@@ -1,0 +1,32 @@
+<%- partial('common/head') %>
+<body>
+    <div id="wrap">
+        <%- partial('common/header', null, {cache: !config.relative_link}) %>
+        <div class="container">
+            <div class="main-body container-inner">
+                <% if (!is_post()) { %>
+                    <div class="main-body-inner">
+                        <section id="main">
+                            <%- partial('common/content-title') %>
+                            <div class="main-body-content">
+                                <%- body %>
+                            </div>
+                        </section>
+                        <%- partial('common/sidebar') %>
+                    </div>
+                <% } %>
+                <% if (is_post()) { %>
+                <section id="main">
+                    <%- partial('common/content-title') %>
+                    <div class="main-body-content">
+                        <%- body %>
+                    </div>
+                </section>
+                <% } %>
+            </div>
+        </div>
+        <%- partial('common/footer', null, {cache: !config.relative_link}) %>
+        <%- partial('common/scripts') %>
+    </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <title>프론트 엔드 개발자 채용공고 지원자격 키워드</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="프론트 엔드 개발자 채용공고 지원자격 키워드">
+  <meta property="og:url" content="https://perfectacle.github.io/crawl-temp/">
+  <meta property="og:site_name" content="프론트 엔드 개발자 채용공고 지원자격 키워드">
+  <meta property="og:description" content="2017/07/18 원티드 프론트 엔드 개발자 채용공고 지원자격 키워드">
+  <meta property="og:image" content="http://perfectacle.github.io/crawl-temp/thumb.png">
+  <meta property="og:updated_time" content="2017-07-18T01:57:59.000Z">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="프론트 엔드 개발자 채용공고 지원자격 키워드">
+  <meta name="twitter:description" content="2017/07/18 원티드 프론트 엔드 개발자 채용공고 지원자격 키워드">
+  <meta name="twitter:image" content="http://perfectacle.github.io/crawl-temp/thumb.png">
+  <style>
+    .chart-container {
+      position: relative;
+      margin: auto;
+      width: 700vw;
+      height: 90vh;
+    }
+  </style>
+</head>
+<body>
+<h1>2017/07/18 원티드 프론트 엔드 개발자 채용공고 지원자격 키워드</h1>
+<div class="chart-container">
+  <canvas id="chart"></canvas>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
+<script>
+  const rand = (min, max) => Math.floor((Math.random() * max) + min);
+  axios.get('./eligibility.json')
+  .then(res => {
+    const la = [];
+    const da = [];
+    const back = [];
+    const border = [];
+    for(const d of res.data) {
+      la.push(d.word);
+      da.push(d.nums);
+      back.push(`rgba(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)}, ${Math.random()})`);
+      border.push(`rgba(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)}, ${Math.random()})`);
+    }
+    const ctx = document.getElementById("chart");
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: la,
+        datasets: [{
+          label: '',
+          data: da,
+          backgroundColor: back,
+          borderColor: border,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            stacked: true,
+          }],
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>
