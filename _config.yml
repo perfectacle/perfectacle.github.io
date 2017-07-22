@@ -66,7 +66,7 @@ pagination_dir: page
 theme: hueman
 plugins:
   google_analytics: UA-87795455-1
-  hexo-generator-robotstxt
+  - hexo-generator-robotstxt
 
 # nofollow
 ## Docs: https://github.com/liuzc/hexo-autonofollow
