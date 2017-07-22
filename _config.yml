@@ -83,8 +83,10 @@ feed:
   path: atom.xml
   limit: 20
 
+# robots.txt for crawler
 robotstxt:
   useragent: "*"
+  allow: /
   sitemap: /sitemap.xml
 
 # Deployment
