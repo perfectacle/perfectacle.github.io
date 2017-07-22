@@ -83,6 +83,10 @@ feed:
   path: atom.xml
   limit: 20
 
+robotstxt:
+  useragent: "*"
+  sitemap: /sitemap.xml
+
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
