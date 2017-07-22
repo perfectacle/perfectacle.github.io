@@ -88,7 +88,6 @@ robotstxt:
   useragent: "*"
   allow:
     - /
-  sitemap: /sitemap.xml
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
