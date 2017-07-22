@@ -87,5 +87,5 @@ feed:
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/perfectacle/perfectacle.github.io
+  repo: git@github.com:perfectacle/perfectacle.github.io.git
   branch: master
