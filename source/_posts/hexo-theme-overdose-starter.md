@@ -1,8 +1,8 @@
 ---
 title: (자작) Hexo theme overdose starter
 date: 2017-07-22 00:58:01
-tag: [기타, 자작]
-category: [blog, hexo, starter]
+category: [기타, 자작]
+tag: [blog, hexo, starter]
 ---
 ![이 테마에 중독될지도 모르니 주의 해야한다!](thumb.png)  
 [깃헙 저장소로 바로가기](https://github.com/perfectacle/hexo-theme-overdose-starter)
