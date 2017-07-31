@@ -2,7 +2,7 @@
 title: (Java) 자바의 정석 3판 007일차 정리
 date: 2017-02-09 13:53:40
 category: [Programming, Java]
-tag: [Java, Java8, 자바의 정석]
+tag: [Java, 자바의 정석]
 ---
 ![](thumb.png)  
 드디어 오늘부터 객체지향 프로그래밍(OOP, Object Oriented Programming) 파트를 나가기 시작했다.  

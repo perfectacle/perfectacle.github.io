@@ -2,7 +2,7 @@
 title: (Java) 자바의 정석 3판 006일차 정리
 date: 2017-01-24 10:17:58
 category: [Programming, Java]
-tag: [Java, Java8, 자바의 정석]
+tag: [Java, 자바의 정석]
 ---
 ![](thumb.png)
 
