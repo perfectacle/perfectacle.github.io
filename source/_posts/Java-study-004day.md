@@ -127,7 +127,7 @@ public class test {
 ## 문자열 비교 메소드 equals()
 문자열 클래스 String은 기본형이 아니다.  
 따라서 String 클래스의 인스턴스들은 참조형이다.  
-참조형은 변수, 상에 값을 저장하는 게 아니라 주소(번지)를 저장한다.
+참조형은 변수, 상수에 값을 저장하는 게 아니라 주소(번지)를 저장한다.
 ```java
 public class test {
     public static void main(String[] args){
@@ -355,5 +355,5 @@ float로 형변환해서 비교하는 것이 정확한 결과를 얻는다.
 따라서 오차가 큰 float를 double로 바꿔도 오차가 큰 double이 된다.  
 따라서 float를 double로 바꿨다 하더라도  
 오차가 큰 double와 오차가 작은 double을 비교하면 신뢰할 수 없는 값이 나온다.  
-그럼 역으로 오차가 작은 duble을 오차가 큰 float로 형변환 시키는 것이다.  
+그럼 역으로 오차가 작은 double을 오차가 큰 float로 형변환 시키는 것이다.  
 이러한 역발상을 통해 둘 다 오차가 큰 float로 만들어서 비교하면 신뢰할 수 있는 결과가 나온다.

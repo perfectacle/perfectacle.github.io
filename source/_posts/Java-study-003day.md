@@ -23,7 +23,7 @@ public class test {
         int num2 = num;
         num2 = ch;
         long num3 = 12345678781234L;
-        // long은 4byte지만 부동 소수점 형태로 표현되기 때문에 8byte인 long보다 더 넓은 범위를 표현할 수 있다.
+        // float은 4byte지만 부동 소수점 형태로 표현되기 때문에 8byte인 long보다 더 넓은 범위를 표현할 수 있다.
         // 하지만 정밀도 때문에 오차가 발생할 수는 있다.
         float num4 = num3;
         double num5 = num3;
