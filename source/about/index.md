@@ -1,5 +1,5 @@
 ---
-title: About Me
+title: 양권성이란...?
 date: 2016-11-10 18:06:26
 ---
 ![백엔드 엔드 개발 지망자](exobud.jpg)
