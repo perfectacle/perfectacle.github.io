@@ -127,7 +127,8 @@ String 클래스는 char 배열에 기능을 추가하여 확장한 것.
 객체 지향 개념인 Java에서는 데이터와 그와 관련된 기능을 하나의 클래스로 묶음.  
 기능 = 함수 = 메소드라고 보면 된다.  
 
-하지만 char 배열과 달리 String 클래스는 내용의 변경이 불가능하다.
+하지만 char 배열과 달리 String 클래스는 내용의 변경이 불가능하다.  
+변경 가능한 String 클래스는 StringBuffer라는 클래스가 따로 있다.
 ```java
 public class test2 {
     public static void main(String[] args) {
@@ -148,8 +149,6 @@ public class test2 {
     }
 }
 ```
-
-변경 가능한 String 클래스는 StringBuffer라는 클래스가 따로 있다.
 
 ### 향상된 for문
 ```java
@@ -189,7 +188,7 @@ public class test2 {
         // 정사각형이 아닌 배열을 만들 수 있게 됨.
         // int int
         // int int int
-        // int int int
+        // int int int int
         nums[0] = new int[2];
         nums[1] = new int[3];
         nums[2] = new int[4];

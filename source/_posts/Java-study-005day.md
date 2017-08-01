@@ -163,3 +163,25 @@ public class test {
     }
 }
 ```
+## continue와 break
+이중 반복문이 있을 때 반복문에 이름을 붙이고, continue와 break 뒤에 반복문의 이름을 붙이면 해당 반복문을 탈출한다.  
+```java
+public class Main {
+    public static void main(String[] args) {
+        /*00
+        01
+        10
+        11*/
+        outer:
+        for(int i=0; i<2; i++) {
+            for(int j=0; j<4; j++) {
+                if(j == 2) {
+                    continue outer;
+                }
+                System.out.print(i);
+                System.out.println(j);
+            }
+        }
+    }
+}
+```

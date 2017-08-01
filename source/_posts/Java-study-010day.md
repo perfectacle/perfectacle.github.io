@@ -103,7 +103,10 @@ class Car {
         // 사실 위와 같이 하는 것 보다는
         // 기존의 코드를 재활용하는 것이 유지보수 측면에서 좋다.
         // 미연의 실수도 방지하고...
-        // this Car(c.color, c.gearType, c.cntDoor);
+        // this(c.color, c.gearType, c.cntDoor); 
+        // 위와 같이 써줘야하고 생성자의 제일 첫줄에 적어줘야한다.
+        // 왜냐하면 여태까지 초기화한 내역 이후에 또 다시 생성자로 다시 인스턴스를 초기화할 필요는 없기 때문이다.
+        // Car(c.colr, c.gearType, c.cntDoor); 라고 쓰면 오류가 난다.
     }
     Car(String color, String gearType, int cntDoor) {
         this.color = color;
