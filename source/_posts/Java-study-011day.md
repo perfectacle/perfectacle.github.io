@@ -14,9 +14,11 @@ public class SutdaCard {
     int num = 0;
     boolean isKwang = false;
     SutdaCard() {
-        num = 1;
-        isKwang = true;
-        // this(1, true); 이 한줄로 커버 되고 이래야 유지보수 측면에서도 용이하다.
+        // 이 한줄로 커버 되고 이래야 유지보수 측면에서도 용이하다.
+        this(1, true);
+        // num = 1;
+        // isKwang = true;
+       
     }
     SutdaCard(int num, boolean isKwang) {
         this.num = num;
@@ -203,7 +205,7 @@ class Child extends Parent {
 ```
 
 * 인스턴스 메소드 <-> static 메소드가 불가능하다.  
-부모 클래스의 static 메소드를 자식 클래스에서 static 메소드로 선언하는 것은 각 클래스에 별개의 static 메소드를 선언하는 것이므로 오버라이딩은 아니다.  
+또한 부모 클래스의 static 메소드를 자식 클래스에서 static 메소드로 선언하는 것은 각 클래스에 별개의 static 메소드를 선언하는 것이므로 오버라이딩은 아니다.  
 
 ## 오버로딩 vs 오버라이딩
 1. 오버로딩(new): 기존에 없던 새로운 메소드(이름만 같은)를 선언하는 것  
@@ -280,7 +282,7 @@ super()는 부모 클래스의 생성자를 호출하기 위해 사용된다.
 this와 마찬가지로 super도 제일 첫 줄에 호출해야하는데  
 자식 클래스가 부모 클래스의 멤버를 사용했을 수도 있으므로
 먼저 부모 클래스의 생성자를 호출해서 멤버들을 초기화시켜야한다.  
-컴파일러가 자동으로 super()를 삽입한다.
+자식 생성자에서 다른 생성자(super()나 this())가 없는 경우에는 컴파일러가 자동으로 super()를 삽입한다.
 
 ```java
 class Test {
@@ -321,12 +323,12 @@ class Point3D extends Point {
 3. Object()
 
 ## 패키지와 클래스  
-클래스: 물리적으로 하나의 클래스 파일(*.class)  
+클래스: 물리적으로 하나의 파일(*.class)  
 패키지: 물리적으로 하나의 디렉토리  
 java.lang.String -> java 패키지(디렉토리) 안에 lang 패키지(디렉토리) 안에 String 클래스(파일)  
 패키지(디렉토리)가 다르면 클래스(파일)명은 같아도 된다.  
 
-모든 클래스는 반드시 패키지 안에 속해야하며 패키지를 명시하지 않으면 default package로 가 같은 패키지 안에 속하게 된다.  
+모든 클래스는 반드시 패키지 안에 속해야하며 패키지를 명시하지 않으면 default package로 같은 패키지 안에 속하게 된다.  
 
 ## import
 import 문은 다른 패키지에 있는 클래스를 사용할 때 패키지 명을 붙이지 않고 사용할 수 있게 해준다.  
@@ -342,10 +344,10 @@ class Test4 {
 }
 ```
 
-import 문을 많이 쓰거나 import java.util.* 처럼 *을 썼다고 해서 실행할 때 퍼포먼스 상 차이는 없다.  
+import 문을 많이 쓰거나 import java.util.\* 처럼 \*을 썼다고 해서 실행할 때 퍼포먼스 상 차이는 없다.  
 단지 컴파일 시간이 조금 더 오래 걸릴 뿐이다.  
-하지만 *을 쓰면 어떤 패키지의 클래스인지 구분하기 어려울 때가 있다.  
-또한 *은 클래스에만 매칭되지 하위 패키지까지 매칭되는 것은 아니다.  
+하지만 \*을 쓰면 어떤 패키지의 클래스인지 구분하기 어려울 때가 있다.  
+또한 \*은 클래스에만 매칭되지 하위 패키지까지 매칭되는 것은 아니다.  
 
 ```java
 // 이렇게 하면 java 패키지의 클래스만 매칭되지  
@@ -365,10 +367,13 @@ import java.lang.*;
 
 ## static import 문
 import를 하면 패키지명을 생략할 수 있듯이  
-static 키워드를 사용하면 클래스명을 생략할 수 있다.
+static 키워드를 사용하면 클래스명을 생략할 수 있다.  
+단 export 한 녀석은 public static이어야한다.   
 ```java
 import static java.lang.System.out;
-import static java.lang.Math.random; 
+import static java.lang.Math.random;
+// 아래와 같이 하면 Math 클래스의 모든 public static 메소드(random, ceil, abs 등등)에서 Math 클래스를 생략 가능하다.  
+// import static java.lang.Math.*;
 
 class Test2 {
     public static void main(String[] args) {
@@ -393,7 +398,7 @@ class Test2 {
 * 메소드 -> 오버라이딩이 불가능해짐.  
 * 클래스 -> 상속받지 못하는 클래스가 됨.  
 
-예외로 인스턴스 변수는 상수로 선언하고 생성자 함수에서 초기화가 가능하다.  
+예외로 인스턴스 변수는 상수로 선언만 했을 때는 생성자 함수에서 초기화가 가능하다.  
 그 이유는 생성자 함수에서 초기화가 불가능하다면 모든 인스턴스마다 같은 인스턴스 상수를 갖게 될 것이기 때문이다.  
 인스턴스 상수도 일단은 인스턴스 변수이니 인스턴스마다 다른 값을 가져야 의미가 있는 것이지 다 같은 값을 가지면 static 변수와 큰 차이점이 없게 된다.  
 
@@ -417,7 +422,7 @@ class Test2 {
 | public    | O           | O           | O           | O    |
 | protected | O           | O           | O           | X    |
 | (default) | O           | O           | X           | X    |
-| private   | X           | X           | X           | X    |
+| private   | O           | X           | X           | X    |
 
 | 대상     | 사용 가능한 접근 지정자               |
 |----------|---------------------------------------|
@@ -453,11 +458,47 @@ class TimeTest {
         t.setHour(25);
         System.out.println(t.getHour()); // 0
         t.setHour(11);
-        System.out.println(t.getHour());
+        System.out.println(t.getHour()); // 11
     }
 }
 ```
 
 또한 생성자에 접근 제어자를 사용하면 싱글톤 패턴을 구현할 수 있다.  
-싱글톤: 클래스의 인스턴스가 하나만 생성되고 해당 인스턴스를 가지고 계속 노는 것.  
+싱글톤: 해당 클래스의 인스턴스가 하나만 만들어지고, 어디서든지 그 인스턴스에 접근할 수 있도록 하기 위한 패턴.  
 
+```java
+// 싱글톤 객체는 상속이 불가능하다.
+// 왜냐하면 자식 클래스에서 부모 클래스의 생성자 호출이 불가능하기 때문이다.
+// 따라서 명시적으로 final 키워드를 붙여서 상속이 불가능한 클래스라는 것을 표기해주는 게 좋다.
+public final class Singleton {
+    private static Singleton s = new Singleton();
+    private Singleton() {
+        System.out.println(11);
+    }
+    public static Singleton getInstance() {
+        return s;
+    }
+}
+
+class SingletonTest {
+    public static void main(String[] args) {
+        // Singleton s = new Singleton(); private이므로 다른 클래스에서 생성자에 접근 불가
+        // 클래스의 인스턴스를 얻으려면 이미 static 변수에 저장된 동일한 인스턴스만 불러오면 된다.
+        Singleton s = Singleton.getInstance();
+        System.out.println(s);
+    }
+}
+```
+
+또한 다음과 같은 주의사항이 있다.  
+1. 메소드에 static과 abstract를 함께 사용할 수 없다.  
+abstract는 몸통이 없는 불완전한 애이고, static은 클래스가 로딩되자마자 메모리에 적재되므로  
+구현이 안 된 애를 메모리에 적재할 수는 없다.  
+2. 클래스에도 abstract와 final을 함께 사용할 수 없다.  
+abstract는 선언부만 던져주고 상속받아서 알아서 구현하라는 키워드인데  
+final 키워드를 붙여 상속이 불가능하게 만들면 모순되는 말이다.  
+3. 메소드에 abstract와 private를 함께 사용할 수 없다  
+abstract는 선언부만 던져주고 상속받아서 알아서 구현하라는 키워드인데  
+private 키워드는 그 상속받은 자식 클래스에서 조차 접근이 불가능하므로 모순되는 말이다.  
+4. 메소드에 private과 final을 같이 사용할 필요는 없다.  
+private인 메소드는 자식에서도 접근이 불가능하기 때문에 오버라이딩 될 수 없다. 이미 둘 다 같은 역할을 하기 때문에 하나만 사용하면 된다.  
