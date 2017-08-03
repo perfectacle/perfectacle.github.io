@@ -4,7 +4,6 @@ tag:
   - JS
   - ES
   - 자알쓰
-  - 자료형
   - 디버깅
 category:
   - Programming
