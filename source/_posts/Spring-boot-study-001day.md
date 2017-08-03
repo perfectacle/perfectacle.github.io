@@ -50,7 +50,9 @@ VO는 Java Bean 스펙을 준수했는데 값 자체를 나타내며 불변(immu
 
 ## Lombok
 이것도 라이브러리? 플러그인? 같은데 Sass가 CSS 전처리기라면 Lombok은 어노테이션 전처리기란다.  
-IntelliJ에서 플러그인에서 설치를 해줘야하고, Setting으로 가서 ... > Compiler > Annotation Processors로 가서 Enable 시켜주기.  
+프로젝트를 만들 때 Core에서 Lombok을 설정해줘야한다.  
+IntelliJ에서 플러그인에서 설치를 해줘야하고(그래야 IDE에서 오류로 처리하지 않는다. 아마...??), 
+또 실제로 작동하게 하려면 Setting으로 가서 ... > Compiler > Annotation Processors로 가서 Enable 시켜주기.    
 
 일반 IDE에서는 아래와 같이 getter와 setter를 자동으로 만들어주기도 해서 굳이 Lombok을 쓸 필요가 있냐고 주장하는 사람도 있다.  
 ```java
