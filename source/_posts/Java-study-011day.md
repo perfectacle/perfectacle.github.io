@@ -1,6 +1,6 @@
 ---
 title: (Java) 자바의 정석 3판 011일차 정리
-category: [Programming, Java]
+category: [Note, Java]
 tag: [Java, 자바의 정석]
 date: 2017-08-01 18:30:01
 ---
@@ -382,6 +382,8 @@ class Test2 {
     }
 }
 ```
+그냥 import는 package.\*로 해서 모든 클래스들을 불러와서 패키지 명을 생략가능하게 했다면  
+static import는 package.class.\*로 해서 클래스 내의 모든 멤버를 불러와서 클래스 명을 생략 가능하게 했다고 알아두면 될 것 같다.   
 
 ## 클래스 멤버 vs 인스턴스 멤버  
 멤버: 변수, 메소드  
@@ -463,7 +465,7 @@ class TimeTest {
 }
 ```
 
-또한 생성자에 접근 제어자를 사용하면 싱글톤 패턴을 구현할 수 있다.  
+또한 생성자에 접근 제어자를 사용하면 [싱글톤 패턴](https://blog.seotory.com/post/2016/03/java-singleton-pattern)을 구현할 수 있다.  
 싱글톤: 해당 클래스의 인스턴스가 하나만 만들어지고, 어디서든지 그 인스턴스에 접근할 수 있도록 하기 위한 패턴.  
 
 ```java

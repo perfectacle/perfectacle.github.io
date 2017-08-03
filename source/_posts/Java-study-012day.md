@@ -1,6 +1,6 @@
 ---
 title: (Java) 자바의 정석 3판 012일차 정리
-category: [Programming, Java]
+category: [Note, Java]
 tag: [Java, 자바의 정석]
 date: 2017-08-02 11:35:34
 ---
@@ -101,16 +101,16 @@ class Test4 {
 ```
 
 이렇듯 부모 클래스에서 자식 클래스로 형변환이 가능하지만  
-부모 인스턴스 타입에서 자식 인스턴스 타입으로 변환하지는 못한다.  
+부모 인스턴스 타입에서 자식 참조 타입으로 변환하지는 못한다.  
 이 말을 풀어 쓰면  
 1. `TV2 t = new TV2();`  
-부모 참조타입에 부모 인스턴스면  
+부모 참조 타입에 부모 인스턴스면  
 `CaptionTV c = (CaptionTV)t;`  
-자식 인스턴스의 타입으로 변환하지 못한다.  
+자식의 참조 타입으로 변환하지 못한다.  
 2. `TV2 t = new CaptionTV();`
-부모 참조타입에 자식 인스턴스면  
+부모 참조 타입에 자식 인스턴스면  
 `CaptionTV c = (CaptionTV)t;`  
-자식 인스턴스의 타입으로 변환 가능하단 소리다.  
+자식의 참조 타입으로 변환 가능하단 소리다.  
 
 ## instanceof 연산자
 자스와 비슷하다고 보면 되고, null인 참조 변수는 항상 false를 반환한다.  
@@ -259,7 +259,9 @@ class Test5 {
         Product[] p = {new Computer(), new Radio(), new Radio()};
         // 배열은 길이가 고정적인데 반해 벡터는 10개는 기본이고, 그 이후에는 계속해서 추가된다.
         // 이러한 단점을 극복한 게 Vector이다. Vector는 객체 배열이다.
-        Vector v = new Vector();
+        // 따라서 클래스의 인스턴스 멤버들을 사용하려면 다운캐스팅 해줘야한다.  
+        // System.out.println(((Audio)p[3]).volume);
+        Vector<Product> v = new Vector<>();
         v.add(new Computer());
         v.add(new Radio());
     }

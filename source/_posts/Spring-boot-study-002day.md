@@ -1,6 +1,6 @@
 ---
 title: (Spring) 스타트 스프링 부트 2일차 정리
-category: [Back-end, Spring]
+category: [Note, Spring Boot]
 tag: [Java, Spring, Spring Boot]
 date: 2017-08-03 09:17:54
 ---

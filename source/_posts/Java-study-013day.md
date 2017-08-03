@@ -1,6 +1,6 @@
 ---
 title: (Java) 자바의 정석 3판 013일차 정리
-category: [Programming, Java]
+category: [Note, Java]
 tag: [Java, 자바의 정석]
 date: 2017-08-03 15:05:34
 ---
