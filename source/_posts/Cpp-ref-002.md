@@ -1,7 +1,7 @@
 ---
 title: (C++) 참고용 정리 - 클래스의 두 가지 생성 방법
 date: 2017-02-09 15:55:22
-category: [Programming, C/C++]
+category: [Note, C/C++]
 tag: [C, C++, Variable, Static]
 ---
 ![](thumb.png)
