@@ -132,6 +132,7 @@ public class test {
 어찌보면 0.00000000000000004 정도의 오차는 무시되도 되는 작은 숫자이다.  
 
 ##### Solution in ES6
+Number.EPSILON은 오차없이 나타낼 수 있는 가장 작은 양의 소수를 나타낸다.  
 이렇게 무시되어도 될 정도의 작은 오차를 구분하기 위해 등장한 프로퍼티이다.
 ```javascript
 console.log(5e2); // 500
