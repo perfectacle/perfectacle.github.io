@@ -2,7 +2,7 @@
 title: (후기) 키워드 크롤러를 만들고 나서...
 date: 2017-07-18 15:34:38
 tag: [review]
-category: [기타, 잡담]
+category: [기타, 잡동사니]
 ---
 ![](thumb.png)
 [프로젝트로 바로가기](/2017/07/18/keyword-crawler/)  

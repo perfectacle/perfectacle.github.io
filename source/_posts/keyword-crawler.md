@@ -1,7 +1,7 @@
 ---
 title: (자작) 키워드 크롤러
 date: 2017-07-18 13:59:43
-category: [기타, 잡동사니]
+category: [기타, 자작]
 tag: [node.js, crawler, phantomjs, mecab]
 ---
 ![차트라던지 표라던지 표현 방법은 유저가 직접 구현해야한다.](thumb.png)  
