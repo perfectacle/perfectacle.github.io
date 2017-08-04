@@ -1,8 +1,8 @@
 ---
-title: (Java) 자바의 정석 3판 002일차 정리
+title: (Java) 자바의 정석 3판 002일차 - char의 형변환과 실수형(부동 소수점)
 date: 2016-12-31 18:12:20
 category: [Note, Java]
-tag: [Java, 자바의 정석]
+tag: [Java, 자바의 정석, 부동소수점]
 ---
 ![](thumb.png)
 

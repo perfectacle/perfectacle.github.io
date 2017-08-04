@@ -1,8 +1,8 @@
 ---
-title: (Java) 자바의 정석 3판 009일차 정리
+title: (Java) 자바의 정석 3판 009일차 - 재귀함수, 클래스 설계, 오버로딩, 가변 인자
 date: 2017-02-11 13:07:43
 category: [Note, Java]
-tag: [Java, 자바의 정석]
+tag: [Java, 자바의 정석, OOP]
 ---
 ![](thumb.png)
 

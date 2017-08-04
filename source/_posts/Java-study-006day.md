@@ -1,8 +1,8 @@
 ---
-title: (Java) 자바의 정석 3판 006일차 정리
+title: (Java) 자바의 정석 3판 006일차 - 배열
 date: 2017-01-24 10:17:58
 category: [Note, Java]
-tag: [Java, 자바의 정석]
+tag: [Java, 자바의 정석, 배열]
 ---
 ![](thumb.png)
 
