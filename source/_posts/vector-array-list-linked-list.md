@@ -29,6 +29,68 @@ Vector와 달리 동기화를 보장해주지 못하고, 공간이 모자를 때
 맨 마지막에 있는 녀석을 검색해야한다면 처음부터 끝까지 노드를 타고 줄줄이 이동해야해서 **검색에는 적합하지 않다**.  
 하지만 삭제/삽입을 할 때는 중간에 해당 노드의 주소지만 바꿔주면 되므로 **삽입/삭제가 빈번한 데이터에 적합**하다.
 
+## ArrayList vs LinkdedList
+```java
+public class ArrayLinked {
+    static long add(List list) {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) list.add(i + "");
+        long end = System.currentTimeMillis();
+        return end - start;
+    }
+    static long add2(List list) {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) list.add(500, "X");
+        long end = System.currentTimeMillis();
+        return end - start;
+    }
+    static long remove(List list) {
+        long start = System.currentTimeMillis();
+        for (int i = list.size()-1; i >= 0; i--) list.remove(i);
+        long end = System.currentTimeMillis();
+        return end - start;
+    }
+    static long remove2(List list) {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) list.remove(i);
+        long end = System.currentTimeMillis();
+        return end - start;
+    }
+    static long access(List list) {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) list.get(i);
+        long end = System.currentTimeMillis();
+        return end - start;
+    }
+
+    public static void main(String[] args) {
+        ArrayList a = new ArrayList(200000);
+        LinkedList b = new LinkedList();
+        System.out.println("순차적으로 추가하기");
+        System.out.println("ArrayList: " + add(a) + "ms 소요"); // 44ms
+        System.out.println("LinkedList: " + add(b) + "ms 소요"); // 21ms
+        System.out.println();
+        System.out.println("중간에 추가하기");
+        System.out.println("ArrayList: " + add2(a) + "ms 소요"); // 272ms
+        System.out.println("LinkedList: " + add2(b) + "ms 소요"); // 18ms
+        System.out.println();
+        System.out.println("중간에 제거하기");
+        System.out.println("ArrayList: " + remove2(a) + "ms 소요"); // 259ms
+        System.out.println("LinkedList: " + remove2(b) + "ms 소요"); // 458ms
+        System.out.println();
+        System.out.println("순차적으로 삭제하기");
+        System.out.println("ArrayList: " + remove(a) + "ms 소요"); // 5ms
+        System.out.println("LinkedList: " + remove(b) + "ms 소요"); // 15ms
+        System.out.println();
+        add(a);
+        add(b);
+        System.out.println("접근 속도 테스트");
+        System.out.println("ArrayList: " + access(a) + "ms 소요"); // 1ms
+        System.out.println("LinkedList: " + access(b) + "ms 소요"); // 283ms
+    }
+}
+```
+
 ## 참고자료
 * [Java 의 Vector 와 ArrayList , Linked List 의 차이점](http://seeit.kr/36)  
 * [What are the differences between ArrayList and Vector?](https://stackoverflow.com/questions/2986296/what-are-the-differences-between-arraylist-and-vector)

@@ -714,6 +714,9 @@ StrictMath는 성능을 좀 포기하더라도 어디서나 동일한 결과를 
 
 ### 래퍼 클래스(Wrapper Class)
 기본타입을 객체로 다루기 위한 클래스  
+Object 아래 Boolean, Character, Number 클래스가 있다.  
+Number 클래스의 자식으로 Byte, Short, Integer, Long, Float, Double이 있고,  
+추가적으로 BigInteger(Long 보다 큼), BigDecimal(Double보다 큼)도 존재한다.
 
 #### 오토 박싱 & 언박싱(autoboxing & unboxing)  
 JDK5 이후에 등장했다.  
