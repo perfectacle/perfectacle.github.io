@@ -137,11 +137,25 @@ var a = function() {
     };
     return c;
 };
-var d = a();
-d(); // 1
-d(); // 2
-d(); // 3
-d(); // 4
+a = a();
+a(); // 1
+a(); // 2
+a(); // 3
+a(); // 4
+```
+함수 a를 호출한 결과(내부 함수 c)를 다시 a에 담는 과정이 불필요하다고 생각되니 IIFE(즉시 실행 함수, Immediately Invoked Function Expressions)를 이용하면 아래와 같이 줄일 수 있다.
+```javascript
+var a = (function() {
+    var b = 1;
+    var c = function() {
+      console.log(b++);
+    };
+    return c;
+})();
+a(); // 1
+a(); // 2
+a(); // 3
+a(); // 4
 ```
 
 * 조건 3. 참조하는 대상이 전역 스코프가 아니어야한다.  
