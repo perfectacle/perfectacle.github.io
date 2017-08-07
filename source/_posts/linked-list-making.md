@@ -60,7 +60,7 @@ class Node {
     }
 
     public boolean equals(Node node) { // 내용물과 참조하는 애가 같은지
-        return value == node.getValue() && next == node.getNext();
+        return value.equals(node.getValue()) && next == node.getNext();
     }
 }
 
