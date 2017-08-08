@@ -150,7 +150,7 @@ function add6() {
 * [러닝 자바스크립트](http://book.naver.com/bookdb/book_detail.nhn?bid=12181869)  
 
 [코뿔소 책](http://book.naver.com/bookdb/book_detail.nhn?bid=10338797)이나 [노란책](http://book.naver.com/bookdb/book_detail.nhn?bid=7204207)도 유명하다고들 하나 솔직히 1독이라도 끝낸 사람이 얼마나 될까 싶을 정도라서 그닥 추천하지 않았다.  
-그리고 아직 읽어보지 않았지만 [You Don't Know JS](http://book.naver.com/search/search.nhn?sm=sta_hty.book&sug=pre&where=nexearch&query=You+Don%27t+Know+JS)도 좋은 것 같다.  
+그리고 아직 읽어보지 않았지만 [You Don't Know JS 시리즈](http://book.naver.com/search/search.nhn?sm=sta_hty.book&sug=pre&where=nexearch&query=You+Don%27t+Know+JS)도 좋은 것 같다.  
 
 여기서 jQuery를 뺀 이유는 적어도 ES5까지는 알고 나서 제이쿼리를 접하는 걸 추천한다.  
 자바스크립트는 엄연히 **프로그래밍 언어**인데 중간에 jQuery(DOM 조작 라이브러리+@)를 먼저 접하면 프로그래밍 언어 관점 보다는 DOM을 조작하는데 너무 혈안이 될 수도 있다.  
