@@ -77,6 +77,7 @@ forEach, map, filter, reduce, some, every와 같은 순환 메소드들이 생�
 [Strict mode - JavaScript | MDN](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Strict_mode)  
 * [bind() 메소드](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)    
 this를 강제로 bind 시켜주는 메소드이다.  
+* [실행 컨텍스트 내에 존재하는 Lexical Environment](http://huns.me/development/1407)  
 * JSON(JavaScript Object Notation)  
 과거 통신을 할 때 데이터를 XML 형태로 많이 주고 받았다.  
 하지만 JSON이 좀 더 경량화 돼있는지 요새는 JSON이 대세다.  
@@ -85,8 +86,7 @@ JSON은 자바스크립트의 객체 리터럴과 생긴 건 유사한데 다음
 2. 주석은 사용할 수 없다.  
 3. 프로퍼티로 메소드는 불가능하다.
 4. 프로퍼티에서도 메소드의 사용이 불가능하다.  
-통신을 위해 Object를 JSON으로 바꾸는 방법은 `JSON.stringify(obj)`이고, 자바스크립트 코드에서 사용하기 위해 JSON은 Object로 바꾸는 방법은 `JSON.parse(json)`이다.    
-* [실행 컨텍스트 내에 존재하는 Lexical Environment](http://huns.me/development/1407)   
+통신을 위해 Object를 JSON으로 바꾸는 방법은 `JSON.stringify(obj)`이고, 자바스크립트 코드에서 사용하기 위해 JSON은 Object로 바꾸는 방법은 `JSON.parse(json)`이다.       
 
 ## ES2015(ES6)
 원래는 ES6였는데 사람들이 끝자리인 6과 2016년을 연관짓는 습성 때문에 2016년에 나온 걸로 착각을 해서인지 ES2015로 바꾼 것 같다.  
