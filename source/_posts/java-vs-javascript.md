@@ -1,7 +1,8 @@
 ---
 title: 자바 vs 자바스크립트
 date: 2017-08-19 20:43:58
-tags:
+category: [Programming, ECMAScript]
+tag: [JS, ES, Java]
 ---
 ![](thumb.png)  
 
