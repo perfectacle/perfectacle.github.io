@@ -2,10 +2,9 @@
 title: 양권성이란...?
 date: 2016-11-10 18:06:26
 ---
-![백엔드 엔드 개발 지망자](exobud.jpg)
+![백엔드 엔드 개발자](exobud.jpg)
 
-* C/C++  
-* Java  
+* Java8, Spring Boot, JPA  
 * ES2015+, Typescript, Node.js, React  
 * Git  
 * 자전거, 재즈, 힙합

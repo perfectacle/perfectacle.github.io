@@ -74,7 +74,7 @@ public class TestsTest {
 ```
 `Test test = new Test();`와 같은 방식 대신에 @Inject 어노테이션을 사용했다.  
 `@Autowired`와 동일한 역할을 한다고 한다.  
-build.gradl의 dependency에 `compile('javax.inject:javax.inject:1')` 을 추가하면 된다.  
+build.gradle의 dependency에 `compile('javax.inject:javax.inject:1')` 을 추가하면 된다.  
 자세한 설명은 아래 링크를...
 [Spring MVC 어노테이션 기반 설정 - 2 . @Autowired](http://deoki.tistory.com/28)  
 
