@@ -1,5 +1,5 @@
 ---
-title: (Spring) 스타트 스프링 부트 - properties 값을 불러와보자
+title: (Spring) 스프링 부트 - properties 값을 불러와보자
 category: [Note, Spring Boot]
 tag: [Java, Spring, Spring Boot]
 date: 2017-09-18 01:15:10
@@ -74,6 +74,7 @@ public class TestsTest {
 ```
 `Test test = new Test();`와 같은 방식 대신에 @Inject 어노테이션을 사용했다.  
 `@Autowired`와 동일한 역할을 한다고 한다.  
+다만 Inject는 자바에서 지원하는 표준 어노테이션이고, Autowired는 스프링에서 지원해주는 것 같다.  
 build.gradle의 dependency에 `compile('javax.inject:javax.inject:1')` 을 추가하면 된다.  
 자세한 설명은 아래 링크를...
 [Spring MVC 어노테이션 기반 설정 - 2 . @Autowired](http://deoki.tistory.com/28)  
