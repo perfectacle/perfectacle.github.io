@@ -1,7 +1,7 @@
 ---
 title: (C/C++) 참고용 정리 - 메모리 영역(Code, Data, Stack, Heap)
 date: 2017-02-09 14:31:26
-category: [Note, C/C++]
+category: [Programming, C/C++]
 tag: [C, C++, Variable, Static]
 ---
 ![](thumb.png)

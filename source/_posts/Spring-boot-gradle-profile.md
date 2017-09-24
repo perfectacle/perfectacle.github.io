@@ -1,6 +1,6 @@
 ---
-title: (Spring) 스프링 부트 - Gradle의 Profile(dev/production)을 구분지어보자.
-category: [Note, Spring Boot]
+title: (Spring Boot) Gradle의 Profile(dev/production)을 구분지어보자.
+category: [Back-end, Spring Boot]
 tag: [Java, Spring, Spring Boot, Gradle]
 date: 2017-09-23 01:06:20
 ---
