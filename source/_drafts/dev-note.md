@@ -3,9 +3,6 @@ title: 모르는 항목들
 tag: [develop]
 category: [기타, 등등]
 ---
-<iframe width="100%" height="450" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/330637147&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
-
-
 ## 배포
 
 ### AWS (Amazon Web Server)
