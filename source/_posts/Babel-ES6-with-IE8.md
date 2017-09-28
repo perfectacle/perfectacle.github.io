@@ -20,7 +20,7 @@ tags: [Babel, ES6, ES2015, ES, JS, Cross Browsing, npm, Node.js]
 이 포스트에서는 **Node.js**, **npm**, **ES(ECMAScript)** 등등에 대해서는 설명하지 않는다.  
 해당 내용들은 구글링을 통해 직접 찾아보길 바란다.  
 또한 import, export로 모듈화 시키는 것은 현재 지원 브라우저도 없고,  
-다양한 모듈 번들러 중 하나인 [웹팩](/2016/11/18/ciy9gf4du0017ton9rcrdnh6n/)를 이용하거나 RequireJS를 이용하거나 등등 방법은 많지만  
+다양한 모듈 번들러 중 하나인 [웹팩](/2016/11/18/Module-bundling-with-Webpck/)를 이용하거나 RequireJS를 이용하거나 등등 방법은 많지만  
 해당 포스트에서는 다루지 않고 건너 뛴다.
 
 해당 포스트에서는 ES6를 왜 써야하는지,  
