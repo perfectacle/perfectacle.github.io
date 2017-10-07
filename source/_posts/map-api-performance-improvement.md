@@ -121,7 +121,7 @@ public class Job {
 ```
 서버를 띄웠을 때 최초 1회, 30분 마다 캐싱하도록 설정하였다.  
 
-### 최종 점검
+### 또 다시 중간 점검
 ![4~6초 가량으로 줄어들었다.](20.png)  
 
 ![최대 오래 걸리는 게 딜 목록을 불러오는 부분이다.](21.png)  
@@ -161,6 +161,8 @@ public class HotelMapper2 {
 ![하지만 큰 변함은 없었다.](25.png)
 
 ![제일 데이터가 큰 컬럼인 LIST_IMAGE_JSON 컬럼을 빼자 속도가 3배 가량 빨라졌다.](26.png)
+
+## 또 다시 캐싱 전략 세우기
 따라서 모든 딜의 LIST_IMAGE_JSON 컬럼 또한 캐시하도록 하였다.  
 ```java
 @PostConstruct
@@ -173,6 +175,53 @@ public void setDealsThumbnail() {
 
 ![훨씬 빨라진 실행 속도들](27.png)
 
+그리고 숙박의 경우 사람들이 자주 이용하는 주말, 1박2일, 1~4인 조건의 내용을 캐싱하도록 하였다.
+```java
+// 매 달의 주말(지나간 날은 제외)을 구하는 스케쥴러
+@PostConstruct
+@Scheduled(cron = "0 0 0 1 * *")
+public void setSaturdaysOfMonth() {
+    LocalDate now = LocalDate.now();
+    int year = now.getYear();
+    Month month = now.getMonth();
+
+    List<LocalDate> saturdaysOfMonth = IntStream.rangeClosed(LocalDate.now().getDayOfMonth(), YearMonth.of(year, month).lengthOfMonth())
+            .mapToObj(day -> LocalDate.of(year, month, day))
+            .filter(date -> date.getDayOfWeek() == DayOfWeek.SATURDAY)
+            .collect(Collectors.toList());
+
+    weekend.setSaturdays(saturdaysOfMonth);
+}
+
+// 주말, 1박2일, 1~4인 조건의 내용을 캐싱
+@PostConstruct
+@Scheduled(cron = "0 0/30 * * * ?")
+public void setClusterGroup() {
+    clusterGroupCache.setLeisureCluster(leisureCacheService.findLeisureClusters());
+    clusterGroupCache.setLeisureClusterWithDeals(leisureCacheService.findLeisureClustersAndDeals());
+
+    List<LocalDate> saturdays = weekend.getSaturdays();
+    List<List<List<Cluster>>> clusterByWeekAndAdultCount = Lists.newArrayList();
+    List<List<List<Cluster>>> clusterWithDealsByWeekAndAdultCount = Lists.newArrayList();
+    for(int saturday=0, len=saturdays.size(); saturday<len; saturday++) {
+        List<List<Cluster>> clusterByAdultCount = Lists.newArrayList();
+        List<List<Cluster>> clusterWithDealsByAdultCount = Lists.newArrayList();
+        for (int adultCount = 1; adultCount < 5; adultCount++) {
+            HotelCriteria hotelCriteria = new HotelCriteria(
+                    new StayPeriod(saturdays.get(saturday), saturdays.get(saturday).plusDays(1)), adultCount, UserGroup.STANDARD);
+            clusterByAdultCount.add(hotelCacheService.findHotelClusters(hotelCriteria));
+            clusterWithDealsByAdultCount.add(hotelCacheService.findHotelClustersWithDeals(hotelCriteria));
+        }
+        clusterByWeekAndAdultCount.add(clusterByAdultCount);
+        clusterWithDealsByWeekAndAdultCount.add(clusterWithDealsByAdultCount);
+    }
+    clusterGroupCache.setHotelClusterInSaturdays(clusterByWeekAndAdultCount);
+    clusterGroupCache.setHotelClusterInSaturdaysWithDeals(clusterWithDealsByWeekAndAdultCount);
+}
+```
+
 ## 차후 개선 사항 (시간 문제 및 공수와 효율성 문제)
 * 2MB로 줄였다 하더라도 필터를 계속해서 바꾸다 보면 유저 입장에서는 부담되는 용량일 수도 있다.  
 ![또한 딜을 내려주는 API에서 반복되는 키값을 빼고 순서를 보장한 배열로 만들어 내려주는 형태로 바꿔주면 데이터를 0.5MB 이상 단축할 수 있다.](15.png)    
+
+* 아직 주말의 경우에만 캐싱하도록 했는데 나중에는 공휴일과 휴일 전,후로 휴가를 써서 2박 3일을 다녀오는 경우도 있으니 그러한 케이스도 신경 써야겠다.   
