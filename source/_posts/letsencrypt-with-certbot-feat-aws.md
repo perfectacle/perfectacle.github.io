@@ -52,7 +52,8 @@ chmod +x certbot-auto
 mv certbot-auto /usr/bin/certbot-auto
 ```
 
-그리고 실제 SSL 인증서를 발급받아보도록 하자.
+그리고 실제 SSL 인증서를 발급받아보도록 하자.  
+현재 AWS Linux는 아직 정식 지원이 아닌지 --debug를 붙여줘야한다.
 ```bash
 certbot-auto certonly --standalone -d 발급받을도메인
 
@@ -132,6 +133,8 @@ server {
 그리고 아래와 같이 nginx 서버를 재구동 하고 브라우저에서 도메인을 입력하고 http to https와 ssl 인증서가 제대로 적용됐는지 확인해보자.  
 ```bash
 service nginx start
+# 혹시 재시작이 안 됐다면 아래 커맨드를 입력하자.
+/etc/init.d/nginx restart
 ```
 
 ## 자동 갱신하기

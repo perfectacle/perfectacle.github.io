@@ -122,19 +122,57 @@ public class Job {
 서버를 띄웠을 때 최초 1회, 30분 마다 캐싱하도록 설정하였다.  
 
 ### 최종 점검
-![4~5초 가량으로 줄어들었다.](20.png)  
+![4~6초 가량으로 줄어들었다.](20.png)  
 
 ![최대 오래 걸리는 게 딜 목록을 불러오는 부분이다.](21.png)  
 
-![실제 쿼리 실행은 0.01초도 안 걸렸다.](22.png)  
+![실제 쿼리 실행은 0.01초도 안 걸린다.](22.png)  
 
-![아마 매핑하는 필드가 많아서 오래걸리는 게 아닐까...싶다.](23.png)
+![MyBatis로 해당 쿼리를 실행하는데 걸린 시간은 1초가 넘는다.](24.png)
+
+혹시 MyBatis라서 느린건가 싶어서 JDBC로 쿼리를 날려봤다.
+```java
+@Repository
+public class HotelMapper2 {
+    private JdbcTemplate jdbcTemplate;
+
+    @Inject
+    public HotelMapper2(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate =  jdbcTemplate;
+    }
+
+    public List<DealInMap> test() {
+        String sql = "Select d.id, d.deal_nm, d.`STANDARD_PRICE`, d.zeropass_price, d.group_price, d.lat, d.lon,\n" +
+                "d.tax_and_fee, ct.`tree_code`, d.deal_type, d.`LIST_IMAGE_JSON`\n" +
+                "From DEAL_M d\n" +
+                "Join TREE_DEAL_MAP tdm\n" +
+                "    on d.id = tdm.deal_id\n" +
+                "Join `CATEGORY_TREE` ct\n" +
+                "    on tdm.`CATEGORY_TREE_ID` = ct.id and ct.tree_group_id = 27 and ct.depth = 2\n" +
+                "Join HOTEL_DEAL_MIN_PRICES p\n" +
+                "    on p.deal_id = d.id and p.expire_at > now() and p.ymd Between '2017-10-07' And '2017-10-07' and p.max_capacity >= 1\n" +
+                "Where deal_status = 'IN_SALE' And d.display_yn = 'Y' and display_standard_yn = 'Y' And del_yn = 'N' And deal_type != 'DEAL'\n" +
+                "And d.lat is not NULL And d.lon is not NULL\n" +
+                "Group by d.id";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<DealInMap>(DealInMap.class));
+    }
+}
+```
+![하지만 큰 변함은 없었다.](25.png)
+
+![제일 데이터가 큰 컬럼인 LIST_IMAGE_JSON 컬럼을 빼자 속도가 3배 가량 빨라졌다.](26.png)
+따라서 모든 딜의 LIST_IMAGE_JSON 컬럼 또한 캐시하도록 하였다.  
+```java
+@PostConstruct
+@Scheduled(cron = "0 0/30 * * * ?")
+public void setDealsThumbnail() {
+    thumbs.setLeisureThumbs(dealMMapper.selectLeisureThumbnail());
+    thumbs.setHotelThumbs(dealMMapper.selectHotelThumbnail());
+}
+```
+
+![훨씬 빨라진 실행 속도들](27.png)
 
 ## 차후 개선 사항 (시간 문제 및 공수와 효율성 문제)
 * 2MB로 줄였다 하더라도 필터를 계속해서 바꾸다 보면 유저 입장에서는 부담되는 용량일 수도 있다.  
 ![또한 딜을 내려주는 API에서 반복되는 키값을 빼고 순서를 보장한 배열로 만들어 내려주는 형태로 바꿔주면 데이터를 0.5MB 이상 단축할 수 있다.](15.png)    
-
-* 딜을 뿌리는 API가 여전히 느리다. (3~6초)  
-데이터가 많아지면 이 속도는 더 느려질 게 뻔하다.  
-따라서 캐싱을 해야하는데 어떻게 캐싱할 것인지 전략을 세워야한다.  
-숙박의 경우에는 필터 조건이 다양해서 사람들이 자주 이용하는 주말 등등의 데이터를 저장한다던가 해야겠다.  
