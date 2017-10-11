@@ -49,18 +49,15 @@ treeAllId라던지, clusterName이나 빈 배열 등등 다른 값들을 가지�
 
 ## 문제 해결
 ### 아예 API 서버로 따로 분리
-맵 API는 방대한 양의 데이터를 가져오므로 서버의 리소스 사용이 많아 아예 별도의 서버로 구축하기로 판단했다.  
-하지만 실제 가격을 주입하기 위해서는 유저의 등급이 필요한데 API 서버에는 유저에 대한 정보를 가지고 있지 않기 때문에 아래와 같은 구조로 구성하게 됨.  
-![서버 구조](server.png)  
-가자고 프론트 서버는 타지 않는 게 제일 베스트인데 유저 정보에 따른 실제 가격 주입 때문에 어쩔 수 없이 넣게 되었다.  
+맵 API는 방대한 양의 데이터를 가져오므로 서버의 리소스 사용이 많아 아예 별도의 서버로 구축하기로 판단했다.    
 
 ### 빠른 응답속도 보장
 클러스터와 딜을 함께 내려주다보니 초기에 유저가 기다려야하는 속도는 15~20초 남짓 대기해야한다.    
 ![이 화면에서 클러스터를 그리기 위한 정보는 중심 좌표, 지역 코드, 딜 갯수가 끝이다.](12.png)  
 굳이 딜 목록까지 내려 줄 필요가 없다고 판단이 들어서 클러스터(갯수 포함) 따로 딜 따로 내려주게 끔 API를 두 개로 분리하였다.  
 ```
-/api/v1/map/hotel (클러스터)
-/api/v1/map/hotel/deals (딜, 기존 API)
+/api/v4/map/hotel (클러스터)
+/api/v4/map/hotel/deals (딜, 기존 API)
 ```
 클러스터를 그리기 위한 클러스터 API는 응답 속도가 1~2초 남짓이라 유저가 불편을 느끼지 못할 수준이다.  
 유저가 방심(?)하는 사이에 몰래(?) 딜을 뿌려주는 API를 호출하고 있으면 웬만한 유저들에게는 불편함을 주지 않을 것이다.  
@@ -126,40 +123,6 @@ public class Job {
 
 ![최대 오래 걸리는 게 딜 목록을 불러오는 부분이다.](21.png)  
 
-![실제 쿼리 실행은 0.01초도 안 걸린다.](22.png)  
-
-![MyBatis로 해당 쿼리를 실행하는데 걸린 시간은 1초가 넘는다.](24.png)
-
-혹시 MyBatis라서 느린건가 싶어서 JDBC로 쿼리를 날려봤다.
-```java
-@Repository
-public class HotelMapper2 {
-    private JdbcTemplate jdbcTemplate;
-
-    @Inject
-    public HotelMapper2(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate =  jdbcTemplate;
-    }
-
-    public List<DealInMap> test() {
-        String sql = "Select d.id, d.deal_nm, d.`STANDARD_PRICE`, d.zeropass_price, d.group_price, d.lat, d.lon,\n" +
-                "d.tax_and_fee, ct.`tree_code`, d.deal_type, d.`LIST_IMAGE_JSON`\n" +
-                "From DEAL_M d\n" +
-                "Join TREE_DEAL_MAP tdm\n" +
-                "    on d.id = tdm.deal_id\n" +
-                "Join `CATEGORY_TREE` ct\n" +
-                "    on tdm.`CATEGORY_TREE_ID` = ct.id and ct.tree_group_id = 27 and ct.depth = 2\n" +
-                "Join HOTEL_DEAL_MIN_PRICES p\n" +
-                "    on p.deal_id = d.id and p.expire_at > now() and p.ymd Between '2017-10-07' And '2017-10-07' and p.max_capacity >= 1\n" +
-                "Where deal_status = 'IN_SALE' And d.display_yn = 'Y' and display_standard_yn = 'Y' And del_yn = 'N' And deal_type != 'DEAL'\n" +
-                "And d.lat is not NULL And d.lon is not NULL\n" +
-                "Group by d.id";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<DealInMap>(DealInMap.class));
-    }
-}
-```
-![하지만 큰 변함은 없었다.](25.png)
-
 ![제일 데이터가 큰 컬럼인 LIST_IMAGE_JSON 컬럼을 빼자 속도가 3배 가량 빨라졌다.](26.png)
 
 ## 또 다시 캐싱 전략 세우기
@@ -173,55 +136,32 @@ public void setDealsThumbnail() {
 }
 ```
 
-![훨씬 빨라진 실행 속도들](27.png)
-
-그리고 숙박의 경우 사람들이 자주 이용하는 주말, 1박2일, 1~4인 조건의 내용을 캐싱하도록 하였다.
+그리고 캐시한 썸네일과 DB에서 불러온 딜 목록을 매핑하도록 변경하였다.  
 ```java
-// 매 달의 주말(지나간 날은 제외)을 구하는 스케쥴러
-@PostConstruct
-@Scheduled(cron = "0 0 0 1 * *")
-public void setSaturdaysOfMonth() {
-    LocalDate now = LocalDate.now();
-    int year = now.getYear();
-    Month month = now.getMonth();
-
-    List<LocalDate> saturdaysOfMonth = IntStream.rangeClosed(LocalDate.now().getDayOfMonth(), YearMonth.of(year, month).lengthOfMonth())
-            .mapToObj(day -> LocalDate.of(year, month, day))
-            .filter(date -> date.getDayOfWeek() == DayOfWeek.SATURDAY)
-            .collect(Collectors.toList());
-
-    weekend.setSaturdays(saturdaysOfMonth);
-}
-
-// 주말, 1박2일, 1~4인 조건의 내용을 캐싱
-@PostConstruct
-@Scheduled(cron = "0 0/30 * * * ?")
-public void setClusterGroup() {
-    clusterGroupCache.setLeisureCluster(leisureCacheService.findLeisureClusters());
-    clusterGroupCache.setLeisureClusterWithDeals(leisureCacheService.findLeisureClustersAndDeals());
-
-    List<LocalDate> saturdays = weekend.getSaturdays();
-    List<List<List<Cluster>>> clusterByWeekAndAdultCount = Lists.newArrayList();
-    List<List<List<Cluster>>> clusterWithDealsByWeekAndAdultCount = Lists.newArrayList();
-    for(int saturday=0, len=saturdays.size(); saturday<len; saturday++) {
-        List<List<Cluster>> clusterByAdultCount = Lists.newArrayList();
-        List<List<Cluster>> clusterWithDealsByAdultCount = Lists.newArrayList();
-        for (int adultCount = 1; adultCount < 5; adultCount++) {
-            HotelCriteria hotelCriteria = new HotelCriteria(
-                    new StayPeriod(saturdays.get(saturday), saturdays.get(saturday).plusDays(1)), adultCount, UserGroup.STANDARD);
-            clusterByAdultCount.add(hotelCacheService.findHotelClusters(hotelCriteria));
-            clusterWithDealsByAdultCount.add(hotelCacheService.findHotelClustersWithDeals(hotelCriteria));
-        }
-        clusterByWeekAndAdultCount.add(clusterByAdultCount);
-        clusterWithDealsByWeekAndAdultCount.add(clusterWithDealsByAdultCount);
+public void mappingDealAndThumbnail(List<DealInMap> dealList, Map<Long, String> thumbs) {
+    for (DealInMap deal : dealList) {
+        String thumb = thumbs.get(deal.getId());
+        if(thumb != null) deal.setThumb(thumb);
     }
-    clusterGroupCache.setHotelClusterInSaturdays(clusterByWeekAndAdultCount);
-    clusterGroupCache.setHotelClusterInSaturdaysWithDeals(clusterWithDealsByWeekAndAdultCount);
 }
 ```
 
+![훨씬 빨라진 실행 속도들](27.png)
+
+하지만 여전히 2~4초 가량 걸리는 상황이었고, 숙박 연동사의 가격을 주입하는 부분은 쿼리문을 쓰지도 않는데 왜 이렇게 오래 걸리는지 한번 파보았다.  
+![수많은 리스트 사이에서 딜 아이디 가지고 원하는 요소를 찾는 구문](30.png)  
+기본적으로 ArrayList에서 데이터를 검색할 때는 입력되는 데이터의 양에 따라 비례하여 처리시간이 증가하는 알고리즘 -O(N)- 이고,  
+HashMap의 경우에는 key, value의 쌍으로 이루어져있어서 입력되는 데이터의 크기에 상관없이 항상 같은 처리 시간을 보장 받는 알고리즘 -O(1)- 이다.  
+Big-O 표기법에 관해서는 [초보자를 위한 Big O 표기법 따라잡기](http://www.mydiyworld.net/?p=440)을 참고하자.  
+따라서 해당 자료구조를 전부 해시맵으로 바꿔주었다.  
+![총 실행 시간이 2초 내외로 줄어들었다.](31.png)  
+
+
 ## 차후 개선 사항 (시간 문제 및 공수와 효율성 문제)
 * 2MB로 줄였다 하더라도 필터를 계속해서 바꾸다 보면 유저 입장에서는 부담되는 용량일 수도 있다.  
-![또한 딜을 내려주는 API에서 반복되는 키값을 빼고 순서를 보장한 배열로 만들어 내려주는 형태로 바꿔주면 데이터를 0.5MB 이상 단축할 수 있다.](15.png)    
+![딜을 내려주는 API에서 반복되는 키값을 빼고 순서를 보장한 배열로 만들어 내려주는 형태로 바꿔주면 데이터를 0.5MB 이상 단축할 수 있다.](15.png)    
 
-* 아직 주말의 경우에만 캐싱하도록 했는데 나중에는 공휴일과 휴일 전,후로 휴가를 써서 2박 3일을 다녀오는 경우도 있으니 그러한 케이스도 신경 써야겠다.   
+## 교훈
+처음으로 성능 개선을 해보았는데 쿼리 튜닝을 능수능란하게 할 수 없어서 아쉬웠지만,  
+자료구조에 대한 중요성, 어디서 병목이 발생해서 어느 부분을 캐싱해야할지 등등에 대한 좋은 경험을 얻은 것 같다.  
+다만 연휴 기간을 틈타 작업을 해서 많은 시간을 쓸 수 있었지만 앞으로는 그렇게는 못할 것 같아서 아쉽다... ㅠㅠ   
