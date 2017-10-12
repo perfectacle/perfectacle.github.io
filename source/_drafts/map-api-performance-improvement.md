@@ -102,21 +102,21 @@ public class Job {
      7.Year (optional field)
      */
     @PostConstruct
-    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(cron = "0 0 */2 * * ?")
     public void setLeisureAndHotelCategoryIds() {
         categoryIds.setLeisureCategoryIds(treeDealMapMapper.selectLeisureCategoryId());
         categoryIds.setHotelCategoryIds(treeDealMapMapper.selectHotelCategoryId());
     }
 
     @PostConstruct
-    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(cron = "0 0 */2 * * ?")
     public void setPricesAndPartners() {
         hotelPartnersAndPrices.setPartners(dealPartnersMapper.selectDealPartnersAll());
         hotelPartnersAndPrices.setPrices(hotelDealMinPricesMapper.selectMinPricesAll());
     }
 }
 ```
-서버를 띄웠을 때 최초 1회, 30분 마다 캐싱하도록 설정하였다.  
+서버를 띄웠을 때 최초 1회, 2시간 마다 캐싱하도록 설정하였다.  
 
 ### 또 다시 중간 점검
 ![4~6초 가량으로 줄어들었다.](20.png)  
@@ -129,7 +129,7 @@ public class Job {
 따라서 모든 딜의 LIST_IMAGE_JSON 컬럼 또한 캐시하도록 하였다.  
 ```java
 @PostConstruct
-@Scheduled(cron = "0 0/30 * * * ?")
+@Scheduled(cron = "0 0 */2 * * ?")
 public void setDealsThumbnail() {
     thumbs.setLeisureThumbs(dealMMapper.selectLeisureThumbnail());
     thumbs.setHotelThumbs(dealMMapper.selectHotelThumbnail());
@@ -150,18 +150,69 @@ public void mappingDealAndThumbnail(List<DealInMap> dealList, Map<Long, String> 
 
 하지만 여전히 2~4초 가량 걸리는 상황이었고, 숙박 연동사의 가격을 주입하는 부분은 쿼리문을 쓰지도 않는데 왜 이렇게 오래 걸리는지 한번 파보았다.  
 ![수많은 리스트 사이에서 딜 아이디 가지고 원하는 요소를 찾는 구문](30.png)  
-기본적으로 ArrayList에서 데이터를 검색할 때는 입력되는 데이터의 양에 따라 비례하여 처리시간이 증가하는 알고리즘 -O(N)- 이고,  
-HashMap의 경우에는 key, value의 쌍으로 이루어져있어서 입력되는 데이터의 크기에 상관없이 항상 같은 처리 시간을 보장 받는 알고리즘 -O(1)- 이다.  
+기본적으로 List에서 데이터를 검색할 때는 입력되는 데이터의 양에 따라 비례하여 처리시간이 증가하는 알고리즘 -O(N)- 이고,  
+(ArrayList는 인덱스를 가지고 순차적으로 탐색하지 않지만 순차적인 숫자 이외에 인덱스를 가지지 않으므로 순서를 모르면 말짱꽝이다.)    
+Map의 경우에는 key, value의 쌍으로 이루어져있어서 입력되는 데이터의 크기에 상관없이 항상 같은 처리 시간을 보장 받는 알고리즘 -O(1)- 이다.  
 Big-O 표기법에 관해서는 [초보자를 위한 Big O 표기법 따라잡기](http://www.mydiyworld.net/?p=440)을 참고하자.  
 따라서 해당 자료구조를 전부 해시맵으로 바꿔주었다.  
 ![총 실행 시간이 2초 내외로 줄어들었다.](31.png)  
 
+![클러스터 목록을 불러오는 쿼리문](32.png)
+딜 카운트를 세는 것까지 포함하다보니 빨간 박스 안에서 distinct를 쓰게 되었고 그로 인해 속도가 매우 느려졌다.   
+따라서 클러스터 목록을 불러오는 부분도 다음과 같이 캐싱을 했다.  
+
+* 처음부터 모든 클러스터 목록을 다 불러온다.
+```sql
+SELECT ct.id treeId, cts.sub_category_tree_id treeAllId,
+    ct.tree_code, cts.boundary_n, cts.boundary_e, cts.boundary_w, cts.boundary_s
+FROM DEAL_M d
+JOIN TREE_DEAL_MAP tdm
+    ON d.id = tdm.deal_id
+JOIN CATEGORY_TREE ct
+    ON tdm.category_tree_id = ct.id AND ct.tree_group_id = 27 AND 3 > ct.depth
+JOIN CATEGORY_TREE_SPATIAL cts ON ct.id = cts.category_tree_id
+WHERE deal_status = 'IN_SALE' AND d.display_yn = 'Y' AND display_standard_yn = 'Y' AND del_yn = 'N'
+    AND d.lat IS NOT NULL AND d.lon IS NOT NULL AND deal_type != 'DEAL'
+```
+
+* 모든 딜들도 함께 다 불러온다.  
+```sql
+SELECT d.id, d.deal_nm, d.`STANDARD_PRICE`, d.zeropass_price, d.group_price, d.lat, d.lon,
+    ct.`tree_code`, d.deal_type
+FROM DEAL_M d
+JOIN TREE_DEAL_MAP tdm
+    ON d.id = tdm.deal_id
+JOIN `CATEGORY_TREE` ct
+    ON tdm.`CATEGORY_TREE_ID` = ct.id AND ct.tree_group_id = 27 AND ct.depth = 2
+WHERE deal_status = 'IN_SALE' AND d.display_yn = 'Y' AND display_standard_yn = 'Y' AND del_yn = 'N'
+    AND d.lat IS NOT NULL AND d.lon IS NOT NULL AND deal_type != 'DEAL'
+```
+
+* 1과 2를 일정 시간 간격으로 캐싱한다.
+```java
+@PostConstruct
+@Scheduled(cron = "0 0 */2 * * ?")
+private void setLeisureCache() {
+    List<Cluster> clusters = Cluster.group(clusterAndDealMapper.selectForClusters(true));
+    List<DealInMap> deals = clusterAndDealMapper.selectForClustersWithDeals(true);
+
+    clusterCache.setLeisureClusters(clusters);
+    clusterCache.setLeisureClustersWithDeals(clustersWithDeals);
+}
+```
+
+* 요청이 들어오면 필터링 조건에 부합하는 딜의 ID만 구한다.  
+distinct나 group by로 중복된 딜을 제거할 수 있으나 성능 이슈가 있어서 자바에서 중복 딜을 제거하는 방향으로 개발함.
+```sql
+SELECT deal_id FROM HOTEL_DEAL_MIN_PRICES
+WHERE expire_at > now() AND ymd BETWEEN '2017-10-11' AND '2017-10-14' AND max_capacity >= 1
+```
+* 캐싱한 딜 목록과 조건에 부합하는 딜 ID 목록을 비교하여 조건에 맞는 딜들만 남긴다.  
+* 딜과 클러스터를 매핑하고 딜의 갯수를 구한다.  
+
+조건에 구애 받지 않는 모든 쿼리를 캐싱하고 최소한의 쿼리만 날리고 데이터들을 매핑하게 끔 하다보니 0.5초 내외로 시간을 단축시킬 수 있었다.  
+![](33.png) 
 
 ## 차후 개선 사항 (시간 문제 및 공수와 효율성 문제)
 * 2MB로 줄였다 하더라도 필터를 계속해서 바꾸다 보면 유저 입장에서는 부담되는 용량일 수도 있다.  
 ![딜을 내려주는 API에서 반복되는 키값을 빼고 순서를 보장한 배열로 만들어 내려주는 형태로 바꿔주면 데이터를 0.5MB 이상 단축할 수 있다.](15.png)    
-
-## 교훈
-처음으로 성능 개선을 해보았는데 쿼리 튜닝을 능수능란하게 할 수 없어서 아쉬웠지만,  
-자료구조에 대한 중요성, 어디서 병목이 발생해서 어느 부분을 캐싱해야할지 등등에 대한 좋은 경험을 얻은 것 같다.  
-다만 연휴 기간을 틈타 작업을 해서 많은 시간을 쓸 수 있었지만 앞으로는 그렇게는 못할 것 같아서 아쉽다... ㅠㅠ   
