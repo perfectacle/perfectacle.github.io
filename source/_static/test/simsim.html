@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" type="text/css">
+    <title>Document</title>
+    <style>
+        .animateResult {
+            display: none;
+            position : absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            text-align: center;
+            line-height: 18px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .animateResult.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<h1>음식종류</h1>
+<div class="dataText"></div>
+<label for="foodData">음식추가<input id="foodData" type="text" value='' placeholder="추가하고 싶은 음식" /></label>
+<button id="foodAdd" type="button" onclick="nameSpace.foodAdd();">음식 추가</button>
+<button id="randomChoice" type="button" onclick="nameSpace.randomChoice();">랜덤 선택</button>
+<button id="reset" type="button" onclick="nameSpace.reset();">리셋</button>
+<div class="randomChoiceText"></div>
+<div class="animateResult"></div>
+<script>
+    var nameSpace = ((function(){
+        var foodData = ['중식', '한식', '양식', '멕시코식', '동남아식', '영국식', '이탈리아'];
+        var foodChoice = [];
+        var animateData = [
+            {
+                food: '짜장'
+            },
+            {
+                food: '된장'
+            },
+            {
+                food: '돈까스'
+            },
+            {
+                food: '타코'
+            },
+            {
+                food: '쌀국수'
+            },
+            {
+                food: '피쉬앤칩스'
+            },
+            {
+                food: '스파케티'
+            }
+        ];
+        function randomChoice(){
+            var max = foodData.length-1;
+            var index = Math.floor(Math.random()*(max+1));
+            var resultView = document.querySelector('.randomChoiceText');
+            if(max < 0) {
+                alert('그만해요 쉬고싶어요 ㅠㅠ');
+                return;
+            }
+            foodChoice.push(foodData[index]);
+            resultView.textContent = foodChoice.join(', ');
+            foodData.splice(index, 1);
+            foodDataPrint()
+            return restNeedAnimate(index);
+        }
+
+        function foodDataPrint() {
+            var foodDataView = document.querySelector('.dataText');
+            var max = foodData.length;
+            var dataText= foodData.join(', ');
+            return foodDataView.textContent = dataText;
+        }
+
+
+        function foodAdd() {
+            var target = document.querySelector('#foodData');
+            var addText = target.value;
+            if(addText === '') {
+                alert('장난치지 말아요.');
+                return;
+            }
+            foodData.push(addText);
+            target.value = '';
+            return foodDataPrint();
+        }
+
+        function foodEnterAdd(e) {
+            if(e.keyCode === 13) {
+                return foodAdd();
+            }
+            return;
+        }
+
+        function reset() {
+            location.reload();
+        }
+
+        function restNeedAnimate(i) {
+            target = document.querySelector('.animateResult');
+            target.classList.add('active');
+            target.classList.add('animated');
+            target.classList.add('bounceInDown');
+            target.innerHTML += `today:  ${animateData[i].food}\<br\>`;
+            animateData.splice(i, 1);
+        }
+
+        foodDataPrint();
+
+        return {
+            randomChoice: randomChoice,
+            foodAdd: foodAdd,
+            foodEnterAdd: foodEnterAdd,
+            reset: reset
+        }
+    })());
+
+    var el = document.getElementById('foodData');
+    el.addEventListener('keypress', nameSpace.foodEnterAdd);
+</script>
+</body>
+</html>
