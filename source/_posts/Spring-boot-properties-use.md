@@ -2,7 +2,7 @@
 title: (Spring Boot) properties 값을 불러와보자
 category: [Back-end, Spring Boot]
 tag: [Java, Spring, Spring Boot]
-date: 2017-09-18 01:15:10
+date: 2017-09-18 09:15:10
 ---
 ![](thumb.png)  
 

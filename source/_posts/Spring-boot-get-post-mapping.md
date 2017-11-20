@@ -2,7 +2,7 @@
 title: (Spring Boot) get/post 리퀘스트를 다뤄보자.
 category: [Back-end, Spring Boot]
 tag: [Java, Spring, Spring Boot]
-date: 2017-09-19 00:50:51
+date: 2017-09-19 09:50:51
 ---
 ![](thumb.png)  
 

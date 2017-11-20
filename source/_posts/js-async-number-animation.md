@@ -1,6 +1,6 @@
 ---
 title: (JS) 숫자가 증가하는 애니메이션 구현하기
-date: 2017-05-03 00:39:29
+date: 2017-05-03 09:39:29
 category: [Programming, ECMAScript]
 tag: [JS, ES, ES6, ES2015, ES6+, callback, promise, async, await]
 ---

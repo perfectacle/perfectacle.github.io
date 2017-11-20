@@ -1,6 +1,6 @@
 ---
 title: (ES6) 숫자형
-date: 2016-12-23 01:37:53
+date: 2016-12-23 09:37:53
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Number]
 ---

@@ -1,6 +1,6 @@
 ---
 title: (ASM) 참고용 정리 - 리틀 엔디안, 빅 엔디안
-date: 2017-01-24 08:52:21
+date: 2017-01-24 09:52:21
 category: [Programming, ASM]
 tag: [ASM, Assembly, Endian]
 ---

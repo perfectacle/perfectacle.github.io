@@ -1,6 +1,6 @@
 ---
 title: (자알쓰) 훼이크 연산자 (번외편)
-date: 2017-05-30 00:39:29
+date: 2017-05-30 09:39:29
 category: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰, Unary, Operator]
 ---

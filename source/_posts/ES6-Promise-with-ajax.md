@@ -1,6 +1,6 @@
 ---
 title: (ES6) ajax 위주의 promise 실습
-date: 2017-01-21 01:09:50
+date: 2017-01-21 09:09:50
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, ajax, promise]
 ---

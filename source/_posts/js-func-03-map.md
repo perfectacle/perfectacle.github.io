@@ -8,7 +8,7 @@ category:
   - Programming
   - ECMAScript
   - 함수형 JS
-date: 2017-06-26 01:26:10
+date: 2017-06-26 09:26:10
 ---
 
 ![](thumb.png)

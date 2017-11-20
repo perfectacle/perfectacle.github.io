@@ -1,6 +1,6 @@
 ---
 title: (Spring) 자바 빈즈 객체를 XML 파일로 관리하면서 DI하기 - 기본
-date: 2017-09-04 00:35:22
+date: 2017-09-04 09:35:22
 tags: [Java, DI, Spring]
 category: [Back-end, Spring]
 ---
