@@ -1,6 +1,6 @@
 ---
 title: (CI/CD) Netlify로 github page에서 jekyll 마냥 hexo(hugo, etc.)을 이용해보자.
-date: 2017-11-21 12:51:11
+date: 2017-11-21 08:51:11
 category: [Middle-end, Web Server]
 tag: [CDN, CI, CD]
 ---
