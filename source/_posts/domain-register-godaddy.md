@@ -1,6 +1,6 @@
 ---
 title: (DNS) 1331원에 .com 도메인 사기 (feat. GoDaddy)
-date: 2017-11-21 01:10:12
+date: 2017-11-21 09:10:12
 category: [Middle-end, Web Server]
 tag: [DNS]
 ---
