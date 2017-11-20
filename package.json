@@ -9,7 +9,8 @@
     "start": "hexo serve --draft",
     "deploy": "npm run gh-pages && npm run master",
     "gh-pages": "git add . && git commit -m \"update on `date +\"%Y/%m/%d %H:%M:%S\"`\" && git push origin gh-pages; exit 0",
-    "master": "hexo clean && hexo deploy; exit 0"
+    "master": "hexo clean && hexo deploy; exit 0",
+    "netlify": "git add . && git commit -m \"update on `date +\"%Y/%m/%d %H:%M:%S\"`\" && git push origin netlify; exit 0"
   },
   "dependencies": {
     "hexo": "^3.2.0",
