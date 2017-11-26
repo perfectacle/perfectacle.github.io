@@ -2,7 +2,7 @@
 title: 양권성이란...?
 date: 2016-11-10 18:06:26
 ---
-![레저큐 백엔드 개발자](exobud.jpg)
+![웹 개발자](exobud.jpg)
 
 * Java8, Spring Boot, JPA  
 * ES2015+, Typescript, Node.js, React  
