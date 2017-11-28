@@ -12,7 +12,7 @@ timezone: Asia/Seoul
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://perfectacle.com/
+url: https://blog.perfectacle.com/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -92,3 +92,6 @@ robotstxt:
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
+  type: git
+  repo: git@github.com:perfectacle/perfectacle.github.io.git
+  branch: blog
