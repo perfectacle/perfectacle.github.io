@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
     <meta charset="utf-8">
     <%
         var title = page.title;
@@ -15,26 +18,25 @@
         }
     %>
     <title><% if (title) { %><%= title %> | <% } %><%= config.title %></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="robots" content="index,follow">
-    <% if(!is_post()) { %>
-        <meta name="description" content="호기심 많고 삽질을 몸에 달고 사는 주니어 개발자가 끄적대는 공간">
-        <meta name="keywords" content="개발, 개발자, 프론트, 백, 자바스크립트, 자바, 리액트, 웹팩, 바벨, ES2015, ES6, 크롤러, 자알쓰, Node.js">
+    <% if (theme.plugins.bing_site_verification) { %>
+      <meta name="msvalidate.01" content="<%- theme.plugins.bing_site_verification %>" />
     <% } %>
-
-    <%- autoCanonical(config, page) %>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <% if (page.tags) {
+        var keywords = [];
+        for (var i in page.tags.data) {
+            keywords.push(page.tags.data[i].name);
+        }
+    %>
+        <meta name="keywords" content="<%= keywords.join(',') %>" />
+    <% } %>
     <%- open_graph({
         image:          thumbnail(page),
         fb_app_id:      theme.miscellaneous.open_graph.fb_app_id,
         fb_admins:      theme.miscellaneous.open_graph.fb_admins,
-        twitter_id:     theme.miscellaneous.open_graph.twitter_id
+        twitter_id:     theme.miscellaneous.open_graph.twitter_id,
+        google_plus:    theme.miscellaneous.open_graph.google_plus,
     }) %>
-    <% if(!is_post()) { %>
-        <meta property="og:description" content="호기심 많고 삽질을 몸에 달고 사는 주니어 개발자가 끄적대는 공간">
-        <meta property="og:image" content="http://perfectacle.github.io/css/images/logo.png">
-        <meta name="twitter:description" content="호기심 많고 삽질을 몸에 달고 사는 주니어 개발자가 끄적대는 공간">
-        <meta name="twitter:image" content="http://perfectacle.github.io/css/images/logo.png">
-    <% } %>
     <%- meta(page) %>
 
     <% if (theme.customize && theme.customize.social_links && theme.customize.social_links.rss) { %>
@@ -53,10 +55,4 @@
 
     <%- js('libs/jquery/2.0.3/jquery.min') %>
     <%- partial('plugin/scripts', { isHead: true }) %>
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-3881550906962162",
-        enable_page_level_ads: true
-      });
-    </script>
+</head>
