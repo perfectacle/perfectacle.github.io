@@ -67,7 +67,7 @@ require = function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-}({ 3: [function (require, module, exports) {
+}({ 2: [function (require, module, exports) {
     "use strict";
 
     Object.defineProperty(exports, "__esModule", {
@@ -80,4 +80,4 @@ require = function (modules, cache, entry) {
     var _module = require("./module");
 
     console.log(_module.a);
-  }, { "./module": 3 }] }, {}, [1]);
+  }, { "./module": 2 }] }, {}, [1]);

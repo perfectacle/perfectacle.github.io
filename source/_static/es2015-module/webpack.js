@@ -79,8 +79,9 @@ console.log(__WEBPACK_IMPORTED_MODULE_0__module__["a"]);
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return a; });
-var a = 2;
+const a = 2;
+/* harmony export (immutable) */ __webpack_exports__["a"] = a;
+
 
 /***/ })
 /******/ ]);
