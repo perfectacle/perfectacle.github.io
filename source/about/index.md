@@ -24,5 +24,5 @@ date: 2016-11-10 18:06:26
 이 블로그도 저의 호기심을 정리해놓기 위해 만들었습니다.  
 여러분의 따뜻한 댓글이 저로 하여금 의지를 더 불타게 만듭니다.  
 블로그를 구독하시고자하시는 분들은 아래 RSS Feed를 구독하시면 되겠습니다.  
-[https://perfectacle.com/atom.xml](https://perfectacle.com/atom.xml)  
+[https://blog.perfectacle.com/atom.xml](https://blog.perfectacle.com/atom.xml)  
 감사합니다.

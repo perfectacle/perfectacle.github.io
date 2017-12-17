@@ -19,7 +19,7 @@ async/await 크롬과 오페라에서만 된다고 한다.
 크로스 브라우징을 위해선 [window.fetch polyfill](https://github.com/github/fetch)을 쓰자.  
 우선 기존에 우리가 ajax를 하기 위해서 어떻게 했는지 보자.  
 ```javascript
-const jsonURL = "https://perfectacle.github.io/mock/test.json";
+const jsonURL = "https://blog.perfectacle.com/mock/test.json";
 
 const getDataAjax = url => {
   const xhr = new XMLHttpRequest();
@@ -45,7 +45,7 @@ getDataAjax(jsonURL);
 
 이 복잡한 getDataAjax 부분을 줄여보자.  
 ```javascript
-const jsonURL = "https://perfectacle.github.io/mock/test.json";
+const jsonURL = "https://blog.perfectacle.com/mock/test.json";
 
 const getDataAjaxFetch = url => (
   fetch(url).then(res => res.json())
@@ -65,14 +65,14 @@ fetch API는 XMLHttpRequest를 대신하기 위한 방안 중 하나이다.
 
 그럼 대충 fetch를 뜯어보자.  
 ```javascript
-console.dir(fetch("https://perfectacle.github.io/mock/test.json"));
+console.dir(fetch("https://blog.perfectacle.com/mock/test.json"));
 ```
 ![크롬 콘솔창에서 본 fetch의 반환값](01.png)  
 Promise 인스턴스가 반환된다.  
 Promise에서 실제로 쓰고 싶은 값은 [[PromiseValue]]에 들어있는데 이를 직접 접근하지 못한다.  
 따라서 then() 메소드를 써야한다.  
 ```javascript
-fetch("https://perfectacle.github.io/mock/test.json")
+fetch("https://blog.perfectacle.com/mock/test.json")
 .then(res => console.dir(res));
 ```
 ![크롬 콘솔창에서 본 [[PromiseValue]]의 반환값](02.png)  
@@ -81,7 +81,7 @@ fetch("https://perfectacle.github.io/mock/test.json")
 뭐 쓰고 싶은 값을 찾아낼 수가 없다.  
 여기서 또 하나의 메소드를 쓰면 된다.  
 ```javascript
-fetch("https://perfectacle.github.io/mock/test.json")
+fetch("https://blog.perfectacle.com/mock/test.json")
 .then(res => console.dir(res.json()));
 ```
 ![Response 인스턴스의 JSON화](03.png)  
@@ -90,7 +90,7 @@ Response 인스턴스는 문자열이 아니다.
 바꿨더니 또 promise 인스턴스다.  
 [[PromiseValue]]를 한 번 더 벗겨야한다.
 ```javascript
-fetch("https://perfectacle.github.io/mock/test.json")
+fetch("https://blog.perfectacle.com/mock/test.json")
 .then(res => res.json())
 .then(data => console.dir(data));
 ```
@@ -102,8 +102,8 @@ fetch("https://perfectacle.github.io/mock/test.json")
 그럼 기존 XMLHttpRequest와 Fetch를 비교해보자.  
 ```javascript
 const jsonURL = [
-  "https://perfectacle.github.io/mock/test.json",
-  "https://perfectacle.github.io/mock/test2.json"
+  "https://blog.perfectacle.com/mock/test.json",
+  "https://blog.perfectacle.com/mock/test2.json"
 ];
 
 // promise에 파라미터를 넘겨주기 위해선 밖에서 함수로 한 번 래핑해줘야 함.
@@ -189,8 +189,8 @@ getDataAjaxPromise(jsonURL[0])
 
 ```javascript
 const jsonURL = [
-  "https://perfectacle.github.io/mock/test.json",
-  "https://perfectacle.github.io/mock/test2.json"
+  "https://blog.perfectacle.com/mock/test.json",
+  "https://blog.perfectacle.com/mock/test2.json"
 ];
 
 // 성공 콜백함수는 공통 함수로 빼버렸다.
@@ -250,8 +250,8 @@ getDataFetch(jsonURL[0])
 
 ```javascript
 const jsonURL = [
-  "https://perfectacle.github.io/mock/test.json",
-  "https://perfectacle.github.io/mock/test2.json"
+  "https://blog.perfectacle.com/mock/test.json",
+  "https://blog.perfectacle.com/mock/test2.json"
 ];
 
 const getDataFetch = url => (

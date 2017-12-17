@@ -137,7 +137,7 @@ C에서는 문자의 배열로 문자열을 다루며, 자바에서는 클래스
 C에서 문자의 배열이라고 말하듯이 자바스크립트에서도 배열과 같이 사용이 가능하다.  
 ```javascript
 // 쌍따옴표, 홑따옴표 개인의 기호에 맞게, 혹은 코딩 컨벤션에 맞게 사용하면 된다.
-var url = 'https://perfectacle.github.io/';
+var url = 'https://blog.perfectacle.com/';
 
 // HTML 템플릿을 바인딩 할 때 HTML 템플릿은 쌍따옴표를 사용하므로 홑따옴표 사용을 주장하는 입장도 있다.
 var a = '<a href="' + url + '" target="_blank">짱짱맨의 블로그</a>';

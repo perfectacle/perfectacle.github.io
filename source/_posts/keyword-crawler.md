@@ -10,7 +10,7 @@ tag: [node.js, crawler, phantomjs, mecab]
 사이트에서 원하는 내용만 수집해오는 크롤러.  
 더 나아가 mecab-ko와 같은 형태소 분석기를 사용하면 키워드 별로 분류하고 빈도수도 알아낼 수 있다.  
 무한 스크롤 페이지에 적합하게 만들었고, 페이지네이션 사이트를 크롤링 하려면 직접 구현해야한다.  
-[원티드의 프론트 개발 지원 자격을 크롤링 하여 키워드 별로 분류 후 나타낸 그래프](https://perfectacle.github.io/crawl-temp/)  
+[원티드의 프론트 개발 지원 자격을 크롤링 하여 키워드 별로 분류 후 나타낸 그래프](https://blog.perfectacle.com/crawl-temp/)  
 
 ## 설치
 ```bash

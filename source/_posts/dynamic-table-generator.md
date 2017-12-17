@@ -22,7 +22,7 @@ tag: [IT, Computer, HTML, Table]
 하지만 그냥 써보기만 해도 문제가 참 많다는 걸 알 수 있다.  
 그렇게 기억 속에 묻혀있었는데, 어느 한 분께서 친절하게 해당 사항에 대해 얘기를 꺼내셨고,  
 설날에 잉여였던 나는 길어야 2일 걸릴 줄 알았는데, 4일 밤낮을 샌 것 같다...
-[동적 테이블 생성기 v1.0](https://perfectacle.github.io/dynamic-table-generator/)
+[동적 테이블 생성기 v1.0](https://blog.perfectacle.com/dynamic-table-generator/)
 
 혹시 미천한 프로젝트가 궁금하시거나 개선하고 싶으신 분은 아래 링크로 들어가길 바란다.  
 (스타도 박아주심 헤헤헤...)  
