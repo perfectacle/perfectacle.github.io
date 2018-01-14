@@ -92,3 +92,6 @@ robotstxt:
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
+  type: git
+    repo: git@github.com:perfectacle/blog.git
+    branch: master
