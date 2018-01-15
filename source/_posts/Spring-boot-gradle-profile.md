@@ -1,6 +1,6 @@
 ---
 title: (Spring Boot) Gradle의 Profile(dev/production)을 구분지어보자.
-category: [Back-end, Spring Boot]
+category: [Back-end, Spring]
 tag: [Java, Spring, Spring Boot, Gradle]
 date: 2017-09-23 09:06:20
 ---

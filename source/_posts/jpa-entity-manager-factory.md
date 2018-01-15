@@ -13,7 +13,7 @@ DB의 테이블과 매칭이 되는 개념이라고 보면 된다.
 
 만약 DB에 member라는 테이블이 있고, 해당 테이블의 스키마가 아래와 같다고 해보자.  
 ```sql
-CREATE TABLE `member` (
+CREATE TABLE `Member` (
   `id` BIGINT(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `age` int(11) NOT NULL,
@@ -24,7 +24,6 @@ CREATE TABLE `member` (
 그렇다면 엔티티는 아래와 같이 만들 수 있다.  
 ```java
 @Entity
-@Table(name = "member")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -70,7 +69,7 @@ public class Member {
 
 ```java
 @Entity
-@Table(name = "member")
+@Table(name = "Member")
 public class MemberOnlyName {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -187,6 +186,7 @@ public class Join {
 트랜잭션이 모두 정상적으로 수행됐을 때는 commit을 수행해서 작업 내용을 실제 DB와 엔티티 매니저에 반영한다.
 
 그럼 JPA에서 모든 로직은 왜 트랜잭션 안에서 수행해야하는 것일까...?  
+물론 조회 로직은 트랜잭션 안에서 수행해야 할 필요도 없고, 트랜잭션의 단위가 커지면 데드락 이슈에 봉착하기 때문에 최대한 트랜잭션의 단위를 작게 잡으면서 안정성을 가져가는 게 베스트다.  
 그건 JPA가 쿼리를 한 방에 날리기 때문이다.  
 
 #### 쓰기 지연 SQL 저장소
@@ -294,6 +294,7 @@ public class Join {
             // 성능 상 문제가 있어서 이렇게 종료시켜줘야 하는 건지 모르겠다. 
             em.close();
         }
+        emf.close(); // 마찬가지로 엔티티 매니저 팩토리도 더이상 쓰지 않는다면 종료시켜줘야 한다.
     }
 }
 ```

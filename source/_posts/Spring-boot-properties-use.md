@@ -1,6 +1,6 @@
 ---
 title: (Spring Boot) properties 값을 불러와보자
-category: [Back-end, Spring Boot]
+category: [Back-end, Spring]
 tag: [Java, Spring, Spring Boot]
 date: 2017-09-18 09:15:10
 ---
