@@ -12,8 +12,11 @@ tags: [Java, Spring Boot, Jackson, JSON]
 따라서 이번에는 어렵지는 않지만 새로 프로젝트 구성할 때마다 매번 까먹어서 찾아 헤매던 케이스들을 정리해봤다.  
 또한 예제의 설명은 스프링 부트를 기준으로 설명하겠다.  
 
+이 글을 본 다음에는 후속작인 [Serialize](/2018/01/15/jackson-local-date-time-serialize/)를 보도록 하자.  
+
 ## Parameter
-파라미터로 데이터를 받는 api를 만들어보자.  
+파라미터로 데이터를 각각 받을 때는 JSON 데이터를 받는 게 아니므로 Jackson의 Deserialize와는 무관하게 작동한다.  
+우선 파라미터로 데이터를 받는 api를 만들어보자.  
 ```java
 @RestController
 public class Controller {
@@ -45,15 +48,13 @@ public class Controller {
                         @DateTimeFormat(pattern = "yyyy-MM-dd")
                         LocalDate date,
                         @RequestParam
-                        @DateTimeFormat(pattern = "HH:mm:ss")
+                        @DateTimeFormat(pattern = "kk:mm:ss")
                         LocalTime time,
                         @RequestParam
-                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                        @DateTimeFormat(pattern = "yyyy-MM-dd kk:mm:ss")
                         LocalDateTime dateTime) {}
 }
 ```
-
-**@RequestParam 어노테이션을 붙여서 파라미터로 넘긴 경우에는 잭슨의 Deserialize와는 관련이 없는 것 같다.**
 
 ## Deserialize
 ### Parameter(Command 객체)
@@ -258,9 +259,9 @@ public class DateType {
 public class DateType {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-    @DateTimeFormat(pattern = "HH:mm:ss")
+    @DateTimeFormat(pattern = "kk:mm:ss")
     private LocalTime time;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime dateTime;
 
     public LocalDate getDate() {
@@ -371,9 +372,9 @@ Maven이나 Gradle에 추가해주자.
 public class DateType {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-    @JsonFormat(pattern = "HH:mm:ss")
+    @JsonFormat(pattern = "kk:mm:ss")
     private LocalTime time;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
     private LocalDateTime dateTime;
 
     public LocalDate getDate() {
@@ -435,14 +436,14 @@ public class JacksonConfig {
         module.addDeserializer(LocalTime.class, new JsonDeserializer<LocalTime>() {
             @Override
             public LocalTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-                return LocalTime.parse(jsonParser.getValueAsString(), DateTimeFormatter.ofPattern("HH:mm:ss"));
+                return LocalTime.parse(jsonParser.getValueAsString(), DateTimeFormatter.ofPattern("kk:mm:ss"));
             }
         });
 
         module.addDeserializer(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
             @Override
             public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-                return LocalDateTime.parse(jsonParser.getValueAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                return LocalDateTime.parse(jsonParser.getValueAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss"));
             }
         });
 
@@ -557,6 +558,4 @@ public class DateType {
 
 정상적으로 요청이 들어갔다면 성공한 것이다.
 
-원래 Serialize까지 이번 시간에 뽀개려고 했는데 시간이 너무 늦어서...  
-출근도 해야하고... ㅠㅠ  
-시간이 날 때 다시 정리를 해야할 것 같다.  
+이제는 [Serialize](/2018/01/15/jackson-local-date-time-serialize/)를 보도록 하자.  
