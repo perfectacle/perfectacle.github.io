@@ -14,6 +14,11 @@ tags: [Java, Spring Boot, Jackson, JSON]
 
 우선 [Deserialize](/2018/01/15/jackson-local-date-time-deserialize/)를 안 본 사람은 해당 내용에서 이어지는 포스트이기 때문에 보고 오도록 하자.  
 
+## 3줄 요약
+1. Serialize 한 형태가 요상하니 jackson-datatype-jsr310을 Dependency에 추가해두자.  
+2. 모든 필드마다 @JsonFormat 어노테이션 달아주기 귀찮으니 LocalDate, LocalTime, LocalDateTime 등등에 대한 기본 Custom Serializer를 만들어주자.  
+3. `spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false`를 쓰면 내용이 좀 상세하게 나오니 @JsonFormat을 애용하자.   
+
 ## Serialize
 우선 아래와 같이 api를 만들자.  
 ```java
@@ -437,3 +442,50 @@ public class DateType {
 
 요청 응답 오는 건 전혀 다르지 않다. 완전 무쓸모넹... ㅠㅠ  
 그럼 profile에서 `spring.jackson.serialization.WRITE_DATES_AS_TIMESTAMPS=false`을 빼고 @JsonFormat 어노테이션으로 바꿔보자.  
+
+```java
+public class DateType {
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date = LocalDate.now();
+    @JsonSerialize(using = LocalTimeSerializer.class)
+    @JsonFormat(pattern = "kk:mm:ss")
+    private LocalTime time = LocalTime.now();
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
+    private LocalDateTime dateTime = LocalDateTime.now();
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+}
+```
+
+그럼 우리가 원하는대로 응답이 온다.
+```json
+{
+    "date": "2018-01-16",
+    "time": "11:54:17",
+    "dateTime": "2018-01-16 11:54:17"
+}
+```

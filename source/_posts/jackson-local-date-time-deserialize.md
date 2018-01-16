@@ -14,6 +14,11 @@ tags: [Java, Spring Boot, Jackson, JSON]
 
 이 글을 본 다음에는 후속작인 [Serialize](/2018/01/15/jackson-local-date-time-serialize/)를 보도록 하자.  
 
+## 3줄 요약
+1. 모든 필드마다 @JsonFormat 어노테이션 달아주기 귀찮으니 LocalDate, LocalTime, LocalDateTime 등등에 대한 기본 Custom Deserializer를 만들어주자.  
+2. 특정 필드는 잭슨의 기본 Deserializer를 써야할 수도 있으니 jackson-datatype-jsr310을 Dependency에 추가해두자.  
+3. @DateTimeFormat은 제대로 안 먹히는 필드도 있으니 @JsonFormat을 애용하도록 하자.
+
 ## Parameter
 파라미터로 데이터를 각각 받을 때는 JSON 데이터를 받는 게 아니므로 Jackson의 Deserialize와는 무관하게 작동한다.  
 우선 파라미터로 데이터를 받는 api를 만들어보자.  
