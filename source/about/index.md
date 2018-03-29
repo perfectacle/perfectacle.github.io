@@ -2,14 +2,20 @@
 title: 양권성이란...?
 date: 2016-11-10 18:06:26
 ---
-![웹 개발자](exobud.jpg)
+![](exobud.jpg)  
+<span class="caption" style="margin-top: -50px;">
+    <a href="http://www.leisureq.co.kr">레저큐</a>
+    기술개발본부 엔지니어
+</span>
 
+* 네트워크, OS
 * Java8, Spring Boot, JPA  
-* ES2015+, Typescript, Node.js, React  
-* Git  
-* 자전거, 재즈, 힙합
+* ES2015+, Typescript, Node.js  
+* TDD, Git, 클린 코드, 디자인 패턴  
+* 자전거, 재즈, 힙합, Lofi
 
-위 사항에 관심이 정말 많습니다.  
+위 사항에 관심이 많습니다.  
+그 관심을 하나하나 제 것으로 만들기 위해 차근차근 공부해나가는 중입니다.
 
 자작물은 아래와 같습니다.  
 * [떡밥밥](https://github.com/perfectacle/fish)  
