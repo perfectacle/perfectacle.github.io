@@ -7,8 +7,8 @@
   },
   "scripts": {
     "start": "hexo serve --draft",
-    "push": "git add . && git commit -m \"update on `date +\"%Y/%m/%d %H:%M:%S\"`\" && git push origin master; exit 0",
-    "deploy": "hexo clean && hexo deploy; exit 0"
+    "deploy": "git add . && git commit -m \"update on `date +\"%Y/%m/%d %H:%M:%S\"`\" && git push origin master; exit 0",
+    "build": "hexo clean && hexo deploy; exit 0"
   },
   "dependencies": {
     "hexo": "^3.4.2",
