@@ -1,13 +1,12 @@
 ---
 title: 지도 API 성능 개선기
-tags:
-  - API
-  - Performance
-category:
+tags: [API, Performance]
+categories:
   - Note
   - Dev
 date: 2017-09-28 23:29:16
 ---
+
 
 ![](thumb.png)  
 
