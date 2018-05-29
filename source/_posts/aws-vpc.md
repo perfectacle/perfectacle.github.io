@@ -33,8 +33,7 @@ Name Tag와 IPv4 <a href="https://ko.wikipedia.org/wiki/%EC%82%AC%EC%9D%B4%EB%8D
 [AWS 공식 문서](https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html#VPC_Sizing)에서는
 [RFC 1918](http://www.faqs.org/rfcs/rfc1918.html)에 명시된 private ip를 권장하고 있다.  
 vpc와 같은 서비스는 전 세계에서 공통으로 사용하는 서비스이고 IP 주소는 자원을 식별하기 위한 주소이므로 충돌이 일어나면 안 된다.  
-따라서 private ip를 추천하는 것 같고, [ip class](https://ko.wikipedia.org/wiki/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%ED%81%B4%EB%9E%98%EC%8A%A4)
-별 private ip는 다음과 같다.  
+따라서 private ip를 추천하는 것 같고, [ip class](https://ko.wikipedia.org/wiki/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%ED%81%B4%EB%9E%98%EC%8A%A4) 별 private ip는 다음과 같다.  
 * A 클래스 - 10.0.0.0 - 10.255.255.255 (cidr block 10.0.0.0/8)  
 * B 클래스 - 172.16.0.0 - 172.31.255.255 (cidr block 172.16.0.0/12)  
 * C 클래스 - 192.168.0.0 - 192.168.255.255 (cidr block 192.168.0.0/16)

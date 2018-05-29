@@ -27,9 +27,9 @@ Name tag를 정하고 어떤 VPC에 Subnet을 생성할 것인지 선택하면 �
 VPC가 Region에 생성되는 것에 반해 Subnet은 어떤 [AZ(Availability Zone)](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions-availability-zones)에 생성될 것인지도 정해야한다.  
 따라서 AZ가 다운돼서 장애가 발생하는 것을 방지하려면 Multi AZ로 Subnet을 생성해야하지만, 포스트에서는 단일 AZ로 진행하도록 하겠다.  
 그리고 Subnet의 <a href="https://ko.wikipedia.org/wiki/%EC%82%AC%EC%9D%B4%EB%8D%94_(%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%82%B9)" target="_blank">CIDR Block</a>을 지정해야하는데,
-Subnet은 VPC의 Subset이기 때문에 VPC의 cidr block을 초과해서 정할 수 없다.  
-[ip class](https://ko.wikipedia.org/wiki/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%ED%81%B4%EB%9E%98%EC%8A%A4)
-를 참고해서 네트워크 규모에 따라서 cidr block을 설정하면 된다.  
+Subnet은 VPC의 Subset이기 때문에 VPC의 cidr block을 초과해서 정할 수 없다.
+또한 미리 생성한 Subnet의 cidr block과 겹쳐서도 안 된다.  
+[ip class](https://ko.wikipedia.org/wiki/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%ED%81%B4%EB%9E%98%EC%8A%A4)를 참고해서 네트워크 규모에 따라서 cidr block을 설정하면 된다.  
 
 `또한 서브넷 내의 리소스(EC2 인스턴스, ELB 등등)는 무조건 private ip를 가지는데, private ip는 고정할 수 없고,
 생성될 때 서브넷의 cidr block 내의 ip가 랜덤으로 할당된다.`
@@ -53,6 +53,7 @@ Route Table이란 어떤 IP 주소로 가야할 때 어디로 가야하는지를
 기본적으로 VPC를 생성하면 Main Route Table이 생성되고, 라우트 테이블을 설정하지 않은 서브넷들은 암묵적으로 메인 라우트 테이블이 설정된다.  
 이 포스트에서는 메인 라우트 테이블을 수정하도록 하겠다.  
  
+Route Table을 수정하려면 AWS 콘솔에서 Route Tables 서비스로 이동해서 해당 vpc의 메인 라우트 테이블을 선택하고, Edit 버튼을 클릭한다.
 ![](main-route-table.png)  
 우선 메인 라우트 테이블의 Destination은 vpc의 cidr block이 할당돼있고, target은 local로 돼있다.  
 vpc 내부 자원에 대해서는 cidr block 범위에 해당하는 private ip가 할당돼있기 마련이다.  
