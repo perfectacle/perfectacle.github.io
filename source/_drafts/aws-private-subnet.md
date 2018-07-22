@@ -27,7 +27,7 @@ Subnet은 VPC의 Subset이기 때문에 VPC의 cidr block을 초과해서 정할
 Route Table이란 어떤 IP 주소로 가야할 때 어디로 가야하는지를 나타낸 경로를 뜻한다.  
 기본적으로 VPC를 생성하면 Main Route Table이 생성되고, 라우트 테이블을 설정하지 않은 서브넷들은 암묵적으로 메인 라우트 테이블이 설정된다.  
 
-[Public Subnet]()에서 Main Route Table에 인터넷 게이트웨이를 붙였으므로 메인 라우트 테이블이 설정된 서브넷들은 외부에서 접근이 가능한 Public Subnet이 된다.  
+[Public Subnet](/2018/04/25/aws-public-subnet)에서 Main Route Table에 인터넷 게이트웨이를 붙였으므로 메인 라우트 테이블이 설정된 서브넷들은 외부에서 접근이 가능한 Public Subnet이 된다.  
 private subnet이 되기 위해서는 인터넷 게이트웨이가 물려있지 않은 별도의 라우트 테이블을 만들고 서브넷을 설정해야한다.  
 
 Route Table을 생성하려면 AWS 콘솔에서 Route Tables 서비스로 이동해서 Create Route Table 버튼을 클릭한다.  
