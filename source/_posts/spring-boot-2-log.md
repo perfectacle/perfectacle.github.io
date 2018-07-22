@@ -80,7 +80,8 @@ ConsoleAppender 클래스를 사용해서 콘솔에 로깅한다고 명시하는
     </root>
 </configuration>
 ```
-include를 쓰지 않고 직접 xml 소스 코드를 넣어도 되지만 가독성을 헤치는 것 같아 분리했다.  
+include를 쓰지 않고 직접 xml 소스 코드를 넣어도 되지만 가독성을 해치는 것 같아 분리했다.  
+또한 root에 설정했다 싶이 default logging level을 info로 설정했다.  
 그리고 springProfile name 값에는 !local과 같은 값도 넣을 수 있다.  
 appender-ref를 통해 appender를 참조할 수 있다.  
 아니면 직접 그 코드를 삽입해도 되긴 하지만 중복이 상당히 많아질 것이다.  
@@ -204,7 +205,7 @@ logging level을 아무것도 설정하지 않은 prod env로 실행하면 아�
 20180723 00:54:06.524 [main] WARN c.e.d.DemoApplication - warn 
 20180723 00:54:06.524 [main] INFO c.e.d.DemoApplication - info 
 ```
-default level은 info인 것 같다.  
+default level을 info로 설정했기 때문이다.  
 
 Hibernate Logging을 하고 싶다면 아래와 같이 하면 된다.  
 ```properties
