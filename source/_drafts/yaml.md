@@ -150,6 +150,11 @@ YAML 스펙 문서는 [BNF 표기법](/2018/08/15/bnf/)을 사용하고 있기 �
 스칼라 노드는 0개 이상의 유니코드 문자이다.  
 일반적인 primitive type을 생각하면 편하다.  
 
+```yaml
+a: b
+```
+여기서 a와 b 모두 scalar 노드이다.
+
 * Sequence
 > The content of a sequence node is an ordered series of zero or more nodes.
   In particular, a sequence may contain the same node more than once.
@@ -160,6 +165,12 @@ YAML 스펙 문서는 [BNF 표기법](/2018/08/15/bnf/)을 사용하고 있기 �
 심지어 자기 자신을 포함할 수도 있다.  
 일반적인 list를 생각하면 편하다.  
 
+```yaml
+- a
+- b
+```
+여기서 `-a -b`를 통틀어 시퀀스 노드라고 부른다.
+
 * Mapping
 > The content of a mapping node is an unordered set of key: value node pairs, with the restriction that each of the keys is unique.
   YAML places no further restrictions on the nodes. 
@@ -167,13 +178,66 @@ YAML 스펙 문서는 [BNF 표기법](/2018/08/15/bnf/)을 사용하고 있기 �
 
 매핑 노드는 순서가 보장되지 않은 key:value 쌍의 집합이다.  
 key는 고유하다는 제한을 빼고는 다른 제한은 있지 않다.  
-특히 키는 임의의 노드일 수도 있고, 동일한 노드를 여러 key:value 쌍의 값으로 사용할 수 있고, 자기 자신을 포함할 수 있다.  
+1. 키는 임의의 노드일 수도 있고 자기 자신을 포함할 수 있다.  
+-> 키에 문자열을 대부분 넣는데 문자열은 scalar 노드이니까 임의의 노드일 수도 있다고 표현한 게 아닐까?
+2. 동일한 노드를 여러 key:value 쌍의 값으로 사용할 수 있고,  
+-> key는 고유한데, value는 고유하지 않다는 걸 표현한 게 아닐까?  
+3. 자기 자신을 포함할 수 있다. 
+
+```yaml
+a: b
+c:
+  - e
+  - f
+```
+`a: b`, `c: -e -f` 이 두 개 모두 매핑 노드이다.
 
 > When appropriate, it is convenient to consider sequences and mappings together, as collections.
 
-Sequence와 Mapping 두 개를 합쳐 collections라고 부른다.  
+sequence와 mapping 두 개를 합쳐 collections로 퉁친다는 소리 같다.
 
-##### Indicator characters
+#### Block Styles
+> In YAML block styles, structure is determined by indentation.
+  In general, indentation is defined as a zero or more space characters at the start of a line.
+  To maintain portability, tab characters must not be used in indentation, since different systems treat tabs differently.
+
+구조를 표현할 때 [indentation](#)를 사용한다.  
+라인의 시작점에 존재하는 0개 이상의 [white space character](#)에 의해 정의된다.
+하지만 이식성을 고려해서 Tab키는 사용하면 안 된다.  
+시스템들 사이에서 Tab키를 취급하는 방법이 서로 다르기 때문이다.
+
+#### Indicator
+> In YAML block styles, structure is determined by indentation.
+  In general, indentation is defined as a zero or more space characters at the start of a line.
+  To maintain portability, tab characters must not be used in indentation, since different systems treat tabs differently.
+
+Block Style의 구조는 들여쓰기에 의해 결정된다.  
+라인의 시작점에 존재하는 0개 이상의 [white space character](#)에 의해 정의된다.
+하지만 이식성을 고려해서 Tab키는 사용하면 안 된다.  
+시스템들 사이에서 Tab키를 취급하는 방법이 서로 다르기 때문이다.
+
+```
+s-indent(n) ::= s-space × n
+```
+
+> A block style construct is terminated when encountering a line which is less indented than the construct.
+  Each node must be indented further than its parent node.
+  All sibling nodes must use the exact same indentation level. 
+  However the content of each sibling node may be further indented independently.
+
+Block Style의 구조는 이전 라인보다 더 적은 들여쓰기가 있는 라인을 만나면 끝난다.  
+각각의 노드는 부모 노드보다 더 많은 들여쓰기를 써야만 한다.  
+모든 형제 노드는 같은 들여쓰기 레벨을 써야만 한다.  
+하지만 각 형제 노드의 내용들은 독립적이다.
+
+##### White Space Characters
+```
+s-space ::= #x20 /* SP */
+s-tab   ::= #x9  /* TAB */
+s-white ::= s-space | s-tab
+```
+스페이스와 탭 문자만 white space character로 인식한다.
+
 
 
 
