@@ -1,7 +1,7 @@
 ---
 title: YAML
-tags: []
-category: []
+tags: [YAML]
+category: [Note, Dev]
 ---
 ![YAML Ain't Markup Language](thumbs.png)    
 
@@ -139,8 +139,39 @@ YAML은 구현 및 사용이 쉽다.
 
 #### Prior Art(선행 기술??)
 HTML의 EOL(End of Line)에 영감을 받아서 sinlge line break는 single space로 해석되고,
-empty line은 line break character를 뜻한다. 
+empty line은 line break character를 뜻한다.  
 
+YAML 스펙 문서는 [BNF 표기법](/2018/08/15/bnf/)을 사용하고 있기 때문에 BNF 표기법에 대해 조금은 알고 있어야 읽기가 수월하다.
+
+#### Node Kinds
+* Scalar  
+> The content of a scalar node is an opaque datum that can be presented as a series of zero or more Unicode characters.
+
+스칼라 노드는 0개 이상의 유니코드 문자이다.  
+일반적인 primitive type을 생각하면 편하다.  
+
+* Sequence
+> The content of a sequence node is an ordered series of zero or more nodes.
+  In particular, a sequence may contain the same node more than once.
+  It could even contain itself (directly or indirectly).
+
+시퀀스 노드는 0개 이상의 순서가 보장된 노드이다.  
+또한 똑같은 노드를 여러 번 포함할 수 있다.  
+심지어 자기 자신을 포함할 수도 있다.  
+일반적인 list를 생각하면 편하다.  
+
+* Mapping
+> The content of a mapping node is an unordered set of key: value node pairs, with the restriction that each of the keys is unique.
+  YAML places no further restrictions on the nodes. 
+  In particular, keys may be arbitrary nodes, the same node may be used as the value of several key: value pairs, and a mapping could even contain itself as a key or a value (directly or indirectly).
+
+매핑 노드는 순서가 보장되지 않은 key:value 쌍의 집합이다.  
+key는 고유하다는 제한을 빼고는 다른 제한은 있지 않다.  
+특히 키는 임의의 노드일 수도 있고, 동일한 노드를 여러 key:value 쌍의 값으로 사용할 수 있고, 자기 자신을 포함할 수 있다.  
+
+> When appropriate, it is convenient to consider sequences and mappings together, as collections.
+
+Sequence와 Mapping 두 개를 합쳐 collections라고 부른다.  
 
 ##### Indicator characters
 
