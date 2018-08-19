@@ -1,8 +1,13 @@
 ---
 title: YAML
-tags: [YAML]
-category: [Note, Dev]
+tags:
+  - YAML
+category:
+  - Note
+  - Dev
+date: 2018-08-19 13:56:20
 ---
+
 ![YAML Ain't Markup Language](thumbs.png)    
 
 ## [YAML](http://yaml.org/)  
