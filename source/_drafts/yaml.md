@@ -10,7 +10,7 @@ category: [Note, Dev]
 YAML is a human friendly data serialization standard for all programming languages.
 
 YAML은 마크업 언어가 아니고, `사람에게 친숙한 데이터 Serializaition 표준`이다.  
-아마 X*ML*, HT*ML*과 같이 YA*ML*도 *ML*이 들어서 사람들의 오해를 샀던 모양이다.  
+아마 X**ML**, HT**ML**과 같이 YA**ML**도 **ML**이 들어가서 사람들의 오해를 샀던 모양이다.  
 마크업 언어는 태그를 이용하여 문서나 데이터의 구조를 표현하는 언어이다. (HTML, XML)   
 Serialization(직렬화)은 데이터를 시스템 외부(파일로 쓰거나 네트워크로 전송하거나)에서 사용할 때 사용한다. (Byte Array, [JSON](https://www.json.org/), YAML)  
 
@@ -19,6 +19,7 @@ Serialization(직렬화)은 데이터를 시스템 외부(파일로 쓰거나 �
 따라서 YAML 파일을 POJO로 매핑할 수도 있고, Configuration 파일에서도 사용할 수 있다.  
 주의사항은 Spring에 내장된 [SankeYAML은 YAML 1.1 스펙을 구현한 점](https://mvnrepository.com/artifact/org.yaml/snakeyaml)이다.  
 
+![Hexo의 기본 디펜던시에 포함된 js-yaml](js-yaml.png)
 [Node.js](https://nodejs.org/) 기반의 블로그 프레임워크인 [Hexo](https://hexo.io/)에서도
 [JS-YAML](https://github.com/nodeca/js-yaml)이라는 YAML Parser를 이용해 Configuration을 설정하고 있다.  
 JS-YAML은 Python의 YAML Parser인 [PyYAML](https://pyyaml.org/)을 포팅하면서 처음에는 YAML 1.1 스펙을 지원했는데, 현재는 YAML 1.2 스펙까지 구현했다.  
@@ -29,8 +30,8 @@ Thus, JSON is trivial to generate and parse, at the cost of reduced human readab
 In contrast, YAML’s foremost design goals are human readability and support for serializing arbitrary native data structures.
 Thus, YAML allows for extremely readable files, but is more complex to generate and parse.  
 
-JSON의 최우선 설계 목표는 간편성과 보편성이다. 따라서 JSON은 가독성을 떨어트리는 대신에 생성 및 파싱이 용이하다.  
-반면에 YAML의 최우선 설계 목표는 가독성과 데이터 구조 Serialization이다. 따라서 YAML은 사람이 읽기 쉬운 반면에 생성 및 파싱이 좀 더 복잡하다.
+JSON의 최우선 설계 목표는 간편성과 보편성이다. 따라서 JSON은 가독성을 조금 떨어트리는 대신에 생성 및 파싱이 용이하다.  
+반면에 YAML의 최우선 설계 목표는 가독성과 데이터 구조 Serialization이다. 따라서 YAML은 사람이 읽기 쉬운 반면에 생성 및 파싱이 JSON 보다 복잡하다.
 
 > YAML can therefore be viewed as a natural superset of JSON.  
 This is also the case in practice; every JSON file is also a valid YAML file.  
@@ -70,20 +71,19 @@ JSON 보다 [YAML의 모델](http://yaml.org/spec/1.2/spec.html#id2763452)이 �
 속도도 느린데 직접 파싱을 한다고 생각해도 JSON이 훨씬 간단하다.
 
 #### 용도
-* 대부분의 웹 기술([AJAX](https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX) 등등)에서 데이터 통신을 위해서 성능을 위한 것인지, 파싱하기가 간편해서인지  
-는 잘 모르겠지만 대부분 JSON을 많이 사용하고,
+* 대부분의 웹 기술([AJAX](https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX) 등등)에서 데이터 통신을 위해서 성능을 위한 것인지는 잘 모르겠지만 대부분 JSON을 많이 사용하고,
 [reference](#Anchor-amp-Alias)가 있는 YAML은 복잡한 object 구조를 표현하는데 적합해서, 오프라인에서 data serialization을 위해 더 적합하다.     
-* 파이썬 커뮤니티에서는 {} 보다는 파이썬 문법과 비슷한 [indent](#Indentation)로 indicate level을 구분하는 YAML을 더 선호하고,
+* 파이썬 커뮤니티에서는 `{ } [ ] : ,`과 같은 [Indicator](#Flow-Style-Indicator) 보다는 파이썬 문법과 비슷한 [indent](#Indentation)로 indicate level을 구분하는 YAML을 더 선호하고,
 자바스크립트 진영에서는 별도의 파서가 필요없고, Javascript Object와 구조가 유사한 JSON을 선호하는 편이다.  
 
 #### 그 외.    
 * JSON은 주석이 없다.  
-* * YAML은 [한 파일에 여러 Document](#Multiple-Documents)를 표현할 수 있다.
+* YAML은 [한 파일에 여러 Document](#Multiple-Documents)를 표현할 수 있다.
 * > JSON's RFC4627 requires that mappings keys merely “SHOULD” be unique, while YAML insists they “MUST” be.
   Technically, YAML therefore complies with the JSON spec, choosing to treat duplicates as an error.
   In practice, since JSON is silent on the semantics of such duplicates, the only portable JSON files are those with unique keys, which are therefore valid YAML files.
     
-  JSON은 Key의 중복을 Warning으로 표시하지만, YAML은 허용하지 않는다.  
+JSON은 Key의 중복을 Warning으로 표시하지만, YAML은 허용하지 않는다.  
   
 ### YAML vs. XML
 > two languages may actually compete in several application domains, there is no direct correlation between them.
@@ -115,7 +115,7 @@ YAML 데이터는 프로그래밍 언어 간에 이동이 가능하다.
 
 > YAML matches the native data structures of agile languages.  
 
-YAML은 agile 언어의 native data structure를 매치한다.  
+YAML은 agile 언어의 native data structure와 매치된다.  
 
 > YAML’s core type system is based on the requirements of agile languages such as Perl, Python, and Ruby.
 YAML directly supports both collections (mappings, sequences) and scalars.
@@ -126,7 +126,7 @@ Perl, Python, Ruby와 같은 agile language에 존재하는 [scalar](#Scalar), [
 
 > YAML has a consistent model to support generic tools.
   
-YAML은 tool들을 지원하는 [일관적인 모델](http://yaml.org/spec/1.2/spec.html#id2763452)이 있다.  
+YAML은 parser들을 위해서 [일관적인 모델](http://yaml.org/spec/1.2/spec.html#id2763452)이 있다.  
 
 > YAML supports one-pass processing.
   
@@ -177,26 +177,16 @@ b
 ```
 여기서 b와 0 모두 scalar 노드이다.
 
-###### Literal Scalar
-> The literal style is denoted by the “|” indicator. It is the simplest, most restricted, and most readable scalar style.
-
-Literal Style은 `|` 문자로 시작된다.  
-간단하고, 더 제한적(??)이고, 더 읽기 쉽다고 한다.  
-
-```yaml
-|↓
-·literal↓
-·→text↓
-↓
-```
-
-이 Literal Scalar는 아래와 같은 Scalar로 변형된다.  
-
-```yaml
-"literal\n\ttext\n"
-```
-
-| 문자 뒤에는 
+Scalar의 종류는 아래와 같다.  
+* [Block Styles](#Block-Styles)
+  * [Block Scalar Styles](http://yaml.org/spec/1.2/spec.html#id2793652)  
+    * [Literal Style](http://yaml.org/spec/1.2/spec.html#id2795688)
+    * [Floded Style](http://yaml.org/spec/1.2/spec.html#id2796251)
+* [Flow Styles](#Flow-Styles)
+  * [Flow Scalar Styles](http://yaml.org/spec/1.2/spec.html#id2786942)  
+    * [Double-Quoted Style](http://yaml.org/spec/1.2/spec.html#id2787109)
+    * [Single-Quoted Style](http://yaml.org/spec/1.2/spec.html#id2788097)
+    * [Plain Style](http://yaml.org/spec/1.2/spec.html#id2788859)
 
 ##### Collections
 > When appropriate, it is convenient to consider sequences and mappings together, as collections.
@@ -338,10 +328,46 @@ b-alias: *name
 }
 ```
 
+#### Directives
+> Directives are instructions to the YAML processor.
+  This specification defines two directives, “YAML” and “TAG”, and reserves all other directives for future use.
+  There is no way to define private directives. This is intentional.
+  Directives are a presentation detail and must not be used to convey content information.
+
+Directives는 YAML Processor에게 `어떻게 해석해라`라고 지시하는 것이다.  
+YAML의 버전을 명시하는 [YAML Directive](http://yaml.org/spec/1.2/spec.html#directive/YAML/)와
+[node tags](http://yaml.org/spec/1.2/spec.html#tag//)를 명시하는 [TAG Directive](http://yaml.org/spec/1.2/spec.html#directive/TAG/)가 있다.  
+맨 첫 번째 줄의 % [Indicator](#Common-Indicator)를 통해 표시한다.
+```yaml
+%YAML 1.2
+```
+
+```yaml
+%TAG !yaml! tag:yaml.org,2002:
+```
+
 #### Multiple Documents
 > YAML uses three dashes (“---”) to separate directives from document content.
   This also serves to signal the start of a document if no directives are present.
   Three dots ( “...”) indicate the end of a document without starting a new one, for use in communication channels.
+  
+`---` [Indicator](#Common-Indicator)로 [Directive](#Directives)와 Documnet content를 구분지을 수 있고, document content의 시작이라는 신호도 된다.  
+`...` [Indicator](#Common-Indicator)로 [Directive](#Directives)와 Document content를 구분지을 수 있고, document content의 끝이라는 신호도 된다.
+
+```yaml
+%YAML 1.2 # Directive
+--- # Document content begin
+a: b # Document content
+c: d
+... # Document content end
+%YAML 1.1 # Directive
+--- # Document content begin
+a: d # Document content
+c: b
+... # Document content end
+```
+
+좀 더 다양한 예제를 살펴보자.  
   
 ```yaml
 spring:
@@ -361,6 +387,8 @@ spring:
 ...
 ```
 
+이번엔 multiple documents를 표현해보자.
+
 ```yaml
 spring:
   profiles: local
@@ -388,6 +416,7 @@ spring:
   datasource:
       url: jdbc:mysql://dev
 ...
+
 ```
 
 #### Indentation
@@ -463,21 +492,6 @@ c-mapping-key   ::= “?”
 
 ```json
 {"a": "b"}
-```
-
-###### Chomping Indicator
-> Chomping controls how final line breaks and trailing empty lines are interpreted.
-
-이 Indicator는 마지막 line breaks와 trailing empty line을 어떻게 취급할지에 대한 indicator이다.  
-Literal Scalar에서만 쓰인다.
-
-종류는 아래 세 가지이다.
-> Stripping is specified by the “-” chomping indicator. 
-In this case, the final line break and any trailing empty lines are excluded from the scalar’s content.
-
-```yaml
-|-
-  text↓
 ```
 
 ##### Flow Style Indicator
@@ -577,9 +591,100 @@ anchor: value
 alias: value
 ```
 
+`%`: [Directive](#Directives) Line 임을 나타내는 문자
+```
+c-directive ::= “%”
+```
 
+```yaml
+%YAML 1.2
+```
 
+```yaml
+%TAG !yaml! tag:yaml.org,2002:
+```
 
+`---`: [Directive](#Directives) Line이 끝나고 Document content의 시작을 알리는 문자  
+```
+c-directives-end    ::= “-” “-” “-”
+```
 
+```yaml
+%YAML 1.2
+---
+asdf: qwer
+```
 
+`,,,`: Document content가 끝나고 [Directive](#Directives) Line과 구분을 짓는 문자
+```
+c-document-end  ::= “.” “.” “.”
+```
 
+```yaml
+asdf: qwer
+...
+%YAML 1.2
+```
+
+### \*.yaml vs \*.yml
+[YAML FAQ](http://yaml.org/faq.html)에서는 \*.yaml을 공식 확장자라고 얘기하고 있다.  
+그럼에도 불구하고 \*.yml이 있는 이유는 `*.html vs *.htm` 과도 비슷한 이유일 것 같다.  
+MS-Dos 시절에는 파일의 확장자 길이가 3자로 제한됐었다.  
+그 시절의 영향 때문인지, 3글자 확장자 스타일을 고수하는 사람들 때문에 \*.yml이나 *.htm 같은 확장자가 보이는 것 같다. 
+
+### \*.yaml vs. \*.properties
+스프링에서 개발 환경 별로 configuration을 구성할 때 \*.properties를 사용하면 아래와 같이 할 수 있다.  
+
+```properties
+spring.profiles=dev
+spring.datasource.url=jdbc:mysql://
+management.endpoints.web.base-path=/
+spring.datasource.hikari.minimum-idle=1
+spring.datasource.hikari.maximum-pool-size=3
+```
+
+```properties
+spring.profiles=prod
+spring.datasource.url=jdbc:mysql://
+management.endpoints.web.base-path=/
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.maximum-pool-size=10
+```
+
+하지만 \*.yaml로 구성하게 되면 아래와 같이 구성할 수 있다.  
+```yaml
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 3
+management:
+  endpoints:
+    web:
+      base-path: /
+---
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:mysql://
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+management:
+  endpoints:
+    web:
+      base-path: /
+```
+
+\*.yaml로 했을 때 특징은 다음과 같다.  
+1. 한 파일에서 모든 configuration을 관리할 수 있다.  
+이건 호불호가 갈릴 것 같다.  
+오히려 특정 환경의 설정만 바꾸고 싶은데 똑같은 key들이 환경별로 있어서 헷갈린다는 사람도 있을 것이고,
+하나의 파일에서 설정을 다 바꿀 수 있어서 여기 저기 다른 파일을 탐색하지 않아서 좋다고 하는 사람도 있을 수 있을 것이다.  
+환경 별로 쪼개서 사용할 수도 있으니 자기 취향 혹은 팀의 가이드라인을 따라 사용하면 될 것 같다.
+2. 비슷한 설정들끼리 뭉친다.  
+동일한 key를 허용하지 않기 때문에 동일한 부모를 가진 key들끼리 뭉치는데, 동일한 부모 아래의 자식이기 때문에 비슷한 설정들끼리 뭉친다.  
+비슷한 설정들끼리 뭉치기 때문에 yaml 파일을 읽을 때 흐름을 파악하기가 훨씬 용이하다.  
+물론 *.properties에서도 비슷한 설정들끼리 뭉쳐놓으면 되는데 설정의 순서를 강제할 순 없기 때문에 yaml이 난 더 좋은 것 같다.

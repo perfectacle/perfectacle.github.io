@@ -17,59 +17,22 @@ date: 2018-08-15 16:08:01
 
 ### 표기법
 ```
-<기호> ::= <표현식>
+<이름> ::= <표현식>
 ```
 
-표현식은 단말 표현, 더 이상 유도할 수 없는 표현으로 `0, 1 +, *`과 같은 표현들을 뜻한다.  
-기호는 비단말 표현, `<digit>, <character>`과 같은 표현들을 뜻한다.  
+표현식은 단말 표현식(더 이상 유도할 수 없는 표현식으로써 `0 1 + *` 같은 애들,
+비단말 표현식(유도가 가능한 표현식으로써 `<digit>, <character>`과 )과 같은 표현들을 뜻한다.  
 
-예를 들면 `<digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9`와 같이 표기할 수 있다.
+예를 들면 아래와 같이 표기할 수 있다.  
+```
+<digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+<hex_letter> ::= A | B | C | D | E | F
+<hex> ::= <digit> | <hex_letter>
+```
 
 ### 연산자
 * `|`: or을 의미한다.  
 `0 | 1 | 2` (0도 되고 1도 되고 2도 되고)
-* `&`: and를 의미하기도 하고, 단항 연산자로 쓰이면 address/alias를 의미한다.(C언어 포인터 생각하면 편하다.)
-* `*`: 곱하기의 의미이기도 하고, 단항 연산자로 쓰이면 address/alias를 참조하는 걸 의미한다.  
-yaml에서는 아래와 같이 쓴다.  
-```yaml
-defaults: &defaults
-  adapter: mysql2
-  encoding: utf8
-  reconnect: false
-  pool: 5
-  username: sqluser
-  password: s3cret
-  host: localhost
-
-development:
-  <<: *defaults
-  database: app_development
-  
-local: &asdf qwer
-production: *asdf
-```
-위 구문은 아래와 같이 해석한다.  
-```yaml
-defaults: 
-  adapter: mysql2
-  encoding: utf8
-  host: localhost
-  password: s3cret
-  pool: 5
-  reconnect: false
-  username: sqluser
-development: 
-  adapter: mysql2
-  database: app_development
-  encoding: utf8
-  host: localhost
-  password: s3cret
-  pool: 5
-  reconnect: false
-  username: sqluser
-local: qwer
-production: qwer
-```
 * `-`: 뺄셈의 의미인데 항목 제거의 의미로도 해석할 수 있다.  
 ```
 <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
