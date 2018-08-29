@@ -91,7 +91,7 @@ Security Group의 Source 부분에 다른 Security Group을 추가하는 것은 
 |-------|----------|------------|----------------|---------------|
 | HTTPS | TCP      | 443        | 41.22.44.22/32 | B Web Service |
 
-그리고 결제 서비스의 Security Group에는 sg-workaround, sg-payment 두 개를 적용햐고,  
+그리고 결제 서비스의 Security Group에는 sg-workaround, sg-payment 두 개를 적용하고,  
 인증 서비스의 Security Group에는 sg-workaround, sg-auth 두 개를 적용해주면 된다.  
 
 이거보다 더 나은 방법이 있으면 댓글 남겨주시면 감사하겠습니다 :)
