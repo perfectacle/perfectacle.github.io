@@ -67,7 +67,7 @@ Security Group을 리팩토링(?)해서 공통된 부분을 추출해서 장애�
 
 ## 문제 해결
 Security Group의 Source 부분에 다른 Security Group을 추가하는 것은 `중첩이나 상속 등등을 의미하지 않는다`.  
-[Security Group에서 다른 Security Group을 참조하는 경우](#)가 어떨 때 쓰는 건지는 좀 이따 설명하겠다.  
+[Security Group에서 다른 Security Group을 참조하는 경우](#Security-Group에서-다른-Security-Group을-참조하는-경우)가 어떨 때 쓰는 건지는 좀 이따 설명하겠다.  
 우리는 우선 위 문제부터 해결해보자.  
 
 우선 공통된 부분을 따로 빼야한다는 사실은 변하지 않는다. (id는 sg-workaround라고 가정)  
