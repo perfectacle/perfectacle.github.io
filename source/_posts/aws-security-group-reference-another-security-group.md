@@ -126,7 +126,8 @@ AWS의 이런 세심한 배려 덕분에 우리는 EC2의 Security Group을 다�
 | HTTP  | TCP      | 80         | 13.209.xxx.125/32 | ELB 2       |
 
 하지만 위와 같이 설정해도 다음과 같은 문제가 존재한다.  
-우리는 `Public` DNS를 가지고 nslookup 명령어를 때려서 ip 주소를 가져왔다.  
+시간이 지나면 ELB의 ip는 변한다.  
+또한 우리는 `Public` DNS를 가지고 nslookup 명령어를 때려서 ip 주소를 가져왔다.  
 `Public` DNS를 가지고 온 ip는 `Public` ip이다. (13.124.xxx.124, 13.209.xxx.125)  
 ELB와 EC2 사이의 통신은 private network를 통해 이뤄지므로 ELB의 `private ip`가 Security Group에 추가돼야한다.  
 하지만 우리는 ELB의 private ip를 알 방법이 없다.  
