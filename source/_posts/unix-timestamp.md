@@ -42,6 +42,7 @@ PC에서 시간은 카운터로 표시되고, 매 초마다 카운트가 증가�
 
 ## 그래서 그게 뭔데?  
 [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) 표기법 1970-01-01T00:00:00Z 기준으로 현재까지 몇 초가 지났는지를 나타내는 것이다.  
+[윤초(Leap Second)](https://ko.wikipedia.org/wiki/%EC%9C%A4%EC%B4%88)는 포함하지 않는다.  
 1970-01-01T00:00:00Z는 Unix Timestamp가 0이고, 1970-01-01T00:00:01Z은 Unix Timestamp가 1이고, 1969-12-31T23:59:59Z는 Unix Timestamp가 -1이다.  
 
 ## 왜 1970년 01월 01일 00시 00분 00초를 기준으로 했을까?
