@@ -1,0 +1,134 @@
+---
+title: (Java8) 시간과 날짜
+tags: []
+category: []
+---
+부끄럽게도 Java8에 새로 등장한 시간과 날짜 관련한 내용들을 모르고 사용하다 이제서라도 정리해봤다.  
+먼저 그 전에 시간에 대한 것부터 조금씩 알아보자.
+
+## GMT(Greenwich Mean Time) vs. UTC(Coordinated Universal Time)
+세계 표준 시간 관련해서 위 두 키워드가 자주 나오길래 [구글](https://www.google.co.kr/search?newwindow=1&hl=en-KR&rlz=1C5CHFA_enKR721KR721&ei=zc2pW-WIHYq88QXQmKzABQ&q=gmt+vs+utc&oq=gmt+vs+utc&gs_l=psy-ab.3..0i67k1j0i20i263k1j0l3.1063480.1067397.0.1067832.22.18.2.0.0.0.289.2326.0j9j4.14.0....0...1.1j4.64.psy-ab..6.16.2500.6..0i131k1j0i10k1j35i39k1j0i203k1.171.hKhy4qSkjm4)에서 검색해보았다.  
+
+> There is no time difference between Greenwich Mean Time and Coordinated Universal Time.  
+6:13 AM Tuesday, Greenwich Mean Time (GMT) is 6:13 AM Tuesday, Coordinated Universal Time (UTC)  
+
+둘의 차이점이 없다고 한다.  
+그래서 다른 사이트를 뒤져보았다.
+
+> GMT is a time zone and UTC is a time standard.  
+Although GMT and UTC share the same current time in practice.  
+https://www.timeanddate.com/time/gmt-utc-time.html
+
+Time Zone과 Time Standard인 게 차이라는데...  
+둘의 차이는 무엇일까... 찾아보았다.  
+
+### Time Zone
+세계에는 다양한 Time Zone이 존재한다.  
+우선 우리나라에서 사용하는 KST(Korea Standard Timezone), 하와이에서 사용하는 HST(Hawaii Standard Time), UK 등등에서 사용하는 [GMT](#GMT-Greenwich-Mean-Time) 등등이 있다.
+
+#### GMT(Greenwich Mean Time)
+> GMT is a time zone officially used in some European and African countries.  
+The time can be displayed using both the 24-hour format (0 - 24) or the 12-hour format (1 - 12 am/pm).
+https://www.timeanddate.com/time/gmt-utc-time.html  
+
+뭐, 유럽과 아프리카 쪽에서 주로 사용되는 **타임존**이란다.  
+의문점은 왜 0 ~ 23이 아니라 0 ~ 24라고 표기했을까...  
+0 ~ 23이라고 표기하는 국가도 있고, 1 ~ 24라고 표기하는 국가도 있어서 그런 걸까...?  
+뭐, 짜치는 문제이므로 건너 뛰자.
+
+[Greenwich](https://en.wikipedia.org/wiki/Greenwich)는 영국에 위치한 도시이고, 경도(longitude)가 0도인 곳이다.  
+다른 경도가 0인 도시도 많을텐데 아마 이런 표준을 제정할 때 영국이 강대국이었을 것이고, 지리 및 정치 기타 등등의 요소로 인해 Greenwich가 선정된 게 아닐까 싶다.    
+
+### Time Standard
+세계 어디서나 사용할 수 있는 시간의 표준을 의미한다.    
+그 대표는 어디를 기준으로 해야할까?  
+시간은 경도(longitude)에 따라 달라지지, 위도(longitude)에 따라 달라지지 않는다.  
+따라서 경도가 0°인 곳을 기준으로 하다보니 GMT가 Time Standard로 선정됐**었**다.  
+과거형이니 현재는 GMT가 Time Standard가 아님을 의미한다.  
+현재는 UTC가 Time Standard라는 뜻이다.  
+왜 GMT는 Time Standard에서 탈락하게 된 것일까...?  
+
+#### UT(Universal Time)
+> Universal Time (UT) was created at the International Meridian Conference in 1884.
+  This is the basis for the 24-hour time zone system we know today.
+  At the time, Greenwich Mean Time (GMT) was chosen as the world’s time standard.
+  https://www.timeanddate.com/time/aboututc.html 
+
+1884년에 UT(24시간 시스템의 기본)가 만들어졌다.  
+이 때 선정된 표준 시간(Time Standard)이 [GMT](#GMT-Greenwich-Mean-Time)이다.  
+
+#### GMT에서 UTC로...
+> In 1960, the International Radio Consultative Committee formalized the concept of UTC, and it was put into practice the year after.
+The name Coordinated Universal Time was officially adopted in 1967.
+UTC was adjusted several times until 1972.  
+https://www.timeanddate.com/time/aboututc.html
+
+UTC는 1972년까지 여러 번 제정되었다.
+
+> Until 1972, Greenwich Mean Time (also known as Zulu time) was the same as Universal Time (UT).
+Since then, GMT is no longer a time standard. 
+Today, Greenwich Mean Time (GMT) is only the name of a time zone.
+https://www.timeanddate.com/time/aboututc.html
+
+동시에 1972년부터 GMT는 Time Standard의 자리를 박탈당하고 일개 Time Zone에 불과하게 되었다.
+
+### UTC(Coordinated Universal Time)  
+> UTC is not a time zone, but a time standard that is the basis for civil time and time zones worldwide.  
+This means that no country or territory officially uses UTC as a local time.  
+https://www.timeanddate.com/time/gmt-utc-time.html    
+
+GMT와는 달리 세계에서 공통적으로 쓰이는 **시간 표준(time standard)**이란다.  
+KST, GMT와 같이 현지 시간을 반영한 Time Zone과 달리 UTC는 현지 시간(local time)이 반영되지 않은, 즉 Time Zone에 얽매이지 않는 게 특징이다.  
+그래서 세계 표준 시간을 언급할 때 UTC가 많이 언급되는 것 같다. 
+
+내가 UTC를 위에 Coordinated Universal Time라고 적어놨는데 왜 UTC라고 줄여서 부르는 걸까...?  
+원래 UTC는 표준 명칭이 CUT(Coordinated Universal Time in English), TUC(Temps Universel Coordonné in French)로 두 개였다.  
+혼란을 줄이기 위해 표준을 정해야하는데 한 쪽의 손을 들어주면 정치적 싸움판이 될테므로 아마 둘 다 택하지 않고 쌩뚱맞은 UTC로 간 게 아닐까... 싶다.  
+하지만 왜 Universal Coordinated Time이 아닌 Coordinated Universal Time이라고 부르는지는 잘 모르겠다...  
+영어가 불어보다는 글로벌하기 때문에 풀네임은 영어권의 손을 들어준 것일까...?
+
+## 그래서 우리나라는...?
+우리나라는 **KST(Korea Standard Time)**를 사용하고 있다.  
+KST는 UTC에 9시간을 더한 시간으로 **UTC +9** 와 같이 표기하고 있다.  
+그리고 UTC +9을 사용하는 나라가 더 있는데 대표적으로 일본이 있다.  
+하지만 KST는 우리나라에서나 사용하지, 일본에서는 **JST(Japan Standard Time)**를 사용하고 있다.  
+따라서 [일본과 우리나라는 세계 시간이 동일](https://www.zeitverschiebung.net/en/difference/country/kr/city/1850147)하고,
+KST와 JST도 GMT와 동일한 **Time Zone**이지만, **세계 표준이 아니라는 점**만 빼고 동일하다.  
+자바에서는 안타깝게 KST는 없고 JST만 있다. (정치적인 파워에서 밀린 것인지... 일본이 더 소프트웨어 엔지니어링 강국으로 판단한 건지 모르겠지만...)  
+~~독도는 우리땅!!~~
+
+또한 영토가 좌우로 쭉 뻗은 미국 같은 경우에는 여러 타임존(HST(Hawaii Standard Time), PDT(Pacific Daylight Time) 등등)을 사용하고 있다.
+
+이러한 사유로 AWS RDS의 기본 타임존은 UTC이고, 우리는 현재 시간을 저장했다고 판단했는데 DB에 저장된 시간을 보면 9시간 이전의 시간이 저장된 사례를 볼 수 있다.  
+이게 바로 우리나라가 UTC +9인 KST를 사용하고 있기 때문이다.  
+
+## [ISO-8601 - Date and time format](https://en.wikipedia.org/wiki/ISO_8601)
+[ISO(International Organization for Standardization)](https://en.wikipedia.org/wiki/International_Organization_for_Standardization)
+는 세계에서 인정하는 표준을 정의하는 기관이다.  
+이 기관에서 시간과 날짜에 관한 표준을 지정하였는데 이게 이 기관에서 정한 8601번 째 표준이라는 의미이다.  
+자바를 비롯해서 많은 프로그래밍 언어에서 날짜와 시간을 표기할 때 위 표준을 준수하고 있다.  
+
+## [LocalDateTime.class](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html)
+> A date-time without a time-zone in the ISO-8601 calendar system, such as 2007-12-03T10:15:30.  
+This class does not store or represent a time-zone. 
+Instead, it is a description of the date, as used for birthdays, combined with the local time as seen on a wall clock. 
+It cannot represent an instant on the time-line without additional information such as an offset or time-zone.
+
+타임존이 없는 날짜/시간을 나타내는 클래스이다.  
+타임존이 없기 때문에 타임존과 상관 없는 날짜/시간을 사용할 때 사용해야한다.  
+예를 들면 생일이 제일 적합하다.  
+내가 KST 기준 1993년 5월 30일 01시 35분 15초에 태어났고, GMT 기준 1993년 5월 29일 16시 35분 15초에 태어났다고 가정해보자.  
+KST를 쓰는 한국에서 5월 30일이면 GMT를 쓰는 다른 나라에 간다고 해서 내 생일이 5월 29일로 바뀌는 게 아니다.  
+내 생일은 어딜 가던 5월 30일이다.  
+즉 타임존에 얽매이지 않는 경우에 사용하면 된다.  
+
+## [Instant.class](https://docs.oracle.com/javase/8/docs/api/java/time/Instant.html)  
+
+
+## [ZoneDateTime.class](https://docs.oracle.com/javase/8/docs/api/java/time/ZonedDateTime.html)
+
+## 
+
+
+  
+ 
