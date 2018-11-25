@@ -454,7 +454,7 @@ void test() {
 
 하지만 이런 일관성을 깨뜨리면서 equals를 오버라이딩한 경우가 자바 라이브러리에도 존재한다.  
 바로 [java.net.URL](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URL.html) 클래스가 그 예이다.  
-java.net.URL의 [equals](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URL.html#equals(java.lang.Object)) 메서드는 URL과 매핑된 IP 주소를 이용해 비교한다.  
+java.net.URL의 equals 메서드는 URL과 매핑된 IP 주소를 이용해 비교한다.  
 URL을 통해 매핑된 IP 주소를 알아내려면 네트워크를 이용해야한다.  
 하지만 이 **네트워크**도 **equals 판단에 신뢰할 수 없는 자원** 중 하나이다.  
 하지만 이 경우에는 하위 호환성 때문에 문제를 고치지 못하고 있다고 한다.
