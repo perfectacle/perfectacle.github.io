@@ -30,7 +30,7 @@ equals 메서드와 마찬가지로 hashCode를 오버라이딩 할 경우는 �
 (물론 equals, hashCode, toString 메서드까지 다 오버라이딩 해준다.)  
 클래스가 변경돼도 hashCode 쪽 소스코드를 수정할 필요가 없다.  
 얘는 자바 6부터 지원한다.  
-1. IDEA가 생성해준 소스 코드 사용하기.  
+2. IDEA가 생성해준 소스 코드 사용하기.  
 여러가지 규칙을 직접 찾아보며 구현하기 귀찮으니까 아래 코드를 복붙하면 된다.  
 인텔리제이 IDEA가 생성한 코드니 신뢰하고 써도 될 것이다.
 ```java
@@ -42,8 +42,8 @@ public int hashCode() {
 ```
 단점으로 클래스가 변경될 때마다 hashCode 쪽 소스도 넣어줘야해서 귀찮다.  
 또한 Objects 클래스는 자바 7에 등장해서 자바 7 미만인 환경에서는 사용하지 못한다.  
-1. 직접 구현하기(자바 5 이하~~탈출을 권장~~)
-이 글을 보시고 직접 구현해보시면 될 것 같습니다.
+3. 직접 구현하기(자바 5 이하~~탈출을 권장~~)
+이 글을 보시고 직접 구현해보면 될 것 같다.
 
 ## hashCode
 > Returns a hash code value for the object. 
@@ -71,7 +71,6 @@ static final int hash(Object key) {
 1. Whenever it is invoked on the same object more than once during an execution of a Java application, the hashCode method must consistently return the same integer, provided no information used in equals comparisons on the object is modified.  
 This integer need not remain consistent from one execution of an application to another execution of the same application.  
 equals 비교에 사용되는 정보가 변경되지 않았다면, 애플리케이션이 실행되는 동안 그 객체의 hashCode 메서드는 몇 번을 호출해도 일관되게 항상 같은 값을 반환해야 한다.  
-객체의 hashCode 메서드는 몇 번을 호출해도 일관되게 항상 같은 값을 반환해야한다.  
 단, 어플리케이션을 다시 실행한다면 이 값이 달라져도 상관없다.
 1. If two objects are equal according to the equals(Object) method, then calling the hashCode method on each of the two objects must produce the same integer result.    
 equals(Object)가 두 객체를 같다고 판단했다면, 두 객체의 hashCode는 똑같은 값을 반환해야한다.  
