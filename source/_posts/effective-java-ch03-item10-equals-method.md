@@ -180,7 +180,7 @@ void test() {
     // reflexive!!
     assertEquals(x, x);
     
-    final var y = new String();
+    final var y = "";
     
     // not symmetric!!
     assertEquals(x, y);
