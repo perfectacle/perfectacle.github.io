@@ -610,7 +610,7 @@ public class Type {
     public boolean equals(final Object o) {
         final var obj = (Type) o;
         
-        // 변경이 불가능한 a를 먼저 검사하기 보단 변경이 가능한 a를 검사해야 더 빠르게 논리적 동치성을 검출할 수 있다.
+        // 변경이 불가능한 a를 먼저 검사하기 보단 변경이 가능한 b를 검사해야 더 빠르게 논리적 동치성을 검출할 수 있다.
         if(obj.b != this.b) return false;
         if(obj.a != this.a) return false;
         return true;
