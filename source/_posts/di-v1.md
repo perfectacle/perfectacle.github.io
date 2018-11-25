@@ -19,8 +19,8 @@ public class KoreanTire {
 }
 ```
 ```java
-// AmericanTrie.java
-public class AmericanTrie {
+// AmericanTire.java
+public class AmericanTire {
     public void wheel() {
         System.out.println("wheel");
     }
