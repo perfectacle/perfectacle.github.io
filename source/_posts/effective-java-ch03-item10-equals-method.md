@@ -501,7 +501,7 @@ void test() {
     assertEquals(y, z);
     assertEquals(x, z);
 
-    // is x null!!
+    // x is null!!
     assertEquals(x, null);
 }
 ```
