@@ -51,7 +51,7 @@ public int hashCode() {
   https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#hashCode()
   
 object의 해시 값을 반환하는 메서드이다.  
-key를 해싱해서 인덱스를 만들고, 값을 저장하는 자료구조인 [HashMap](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashMap.html), [HashSet](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashSet.html) 등등의 컬렉션에서 사용된다.
+key를 해싱해서 인덱스를 만들고, 해당 인덱스의 버킷(저장 공간)에 값을 저장하는 자료구조인 [Hash Table](https://en.wikipedia.org/wiki/Hash_table)에서 사용된다.
 
 ```java
 public V get(Object key) {
@@ -64,7 +64,7 @@ static final int hash(Object key) {
     return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
 }
 ```
-위 코드는 HashMap 클래스의 get 메서드인데 내부적으로 타고들어가다보면 Object의 hashCode 메서드를 사용해서 key의 hashCode를 구해서 원하는 value를 구하고 있다.    
+위 코드는 [HashMap](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashMap.html), [HashSet](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashSet.html) 클래스의 get 메서드인데 내부적으로 타고들어가다보면 Object의 hashCode 메서드를 사용해서 key의 hashCode를 구해서 원하는 value를 구하고 있다.    
 
 
 이제 hashCode의 규약을 알아보자.  
@@ -174,4 +174,112 @@ public native int hashCode();
 hashCode의 기본 메서드로를 모든 인스턴스마다 고유한 hashCode를 생산한다.  
 하지만 우리가 구현한 equals 메서드에 따르면 각 인스턴스마다 equals 값이 true로 나오고 있으므로 hashCode도 동일한 값이 나와야하는데  
 그러고 있지 않으므로, 우리가 만든 클래스는 hashCode의 규약을 준수하지 못한 경우이다.  
-따라서 equals 메서드를 오버라이딩 했으면 거의 hashCode도 같이 오버라이딩 해줘야 hashCode의 규약을 준수해서 hashMap 등등에서 key로써 제대로 된 역할을 수행한다고 말할 수 있다.
+따라서 equals 메서드를 오버라이딩 했으면 거의 hashCode도 같이 오버라이딩 해줘야 hashCode의 규약을 준수해서 hashMap 등등에서 key로써 제대로 된 역할을 수행한다고 말할 수 있다.  
+
+아주 간단하게 해시 코드를 작성해보면 다음과 같다.~~(실무에서 절대 쓰면 안된다.)~~  
+```java
+@Override
+public int hashCode() {
+    return 1;
+}
+```
+이렇게 구현하면 물론 `equals 비교에 사용되는 정보가 변경됐는데도 똑같은 해시 값을 반환`하므로 1번 규약을 지키지는 못한다.  
+또한 모두 같은 해시 값을 반환하기 때문에 충돌이 발생하게 되는데 이 경우에는 index가 가리키고 있는 LinkedList에 값을 추가해서 데이터의 유실을 방지한다.  
+따라서 해시 테이블의 단 하나의 버킷에 저장하기 때문에 평균 수행 시간이 O(n)으로 느려진다.  
+이상적인 해시 값이라면 hashCode 규약을 준수하고, O(1)의 수행속도를 가져야한다. (각기 다른 버킷에 값을 저장하고, 따라서 충돌이 아주 적은...)  
+
+책에 나와있는 hashCode 작성법을 글로만 읽으면 이해가 안 되니 코드와 함께 이해해보자.  
+```java
+public class Type {
+    private int x;
+    private String y;
+    private double[] z;
+    private Type t;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Type)) return false;
+        final var obj = (Type) o;
+
+        // 첫 번째 핵심 필드 x
+        if(obj.x != this.x) return false;
+        if(obj.y.equals(this.y)) return false;
+        if(Arrays.equals(obj.z, this.z)) return false;
+        // 필드 t는 아예 equals 메서드에서 제외하였다.
+
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        // 첫 번째 핵심 필드 x의 해시값을 구함.
+        // primitive type이기 때문에 WrapperClass.hashCode() 메서드를 통해 해시값을 구함.
+        var result = Integer.hashCode(x);
+        
+        // 그 다음 핵심필드 y는 참조 타입이기 때문에 참조 타입의 hashCode() 메서드 사용.
+        result = result * 31 + y.hashCode();
+        
+        // 그 다음 핵심필드 z는 배열이고, 그 내부 원소가 모두 equals에 사용된 핵심 원소이므로 Arrays.hashCode() 메서드를 통해 구현.
+        // 만약 특정 원소만 핵심 원소라면 해당 원소들에 대해서 for-loop 돌면서 hashCode를 구하면 됨.
+        result = result * 31 + Arrays.hashCode(z);
+        
+        // equals 메서드에 사용되지 않은, 핵심필드가 아닌 t는 hashCode에서 사용하면 안 됨.
+        // equals 메서드를 통해 같다고 판단한 객체가 서로 다른 hashCode를 내뱉는 현상이 발생해 hashCode 규약을 지키지 못할 수 있음.
+        
+        // 위에서 구한 result를 반환.
+        return result;
+    }
+}
+```
+**Q: 왜 기존 값에 해시코드를 더하지 않고, 31을 곱한 후에 더하는가?**  
+A: 아래의 예제를 통해 알아보자.  
+```java
+public class Type {
+    private int x;
+    private int y;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Type)) return false;
+        final var obj = (Type) o;
+
+        // 첫 번째 핵심 필드 x
+        if(obj.x != this.x) return false;
+        if(obj.y != this.y) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        // 첫 번째 핵심 필드 x의 해시값을 구함.
+        // primitive type이기 때문에 WrapperClass.hashCode() 메서드를 통해 해시값을 구함.
+        var result = Integer.hashCode(x);
+
+        // 그 다음 핵심필드 y도 primitive type이기 때문에 WrapperClass.hashCode() 메서드를 통해 해시값을 구함.
+        result += Integer.hashCode(y);
+
+        // 위에서 구한 result를 반환.
+        return result;
+    }
+}
+```
+여기서 {x=1, y=2}와 {x=2, y=1}은 동등(equals)하지 않다.  
+하지만 각 원소의 집합은 {1, 2}로 동일하기 때문에 해시코드를 구하면 일치하게 된다.  
+이런 충돌을 줄이고자 31을 곱하는 것이다. (이는 String의 hashCode 메서드를 봐도 마찬가지다.)  
+
+**Q: 왜 31을 곱하는가?**  
+A: 31이 소수이기 때문이란다.  
+
+**Q: 왜 소수를 곱하는가?**
+A: 소수를 곱하는 것이 (해싱된 값이 저장되는 버킷의)분포도 측면에서 좋다고 한다. (즉, 충돌을 줄이기 위함이란다.)  
+
+**Q: 그 많은 소수 중에 왜 31인가? (추측)**  
+31은 2⁵ - 1이다.  
+이를 비트 연산자로 표기하면 2 << 5 - 1이다.  
+왼쪽으로 n칸 이동하면 2ⁿ만큼 곱했다고 보면 된다.  
+따라서 hash * 31은 hash * 2⁵ - 1, 즉 hash << 5 - 1이다.  
+cpu는 비트 연산에 매우 최적화 돼있다.  
+그리고 31은 1만 빼면 되는데, 37((2 << 5) + 6)은 6을 더해야하니 31이 더 빠르지 않을까?  
