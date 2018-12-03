@@ -1,8 +1,13 @@
 ---
-title: (이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라
-tags: [Java]
-category: [Note, Java]
+title: '(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라'
+tags:
+  - Java
+category:
+  - Note
+  - Java
+date: 2018-12-03 20:42:39
 ---
+
 ![](thumb.png)
 
 Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.
@@ -64,7 +69,7 @@ static final int hash(Object key) {
     return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
 }
 ```
-위 코드는 [HashMap](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashMap.html), [HashSet](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashSet.html) 클래스의 get 메서드인데 내부적으로 타고들어가다보면 Object의 hashCode 메서드를 사용해서 key의 hashCode를 구해서 원하는 value를 구하고 있다.    
+위 코드는 [HashMap](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashMap.html) 클래스의 get 메서드인데 내부적으로 타고들어가다보면 Object의 hashCode 메서드를 사용해서 key의 hashCode를 구해서 원하는 value를 구하고 있다.    
 
 
 이제 hashCode의 규약을 알아보자.  
@@ -274,12 +279,71 @@ public class Type {
 A: 31이 소수이기 때문이란다.  
 
 **Q: 왜 소수를 곱하는가?**
-A: 소수를 곱하는 것이 (해싱된 값이 저장되는 버킷의)분포도 측면에서 좋다고 한다. (즉, 충돌을 줄이기 위함이란다.)  
+A: Modulo operation(나머지 연산)에서 충돌을 줄이기 위함이라고 한다.  
+해시 함수의 예제를 구글링해보면 나머지 연산을 통해 해시 값을 구하는 예제가 참 많다.  
+실제로 나머지 연산을 통해 해시값을 구할 때는 소수로 나누는 것이 훨씬 충돌 횟수가 적다. (입력값이 균일하게 분포돼있지 않다는 전제 하에...)  
+그래서인지 곱하는 수도 소수를 곱하는 것 같다.  
+하지만 명확하게 왜 소수를 곱하는지는 아직 찾지 못했다.
+
+**Q: 충돌이 일어나면 어떻게 동작하는가?**
+우선 데이터의 유실을 막기 위해 어디다가 저장하긴 해야한다.  
+이를 위한 여러가지 동작 방식이 있는데 자바에서는 Separate Chaining 방식을 채택해서 버킷을 Linked List로 구현했다. 
+(Open Addressing이란 방식도 있다고 하니 이것도 공부해두면 좋을 것 같다.)  
+따라서 해시 코드가 충돌되더라도 일단 데이터는 저장되니 데이터의 유실은 막는다.  
+하지만 충돌이 잦을 수록 검색 성능은 나빠지니 최대한 충돌이 적은 알고리즘을 찾아야한다.  
+그리고 충돌이 발생하더라도 해당 키값에 대한 동등(equals) 비교가 일치하는 키 값이 없으면 null을 반환하게 된다.
 
 **Q: 그 많은 소수 중에 왜 31인가? (추측)**  
 31은 2⁵ - 1이다.  
 이를 비트 연산자로 표기하면 2 << 5 - 1이다.  
 왼쪽으로 n칸 이동하면 2ⁿ만큼 곱했다고 보면 된다.  
-따라서 hash * 31은 hash * 2⁵ - 1, 즉 hash << 5 - 1이다.  
 cpu는 비트 연산에 매우 최적화 돼있다.  
 그리고 31은 1만 빼면 되는데, 37((2 << 5) + 6)은 6을 더해야하니 31이 더 빠르지 않을까?  
+31보다는 37이 더 충돌 횟수가 적긴 할텐데, 아마 31만으로도 충분히 충돌 횟수를 많이 줄일 수 있어서 굳이 37을 안 쓰는 게 아닐까 싶다...  
+즉, 성능과 충돌 사이의 밸런스를 찾다보니 31이 나온 건 아닌가 싶다.  
+
+그리고 해시값을 구하는데 소수를 이용하는 거 보다 더 나은 알고리즘들이 있다고 하니 직접 찾아보는 것도 좋을 것 같다.
+
+또한 위와 같이 일일이 귀찮게 hashCode를 계산하기 보다는 아래와 같이 할 수 있다.  
+하지만 박싱/언박싱 및 입력값을 담기 위한 배열 생성 비용 등등으로 인해 성능 측면에서는 조금 아쉽긴 하다.
+```java
+@Override
+public int hashCode() {
+    // Array가 아닌 타입은 모두 Objects.hash() 메서드로 해시값을 구할 수 있다.
+    int result = Objects.hash(x, y, t);
+    result = 31 * result + Arrays.hashCode(z);
+    return result;
+}
+
+// 어차피 Objects.hash() 메서드를 따라들어가보면 Arrays.hashCode()를 사용하고 있다.
+public static int hash(Object... values) {
+    return Arrays.hashCode(values);
+}
+```
+
+혹은 클래스가 불변인 경우에는 생성 당시에 해시코드 값을 미리 캐싱해놓는 것도 좋다.
+```java
+private final int hash;
+
+public Type(final int x, final String y, final double[] z, final Type t) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    this.t = t;
+    this.hash = hashCode();
+}
+```
+  
+하지만 해시코드 생성 비용이 큰 경우에는 해시코드 값을 사용하기 전까지는 지연 초기화를 시켜놓으면 된다.  
+```java
+@Override
+public int hashCode() {
+    if(hash != 0) return hash;
+    
+    var result = Objects.hash(x, y, t);
+    result = 31 * result + Arrays.hashCode(z);
+    hash = result;
+    
+    return hash;
+}
+```   
