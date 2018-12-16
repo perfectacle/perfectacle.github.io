@@ -8,7 +8,7 @@ date: 2018-11-26 01:16:30
 
 Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.
 (그 이유는 모르겠지만... 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)  
-따라서 final이 아닌 메서드([equals](#equals), hashCode, toString, clone, finalize는)는 모두 메서드 오버라이딩을 염두하고 설계된 메서드이다.  
+따라서 final이 아닌 메서드([equals](#equals), [hashCode](/2018/12/03/effective-java-ch03-item11-hashCode-method), toString, [clone](/2018/12/16/effective-java-ch03-item13-clone-method), finalize는)는 모두 메서드 오버라이딩을 염두하고 설계된 메서드이다.  
 따라서 해당 메서드를 오버라이딩 할 때는 각 메서드마다 지켜야할 규칙들이 존재한다.  
 이 규칙을 지키지 않았을 때 뻑나는 경우가 있다.  
 일반적인 클래스들(Collection Framework 등등)은 이러한 규칙들은 지켰겠지~ 하고 작성된 코드들이 많다.  

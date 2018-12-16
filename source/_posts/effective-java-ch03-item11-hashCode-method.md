@@ -12,7 +12,7 @@ date: 2018-12-03 20:42:39
 
 Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.
 (그 이유는 모르겠지만... 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)  
-따라서 final이 아닌 메서드([equals](/2018/11/26/effective-java-ch03-item10-equals-method), [hashCode](#hashCode), toString, clone, finalize는)는 모두 메서드 오버라이딩을 염두하고 설계된 메서드이다.  
+따라서 final이 아닌 메서드([equals](/2018/11/26/effective-java-ch03-item10-equals-method), [hashCode](#hashCode), toString, [clone](/2018/12/16/effective-java-ch03-item13-clone-method), finalize는)는 모두 메서드 오버라이딩을 염두하고 설계된 메서드이다.  
 따라서 해당 메서드를 오버라이딩 할 때는 각 메서드마다 지켜야할 규칙들이 존재한다.  
 이 규칙을 지키지 않았을 때 뻑나는 경우가 있다.  
 일반적인 클래스들(Collection Framework 등등)은 이러한 규칙들은 지켰겠지~ 하고 작성된 코드들이 많다.  
@@ -148,8 +148,11 @@ void test() {
     assertEquals(new Point(1, 1), new Point(1, 1));
 
     // 1번 규칙에 의하면 몇 번을 호출하더라도 동일한 hashCode가 나와야하는데 동일한 값이 나오지 않았음.
-    final var resultSet = IntStream.range(1, 100).mapToObj((i) -> new Point(1, 1).hashCode()).collect(toSet());
-    assertNotEquals(resultSet.size(), 1);
+    // 사실 이 스트림은 한 번만 호출되더라도 !h.equals(hashCode) 조건을 만족하기 때문에 한 번 밖에 돌지 않음.
+    final var hashCode = new Point(1, 1).hashCode();
+    final var result = IntStream.range(1, 100)
+                                .mapToObj(i -> new Point(1, 1).hashCode())
+                                .anyMatch(h -> !h.equals(hashCode));
 
     // 단 두 번만 호출했는데도 불구하고 둘이 다른 해시코드가 나옴.
     assertNotEquals(new Point(1, 1).hashCode(), new Point(1, 1).hashCode());
