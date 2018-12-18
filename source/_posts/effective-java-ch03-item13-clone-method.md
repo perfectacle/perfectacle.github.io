@@ -75,7 +75,7 @@ Cloneable 인터페이스는 믹스인 인터페이스이다.
 ```java
 public interface Cloneable {
 }
-``` 
+```
 
 위에서 얘기했던 Comparable과의 차이점이 뭘까?  
 인터페이스만 있을 뿐, 구현해야하는 메서드가 아무것도 없다.  
@@ -343,7 +343,7 @@ public class Type implements Cloneable {
         return true;
     }
 }
-```  
+```
 
 그럼 clone 메서드가 우리가 생각하는대로 동작하는지 알아보자.  
 ```java
@@ -394,7 +394,7 @@ void test() {
     // clone과 original이 완전 독립된 객체라면 이 테스트는 통과해선 안 된다.
     assertEquals(original, clone);
 }
-```  
+```
   
 아래와 같이 재귀를 통해 깊은 복사를 하면 우리가 원하는 문제를 해결할 수 있다.  
 ```java
