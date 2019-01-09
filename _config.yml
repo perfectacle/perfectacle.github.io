@@ -93,4 +93,3 @@ robotstxt:
 deploy:
   type: git
   repo: git@github.com:perfectacle/perfectacle.github.io.git
-  branch: gh-pages

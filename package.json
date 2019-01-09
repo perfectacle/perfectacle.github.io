@@ -8,7 +8,7 @@
   "scripts": {
     "start": "hexo serve --draft",
     "deploy": "npm run push && npm run build",
-    "push": "git add . && git commit -m \"update on `date +\"%Y/%m/%d %H:%M:%S\"`\" && git push origin master; exit 0",
+    "push": "git add . && git commit -m \"update on `date +\"%Y/%m/%d %H:%M:%S\"`\" && git push origin gh-pages; exit 0",
     "build": "hexo clean && hexo deploy; exit 0"
   },
   "dependencies": {
