@@ -15,8 +15,8 @@ ajax 위주의 예제를 한 번 정리해보았다.
 ## 비동기 코드를 동기식으로 작성하면?
 ```javascript
 const jsonURL = [
-  "https://blog.perfectacle.com/mock/test.json",
-  "https://blog.perfectacle.com/mock/test2.json"
+  "https://perfectacle.github.io/mock/test.json",
+  "https://perfectacle.github.io/mock/test2.json"
 ];
 
 const getDataAjax = url => {
@@ -67,8 +67,8 @@ getDataAjax(jsonURL[1]);
 ## 비동기 코드를 비동기식(콜백 함수)으로 작성하면? (ES5)
 ```javascript
 const jsonURL = [
-  "https://blog.perfectacle.com/mock/test.json",
-  "https://blog.perfectacle.com/mock/test2.json"
+  "https://perfectacle.github.io/mock/test.json",
+  "https://perfectacle.github.io/mock/test2.json"
 ];
 
 // 따라서 아래와 같이 콜백 함수를 이용하여야 한다...
@@ -153,8 +153,8 @@ getDataAjaxCallback(jsonURL[0], data => {
 ## 비동기식 코드의 순서를 아름답게 보장하려면...? (ES6)
 ```javascript
 const jsonURL = [
-  "https://blog.perfectacle.com/mock/test.json",
-  "https://blog.perfectacle.com/mock/test2.json"
+  "https://perfectacle.github.io/mock/test.json",
+  "https://perfectacle.github.io/mock/test2.json"
 ];
 
 // 위 코드를 보면 가독성이 매우매우매우 안 좋다.

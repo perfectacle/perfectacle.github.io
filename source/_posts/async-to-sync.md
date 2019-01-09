@@ -220,8 +220,8 @@ var d = function(url, cb) {
 이 함수는 에러 발생시 실행되며, 그 이후에 실행될 함수들의 실행을 모두 멈춰버린다.  
 ```javascript
 var arrUrl = [
-  'https://blog.perfectacle.com/mock/test.json',
-  'https://blog.perfectacle.com/mock/test2.json'
+  'https://perfectacle.github.io/mock/test.json',
+  'https://perfectacle.github.io/mock/test2.json'
 ];
 
 var arrAsync = [
