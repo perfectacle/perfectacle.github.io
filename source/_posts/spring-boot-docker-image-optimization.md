@@ -758,11 +758,15 @@ COPY ${buildDir}/app .
 ```
 
 어플리케이션 레이어
---------------
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 라이브러리 레이어
 
 위와 같이 라이브러리 레이어 위에 어플리케이션 레이어를 쌓고 있다.  
 이 상황에서 어플리케이션 레이어만 수정하면 아래 있는 라이브러리 레이어를 재활용 할 수 있다.  
 하지만 라이브러리 레이어를 바꾼다면 라이브러리 레이어를 쌓고 그 위에 다시 어플리케이션 레이어를 쌓아야한다.  
 따라서 어플리케이션 레이어를 재활용하지 못하는 것이다.  
-도커 이미지는 마치 스택 자료구조 안에 레이어들을 쌓아간다고 생각하면 좀 더 이해하기 쉬운 것 같다. 
+도커 이미지는 마치 스택 자료구조 안에 레이어들을 쌓아간다고 생각하면 좀 더 이해하기 쉬운 것 같다.
+
+## 참조 링크
+* [TOPICAL GUIDE Spring Boot Docker](https://spring.io/guides/topicals/spring-boot-docker)  
+* [Optimizing Docker Images for Spring Boot](https://toedter.com/2017/09/23/optimizing-docker-images-for-spring-boot/)
