@@ -20,6 +20,7 @@ plugins {
 
 apply plugin: 'io.spring.dependency-management'
 
+archivesBaseName = 'demo'
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -35,16 +36,6 @@ dependencies {
 }
 ```
 
-settings.gradle은 아래와 같다.
-```groovy
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-rootProject.name = 'demo'
-```
-
 ## 가장 간단한 Spring Boot Docker Image 만들기
 이 상태에서 gradle wrapper를 이용해 build를 수행해보자.
 ```bash
@@ -52,7 +43,7 @@ rootProject.name = 'demo'
 ```
 
 그렇다면 build/libs 디렉토리에 **demo-0.0.1-SNAPSHOT.jar**란 파일이 만들어진다.
-(settings.gradle의 rootProject.name 값과 build.gradle의 version 값에 의해 위와 같은 이름으로 생성된다.)
+(build.gradle의 archivesBaseName과 version 값에 의해 위와 같은 이름으로 생성된다.)
 
 이제 실행 가능한 jar 파일이 생성됐으니 Docker 이미지를 만들어서 해당 jar 파일을 실행하게 만들어보기 위해서 Dockerfile을 생성하자.
 ```dockerfile
@@ -221,21 +212,12 @@ ls BOOT-INF
 build.gradle에서 아래 내용을 추가해주자.  
 ```groovy
 task unpackJar(type: Copy) {
-    def jarLocation = "$buildDir/libs"
-    def jarFileName = project.name
+    def archiveFile = jar.getArchiveFile().get().getAsFile()
+    def unpackDir = archiveFile.getParent() + "/unpack"
 
-    // 버전의 유무에 따라서 jar 파일의 이름이 변경됨
-    if (project.version != "unspecified") {
-        jarFileName += "-$project.version"
-    }
-
-    def jarFile = file("$jarLocation/$jarFileName" + '.jar')
-    def outputDir = file("$jarLocation/unpack")
-
-    // 혹시 찌꺼기 파일이 존재할지 모르니 압축이 풀리는 폴더는 삭제
-    delete outputDir
-    from zipTree(jarFile)
-    into outputDir
+    delete unpackDir
+    from zipTree(archiveFile)
+    into unpackDir
 }
 
 build {
@@ -364,25 +346,18 @@ docker push perfectacle/spring-boot-demo:unpack-jar-launcher
 ```groovy
 task moveLib {
     doLast {
-        def unpackLocation = "$buildDir/libs/unpack"
-        ant.move(file: "${unpackLocation}/app/BOOT-INF/lib", toFile: "${unpackLocation}/lib")
+        def unpackDir = jar.getArchiveFile().get().getAsFile().getParent() + "/unpack"
+        ant.move(file: "${unpackDir}/app/BOOT-INF/lib", toFile: "${unpackDir}/lib")
     }
 }
 
 task unpackJar(type: Copy) {
-    def jarLocation = "$buildDir/libs"
-    def jarFileName = project.name
+    def archiveFile = jar.getArchiveFile().get().getAsFile()
+    def unpackDir = archiveFile.getParent() + "/unpack"
 
-    if (project.version != "unspecified") {
-        jarFileName += "-$project.version"
-    }
-
-    def jarFile = file("$jarLocation/$jarFileName" + '.jar')
-    def outputDir = file("$jarLocation/unpack/app")
-
-    delete outputDir
-    from zipTree(jarFile)
-    into outputDir
+    delete unpackDir
+    from zipTree(archiveFile)
+    into "$unpackDir/app"
 
     finalizedBy moveLib
 }
