@@ -212,11 +212,10 @@ ls BOOT-INF
 build.gradle에서 아래 내용을 추가해주자.  
 ```groovy
 task unpackJar(type: Copy) {
-    def archiveFile = jar.getArchiveFile().get().getAsFile()
-    def unpackDir = archiveFile.getParent() + "/unpack"
-
+    def unpackDir = "$buildDir/unpack"
+    
     delete unpackDir
-    from zipTree(archiveFile)
+    from zipTree(jar.getArchiveFile())
     into unpackDir
 }
 
@@ -231,10 +230,10 @@ FROM openjdk:11-jre-slim
 
 WORKDIR /root
 
-ARG buildDir=build/libs/unpack/BOOT-INF
+ARG buildDir=build/unpack
 
-COPY ${buildDir}/classes/ app
-COPY ${buildDir}/lib/ lib
+COPY ${buildDir}/BOOT-INF/classes/ app
+COPY ${buildDir}/BOOT-INF/lib/ lib
 
 CMD java -cp app:lib/* com.example.demo.DemoApplication
 ```
@@ -288,7 +287,7 @@ FROM openjdk:11-jre-slim
 
 WORKDIR /root
 
-ARG buildDir=build/libs/unpack
+ARG buildDir=build/unpack
 
 COPY ${buildDir}/BOOT-INF/classes BOOT-INF/classes
 COPY ${buildDir}/BOOT-INF/lib BOOT-INF/lib
@@ -346,17 +345,16 @@ docker push perfectacle/spring-boot-demo:unpack-jar-launcher
 ```groovy
 task moveLib {
     doLast {
-        def unpackDir = jar.getArchiveFile().get().getAsFile().getParent() + "/unpack"
+        def unpackDir = "$buildDir/unpack"
         ant.move(file: "${unpackDir}/app/BOOT-INF/lib", toFile: "${unpackDir}/lib")
     }
 }
 
 task unpackJar(type: Copy) {
-    def archiveFile = jar.getArchiveFile().get().getAsFile()
-    def unpackDir = archiveFile.getParent() + "/unpack"
+    def unpackDir = "$buildDir/unpack"
 
     delete unpackDir
-    from zipTree(archiveFile)
+    from zipTree(jar.getArchiveFile())
     into "$unpackDir/app"
 
     finalizedBy moveLib
@@ -373,7 +371,7 @@ FROM openjdk:11-jre-slim
 
 WORKDIR /root
 
-ARG buildDir=build/libs/unpack
+ARG buildDir=build/unpack
 
 COPY ${buildDir}/app .
 COPY ${buildDir}/lib BOOT-INF/lib
@@ -554,7 +552,7 @@ FROM openjdk:11-jre-slim
 
 WORKDIR /root
 
-ARG buildDir=build/libs/unpack
+ARG buildDir=build/unpack
 
 COPY ${buildDir}/lib BOOT-INF/lib
 COPY ${buildDir}/app .
