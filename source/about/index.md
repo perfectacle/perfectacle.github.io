@@ -4,14 +4,13 @@ date: 2016-11-10 18:06:26
 ---
 ![](exobud.jpg)  
 <span class="caption" style="margin-top: -50px;">
-    <a href="http://www.leisureq.co.kr">레저큐</a>
+    <a href="https://www.leisureq.com">레저큐</a>
     기술개발본부 엔지니어
 </span>
 
 * 네트워크, OS
-* Java8, Spring Boot, JPA  
+* Java, Spring Boot, JPA  
 * ES2015+, Typescript, Node.js  
-* TDD, Git, 클린 코드, 디자인 패턴  
 * 자전거, 재즈, 힙합, Lofi
 
 위 사항에 관심이 많습니다.  
