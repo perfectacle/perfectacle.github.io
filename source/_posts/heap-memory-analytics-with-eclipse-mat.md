@@ -1,19 +1,25 @@
 ---
 title: (Troubleshooting) 생애 첫 Heap 메모리 분석기 (feat. Eclipse MAT)
-tags: [Troubleshooting, JVM, Heap]
-category: [Note, Troubleshooting]
+tags:
+  - Troubleshooting
+  - JVM
+  - Heap
+category:
+  - Note
+  - Troubleshooting
+date: 2019-04-28 23:25:38
 ---
+
 ![](thumb.png)
 
 어느 날 서비스가 갑자기 다운되는 사례가 발생했다.  
-다행히 서버를 이중화시켜놓아서 장애가 발생하진 않았지만 그래도 왜 다운된 건지 원인 분석을 해야했다.    
-다음 JVM 플래그를 적용시켜놓은 것이 날 살렸다.  
+다행히 서버를 이중화시켜놓아서 장애가 발생하진 않았지만 그래도 왜 다운된 건지 원인 분석을 해야했다.   
+나의 실수로 인해 WAS 로그는 제대로 남겨져있지 않았고, CTO 님께서 힙 덤프 같은 거라도 떠져있나 보라고 하셔서 지푸라기라도 잪는 심정으로 기대를 했는데 희망을 저버리지 않았다. 
 ```bash
 -XX:+HeapDumpOnOutOfMemoryError \
 -XX:HeapDumpPath=./jvm.hprof
 ```
-나의 실수로 인해 로그는 제대로 남겨져있지 않았고, 지푸라기라도 잪는 심정으로 혹시 힙 덤프가 떠지지 않았을까 기대를 했는데 희망을 저버리지 않았다.  
-위 옵션으로 인해 OOME(Out of Memory Exception) 발생 시 힙 덤프를 뜨게 해놓았다.  
+위 옵션으로 인해 OOME(Out of Memory Exception) 발생 시 힙 덤프를 뜨게 해놓았는데 다행히 힙 덤프가 존재했다.  
 
 여기서 힙 덤프는 힙 메모리의 내용을 그대로 떠놓은 파일이다.  
 따라서 힙 메모리에 어떤 객체들로 가득 채워져있었는지 분석할 수 있게 되었다.  
@@ -29,7 +35,7 @@ category: [Note, Troubleshooting]
 ![Security & Privacy의 General 탭에서 빨간색 표시친 곳에서 Open Anyway를 누르자.](02.png)  
 ![그럼 MAT를 열 수 있게 된다.](03.png)  
 ![함정카드 발동... 아직도 열 수가 없다.](04.png)  
-![MAT를 Application 디렉토리로 옮긴 후에 열어보자.](05.png)  
+![MAT를 Applications 디렉토리로 옮긴 후에 열어보자.](05.png)  
 ![드디어 정상적으로 열렸다 ㅠㅠ... 이제 빨간색 표시친 Open a Heap Dump를 통해 로컬로 복사한 힙 덤프 파일을 열어보자.](06.png)  
 ![Heap Dump 파싱이 끝난 후 Leak Suspects Report를 체크 후 finish를 누르자.](07.png)  
 ![Leak Suspects Report를 보니 com.mysql.jdbc.JDBC42ResultSet 클래스의 인스턴스가 1.8GB나 존재했다.](08.png)  
@@ -47,13 +53,13 @@ category: [Note, Troubleshooting]
 어플리케이션에서 너무 많은 row를 로딩해서 생긴 문제라고 했다.  
 CTO 님께 말씀드려보니 CTO 님도 보시더니 아마도 저 문제가 맞을 거라고 하셨다.  
 그리고 우리가 저렇게 Row를 많이 불러올만한 쿼리를 쓰는 게 주문 내역 등등을 엑셀로 다운로드 받는 기능에서 날 거라고 말씀해주셨다.  
-따라서 해당 소스코드를 분석해봤는데 카운트 쿼리로 인해 이미 너무 많은 Row를 불러오는 걸 방지하고 있었다.  
+따라서 해당 소스코드를 분석해봤는데 카운트 쿼리를 통해 사전에 너무 많은 Row를 불러오는 걸 방지하고 있었다.  
 그럼 어디서 이렇게 많은 Row를 불러오는 쿼리를 사용하지...? 도무지 이해가 가지 않았다.  
 그래서 다른 시니어 개발자 분의 도움을 받아 MAT의 간단한 사용 방법을 익혔다.  
 
 ## 분석 및 해결
 ![Leak Suspects Report에서 Details를 클릭하자.](09.png)
-![우선 위 정보를 토대로 대략 120만 Row의 데이터를 불러왔다고 볼 수 있다.](10.png)  
+![그럼 위와 같은 정보를 발견할 수 있는데 위 정보를 토대로 대략 120만 Row의 데이터를 불러왔다고 볼 수 있다.](10.png)  
 ![최상위 Object를 클릭해서 List objects > with outgoing references를 클릭하자.](11.png)  
 incoming이면 해당 object를 참조하는 object를, outgoing이면 해당 object가 참조하고 있는 object를 포함해서 보여준다.  
 자세한 설명은 [Eclipse MAT — Incoming, Outgoing References](https://dzone.com/articles/eclipse-mat-incoming-outgoing-references)를 참고하자.  
@@ -68,5 +74,5 @@ incoming이면 해당 object를 참조하는 object를, outgoing이면 해당 ob
 결국 해당 쿼리문에 조건을 추가해서 배포함으로써 해당 이슈는 일단락 짓게 되었다.  
 어찌보면 별 거 아니고, 내가 로그를 제대로 남겼더라면 힙덤프까지 안 봤을지도 몰랐겠지만
 내가 로그를 남기지 않는 실수로 인해 힙 덤프를 분석해볼 수 있는 값진 기회가 주어졌다. ~~(절대로 노린 건 아니다.)~~  
-앞으로 이런 일이 있으면 안 되겠지만, 이런 일을 경험해보지 않고서 시니어 개발자로 다가가긴 힘든 것 같다.  
+앞으로 이런 일이 있으면 안 되겠지만, 이런 일을 경험해보지 않고서 더 좋은 개발자로 다가가긴 힘든 것 같다.  
 역시 소프트웨어는 개발도 중요하지만 그 후에 유지보수를 해나가는 경험 또한 매우 중요한 것 같다.
