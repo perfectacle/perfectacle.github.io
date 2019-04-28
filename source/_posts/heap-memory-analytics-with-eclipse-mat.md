@@ -28,7 +28,7 @@ date: 2019-04-28 23:25:38
 무조건 scp 등등의 명령어를 통해 로컬로 복사한 후에 열어보는 습관을 가지자.
 
 ## [Eclipse Memory Analyzer (MAT)](https://www.eclipse.org/mat/)
-[Eclipse Memory Analyzer 소개](https://spoqa.github.io/2012/02/06/eclipse-mat.html)와 [하나의 메모리 누수를 잡기까지](https://d2.naver.com/helloworld/1326256)에서 힙 덤프를 분석하는데 Eclipse MAT를 사용한다길래 나도 한 번 사용해보았다.  
+[Eclipse Memory Analyzer 소개](https://spoqa.github.io/2012/02/06/eclipse-mat.html)와 [하나의 메모리 누수를 잡기까지](https://d2.naver.com/helloworld/1326256)에서 힙 덤프를 분석하는데 Eclipse MAT를 사용했다길래 나도 한 번 사용해보았다.  
 [다운로드](https://www.eclipse.org/mat/downloads.php) 페이지에서 OS에 맞는 어플리케이션을 받으면 되는데 나는 MacOSX 버전을 다운받았다.  
 
 ![식별되지 않은 개발자가 만든 앱이라고 실행되지 않는다... 역시 보안에 빡센 애플](01.png)  
