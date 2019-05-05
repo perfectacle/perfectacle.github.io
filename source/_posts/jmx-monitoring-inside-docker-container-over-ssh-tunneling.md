@@ -80,3 +80,7 @@ ssh -N -L 9090:${application_server_ip}:9090 -i ~/.ssh/key.pem ec2-user@{bastion
 
 JMX remote port(9090)와 다른 포트를 매핑하는 바람에 몇 시간을 삽질했는지 모르겠다...
 **혹시 이거보다 더 간단하게 연결하는 방법이 있다면 댓글로 남겨주시면 정말 감사하겠습니다.**
+
+## 참조 링크
+* [VisualVM over ssh](https://stackoverflow.com/questions/1609961/visualvm-over-ssh)  
+* [Docker 안에 숨어 있는 Web application JMX profiling Tip](https://www.popit.kr/docker-jmx-profiling-tip/)
