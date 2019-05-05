@@ -7,7 +7,7 @@ date: 2019-05-05 08:36:13
 ![네가 알던 로컬호스트가 아냐! (로컬호스트처럼 보이지만 실제론 원격지에 있는 서버에 붙었음을 의미)](thumb.png)
 
 ## 들어가기에 앞서
-JMX를 모니터링 하려먼 [VisualVM](https://visualvm.github.io/)이나 JDK에 기본적으로 내장돼있는 [JConsole](http://openjdk.java.net/tools/svc/jconsole/)을 사용해야한다.
+JMX를 모니터링 하려면 [VisualVM](https://visualvm.github.io/)이나 JDK에 기본적으로 내장돼있는 [JConsole](http://openjdk.java.net/tools/svc/jconsole/)을 사용해야한다.
 
 ## 로컬에서 JMX 모니터링하기
 우선 로컬에 어플리케이션을 띄우고 JMX 모니터링하기란 참 쉽다.  
