@@ -193,12 +193,13 @@ generational count가 어느정도 있으려면~~(짬밥을 어느정도 먹었�
 ![나이를 먹지 않았음에도 Old Generation으로 옮겨지는 경우도 Premature Promotion이고,](premature-promotion-02.png)  
 ![새롭게 할당될 객체의 용량이 Eden Space의 용량보다 큰 경우에는](premature-promotion-03.png)  
 ![바로 Old Generation에 할당되게 되는데 이 경우에도 Premature Promotion이고,](premature-promotion-04.png)
-
-또한 -XX:TargetSurvivorRatio(기본값 50)에 의해서도 Premature Promotion하는 경우가 있다고 하는데 이 경우는 아직 잘 모르겠다....
+![원래 같으면 Eden Space의 내용이 From Survivor Space 영역의 바로 아래 공간에 할당되면 되는데, -XX:TargetSurvivorRatio(기본값 50)에 의해 할당되지 못하는 경우가 있다.](premature-promotion-04.png)  
+-XX:TargetSurvivorRatio는 Minor GC 이후의 From Survivor Space의 사용률(%)을 제한하는 옵션이다.  
+![적당한 나이가 되지 않은 어린 객체가 Old Generation으로 이동하는 것도 Premature Promotion이다.](premature-promotion-06.png)
 
 이 premature promotion의 경우에는 Old Generation에 놓기 때문에 Major GC 혹은 Full GC가 일어나기 전에는 회수해가지 않으며
 적당한 나이를 먹지 않고 와서 단명할 가능성이 높음에도 불구하고 쓸데없이 Old Generation을 차지하고 있기 때문에
-Major GC 혹은 Full GC의 발생 빈도를 늘려 어플리케이션 전반에 영향을 미치기 때문에 적절하게 Young Generation Space의 사이즈를 정하는 게 중요하다.
+Major GC 혹은 Full GC의 발생 빈도를 늘려 어플리케이션 전반에 영향을 미치기 때문에 적절하게 Young Generation과 관련된 사이즈를 정하는 게 중요하다.
 
 ## Old Generation
 객체가 적당한 나이를 먹거나 조기 승진을 통해 넘어온 객체들이 존재하는 영역이다.
@@ -287,6 +288,7 @@ Eden Space를 여러 버퍼로 나누어 각 어플리케이션 스레드에게 
 * [Understand the OutOfMemoryError Exception - Oracle Docs](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/memleaks002.html)  
 * [Sizing the Generations - Oracle Docs](https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/sizing.html)  
 * [Minor GC vs Major GC vs Full GC](https://plumbr.io/blog/garbage-collection/minor-gc-vs-major-gc-vs-full-gc)  
-* [Useful JVM Flags – Part 5 (Young Generation Garbage Collection)](https://blog.codecentric.de/en/2012/08/useful-jvm-flags-part-5-young-generation-garbage-collection/)  
+* [Useful JVM Flags – Part 5 (Young Generation Garbage Collection)](https://blog.codecentric.de/en/2012/08/useful-jvm-flags-part-5-young-generation-garbage-collection/)
+* ["-XX:TargetSurvivorRatio" - Second Tenuring Condition](http://www.herongyang.com/Java-GC/Serial-TargetSurvivorRatio-Second-Tenuring-Condition.html)  
 
 그 외 더 많은 거 같은데 기억이 잘 나지 않는다...
