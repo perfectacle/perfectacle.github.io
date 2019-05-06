@@ -250,12 +250,15 @@ Metadata에 대한 관리는 OS에서 함으로 믿고 맡겨도 된다고 생�
 우선 메모리가 부족하면 가비지 컬렉터는 힙메모리의 가비지 컬렉션을 수행한다.
 가비지 컬렉션을 수행했음에도 불구하고 새로운 객체를 더이상 할당할 수 없는 경우에 OOME가 발생하게 된다.
 이 때는 아주 급한 경우에는 일단 -Xmx와 -Xms로 메모리를 늘리고 보고,
+![](mat.png)  
 ```bash
 -XX:+HeapDumpOnOutOfMemoryError 
 -XX:HeapDumpPath=${PATH}/${FILE_NAME}.hprof
 ```
-![위 두가지 설정을 주고 실행해서 재발하면 힙덤프를 생성하거나 아니면 jmap 등등으로 살아있는 서버의 힙덤프를 떠서 어디서 메모리 릭이 발생했는지 Eclipse MAT 등등으로 분석하거나](mat.png)
+위 두가지 설정을 주고 실행해서 재발하면 힙덤프를 생성하거나 아니면
+jmap 등등으로 살아있는 서버의 힙덤프를 떠서 어디서 메모리 릭이 발생했는지 Eclipse MAT 등등으로 분석하거나
 
+![](visual-vm.png)  
 ```bash
 -Dcom.sun.management.jmxremote
 -Dcom.sun.management.jmxremote.port=${JMX_PORT}
@@ -264,7 +267,7 @@ Metadata에 대한 관리는 OS에서 함으로 믿고 맡겨도 된다고 생�
 -Dcom.sun.management.jmxremote.rmi.port=${RMI_PORT}
 -Djava.rmi.server.hostname=${HOST_NAME}
 ```
-![위 설정 등등을 줘서 VisualVM으로 서버에 실제로 떠있는 어플리케이션 등등을 모니터링하는 방법이 있다.](visual-vm.png)
+위 설정 등등을 줘서 VisualVM으로 서버에 실제로 떠있는 어플리케이션 등등을 모니터링하는 방법이 있다.
 
 ## 알아두면 좋을 상식
 * Hotspot VM의 GC는 Arena라는 메모리 영역에서 작동한다.
