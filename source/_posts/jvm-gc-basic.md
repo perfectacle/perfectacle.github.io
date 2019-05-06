@@ -193,9 +193,8 @@ generational count가 어느정도 있으려면~~(짬밥을 어느정도 먹었�
 ![나이를 먹지 않았음에도 Old Generation으로 옮겨지는 경우도 Premature Promotion이고,](premature-promotion-02.png)  
 ![새롭게 할당될 객체의 용량이 Eden Space의 용량보다 큰 경우에는](premature-promotion-03.png)  
 ![바로 Old Generation에 할당되게 되는데 이 경우에도 Premature Promotion이고,](premature-promotion-04.png)
-![정상적으로 GC가 이루어지면 From Survivor Space가 가득차서 위와 같이 생존된 객체를 To Survivor Space로 옮겨야하는데](premature-promotion-05.png)  
-![-XX:TargetSurvivorRatio(기본값 50)에 의해 To Survivor Space를 50% 밖에 쓰지 못하는 상황이 된다. (물론 이후에 To Survivor Space가 가득찰 때까지 해당 영역은 계속해서 사용할 수 있는데 From Survivor Space에서 To Survivor Space로 객체를 옮길 때만 -XX:TargetSurvivorRatio 값이 적용된다.)](premature-promotion-06.png)  
-![이럴 때 적당히 나이를 먹지 않은 객체들이 나이순으로 Old Generation으로 이동하게 되는 경우도 Premature Promotion에 해당한다.](premature-promotion-07.png)
+
+또한 -XX:TargetSurvivorRatio(기본값 50)에 의해서도 Premature Promotion하는 경우가 있다고 하는데 이 경우는 아직 잘 모르겠다....
 
 이 premature promotion의 경우에는 Old Generation에 놓기 때문에 Major GC 혹은 Full GC가 일어나기 전에는 회수해가지 않으며
 적당한 나이를 먹지 않고 와서 단명할 가능성이 높음에도 불구하고 쓸데없이 Old Generation을 차지하고 있기 때문에
