@@ -167,7 +167,8 @@ Survivor 영역은 동일한 사이즈의 두 개의 영역으로 구분되는�
 ![이 때 From Survivor Space에서 생존한 모든 객체들을 To Survivor Space의 연속된 공간에 먼저 옮기고, 그 후에 Eden Space에서 생존한 객체를 To Survivor Space의 연속된 공간에 옮긴다.](minor-gc-18.png)  
 To Survivor Space에 Eden Space에 있는 내용보다 From Survivor Space에 있는 내용을 먼저 복사하는 이유는
 generational count가 적은 객체(Eden Space에 거주중인 객체들)보다 generational count가 높은 객체(From Survivor Space에 거주중인 객체들)의
-수명이 더 길 가능성이 높기 때문이다. (Weak Generational 가설에 의해...)
+수명이 더 길 가능성이 높기 때문이다. (Weak Generational 가설에 의해...)  
+수명이 더 길 가능성이 높은 메모리를 먼저 배치하는 이유는 메모리의 단편화를 줄이기 위함이다.  
 ![생존한 모든 객체를 옮겼으므로 From Survivor Space와 Eden Space를 비운다.](minor-gc-19.png)
 ![기존 From Survivor Space의 역할을 To Survivor Space가 대신하게 됐으므로 둘의 이름을 바꾼다. (Stop the World의 끝)](minor-gc-20.png)
 ![GC가 끝났으므로 새로운 객체를 Eden Space에 할당한다.](minor-gc-21.png)
