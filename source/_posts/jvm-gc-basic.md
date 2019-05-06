@@ -187,7 +187,7 @@ generational count가 어느정도 있으려면~~(짬밥을 어느정도 먹었�
 (Old 영역으로 승진하는 객체의 갯수나 비율이 많아지면 자동으로 TenuringThreshold를 늘리는 원리인지 뭔지 잘 모르겠다...)    
 
 #### Premature Promotion
-적당한 나이(generational count)를 먹지 않았는데 어쩔 수 없이 Old Generation으로 이동하는 행위를 premature promotion(조기 승진)이라고 부른다.  
+적당한 나이(TenuringThreshold)를 먹지 않았는데 어쩔 수 없이 Old Generation으로 이동하는 행위를 premature promotion(조기 승진)이라고 부른다.  
 아래 나오는 그림에서 동그라미 안의 숫자는 객체의 나이(객체가 GC로부터 살아남은 횟수)를 의미한다.  
 ![주로 메모리 할당이 잦다보니 Survivor Space에 적당한 공간이 없어서](premature-promotion-01.png)  
 ![나이를 먹지 않았음에도 Old Generation으로 옮겨지는 경우도 Premature Promotion이고,](premature-promotion-02.png)  
