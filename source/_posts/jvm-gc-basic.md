@@ -278,6 +278,9 @@ jmap 등등으로 살아있는 서버의 힙덤프를 떠서 어디서 메모리
 Eden Space를 여러 버퍼로 나누어 각 어플리케이션 스레드에게 할당함으로써 자기 자신이 사용해야 할 버퍼를 바로 찾게되고, 리소스를 공유해서 생기는 문제를 없애버렸다.  
 만약 본인에게 할당된 TLAB가 부족할 경우에는 크기를 동적으로 조정한다.
 
+## 마치며
+해당 글을 읽고 [Garbage Collection Advanced](/2019/05/11/jvm-gc-advanced/) 편을 읽어보시면 GC에 대해 더 깊게 이해하실 수 있을 겁니다 :)
+
 ## 참조 링크
 * [Naver D2 - Java Garbage Collection](https://d2.naver.com/helloworld/1329)  
 * [Naver D2 - JVM Internal](https://d2.naver.com/helloworld/1230)  

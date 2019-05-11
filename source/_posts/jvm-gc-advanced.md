@@ -16,9 +16,10 @@ date: 2019-05-11 16:05:47
 ![](optimizing-java.jpeg)
 이 글은 이일웅 님께서 번역하신 [자바 최적화](https://book.naver.com/bookdb/book_detail.nhn?bid=14796595)란 책을 읽던 도중 공부한 내용을 정리한 글입니다.  
 절대 해당 책의 홍보는 아니며 좋은 책을 써준 사람과 번역해주신 분께 진심으로 감사하는 마음에 썼습니다.  
+이 글을 읽어보시기 전에 [Garbage Collection Basic](/2019/05/07/jvm-gc-basic/) 편을 읽어보시면 더 도움이 될 것입니다 :) 
 
 ## Mark and Sweep Algorithm
-[Basic](/2019/05/07/jvm-gc-basic/)편에서는 간단하게 Young/Old Generation과 Mark and Sweep 알고리듬에 대해서 간단하게 알아보았다.  
+Basic 편에서는 간단하게 Young/Old Generation과 Mark and Sweep 알고리듬에 대해서 간단하게 알아보았다.  
 해당 알고리듬을 사용하는 GC를 **scavenge garbage collector**라고도 부른다.
 Mark and Sweep Algorith의 단점은 GC를 수행하는 동안 Stop the World(이하 STW)가 발생한다는 것이다. 
 ![출처: https://www.youtube.com/watch?v=_cNXjmuhCCc](stop-the-world.png) 
