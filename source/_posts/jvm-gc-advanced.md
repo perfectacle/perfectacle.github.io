@@ -315,7 +315,8 @@ G1 GC는 이렇게 Garbage의 수집을 우선(First)해서 계속해서 여유 
 혹시나 사용하고 싶다면 `-XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC` 옵션을 주자.
 
 ## 마치며
-모든
+은총알은 없는 것 같습니다.  
+모든 GC에는 각자 장단점이 있으니 충분하고 검증된 테스트를 통해 본인의 상황에 맞는 GC를 고르는 역량을 길러야합니다. (이러고 작성자는 무조건 G1 GC를 디폴트로 쓰고 있습니다 ㅠㅠ)  
 또한 작성자의 역량 부족으로 인해 [Z GC](https://wiki.openjdk.java.net/display/zgc/Main)에 대해서는 다루지 못했습니다.  
 또한 Hotspot VM 계열의 GC만 다루었습니다. (제가 OpenJDK만 사용하고 있고, 다 다루기에는 이해하기도 힘들기도 하고 많기도 해서 ㅠㅠ...)
 혹시나 다른 VM 계열의 GC(셰난도아(Shenandoah), C4, IBM J9)가 궁금하신 분은 이일웅 님께서 번역하신 [자바 최적화](https://book.naver.com/bookdb/book_detail.nhn?bid=14796595)란 책을 참고하시면 좋을 것 같습니다.    
