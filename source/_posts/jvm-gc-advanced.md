@@ -171,6 +171,8 @@ Concurrent Sweep 단계에서 Sweeper 쓰레드는 다음의 일을 한다.
 
 ### G1 GC(Garbage First GC)
 G1 GC는 자바 6에 실험적으로 등장하여 자바 8u40 이후부터 쓸만큼의 성능 및 안정성을 발휘하기 시작했고, **자바 9부터 기본 GC**로 채택됐다. (자바 12가 나온 현재도 기본 GC이다.)
+G1 GC는 처음부터 CMS를 대체할 목적으로 설계되었는데 CMS GC를 사용중인데 아무런 문제가 없는데 성급하게 바꾸는 행위는 하지 않는 게 좋다.  
+굳이 바꾸지 않아도 바꾸는 건 안정성을 떨어뜨리는 행위이며 조금이라도 처리율을 높이고 싶어서 올리고 싶다면 충분한 테스트를 거친 이후에 하자.
 
 ![G1 GC는 Young(Eden/Survivor) Generation 및 Old Generation이 존재하는데 각 Generation이 연속된 메모리 공간일 필요가 없다는 게 큰 차이점이다. (물론 힙 메모리 자체로 봤을 때는 각 Region은 연속된 메모리 공간에 할당된다.)](g1-gc-01.png)  
 즉, Survivor 영역도 기존에는 2개였는데 G1 GC에서는 그러한 개념도 사라졌다.    
@@ -313,6 +315,7 @@ G1 GC는 이렇게 Garbage의 수집을 우선(First)해서 계속해서 여유 
 혹시나 사용하고 싶다면 `-XX:+UnlockExperimentalVMOptions -XX:+UseEpsilonGC` 옵션을 주자.
 
 ## 마치며
+모든
 또한 작성자의 역량 부족으로 인해 [Z GC](https://wiki.openjdk.java.net/display/zgc/Main)에 대해서는 다루지 못했습니다.  
 또한 Hotspot VM 계열의 GC만 다루었습니다. (제가 OpenJDK만 사용하고 있고, 다 다루기에는 이해하기도 힘들기도 하고 많기도 해서 ㅠㅠ...)
 혹시나 다른 VM 계열의 GC(셰난도아(Shenandoah), C4, IBM J9)가 궁금하신 분은 이일웅 님께서 번역하신 [자바 최적화](https://book.naver.com/bookdb/book_detail.nhn?bid=14796595)란 책을 참고하시면 좋을 것 같습니다.    
