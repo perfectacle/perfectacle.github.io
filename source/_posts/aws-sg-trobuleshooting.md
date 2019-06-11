@@ -3,7 +3,7 @@ title: (Troubleshooting) 내 로컬에서는 잘 되는데...? (내로잘)
 tags:
   - Troubleshooting
   - AWS
-  - SG
+  - Network
 category:
   - Note
   - Troubleshooting
