@@ -3,11 +3,6 @@ title: 양권성이란...?
 date: 2016-11-10 18:06:26
 ---
 ![](exobud.jpg)  
-<span class="caption" style="margin-top: -50px;">
-    <a href="https://www.leisureq.com">레저큐</a>
-    기술개발본부 엔지니어
-</span>
-
 * 네트워크, OS
 * Java, Spring Boot, JPA  
 * ES2015+, Typescript, Node.js  
