@@ -5,7 +5,7 @@
 # Site
 title: 오늘도 끄적끄적
 subtitle:
-description:
+description: 느리더라도 꾸준하게
 author: 양권성
 language: ko
 
@@ -62,7 +62,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: hueman
+theme: next
 plugins:
   google_analytics: UA-87795455-1
 
