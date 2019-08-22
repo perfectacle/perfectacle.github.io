@@ -20,7 +20,7 @@
       <meta itemprop="name" content="{{ title }}">
     </span>
 
-    {% include '../_third-party/adsense/google-adsense-post-top.swig' %}
+    {% include '../_third-party/adsense/google-adsense-post.swig' %}
 
     {%- if post.header !== false %}
       <header class="post-header">
@@ -270,6 +270,8 @@
             {%- endfor %}
           </div>
         {%- endif %}
+
+        {% include '../_third-party/adsense/google-adsense-post.swig' %}
 
         {{ partial('../_partials/post/post-footer.swig', {}, {cache: theme.cache.enable}) }}
 
