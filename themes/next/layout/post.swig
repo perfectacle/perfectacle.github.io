@@ -1,5 +1,6 @@
 {% extends '_layout.swig' %}
 {% import '_macro/sidebar.swig' as sidebar_template %}
+{% import '_third-party/adsense/post_top.swig' as sidebar_template %}
 
 {% block title %}{{ page.title }} | {{ title }}{% endblock %}
 

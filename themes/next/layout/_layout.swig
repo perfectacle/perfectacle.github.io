@@ -22,7 +22,6 @@
   <meta name="generator" content="Hexo {{ hexo_env('version') }}">
   {{ partial('_third-party/analytics/index.swig', {}, {cache: theme.cache.enable}) }}
   {{ partial('_scripts/noscript.swig', {}, {cache: theme.cache.enable}) }}
-  {% include '_third-party/google_adsense.swig' %}
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="{{ page.lang || page.language || config.language }}">
