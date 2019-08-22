@@ -1,4 +1,5 @@
 {{ open_graph() }}
+<meta property="og:image" content="/images/avatar.png" />
 
 {%- if theme.rss === '' and config.feed and config.feed.path %}
   {%- set theme.rss = config.feed.path %}

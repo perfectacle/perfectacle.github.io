@@ -16,7 +16,7 @@
 <html lang="{{ config.language }}">
 <head>
   {{ partial('_partials/head/head.swig', {}, {cache: theme.cache.enable}) }}
-  {% include '_partials/head/head-unique.swig' %}
+  {{ partial('_partials/head/head-unique.swig', {is_index: true}) }}
   {{- next_inject('head') }}
   <title>{% block title %}{% endblock %}</title>
   <meta name="generator" content="Hexo {{ hexo_env('version') }}">

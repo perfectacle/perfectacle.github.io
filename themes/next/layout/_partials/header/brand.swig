@@ -17,9 +17,9 @@
     </div>
     {%- if subtitle %}
       {%- if theme.seo %}
-        <h1 class="site-subtitle" itemprop="description">{{ subtitle }}</h1>
+        <h1 class="site-subtitle" itemprop="description">{{ description }}</h1>
       {% else %}
-        <p class="site-subtitle">{{ subtitle }}</p>
+        <p class="site-subtitle">{{ description }}</p>
       {%- endif %}
     {%- endif %}
     {%- if theme.custom_logo and (theme.scheme === 'Gemini' or theme.scheme === 'Pisces') %}
