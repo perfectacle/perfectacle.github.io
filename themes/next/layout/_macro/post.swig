@@ -20,7 +20,7 @@
       <meta itemprop="name" content="{{ title }}">
     </span>
 
-    {% include '../_third-party/adsense/post_top.swig' %}
+    {% include '../_third-party/adsense/google-adsense-post-top.swig' %}
 
     {%- if post.header !== false %}
       <header class="post-header">
