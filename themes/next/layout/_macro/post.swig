@@ -20,6 +20,8 @@
       <meta itemprop="name" content="{{ title }}">
     </span>
 
+    {% include '../_third-party/adsense/post_top.swig' %}
+
     {%- if post.header !== false %}
       <header class="post-header">
         <{%- if theme.seo %}h2{% else %}h1{%- endif %} class="post-title{%- if post.direction &&post.direction.toLowerCase() === 'rtl' %} rtl{%- endif %}" itemprop="name headline">{#
