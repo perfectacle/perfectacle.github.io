@@ -234,8 +234,8 @@ NexT.utils = {
 
     function getDimension(element) {
       return {
-        width : element.width(),
-        height: element.height()
+        width : 0,
+        height: 0
       };
     }
 
