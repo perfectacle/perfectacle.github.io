@@ -26,7 +26,7 @@ Static Page로 만들어진 블로그들은 테마가 굉장히 중요하다.
 따라서 애드센스가 통과된 적이 있고, 사람들이 많이 사용하는 테마를 최대한 커스터마이징하지 않으려고 하다보니 [NexT](https://github.com/theme-next/hexo-theme-next)란 테마를 발견하게 되었다.
 
 우선 카테고리, 메뉴, 태그, 검색 등등의 기능은 이전 Hueman 테마와 동일하다.  
-하지만 디자인이 깔끔하고 테마 안에서도 [Muse](https://muse.theme-next.org), [Mist](https://mist.theme-next.org), [Pisces](https://pisces.theme-next.org), [Gemini](https://theme-next.org)와 같은 테마들이 존재한다. (나는 기본 테마인 Muse를 택했다.)  
+하지만 디자인이 깔끔하고 테마 안에서도 [Muse](https://muse.theme-next.org), [Mist](https://mist.theme-next.org), [Pisces](https://pisces.theme-next.org), [Gemini](https://theme-next.org)와 같은 테마들이 존재한다. (나는 Pisces 테마를 택했다.)  
 또한 사이드바에 목차가 나오는 것도 좋고, 예전에는 블로그 홈에 썸네일이 없으면 좀 보기가 안 좋았는데 이 테마는 굳이 썸네일이 없어도 돼서 썸네일을 고르는데 들었던 시간을 단축시킬 수도 있다.  
 [문서](https://theme-next.org/docs/)도 굉장히 잘 되있고, 한국어도 잘 지원한다.  
 또한 북마크 기능(다음에 해당 페이지 재방문시 스크롤 위치 기억), [PJAX](https://github.com/MoOx/pjax) (AJAX와 pushState를 이용하여 페이지를 처음부터 로딩하는 게 아니라 필요한 컨텐츠만 로딩), 각종 Analytic, 댓글 등등의 플러그인의 사용이 가능하다.
