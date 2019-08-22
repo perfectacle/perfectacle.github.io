@@ -8,7 +8,7 @@ category:
 date: 2018-05-30 03:34:00
 ---
 
-![](thumb.png)
+![](/images/network-hardware/thumb.png)
 
 ## Layer 1(Physical Layer)
 랜선, 랜카드는 너무 익숙하고 짜치니 일단 생략.  

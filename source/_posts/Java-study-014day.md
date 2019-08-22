@@ -4,7 +4,7 @@ category: [Note, Java]
 tag: [Java, 자바의 정석, 오류, 에러, 예외, 내장 클래스]
 date: 2017-08-04 15:17:49
 ---
-![](thumb.png)  
+![](/images/Java-study-014day/thumb.png)  
 
 ## 프로그램 오류
 1. 컴파일 에러 - 컴파일 시에 발생하는 에러(오타, 타입 불일치 등등)  

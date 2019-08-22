@@ -4,7 +4,7 @@ date: 2017-01-23 17:57:03
 category: [기타, 등등]
 tag: [IT, Computer, 용량, 상식]
 ---
-![](thumb.png)
+![](/images/Computer-capacity-fact/thumb.png)
 
 이제 사람들이 IT에 많은 관심이 생겨서  
 1TB 짜리 저장장치를 사도 온전히 1TiB가 아님을 알 수 있다.  

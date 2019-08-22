@@ -5,7 +5,7 @@ category: [Front-end]
 tags: [Typescript, TSLint, Mocha, Chai, ts-node, NYC]
 ---
 
-![](thumb.png)  
+![](/images/ts-node-mocha-chai/thumb.png)  
 
 이 글은 [rollup.js를 통해 모듈 번들링하기](/2017/12/10/bundle-with-rollup), [travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기](/2017/12/10/travis-ci-coveralls)을 읽기 전에 읽어야할 포스트이며    
 여러 주제를 다루다보니 깊게 다루지는 않고 각각이 무엇을 하는 것인지만 간단하게 설명과 예제를 곁들여 진행하고 있습니다.  
@@ -33,17 +33,17 @@ b('1').call(null, 1, 2, 3); // Uncaught TypeError: b(...).call is not a function
 
 하지만 정적 타입인 타입스크립트에서는 위의 코드를 아래와 같이 런타임 전인 컴파일 에러로 체크해주기 때문에  
 아예 실행 조차 되지 않는 다는 것을 알려주기 때문에 좀 더 안전하게 코드를 작성할 수 있다.  
-![](ts00.png)
+![](/images/ts-node-mocha-chai/ts00.png)
 
 ### Why Typescript?
 기존에 자바스크립트와 같이 동적 타입이 가지는 문제점을 위에서 지적하긴 했지만 그래도 왜 써야하는지 납득이 잘 가지 않는 경우를 대비해 간단하게 나마 비교를 해보았다.
-![우선 함수를 사용하려고 할 때 해당 함수의 매개변수 타입과 리턴 타입을 알지 못한다.](js01.png)  
+![우선 함수를 사용하려고 할 때 해당 함수의 매개변수 타입과 리턴 타입을 알지 못한다.](/images/ts-node-mocha-chai/js01.png)  
 이는 위에서 설명한 바와 같이 직접 함수 선언부를 찾아가야한다는 단점이 있다.  
 
-![갓텔리제이 마저 포기한 자바스크립트의 타입 추론](js02.png)  
+![갓텔리제이 마저 포기한 자바스크립트의 타입 추론](/images/ts-node-mocha-chai/js02.png)  
 타입 추론은 맥 OS 기준 커맨드+P 키를 누르면 볼 수 있다.
 
-![. 찍은 이후에 어떤 프로퍼티를 사용해야할지 동공지진이 일어날 것이다.](js03.png)  
+![. 찍은 이후에 어떤 프로퍼티를 사용해야할지 동공지진이 일어날 것이다.](/images/ts-node-mocha-chai/js03.png)  
 이 메소드가 반환하는 게 무슨 타입인지 모르기 때문에 또 직접 함수 선언부를 봐야한다.  
 
 물론 아예 방법이 없는 것은 아니고 [jsdoc](http://usejsdoc.org/)을 이용하면 된다.  
@@ -58,16 +58,16 @@ const b = val => [val];
 
 위처럼 return 타입에 number를 명시해놓고 배열을 리턴하게 짠 코드를 막지는 못한다.  
 
-![이제 함수를 쓰려고 할 때 리턴 타입과 매개변수 타입을 알 수 있다.](jsdoc01.png)  
+![이제 함수를 쓰려고 할 때 리턴 타입과 매개변수 타입을 알 수 있다.](/images/ts-node-mocha-chai/jsdoc01.png)  
 
-![매개변수에 뭘 넣어야하는지 잘 알려주는 갓텔리제이](jsdoc02.png)  
+![매개변수에 뭘 넣어야하는지 잘 알려주는 갓텔리제이](/images/ts-node-mocha-chai/jsdoc02.png)  
 
-![. 찍었을 때 이제 숫자에서만 사용 가능한 속성들이 자동완성으로 뜬다.](jsdoc03.png)  
+![. 찍었을 때 이제 숫자에서만 사용 가능한 속성들이 자동완성으로 뜬다.](/images/ts-node-mocha-chai/jsdoc03.png)  
 
-![인텔리제이로 본 함수의 doc](jsdoc04.png)  
+![인텔리제이로 본 함수의 doc](/images/ts-node-mocha-chai/jsdoc04.png)  
 맥 OS 기준 컨트롤+J 키를 누르면 doc을 볼 수 있다.  
 
-![하지만 사용자의 마이웨이는 막지 못한다.](jsdoc05.png)  
+![하지만 사용자의 마이웨이는 막지 못한다.](/images/ts-node-mocha-chai/jsdoc05.png)  
 위 사진이 전적으로 왜 타입스크립트를 써야하는지 설명하고 있다.  
 내가 아무리 함수마다 일일이 jsdoc 다느라 뻘짓을 했어도 사용자 측에서 다 무시하고 마이웨이로 코딩하면 런타임 에러로 뻗는다.  
 아예 저런 코드는 실행 자체를 하게 하면 안 되는데 나 조차도 저렇게 코딩을 할지도 모르는 상황이고,  
@@ -76,13 +76,13 @@ const b = val => [val];
 
 그럼 타입스크립트는 어떤지 비교해보자.
 
-![jsdoc 없이도 타입 추론을 잘 한다.](ts01.png)  
+![jsdoc 없이도 타입 추론을 잘 한다.](/images/ts-node-mocha-chai/ts01.png)  
 
-![어떤 매개변수를 넣어줘야할지 아주 친절하다.](ts02.png)  
+![어떤 매개변수를 넣어줘야할지 아주 친절하다.](/images/ts-node-mocha-chai/ts02.png)  
 
-![. 을 찍고 나서도 어디로 가야할지 힌트 제공이 된다.](ts03.png)  
+![. 을 찍고 나서도 어디로 가야할지 힌트 제공이 된다.](/images/ts-node-mocha-chai/ts03.png)  
 
-![마이웨이 코딩이 불가능해진다.](ts04.png)  
+![마이웨이 코딩이 불가능해진다.](/images/ts-node-mocha-chai/ts04.png)  
 어쨋든 ts를 다이렉트로 실행하지 못하기 때문에 js 파일로 컴파일 해야하는데 저런 코드는 컴파일 오류로 아예 js 파일로 컴파일 자체가 되질 않는다.  
 따라서 아예 실행 조차 불가능한 코드가 되어버린다.  
 
@@ -97,7 +97,7 @@ npm i -S typescript
 ```
 위와 package.json을 만들고 타입스크립트를 설정하면 인텔리제이가 알아서 타입스크립트 신택스를 지원해준다.  
 
-![혹시 오류가 난다면 위와 같이 인텔리제이에서 세팅을 해주면 된다.](ts05.png)
+![혹시 오류가 난다면 위와 같이 인텔리제이에서 세팅을 해주면 된다.](/images/ts-node-mocha-chai/ts05.png)
 
 ts 컴파일러도 [자세한 설정](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)이 가능한데 글의 범주를 넘어서므로 tsconfig.json을 프로젝트 루트 디렉토리에 아래와 같이 만들었다.  
 ```json
@@ -155,9 +155,9 @@ tslint도 자세한 설정이 가능하고, 아래는 간단한 설정을 만들
 }
 ```
 
-![인텔리제이에서는 위와 같이 설정해줘야한다.](tslint01.png)  
+![인텔리제이에서는 위와 같이 설정해줘야한다.](/images/ts-node-mocha-chai/tslint01.png)  
 
-![tslint를 적용하니 들여쓰기를 2칸 스페이스로 지정했으니 탭으로 들여쓰기 한 코드는 빨간 줄이 간다.](tslint02.png)
+![tslint를 적용하니 들여쓰기를 2칸 스페이스로 지정했으니 탭으로 들여쓰기 한 코드는 빨간 줄이 간다.](/images/ts-node-mocha-chai/tslint02.png)
 
 ## Test Code
 [mocha-chai 브랜치](https://github.com/perfectacle/front-test-setting/tree/mocha-chai)에 예제 파일이 올라가있습니다.
@@ -232,12 +232,12 @@ describe('util', () => {
 그럼 막 빨간줄이 쫙쫙 갈 것이다.  
 여기서 갓텔리제이의 진가를 발휘할 시간이다.  
 
-![removedNotDigits로 커서를 이동하면 뭔가 넣을 게 있는 거 처럼 힌트를 준다.](mocha-chai01.png)  
+![removedNotDigits로 커서를 이동하면 뭔가 넣을 게 있는 거 처럼 힌트를 준다.](/images/ts-node-mocha-chai/mocha-chai01.png)  
 
-![Alt+Enter 키를 누르고 Add import statement를 클릭해주자.](mocha-chai02.png)  
+![Alt+Enter 키를 누르고 Add import statement를 클릭해주자.](/images/ts-node-mocha-chai/mocha-chai02.png)  
 그럼 util.ts의 removedNotDigits 함수가 제대로 임포트 된다.  
 
-![expect 에서도 Alt+Enter 키를 누르고 Import 'expect' from "chai"를 클릭해주자.](mocha-chai03.png)  
+![expect 에서도 Alt+Enter 키를 누르고 Import 'expect' from "chai"를 클릭해주자.](/images/ts-node-mocha-chai/mocha-chai03.png)  
 
 그리고 test 디렉토리 안에 모카 설정 파일인 mocha.opts 파일을 만들어서 아래와 같이 테스트 코드의 디렉토리를 설정해주자.  
 ```bash
@@ -282,8 +282,8 @@ npm i -S ts-node
 그리고 mocha.opts 파일에서 아래 한 줄을 추가해줘야한다.  
 `--require ts-node/register`  
 
-![그리고 다시 npm test를 때리면 테스트가 성공적으로 마친 걸 볼 수 있다.](tsnode01.png)  
-![IntelliJ와 같은 IDE를 쓰면 좌측 재생 모양 버튼을 클릭해서 원하는 테스트만 쪼개서 실행하기가 간편하다.](tsnode02.png)  
+![그리고 다시 npm test를 때리면 테스트가 성공적으로 마친 걸 볼 수 있다.](/images/ts-node-mocha-chai/tsnode01.png)  
+![IntelliJ와 같은 IDE를 쓰면 좌측 재생 모양 버튼을 클릭해서 원하는 테스트만 쪼개서 실행하기가 간편하다.](/images/ts-node-mocha-chai/tsnode02.png)  
 
 ## Test Coverage
 [nyc 브랜치](https://github.com/perfectacle/front-test-setting/tree/nyc)에 예제 파일이 올라가있습니다.
@@ -349,11 +349,11 @@ touch .nycrc
 }
 ```
 
-![npm test를 때리면 text-summary 리포터의 결과로 테스트 커버리지를 볼 수 있다.](nyc01.png)  
+![npm test를 때리면 text-summary 리포터의 결과로 테스트 커버리지를 볼 수 있다.](/images/ts-node-mocha-chai/nyc01.png)  
 
-![html 리포터의 결과로 coverage 폴더 안에 html과 관련된 파일들이 생겼다.](nyc02.png)  
+![html 리포터의 결과로 coverage 폴더 안에 html과 관련된 파일들이 생겼다.](/images/ts-node-mocha-chai/nyc02.png)  
 
-![html 파일을 열어보면 보기 좋게 테스트 커버리지가 나온다.](nyc03.png)  
+![html 파일을 열어보면 보기 좋게 테스트 커버리지가 나온다.](/images/ts-node-mocha-chai/nyc03.png)  
 
 ## 마치며...
 저도 수박 겉핥기로 예제를 따라하며 정리해본 내용이고, 정리해야할 내용이 방대해서 좀 깊이없이 다뤄서 이 부분은 직접 찾아보셔야할 겁니다.  

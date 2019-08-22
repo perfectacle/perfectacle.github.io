@@ -4,7 +4,7 @@ category: [Note, Spring Boot]
 tag: [Java, Spring, Spring Boot, Hibernate, MySQL, Entity Lifecycle]
 date: 2017-08-03 09:17:54
 ---
-![](thumb.png)  
+![](/images/Spring-boot-study-002day/thumb.png)  
 
 Hibernate를 써보자! (feat. MySQL)
 

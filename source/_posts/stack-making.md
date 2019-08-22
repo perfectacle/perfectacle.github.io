@@ -4,7 +4,7 @@ category: [Middle-end, 자료구조]
 tag: [자료구조, Stack]
 date: 2017-08-05 18:44:56
 ---
-![](thumb.png)
+![](/images/stack-making/thumb.png)
 List는 데이터를 순차적으로 저장하므로 선형 구조(한 줄로 계속 되며, 데이터가 끊어지지 않음)이다.  
   
 ## 스택이란...?

@@ -4,7 +4,7 @@ date: 2017-01-21 09:09:50
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, ajax, promise]
 ---
-![](thumb.png)
+![](/images/ES6-Promise-with-ajax/thumb.png)
 
 # 들어가기에 앞서
 집중력을 위해 짧은 글을 지향하여 Promise 문법을 설명하지는 않았다.  

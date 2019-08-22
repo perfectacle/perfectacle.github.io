@@ -4,7 +4,7 @@ date: 2017-09-05 09:02:25
 tags: [Java, DI, Spring]
 category: [Back-end, Spring]
 ---
-![](thumb.png)
+![](/images/spring-di-v3/thumb.png)
 
 Car 클래스를 수정해보자.  
 ```java

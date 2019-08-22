@@ -4,7 +4,7 @@ tags: [AWS, Security Group]
 category: [Middle-end, DevOps]
 date: 2018-08-30 03:41:08
 ---
-![](thumb.png)
+![](/images/aws-security-group-reference-another-security-group/thumb.png)
 
 ## 상황
 결제 서비스는 아래와 같은 접근 경로를 허용해야한다.  
@@ -113,9 +113,9 @@ ELB와 EC2 사이의 통신은 private network를 통해 이뤄지므로 외부�
 따라서 EC2 인스턴스와 ELB 사이의 통신은 HTTPS일 필요가 없으므로 EC2에는 TLS(SSL) 인증서를 붙일 필요도 없고, ELB의 http 포트(80번)만 열어주면 되고,
 ELB의 IP를 EC2 인스턴스의 시큐리티 그룹으로 추가해주면 된다.  
 
-![하지만 ELB 어디를 보더라도 IP 주소는 나와있지 않고 DNS만 나와있는 걸 볼 수 있다.](elb.png)  
+![하지만 ELB 어디를 보더라도 IP 주소는 나와있지 않고 DNS만 나와있는 걸 볼 수 있다.](/images/aws-security-group-reference-another-security-group/elb.png)  
 
-![nslookup을 때려보면 ELB의 IP 주소가 두 개인 걸 알 수 있다.](elb-ip.png)  
+![nslookup을 때려보면 ELB의 IP 주소가 두 개인 걸 알 수 있다.](/images/aws-security-group-reference-another-security-group/elb-ip.png)  
 AWS에서는 ELB가 죽으면 서비스가 죽는 걸(SPOF, Single Point of Failure) 방지하고자 ELB까지 이중화했다.  
 AWS의 이런 세심한 배려 덕분에 우리는 EC2의 Security Group을 다음과 같이 구성하면 된다.  
 [Network Load Balancer](https://blog.wisen.co.kr/?p=1926)의 경우에는 Elastic IP(AWS에서 제공하는 고정 IP, 이하 EIP)를 설정하고 그것만 등록하면 된다.  

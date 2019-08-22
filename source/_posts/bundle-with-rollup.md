@@ -4,7 +4,7 @@ date: 2017-12-10 17:32:52
 category: [Front-end]
 tags: [Rollup, CommonJS, ESModule, UMD]
 ---
-![](thumb.png)
+![](/images/bundle-with-rollup/thumb.png)
 
 이 글은 [Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기](/2017/12/10/ts-node-mocha-chai)에서 이어지는 내용이며,  
 이 글을 본 이후에 [travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기](/2017/12/10/travis-ci-coveralls)를 보는 걸 추천드립니다.   
@@ -135,14 +135,14 @@ declare module 'utils' {
 ```
 
 만약 index.d.ts를 만들어두지 않는다면 아래와 같은 현상이 발생한다.  
-![모듈에 대한 타입 정의를 찾을 수 없다.](d-ts-01.png)
+![모듈에 대한 타입 정의를 찾을 수 없다.](/images/bundle-with-rollup/d-ts-01.png)
 
-![모듈을 로드하고 . 찍었을 때 제대로 자동완성이 되지 않는다.](d-ts-02.png)  
+![모듈을 로드하고 . 찍었을 때 제대로 자동완성이 되지 않는다.](/images/bundle-with-rollup/d-ts-02.png)  
 
 index.d.ts를 만들어두면 위 현상이 발생하지 않는다.
-![모듈에 대한 타입 정의를 잘 찾을 수 있다.](d-ts-03.png)  
+![모듈에 대한 타입 정의를 잘 찾을 수 있다.](/images/bundle-with-rollup/d-ts-03.png)  
 
-![. 찍어도 자동완성이 잘 된다.](d-ts-04.png)
+![. 찍어도 자동완성이 잘 된다.](/images/bundle-with-rollup/d-ts-04.png)
 
 하지만 index.d.ts를 추가하고 테스트해보면 `TypeError: Unable to require .d.ts file.` 오류가 발생하니 .nycrc를 아래와 같이 수정해줘야한다.  
 ```json

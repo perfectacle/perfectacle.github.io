@@ -4,7 +4,7 @@ date: 2017-08-07 09:02:39
 category: [기타, 등등]
 tag: [IT, Computer, 진법]
 ---
-![](thumb.png)  
+![](/images/computer-number-making-reason/thumb.png)  
 여러 책을 보고 혼자서 내린 결론이기 때문에 틀릴 가능성이 있으니 지적해주면 감사하겠습니다 ^^
 
 ## 최초의 컴퓨터는 10진수를 사용했다.  

@@ -8,7 +8,7 @@ category:
 date: 2019-03-10 17:45:29
 ---
 
-![](thumb.png)
+![](/images/java-synchronized-note/thumb.png)
 
 synchronized 키워드를 사용하는 이유를 살펴보기 전에 쓰레드를 왜 여러 개 사용하는지부터 알아보자.  
 

@@ -10,7 +10,7 @@ category:
 date: 2018-09-26 13:36:45
 ---
 
-![](thumb.png)
+![](/images/java8-date-time/thumb.png)
 
 부끄럽게도 Java8에 나온 날짜와 시간 API를 제대로 모르고 계속해서 사용해왔다.  
 늦었지만 지금이라도 정리를 해봤다.  
@@ -159,8 +159,8 @@ LocalDateTime + ZoneOffset에 대한 정보까지 포함한 API이다.
 이러한 경우는 축구 경기 생중계 등등에 적합하다.  
 
 레알 마드리드와 바르셀로나의 경기인 엘 클라시코 더비의 경우를 살펴보자.  
-![바르셀로나 홈 구장인 Camp Nou(바르셀로나에 위치)에서 2018-05-06T20:45:00+02:00에 경기가 시작했다.](el-clasico-cest.png)
-![똑같은 경기를 한국 사람이 보려면 2018-05-07T03:45:00+09:00에 경기가 시작했다.](el-clasico-kst.png)
+![바르셀로나 홈 구장인 Camp Nou(바르셀로나에 위치)에서 2018-05-06T20:45:00+02:00에 경기가 시작했다.](/images/java8-date-time/el-clasico-cest.png)
+![똑같은 경기를 한국 사람이 보려면 2018-05-07T03:45:00+09:00에 경기가 시작했다.](/images/java8-date-time/el-clasico-kst.png)
 
 ```java
 import java.time.OffsetDateTime;

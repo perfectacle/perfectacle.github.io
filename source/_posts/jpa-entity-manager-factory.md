@@ -4,7 +4,7 @@ date: 2018-01-14 15:24:15
 tags: [DB, ORM, JPA, Hibernate]
 category: [Back-end, DB, JPA]
 ---
-![엔티티는 과자, 엔티티 매니저는 아줌마, 엔티티 매니저 팩토리는 과자 공장](thumb.png)  
+![엔티티는 과자, 엔티티 매니저는 아줌마, 엔티티 매니저 팩토리는 과자 공장](/images/jpa-entity-manager-factory/thumb.png)  
 이미지 출처: [<박상문의 Photo & Essay>평양 육아원의 모습](http://m.blog.daum.net/umji0112/11794517?categoryId=646664)
 
 ## Entity
@@ -106,7 +106,7 @@ public class MemberOnlyName {
 엔티티 매니저 내부에 **영속성 컨텍스트(Persistence Context)**라는 걸 두어서 엔티티들을 관리한다.  
 
 ### 영속성 컨텍스트(Persistence Context)
-![](entity-manager.png)
+![](/images/jpa-entity-manager-factory/entity-manager.png)
 영속성: 기본적으로 컴퓨터 공학에서 영속성이라고 하면 **비휘발성**이라고 보면 될 것 같다.  
 휘발성은 프로그램이 꺼지거나 전원이 나가면 데이터가 날아가는 경우를 휘발성이라 하고, 그 반대가 비휘발성이다.  
 하지만 휘발성과 비휘발성 이란 단어는 저장 장치(메인 메모리나 플래시 메모리 등등)의 특징을 나타낼 때 많이 쓰고,  
@@ -190,7 +190,7 @@ public class Join {
 그건 JPA가 쿼리를 한 방에 날리기 때문이다.  
 
 #### 쓰기 지연 SQL 저장소
-![](sql-manager.png)  
+![](/images/jpa-entity-manager-factory/sql-manager.png)  
 영속성 컨텍스트 안에는 **쓰기 지연 SQL 저장소**라는 공간이 따로 존재한다.  
 만약 아래와 같은 코드가 있다고 보자.  
 

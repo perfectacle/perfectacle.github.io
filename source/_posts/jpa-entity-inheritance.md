@@ -4,7 +4,7 @@ tags: [JPA, ORM]
 category: [Back-end, DB, JPA]
 date: 2018-07-10 01:13:20
 ---
-![출처: https://blog.naver.com/PostView.nhn?blogId=dyner&logNo=100177467201](thumb.png)
+![출처: https://blog.naver.com/PostView.nhn?blogId=dyner&logNo=100177467201](/images/jpa-entity-inheritance/thumb.png)
 
 어이쿠야... 정말 백만년만에 포스팅하는 것 같다...
 나태하게 살지 말기로 작심만 몇 번째 하는 건지 ㅠㅠ  

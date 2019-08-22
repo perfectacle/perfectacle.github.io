@@ -4,7 +4,7 @@ date: 2016-12-25 22:17:14
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Interface]
 ---
-![](thumb.png)
+![](/images/es6-interface/thumb.png)
 
 이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
 [이터레이터 인터페이스와 이터러블 인터페이스](/2017/04/22/ES6-Iterator/)는 다음 포스트에서 정리할 예정이다.  

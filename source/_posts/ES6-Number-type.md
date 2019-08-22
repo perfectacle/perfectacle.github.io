@@ -4,7 +4,7 @@ date: 2016-12-23 09:37:53
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Number]
 ---
-![](thumb.png)  
+![](/images/ES6-Number-type/thumb.png)  
 이 글을 읽고 [(ES6) Number 객체와 함수](/2016/12/24/ES6-Number-object-and-function/)를 이어서 보는 걸 추천한다.
 
 # 자료형

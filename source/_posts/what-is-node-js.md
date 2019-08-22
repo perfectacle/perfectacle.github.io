@@ -4,7 +4,7 @@ date: 2017-06-18 21:12:33
 tag: [Node.js]
 category: [Programming, Node.js]
 ---
-![](thumb.png)
+![](/images/what-is-node-js/thumb.png)
 이 글을 쓰게 된 계기는 다음과 같다.  
 > Q: Node.js는 서버인가요?  
 A: 네, 백엔드 개발자들이 Node.js를 씁니다.  
@@ -14,7 +14,7 @@ A: 네, 백엔드 개발자들이 Node.js를 씁니다.
 혹시 내가 내린 결론이 잘못된 부분은 무한 태클을 환영한다.  
 
 # Node.js란...?
-![Node.js 공식 사이트에서 내린 Node.js의 정의](01.png)  
+![Node.js 공식 사이트에서 내린 Node.js의 정의](/images/what-is-node-js/01.png)  
 Node.js는 Chrome V8 Javascript 엔진으로 빌드된 Javascript **런타임**이다.  
 V8 자바스크립트 엔진은 여기서 중요한 포인트가 아니므로 직접 찾아보길 바란다.    
 
@@ -33,7 +33,7 @@ V8 자바스크립트 엔진은 여기서 중요한 포인트가 아니므로 �
 
 이러한 REPL은 [Babel REPL](https://babeljs.io/repl/)과 같이 웹에서 제공해주기도 하고,  
 Node.js에서 제공하는 REPL은 윈도우의 CMD, 맥의 터미널 등등에서 제공을 해준다.  
-![터미널에서 node라고 입력을 하면 node repl이 실행된다.](02.png)  
+![터미널에서 node라고 입력을 하면 node repl이 실행된다.](/images/what-is-node-js/02.png)  
 
 두 번째로 따로 자바스크립트 파일을 Node.js에서 제공하는 자바스크립트 런타임을 통해 실행이 가능하다.    
 위와 같이 REPL에서 개발을 하면 간단한 테스트 정도면 몰라도 어플리케이션을 개발하는 데 적합하지 않다.  
@@ -46,7 +46,7 @@ a;
 a + 4;
 console.log(a);
 ```
-![](03.png)
+![](/images/what-is-node-js/03.png)
 
 
 
@@ -61,8 +61,8 @@ http.createServer((req, res) => {
     res.end("Hello World\n");
 }).listen(8080);
 ```
-![node.js를 통해 실행한 server.js](04.png)  
-![node.js를 통해 구현한 서버](05.png)  
+![node.js를 통해 실행한 server.js](/images/what-is-node-js/04.png)  
+![node.js를 통해 구현한 서버](/images/what-is-node-js/05.png)  
 
 ## 그럼 프론트 엔드 개발자는 언제 Node.js를 쓰는가?  
 매우 빈번하게 쓰이는데 그 중에서 대표적으로 ES2015+ 문법을 ES5 문법으로 트랜스파일 해주는 [Babel](/2016/11/11/Babel-ES6-with-IE8/)을 예로 들어보겠다.  
@@ -96,11 +96,11 @@ const a = 1;
 ```
 
 터미널에서 babel-cli를 통해 해당 파일을 ES5로 트랜스파일 된 결과를 보자.  
-!["use strict" 구문 부터가 실제로 트랜스파일 된 결과](06.png)  
+!["use strict" 구문 부터가 실제로 트랜스파일 된 결과](/images/what-is-node-js/06.png)  
 
 이게 뭐가 Node.js를 통해 실행한 내용인지 확인해보자.  
 기본적으로 npm script는 node_modules 디렉토리 안의 .bin 디렉토리에 있는 디렉토리를 인식한다.  
-![node_modules/.bin 디렉토리 안에 babel 파일이 존재한다.](07.png)  
+![node_modules/.bin 디렉토리 안에 babel 파일이 존재한다.](/images/what-is-node-js/07.png)  
 
 그리고 그 내용은 다음과 같다.  
 ```javascript
@@ -111,7 +111,7 @@ require("../lib/babel");
 `#!/usr/bin/env node` 요 구문으로 인해 node.js에서 cli를 만들 수 있게 해주는 것이라고 생각하면 된다.  
 그럼 직접 `../lib/babel`을 찾아가보자.  
 
-![node_modules/babel-cli/lib/babel 디렉토리가 존재한다.](08.png)  
+![node_modules/babel-cli/lib/babel 디렉토리가 존재한다.](/images/what-is-node-js/08.png)  
 Node.js에서 기본적으로 디렉토리 뒤에 따로 파일이 명시되지 않으면 index.js 파일을 찾아가는 규칙이 있다.  
 index.js 파일의 상단 부분을 보면 다음과 같다.  
 
@@ -138,18 +138,18 @@ var glob = require("glob");
 소스 코드 첫 라인에 `#!/usr/bin/env node`을 보면 CLI임을 짐작할 수 있다.  
 그럼 다음과 같이도 실행을 해볼 수도 있다는 말이 된다.  
 
-![npm script가 아닌 직접 파일로 접근해서 CLI를 실행](09.png)  
+![npm script가 아닌 직접 파일로 접근해서 CLI를 실행](/images/what-is-node-js/09.png)  
 
 하지만 우리가 접근한 파일은 우리가 흔히 보고 있는 js 파일이다.  
 Node.js는 자바스크립트를 실행해줄 수 있는 환경인 런타임을 제공해주기 때문에 다음과 같이도 할 수 있다.  
-![Node.js에서 바벨을 실행시킨 결과](10.png)  
+![Node.js에서 바벨을 실행시킨 결과](/images/what-is-node-js/10.png)  
 
 즉, 바벨을 쓴다면, 프론트 엔드 개발자도 Node.js를 쓴다는 결론을 내릴 수가 있다.  
 바벨 뿐만 아니라 웹팩, 걸프, CRA, Vue-CLI 등등 npm으로 설치하는 모든 CLI는 Node.js를 이용한다고 보면 된다.  
 그리고 npm(Node Package Manger)을 쓴다는 것 자체가 Node.js를 이용한다고 보면 된다.  
 
 ## 웹을 벗어난 Node.js
-![Node.js 공홈 about 페이지](11.png)  
+![Node.js 공홈 about 페이지](/images/what-is-node-js/11.png)  
 Node.js는 확장성 있는 **네트워크 애플리케이션**을 위해 설계했다고 나온다.  
 네트워크 어플리케이션, 즉 서버, 서버를 위해서 설계된 플랫폼이다.  
 따라서 Node.js로 실제 구현하는 내용도 서버가 많다는 것에는 동의한다.  
@@ -167,10 +167,10 @@ npm으로 의존성 모듈 관리, 바벨, 웹팩과 같은 CLI를 Node.js 위�
 이런 고민을 하다보니 그럼 웹이 아닌 경우에는 무엇이 있을까 고민하게 됐다.  
 
 ### 데스크탑 어플리케이션을 제작해주는 일렉트론(Electron)
-![Electron의 정의](12.png)  
+![Electron의 정의](/images/what-is-node-js/12.png)  
 맥, 윈도우 등등의 크로스 플랫폼 데스크탑 어플리케이션을 HTML, CSS, JS를 통해 만들 수 있다.  
 자세히 몰라서 아래의 사진으로 대체하겠다.  
-![출처: http://blog.dramancompany.com/2015/12/electron%EC%9C%BC%EB%A1%9C-%EC%9B%B9-%EC%95%B1-%EB%A7%8C%EB%93%A4%EB%93%AF-%EB%8D%B0%EC%8A%A4%ED%81%AC%ED%86%B1-%EC%95%B1-%EB%A7%8C%EB%93%A4%EA%B8%B0/](13.png)  
+![출처: http://blog.dramancompany.com/2015/12/electron%EC%9C%BC%EB%A1%9C-%EC%9B%B9-%EC%95%B1-%EB%A7%8C%EB%93%A4%EB%93%AF-%EB%8D%B0%EC%8A%A4%ED%81%AC%ED%86%B1-%EC%95%B1-%EB%A7%8C%EB%93%A4%EA%B8%B0/](/images/what-is-node-js/13.png)  
 슬랙과 atom, vs code가 일렉트론으로 만들어졌다 하니 믿을만 하다고 할 수 있을 것 같다.  
 
 ## 결론

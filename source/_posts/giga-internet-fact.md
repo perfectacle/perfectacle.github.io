@@ -4,7 +4,7 @@ date: 2017-01-23 18:55:53
 category: [기타, 등등]
 tag: [IT, Computer, 인터넷, 속도, 용량, 상식]
 ---
-![](thumb.png)
+![](/images/giga-internet-fact/thumb.png)
 
 이제는 100메가 광랜을 넘어서 기가의 시대가 열렸다.  
 100메가 광랜을 쓸 적에 100 메가의 속도를 느껴본 적이 있는가?  
@@ -94,7 +94,7 @@ UTP > FTP > STP 순으로 비싸지지만, (내구성/안정성 측면)
 이번에는 속도 측면에서 보자.  
 출처는 아래와 같다.  
 [랜선의 종류와 구분 (UTP/STP/FTP 차이점)](https://blog.lael.be/post/50)  
-![규격은 무시하고 보자.](lan.jpg)  
+![규격은 무시하고 보자.](/images/giga-internet-fact/lan.jpg)  
 대역폭은 길이 좁냐 넓냐인데 이 또한 속도와도 관련이 있다고만 보면 된다.  
 자신의 집이 아마 UTP 쓸테고, 그럼 CAT 어느 규격의 랜선을 쓰고 있는지를 알아야  
 랜선을 새로 사야할지, 기가 광랜을 설치할지 말지를 결정할 수 있다.  
@@ -114,7 +114,7 @@ USB 3.0 미지원 메인보드면 PCI-Express용을 사거나 메인보드를 US
 이게 뭔소린지 모를 수도 있다.  
 간단하게 CrystalDiskMark라는 프로그램을 써서  
 내가 파일 저장하려는 공간의 읽기/쓰기 속도를 체크할 수 있다.  
-![읽기/쓰기 속도를 체크해보자](bench.png)  
+![읽기/쓰기 속도를 체크해보자](/images/giga-internet-fact/bench.png)  
 대충 seq를 기준으로 잡으면 되지 않을까 싶다.  
 다운로드는 아래 페이지를 이용하자.  
 [CrystalDiskMark](http://crystalmark.info/software/CrystalDiskMark/index-e.html)  

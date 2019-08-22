@@ -4,7 +4,7 @@ date: 2017-02-13 22:01:37
 category: [Programming, ECMAScript]
 tags: [JS, ES, Operator]
 ---
-![](thumb.png)  
+![](/images/es-tilt-operator/thumb.png)  
 우리는 주로 `~`라는 문자를 물결이라고 읽었다.  
 하지만 영어권 국가에서는 Tilde(틸드)라고 읽는다.  
 따라서 해당 연산자를 틸드 연산자라고 부른다.  
@@ -26,7 +26,7 @@ console.log(~1); // -2
 Not 연산자 이므로 0을 1로, 1을 0으로 역전시킨다.  
 11111110  
 위에 2진수가 -2인지 확인해보자.  
-![https://planetcalc.com/747/ 에서 확인해보자](01.png)  
+![https://planetcalc.com/747/ 에서 확인해보자](/images/es-tilt-operator/01.png)  
 
 ## -1의 비밀
 유독 자바스크립트의 메소드를 보면 -1을 반환하는 녀석들이 많다.  

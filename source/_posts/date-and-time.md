@@ -12,7 +12,7 @@ category:
 date: 2018-09-26 00:27:20
 ---
 
-![출처: https://www.sitepoint.com/suggesting-carbon-with-composer-date-and-time-the-right-way/](thumb.jpg)
+![출처: https://www.sitepoint.com/suggesting-carbon-with-composer-date-and-time-the-right-way/](/images/date-and-time/thumb.jpg)
 
 ## GMT(Greenwich Mean Time) vs. UTC(Coordinated Universal Time)
 세계 표준 시간 관련해서 위 두 키워드가 자주 나오길래 [구글](https://www.google.co.kr/search?newwindow=1&hl=en-KR&rlz=1C5CHFA_enKR721KR721&ei=zc2pW-WIHYq88QXQmKzABQ&q=gmt+vs+utc&oq=gmt+vs+utc&gs_l=psy-ab.3..0i67k1j0i20i263k1j0l3.1063480.1067397.0.1067832.22.18.2.0.0.0.289.2326.0j9j4.14.0....0...1.1j4.64.psy-ab..6.16.2500.6..0i131k1j0i10k1j35i39k1j0i203k1.171.hKhy4qSkjm4)에서 검색해보았다.  

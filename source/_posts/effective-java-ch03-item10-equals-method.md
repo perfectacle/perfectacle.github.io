@@ -4,7 +4,7 @@ tags: [Java]
 category: [Note, Java]
 date: 2018-11-26 01:16:30
 ---
-![](thumb.png)
+![](/images/effective-java-ch03-item10-equals-method/thumb.png)
 
 Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.
 (그 이유는 모르겠지만... 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)  
@@ -79,11 +79,11 @@ public boolean equals(Object obj) {
 
 그냥 읽어선 뭔 소린지 모르겠다.  
 그림으로 이해를 해보자. (마우스 없는 환경에서 그리려니까 너무 힘들다...)  
-![](01.png)  
+![](/images/effective-java-ch03-item10-equals-method/01.png)  
 위 그림은 아래와 같은 기호를 통해 표현할 수 있다.  
 `X = {a, b, c, a, b, c}`  
 이제 이 집합 X를 서로 같은 원소들로 이뤄진 부분집합으로 나눠보자.  
-![](02.png)  
+![](/images/effective-java-ch03-item10-equals-method/02.png)  
 위 그림은 아래와 같은 기호를 통해 표현할 수 있다.  
 ```
 X = {a, b, c, a, b, c}

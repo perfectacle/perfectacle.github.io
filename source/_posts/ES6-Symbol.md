@@ -4,7 +4,7 @@ date: 2017-04-16 15:15:31
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Symbol]
 ---
-![](thumb.png)  
+![](/images/ES6-Symbol/thumb.png)  
 
 ## 목차
 * [들어가기에 앞서](#들어가기에-앞서)  

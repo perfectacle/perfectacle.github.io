@@ -4,7 +4,7 @@ date: 2017-01-20 15:31:25
 category: [Note, Java]
 tag: [Java, 자바의 정석, 반복문]
 ---
-![](thumb.png)
+![](/images/Java-study-005day/thumb.png)
 
 ## 반복문
 ## for문

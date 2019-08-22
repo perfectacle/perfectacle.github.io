@@ -4,7 +4,7 @@ tags: [Docker, Spring Boot]
 category: [Middle-end, DevOps]
 date: 2019-04-16 03:19:58
 ---
-![](thumb.png)
+![](/images/spring-boot-docker-image-optimization/thumb.png)
 
 ## 들어가기에 앞서
 이 글에서 Docker와 Spring Boot, Gradle에 대한 기본적인 지식은 있다고 판단하고 설명한다.  

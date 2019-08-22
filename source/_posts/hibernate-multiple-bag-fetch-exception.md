@@ -11,7 +11,7 @@ category:
 date: 2019-05-01 20:04:41
 ---
 
-![이미지 출처: https://pgr21.com/pb/pb.php?id=humor&no=166185](thumb.jpg)
+![이미지 출처: https://pgr21.com/pb/pb.php?id=humor&no=166185](/images/hibernate-multiple-bag-fetch-exception/thumb.jpg)
 
 ## Trouble
 Spring Data JPA를 이용하다보면 종종 `org.hibernate.loader.MultipleBagFetchException: cannot simultaneously fetch multiple bags`이란 메세지를 보게 된다.  
@@ -213,7 +213,7 @@ left outer join
         on mother0_.id=sons2_.mother_id
 ```
 
-![주목할 부분은 파란색으로 쳐놓은 부분이다.](01.png)  
+![주목할 부분은 파란색으로 쳐놓은 부분이다.](/images/hibernate-multiple-bag-fetch-exception/01.png)  
 Set으로 저장한 딸들은 중복없이 잘 불러와졌고, List(Bag)로 저장한 아들들은 중복있이 잘 불러와졌다.  
 (List라고 무조건 중복이 발생하는 건 아니다. 단일 List(Bag)만 Fetch 해오면 중복없이 잘 불러온다.)  
 

@@ -4,7 +4,7 @@ date: 2017-04-03 21:18:09
 category: [Programming, ECMAScript]
 tag: [JS, ES, ES6, ES2015, ES6+, callback, promise, async, await]
 ---
-![](thumb.png)
+![](/images/js-async-function/thumb.png)
 
 전에 AJAX를 Promise와 Async/Await로 처리하는 방법을 알아봤는데,  
 setTimeout과 같은 비동기 함수를 처리하려니 또 버퍼링이 걸려서 정리해봤다.  
@@ -81,7 +81,7 @@ f1(
 ```
 
 ## ES6(Promise)
-![프라미스 동작 구조](promises.png)  
+![프라미스 동작 구조](/images/js-async-function/promises.png)  
 콜백 함수 패턴이 익숙해서 자주 쓰는데,  
 뎁스가 깊어지니 뭔가 깔끔하게 정리해보고 싶었다.  
 일단 나는 reject 되는 경우는 생각하지 않았다.  

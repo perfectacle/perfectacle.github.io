@@ -4,12 +4,12 @@ date: 2017-10-05 17:50:29
 tags: [ELB, CertificateManager, HTTPS, AWS, EC2, Route53, Nginx]
 category: [Middle-end, DevOps]
 ---
-![요청을 분산해주는 Load Balancer](thumb.png)  
+![요청을 분산해주는 Load Balancer](/images/https-with-elb/thumb.png)  
 
 ELB가 요청 분산 및 오토 스케일링을 위한 것도 있지만 SSL 암호화 지원도 해줘서
 인스턴스에 SSL 인증서를 물리면 인스턴스에서 암/복호화 등등의 리소스 낭비가 이뤄지지만 ELB에 물리면 ELB에서 다 처리되기 때문에  
 서버 입장에서는 부담이 더 줄어들게 된다.  
-하지만 역시 공짜는 아니니 ![Elastic Load Balancing 요금](https://aws.amazon.com/ko/elasticloadbalancing/pricing/) 파트를 참조하자.  
+하지만 역시 공짜는 아니니 [Elastic Load Balancing 요금](https://aws.amazon.com/ko/elasticloadbalancing/pricing/) 파트를 참조하자.  
 돈이 없거나(ㅜㅜ) 공부 목적이 있는 사람은 직접 [EC2 인스턴스(서버)에 HTTPS 서버 열기](/2017/10/05/letsencrypt-with-certbot-feat-aws/)를 참고하자.  
 
 ## Certificate Manager(SSL 인증서)

@@ -4,7 +4,7 @@ date: 2017-01-31 09:59:04
 category: [기타, 자작]
 tag: [IT, Computer, HTML, Table]
 ---
-![](thumb.png)  
+![](/images/dynamic-table-generator/thumb.png)  
 
 ## 개발 배경
 예전부터 테이블 태그는 참 헷갈렸다.  
@@ -33,21 +33,21 @@ tag: [IT, Computer, HTML, Table]
 기본적인 사용 방법은 아래와 같다.  
 제목행(th scope="col"), 제목열(th scope="row")  
 캡션, colspan, rowspan에 중점을 뒀다.  
-![](01.gif)  
+![](/images/dynamic-table-generator/01.gif)  
 
-![](02.gif)
+![](/images/dynamic-table-generator/02.gif)
 
 ### 수정 모드
 초기 버전과는 다르게 수정모드도 붙여 보았다.  
 엔터를 누르면 저장, ESC를 누르면 취소가 된다.
-![](03.gif)  
+![](/images/dynamic-table-generator/03.gif)  
 
-![](04.gif)
+![](/images/dynamic-table-generator/04.gif)
 
 ### JSON, 사용자 편의 고려
 표가 복잡하면 다시 새롭게 만들기 귀찮은데,  
 이런 유저를 위해 제이슨 형태로 저장할 수 있게 제공하였다.  
-![](05.gif)
+![](/images/dynamic-table-generator/05.gif)
 
 ### 하지만 가독성이 구린 문제점이... 지못미...
 제이슨에서 다른 셀과 구분 짓기 위해 병합된 셀의 정보는 다음과 같이 나타난다.
@@ -55,23 +55,23 @@ tag: [IT, Computer, HTML, Table]
 병합된 셀은 `%collapsedCell%`과 같이 나타냈다.  
 가독성이 안 좋지만 딱히 방법이 떠오르지 않았다... ㅠㅠ  
 여하튼 이렇게 가독성이 구린 데이터를 함부로 손 댔다가는 테이블 조차 만들 수도 없을 것이다.  
-![](06.gif)
+![](/images/dynamic-table-generator/06.gif)
 
 ### 셀 병합에 있어서 또 다른 문제점
 또한 제목 행은 &lt;thead> 안에 있고, 나머지 행은 <tbody&gt;에 있기 때문에  
 제목 행과 다른 행을 합칠 순 없다.  
-![](07.gif)
+![](/images/dynamic-table-generator/07.gif)
 
 ### 백업은 필수
 테이블을 새로 생성하면 기존 데이터는 날아가기 때문에  
 귀찮더라도 제이슨 데이터는 항상 백업해두자.  
-![](08.gif)
+![](/images/dynamic-table-generator/08.gif)
 
 ## 마치며...
 내가 이 짓을 할 시간에 리액트, 자바, ES6 등등을 공부했더라면  
 엄청나게 많은 지식을 습득했을 것 같은데 그래도 후회는 없다.  
 
-![테스트 코드만 하루 반 나절은 작성한 것 같다.](09.png)  
+![테스트 코드만 하루 반 나절은 작성한 것 같다.](/images/dynamic-table-generator/09.png)  
 일단 지금 공부하고 있는 자스민, 카르마를 연동해서 TDD를 해보았다.(+ESLint)  
 TDD가 없었다면 이 많은 케이스를 테스트 할 엄두가 나지 않았을 것이다.  
 물론 아직도 귀찮거나 미처 테스트하지 못한 케이스들이 존재할테지만...

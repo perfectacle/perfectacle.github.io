@@ -4,7 +4,7 @@ category: [Note, Java]
 tag: [Java, 자바의 정석, 내장 클래스, 날짜와 시간, 형식화]
 date: 2017-08-05 15:17:49
 ---
-![](thumb.png)  
+![](/images/Java-study-015day/thumb.png)  
 
 ## java.util 패키지
 ### Random 클래스  
@@ -227,9 +227,9 @@ Vector, Stack, HashTable, Properties는 이름만 봐서는 누구를 구현한 
 이는 컬렉션 인터페이스가 생기기 전인 JAVA1에 생긴 것이라서 레거시 코드들과의 호환을 위해 이름을 바꾸지 않았다.  
 이런 녀석들보다는 다소 최근에 생긴 ArrayList나 HashMap을 사용하도록 하자~  
 
-![List 상속 계층도](list.png)  
-![Set 상속 계층도](set.png)  
-![Map 상속 계층도](map.png)  
+![List 상속 계층도](/images/Java-study-015day/list.png)  
+![Set 상속 계층도](/images/Java-study-015day/set.png)  
+![Map 상속 계층도](/images/Java-study-015day/map.png)  
 
 컬렉션의 사이즈를 정할 때는 생각한 것보다 여유를 좀 줘서 생성해주는 게 좋다.  
 어차피 공간이 부족하면 자동적으로 늘리긴 하지만 성능 상 좋지는 않기 때문이다.  

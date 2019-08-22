@@ -4,7 +4,7 @@ date: 2017-09-04 09:05:54
 tags: [Java, DI]
 category: [Middle-end, Pattern]
 ---
-![](thumb.png)
+![](/images/di-v1/thumb.png)
 
 이 글은 의존성 주입을 전혀 적용하지 않은, 의존성 주입이 뭔지 모르는 상태로 짠 코드이다.  
 우선 문제점을 먼저 파악해봐야 뭐가 되지 않을까 싶어서 막코딩을 해봤다고 가정해보자.  

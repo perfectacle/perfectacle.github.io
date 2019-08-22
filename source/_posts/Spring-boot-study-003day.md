@@ -4,7 +4,7 @@ category: [Note, Spring Boot]
 tag: [Java, Spring, Spring Boot, Spring Data JPA]
 date: 2017-08-04 13:11:13
 ---
-![](thumb.png)  
+![](/images/Spring-boot-study-003day/thumb.png)  
 
 드디어 유닛 테스트? 단위 테스트? JUnit을 써봤다~  
 그럼 시작!  

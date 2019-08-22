@@ -10,10 +10,10 @@ category:
 date: 2019-05-11 16:05:47
 ---
 
-![출처: https://medium.com/@iacomini.riccardo/hadoop-namenode-garbage-collector-tuning-7f6a029e9012](thumb.jpeg)
+![출처: https://medium.com/@iacomini.riccardo/hadoop-namenode-garbage-collector-tuning-7f6a029e9012](/images/jvm-gc-advanced/thumb.jpeg)
 
 ## 들어가기에 앞서
-![](optimizing-java.jpeg)
+![](/images/jvm-gc-advanced/optimizing-java.jpeg)
 이 글은 이일웅 님께서 번역하신 [자바 최적화](https://book.naver.com/bookdb/book_detail.nhn?bid=14796595)란 책을 읽던 도중 공부한 내용을 정리한 글입니다.  
 절대 해당 책의 홍보는 아니며 좋은 책을 써준 사람과 번역해주신 분께 진심으로 감사하는 마음에 썼습니다.  
 이 글을 읽어보시기 전에 [Garbage Collection Basic](/2019/05/07/jvm-gc-basic/) 편을 읽어보시면 더 도움이 될 것입니다 :) 
@@ -22,7 +22,7 @@ date: 2019-05-11 16:05:47
 Basic 편에서는 간단하게 Young/Old Generation과 Mark and Sweep 알고리듬에 대해서 간단하게 알아보았다.  
 해당 알고리듬을 사용하는 GC를 **scavenge garbage collector**라고도 부른다.
 Mark and Sweep Algorith의 단점은 GC를 수행하는 동안 Stop the World(이하 STW)가 발생한다는 것이다. 
-![출처: https://www.youtube.com/watch?v=_cNXjmuhCCc](stop-the-world.png) 
+![출처: https://www.youtube.com/watch?v=_cNXjmuhCCc]/images/jvm-gc-advanced/stop-the-world.png) 
 
 그럼 이제 해당 알고리듬을 사용하는 GC 알고리듬에는 뭐가 있는지 알아보자.
 
@@ -56,15 +56,15 @@ Tri라는 접두사는 숫자 3을 의미하며, 총 3가지 색을 써서 마�
 3. 흰색(White)  
 해당 객체를 참조하고 있는 객체가 아무런 객체도 없는 객체, 수집 대상이 되는 객체
 
-![Stack과 같은 GC Root(외부에서 힙 메모리에 대한 레퍼런스를 갖고 있는 메모리 풀?)에 있는 객체를 전부 회색으로 표시한다.](tri-color-marking-01.png)  
-![마킹 스레드가 회색 객체를 랜덤하게 돌아다니면서 해당 회색 객체가 참조하고 있는 객체를 전부 회색으로 마킹한 후 본인을 검은색으로 마킹한다.](tri-color-marking-02.png)  
-![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체가 없음을 확인했으니 자신을 검은색으로 마킹한다.](tri-color-marking-03.png)  
-![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체가 없음을 확인했으므로 본인을 검은색으로 마킹한다.](tri-color-marking-04.png)    
-![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체가 없음을 확인했으므로 본인을 검은색으로 마킹한다.](tri-color-marking-05.png)    
-![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체는 회색으로 마킹하고 본인은 검은색으로 마킹한다.](tri-color-marking-06.png)  
-![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체는 회색으로 마킹하고 본인은 검은색으로 마킹한다.](tri-color-marking-07.png)  
-![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체가 없음을 확인했으므로 본인을 검은색으로 마킹한다.](tri-color-marking-08.png)  
-![회색 객체가 없을 때까지 위 작업을 반복하고 흰색 객체를 전부 수거해간다.](tri-color-marking-09.png)  
+![Stack과 같은 GC Root(외부에서 힙 메모리에 대한 레퍼런스를 갖고 있는 메모리 풀?)에 있는 객체를 전부 회색으로 표시한다.](/images/jvm-gc-advanced/tri-color-marking-01.png)  
+![마킹 스레드가 회색 객체를 랜덤하게 돌아다니면서 해당 회색 객체가 참조하고 있는 객체를 전부 회색으로 마킹한 후 본인을 검은색으로 마킹한다.](/images/jvm-gc-advanced/tri-color-marking-02.png)  
+![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체가 없음을 확인했으니 자신을 검은색으로 마킹한다.](/images/jvm-gc-advanced/tri-color-marking-03.png)  
+![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체가 없음을 확인했으므로 본인을 검은색으로 마킹한다.](/images/jvm-gc-advanced/tri-color-marking-04.png)    
+![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체가 없음을 확인했으므로 본인을 검은색으로 마킹한다.](/images/jvm-gc-advanced/tri-color-marking-05.png)    
+![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체는 회색으로 마킹하고 본인은 검은색으로 마킹한다.](/images/jvm-gc-advanced/tri-color-marking-06.png)  
+![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체는 회색으로 마킹하고 본인은 검은색으로 마킹한다.](/images/jvm-gc-advanced/tri-color-marking-07.png)  
+![또 마킹 스레드가 랜덤하게 회색 객체를 돌아다니다가 참조하고 있는 객체가 없음을 확인했으므로 본인을 검은색으로 마킹한다.](/images/jvm-gc-advanced/tri-color-marking-08.png)  
+![회색 객체가 없을 때까지 위 작업을 반복하고 흰색 객체를 전부 수거해간다.](/images/jvm-gc-advanced/tri-color-marking-09.png)  
 
 ### Issue
 Mark and Sweep Algorithm과 달리 Tri-color Marking Algorithm은 어플리케이션과 동시에 수행된다.  
@@ -73,7 +73,7 @@ Mark and Sweep Algorithm과 달리 Tri-color Marking Algorithm은 어플리케�
 ```java
 aInstance.setSomeField(cInstance);
 ```
-![A라는 객체는 검은색으로 마킹돼있기 때문에 참조하는 객체에 대한 처리가 모두 끝난 객체이다.](tri-color-marking-issue-01.png)  
+![A라는 객체는 검은색으로 마킹돼있기 때문에 참조하는 객체에 대한 처리가 모두 끝난 객체이다.](/images/jvm-gc-advanced/tri-color-marking-issue-01.png)  
 
 ```java
 aInstance.setSomeField(cInstance);
@@ -82,7 +82,7 @@ aInstance.setSomeField(cInstance);
 
 aInstance.setSomeField(bInstance);
 ```
-![A가 C에서 B를 바라보게 끔 변경되었다.](tri-color-marking-issue-02.png)  
+![A가 C에서 B를 바라보게 끔 변경되었다.](/images/jvm-gc-advanced/tri-color-marking-issue-02.png)  
 여기서 두 가지 문제점이 발생한다.  
 1. A는 검은색 객체로 모든 작업이 끝난 객체다.    
 또한 B는 흰색으로 마킹돼있다, 즉 수집의 대상이다.  
@@ -118,17 +118,17 @@ CMS GC의 단점은 아래와 같다.
 
 CMS GC는 어플리케이션 쓰레드와 같이 돌기 때문에 좀 복잡하게 동작한다.  
 1. 초기 마킹(Initial Mark, **STW 발생**)
-![GC Root나 Young Generation에서 참조하는 객체를 회색으로 마킹한다.](cms-01.png)  
+![GC Root나 Young Generation에서 참조하는 객체를 회색으로 마킹한다.](/images/jvm-gc-advanced/cms-01.png)  
 이렇게 마킹해놓으면 마킹 단계에서 다른 메모리 영역은 신경쓰지 않고 하나의 GC 풀에만 신경쓰면 된다.  
 
 2. 동시 마킹(Concurrent Mark)  
-![마킹 쓰레드와 어플리케이션 쓰레드가 동시에 돌기 때문에 객체 참조 간에 변경 사항이 발생한다.](cms-02.png)  
+![마킹 쓰레드와 어플리케이션 쓰레드가 동시에 돌기 때문에 객체 참조 간에 변경 사항이 발생한다.](/images/jvm-gc-advanced/cms-02.png)  
 
 3. 동시 사전 정리(Concurrent Preclean)  
-![Old Generation 영역을 일정 공간으로 나누어 Card라 불리는 곳에 저장한다.](cms-03.png)  
+![Old Generation 영역을 일정 공간으로 나누어 Card라 불리는 곳에 저장한다.](/images/jvm-gc-advanced/cms-03.png)  
 그리고 Initial Mark 이후에 참조 간에 변경이 생긴 곳을 Dirty Card라고 부른다.  
 자세한 내용은 [The JVM Write Barrier - Card Marking](http://psy-lob-saw.blogspot.com/2014/10/the-jvm-write-barrier-card-marking.html)을 참고하자.  
-![사전 정리를 해야 Dirty Card에서 일반 Card가 될 수 있다.](cms-04.png)  
+![사전 정리를 해야 Dirty Card에서 일반 Card가 될 수 있다.](/images/jvm-gc-advanced/cms-04.png)  
 이 phase의 목적은 5단계(재마크, Final Remark) 시에 STW 시간을 줄이기 위함이다.
 
 4. Abort 가능한 동시 사전 정리(Concurrent Abortable Precelan)  
@@ -137,13 +137,13 @@ CMS GC는 어플리케이션 쓰레드와 같이 돌기 때문에 좀 복잡하�
 반복 횟수를 넘거나, 정해진 시간을 초과하거나, 사전 정리가 효과적으로 이루어졌거나 등등... (JVM 옵션으로 설정 가능한 것들도 있다.)  
 
 5. 재마크 (Final Remark, **STW 발생**)  
-![Old Generation의 모든 live object를 마킹한다.](cms-05.png)  
+![Old Generation의 모든 live object를 마킹한다.](/images/jvm-gc-advanced/cms-05.png)  
 
 6. 동시 쓸어담기 (Concurrent Sweep)  
-![어플리케이션 스레드가 돌아감과 동시에 하얀색으로 마킹된 오브젝트를 전부 수거해간다.](cms-06.png)  
+![어플리케이션 스레드가 돌아감과 동시에 하얀색으로 마킹된 오브젝트를 전부 수거해간다.](/images/jvm-gc-advanced/cms-06.png)  
 
 7. 동시 리셋 (Concurrent Reset)
-![어플리케이션 스레드가 돌아감과 동시에 마킹했던 내용들을 리셋한다.](cms-07.png)
+![어플리케이션 스레드가 돌아감과 동시에 마킹했던 내용들을 리셋한다.](/images/jvm-gc-advanced/cms-07.png)
 
 #### CMF(Concurrent Mode Failure)
 ParallelOldGC는 긴 STW를 가지는 대신에 CMS는 짧은 두 번의 STW만 있으므로 지연이 매우 적다.  
@@ -175,7 +175,7 @@ G1 GC는 자바 6에 실험적으로 등장하여 자바 8u40 이후부터 쓸�
 G1 GC는 처음부터 CMS를 대체할 목적으로 설계되었는데 CMS GC를 사용중인데 아무런 문제가 없는데 성급하게 바꾸는 행위는 하지 않는 게 좋다.  
 굳이 바꾸지 않아도 바꾸는 건 안정성을 떨어뜨리는 행위이며 조금이라도 처리율을 높이고 싶어서 올리고 싶다면 충분한 테스트를 거친 이후에 하자.
 
-![G1 GC는 Young(Eden/Survivor) Generation 및 Old Generation이 존재하는데 각 Generation이 연속된 메모리 공간일 필요가 없다는 게 큰 차이점이다. (물론 힙 메모리 자체로 봤을 때는 각 Region은 연속된 메모리 공간에 할당된다.)](g1-gc-01.png)  
+![G1 GC는 Young(Eden/Survivor) Generation 및 Old Generation이 존재하는데 각 Generation이 연속된 메모리 공간일 필요가 없다는 게 큰 차이점이다. (물론 힙 메모리 자체로 봤을 때는 각 Region은 연속된 메모리 공간에 할당된다.)](/images/jvm-gc-advanced/g1-gc-01.png)  
 즉, Survivor 영역도 기존에는 2개였는데 G1 GC에서는 그러한 개념도 사라졌다.    
 또한 거대한 객체(Humongous Object)를 저장하는 '거대 영역(Humongous Region)'이라는 특수한 영역도 존재한다.(Humongous Object는 Old Generation에 바로 할당된다.)  
 Humongous Object라고 식별하는 기준은 리전 사이즈의 50%를 넘는 객체면 된다.   
@@ -230,7 +230,7 @@ Old Generation Region에 있는 생존 객체를 다른 리전으로 피난(Evac
 그냥 해당 리전의 객체(Humongous Object)가 더 이상 참조하는 객체가 없어서 사망하셨으면 바로 회수해간다.
 
 #### G1 GC Cycle
-![출처: https://docs.oracle.com/en/java/javase/12/gctuning/garbage-first-garbage-collector.html#GUID-F1BE86FA-3EDC-4D4F-BDB4-4B044AD83180](g1-gc-cycle.png)  
+![출처: https://docs.oracle.com/en/java/javase/12/gctuning/garbage-first-garbage-collector.html#GUID-F1BE86FA-3EDC-4D4F-BDB4-4B044AD83180](/images/jvm-gc-advanced/g1-gc-cycle.png)  
 위 그림은 알고리듬의 Phase 및 STW가 발생하는 걸 표현한 것이다.  
 
 모든 원은 STW가 발생함을 나타낸 것이고, 그 크기에 따라 시간이 달라진다고 생각하면 될 것 같다.  
@@ -262,29 +262,29 @@ Space Reclamation Phase가 끝나면 다시 Young Only Phase로 돌아가서 Min
 ##### Minor GC (Young Generation)
 Minor GC는 기존 GC들과 크게 다르지 않다.  
 물론 멀티 쓰레드에서 병렬로 돌아간다.  
-![연속되지 않은 메모리 공간에 Young Genration이 Region 단위로 메모리에 할당돼있다.](g1-gc-02.png)  
-![live object가 suvivor region이나 old generation으로 evacuation(피난, copy or move)된다.](g1-gc-03.png)  
+![연속되지 않은 메모리 공간에 Young Genration이 Region 단위로 메모리에 할당돼있다.](/images/jvm-gc-advanced/g1-gc-02.png)  
+![live object가 suvivor region이나 old generation으로 evacuation(피난, copy or move)된다.](/images/jvm-gc-advanced/g1-gc-03.png)  
 이 단계에서 STW가 발생하고, Eden과 Survivor의 사이즈는 다음 Minor GC를 위해 재계산 된다.    
-![Minor GC를 모두 마친 후의 모습이다.](g1-gc-04.png)  
+![Minor GC를 모두 마친 후의 모습이다.](/images/jvm-gc-advanced/g1-gc-04.png)  
 
 ##### Major GC (Old Generation)
-![Initial Mark는 STW를 발생시킨다.](g1-gc-05.png)  
+![Initial Mark는 STW를 발생시킨다.](/images/jvm-gc-advanced/g1-gc-05.png)  
 Initial Mark는 Survivor Region에서 Old Region을 참조하는 게 있는지 파악해서 Mark하는 단계이다.  
 Survivor Region에 의존적이기 때문에 Survivor Region은 깔끔한 상태여야하고,
 Survivor Region이 깔끔하려면 Minor GC가 전부 끝난 상태여야한다.  
 따라서 Initial Mark가 Minor GC에 의존적이다.  
 
-![X 표시한 Region은 모든 객체가 사망한 Empty Region이다.](g1-gc-06.png)  
+![X 표시한 Region은 모든 객체가 사망한 Empty Region이다.](/images/jvm-gc-advanced/g1-gc-06.png)  
 Concurrent Mark 단계에서는 Old Generation 내에 생존해있는 모든 객체를 마크하고 다닌다.  
 STW가 없기 때문에 어플리케이션 쓰레드와 동시에 돌고, 종종 Minor GC한테 인터럽트 당한다.  
 
-![Concurrent Mark에서 X 표시 친 Empty Region을 바로 회수해버린다.](g1-gc-07.png)  
+![Concurrent Mark에서 X 표시 친 Empty Region을 바로 회수해버린다.](/images/jvm-gc-advanced/g1-gc-07.png)  
 Remark Phase 역시 STW를 수반한다.    
 또한 Concurrent Mark 단계에서 깔짝깔짝 마킹하던 걸 완전히 끝내버린다.  
 그리고 SATB(snapshot-at-the-beginning) 기법을 쓰기 때문에 CMS GC보다 더 빠르다.  
 여기서 SATB는 `수집 사이클을 시작할 때 접근 가능하거나 그 이후에 할당된 객체를 라이브 객체로 간주하는 기법`이다.
 
-![Old Generation에서도 evacuation(피난, 살아있는 객체를 copy or move)이 발생한다.](g1-gc-08.png)  
+![Old Generation에서도 evacuation(피난, 살아있는 객체를 copy or move)이 발생한다.](/images/jvm-gc-advanced/g1-gc-08.png)  
 이 단계는 STW를 수반하지 않는다.    
 Remark에서 제일 수집하기 쉬운 Empty Region을 수집해갔으니 이제 그 다음으로 수집하기 쉬운 영역을 수집해갈 차례다.  
 Empty Region 다음으로 수집하기 쉬운 Region은 생존률이 제일 낮은 Region이고 생존률이 낮은 순으로 순차적으로 수거해가는 것이다.  
@@ -297,7 +297,7 @@ G1 GC는 이렇게 Garbage의 수집을 우선(First)해서 계속해서 여유 
 * RSet을 정리(STW 발생)
 * 빈 리전을 정리하고나서 Free List에 추가(Concurrent)
 
-![Major GC 이후 깔끔하게 정리된 Old Generation의 모습이다.](g1-gc-09.png)
+![Major GC 이후 깔끔하게 정리된 Old Generation의 모습이다.](/images/jvm-gc-advanced/g1-gc-09.png)
 
 ## Epsilon Collector
 이 컬렉터는 GC를 전혀 수행하지 않는 컬렉터이다.  

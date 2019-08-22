@@ -4,14 +4,14 @@ date: 2017-08-07 10:02:39
 category: [기타, 등등]
 tag: [IT, Computer, 기계어, 컴파일, 인터프리터, JIT]
 ---
-![](thumb.png)  
+![](/images/how-can-computer-understand-our-source/thumb.png)  
 
 기본적으로 컴퓨터는 기계어(2진수(0과 1)로 이루어진 코드) 밖에 해석하지 못한다.  
 ~~바보 녀석 ㅎㅎ~~  
 왜 10진수가 아닌 2진수를 사용하게 됐는지 궁금한 사람은 [컴퓨터에서 2진수, 8진수, 16진수를 쓰게 된 이유](/2017/08/07/computer-number-making-reason/)를 참고하자.  
 
 따라서 우리는 우리가 짠 코드를 기계어로 바꾸는 행위를 해야한다.  
-![이게 귀찮은 사람은 처음부터 기계어로 코딩하면 된다. (뇌가 좋다면...)](realprogrammers.png)  
+![이게 귀찮은 사람은 처음부터 기계어로 코딩하면 된다. (뇌가 좋다면...)](/images/how-can-computer-understand-our-source/realprogrammers.png)  
 우리의 뇌는 이렇게 좋지도 않고, 효율성 측면에서 이러한 행위를 도와주는 도구가 세 가지가 있다.
 
 ## 1. 컴파일(Compile)

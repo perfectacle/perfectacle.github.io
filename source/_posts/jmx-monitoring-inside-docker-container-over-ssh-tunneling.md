@@ -4,7 +4,7 @@ tags: [JVM, JMX]
 category: [Note, 삽질]
 date: 2019-05-05 08:36:13
 ---
-![네가 알던 로컬호스트가 아냐! (로컬호스트처럼 보이지만 실제론 원격지에 있는 서버에 붙었음을 의미)](thumb.png)
+![네가 알던 로컬호스트가 아냐! (로컬호스트처럼 보이지만 실제론 원격지에 있는 서버에 붙었음을 의미)](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/thumb.png)
 
 ## 들어가기에 앞서
 JMX를 모니터링 하려면 [VisualVM](https://visualvm.github.io/)이나 JDK에 기본적으로 내장돼있는 [JConsole](http://openjdk.java.net/tools/svc/jconsole/)을 사용해야한다.
@@ -52,10 +52,10 @@ docker run -p 9090:9090 air
 ```
 
 Host OS에 자바 어플리케이션이 뜬 게 아니라 컨테이너 안에서 뜬 거고, HostOS는 JMX remort port만 바인딩 된 거기 때문에 모니터링 툴을 보면 바로 잡혀있지 않다.  
-![좌측 상단의 해당 버튼을 클릭해주자.](02.png)  
-![localhost와 jmx remote port를 입력해주고 적당히 보기 쉬운 이름으로 Display name에 채워주고 스크린샷을 따라서 작성한 후에 OK 버튼을 눌러주자.](03.png)  
+![좌측 상단의 해당 버튼을 클릭해주자.](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/02.png)  
+![localhost와 jmx remote port를 입력해주고 적당히 보기 쉬운 이름으로 Display name에 채워주고 스크린샷을 따라서 작성한 후에 OK 버튼을 눌러주자.](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/03.png)  
 만약 jmx remote port와 jmx remote rmi port를 다르게 했더라도 입력하는 포트는 jmx remote port를 입력해줘야한다.  
-![성공적으로 불러와졌다.](04.png)  
+![성공적으로 불러와졌다.](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/04.png)  
 아쉽지만 도커 컨테이너로 띄우게 되면 쓰레드 덤프는 떠지지만 힙 덤프는 안 떠진다.  
 **혹시 도커 컨테이너로 띄웠을 때도 힙 덤프를 뜨게 하려면 어떻게 해야하는지 댓글에 남겨주시면 정말 감사하겠습니다.**
 
@@ -63,8 +63,8 @@ Host OS에 자바 어플리케이션이 뜬 게 아니라 컨테이너 안에서
 서버를 퍼블릭 존에 두는 건 매우 위험하다. (크래커가 직접 SSH로 붙을 가능성이 존재하거나 각종 공격에 직접적으로 노출되기 때문에...)
 따라서 프라이빗 존에 둬야하는데 VPN을 쓸 경제적 여력이 안 되는 가난한 환경이나 VPN을 적용하지 않은 환경에서는 매우 귀찮아진다.  
 ~~(우리 회사가 가난하다는 게 아니다.)~~  
-![따라서 퍼블릭 존에 Bastion Host를 두고 해당 Host를 경유해 프라이빗 존에 있는 서버에 접근하게 된다.](aws-bastion-host.png)  
-![이런 환경에서는 Bastion Host를 거쳐 SSH Tunneling의 일종인 Local Port Forwading을 해야한다.](aws-ssh-local-port-forwading.png)
+![따라서 퍼블릭 존에 Bastion Host를 두고 해당 Host를 경유해 프라이빗 존에 있는 서버에 접근하게 된다.](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/aws-bastion-host.png)  
+![이런 환경에서는 Bastion Host를 거쳐 SSH Tunneling의 일종인 Local Port Forwading을 해야한다.](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/aws-ssh-local-port-forwading.png)
 기본적인 명령어는 위 사진에서 보는 바와 같고 명령어의 예시를 들어보겠다.  
 
 ```bash
@@ -74,9 +74,9 @@ Host OS에 자바 어플리케이션이 뜬 게 아니라 컨테이너 안에서
 ssh -N -L 9090:${application_server_ip}:9090 -i ~/.ssh/key.pem ec2-user@{bastion_host_ip} 
 ```
 이번에도 역시 Host OS에 자바 어플리케이션이 뜬 게 아니라 원격지의 도커 컨테이너 안에서 뜬 거고, Localhost에는 JMX remort port만 바인딩 된 거기 때문에 모니터링 툴을 보면 바로 잡혀있지 않다.  
-![좌측 상단의 해당 버튼을 클릭해주자.](02.png)  
-![localhost와 jmx remote port를 입력해주고 적당히 보기 쉬운 이름으로 Display name에 채워주고 스크린샷을 따라서 작성한 후에 OK 버튼을 눌러주자.](05.png)  
-![정상적으로 접속됐다.](06.png)
+![좌측 상단의 해당 버튼을 클릭해주자.](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/02.png)  
+![localhost와 jmx remote port를 입력해주고 적당히 보기 쉬운 이름으로 Display name에 채워주고 스크린샷을 따라서 작성한 후에 OK 버튼을 눌러주자.](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/05.png)  
+![정상적으로 접속됐다.](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/06.png)
 
 JMX remote port(9090)와 다른 포트를 매핑하는 바람에 몇 시간을 삽질했는지 모르겠다...
 **혹시 이거보다 더 간단하게 연결하는 방법이 있다면 댓글로 남겨주시면 정말 감사하겠습니다.**

@@ -4,7 +4,7 @@ date: 2017-02-10 10:20:35
 category: [Note, Java]
 tag: [Java, 자바의 정석, JVM]
 ---
-![](thumb.png)
+![](/images/Java-study-008day/thumb.png)
 
 ## JVM의 메모리 구조
 이 글을 보기 전에 아래 글을 참조하면 더 이해가 잘 간다.  

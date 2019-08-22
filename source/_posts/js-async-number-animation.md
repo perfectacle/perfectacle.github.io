@@ -4,7 +4,7 @@ date: 2017-05-03 09:39:29
 category: [Programming, ECMAScript]
 tag: [JS, ES, ES6, ES2015, ES6+, callback, promise, async, await]
 ---
-![](thumb.png)
+![](/images/js-async-number-animation/thumb.png)
 
 숫자가 0~100까지 순서대로 변하는 예제를 만들어볼 것이다.  
 일단 예제 파일에 쓰일 index.html을 하나 만들어보자.  

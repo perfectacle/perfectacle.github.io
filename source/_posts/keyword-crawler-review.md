@@ -4,7 +4,7 @@ date: 2017-07-18 15:34:38
 tag: [review]
 category: [기타, 잡동사니]
 ---
-![](thumb.png)
+![](/images/keyword-crawler-review/thumb.png)
 [프로젝트로 바로가기](/2017/07/18/keyword-crawler/)  
 
 # 왜 만들었나?  

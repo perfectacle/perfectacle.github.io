@@ -6,7 +6,7 @@ date: 2017-04-20 09:37:49
 ---
 
 ## 상대경로 헬파티
-![예제를 위해 과장한 폴더 구조](thumb.png)  
+![예제를 위해 과장한 폴더 구조](/images/webpack2-escape-relative-path-hell/thumb.png)  
 /app/src/lib/lib.js에는 아래와 같은 변수가 들어가있다.  
 ```javascript
 export const num = 2;
@@ -38,7 +38,7 @@ div {
 오늘은 이러한 문제점을 해결해보고자 한다!  
 
 ## 프로젝트 세팅
-![프로젝트 구조](dir.png)  
+![프로젝트 구조](/images/webpack2-escape-relative-path-hell/dir.png)  
 
 일단 프로젝트로 쓸 디렉토리를 아무거나 만들고 터미널로 해당 디렉토리로 이동 후 다음 명령어를 쳐서 npm을 초기화 시키고 패키지들을 설치하자.  
 ```bash
@@ -173,22 +173,22 @@ npm start
 ```
 
 그리고 나서 /app/dist/index.html을 열어보면 다음과 같이 원하는 결과를 얻을 수 있다.  
-![](result.png)  
+![](/images/webpack2-escape-relative-path-hell/result.png)  
 100x100의 까만 div와 2*2=4의 결과를 콘솔창에서 볼 수 있다.  
 
 ## 갓텔리제이 짱짱맨  
-![자동 완성이 지원되질 않는다.](nono.png)  
+![자동 완성이 지원되질 않는다.](/images/webpack2-escape-relative-path-hell/nono.png)  
 한 가지 아쉬운 점이라면 IDE는 웹팩에서 정해준 루트 경로를 이해하지 못한다.  
 따라서 자동완성과 인덱싱(폴더가 존재하는 경로나 파일로 이동)을 지원하지 않는다.  
-![하지만 우리의 IntelliJ가 최근에 업데이트 되면서 이러한 문제를 깔끔히 해결해주었다.](gottellij.png)  
+![하지만 우리의 IntelliJ가 최근에 업데이트 되면서 이러한 문제를 깔끔히 해결해주었다.](/images/webpack2-escape-relative-path-hell/gottellij.png)  
 아마 Jet Brains의 IDE(Webstorm, PHPStorm 등등)에서는 다 지원될 것이다.  
 최신 버전으로 업데이트 한 후에 /app/src 경로를 Resource Root로 지정해주자.  
 Source Root로 지정하면 sass에서 모듈을 인덱싱하지 못한다.  
-![](markDir.png)  
-![](01.png)  
-![](02.png)  
-![](03.png)  
-![](04.png)  
+![](/images/webpack2-escape-relative-path-hell/markDir.png)  
+![](/images/webpack2-escape-relative-path-hell/01.png)  
+![](/images/webpack2-escape-relative-path-hell/02.png)  
+![](/images/webpack2-escape-relative-path-hell/03.png)  
+![](/images/webpack2-escape-relative-path-hell/04.png)  
 경로, 변수 자동 완성 및 인덱싱까지 너무 잘 돼서 개발자에게 뽀뽀 해주고 싶은 심정이다.  
 다른 IDE는 어떤지 모르겠지만 역시 갓텔리제이라 할만하다.
  

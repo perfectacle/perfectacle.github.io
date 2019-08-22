@@ -8,7 +8,7 @@ category:
 date: 2018-12-03 20:42:39
 ---
 
-![](thumb.png)
+![](/images/effective-java-ch03-item11-hashCode-method/thumb.png)
 
 Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.
 (그 이유는 모르겠지만... 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)  

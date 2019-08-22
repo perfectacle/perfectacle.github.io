@@ -2,7 +2,7 @@
 title: 양권성이란...?
 date: 2016-11-10 18:06:26
 ---
-![](exobud.jpg)  
+![](/images/about/exobud.jpg)  
 * 네트워크, OS
 * Java, Spring Boot, JPA  
 * ES2015+, Typescript, Node.js  

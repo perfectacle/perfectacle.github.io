@@ -4,7 +4,7 @@ tags: [Spring, Gradle]
 category: [Back-end, Spring]
 date: 2018-07-22 15:31:41
 ---
-![](thumb.png)  
+![](/images/spring-boot-2-env/thumb.png)  
 
 Spring Boot 1.x와 달리 Spring Boot 2.0에서는 Profile 설정하는 게 좀 달라졌다.  
 알아보자.  
@@ -261,11 +261,11 @@ project의 specific gradle을 실행하는 Gradle Wrapper를 통해 실행해보
 ```
 
 IntelliJ IDEA에서는 아래와 같이 하면 된다.  
-![IDEA 우측 상단에서 Edit Configurations를 클릭하자.](edit-configurations.png)  
-![좌측 상단에 있는 + 버튼을 눌러서 Gradle을 선택하자.](add-gradle-task.png)  
-![default로 설정한 profile이 local이기 때문에 딱히 profile argument를 넘겨주지 않아도 된다.](boot-run-local.png)  
-![dev profile argument를 넘겨주자.](boot-run-dev.png)  
-![prod profile argument를 넘겨주자.](boot-run-prod.png)  
+![IDEA 우측 상단에서 Edit Configurations를 클릭하자.](/images/spring-boot-2-env/edit-configurations.png)  
+![좌측 상단에 있는 + 버튼을 눌러서 Gradle을 선택하자.](/images/spring-boot-2-env/add-gradle-task.png)  
+![default로 설정한 profile이 local이기 때문에 딱히 profile argument를 넘겨주지 않아도 된다.](/images/spring-boot-2-env/boot-run-local.png)  
+![dev profile argument를 넘겨주자.](/images/spring-boot-2-env/boot-run-dev.png)  
+![prod profile argument를 넘겨주자.](/images/spring-boot-2-env/boot-run-prod.png)  
 
 ## test profile
 ```

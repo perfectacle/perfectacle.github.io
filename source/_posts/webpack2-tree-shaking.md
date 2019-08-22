@@ -10,7 +10,7 @@ tags: [npm, Node.js, Webpack2, babel, ES2015, ES6]
 또한 이 글을 보고 나서 [(Webpack 2) 코드를 분할해보자!](/2017/03/13/webpack2-code-splitting/)도 보는 걸 추천한다.
 
 ## 트리 쉐이킹(Tree Shaking)??
-![나무를 흔들어 썩은 과일(필요없는 놈)을 떨어트리자!](thumb.png)  
+![나무를 흔들어 썩은 과일(필요없는 놈)을 떨어트리자!](/images/webpack2-tree-shaking/thumb.png)  
 트리 쉐이킹이란 나무를 흔들어서 필요없는 걸 떨어트리는 행위를 말한다.  
 여기서 우리에게 필요없는 것이란 쓰지 않는 코드를 뜻한다.  
 

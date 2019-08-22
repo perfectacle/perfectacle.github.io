@@ -11,7 +11,7 @@ category:
 date: 2017-06-30 21:30:56
 ---
 
-![](thumb.png)
+![](/images/js-func-08-pipe/thumb.png)
 
 이 포스트는 [인프런](https://www.inflearn.com/)에서 진행한 [유인동](https://www.facebook.com/profile.php?id=100011413063178) 님의 [함수형 자바스크립트](https://www.inflearn.com/course/%ED%95%A8%EC%88%98%ED%98%95-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/)를 듣고 감명 받아서 쓴 글이다.  
 사실 [underscore](http://underscorejs.org/), [lodash](https://lodash.com/) 등 함수형 패러타임으로 코드를 짤 수 있게 끔
@@ -101,7 +101,7 @@ console.log(
 마치 비동기 함수에서 콜백 함수 지옥을 탈출하기 위해 프로미스가 나온 것과 비슷해보인다.  
 ~~역시 콜백 함수가 문제다.~~
 
-![이러한 파이프를 타고 요리조리 이동하며 함수를 하나씩 실행하는 원리이다.](pipe.gif)  
+![이러한 파이프를 타고 요리조리 이동하며 함수를 하나씩 실행하는 원리이다.](/images/js-func-08-pipe/pipe.gif)  
 우리가 인자로 넘긴 함수를 하나 하나 순차적으로 실행할 수 있게 해주는 pipe 함수를 만들어보자.  
 머리를 굴려도 생각이 나지 않아 아래 링크를 ~~베껴~~참조 하였다.  
 [(함수형JS) 흐름 기반 프로그래밍](http://blog.jeonghwan.net/js/2017/05/11/pipeline.html)  

@@ -12,7 +12,7 @@ category:
 date: 2019-04-28 21:53:56
 ---
 
-![ALB는 Cross-Zone Load Balancing 옵션이 무조건 활성화돼있다.](thumb.png)  
+![ALB는 Cross-Zone Load Balancing 옵션이 무조건 활성화돼있다.](/images/nginx-proxy-aws-elb/thumb.png)  
 얼마 전에 서버를 새롭게 이전했다.  
 기존에 있던 local의 upstream server 대신에 새로운 서버로 업스트림을 걸어놨다.  
 

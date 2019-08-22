@@ -4,7 +4,7 @@ date: 2017-02-12 22:51:05
 category: [Programming, ECMAScript]
 tags: [JS, ES, ES5, Array]
 ---
-![](thumb.png)  
+![](/images/ES5-array-loop-method-break/thumb.png)  
 이 글은 Outsider 님의 블로그 포스트 중  
 [forEach에 break문 대신 some 사용하기](https://blog.outsider.ne.kr/847)를 보고 큰 감명을 받아  
 내가 이해한 내용을 토대로 정리해 본 글이다.

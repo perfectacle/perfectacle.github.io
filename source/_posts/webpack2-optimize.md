@@ -5,7 +5,7 @@ tags: [npm, Node.js, Webpack2, Optimize, gzip]
 date: 2017-04-18 09:56:26
 ---
 
-![](thumb.png)
+![](/images/webpack2-optimize/thumb.png)
 
 ## 들어가기에 앞서
 이 포스트들에서 말하는 내용들은 전부 배포용 파일에 적합한 작업이다.  
@@ -31,7 +31,7 @@ npm i
 npm run build
 ```
 
-![지금은 컴포넌트(페이지라고 생각)가 적어서 그렇지만 수백 개가 된다면 청크도 수백 개가 될 것이다](a-lot-chunks.png)  
+![지금은 컴포넌트(페이지라고 생각)가 적어서 그렇지만 수백 개가 된다면 청크도 수백 개가 될 것이다](/images/webpack2-optimize/a-lot-chunks.png)  
 청크 별로 코드를 분할 시켜서 로딩시간을 단축시켰다고 생각할 수 있지만 그렇지 않을 수도 있다.  
 실제 코드를 로딩받는 시간보다 http 요청을 수십, 수백 회 증가시키는 행위가 오히려 더 로딩시간을 늘리게 될 수가 있다.  
 http 1.1 스펙에서 하나의 요청당 하나의 응답(js 파일 등등)만 받아올 수 있는데 그 하나의 요청을 위한 비용은 어찌보면  
@@ -45,7 +45,7 @@ new webpack.optimize.MinChunkSizePlugin({
   minChunkSize: 512000 // 50kb
 })
 ```
-![라이브러리 청크 빼고는 코드 스플리팅이 되지 않았다.](min-chunks.png)  
+![라이브러리 청크 빼고는 코드 스플리팅이 되지 않았다.](/images/webpack2-optimize/min-chunks.png)  
 라우팅 된 컴포넌트의 코드 스플리팅이 안 된 것처럼 보이지만,  
 앱이 점점 커지고 컴포넌트 수가 급격히 증가하고, 코드의 용량이 증가하다보면  
 50kb짜리 코드 여러 개로 분할될 것이다.
@@ -120,11 +120,11 @@ new CompressionPlugin({
   minRatio: 0.8
 })
 ```
-![](gz.png)  
+![](/images/webpack2-optimize/gz.png)  
 그럼 위와 같이 gz으로 압축된 vendor 파일을 볼 수 있다.  
 파일 크기가 너무 작으면 압축을 해제하는데 더 큰 시간을 소모하므로 threshold를 잘 지정해주자.  
 
-![크롬 개발자 도구 네트워크 탭에서 본 결과](check-gz.png)  
+![크롬 개발자 도구 네트워크 탭에서 본 결과](/images/webpack2-optimize/check-gz.png)  
 실제 페이지를 보면 위와 같이 vendor.js의 파일 용량(받은 용량)이 179kb가 아닌 50kb임을 알 수 있다.  
 
 이 외에도 chunk의 최대 갯수(코드 스플리팅하는)를 제한하는 [LimitChunkCountPlugin](https://webpack.js.org/plugins/limit-chunk-count-plugin/) 등등이 있으니 궁금한 사람은 더 찾아보길 바란다.

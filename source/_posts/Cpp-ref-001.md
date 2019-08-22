@@ -4,7 +4,7 @@ date: 2017-01-02 09:59:21
 category: [Programming, C/C++]
 tag: [C, C++, Pointer, Address]
 ---
-![](thumb.png)  
+![](/images/Cpp-ref-001/thumb.png)  
 
 ```c
 #include <iostream>

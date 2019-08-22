@@ -4,7 +4,7 @@ category: [Note, Java]
 tag: [Java, 자바의 정석, 내장 클래스, 날짜와 시간, 형식화]
 date: 2017-08-04 15:17:49
 ---
-![](thumb.png)  
+![](/images/Java-study-016day/thumb.png)  
 
 흠... 한 3일을 탱자탱자 논 거 같다...
 어찌보면 아까운 시간이지만 쉼이 있어야 또 달릴 수 있는 거 같다.  

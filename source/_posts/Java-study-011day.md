@@ -5,7 +5,7 @@ tag: [Java, 자바의 정석, OOP]
 date: 2017-08-01 18:30:01
 ---
 
-![](thumb.png)
+![](/images/Java-study-011day/thumb.png)
 
 ## 연습문제 실수
 * 기존의 코드를 재사용할 수 있으면 하자.  

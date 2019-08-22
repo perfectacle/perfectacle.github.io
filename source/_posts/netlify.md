@@ -4,7 +4,7 @@ date: 2017-11-21 09:51:11
 category: [Middle-end, Web Server]
 tag: [CD, CDN]
 ---
-![](thumb.png)
+![](/images/netlify/thumb.png)
 
 이 포스트는 [2017 GDG Seoul](https://devfest17-seoul.firebaseapp.com)에서 [Github와 CloudFlare를 이용한 무료 고성능 웹 어플리케이션 호스팅](https://devfest17-seoul.firebaseapp.com/schedule/?sessionId=115)을
 주제로 발표하신 [박병진](https://devfest17-seoul.firebaseapp.com/speakers/7) 님의 세션을 듣고 삘이 꽂혀서 바로 실행에 옮긴 삽질을 포스팅했습니다.
@@ -36,7 +36,7 @@ netlify는 CI(빌드 및 배포)+CDN의 개념으로 볼 수 있다.
 깃헙 페이지와 마찬가지로 무중단 배포를 지원한다.  
 로그인을 하고 나서는 New site from Git 버튼을 클릭해서 netlify에 빌드+배포 할 깃헙 리파지토리를 선택해주자.  
 
-![](00.png)  
+![](/images/netlify/00.png)  
 아마 요 설정에서 어떻게 해야할지 막막(?)할 것이다.  
 github.io를 버리고 갑자기 도메인 이전을 하면 이전 사용자가 혼란을 겪을 수 있으므로 우선 master 브랜치는 냅두고, 별도의 브랜치(나의 경우엔 netlify)를 팠다.  
 만약 신규로 깃헙 페이지를 파는 경우에는 master 브랜치를 바라보게 하면 될 것이다.  
@@ -46,12 +46,12 @@ github.io를 버리고 갑자기 도메인 이전을 하면 이전 사용자가 
 퍼블리시 디렉토리는 플랫폼(지킬, 헥소, 휴고, 등등) 별로 다를 가능성이 크니 직접 로컬에서 테스트 해보자.  
 위 설정을 다 마쳤다면 deploy를 하자.
 
-![](01.png)  
+![](/images/netlify/01.png)  
 혹시 배포 중에 빌드 오류 등등이 일어날 지 모르니 배포 중인 항목을 선택해서 로그를 유심히 살펴보자.  
 나의 경우에는 빌드하는데 2~3분 가량 걸렸고, CDN의 각 엣지 포인트에 배포되기까지는 5분 가량 걸린 것 같다.  
 
 ## Setting
-![해괴망측한 도메인](02.png)  
+![해괴망측한 도메인](/images/netlify/02.png)  
 배포를 성공적으로 마쳤으면 저 해괴망측한 도메인으로 접속이 가능하다.  
 우선 저 도메인부터 바꾸기 위해 site settings를 누르자.   
 그리고 change site name을 눌러서 도메인 및 사이트 이름을 변경해주면 된다.  
@@ -74,7 +74,7 @@ github.io를 버리고 갑자기 도메인 이전을 하면 이전 사용자가 
 
 Custom domain에서 add custom domain을 선택하고 자신의 도메인을 등록하자.  
 
-![절대 한번에 제대로 되는 법이 없다](03.png)  
+![절대 한번에 제대로 되는 법이 없다](/images/netlify/03.png)  
 아마 위와 같은 오류를 마주치게 될 것이다.  
 오류 문구를 읽다보면 다음과 같은 문장과 마주하게 된다.  
 >> Warning! With your current configuration, you won’t benefit from the full advantages of a CDN if you use an A record.
@@ -87,10 +87,10 @@ www.*.com과 같이 사용하는 걸 권장한다는 것 같아서 뭔가 좀 �
 그러면 오류 메세지가 바뀌면서 어떤 네임서버를 추가해야하는지 알려준다.  
 도메인의 DNS관리(GoDaddy의 경우 도메인 관리 - 해당 도메인의 DNS 관리로 들어와야 함)로 가서 네임서버를 변경하자.  
 
-![GoDaddy의 경우에는 다음과 같이 하면 된다.](04.png)  
+![GoDaddy의 경우에는 다음과 같이 하면 된다.](/images/netlify/04.png)  
 저장을 누르고 약 5분이 지난 후 새로고침을 해보면 아래와 같이 해당 도메인으로 정상적인 접근이 가능하다는 것을 볼 수 있다.  
 
-![감격의 눈물이 주륵주륵](05.png)
+![감격의 눈물이 주륵주륵](/images/netlify/05.png)
 
 아래로 내려서 HTTPS 탭에서 TLS(a.k.a SSL) 인증서를 붙이자.  
 별도의 인증서가 없다면 Verify DNS configuration - Let's Encrypt certificate를 클릭하자. (Let's Encrypt 만만세)  

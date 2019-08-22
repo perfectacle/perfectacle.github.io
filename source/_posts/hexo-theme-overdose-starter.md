@@ -4,15 +4,15 @@ date: 2017-07-22 09:58:01
 category: [기타, 자작]
 tag: [blog, hexo, starter]
 ---
-![이 테마에 중독될지도 모르니 주의 해야한다!](thumb.png)  
+![이 테마에 중독될지도 모르니 주의 해야한다!](/images/hexo-theme-overdose-starter/thumb.png)  
 [깃헙 저장소로 바로가기](https://github.com/perfectacle/hexo-theme-overdose-starter)
 
 ## 만든 계기
 기본적으로 헥소로 블로그 테마를 얹히는 것은 크게 어렵지 않다.  
 하지만 적용한 테마를 깃헙에 올리고 다른 컴퓨터에서 다운받으려고 하면 참담한 결과를 맞이하게 된다.  
-![내가 여태까지 커스터마이징 한 테마 어디갔어!?](01.png)  
+![내가 여태까지 커스터마이징 한 테마 어디갔어!?](/images/hexo-theme-overdose-starter/01.png)  
 이유는 다음 스크린샷을 보면 알게 된다.  
-![우리가 관리하는 블로그 프로젝트 안에 테마 프로젝트가 또 git으로 관리되고 있기 때문이다.](02.png)  
+![우리가 관리하는 블로그 프로젝트 안에 테마 프로젝트가 또 git으로 관리되고 있기 때문이다.](/images/hexo-theme-overdose-starter/02.png)  
 이러한 문제점은 모든 테마에서 발생하고 있으며 .git 폴더를 삭제하면 해결되는 문제이다.  
 하지만 이미 컴퓨터를 포맷한 이후라면 여태까지 커스터마이징한 내역을 복구가 불가능할 것이다. (지못미 ㅠㅠ)  
 물론 .gitignore도 삭제해야 우리가 여태까지 테마를 커스터마이징한 설정 파일인 _config.yml까지 형상관리가 가능하게 된다.  
@@ -37,7 +37,7 @@ npm run clone
 이 과정에서는 2MiB 정도의 데이터만 다운받기 때문에 큰 시간은 소요되지 않는다.  
 
 하지만 위 과정에도 역시나 문제는 존재한다.  
-![내 폰트 어디갔어?!](03.png)  
+![내 폰트 어디갔어?!](/images/hexo-theme-overdose-starter/03.png)  
 이유는 바로 클론을 받았기 때문에 해당 디렉토리 내에도 .git 디렉토리가 존재한다.  
 따라서 .git 디렉토리를 지워주고 다시 올려야 나중에 클론할 때도 폰트 파일까지 정상적으로 받아오게 된다.  
 ~~물론 폰트파일만 400MiB가 넘을테지만...~~
@@ -73,18 +73,18 @@ spoqa-han-sans-jp는 한자 때문인지 16MiB에 달해 부담이 될만한 용
 
 ## 추가된 사항
 * 정적인 html 파일들만 버전관리가 되는 문제  
-![읭? 내가 md로 작성한 포스트 파일은 어디로...?](04.png)  
+![읭? 내가 md로 작성한 포스트 파일은 어디로...?](/images/hexo-theme-overdose-starter/04.png)  
 기존 헥소 블로그에는 위와 같은 고질적인 문제가 존재한다.  
 따라서 나는 이러한 문제를 해결하고자 과거에는 md나 기타 파일들을 관리하는 저장소를 따로 팠었는데 그냥 브랜치를 하나 파서 하나의 저장소에서 관리하게끔 하였다.  
 그리고 새로 만든 브랜치를 default 브랜치로 정해놓으면 더 편하다.    
-![gh-pages라는 브랜치를 새로 파서 거기서 기타 파일들을 버전관리](05.png)  
+![gh-pages라는 브랜치를 새로 파서 거기서 기타 파일들을 버전관리](/images/hexo-theme-overdose-starter/05.png)  
 * 포트폴리오를 블로그 위에 얹기  
 원래 깃헙 페이지는 블로그가 메인이 아니라 정적 페이지를 서비스하는 게 메인인 것으로 알고 있다. (아닌가...?)  
 그럼 블로그 위에 포트폴리오도 얹을 수 있다는 발상이 떠오르게 된다.  
-![/source/_static 디렉토리 안에 포트폴리오들을 얹으면 된다.](06.png)  
+![/source/_static 디렉토리 안에 포트폴리오들을 얹으면 된다.](/images/hexo-theme-overdose-starter/06.png)  
 물론 포트폴리오는 웹서버나 DB를 사용하지 않는 동적인 페이지만 가능하다. (예를 들면 홈페이지나 웹 어플리케이션)  
 이 디렉토리에 있는 파일들은 아래와 같이 접근이 가능하다.  
-![물론 자신의 깃헙 페이지에서도 확인이 가능하다.](07.png)  
+![물론 자신의 깃헙 페이지에서도 확인이 가능하다.](/images/hexo-theme-overdose-starter/07.png)  
 * SEO 친화적으로 만들기(검색 엔진에 노출 잘 되게 만들기)  
 1. [hexo-generator-seo-friendly-sitemap](https://github.com/ludoviclefevre/hexo-generator-seo-friendly-sitemap)을 이용하여 사이트맵 만들기.  
 2. [hexo-generator-feed](https://github.com/hexojs/hexo-generator-feed)을 이용하여 RSS Feed를 만들기.  

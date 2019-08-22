@@ -4,7 +4,7 @@ date: 2017-03-25 09:39:14
 category: [Front-end, React]
 tags: [npm, Node.js, Webpack2, React, Router]
 ---
-![](thumb.png)  
+![](/images/react-router-v4/thumb.png)  
 
 ## 들어가기에 앞서
 ~~React Router v4가 정식으로 나와서 3은 deprecated 된 거나 마찬가지라고 본다.~~~  
@@ -23,7 +23,7 @@ v3으로 만든 [라이브 데모](http://react-router-v3.surge.sh/)에서 직�
 Node.js의 express 프레임워크를 사용해서 새로고침을 해도 제대로 작동하게 만들 것이다.  
 
 전체적인 프로젝트 구조는 다음과 같다.
-![](02.png)
+![](/images/react-router-v4/02.png)
 
 일단 packge.json 파일을 만들고 다음 패키지들을 설치하자.  
 ```bash
@@ -142,7 +142,7 @@ const Portfolio = ({routeParams: {id}}) =>  {
 export default Portfolio;
 ```
 
-![리액트 라우터 v3의 파라미터는 요렇게 넘어온다.](01.png)  
+![리액트 라우터 v3의 파라미터는 요렇게 넘어온다.](/images/react-router-v4/01.png)  
 id는 추후에 우리가 정할 파라미터이다.
 
 ```javascript
@@ -406,7 +406,7 @@ app.get('*', (req, res) => {
 리액트 라우터 v4에서는 바뀐 게 참 많아서... 수정해야할 부분이 참 많다.  
 혹시 따라하기 귀찮거나 중간 중간 확인하고 싶은 사람은 [소스 코드](https://github.com/perfectacle/react-router-4/tree/v4)를 확인하자.
 
-![뭐가 이렇게 많아?](04.png)  
+![뭐가 이렇게 많아?](/images/react-router-v4/04.png)  
 v3 때는 react-router 하나 밖에 못 봤던 것 같은데... 5개나 됐다.  
 대표적으로 react-router, react-router-dom, react-router-native만 알아봤다.  
 * react-router = react-router-dom + react-router-native  
@@ -469,7 +469,7 @@ const Portfolio = ({ match: {params: {id}} }) =>  {
 
 export default Portfolio;
 ```
-![v4에서는 파라미터가 이런 식으로 넘어온다.](03.png)
+![v4에서는 파라미터가 이런 식으로 넘어온다.](/images/react-router-v4/03.png)
 
 App.js가 가장 수정 사항이 많다...  
 나도 원리 보다는 사용방법 위주로 익혔으니 자세한 내용은 [공식 사이트](https://reacttraining.com/react-router/)를 참조하자.  

@@ -8,7 +8,7 @@ category:
 date: 2018-08-19 13:56:20
 ---
 
-![YAML Ain't Markup Language](thumbs.png)    
+![YAML Ain't Markup Language](/images/yaml/thumbs.png)    
 
 ## [YAML](http://yaml.org/)  
 > YAML Ain't Markup Language  
@@ -19,12 +19,12 @@ YAML은 마크업 언어가 아니고, `사람에게 친숙한 데이터 Seriali
 마크업 언어는 태그를 이용하여 문서나 데이터의 구조를 표현하는 언어이다. (HTML, XML)   
 Serialization(직렬화)은 데이터를 시스템 외부(파일로 쓰거나 네트워크로 전송하거나)에서 사용할 때 사용한다. (Byte Array, [JSON](https://www.json.org/), YAML)  
 
-![Spring Boot 2의 기본 디펜던시에 포함된 SnakeYAML](snake-yaml.png)
+![Spring Boot 2의 기본 디펜던시에 포함된 SnakeYAML](/images/yaml/snake-yaml.png)
 [Spring](https://spring.io/)에서는 YAML Parser인 [SnakeYAML](https://bitbucket.org/asomov/snakeyaml)이 내장돼있다.  
 따라서 YAML 파일을 POJO로 매핑할 수도 있고, Configuration 파일에서도 사용할 수 있다.  
 주의사항은 Spring에 내장된 [SankeYAML은 YAML 1.1 스펙을 구현한 점](https://mvnrepository.com/artifact/org.yaml/snakeyaml)이다.  
 
-![Hexo의 기본 디펜던시에 포함된 js-yaml](js-yaml.png)
+![Hexo의 기본 디펜던시에 포함된 js-yaml](/images/yaml/js-yaml.png)
 [Node.js](https://nodejs.org/) 기반의 블로그 프레임워크인 [Hexo](https://hexo.io/)에서도
 [JS-YAML](https://github.com/nodeca/js-yaml)이라는 YAML Parser를 이용해 Configuration을 설정하고 있다.  
 JS-YAML은 Python의 YAML Parser인 [PyYAML](https://pyyaml.org/)을 포팅하면서 처음에는 YAML 1.1 스펙을 지원했는데, 현재는 YAML 1.2 스펙까지 구현했다.  

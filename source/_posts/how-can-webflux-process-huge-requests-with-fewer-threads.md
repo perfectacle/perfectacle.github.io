@@ -11,7 +11,7 @@ category:
 date: 2019-03-10 19:24:38
 ---
 
-![](thumb.png)
+![](/images/how-can-webflux-process-huge-requests-with-fewer-threads/thumb.png)
 
 기본적으로 SpringMVC에서 많이 사용하는 WAS인 Tomcat의 경우에는 기본적으로 쓰레드 풀의 갯수가 200개이고,
 Jetty의 경우에는 기본적으로 minimum 8개에서 maximum 200개로 설정돼있다.  

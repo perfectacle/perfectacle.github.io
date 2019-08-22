@@ -4,7 +4,7 @@ tags: [자본주의, 경제, 재테크]
 category: [기타, 경제]
 date: 2019-08-15 00:08:49
 ---
-![돈은 빚이다.](thumb.png)
+![돈은 빚이다.](/images/money-is-debt/thumb.png)
 
 [EBS 다큐프라임 자본주의 제1부 돈은 빚이다](https://youtu.be/0LYMTsj_eqc)를 보고 나면 더 많은 인사이트를 얻을 수 있다.
 

@@ -4,7 +4,7 @@ date: 2016-12-18 22:01:28
 category: [기타, 등등]
 tags: [IDE, Editor, JetBrains, WebStorm, PhpStorm, IntelliJ]
 ---
-![](thumb.png)
+![](/images/JetBrains-License/thumb.png)
 
 여름방학에 현장실습을 하면서 다음과 같은 경험을 했다.  
 > A: 권성 씨, 에디터 좋다. 뭐 써요?
@@ -14,7 +14,7 @@ A: 뭐 같은 대학생이니까 상관 없으려나...
 A: 어, 웹스톰은 기업용이 아니면 기업에서는 쓰면 안 된다고 하는데요?
 나: (나니?!)
 
-![가정용/학생용 라이센스는 기업에서 쓸 수 없다고 나온다.](webstorm.png)  
+![가정용/학생용 라이센스는 기업에서 쓸 수 없다고 나온다.](/images/JetBrains-License/webstorm.png)  
 [국내 유통 업체에서 팔고있는 웹스톰 개인용 라이센스](http://www.kbsmedia.net/shop/shop.htm?type=shopdetail&brandcode=00600800100000000037&NaPm=ct%3Diwuof86w%7Cci%3D39710175c68e1f21f18e9ed8ef37a0ede2bbc992%7Ctr%3Dslsl%7Csn%3D225947%7Chk%3D2c97d4652c52b3836eb42e7e617c1312a1deba82)  
 &nbsp;  
 내가 느끼기에는 '개인용'이란 단어를 교묘하게  

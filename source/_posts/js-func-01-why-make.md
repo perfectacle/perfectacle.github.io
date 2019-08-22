@@ -11,7 +11,7 @@ category:
 date: 2017-06-26 09:25:57
 ---
 
-![](thumb.png)
+![](/images/js-func-01-why-make/thumb.png)
 
 이 포스트는 [인프런](https://www.inflearn.com/)에서 진행한 [유인동](https://www.facebook.com/profile.php?id=100011413063178) 님의 [함수형 자바스크립트](https://www.inflearn.com/course/%ED%95%A8%EC%88%98%ED%98%95-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/)를 듣고 감명 받아서 쓴 글이다.  
 사실 [underscore](http://underscorejs.org/), [lodash](https://lodash.com/) 등 함수형 패러타임으로 코드를 짤 수 있게 끔
@@ -39,7 +39,7 @@ date: 2017-06-26 09:25:57
 이 메소드들은 ArrayLike나 돌림직한(?), 돌릴 수 있는 데이터(key와 value의 쌍으로 이루어져있는 object 등등)들에게는 적용되지 못한다.  
 
 **ArrayLike...?**  
-![대표적인 ArrayLike인 NodeList](array-like.png)  
+![대표적인 ArrayLike인 NodeList](/images/js-func-01-why-make/array-like.png)  
 ArrayLike는 배열 같지만 배열이 아니다.  
 다음과 같은 특징을 갖는다.  
 1. length 프로퍼티가 존재한다.  

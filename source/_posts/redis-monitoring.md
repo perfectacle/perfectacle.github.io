@@ -9,7 +9,7 @@ category:
   - Troubleshooting
 date: 2019-05-29 03:00:50
 ---
-![점점 산으로 가는 그래프...](thumb.png)
+![점점 산으로 가는 그래프...](/images/redis-monitoring/thumb.png)
 
 ## 사건의 발단
 사내에서 사용하는 어드민(이하 **어드민 A**)/외부에서 사용하는 어드민(이하 **어드민 B**)이 사망하는 사례가 속출하였다.  
@@ -29,13 +29,13 @@ elasticsearch에 저장된 에러 로그를 확인해본 결과 위와 같은 �
 하지만 머지않은 시점에 또 다시 사망하는 사례가 발생하였다.
 
 ## 응급 처치
-![](legacy-redis.png)
+![](/images/redis-monitoring/legacy-redis.png)
 우선 어드민 A가 사용하는 레디스(이하 **레디스 A**)와 어드민 B가 사용하는 레디스(이하 **레디스 B**)가 같은 EC2 인스턴스 내에 존재하였다.  
 또한 메모리 1GB라는 소규모 서버에서 구동하다보니 인메모리 기반의 DB인 레디스에는 굉장히 협소하다고 생각했다.  
 하지만 우리가 사용하는 건 로그인 세션을 위해서만 사용하지, 그 이외의 것은 사용하지 않고 있어서 여전히 의아하긴 했다.  
 하지만 문제가 계속해서 발생하다보니 우선은 스케일업을 해야했다.  
 
-![](new-redis.png)
+![](/images/redis-monitoring/new-redis.png)
 그 중에 레디스 A보다 레디스 B가 더 자주 뻗어서 레디스 B를 새로운 서버로 옮기기로 했다.  
 트래픽이 그렇게 많지도 않은 어드민 서버의 로그인 세션만 저장하는데
 메모리를 8GB씩이나 주는 건 약간 오버하는 경향이 없잖아 보였지만 일단 안정성을 챙기고자 좀 빵빵하게 주었다.
@@ -45,7 +45,7 @@ elasticsearch에 저장된 에러 로그를 확인해본 결과 위와 같은 �
 CTO 님께서는 좀 더 정확하게 원인을 분석하자고 하셨다.  
 나도 대충대충 넘어가다보면 영 찜찜하기도 해서 ~~내 역량도 그닥 올라갈 거 같지 않아서~~ 정확하게 원인을 분석해보는 게 좋을 것 같았다.  
 
-![어디서부터 어떻게 접근해야할지 몰랐기 때문에 우선 레디스를 모니터링하기로 했는데, 이미 사내에 구축한 모니터링 시스템(Exporter - Prometheus - Grafana)이 있기 때문에 이를 이용하기로 했다.](monitoring.png)  
+![어디서부터 어떻게 접근해야할지 몰랐기 때문에 우선 레디스를 모니터링하기로 했는데, 이미 사내에 구축한 모니터링 시스템(Exporter - Prometheus - Grafana)이 있기 때문에 이를 이용하기로 했다.](/images/redis-monitoring/monitoring.png)  
 
 우선 모니터링하기 위해선 지표(Metric)을 수집해야한다.  
 그래서 가장 유명한 [Redis Exporter](https://github.com/oliver006/redis_exporter)를 찾아서 적용해보려고 했다.  
@@ -55,7 +55,7 @@ CTO 님께서는 좀 더 정확하게 원인을 분석하자고 하셨다.
 하지만 해당 Exporter는 [Port를 옵션으로 받는 게 아니](https://github.com/oliver006/redis_exporter/issues/262)라 [하드코딩](https://github.com/oliver006/redis_exporter/blob/7a06cf8af9e28ad109018d067ff653edf08e664f/main.go#L46) 돼있다.
 Redis Exporter를 하나만 띄울 거라면 상관 없지만, 우리는 나중에 레디스 A도 업어와야하기 때문에 Redis Exporter를 하나 더 띄워야하는 경우였다.  
 
-![](redis-exporter.png)
+![](/images/redis-monitoring/redis-exporter.png)
 따라서 주객이 전도된 것 같지만 지표 수집을 위해서 기존에 Host OS에 띄워놓은 Redis를 Docker Container로 띄우고,  
 Redis Exporter도 Docker Container로 띄워서 각 컨테이너끼리 통신하게 끔 하였다.
 ```yaml
@@ -81,17 +81,17 @@ services:
 
 또한 레디스 B 뿐만 아니라 기존 서버에서 레디스 A도 모니터링을 붙여놓았다.
 
-![레디스 A를 재시작 한 이후에 모니터링 해보니 점점 산으로 간다...](legacy-monitoring.png)  
+![레디스 A를 재시작 한 이후에 모니터링 해보니 점점 산으로 간다...](/images/redis-monitoring/legacy-monitoring.png)  
 레디스 A는 우리 사내에서 사용하는 어드민이 사용하는 레디스다.  
 계열사까지 합쳐도 전사 직원이 1,000명도 안 될텐데 생성된 키만 70,000개를 넘었다. (실제로 해당 어드민을 사용하는 유저는 100명도 안 되는데 말이다.)  
 이는 분명히 이상했지만, 명확하게 이렇게 생성된 원인을 파악할 수 없었다. (못난 나레기 ㅠㅠ...)  
 
-![](legacy-monitoring-1-day.png)  
+![](/images/redis-monitoring/legacy-monitoring-1-day.png)  
 우선 스프링 레디스 세션에 설정한 만료기간인 하루가 지나야 뭔가 볼 수 있을 것 같아 날이 밝기를 기다렸다.  
 그러자 위와 같이 그래프의 양상이 바뀌었다.  
 
-![그래프의 양상이 바뀐 시점부터 분명 뭔가 만료는 되고 있고...](expired-graph.png)  
-![하지만 주말 새벽 시간에도 꾸준히 뭔가 call이 일어나고 있다.](command-call-graph.png)
+![그래프의 양상이 바뀐 시점부터 분명 뭔가 만료는 되고 있고...](/images/redis-monitoring/expired-graph.png)  
+![하지만 주말 새벽 시간에도 꾸준히 뭔가 call이 일어나고 있다.](/images/redis-monitoring/command-call-graph.png)
 
 여기서 내린 추측은 `세션이 만료됨과 동시에 누군가 계속 세션을 생성해서 그래프가 현상유지가 되는 것`이라고 전제를 깔고 분석하기 시작했다.  
 그래서 우선 Nginx의 Access Log부터 까보기로 했다.
@@ -310,7 +310,7 @@ scrape_configs:
 이제 `Go-http-client/1.1`라는 Agent도 `/health`을 찌르기 시작했다.  
 그 이후에 이제 레디스 A를 모니터링 해봤다.  
 
-![그래프가 쭉쭉 떨어지는 걸 봐서 잘 해결된 것 같다.](legacy-monitoring-2.png)
+![그래프가 쭉쭉 떨어지는 걸 봐서 잘 해결된 것 같다.](/images/redis-monitoring/legacy-monitoring-2.png)
 
 ## 진짜 진짜로 죽은 이유
 레디스 A와 같이 그래프가 현상유지만 됐으면 별 문제가 되지 않는다.  
@@ -319,29 +319,29 @@ scrape_configs:
 레디스 B는 어드민 B(외부에서 사용하는 어드민)이 사용하는 레디스이다.  
 해당 프로젝트는 세션의 만료기간을 Integer.MAX_VALUE(2³¹ − 1 = 2,147,483,647)로 잡아놓았다.  
 나는 해당 프로젝트의 개발에 참여하지 않아 잘 모르겠는데 아마 외부에서 사용하는 사람들이라면 매번 로그인하는 걸 번거롭게 생각해서 직접 요구사항이 들어오지 않았을까 싶다.  
-![무려 68년동안이나 세션이 유지된다.](integer_max_value_to_year.png)  
+![무려 68년동안이나 세션이 유지된다.](/images/redis-monitoring/integer_max_value_to_year.png)  
 
 거의 평생동안 쓰레기 세션이 만들어진 채로 계속 유지가 된 거다.  
-![그 결과 500mb가 넘는 쓰레기 세션들이 만들어지고 있었다.](forever-session-monitoring.png)  
+![그 결과 500mb가 넘는 쓰레기 세션들이 만들어지고 있었다.](/images/redis-monitoring/forever-session-monitoring.png)  
 1GB 장비에서 500mb가 넘는 메모리는 엄청난 장애를 동반할 수 있다.  
 계속 유지되다가 버티지 못하고 레디스가 뻗고, 해당 레디스를 사용하는 서버도 뻗고, 다른 레디스 및 서버에도 영향을 미친 것으로 보인다.  
 
-![](forever-session-garbage.png)  
+![](/images/redis-monitoring/forever-session-garbage.png)  
 헬스 체크 엔드포인트를 변경한 이후에는 새로운 세션은 거의 만들어지지 않고 계속 현상 유지만 된 것이다.  
 500MB가 넘는 쓰레기 세션을 68년이 넘는 시간동안이나 끌고 가야하는 문제에 직면하게 되었다.  
 일단 로그인이 풀리겠지만 쓰레기 세션이 너무 많은 관계로 한 번 털고 가고(레디스 재시작), 세션의 만료기간도 좀 줄이기로 하였다.   
 
-![](after-garbage-collection.png)  
+![](/images/redis-monitoring/after-garbage-collection.png)  
 쓰레기 세션을 한 번 털고 나니 메모리 사용량이 확 줄어들었다.  
 
 ## 이후 상황
-![어드민 A(세션 유지기가 1일)100MB를 치던 키가 쭉쭉 떨어지는 걸 볼 수 있다.](admin-a-30-days.png)  
+![어드민 A(세션 유지기가 1일)100MB를 치던 키가 쭉쭉 떨어지는 걸 볼 수 있다.](/images/redis-monitoring/admin-a-30-days.png)  
 재밌는 건 중간에 줄어들다가 현상유지되는 구간이다.  
 이 구간은 내 실수로 두 대의 서버가 떠있는데 한 대의 서버의 헬스 체크 엔드포인트만 수정하고, 나머지 한대는 제대로 수정하지 않아서 현상 유지가 되었다.  
 (Consul 클라이언트 프로세스를 죽이고 다시 띄웠는데도 Consul 서버에서는 해당 노드와 서비스들이 좀비처럼 살아있었다 ㅠㅠ...)  
-![지금은 뭐 피크 타임 때도 2메가 쓸까 말까이다.](admin-a-24-hours.png)  
-![어드민 B(세션 유지기간 68년)의 경우에는 너무 쓰레기 세션이 많아서 한 번 털고 갔다.](admin-b-30-days.png)  
-![얘는 피크 때 그나마 6~7메가 정도를 쓰고 있다.](admin-b-24-hours.png)  
+![지금은 뭐 피크 타임 때도 2메가 쓸까 말까이다.](/images/redis-monitoring/admin-a-24-hours.png)  
+![어드민 B(세션 유지기간 68년)의 경우에는 너무 쓰레기 세션이 많아서 한 번 털고 갔다.](/images/redis-monitoring/admin-b-30-days.png)  
+![얘는 피크 때 그나마 6~7메가 정도를 쓰고 있다.](/images/redis-monitoring/admin-b-24-hours.png)  
 
 솔직히 말해서 스케일 아웃은 괜히했고, 애초에 로그인 세션만 사용하는데 비정상적으로 키가 많이 생성되고 용량 차지를 많이하는 것부터가 이상했다.  
 다음부터는 좀 더 조심히 일하고 현상 파악을 해야겠다. 

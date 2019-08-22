@@ -4,7 +4,7 @@ date: 2017-02-13 09:01:37
 category: [Programming, ECMAScript]
 tags: [JS, ES, Operator]
 ---
-![](thumb.png)  
+![](/images/es-logical-operator/thumb.png)  
 오늘은 기본값을 위해 많이 쓰던 논리 연산자인  
 ||와 &&을 집중 탐구해보았다.  
 우선 위에 있는 녀석들은 어떨 때 쓰는지 알아보자.  

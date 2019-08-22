@@ -4,7 +4,7 @@ date: 2017-01-24 10:17:58
 category: [Note, Java]
 tag: [Java, 자바의 정석, 배열]
 ---
-![](thumb.png)
+![](/images/Java-study-006day/thumb.png)
 
 ## 배열
 Java에서는 길이가 0인 배열의 선언도 가능하다.  
