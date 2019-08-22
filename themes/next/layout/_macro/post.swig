@@ -20,7 +20,9 @@
       <meta itemprop="name" content="{{ title }}">
     </span>
 
-    {% include '../_third-party/adsense/google-adsense-post.swig' %}
+    {%- if not is_index %}
+      {% include '../_third-party/adsense/google-adsense-post-header.swig' %}
+    {%- endif %}
 
     {%- if post.header !== false %}
       <header class="post-header">
@@ -174,7 +176,7 @@
             #}</div>
           {%- endif %}
 
-          {%- if post.tags and post.tags.length %}
+          {%- if not is_index and post.tags and post.tags.length %}
             {%- if theme.tag_icon %}
               {%- set tag_indicate = '<i class="fa fa-tag"></i>' %}
             {% else %}
@@ -271,7 +273,7 @@
       {%- endif %}
 
       <footer class="post-footer">
-        {% include '../_third-party/adsense/google-adsense-post.swig' %}
+        {% include '../_third-party/adsense/google-adsense-post-footer.swig' %}
 
         {{ partial('../_partials/post/post-footer.swig', {}, {cache: theme.cache.enable}) }}
 
