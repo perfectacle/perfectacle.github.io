@@ -275,6 +275,8 @@
       <footer class="post-footer">
         {% include '../_third-party/adsense/google-adsense-post-footer.swig' %}
 
+        {% include '../_third-party/share/share.swig' %}
+
         {{ partial('../_partials/post/post-footer.swig', {}, {cache: theme.cache.enable}) }}
 
         {%- if post.prev or post.next %}

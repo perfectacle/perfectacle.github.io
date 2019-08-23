@@ -13,3 +13,5 @@
 
 {{- next_js('next-boot.js') }}
 {% include 'three.swig' %}
+
+{{- next_js('share.js') }}
