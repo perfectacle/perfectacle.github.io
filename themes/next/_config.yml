@@ -802,11 +802,11 @@ local_search:
   # If manual, trigger search by pressing enter key or search button.
   trigger: auto
   # Show top n results per article, show all results by setting to -1
-  top_n_per_article: 1
+  top_n_per_article: -1
   # Unescape html strings to the readable one.
-  unescape: false
+  unescape: true
   # Preload the search data when the page loads.
-  preload: false
+  preload: true
 
 # Swiftype Search API Key
 swiftype_key:
