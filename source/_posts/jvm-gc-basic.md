@@ -179,8 +179,8 @@ generational count가 적은 객체(Eden Space에 거주중인 객체들)보다 
 
 #### Promotion
 아래 나오는 그림에서 동그라미 안의 숫자는 객체의 나이(객체가 GC로부터 살아남은 횟수)를 의미한다.  
-![Promotion(승진)은 Young Generation에서 적당히 나이를 먹어서(GC로 부터 살아남아서 계속해서 generational count가 늘어나서 적당한 generational count가 됐음을 의미)](promotion-01.png)
-![이제 Old Generation으로 갈 나이가 됐으니 Old Generation으로 이동하는 걸 의미한다.](promotion-02.png)
+![Promotion(승진)은 Young Generation에서 적당히 나이를 먹어서(GC로 부터 살아남아서 계속해서 generational count가 늘어나서 적당한 generational count가 됐음을 의미)](/images/jvm-gc-basic/promotion-01.png)
+![이제 Old Generation으로 갈 나이가 됐으니 Old Generation으로 이동하는 걸 의미한다.](/images/jvm-gc-basic/promotion-02.png)
 generational count가 어느정도 있으려면~~(짬밥을 어느정도 먹었으려면)~~ 당연히 Survivor Space에 있는 객체가 이동됨을 의미한다.
 
 적당한 나이는 -XX:InitialTenuringThreshold와 -XX:MaxTenuringThreshold 파라미터로 정할 수 있다.  

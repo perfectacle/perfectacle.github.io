@@ -22,7 +22,7 @@ date: 2019-05-11 16:05:47
 Basic 편에서는 간단하게 Young/Old Generation과 Mark and Sweep 알고리듬에 대해서 간단하게 알아보았다.  
 해당 알고리듬을 사용하는 GC를 **scavenge garbage collector**라고도 부른다.
 Mark and Sweep Algorith의 단점은 GC를 수행하는 동안 Stop the World(이하 STW)가 발생한다는 것이다. 
-![출처: https://www.youtube.com/watch?v=_cNXjmuhCCc]/images/jvm-gc-advanced/stop-the-world.png) 
+![출처: https://www.youtube.com/watch?v=_cNXjmuhCCc](/images/jvm-gc-advanced/stop-the-world.png) 
 
 그럼 이제 해당 알고리듬을 사용하는 GC 알고리듬에는 뭐가 있는지 알아보자.
 

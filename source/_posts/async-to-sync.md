@@ -240,6 +240,6 @@ ats(arrAsync, fallback);
 ```
 
 #### 지원하는 플랫폼
-![Chrome](chrome.png) | ![Firefox](firefox.jpg) | ![IE](IE.png)| ![Node.js](node.png)|
+![Chrome](/images/async-to-sync/chrome.png) | ![Firefox](/images/async-to-sync/firefox.jpg) | ![IE](/images/async-to-sync/IE.png)| ![Node.js](/images/async-to-sync/node.png)|
 --- | --- | --- | --- |
 Latest ✔ | Latest ✔ | 9+ ✔ |  6+ ✔ |

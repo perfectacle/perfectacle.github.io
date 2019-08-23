@@ -16,7 +16,7 @@ JMX를 모니터링 하려면 [VisualVM](https://visualvm.github.io/)이나 JDK�
 java -jar air.jar
 ```
 
-![그리고 모니터링 툴을 보면 바로 해당 어플리케이션이 잡혀있다.](01.png)
+![그리고 모니터링 툴을 보면 바로 해당 어플리케이션이 잡혀있다.](/images/jmx-monitoring-inside-docker-container-over-ssh-tunneling/01.png)
 
 ## 도커 컨테이너 안의 JMX 모니터링 하기
 우선 도커 이미지 파일부터 만들어야한다.  

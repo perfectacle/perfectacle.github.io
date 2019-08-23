@@ -541,7 +541,7 @@ const objNum = new Number(11);
 console.log(typeof objNum); // "object"
 console.dir(objNum);
 ```
-![Number Constructor Structure](number-constructor.png)
+![Number Constructor Structure](/images/ES6-Number-object-and-function/number-constructor.png)
 
 #### \_\_proto\_\_
 ```javascript
