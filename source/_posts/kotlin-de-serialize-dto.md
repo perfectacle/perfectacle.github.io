@@ -65,22 +65,63 @@ class DTO(@JsonProperty("n") val name: String?)
 ```
 
 ### Request Body를 Deserialize 할 때와 Response Body를 Serialize 할 때 필드명이 다른 경우
+dto field name: name  
+request body's key: n  
+response body's key: name
 ```kotlin
 /**
  * deserialize from (request body)
  * {n: "name"}
  *
  * serialize to (response body)
- * {names: "name"}
+ * {name: "name"}
  * */
 class DTO(name: String?) {
     var name = name
-        @JsonProperty(value = "names", access = JsonProperty.Access.READ_ONLY) get
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY) get
         @JsonProperty(value = "n", access = JsonProperty.Access.WRITE_ONLY) set
 }
 ```
 
+dto field name: name  
+request body's key: name  
+response body's key: n
+```kotlin
+/**
+ * deserialize from (request body)
+ * {name: "name"}
+ *
+ * serialize to (response body)
+ * {n: "name"}
+ * */
+class DTO(name: String?) {
+    var name = name
+        @JsonProperty(value = "n", access = JsonProperty.Access.READ_ONLY) get
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) set
+}
+```
+
+dto field name: name  
+request body's key: names  
+response body's key: n
+```kotlin
+/**
+ * deserialize from (request body)
+ * {name: "name"}
+ *
+ * serialize to (response body)
+ * {n: "name"}
+ * */
+class DTO(name: String?) {
+    var name = name
+        @JsonProperty(value = "n", access = JsonProperty.Access.READ_ONLY) get
+        @JsonProperty(value = "names", access = JsonProperty.Access.WRITE_ONLY) set
+}
+```
+
 ## LocalDateTime 3형제 다루기
+보기 좋은 포맷으로 serialize하려면 `jackson-modules-java8`을 디펜던시에 추가해줘야한다.   
+
 LocalDate, LocalTime, LocalDateTime 3형제를 다뤄보자.  
 모든 클라이언트가 ISO 8601을 따라서 Request Body를 만들어서 주면 좋겠지만 그렇지 않은 경우가 많기 때문에 직접 파싱해야할 경우가 있다.  
 
@@ -143,6 +184,8 @@ class DTO(
 ```
 
 ## 세계 시간 다루기
+보기 좋은 포맷으로 serialize하려면 `jackson-modules-java8`을 디펜던시에 추가해줘야한다.  
+
 Local 시리즈는 타임존이 없다.  
 저 시간/날짜가 영국 기준인지, 한국 기준인지 모른다.  
 **생일**과 같이 타임존에 관계를 받지 않는 시간/날짜에 사용해야한다.  
