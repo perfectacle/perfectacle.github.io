@@ -13,7 +13,7 @@ date: 2019-09-18 01:23:39
 
 ## 기본값을 사용하자.
 ```kotlin
-class DTO(val name: String? = "")
+class DTO(val name: String? = null)
 
 @RestController
 class Controller {
@@ -21,10 +21,10 @@ class Controller {
     fun test(@RequestBody dto: DTO) {}
 }
 ```
-위와 같을 때 request body의 name에 아무런 내용도 입력하지 않으면 name에 기본값 `""`이 잘 세팅된다.  
-기본값이 없어서 null로 세팅되는 것보다는 한결 다루기 편할 것이다.
+위와 같을 때 request body의 name에 아무런 내용도 입력하지 않으면 name에 기본값 `null`이 잘 세팅된다.  
+기본값이 전부 존재하면 default constructor가 생성돼서 객체를 손쉽게 생성할 수 있다보니 테스트 할 때 용이하다.  
 
-2. 무조건 nullable 타입을 사용하자.  
+## 무조건 nullable 타입을 사용하자.  
 ```kotlin
 class DTO(val name: String = "123")
 
@@ -40,7 +40,7 @@ class Controller {
 라는 오류와 함께 400 에러를 뱉는다. (**타입에 관련된 에러임**)  
 따라서 nullable 타입을 사용하자.
 
-3. Header와 Parameter의 default value는 어노테이션에 있는 설정을 쓴다.  
+## Header와 Parameter의 default value는 어노테이션에 있는 설정을 쓴다.  
 ```kotlin
 @RestController
 class Controller {
