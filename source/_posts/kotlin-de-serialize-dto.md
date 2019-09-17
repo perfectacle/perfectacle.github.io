@@ -1,6 +1,6 @@
 ---
 title: (Kotlin) De/Serialize DTO 뽀개서 뿌셔버리기
-tags: [Kotlin]
+tags: [Kotlin, Spring]
 category: [Note, Kotlin]
 date: 2019-09-16 00:30:06
 ---
