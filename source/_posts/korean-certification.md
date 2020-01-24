@@ -1,8 +1,14 @@
 ---
 title: 공인인증서
-tags: [공인인증서, 보안]
-category: []
+tags:
+  - 공인인증서
+  - 보안
+category:
+  - Note
+  - 삽질
+date: 2020-01-24 15:52:03
 ---
+
 ![npki라는 디렉리토리 안에 보관돼있는 공인인증서의 공개키(*.der)와 비밀키(*.key)](/images/korean-certification/thumb.png)
 
 ## 인증서는 왜 쓸까
