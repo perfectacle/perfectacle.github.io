@@ -1,39 +1,30 @@
 .sub-menu {
-  background: #fff !important;
+  background: var(--content-bg-color);
   border-bottom: 1px solid $table-border-color;
   margin: 0;
   padding: 6px 0;
 
   .menu-item {
-    display: inline-block !important;
+    display: inline-block;
 
-    & a, span.exturl {
+    a, span.exturl {
+      background: transparent;
       margin: 5px 10px;
-      padding: initial !important;
-    }
+      padding: initial;
 
-    & a:hover, span.exturl:hover {
-      background: initial !important;
-      color: $sidebar-highlight;
+      &:hover {
+        background: transparent;
+        color: $sidebar-highlight;
+      }
     }
   }
 
   .menu-item-active a {
-    background: #fff !important;
     border-bottom-color: $sidebar-highlight;
     color: $sidebar-highlight;
 
     &:hover {
-      background: #fff !important;
       border-bottom-color: $sidebar-highlight;
-    }
-
-    $badges = hexo-config('menu_settings.badges');
-
-    if (!$badges) {
-      &::after {
-        content: initial;
-      }
     }
   }
 }

@@ -1,11 +1,7 @@
 .back-to-top {
-  background: $b2t-sidebar-bg-color;
-  cursor: pointer;
-  font-size: $b2t-font-size;
+  background: transparent;
   margin: 20px - $sidebar-offset -10px -20px;
-  opacity: $b2t-opacity;
-  text-align: center;
-  visibility: hidden;
+  opacity: 0;
 
   if (!hexo-config('back2top.scrollpercent')) {
     span {
@@ -13,18 +9,12 @@
     }
   }
 
-  &:hover {
-    opacity: $b2t-opacity-hover;
-  }
-
-  +tablet-mobile() {
-    if (!hexo-config('sidebar.onmobile')) {
-      display: none;
-    }
-  }
-
   &.back-to-top-on {
-    visibility: visible;
-    the-transition();
+    cursor: pointer;
+    opacity: $b2t-opacity;
+
+    &:hover {
+      opacity: $b2t-opacity-hover;
+    }
   }
 }

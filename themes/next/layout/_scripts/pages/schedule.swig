@@ -1,18 +1,18 @@
-<script>
+<script{{ pjax }}>
 (function() {
   // Initialization
   var calendar = {
     orderBy     : 'startTime',
-    showLocation: 'false',
+    showLocation: false,
     offsetMax   : 72,
     offsetMin   : 4,
-    showDeleted : 'false',
-    singleEvents: 'true',
-    maxResults  : '250'
-  }
+    showDeleted : false,
+    singleEvents: true,
+    maxResults  : 250
+  };
 
   // Read config form theme config file
-  Object.assign(calendar, {{ theme.calendar | json_encode }});
+  Object.assign(calendar, {{ theme.calendar | json }});
 
   var now = new Date();
   var timeMax = new Date();
@@ -20,40 +20,39 @@
 
   timeMax.setHours(now.getHours() + calendar.offsetMax);
   timeMin.setHours(now.getHours() - calendar.offsetMin);
-  calendar.timeMaxISO      = timeMax.toISOString();
-  calendar.timeMinISO      = timeMin.toISOString();
 
   // Build URL
-  const BASE_URL           = 'https://www.googleapis.com/calendar/v3/calendars/';
-  const FIELD_KEY          = 'key';
-  const FIELD_ORDERBY      = 'orderBy';
-  const FIELD_TIMEMAX      = 'timeMax';
-  const FIELD_TIMEMIN      = 'timeMin';
-  const FIELD_SHOWDELETED  = 'showDeleted';
-  const FIELD_SINGLEEVENTS = 'singleEvents';
-  const FIELD_MAXRESULTS   = 'maxResults';
+  const params = {
+    key         : calendar.api_key,
+    orderBy     : calendar.orderBy,
+    timeMax     : timeMax.toISOString(),
+    timeMin     : timeMin.toISOString(),
+    showDeleted : calendar.showDeleted,
+    singleEvents: calendar.singleEvents,
+    maxResults  : calendar.maxResults
+  };
 
-  var request_url = BASE_URL + calendar.calendar_id  + '/events?' +
-    FIELD_KEY          + '=' + calendar.api_key      + '&' +
-    FIELD_ORDERBY      + '=' + calendar.orderBy      + '&' +
-    FIELD_TIMEMAX      + '=' + calendar.timeMaxISO   + '&' +
-    FIELD_TIMEMIN      + '=' + calendar.timeMinISO   + '&' +
-    FIELD_SHOWDELETED  + '=' + calendar.showDeleted  + '&' +
-    FIELD_SINGLEEVENTS + '=' + calendar.singleEvents + '&' +
-    FIELD_MAXRESULTS   + '=' + calendar.maxResults;
-
+  var request_url = 'https://www.googleapis.com/calendar/v3/calendars/' + calendar.calendar_id + '/events?' + Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
 
   fetchData();
-  var queryLoop = setInterval(fetchData, 60000);
+  var fetchDataTimer = setInterval(fetchData, 60000);
+  window.addEventListener('pjax:send', () => {
+    clearInterval(fetchDataTimer);
+  });
 
   function fetchData() {
+    var eventList = document.querySelector('.event-list');
+    if (!eventList) return;
+
     fetch(request_url).then(response => {
       return response.json();
     }).then(data => {
-      $eventList = document.getElementById('event-list');
-
+      if (data.items.length === 0) {
+        eventList.innerHTML = '<hr>';
+        return;
+      }
       // Clean the event list
-      $eventList.innerHTML = '';
+      eventList.innerHTML = '';
       var prevEnd = 0; // used to decide where to insert an <hr>
 
       data.items.forEach(event => {
@@ -64,12 +63,12 @@
 
         tense = judgeTense(now, start, end); // 0:now 1:future -1:past
 
-        if (tense == 1 && prevEnd < now) {
-          $eventList.innerHTML += '<hr>';
+        if (tense === 1 && prevEnd < now) {
+          eventList.innerHTML += '<hr>';
         }
 
         eventDOM = buildEventDOM(tense, event);
-        $eventList.innerHTML += eventDOM;
+        eventList.innerHTML += eventDOM;
 
         prevEnd = end;
       });
@@ -89,19 +88,19 @@
     elapsed = Math.abs(elapsed);
 
     if      ( elapsed < msPerHour  ) {
-      return Math.round(elapsed/msPerMinute) + ' minutes ' + tense;
+      return Math.round(elapsed / msPerMinute) + ' minutes ' + tense;
     }
     else if ( elapsed < msPerDay   ) {
-      return Math.round(elapsed/msPerHour) + ' hours ' + tense;
+      return Math.round(elapsed / msPerHour) + ' hours ' + tense;
     }
     else if ( elapsed < msPerMonth ) {
-      return 'about ' + Math.round(elapsed/msPerDay) + ' days ' + tense;
+      return 'about ' + Math.round(elapsed / msPerDay) + ' days ' + tense;
     }
     else if ( elapsed < msPerYear  ) {
-      return 'about ' + Math.round(elapsed/msPerMonth) + ' months ' + tense;
+      return 'about ' + Math.round(elapsed / msPerMonth) + ' months ' + tense;
     }
     else {
-      return 'about' + Math.round(elapsed/msPerYear) + ' years' + tense;
+      return 'about' + Math.round(elapsed / msPerYear) + ' years' + tense;
     }
   }
 
@@ -128,36 +127,27 @@
       default:
         throw 'Time data error';
     }
-    durationFormat = {
+    var durationFormat = {
       weekday: 'short',
       hour   : '2-digit',
       minute : '2-digit'
     };
-    relativeTimeStr = (tense == 0) ? 'NOW' : getRelativeTime(now, start);
-    durationStr = start.toLocaleTimeString([], durationFormat) + ' - ' +
-                  end.toLocaleTimeString([], durationFormat);
+    var relativeTimeStr = (tense === 0) ? 'NOW' : getRelativeTime(now, start);
+    var durationStr = start.toLocaleTimeString([], durationFormat) + ' - ' + end.toLocaleTimeString([], durationFormat);
 
-    liOpen  = '<li class="event ' + tenseClass + '">';
-    liClose = '</li>';
-    h2Open  = '<h2 class="event-summary">';
-    h2Close = '</h2>';
-
-    locationDOM     = '';
+    var locationDOM = '';
     if (calendar.showLocation && event.location) {
-      locationDOM   = '<span class="event-location event-details">' + event.location + '</span>';
+      locationDOM = '<span class="event-location event-details">' + event.location + '</span>';
     }
-    relativeTimeDOM = '<span class="event-relative-time">' + relativeTimeStr + '</span>';
-    durationDOM     = '<span class="event-duration event-details">' + durationStr + '</span>';
 
-    eventContent =
-      liOpen +
-        h2Open +
-          event.summary +
-          relativeTimeDOM+
-        h2Close +
-        locationDOM +
-        durationDOM +
-      liClose;
+    var eventContent = `<div class="event ${tenseClass}">
+        <h2 class="event-summary">
+          ${event.summary}
+          <span class="event-relative-time">${relativeTimeStr}</span>
+        </h2>
+        ${locationDOM}
+        <span class="event-duration event-details">${durationStr}</span>
+      </div>`;
     return eventContent;
   }
 })();

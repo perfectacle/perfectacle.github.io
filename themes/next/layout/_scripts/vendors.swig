@@ -1,67 +1,47 @@
 {%- set js_vendors = {} %}
-{%- set js_defer_vendors = {} %}
-{%- set js_vendors.jquery = 'jquery/index.js?v=3.4.1' %}
+{%- set js_vendors = js_vendors | attr('anime', 'anime.min.js') %}
 
 {%- if theme.pjax %}
-  {%- set js_vendors.pjax = 'pjax/pjax.min.js?v=0.2.8' %}
+  {%- set js_vendors = js_vendors | attr('pjax', 'pjax/pjax.min.js') %}
 {%- endif %}
 
 {%- if theme.fancybox %}
-  {%- set js_vendors.fancybox = '//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js' %}
+  {%- set js_vendors = js_vendors | attr('jquery', '//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js') %}
+  {%- set js_vendors = js_vendors | attr('fancybox', '//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js') %}
 {%- endif %}
 
 {%- if theme.mediumzoom %}
-  {%- set js_vendors.mediumzoom = '//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js' %}
+  {%- set js_vendors = js_vendors | attr('mediumzoom', '//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js') %}
 {%- endif %}
 
 {%- if theme.lazyload %}
-  {%- set js_vendors.lazyload = '//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js' %}
+  {%- set js_vendors = js_vendors | attr('lazyload', '//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js') %}
 {%- endif %}
 
 {%- if theme.pangu %}
-  {%- set js_vendors.pangu = '//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js' %}
+  {%- set js_vendors = js_vendors | attr('pangu', '//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js') %}
 {%- endif %}
 
 {%- if theme.motion.enable %}
-  {%- set js_vendors.velocity = 'velocity/velocity.min.js?v=1.2.1' %}
-  {%- set js_vendors.velocity_ui = 'velocity/velocity.ui.min.js?v=1.2.1' %}
-{%- endif %}
-
-{%- if theme.three.enable and not theme.three.delay %}
-  {%- if theme.three.three_waves %}
-    {%- set js_defer_vendors.three = 'three/three.min.js' %}
-    {%- set js_defer_vendors.three_waves = 'three/three-waves.min.js' %}
-  {%- endif %}
-  {%- if theme.three.canvas_lines %}
-    {%- set js_defer_vendors.three = 'three/three.min.js' %}
-    {%- set js_defer_vendors.canvas_lines = 'three/canvas_lines.min.js' %}
-  {%- endif %}
-  {%- if theme.three.canvas_sphere %}
-    {%- set js_defer_vendors.three = 'three/three.min.js' %}
-    {%- set js_defer_vendors.canvas_sphere = 'three/canvas_sphere.min.js' %}
-  {%- endif %}
+  {%- set js_vendors = js_vendors | attr('velocity', 'velocity/velocity.min.js') %}
+  {%- set js_vendors = js_vendors | attr('velocity_ui', 'velocity/velocity.ui.min.js') %}
 {%- endif %}
 
 {%- if theme.canvas_nest.enable %}
   {%- if theme.canvas_nest.onmobile %}
-    {%- set canvas_nest_uri = theme.vendors.canvas_nest | default(next_vendors('canvas-nest/canvas-nest.min.js')) %}
+    {%- set canvas_nest_uri = theme.vendors.canvas_nest or next_vendors('canvas-nest/canvas-nest.min.js') %}
   {% else %}
-    {%- set canvas_nest_uri = theme.vendors.canvas_nest_nomobile | default(next_vendors('canvas-nest/canvas-nest-nomobile.min.js')) %}
+    {%- set canvas_nest_uri = theme.vendors.canvas_nest_nomobile or next_vendors('canvas-nest/canvas-nest-nomobile.min.js') %}
   {%- endif %}
   <script color='{{ theme.canvas_nest.color }}' opacity='{{ theme.canvas_nest.opacity }}' zIndex='{{ theme.canvas_nest.zIndex }}' count='{{ theme.canvas_nest.count }}' src="{{ canvas_nest_uri }}"></script>
 {%- endif %}
 
 {%- if theme.canvas_ribbon.enable %}
-  {%- set canvas_ribbon_uri = theme.vendors.canvas_ribbon | default(next_vendors('canvas-ribbon/canvas-ribbon.js')) %}
+  {%- set canvas_ribbon_uri = theme.vendors.canvas_ribbon or next_vendors('canvas-ribbon/canvas-ribbon.js') %}
   <script size="{{ theme.canvas_ribbon.size }}" alpha="{{ theme.canvas_ribbon.alpha }}" zIndex="{{ theme.canvas_ribbon.zIndex }}" src="{{ canvas_ribbon_uri }}"></script>
 {%- endif %}
 
 {%- for name, internal in js_vendors %}
   {%- set internal_script = next_vendors(internal) %}
-  <script src="{{ theme.vendors[name] | default(internal_script) }}"></script>
-{%- endfor %}
-
-{%- for name, internal in js_defer_vendors %}
-  {%- set internal_script = next_vendors(internal) %}
-  <script defer src="{{ theme.vendors[name] | default(internal_script) }}"></script>
+  <script src="{{ theme.vendors[name] or internal_script }}"></script>
 {%- endfor %}

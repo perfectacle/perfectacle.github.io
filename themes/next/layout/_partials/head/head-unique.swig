@@ -1,27 +1,14 @@
 {{ open_graph() }}
-<meta property="og:image" content="/images/avatar.png" />
 
-{%- if theme.rss === '' and config.feed and config.feed.path %}
-  {%- set theme.rss = config.feed.path %}
-{%- endif %}
-{%- if theme.rss %}
-  <link rel="alternate" href="{{ url_for(theme.rss) }}" title="{{ title }}" type="application/atom+xml">
-{%- endif %}
-
-{%- if theme.canonical %}
-  {%- set without_index = url.replace('index.html', '') %}
-  {%- set without_html = without_index.replace('.html', '') %}
-  <link rel="canonical" href="{{ without_html }}">
-{%- endif %}
+{{ canonical() }}
 
 {# Exports some front-matter variables to Front-End #}
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
-    sidebar: {{ page.sidebar | json_encode }},
-    isHome: {{ is_home() }},
-    isPost: {{ is_post() }},
-    isPage: {{ is_page() }},
-    isArchive: {{ is_archive() }}
+    sidebar: {{ page.sidebar | json }},
+    isHome : {{ is_home() }},
+    isPost : {{ is_post() }},
+    lang   : '{{ page.lang }}'
   };
 </script>
