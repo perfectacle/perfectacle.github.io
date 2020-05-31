@@ -101,3 +101,9 @@ archive_generator:
   monthly: true
   daily: false
   order_by: -date
+
+excerpt:
+  depth: 5
+  excerpt_excludes: []
+  more_excludes: []
+  hideWholePostExcerpts: true
