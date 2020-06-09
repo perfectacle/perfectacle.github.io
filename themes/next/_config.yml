@@ -190,14 +190,14 @@ site_state: true
 # Value before `||` delimiter is the target permalink.
 # Value after `||` delimiter is the name of Font Awesome icon. If icon (with or without delimiter) is not specified, globe icon will be loaded.
 social:
-  GitHub: https://github.com/perfectacle || github
-  E-Mail: mailto:perfectacle@gmail.com || envelope
+  GitHub: https://github.com/perfectacle || fab fa-github
+  E-Mail: mailto:perfectacle@gmail.com || fa fa-envelope
   #Weibo: https://weibo.com/yourname || weibo
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
-  Facebook: https://www.facebook.com/perfectacle || facebook
+  FB Page: https://www.facebook.com/perfectacle || fab fa-facebook
   #VK Group: https://vk.com/yourname || vk
-  StackOverflow: https://stackoverflow.com/users/8778461/perfectacle || stack-overflow
+  StackOverflow: https://stackoverflow.com/users/8778461/perfectacle || fab fa-stack-overflow
   #YouTube: https://youtube.com/yourname || youtube
   #Instagram: https://instagram.com/yourname || instagram
   #Skype: skype:yourname?call|chat || skype
