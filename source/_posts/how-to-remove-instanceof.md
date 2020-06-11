@@ -106,15 +106,11 @@ fun `$10 = $10`() {
 
 ```kotlin
 fun ofDollars(): Dollar {
-    if (this is Dollar) return this
-
-    val amount = if (this is Franc) {
-        this.amount / 2
-    } else {
-        throw UnsupportedOperationException("Unsupported Currency")
+    return when (this) {
+        is Dollar -> this
+        is Franc -> Dollar(this.amount / 2)
+        else -> throw UnsupportedOperationException("Unsupported Currency")
     }
-    
-    return Dollar(amount)
 }
 ```
 테스트는 전부 통과하지만, 통화가 늘어나면 저렇게 타입 검사하는 코드를 계속 추가해야하고, 실수로 타입 검사를 빼먹으면 예외를 만나게 될 것이다.  
@@ -128,7 +124,9 @@ abstract class Money(
     val amount: Long,
     val currency: String
 ) {
+    // ...
     abstract fun ofDollars(): Dollar
+    // ...
 }
 ```
 
