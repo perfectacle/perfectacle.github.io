@@ -125,7 +125,7 @@ fun `test addition`() = listOf(
     Pair(5, 2),
     Pair(6, 3)
 ).map { (augendAmount, addendAmount) ->
-    dynamicTest("$${augendAmount} * $${addendAmount} = $${augendAmount + addendAmount}") {
+    dynamicTest("$${augendAmount} + $${addendAmount} = $${augendAmount + addendAmount}") {
         // Given
         val augend = Dollar(augendAmount)
         val addend = Dollar(addendAmount)
@@ -134,7 +134,7 @@ fun `test addition`() = listOf(
         val actual = augend + addend
 
         // Then
-        val expected = Dollar(augendAmount * addendAmount)
+        val expected = Dollar(augendAmount + addendAmount)
         actual shouldBe expected
     }
 }
@@ -182,7 +182,7 @@ class FrancTest {
         Pair(5, 2),
         Pair(6, 3)
     ).map { (augendAmount, addendAmount) ->
-        dynamicTest("${augendAmount}CHF * ${addendAmount}CHF = ${augendAmount + addendAmount}CHF") {
+        dynamicTest("${augendAmount}CHF + ${addendAmount}CHF = ${augendAmount + addendAmount}CHF") {
             // Given
             val augend = Franc(augendAmount)
             val addend = Franc(addendAmount)
@@ -191,7 +191,7 @@ class FrancTest {
             val actual = augend + addend
     
             // Then
-            val expected = Franc(augendAmount * addendAmount)
+            val expected = Franc(augendAmount + addendAmount)
             actual shouldBe expected
         }
     }
@@ -248,7 +248,7 @@ class DollarTest {
         Pair(5, 2),
         Pair(6, 3)
     ).map { (augendAmount, addendAmount) ->
-        dynamicTest("$${augendAmount} * $${addendAmount} = $${augendAmount + addendAmount}") {
+        dynamicTest("$${augendAmount} + $${addendAmount} = $${augendAmount + addendAmount}") {
             // Given
             val augend: Money = Dollar(augendAmount)
             val addend: Money = Dollar(addendAmount)
@@ -257,7 +257,7 @@ class DollarTest {
             val actual: Money = augend + addend
     
             // Then
-            val expected: Money = Dollar(augendAmount * addendAmount)
+            val expected: Money = Dollar(augendAmount + addendAmount)
             actual shouldBe expected
         }
     }
@@ -342,7 +342,7 @@ class FrancTest {
         Pair(5, 2),
         Pair(6, 3)
     ).map { (augendAmount, addendAmount) ->
-        dynamicTest("${augendAmount}CHF * ${addendAmount}CHF = ${augendAmount + addendAmount}CHF") {
+        dynamicTest("${augendAmount}CHF + ${addendAmount}CHF = ${augendAmount + addendAmount}CHF") {
             // Given
             val augend: Money = Franc(augendAmount)
             val addend: Money = Franc(addendAmount)
@@ -351,7 +351,7 @@ class FrancTest {
             val actual: Money = augend + addend
     
             // Then
-            val expected: Money = Franc(augendAmount * addendAmount)
+            val expected: Money = Franc(augendAmount + addendAmount)
             actual shouldBe expected
         }
     }
@@ -397,7 +397,7 @@ class DollarTest {
         Pair(5, 2),
         Pair(6, 3)
     ).map { (augendAmount, addendAmount) ->
-        dynamicTest("$${augendAmount} * $${addendAmount} = $${augendAmount + addendAmount}") {
+        dynamicTest("$${augendAmount} + $${addendAmount} = $${augendAmount + addendAmount}") {
             // Given
             val augend: Money = Money.dollar(augendAmount)
             val addend: Money = Money.dollar(addendAmount)
@@ -406,7 +406,7 @@ class DollarTest {
             val actual: Money = augend + addend
     
             // Then
-            val expected: Money = Money.dollar(augendAmount * addendAmount)
+            val expected: Money = Money.dollar(augendAmount + addendAmount)
             actual shouldBe expected
         }
     }
@@ -462,7 +462,7 @@ class FrancTest {
         Pair(5, 2),
         Pair(6, 3)
     ).map { (augendAmount, addendAmount) ->
-        dynamicTest("${augendAmount}CHF * ${addendAmount}CHF = ${augendAmount + addendAmount}CHF") {
+        dynamicTest("${augendAmount}CHF + ${addendAmount}CHF = ${augendAmount + addendAmount}CHF") {
             // Given
             val augend: Money = Money.franc(augendAmount)
             val addend: Money = Money.franc(addendAmount)
@@ -471,7 +471,7 @@ class FrancTest {
             val actual: Money = augend + addend
     
             // Then
-            val expected: Money = Money.franc(augendAmount * addendAmount)
+            val expected: Money = Money.franc(augendAmount + addendAmount)
             actual shouldBe expected
         }
     }
@@ -512,7 +512,7 @@ Money에 Franc 객체를 생성하는 static factory method를 추가했고 다�
 class Franc(private val amount: Int): Money() {
     // ...
     override operator fun plus(money: Money): Money {
-        return Franc(this.amount * money.amount)
+        return Franc(this.amount + money.amount)
     }
     // ..
 }
@@ -529,7 +529,7 @@ class Franc(private val amount: Int): Money() {
 여기서 멈추지 말고 각 하위 클래스에 있는 equals 메서드를 부모 클래스로 올려서 하위 클래스에서 제거해보자.  
 
 ```kotlin
-abstract class Money(protected val amount: Int) {
+abstract class Money(val amount: Int) {
     // ...
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -557,7 +557,7 @@ class Dollar(amount: Int): Money(amount) {
 ```kotlin
 class Franc(amount: Int): Money(amount) {
     override operator fun plus(money: Money): Money {
-        return Franc(this.amount * money.amount)
+        return Franc(this.amount + money.amount)
     }
 }
 ```
