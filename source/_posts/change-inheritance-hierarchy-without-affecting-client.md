@@ -36,7 +36,7 @@ class DollarTest {
 이제 위 코드가 실패하게 끔 컴파일이 되도록 클래스를 만들어주자. (컴파일만 되게 끔 아주 빠르게 만들면 된다)
 
 ```kotlin
-class Dollar(amount: Int) {
+class Dollar(amount: Long) {
     operator fun plus(dollar: Dollar): Dollar {
         TODO("Not yet implemented")
     }
@@ -55,7 +55,7 @@ class Dollar(amount: Int) {
 그럼 다음 단게인 Green 단계를 만족시키기 위해 테스트를 성공 시키는 강력범죄를 저지르러 가자.  
 
 ```kotlin
-class Dollar(amount: Int) {
+class Dollar(amount: Long) {
     override fun equals(other: Any?): Boolean {
         return true
     }
@@ -90,7 +90,7 @@ Dollar 클래스의 equals 메서드는 무조건 true를 반환하므로 테스
 equality를 비교하려면 해당 클래스의 내부 상태를 검사하는 값 객체(Value Object) 패턴을 사용해야한다.
 
 ```kotlin
-class Dollar(private val amount: Int) {
+class Dollar(private val amount: Long) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -214,7 +214,7 @@ class FrancTest {
 
 이제 컴파일이 되도록 하면 되는데 우리는 어떻게 구현해야할지 Dollar 클래스의 테스트를 작성하면서 명확해졌으므로 Dollar 클래스의 구현체도 복붙하자.
 ```kotlin
-class Franc(private val amount: Int) {
+class Franc(private val amount: Long) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -281,14 +281,14 @@ class DollarTest {
 [상속은 죄악](https://www.notion.so/perfectacle/f06f6cd942e54d5f86e657b1452eb243)이라고 하니까 우선 Money 인터페이스로 빼서 컴파일 되게 구현해보자.
 ```kotlin
 interface Money {
-    val amount: Int
+    val amount: Long
     operator fun plus(money: Money): Money
 }
 ```
 
 그 다음엔 Dollar 클래스가 Money 인터페이스를 구현하게 끔 수정해보자
 ```kotlin
-class Dollar(override val amount: Int): Money {
+class Dollar(override val amount: Long): Money {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -309,7 +309,7 @@ class Dollar(override val amount: Int): Money {
 우선 테스트가 통과하긴 하는데... 이렇게 해선 plus/equals 메서드를 Dollar 클래스에서 제거할 수 없다. (Franc 클래스에서도 마찬가지일 것이다.)  
 인터페이스의 plus/equals 메서드를 디폴트 메서드로 빼면 되긴 하는데 개인적으로 인터페이스의 취지에 적합하지 않다고 판단하여 적당히 타협하여 인터페이스를 추상 클래스로 변경해보자.
 ```kotlin
-abstract class Money(private val amount: Int) {
+abstract class Money(private val amount: Long) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -329,7 +329,7 @@ abstract class Money(private val amount: Int) {
 
 Dollar 클래스를 Money 인터페이스 구현에서 추상 클래스 상속으로 변경해주자.
 ```kotlin
-class Dollar(amount: Int): Money(amount)
+class Dollar(amount: Long): Money(amount)
 ```
 
 오! 모든 테스트가 통과하고 드디어 Dollar 클래스에서 plus/equals 메서드를 제거했고, Dollar 클래스만 봤을 때 딱히 하는 일이 없어 보인다.  
@@ -374,7 +374,7 @@ class FrancTest {
 
 이제 Franc 클래스가 Money 추상 클래스를 상속하도록 수정하자.
 ```kotlin
-class Franc(amount: Int): Money(amount)
+class Franc(amount: Long): Money(amount)
 ```
 
 오! 드디어 Franc에서도 plus/equals 메서드를 제거했다.
@@ -431,7 +431,7 @@ class DollarTest {
 ```kotlin
 abstract class Money {
     companion object {
-        fun dollar(amount: Int): Money = Dollar(amount)
+        fun dollar(amount: Long): Money = Dollar(amount)
     }
     
     // 팩토리 메서드가 부모 클래스 타입을 리턴하도록 변경하였으므로 부모 클래스 API에 plus 메서드가 추가돼야한다.
@@ -444,7 +444,7 @@ Money에 Dollar 객체를 생성하는 static factory method를 추가했고 plu
 다시 Dollar에서 Money를 상속 받게 끔 하자.
 
 ```kotlin
-class Dollar(private val amount: Int): Money() {
+class Dollar(private val amount: Long): Money() {
     // ...
     override operator fun plus(money: Money): Money {
         return Dollar(this.amount + money.amount)
@@ -496,8 +496,8 @@ class FrancTest {
 ```kotlin
 abstract class Money {
     companion object {
-        fun dollar(amount: Int): Money = Dollar(amount)
-        fun franc(amount: Int): Money = Franc(amount)
+        fun dollar(amount: Long): Money = Dollar(amount)
+        fun franc(amount: Long): Money = Franc(amount)
     }
     
     // 팩토리 메서드가 부모 클래스 타입을 리턴하도록 변경하였으므로 부모 클래스 API에 plus 메서드가 추가돼야한다.
@@ -509,7 +509,7 @@ abstract class Money {
 Money에 Franc 객체를 생성하는 static factory method를 추가했고 다시 Franc에서 Money를 상속 받게 끔 하자.
 
 ```kotlin
-class Franc(private val amount: Int): Money() {
+class Franc(private val amount: Long): Money() {
     // ...
     override operator fun plus(money: Money): Money {
         return Franc(this.amount + money.amount)
@@ -529,7 +529,7 @@ class Franc(private val amount: Int): Money() {
 여기서 멈추지 말고 각 하위 클래스에 있는 equals 메서드를 부모 클래스로 올려서 하위 클래스에서 제거해보자.  
 
 ```kotlin
-abstract class Money(val amount: Int) {
+abstract class Money(val amount: Long) {
     // ...
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -547,7 +547,7 @@ abstract class Money(val amount: Int) {
 
 이제 각 하위 클래스에서 컴파일이 되도록 수정하고, equals 메서드도 제거해보자.
 ```kotlin
-class Dollar(amount: Int): Money(amount) {
+class Dollar(amount: Long): Money(amount) {
     override operator fun plus(money: Money): Money {
         return Dollar(this.amount + money.amount)
     }
@@ -555,7 +555,7 @@ class Dollar(amount: Int): Money(amount) {
 ```
 
 ```kotlin
-class Franc(amount: Int): Money(amount) {
+class Franc(amount: Long): Money(amount) {
     override operator fun plus(money: Money): Money {
         return Franc(this.amount + money.amount)
     }

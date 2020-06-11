@@ -22,7 +22,7 @@ date: 2020-06-11 16:03:32
 ## 각 하위 클래스에 있는 plus 메서드 제거하기
 기본적으로 소스 코드는 아래와 같다.
 ```kotlin
-abstract class Money(val amount: Int) {
+abstract class Money(val amount: Long) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -39,7 +39,7 @@ abstract class Money(val amount: Int) {
 ```
 
 ```kotlin
-class Dollar(amount: Int): Money(amount) {
+class Dollar(amount: Long): Money(amount) {
     override operator fun plus(money: Money): Money {
         return Dollar(this.amount + money.amount)
     }
@@ -47,7 +47,7 @@ class Dollar(amount: Int): Money(amount) {
 ```
 
 ```kotlin
-class Franc(amount: Int): Money(amount) {
+class Franc(amount: Long): Money(amount) {
     override operator fun plus(money: Money): Money {
         return Franc(this.amount + money.amount)
     }
@@ -57,10 +57,10 @@ class Franc(amount: Int): Money(amount) {
 문제는 메서드에서는 구체 클래스인 Dollar나 Franc 밖에 반환하지 못하는데 공통된 구체 클래스를 반환하게 해야 중복(plus 메서드)을 제거할 수 있다.  
 그럼 공통된 부모 클래스인 Money 클래스를 구체 클래스로 바꿔보고 Money 클래스를 리턴하게 끔 수정해보자.
 ```kotlin
-open class Money(private val amount: Int) {
+open class Money(private val amount: Long) {
     companion object {
-        fun dollar(amount: Int): Money = Dollar(amount)
-        fun franc(amount: Int): Money = Franc(amount)
+        fun dollar(amount: Long): Money = Dollar(amount)
+        fun franc(amount: Long): Money = Franc(amount)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -80,11 +80,11 @@ open class Money(private val amount: Int) {
 
 이제 plus 메서드를 각 하위 클래스에서 제거해보자.
 ```kotlin
-class Dollar(amount: Int): Money(amount)
+class Dollar(amount: Long): Money(amount)
 ```
 
 ```kotlin
-class Franc(amount: Int): Money(amount)
+class Franc(amount: Long): Money(amount)
 ```
 
 모든 테스트를 돌려보면 통과하고 이제 Dollar와 Franc 클래스는 딱히 하는 일이 없어보이므로 삭제해도 될 거 같다는 생각이 든다.
@@ -121,7 +121,7 @@ fun `$5 + $5 != 5CHF + 5CHF`() {
 따라서 Money 클래스에 currency 필드를 추가해보자.
 ```kotlin
 open class Money(
-    private val amount: Int,
+    private val amount: Long,
     private val currency: String
 ) { 
     // ...
@@ -145,22 +145,22 @@ open class Money(
 
 바뀐 생성자를 각 하위 클래스에 적용해주자.
 ```kotlin
-class Dollar(amount: Int): Money(amount, "")
+class Dollar(amount: Long): Money(amount, "")
 ```
 
 ```kotlin
-class Franc(amount: Int): Money(amount, "")
+class Franc(amount: Long): Money(amount, "")
 ```
 우선 Red 단계를 보기 위해 재빠르게 구현만 해주자.
 그리고 테스트를 돌려보면 여전히 `$5 + $5 != 5CHF + 5CHF`에서 실패한다.  
 그럼 Green을 보기 위해 알맞은 currency를 할당해주자.
 
 ```kotlin
-class Dollar(amount: Int): Money(amount, "USD")
+class Dollar(amount: Long): Money(amount, "USD")
 ```
 
 ```kotlin
-class Franc(amount: Int): Money(amount, "CHF")
+class Franc(amount: Long): Money(amount, "CHF")
 ```
 
 이제 MoneyTest는 Green을 볼 수 있지만 다른 Test를 돌려보면 테스트가 깨진다.  
@@ -172,13 +172,13 @@ DollarTest와 FrancTest의 test addition 테스트가 아래와 같은 사유로
 이제 테스트를 통과하게 끔 factory method에서도 Money를 반환하게 끔 수정해보자.
 ```kotlin
 open class Money(
-    private val amount: Int,
+    private val amount: Long,
     private val currency: String
 ) {
     // ...
     companion object {
-        fun dollar(amount: Int): Money = Money(amount, "USD")
-        fun franc(amount: Int): Money = Money(amount, "CHF")
+        fun dollar(amount: Long): Money = Money(amount, "USD")
+        fun franc(amount: Long): Money = Money(amount, "CHF")
     }
     // ...
 }
@@ -189,7 +189,7 @@ open class Money(
 위 두 클래스를 제거하고 이제 Money 클래스를 상속받는 클래스가 사라졌으므로 클래스를 상속받지 못하게 open 키워드를 제거해서 final 클래스로 만들어버리자.  
 ```kotlin
 class Money(
-    private val amount: Int,
+    private val amount: Long,
     private val currency: String
 ) {
     // ...
