@@ -583,7 +583,7 @@ node server
 ```
 
 브라우저에서 실제로 테스트 해보자.
-http://localhost:8080으로 접속한 결과다.
+http://localhost:8080 으로 접속한 결과다.
 ![Comp 컴포넌트](/images/webpack2-code-splitting/03.png)  
 크롬 개발자 도구의 네트워크 탭을 보면 Comp.[chunkhash]만 있고 Comp2는 로드하지 않았다.  
 하이 라는 링크를 클릭하면 http://localhost:8080/aa/bb/cc로 이동한다.  
