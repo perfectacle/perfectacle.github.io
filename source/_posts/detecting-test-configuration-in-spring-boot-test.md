@@ -11,7 +11,6 @@ date: 2020-12-27 03:00:37
 
 Detecting Test Configuration을 위해서 스프링에 친숙하다면 @ContextConfiguration이나 Nested @Configuration이 필요하다고 하고,
 Spring Boot를 사용하면 @*Test(@SpringBootTest, @WebMvcTest, @DataJpaTest, etc.)에서 별다른 설정을 하지 않았다면 primary configuration을 찾아나간다고 한다.  
-우선 Spring Boot의 코어인 Spring의 관점에서 @ContextConfiguration, nested @Configuration를 살펴보자.
 
 ## N줄 요약
 글이 길어지다보니 아무도 안 볼 거 같고, 집중을 하고 소스코드를 따라가면서 읽어야해서 우선 먼저 요약을 적어놓는다.
@@ -23,7 +22,7 @@ TestContext를 로딩하기 위한 Test Configuaration은 다음과 같은 우�
 4. Nested @TestConfiguration
 
 1, 2, 3 중 하나는 필수이며 셋 중에 하나만 적용된다.  
-Nested @TestConfiguration은 Nested @ContextConfiguration을 사용했을 때는 적용되지 않고, Nested @Configuration이나 @SpringBootConfiguration에 추가로 적용된다고 보면 된다.
+Nested @TestConfiguration은 @ContextConfiguration을 사용했을 때는 적용되지 않고, Nested @Configuration이나 @SpringBootConfiguration에 추가로 적용된다고 보면 된다.
 Nested @Configuration은 여러 개 만들어도 전부 적용되고, Nested @TestConfiguration도 여러 개 만들어도 전부 추가로 적용된다. 
 
 ## @ContextConfiguration
