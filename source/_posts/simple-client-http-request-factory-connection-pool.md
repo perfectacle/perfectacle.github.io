@@ -198,7 +198,6 @@ class Controller {
 이제 SimpleClientHttpRequestFactory를 사용하는 테스트를 작성해보자.  
 ```kotlin
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 class RestTemplateConnectionPoolTest(
     @LocalServerPort
     private val port: Int
