@@ -1,8 +1,14 @@
 ---
 title: Netty 용어사전
-tags: [TCP, Netty]
-category: [Note, Java]
+tags:
+  - TCP
+  - Netty
+category:
+  - Note
+  - Java
+date: 2021-02-28 00:32:51
 ---
+
 
 Netty의 개념이 하도 익숙하지 않아 [자바 네트워크 소녀 네티](https://www.hanbit.co.kr/media/books/book_view.html?p_code=B2683487348)를 보고 용어를 정리해봄.
 
