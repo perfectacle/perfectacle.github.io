@@ -64,8 +64,6 @@ pagination_dir: page
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: next
-plugins:
-  google_analytics: UA-87795455-1
 
 # nofollow
 ## Docs: https://github.com/liuzc/hexo-autonofollow
