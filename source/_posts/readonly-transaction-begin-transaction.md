@@ -12,7 +12,7 @@ date: 2021-05-05 17:46:16
 
 # 3줄 요약
 1. @Transaction(readOnly = true)로 설정해도 트랜잭션은 시작된다. (transaction isolation level 보장)
-1. readOnly 트랜잭션도 커넥션 반환을 위해서는 트랜잭션을 종료시켜야하기 때문에 커밋도 한다.
+1. readOnly 트랜잭션도 시작한 트랜잭션을 종료시켜야하기 때문에 커밋도 한다.
 1. readOnly 트랜잭션의 Hibernate Session의 FlushMode는 Manual로 강제하기 때문에 트랜잭션을 커밋하기 전에 flush를 하지 않는다. (readOnly 보장)
 
 ## @Transaction(readOnly = true)로 설정해도 트랜잭션은 시작된다.
