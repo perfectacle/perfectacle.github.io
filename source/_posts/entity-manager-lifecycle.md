@@ -153,7 +153,7 @@ public final TransactionStatus getTransaction(@Nullable TransactionDefinition de
     // ...
 }
 ```
-1. 다시 [AbstractPlatformTransactionManager의 getTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/support/AbstractPlatformTransactionManager.java#L350)으로 돌아오면 [JpaTransactionManager의 isExistingTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/JpaTransactionManager.java#L391)를 호출한다.
+1. 다시 [AbstractPlatformTransactionManager의 getTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/support/AbstractPlatformTransactionManager.java#L350)로 돌아오면 [JpaTransactionManager의 isExistingTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/JpaTransactionManager.java#L391)를 호출한다.
 1. [JpaTransactionManager의 isExistingTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/JpaTransactionManager.java#L392)에서 [JpaTransactionObject의 hasTransaction 매서드](https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/JpaTransactionManager.java#L692)를 호출한다.
 ```java
 public boolean hasTransaction() {
@@ -289,6 +289,8 @@ public static void bindResource(Object key, Object value) throws IllegalStateExc
 ```
 쓰레드 로컬 맵인 resources에 엔티티 매니저 팩토리를 키로, 엔티티 매니저 홀더를 값으로 넣고 있다.
 
+이렇게 트랜잭션이 시작할 때 엔티티 매니저가 생성된다는 것을 알 수 있다.
+
 ### 엔티티 매니저 종료
 다시 [TransactionAspectSupport의 invokeWithinTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionAspectSupport.java#L336)로 돌아오자.  
 1. [TransactionAspectSupport의 invokeWithinTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionAspectSupport.java#L407)에서 [commitTransactionAfterReturning 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionAspectSupport.java#L649)를 호출하고 있다.
@@ -388,7 +390,7 @@ public static void closeEntityManager(@Nullable EntityManager em) {
 }
 ```
 
-이렇게 트랜잭션이 시작하고 끝날 때 엔티티 매니저가 종료된다는 것을 알게 되었다.  
+이렇게 트랜잭션이 끝날 때 엔티티 매니저가 종료된다는 것을 알게 되었다.  
 
 ### 부모 트랜잭션을 사용한다면...?
 만약 트랜잭션이 부모의 것을 사용하여 쭉 이어진다면 어떻게 될까...?
@@ -521,7 +523,7 @@ private void cleanupAfterCompletion(DefaultTransactionStatus status) {
 transaction이 새로운 트랜잭션이 아니기 때문에 [JpaTransactionManager의 doCleanupAfterCompletion 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/JpaTransactionManager.java#L615)를 호출하고 있지 않다.
 해당 메서드 안에서 쓰레드 로컬 맵도 지우고, 엔티티 매니저도 종료하는 등의 작업을 하고 있는데 호출하지 않기 때문에 엔티티 매니저는 종료되지 않는다.
 
-즉, 부모 트랜잭션이 종료되기 전까지 엔티티 매니저를 새롭게 생성하거나 종료하는 일이 발생하지 않기 때문에 엔티티 매니저가 유효하고, 1차 캐시도 공유된다는 걸 알 수 있다. (물론 부모 트랜잭션을 사용하지 않는 Propagation.REQUIRES_NEW를 사용한다면 부모 트랜잭션을 사용하지 않고 새로운 트랜잭션을 만들기 때문에 엔티티 매니저를 새롭게 생성하고 해당 트랜잭션이 종료된다.)  
+즉, 부모 트랜잭션이 종료되기 전까지 엔티티 매니저를 새롭게 생성하거나 종료하는 일이 발생하지 않기 때문에 엔티티 매니저가 유효하고, 1차 캐시도 공유된다는 걸 알 수 있다. (물론 부모 트랜잭션을 사용하지 않는 Propagation.REQUIRES_NEW를 사용한다면 부모 트랜잭션을 사용하지 않고 새로운 트랜잭션을 만들기 때문에 엔티티 매니저를 새롭게 생성하고 해당 트랜잭션이 종료될 때 엔티티 매니저도 같이 종료될 것이다.)  
 트랜잭션 내에서만 1차 캐시의 성능 최적화를 맛 볼 수 있기 때문에 생각보다 1차 캐시의 hit rate가 낮을 것 같다.   
 
 ## OSIV가 켜져있을 때
@@ -612,12 +614,12 @@ public class OpenEntityManagerInViewInterceptor extends EntityManagerFactoryAcce
 }
 ```
 요청이 들어오면 preHandle 메서드가 실행되는데 TransactionSynchronizationManager.hasResource(emf)는 아마 false가 반환될 것이다. (대부분 그럴 거 같은데 100%는 아닐 것이다.)  
-아직 TransactionSynchronizationManager 안의 쓰레드 로컬 맵(resources 변수)에 해당 키(emf)가 존재하는지 확인하는 메서드인데 아직 해당 키가 존재하지 않을 것이기 때문이다.
+TransactionSynchronizationManager 안의 쓰레드 로컬 맵(resources 변수)에 해당 키(emf)가 존재하는지 확인하는 메서드인데 아직 해당 키가 존재하지 않을 것이기 때문이다.
 그럼 else 문을 타서 새롭게 엔티티 매니저, 엔티티 매니저 홀더를 생성하고 TransactionSynchronizationManager의 bindResource 메서드에서 쓰레드 로컬 맵(resources 변수)에 엔티티 매니저 팩토리를 키로, 엔티티 매니저 홀더를 값으로 넣게 된다.
 
 그리고 뷰 렌더링이 모두 끝나면 afterCompletion이 호출되는데 이 때 TransactionSynchronizationManager의 unbindResource 메서드에서 쓰레드 로컬 맵(resources 변수)에 할당된 키(엔티티 매니저 팩토리)도 제거하고 엔티티 매니저도 종료하는 걸 볼 수 있다.
 
-그럼 인터셉터에서 생성한 이후에 또 생성하거나 미리 제거하는 일은 없는 걸까??
+그럼 인터셉터에서 엔티티 매니저를 생성한 이후에 또 생성하거나 미리 제거하는 일은 없는 걸까??
 
 ### 엔티티 매니저 생성
 1. [TransactionInterceptor의 invoke 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionInterceptor.java#L119)에서 부모 클래스인 [TransactionAspectSupport의 invokeWithinTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionAspectSupport.java#L336)를 호출한다.
@@ -756,7 +758,7 @@ protected void doBegin(Object transaction, TransactionDefinition definition) {
 }
 ```
 
-그리고 OpenEntityManagerInViewInterceptor에서 생성한 엔티티 매니저 홀더를 txObject에 초기화 했기 때문에 [createEntityManagerForTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/JpaTransactionManager.java#L480)를 호출하지 않는다.
+OpenEntityManagerInViewInterceptor에서 생성한 엔티티 매니저 홀더를 txObject에 초기화 했기 때문에 [createEntityManagerForTransaction 메서드](https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/JpaTransactionManager.java#L480)를 호출하지 않는다.
 즉, 새로운 트랜잭션은 맞지만 entity manager는 새롭게 생성하지 않고 OpenEntityManagerInViewInterceptor에서 생성한 엔티티 매니저를 그대로 사용하는 걸 알 수 있다.
 
 ### 엔티티 매니저 종료
