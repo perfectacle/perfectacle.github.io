@@ -13,7 +13,7 @@ date: 2021-06-13 04:02:52
 ## 들어가기에 앞서
 글을 정리하다 보니 너무 깊게 파고 정리한 거 같아 글이 너무 길어져서 아무도 읽지 않을 것 같아 정리부터 해보겠습니다.
 1. 엔티티 매니저의 persist 메서드는 리턴값이 없기 때문에 원본 객체를 수정하고, merge 메서드는 리턴값이 있기 때문에 새로운 객체를 반환합니다.
-1. JpaRepository.save 호출 시 엔티티의 식별자(@Id, @EmbeddedId 어노테이션이 붙은 컬럼 등등)가 붙은 필드의 타입이 primitive type일 때는 null이거나 숫자형일 때는 0이면 새로운 엔티티라고 판단하면서 persist 메서드가 호출되고, 그게 아니면 merge 메서드가 호출됩니다. 
+1. JpaRepository.save 호출 시 엔티티의 식별자(@Id, @EmbeddedId 어노테이션이 붙은 컬럼 등등)가 붙은 필드의 타입이 primitive type이 아닐 때는 null이거나 숫자형일 때는 0이면 새로운 엔티티라고 판단하면서 persist 메서드가 호출되고, 그게 아니면 merge 메서드가 호출됩니다. 
 1. JPQL 호출 시 FlushMode가 AUTO(하이버네이트 기본 FlushMode)라 하더라도 쿼리 지연 저장소에 JPQL에서 사용하는 테이블과 관련있는 쿼리가 저장돼있지 않다면 flush를 호출하지 않습니다.
 1. JPQL 호출 시 AutoFlushEvent가 발생하면서 flush 이전에 cascade가 먼저 이뤄지는데 이 때는 PersistEvent가 발생하면서 원본 엔티티를 변경합니다.
 1. JpaRepository.save 호출 시 엔티티가 새로운 엔티티가 아니면 MergeEvent가 발생하고, cascade가 발생하는데 이 때 해당 엔티티에 대해 MergeEvent가 또 발생하면서 Transient 상태인 경우에는 원본 엔티티를 카피하고 카피한 객체의 값을 수정하고 연관관계가 맺어진 엔티티에서는 레퍼런스도 카피 객체로 바꿔치기 하고 있습니다.
