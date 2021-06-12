@@ -208,7 +208,7 @@ Hibernate:
 
 ### Child는 왜 insert 됐는가??
 너무 내용이 길어서 3 줄로 요약해보면 
-1. JPQL 호출 이전에 AutoFlushEvent를 발생시키고 이벤트 핸들러인 DefaultAutoFlushEventListener 안에서 flushMightBeNeeded 메서드를 호출하는데 하이버네이트의 기본 FlushMode가 AUTO이기 true를 반환합니다.
+1. JPQL 호출 이전에 AutoFlushEvent를 발생시키고 이벤트 핸들러인 DefaultAutoFlushEventListener 안에서 flushMightBeNeeded 메서드를 호출하는데 하이버네이트의 기본 FlushMode가 AUTO이기 때문에 true를 반환합니다.
 1. 본격적으로 flush 호출 이전에 전처리 작업(AbstractFlushingEventListener 클래스의 prepareEntityFlushes 메서드 등등)에서 영속성 컨텍스트에 있는 엔티티들에 대해 cascade를 수행합니다.
 1. 이 때 영속성 컨텍스트에 있는 Mother 엔티티의 children 프로퍼티에 대해 cascade 되면서 insert 쿼리가 호출됐습니다.
 
@@ -314,7 +314,7 @@ flushEntities, flushCollections 메서드를 통해 실제로 플러시를 하�
 ### Mother는 왜 update 되지 않았는가?
 이것도 내용이 길어서 3줄 요악 해보겠습니다.
 1. AbstractFlushingEventListener 클래스의 flushEntities 메서드에서는 flush 호출 이전에 영속성 컨텍스트에 있는 엔티티에 대해 Dirty Checking이 발생하고, 쿼리 지연 저장소(ActionQueue)에 EntityUpdateAction을 추가합니다.
-1. DefaultAutoFlushEventListener 클래스의 flushIsReallyNeeded 메서드에서는 하이버네이트의 기본 FlushMode가 ALWAYS가 아니고(하이버네이트 기본은 FlushMode.AUTO임), AutoFlushEvent의 querySpaces([family_register])가 쿼리 지연 저장소(ActionQueue)에 있는 액션(EntityUpdateAction)과 관련 없는 테이블(mother)이기 false를 반환합니다.
+1. DefaultAutoFlushEventListener 클래스의 flushIsReallyNeeded 메서드에서는 하이버네이트의 기본 FlushMode가 ALWAYS가 아니고(하이버네이트 기본은 FlushMode.AUTO임), AutoFlushEvent의 querySpaces([family_register])가 쿼리 지연 저장소(ActionQueue)에 있는 액션(EntityUpdateAction)과 관련 없는 테이블(mother)이기 때문에 false를 반환합니다.
 1. 힘겹게 쿼리 지연 저장소에 다 밀어넣었건만 flushIsReallyNeeded가 false이면 결국 flush는 호출되지 않습니다.
 
 `결국 Mother의 변경내역은 쿼리 지연 저장소에 저장됐지만 현재 JPQL에서 사용하는 family_register와 상관 없는 테이블인 mother이므로 flush가 호출되지 않습니다.` 
@@ -528,7 +528,7 @@ motherRepository.save 호출 시 MergeEvent의 이벤트 리스너에서는 ACTI
 ![entityIsTransient 메서드 안에서는 엔티티에 대한 카피를 뜨고 있습니다.](/images/entity-manager-persist-vs-merge/default-merge-event-listener-entity-is-transient.png)  
 또 결정적 차이가 여기서 나옵니다.
 PersistEvent의 이벤트 리스너인 DefaultPersistEventListener 클래스의 onPersist 메서드에서 호출하는 `DefaultPersistEventListener 클래스의 entityIsTransient 메서드에서는 entity에 대해 카피를 뜬 적이 없습니다.`
-하지만 MergeEvent의 이벤트 리스너인 DefaultMergeEventListener 클래스의 onPersist 메서드에서 호출하는 `DefaultMergeEventListener 클래스의 entityIsTransient 메서드에서는 entity에 대해 카피를 뜨고 있습니다.`
+하지만 MergeEvent의 이벤트 리스너인 DefaultMergeEventListener 클래스의 onMerge 메서드에서 호출하는 `DefaultMergeEventListener 클래스의 entityIsTransient 메서드에서는 entity에 대해 카피를 뜨고 있습니다.`
 카피 뜰 때 default constructor가 없으면 아마도 `org.hibernate.InstantiationException: No default constructor for entity` 요런 예외를 던지지 않을까 싶네요.
 기본 생성자를 호출했기 때문에 아직 값은 카피되지 않고 객체 생성까지만 된 상태입니다.
 그리고 copyCache라는 `MergeContext에 entity를 key로, copy를 value`로 해서 넣고 있습니다.
