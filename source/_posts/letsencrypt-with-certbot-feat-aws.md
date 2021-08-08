@@ -4,7 +4,7 @@ date: 2017-10-05 15:47:46
 tags: [LetsEncrypt, Certbot, HTTPS, AWS, EC2, Route53, Nginx]
 category: [Middle-end, DevOps]
 ---
-![귀염둥이 Certbot](/images/letsencrypt-with-certbot-feat-aws/thumb.png)
+![귀염둥이 Certbot](letsencrypt-with-certbot-feat-aws/thumb.png)
 
 기본적으로 서버와 도메인(SSL 인증서에 넣을)은 확보가 돼있는 상태로 진행을 해야한다.  
 자본이 빵빵하고(?) 좀 더 간단한 걸 원한다면 [AWS ELB로 HTTPS 서버 열기](/2017/10/05/https-with-elb/)를 보자.  
@@ -28,7 +28,7 @@ Let's Encrypt의 SSL 인증서를 발급받을 수 있다.
 기본적으로 도메인을 확보한 이후에 또 해야하는 게 있다.  
 바로 해당 도메인에 대한 CAA(Certificate Authority Authorization) Record를 추가해야한다.  
 [SSLMate’s CAA Record Generator](https://sslmate.com/caa/)에 들어가면 만들 수 있다지만 들어가봐도 네트워크 지식이 없다보니 그냥 아래 스샷과 같이 만들었다.  
-![SSL 인증서 발급을 위한 CAA Record](/images/letsencrypt-with-certbot-feat-aws/route53.png)  
+![SSL 인증서 발급을 위한 CAA Record](letsencrypt-with-certbot-feat-aws/route53.png)  
 name에는 당연히 발급을 위한 도메인이 들어가야한다.
 
 ## Certbot

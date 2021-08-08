@@ -4,7 +4,7 @@ date: 2017-02-11 15:19:18
 category: [기타, 잡동사니]
 tag: [잡동사니]
 ---
-![](/images/blahblah01/thumb.png)  
+![](blahblah01/thumb.png)  
 자바를 공부하면서 느낀 것이다.  
 > 초반엔 내가 아는 내용이니 하루에 한 챕터씩 나가야지..
 

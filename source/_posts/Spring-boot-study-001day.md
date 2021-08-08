@@ -4,7 +4,7 @@ category: [Note, Spring Boot]
 tag: [Java, Spring, Spring Boot, VO, Bean, Lombok, Jackson, ORM, JPA, Hibernate, Ant, Maven, Gradle]
 date: 2017-08-02 10:02:06
 ---
-![](/images/Spring-boot-study-001day/thumb.png)  
+![](Spring-boot-study-001day/thumb.png)  
 자바에 대한 근본도 없고, MVC, Servelet/JSP에 대한 이해도 제대로 없는데 이런 걸 해도 될런지 모르겠지만... 일단은 시작!  
 나머지는 병행해가면서 해보자...  
 

@@ -4,7 +4,7 @@ date: 2017-01-23 11:00:21
 category: [Programming, C/C++]
 tag: [C, C++, Pointer, Address, Array]
 ---
-![](/images/C-ref-001/thumb.png)  
+![](C-ref-001/thumb.png)  
 윤성우 님의 열혈 C 프로그래밍 동영상 강좌를 열심히 보고 있다.  
 자바는 메모리 관리를 안 해도 된다지만 공부하면 할 수록 메모리에 자꾸만 관심이 갔다.  
 그러한 갈증에 대한 해소를 C언어에서 할 수 있었다.  
@@ -106,8 +106,8 @@ int main() {
     return 0;
 } 
 ```
-![32bit os에서 확인한 결과](/images/C-ref-001/32bit.png)  
-![64bit os에서 확인한 결과](/images/C-ref-001/64bit.png)  
+![32bit os에서 확인한 결과](C-ref-001/32bit.png)  
+![64bit os에서 확인한 결과](C-ref-001/64bit.png)  
 
 ### 포인터 변수 타입에 대한 이해
 32bit에서는 포인터 변수의 크기가 4byte, 64bit에서는 포인터 변수의 크기가 8byte다.  

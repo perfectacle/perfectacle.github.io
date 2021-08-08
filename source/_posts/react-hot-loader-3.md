@@ -4,7 +4,7 @@ date: 2017-03-25 10:39:14
 category: [Front-end, React]
 tags: [npm, Node.js, Webpack2, React, Hot, Loader]
 ---
-![요놈도 v1이 언제 deprecated 될지 모르니 얼른 마이그레이션 해보자](/images/react-hot-loader-3/thumb.png)  
+![요놈도 v1이 언제 deprecated 될지 모르니 얼른 마이그레이션 해보자](react-hot-loader-3/thumb.png)  
 
 ## 들어가기에 앞서
 기본적으로 [웹팩](/2016/11/18/Module-bundling-with-Webpck/), [바벨](/2016/11/11/Babel-ES6-with-IE8/), 리액트 라우터 등등은 안다는 전제 하에 글을 썼다.  
@@ -334,7 +334,7 @@ render(<App />, document.getElementById('app'));
 
 ## AppConainer란?  
 react-hot-loader v3은 [redbox-react](https://github.com/commissure/redbox-react)를 내장하고 있다.  
-![내가 바로 redbox-react야!](/images/react-hot-loader-3/01.png)  
+![내가 바로 redbox-react야!](react-hot-loader-3/01.png)  
 react-hot-loader v3에서 redbox-react를 사용하기 위해 AppContainer를 사용하는 것이다.  
 소스맵을 붙이려면 express 프레임워크에 webpack-dev-server를 붙여야한다.  
 안 그러면 위 스샷과 같이 소스맵이 붙질 않는다.  
@@ -439,7 +439,7 @@ process.env가 뭐하는 놈인지 처음 본 사람은 아래 링크를 참조�
 이제 다 끝났다.  
 `npm start` 치고 http://localhost:3001/로 접속하면 아래와 같은 화면이 뜰 것이다.
 
-![소스 코드는 9번 라인을 넘지 않지만 트랜스파일 된 소스를 기준으로 해서 저렇게 나온다.](/images/react-hot-loader-3/02.png)
+![소스 코드는 9번 라인을 넘지 않지만 트랜스파일 된 소스를 기준으로 해서 저렇게 나온다.](react-hot-loader-3/02.png)
 
 ## 참조 링크
 * [React Hot Loader 3](https://github.com/gaearon/react-hot-loader)  

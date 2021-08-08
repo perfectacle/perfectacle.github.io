@@ -4,7 +4,7 @@ date: 2017-01-23 14:17:09
 category: [Programming, C/C++]
 tag: [C, C++, Variable, Literal, Memory]
 ---
-![](/images/C-ref-002/thumb.png)  
+![](C-ref-002/thumb.png)  
 ## 변수  
 변수라 함은 자바에서 정리했 듯이 아래와 같다.  
 > 짧게 얘기하면 변하는 수  

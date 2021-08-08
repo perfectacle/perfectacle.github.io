@@ -4,7 +4,7 @@ date: 2017-04-22 16:17:14
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Interface, Symbol, Iterator]
 ---
-![](/images/ES6-Iterator/thumb.png)  
+![](ES6-Iterator/thumb.png)  
 
 ## 들어가기에 앞서
 이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
@@ -36,7 +36,7 @@ func(1, 2, 3, 4, 5); // 1, [2, 3, 4, 5]
 ```javascript
 console.log(Array.prototype);
 ```
-![Array의 프로토타입에는 Symbol.iterator 메소드가 있다.](/images/ES6-Iterator/array-prototype.png)  
+![Array의 프로토타입에는 Symbol.iterator 메소드가 있다.](ES6-Iterator/array-prototype.png)  
 
 반면에 Object는 이터러블한 객체가 아니다.  
 ```javascript
@@ -53,7 +53,7 @@ Symbol.iterator() 메소드를 눈 씻고 찾아볼 수가 없다.
 이미지를 보자마자 무슨 의미인지 알 수 있을 것이다.
 
 ### Iterable Interface
-![](/images/ES6-Iterator/iterable.png)
+![](ES6-Iterator/iterable.png)
 인터페이스이기 때문에 객체가 가져야하는 키와 그 키가 가져야하는 값을 명시하고 있다.  
 * 가져야하는 키: Symbol.iterator(well-known symbol 중 하나)
 * 키(Symbol.iterator): 함수인데 반환 값은 [Iterator 인터페이스](#Iterator-Interface)를 준수한 객체가 오면 된다.
@@ -67,7 +67,7 @@ const IterableObject = {
 ```
 
 ### Iterator Interface
-![](/images/ES6-Iterator/iterator.png)
+![](ES6-Iterator/iterator.png)
 인터페이스이기 때문에 객체가 가져야하는 키와 그 키가 가져야하는 값을 명시하고 있다.  
 * 가져야하는 키: next라는 키를 가진다.  
 * 키(next)가 가져야할 값: 함수인데 반환 값은 [IteratorResult 인터페이스](IteratorResult-Interface)를 준수한 객체이다.  
@@ -82,7 +82,7 @@ const IteratorObject = {
 
 ### IteratorResult Interface
 인터페이스이기 때문에 객체가 가져야하는 키와 그 키가 가져야하는 값을 명시하고 있다.  
-![](/images/ES6-Iterator/iterator-result.png)
+![](ES6-Iterator/iterator-result.png)
 * 가져야하는 키: value와 done이라는 키를 가진다.  
 * 키(value, done)가 가져야할 값: value에는 어떤 값이든 와도 상관 없고, done에는 boolean 값만 허용하고 있다.  
 ```javascript
@@ -172,7 +172,7 @@ console.log(iter.next()); // Object {value: 2, done: false}
 console.log(iter.next()); // Object {value: 1, done: true}
 console.log(iter.next()); // Object {value: undefined, done: true}
 ```
-![콘솔 로그에서 찍어본 결과](/images/ES6-Iterator/00.png)  
+![콘솔 로그에서 찍어본 결과](ES6-Iterator/00.png)  
 
 그럼 위에서 기술한 커스텀 이터레이터를 수정해보자.  
 ```javascript

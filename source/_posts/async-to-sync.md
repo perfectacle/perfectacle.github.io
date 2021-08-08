@@ -4,7 +4,7 @@ title: (자작) async-to-sync (자바스크립트 비동기 함수 헬퍼)
 date: 2017-05-01 12:47:00
 tags: [npm, Node.js, JS, ES, ES6, ES2015, Promise, async, await]
 ---
-![](/images/async-to-sync/thumb.png)
+![](async-to-sync/thumb.png)
 # async-to-sync
 async-to-sync는 자바스크립트 비동기 함수를 동기 함수로 바꿔주는 헬퍼 함수이다.    
 async/await는 물론 Promise를 몰라도 된다!!  
@@ -240,6 +240,6 @@ ats(arrAsync, fallback);
 ```
 
 #### 지원하는 플랫폼
-![Chrome](/images/async-to-sync/chrome.png) | ![Firefox](/images/async-to-sync/firefox.jpg) | ![IE](/images/async-to-sync/IE.png)| ![Node.js](/images/async-to-sync/node.png)|
+![Chrome](async-to-sync/chrome.png) | ![Firefox](async-to-sync/firefox.jpg) | ![IE](async-to-sync/IE.png)| ![Node.js](async-to-sync/node.png)|
 --- | --- | --- | --- |
 Latest ✔ | Latest ✔ | 9+ ✔ |  6+ ✔ |

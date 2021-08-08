@@ -10,7 +10,7 @@ tags: [npm, Node.js, Webpack2, babel, ES2015, ES6]
 또한 [(Webpack 2) 트리 쉐이킹을 해보자!](/2017/03/12/webpack2-tree-shaking/)를 보고 나서 이 포스팅을 읽는 걸 추천한다.
 
 ## 코드를 왜 분할하지?
-![](/images/webpack2-code-splitting/thumb.png)  
+![](webpack2-code-splitting/thumb.png)  
 SPA(Single Page Application)은 한 번에 모든 리소스를 로딩해서  
 초기 로딩 이후에 페이지 이동이 매우 빠르다는 장점을 가지고 있다.  
 하지만 앱의 규모가 커지면 모든 리소스를 한 번에 로딩하므로  
@@ -211,7 +211,7 @@ npm run scriptName과 같이 입력해야한다.
 npm build
 ```
 
-![](/images/webpack2-code-splitting/01.png)  
+![](webpack2-code-splitting/01.png)  
 결과를 보면 벤더로 서드파티가 다 빠져서 파일 크기가 더 큰 걸 볼 수 있다.  
 아마 우리가 작성한 앱은 아직 규모가 작기 때문일 것이다.
 
@@ -436,7 +436,7 @@ process.noDeprecation = true;
 npm build
 ```
 
-![](/images/webpack2-code-splitting/02.png)  
+![](webpack2-code-splitting/02.png)  
 빌드된 파일을 보면 두 가지 문제점이 존재한다.  
 1. 뒤에 해쉬 값을 예측할 수가 없다.  
 2. html 파일이 dist에 복사되지 않는다.  
@@ -584,18 +584,18 @@ node server
 
 브라우저에서 실제로 테스트 해보자.
 http://localhost:8080 으로 접속한 결과다.
-![Comp 컴포넌트](/images/webpack2-code-splitting/03.png)  
+![Comp 컴포넌트](webpack2-code-splitting/03.png)  
 크롬 개발자 도구의 네트워크 탭을 보면 Comp.[chunkhash]만 있고 Comp2는 로드하지 않았다.  
 하이 라는 링크를 클릭하면 http://localhost:8080/aa/bb/cc로 이동한다.  
 여기서 다시 네트워크 탭을 봐보자.  
-![Comp2 컴포넌트](/images/webpack2-code-splitting/04.png)  
+![Comp2 컴포넌트](webpack2-code-splitting/04.png)  
 페이지를 처음부터 로딩하는 게 아니라 새로운 부분인  
 Comp2.[chunkhash] 부분만 로딩한 것을 볼 수 있다.  
 여기서 새로고침을 해보자.  
-![Comp2 컴포넌트](/images/webpack2-code-splitting/05.png)  
+![Comp2 컴포넌트](webpack2-code-splitting/05.png)  
 역시 Comp2.[chunkhash]만 로드하고 Comp는 로드하지 않았다.  
 바이 라는 링크를 클릭하면 http://localhost:8080/으로 이동한다.  
-![Comp 컴포넌트](/images/webpack2-code-splitting/06.png)  
+![Comp 컴포넌트](webpack2-code-splitting/06.png)  
 역시 페이지를 처음부터 로딩하는 게 아니라 새로운 부분인
 Comp.[chunkhash] 부분만 로딩한 것을 볼 수 있다.  
 

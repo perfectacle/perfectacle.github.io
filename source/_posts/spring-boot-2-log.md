@@ -4,7 +4,7 @@ tags: [Spring, log]
 category: [Back-end, Spring]
 date: 2018-07-22 20:31:55
 ---
-![](/images/spring-boot-2-log/thumb.png)
+![](spring-boot-2-log/thumb.png)
 
 오늘은 서버를 구성할 때 필수적인 로깅에 대해 알아보자!  
 우선 [환경 별로 profile 쪼개기](/2018/07/22/spring-boot-2-env/)가 진행된 상태에서 시작한다.  
@@ -15,7 +15,7 @@ date: 2018-07-22 20:31:55
 [Java Util Logging](https://docs.oracle.com/javase/10/docs/api/java/util/logging/package-summary.html),
 [Log4j 2](http://logging.apache.org/log4j/2.x/),
 [Logback](https://logback.qos.ch/)을 기본적으로 사용할 수 있다.  
-![](/images/spring-boot-2-log/logging-lib.png)
+![](spring-boot-2-log/logging-lib.png)
 
 [logback 사용해야 하는 이유](https://beyondj2ee.wordpress.com/2012/11/09/logback-%EC%82%AC%EC%9A%A9%ED%95%B4%EC%95%BC-%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0-reasons-to-prefer-logback-over-log4j/)
 에 왜 logback을 사용해야하는지 나왔있으니 logback으로 로깅 라이브러리를 선택했다.

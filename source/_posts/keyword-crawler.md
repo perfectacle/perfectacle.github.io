@@ -4,7 +4,7 @@ date: 2017-07-18 13:59:43
 category: [기타, 자작]
 tag: [node.js, crawler, phantomjs, mecab]
 ---
-![차트라던지 표라던지 표현 방법은 유저가 직접 구현해야한다.](/images/keyword-crawler/thumb.png)  
+![차트라던지 표라던지 표현 방법은 유저가 직접 구현해야한다.](keyword-crawler/thumb.png)  
 
 [소스 코드 보러가기](https://github.com/perfectacle/keyword-crawler)  
 사이트에서 원하는 내용만 수집해오는 크롤러.  

@@ -4,7 +4,7 @@ date: 2017-01-02 09:05:49
 category: [Note, Java]
 tag: [Java, 자바의 정석, 연산자, 조건문]
 ---
-![](/images/Java-study-004day/thumb.png)
+![](Java-study-004day/thumb.png)
 
 ## 연산자 우선순위
 x << 2 **+** 1 => x << (2 + 1)  

@@ -9,11 +9,11 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-starter-web:2.4.0")
 }
 ```
-![compileOnly는 compile classpath에만 추가된다.](/images/intellij-vs-gradle-in-classpath/classpath.png)
+![compileOnly는 compile classpath에만 추가된다.](intellij-vs-gradle-in-classpath/classpath.png)
 runtime classpath에는 추가되지 않아서 원래는 `java.lang.ClassNotFoundException`이 나야 정상이다.
 하지만 IntelliJ의 Spring Boot Configuration으로 실행하면 실행이 잘만 된다.
 
-![](/images/intellij-vs-gradle-in-classpath/spring-boot-intellij-configuration.png)
+![](intellij-vs-gradle-in-classpath/spring-boot-intellij-configuration.png)
 실제로 classpath를 찍어보면 아래와 같이 spring-boot-starter-web을 포함하고 있다.
 ```kotlin
 fun main(args: Array<String>) {
@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
 ...
 ```
 하지만 spring boot gradle plugin을 사용하여 bootRun Task를 실행하면 클래스패스가 아래와 같이 spring-boot-starter-web을 포함하고 있지 않는다.
-![](/images/intellij-vs-gradle-in-classpath/gradle-boot-run-task.png)
+![](intellij-vs-gradle-in-classpath/gradle-boot-run-task.png)
 ```
 /Users/perfectacle/IdeaProjects/demo/build/classes/java/main:
 /Users/perfectacle/IdeaProjects/demo/build/classes/kotlin/main:

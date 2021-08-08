@@ -3,7 +3,7 @@ title: Nginx를 이용하여 Spring Boot Application을 Blue/Green 배포하기
 tags: []
 category: []
 ---
-![](thumbs.jpg)
+![](nginx-spring-boot-blue-green-deployment/thumbs.jpg)
 
 해당 포스트에서는 nginx와 spring boot를 예로 들었지만 apache + Node.js 등등의 조합으로도 충분히 가능하다.  
 기본적으로 nginx는 설치돼있고, 기본 설정을 그대로 유지한 상태로 시작하겠다.  
@@ -26,7 +26,7 @@ nginx 버전이나 OS 등등의 환경에 따라 설정 파일의 내용은 다�
 비용을 줄이려면 배포할 때만 새롭게 서버를 띄우고 배포가 완료된 후에 기존 서버는 죽이면 된다.
 
 ### Rolling Deployment
-![SPOF를 피하려면 어플리케이션 서버는 물론이고 로드 밸런서도 이중화해야한다.](elb-basic.png)
+![SPOF를 피하려면 어플리케이션 서버는 물론이고 로드 밸런서도 이중화해야한다.](nginx-spring-boot-blue-green-deployment/elb-basic.png)
 HA(High Availability)을 위해 프로덕션 환경은 2대 이상의 서버로 구성한다.  
 이런 환경에서 배포하기 가장 간단한 방법이 바로 Rolling 배포이다.  
 시나리오는 다음과 같다.  
@@ -43,13 +43,13 @@ HA(High Availability)을 위해 프로덕션 환경은 2대 이상의 서버로 
 또한 1대에 배포하는 거보다 최소 2배 이상 느리다. (아무리 못해도 2번 이상의 배포가 진행되기 때문에)
 
 ### Canary Deployment
-![](canary.png)
+![](nginx-spring-boot-blue-green-deployment/canary.png)
 광부들이 광산에서 유독가스가 나오는 것을 알아내기 위해서 가스에 민감한 카나리아(조류)를 광산 안에서 키웠다고 해서 유래된 배포이다.  
 소수의 유저(혹은 사내)만 사용하는 환경(Canary 환경)에 신규 버전을 배포하고 문제가 없다고 판단됐을 때 다른 모든 서버에 배포한다.  
 Canary 환경은 뭐 QA Phase가 될 수도 있고, 랜덤하게 유저를 Canary 환경으로 라우팅시킬 수도 있고 구현하기 나름이다.  
 
 ### Blue/Green Deployment
-![](thumbs.jpg)  
+![](nginx-spring-boot-blue-green-deployment/thumbs.jpg)  
 **실제로 서비스 중인 환경(Blue)**와 **새롭게 배포할 환경(Green)**을 세트로 준비해서 배포하는 방식을 말한다.  
 장점으로는 새롭게 배포할 환경에만 배포하면 되기 때문에 배포 속도가 매우 빠르다. (서버가 N대라 하더라도 N대의 Green 서버에 동시에 배포하면 되기 때문에)  
 또한 언제나 Green 환경이 떠있기 때문에 만약에 잘못된 버전으로 배포를 했을 경우에 신속하게 롤백이 가능하다. (수 백대의 서버에 거의 수 초 이내에 롤백이 가능함.)  

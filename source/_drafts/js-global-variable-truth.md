@@ -4,7 +4,7 @@ date: 2017-08-08 18:51:57
 category: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰, JIT]
 ---
-![](thumb.png)
+![](js-global-variable-truth/thumb.png)
 
 해당 포스트는 [김훈민](https://www.facebook.com/jeokrang?fref=ts) 님의 [Lexical Environment in ECMA-262 5th edition](http://huns.me/development/1407)를 감명깊게 보고
 전역 컨텍스트와 전역 변수를 엮어서 설명을 해본 글이다.

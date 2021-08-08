@@ -4,7 +4,7 @@ date: 2017-04-22 17:17:14
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Interface, Symbol, Iterator, Generator]
 ---
-![](/images/ES6-Generator/thumb.png)  
+![](ES6-Generator/thumb.png)  
 
 ## 들어가기에 앞서
 이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
@@ -74,7 +74,7 @@ console.log(gen.next()); // { value: undefined, done: true }
 
 for(const a of arr) console.log(a); // 0 undefined 3 2 1
 ```
-![console.dir로 제너레이터 함수의 실행 결과를 찍어본 결과](/images/ES6-Generator/00.png)  
+![console.dir로 제너레이터 함수의 실행 결과를 찍어본 결과](ES6-Generator/00.png)  
 
 마법과도 같은 일이 일어났다.  
 그럼 이 마법같은 일을 낱낱이 파헤쳐보자.  

@@ -4,7 +4,7 @@ date: 2017-11-06 14:40:55
 tags: [DB, MySQL, Elasticsearch]
 category: [Back-end, DB, Elasticsearch]
 ---
-![](/images/mysql-to-elasitcsearch/thumb.png)
+![](mysql-to-elasitcsearch/thumb.png)
 
 MySQL의 데이터를 Elasticsearch로 마이그레이션 할 때 다음과 같은 방법이 존재한다.  
 1. ~~일일이 노가다로 집어넣기~~

@@ -4,7 +4,7 @@ date: 2017-08-08 21:30:06
 category: [Programming, ECMAScript]
 tag: [JS, ES, 독학]
 ---
-![](/images/js-how-to-learn/thumb.png)
+![](js-how-to-learn/thumb.png)
 
 이 포스트는 제가 다년간 자바스크립트를 설렁 설렁 공부하다 작년 1년동안 빡시게 공부해온 경험을 토대로 작성한 글입니다.  
 따라서 이 글을 읽으시는 분들께서는 본인과 맞지 않는 부분도 존재할 수 있으니 그 점은 참고하고 적절한 필터링을 하시면 되겠습니다.  

@@ -226,15 +226,15 @@ class RestTemplateConnectionPoolTest(
     }
 }
 ```
-![](/images/simple-client-http-request-factory-connection-pool/default-connection-pool-packet-1.png)
+![](simple-client-http-request-factory-connection-pool/default-connection-pool-packet-1.png)
 와이어샤크를 통해 패킷 캡쳐를 해보니 6개의 커넥션이 동시에 맺혀지고 있다.  
 
-![](/images/simple-client-http-request-factory-connection-pool/default-connection-pool-packet-2.png)
+![](simple-client-http-request-factory-connection-pool/default-connection-pool-packet-2.png)
 커넥션 풀을 사용하지 않는다면 모든 커넥션이 종료돼야하는데 하나의 커넥션만 종료되고 있다.  
 가장 처음 응답을 받은 소켓(50322 포트)이 닫혔다.  
 그리고 다음에 또 6개의 요청을 보내야하는데 커넥션이 하나 모자르므로 소켓(50324 포트)을 하나 더 열어서 커넥션을 맺었다.  
 
-![](/images/simple-client-http-request-factory-connection-pool/default-connection-pool-packet-3.png)
+![](simple-client-http-request-factory-connection-pool/default-connection-pool-packet-3.png)
 위와 동일하게 50324 포트는 응답을 받자마자 바로 커넥션이 끊겼다.  
 그리고 나머지 5개의 커넥션은 Keep-Alive의 timeout 파라미터인 60초 이후에 커넥션이 끊기기 시작했다.  
 
@@ -505,7 +505,7 @@ class KeepAliveEntry {
     }
 }
 ```
-![](/images/simple-client-http-request-factory-connection-pool/keep-alive-cache.png)  
+![](simple-client-http-request-factory-connection-pool/keep-alive-cache.png)  
 KeepAliveCache를 보면 KeepAliveKey(프로토콜, 호스트, 포트)를 키로 가지고 있고, ClientVector(Stack을 상속받음)에 실제 커넥션(KeepAliveEntry)들이 들어있다.
 그리고 스택에서 하나씩 커넥션을 꺼내오고 있다.
 

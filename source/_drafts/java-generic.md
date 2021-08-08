@@ -3,7 +3,7 @@ title: (Java) 제네릭
 category: [Programming, Java]
 tag: [Java, Java5, Generic]
 ---
-![](thumb.png)  
+![](java-generic/thumb.png)  
 
 JAVA5에 새로 나온 기능이다.  
 

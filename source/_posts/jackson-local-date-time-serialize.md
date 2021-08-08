@@ -4,7 +4,7 @@ date: 2018-01-16 10:54:25
 tags: [Java, Spring Boot, Jackson, JSON]
 ---
 
-![](/images/jackson-local-date-time-serialize/thumb.png)
+![](jackson-local-date-time-serialize/thumb.png)
 
 [잭슨](https://github.com/FasterXML/jackson)은 JSON -> Java 클래스로 Deserialize, Java 클래스 -> JSON으로 Serialize 할 때 매우 유용한 라이브러리다.  
 

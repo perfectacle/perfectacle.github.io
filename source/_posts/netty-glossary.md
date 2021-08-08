@@ -270,7 +270,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     }
 }
 ```
-![](/images/netty-glossary/nio-event-loop.png)
+![](netty-glossary/nio-event-loop.png)
 selector는 io.netty.channel.nio.SelectedSelectionKeySetSelector 클래스이다.  
 그리고 그 안에 delegate는 KQueueSelectorImpl이다.
 [JRE마다 SelectorImpl은 달라질 수 있다.](https://stackoverflow.com/questions/7916324/do-nio-selectors-use-event-notifications-by-default)  

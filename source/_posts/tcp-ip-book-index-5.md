@@ -5,7 +5,7 @@ tags: [Network]
 category: [Middle-end, Network]
 ---
 
-![](/images/tcp-ip-book-index-5/thumb.png)  
+![](tcp-ip-book-index-5/thumb.png)  
 오래전에 이 책을 추천받았으나 최근에 읽어보게 되었다.  
 백엔드 개발자로 일하면서 프론트 엔드 개발자와 의사소통을 원활히 하기 위해서는 서로 네트워크에 대한 기본 지식이 있어야하는 것 같다.  
 이 글은 빠르게 목차를 리뷰하며 백엔드에게 필요한 내용인지, 프론트에게 필요한 내용인지, 공통적으로 알아야하는 내용인지 개인적인 기준에서 분류해봤다.  
@@ -172,7 +172,7 @@ VLAN 내에서는 L2 스위치와 같이 MAC Adress로 통신이 이루어진다
 유선랜 같은 경우에는 IEEE 802.3으로 이더넷이란 이름까지 붙었는데 무선랜의 경우에는 딱히 이름이 안 붙은 모양이다.  
 
 스펙은 현재 IEEE 802.11, IEEE 802.11a, IEEE 802.11b, IEEE 802.11g, IEEE 802.11n 등이 나왔다.  
-![무선 공유기 라우터로 들어오게 되면 b/g/n과 같은 익숙한 설정 화면이 보인다.](/images/tcp-ip-book-index-5/router-bgn.png)  
+![무선 공유기 라우터로 들어오게 되면 b/g/n과 같은 익숙한 설정 화면이 보인다.](tcp-ip-book-index-5/router-bgn.png)  
 
 통신을 할 때는 다른 통신 장비가 전파를 발신하고 있는지 확인 후 통신을 시작하는 CSMA/CA(Carrie Sense Multiple Access with Collision Avoidance) 방식을 사용한다.  
 
@@ -221,7 +221,7 @@ PPP(Point to Point Protocol)은 원격지에 있는 컴퓨터를 일대일로 �
 이 프로토콜은 다양한 통신 하드웨어를 지원하도록 설계돼있어 전화 회선을 사용하는 다이얼 업 PPP나
 이더넷을 사용하는 PPPoE(Point to Point over Ethernet)와 같은 형태가 있다.  
 
-![라우터에 들어가보면 인터넷 접속 방식을 PPPoE로 바꿀 수 있는데 바꾸면 인터넷이 안 될 것 같다.](/images/tcp-ip-book-index-5/router-pppoe.png)  
+![라우터에 들어가보면 인터넷 접속 방식을 PPPoE로 바꿀 수 있는데 바꾸면 인터넷이 안 될 것 같다.](tcp-ip-book-index-5/router-pppoe.png)  
 
 ### 5-9. ARP 명령으로 MAC 어드레스 알아내기
 DNS와 마찬가지로 MAC Address도 캐시에 저장을 하게 된다.  

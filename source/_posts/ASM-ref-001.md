@@ -4,7 +4,7 @@ date: 2017-01-06 09:06:13
 category: [Programming, ASM]
 tag: [ASM, Assembly]
 ---
-![](/images/ASM-ref-001/thumb.png)
+![](ASM-ref-001/thumb.png)
 
 ## 가상 기계(Virtual Machine)
 기계를 추상화한 것.  
@@ -22,7 +22,7 @@ Digital Logic | ???
 ## 어셈블리어(Low-Level Language)
 [기계어](https://namu.wiki/w/%EA%B8%B0%EA%B3%84%EC%96%B4)  
 고급 언어로 만들던, 저급 언어(ASM)으로 만들던 어차피 기계어로 바뀌어 실행되게 된다.  
-![좋은 뇌만 있다면 키보드가 매우 간단해도 된다....(물론 시간도 엄청 걸린다)](/images/ASM-ref-001/machine-code.jpg)  
+![좋은 뇌만 있다면 키보드가 매우 간단해도 된다....(물론 시간도 엄청 걸린다)](ASM-ref-001/machine-code.jpg)  
 즉 프로그래머는 무엇을 만들던 간에 사실 위와 같이 코딩하는 것이다.  
 컴퓨터는 0과 1로 이루어진 전자 계산기이기 때문에 사실 0과 1만으로 이루어진  
 기계어만으로 코딩이 가능하다는 사실이다.  

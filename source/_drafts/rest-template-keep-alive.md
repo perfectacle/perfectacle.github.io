@@ -42,7 +42,7 @@ Host: localhost
 1. 소켓(포트)을 연다.
 1. tcp 3 way handshake를 통해 커넥션을 맺는다.
 
-![](/images/rest-template-keep-alive/http-1-0-connection-close-packet.png)  
+![](rest-template-keep-alive/http-1-0-connection-close-packet.png)  
 패킷 캡쳐 도구인 [와이어샤크](https://www.wireshark.org/)를 이용하여 어떻게 동작하는지 확인하였다.  
 telnet 명령어를 이용하는 순간 TCP 3 Way Handshake(빨간 박스)가 일어나고, 응답을 받는 즉시 커넥션을 종료한다(파란 박스)
 
@@ -74,7 +74,7 @@ Connection: Keep-Alive
 그리고 `Keep-Alive: timeout=60`이라는 헤더의 응답에 맞게 커넥션을 바로 끊는 게 아니라 60초 이후에 서버에서 끊었다.  
 Connection closed by foreign host.라는 문자열이 60초 이후에 찍혔다는 얘기이다.
 
-![](/images/rest-template-keep-alive/http-1-0-connection-keep-alive-packet-1.png)  
+![](rest-template-keep-alive/http-1-0-connection-keep-alive-packet-1.png)  
 패킷을 떠보니 응답을 받은 54분 15초(빨간 박스)로부터 1분 후인 55분 15초(파란 박스)에 연결이 끊긴 걸 볼 수 있다.  
   
 즉, 60초 안에 다시 요청을 보내면 기존 커넥션을 재활용 할 수 있다는 뜻이다.  
@@ -109,7 +109,7 @@ Connection: Keep-Alive
 # 
 # I'm response text
 ```
-![](/images/rest-template-keep-alive/http-1-0-connection-keep-alive-packet-2.png)  
+![](rest-template-keep-alive/http-1-0-connection-keep-alive-packet-2.png)  
 1. telnet 명령어를 이용하는 순간 TCP 3 Way Handshake(빨간 박스)가 일어나고
 1. 첫 번째 요청에 대한 응답(첫 번째 파란 박스)가 10분 7초에 왔고
 1. 두 번째 요청에 대한 응답(두 번째 파란 박스)가 10분 18초에 홨고
@@ -135,7 +135,7 @@ telnet 192.168.0.144 8080
 # Connection closed by foreign host.
 ```
 
-![](/images/rest-template-keep-alive/http-1-1-connection-keep-alive-packet-1.png)  
+![](rest-template-keep-alive/http-1-1-connection-keep-alive-packet-1.png)  
 Connection과 Keep-Alive 헤더가 존재하지 않지만 커넥션이 60초간 유지되다가 끊겼다.
 
 이는 명시적으로 Connection: Keep-Alive 헤더를 보냈을 때와 동일하게 동작한다.  
@@ -158,7 +158,7 @@ telnet 192.168.0.144 8080
 # I'm response text
 # Connection closed by foreign host.
 ```
-![](/images/rest-template-keep-alive/http-1-1-connection-keep-alive-packet-2.png)  
+![](rest-template-keep-alive/http-1-1-connection-keep-alive-packet-2.png)  
 커넥션이 60초간 유지되다가 끊겼다.
 
 만약 커넥션을 재사용하지 않고 바로 끊고 싶다면 명시적으로 Connection 헤더에 Close 값을 넘겨주면 된다.
@@ -180,7 +180,7 @@ telnet 192.168.0.144 8080
 # I'm response text
 # Connection closed by foreign host.
 ```
-![](/images/rest-template-keep-alive/http-1-1-connection-close-packet.png)  
+![](rest-template-keep-alive/http-1-1-connection-close-packet.png)  
 응답을 받자마자 바로 커넥션이 끊겼다.
 
 위에서 봤듯이 HTTP 1.0에서 Connection 헤더의 기본 동작은 Close이고, HTTP1.1에서 Connection 헤더의 기본 동작은 Keep-Alive이다.  
@@ -533,7 +533,7 @@ fun `총 10개의 요청을 두 번에 끊어서 동시에 5개씩 전송`() {
     futures.forEach { it.join() }
 }
 ```
-![](/images/rest-template-keep-alive/rest-template-default-constructor-packet.png)  
+![](rest-template-keep-alive/rest-template-default-constructor-packet.png)  
 1. TCP 3 Way Handshake(빨간 박스)는 한 번 일어나고,
 1. 첫 번째 요청에 대한 응답(첫 번째 파란 박스)가 14분 7초에 왔고
 1. 두 번째 요청에 대한 응답(두 번째 파란 박스)가 14분 17초에 홨고 (`Thread.sleep(10_000)`에 의해 10초 딜레이)

@@ -12,7 +12,7 @@ category:
 date: 2018-09-26 00:27:20
 ---
 
-![출처: https://www.sitepoint.com/suggesting-carbon-with-composer-date-and-time-the-right-way/](/images/date-and-time/thumb.jpg)
+![출처: https://www.sitepoint.com/suggesting-carbon-with-composer-date-and-time-the-right-way/](date-and-time/thumb.jpg)
 
 ## GMT(Greenwich Mean Time) vs. UTC(Coordinated Universal Time)
 세계 표준 시간 관련해서 위 두 키워드가 자주 나오길래 [구글](https://www.google.co.kr/search?newwindow=1&hl=en-KR&rlz=1C5CHFA_enKR721KR721&ei=zc2pW-WIHYq88QXQmKzABQ&q=gmt+vs+utc&oq=gmt+vs+utc&gs_l=psy-ab.3..0i67k1j0i20i263k1j0l3.1063480.1067397.0.1067832.22.18.2.0.0.0.289.2326.0j9j4.14.0....0...1.1j4.64.psy-ab..6.16.2500.6..0i131k1j0i10k1j35i39k1j0i203k1.171.hKhy4qSkjm4)에서 검색해보았다.  
@@ -145,7 +145,7 @@ KST는 UTC에 9시간을 더한 시간으로 **UTC +9** 와 같이 표기하고 
 이 기관에서 시간과 날짜에 관한 표준을 지정하였는데 이게 이 기관에서 정한 8601번 째 표준이라는 의미이다.  
 자바를 비롯해서 많은 프로그래밍 언어에서 날짜와 시간을 표기할 때 위 표준을 준수하고 있다.  
 
-![나라별 날짜 형식, 청록색이 일-월-연, 황색이 연-월-일, 자주색이 월-일-연, 적색이 일-월-연과 월-일-연 혼용](/images/date-and-time/date-format-by-country.svg)
+![나라별 날짜 형식, 청록색이 일-월-연, 황색이 연-월-일, 자주색이 월-일-연, 적색이 일-월-연과 월-일-연 혼용](date-and-time/date-format-by-country.svg)
 사진에서 보다싶이 동아시아권(한국, 일본, 중국 등등)에서는 연-월-일의 순서로 표기한다.  
 하지만 다른 많은 나라에서는 일-월-연, 월-일-연 등등 아주 다양하게 쓰고 있다.  
 우리나라에서는 1970년 01월 02일을 표기할 때 1970-01-02이지만, 미국에서는 02-01-1970이 된다.  

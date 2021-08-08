@@ -5,7 +5,7 @@ categories: [Middle-end, Network]
 date: 2018-04-13 02:00:23
 ---
 
-![출처: http://kryptophone.kryptotel.net/faq/encryption/index.html](/images/key-algorithm/thumb.png)
+![출처: http://kryptophone.kryptotel.net/faq/encryption/index.html](key-algorithm/thumb.png)
 
 이번 포스트에서는 평문의 데이터를 암호화/복호화 하는 방법에 대해서 이해해보자.  
 사람이 알아볼 수 있는 데이터를 평문(plain text)라고 말하고, 평문을 암호화한 걸 암호문(cipher text)라고 부른다.  
@@ -89,7 +89,7 @@ TLS, SSH 프로토콜에서는 주로 RSA 알고리즘을 채택해서 사용한
 5. 이 때 제 3자가 또 패킷을 가로채서 본인의 개인키로 데이터를 복호화하면 원본 데이터 탈취가 가능하다.
 
 #### 전자 인증서
-![해당 블로그의 전자 인증서](/images/key-algorithm/certificate.png)  
+![해당 블로그의 전자 인증서](key-algorithm/certificate.png)  
 공개키 암호화 방식으로 통신할 때 내가 원하지 않는 상대방에게 데이터가 전달되는 취약점을 방지하고자 등장했다.  
 전자 인증서는 `자기 자신이라는 것을 증명하기 위한 수단`이라고 보면 된다.
 tcp 3way handshake를 통해서 연결이 확립됐다고 해서 안심하면 안 된다.  

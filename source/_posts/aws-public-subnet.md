@@ -11,7 +11,7 @@ category:
 date: 2018-04-25 06:01:08
 ---
 
-![](/images/aws-public-subnet/thumb.png)  
+![](aws-public-subnet/thumb.png)  
 
 ## Subnet
 서브넷이란 Sub Network, 네트워크의 서브, 메인 네트워크를 쪼갰다고 보면 된다.  
@@ -22,7 +22,7 @@ Public Subnet이란 **외부에서 접근이 가능한 네트워크** 정도로 
 
 Public Subnet을 만드려면 AWS 콘솔에서 VPC 서비스로 이동해서 좌측 탭 중에 Subnets를 클릭하고, Create Subnet를 클릭한다.
 
-![subnet 생성 화면](/images/aws-public-subnet/create-subnet.png)  
+![subnet 생성 화면](aws-public-subnet/create-subnet.png)  
 Name tag를 정하고 어떤 VPC에 Subnet을 생성할 것인지 선택하면 된다.  
 VPC가 Region에 생성되는 것에 반해 Subnet은 어떤 [AZ(Availability Zone)](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions-availability-zones)에 생성될 것인지도 정해야한다.  
 따라서 AZ가 다운돼서 장애가 발생하는 것을 방지하려면 Multi AZ로 Subnet을 생성해야하지만, 포스트에서는 단일 AZ로 진행하도록 하겠다.  
@@ -34,7 +34,7 @@ Subnet은 VPC의 Subset이기 때문에 VPC의 cidr block을 초과해서 정할
 `또한 서브넷 내의 리소스(EC2 인스턴스, ELB 등등)는 무조건 private ip를 가지는데, private ip는 고정할 수 없고,
 생성될 때 서브넷의 cidr block 내의 ip가 랜덤으로 할당된다.`
 
-![](/images/aws-public-subnet/enable-auto-assign-public-ip.png)  
+![](aws-public-subnet/enable-auto-assign-public-ip.png)  
 기본적으로 서브넷에는 설정에는 서브넷 내의 리소스에 대해 public ip를 자동으로 할당하지 않게 설정돼있다.  
 우리는 만드는 목적 자체가 public subnet이기 때문에 public ip를 자동으로 할당하도록 설정하자.
 
@@ -44,7 +44,7 @@ VPC 외부에서 접근할 때 항상 Internet Gateway를 거쳐서 접근하게
 따라서 Public Subnet을 구성하기 위해서는 Internet Gateway를 무조건 만들어야한다.  
 VPC 서비스 좌측 탭 중에 Internet Gateways를 클릭하고 Create internet gateway를 클릭하고 Name tag를 입력해서 Internet Gateway를 생성하자.  
 
-![](/images/aws-public-subnet/internet-gateway.png)  
+![](aws-public-subnet/internet-gateway.png)  
 Internet Gateway는 기본적으로 vpc에 안 붙어있기 때문에 vpc에 붙여주자.  
 여기서 끝이 아니고, Subnet에 Route Table을 설정해줘야한다.  
 
@@ -54,13 +54,13 @@ Route Table이란 어떤 IP 주소로 가야할 때 어디로 가야하는지를
 이 포스트에서는 메인 라우트 테이블을 수정하도록 하겠다.  
  
 Route Table을 수정하려면 AWS 콘솔에서 Route Tables 서비스로 이동해서 해당 vpc의 메인 라우트 테이블을 선택하고, Edit 버튼을 클릭한다.
-![](/images/aws-public-subnet/main-route-table.png)  
+![](aws-public-subnet/main-route-table.png)  
 우선 메인 라우트 테이블의 Destination은 vpc의 cidr block이 할당돼있고, target은 local로 돼있다.  
 vpc 내부 자원에 대해서는 cidr block 범위에 해당하는 private ip가 할당돼있기 마련이다.  
 따라서 cidr block 내의 ip의 경우에는 local, vpc 내부에서 자원을 찾을 수 있다는 뜻이다.  
 
 우리는 외부와 통신을 해야하기 때문에 라우트 테이블에 인터넷 게이트웨이를 붙어야하기 때문에 Edit 버튼을 누르고 아래와 같이 설정하면 된다.  
-![](/images/aws-public-subnet/main-route-table-edit.png)  
+![](aws-public-subnet/main-route-table-edit.png)  
 0.0.0.0/0, 즉 모든 ip에 대해서 인터넷 게이트웨이로 향하게 끔 설정을 했다.  
 
 목적지 ip가 cidr block 내의 private ip(10.0.0.0/16)인 경우에 대해서는 vpc 내부(local)에서 자원을 찾게 끔 설정한 것이고,  
@@ -73,7 +73,7 @@ EC2 인스턴스는 간단하게 설명하면 그냥 서버 장비 한 대라고
 AWS 콘솔에서 EC2 서비스로 이동해서 Launch Instance를 클릭하자.  
 입맛에 맞게 설정을 하면 되는데, Step 2에서 Review and Launch 대신에 Configure Instance Details를 선택해주자.  
 
-![](/images/aws-public-subnet/ec2-subnet-setting.png)  
+![](aws-public-subnet/ec2-subnet-setting.png)  
 Step3가 핵심이다.  
 위에서 만든 VPC와 Public Subnet을 설정하고, public ip 할당 부분을 enable로 하던가,
 아니면 서브넷에 자동으로 public ip 할당 설정이 돼있다면 Use subnet setting을 그대로 내비두면 된다.  

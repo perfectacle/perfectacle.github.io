@@ -56,7 +56,7 @@ object : ChannelInitializer<Channel>() {
 // ...
 ```
 
-![Bottom-Up 순서대로 실행되기 때문에 때문에 먼저 등록한 ExampleHandler1부터 순서대로 실행된다.](/images/netty-event-handler-order/inbound-event-handler-order.png)
+![Bottom-Up 순서대로 실행되기 때문에 때문에 먼저 등록한 ExampleHandler1부터 순서대로 실행된다.](netty-event-handler-order/inbound-event-handler-order.png)
 
 ## Outbound Event Handler
 Outbound Event를 발생시키기 위해서는 Inbound Event Handler에서 Outbound Event를 한 번 발생시켜야하기 때문에 둘을 짬뽕시켜보았다.  
@@ -97,7 +97,7 @@ object : ChannelInitializer<Channel>() {
 
 하지만 1만 출력되고, 2와 3은 출력되지 않았다.  
 답은 Outbound Event는 Top-down 순서로 실행되기 때문이다.
-![Top-down 순서대로 실행되기 때문에 Outbound Event가 발생한 InboundHandler 아래에 OutboundHandler가 없어서 이벤트를 처리하지 못했다.](/images/netty-event-handler-order/outbound-event-handler-order.png)
+![Top-down 순서대로 실행되기 때문에 Outbound Event가 발생한 InboundHandler 아래에 OutboundHandler가 없어서 이벤트를 처리하지 못했다.](netty-event-handler-order/outbound-event-handler-order.png)
 
 ```kotlin
 object : ChannelInitializer<Channel>() {
@@ -109,7 +109,7 @@ object : ChannelInitializer<Channel>() {
    }
 }
 ```
-![Top-down 순서대로 실행되기 때문에 Outbound Event가 발생한 InboundHandler 아래에 OutboundHandler들이 등록된 순서 역순으로 실행된다.](/images/netty-event-handler-order/outbound-event-handler-order-2.png)  
+![Top-down 순서대로 실행되기 때문에 Outbound Event가 발생한 InboundHandler 아래에 OutboundHandler들이 등록된 순서 역순으로 실행된다.](netty-event-handler-order/outbound-event-handler-order-2.png)  
 OutboundHandler2, OutboundHandler3 순서대로 실행돼서 1이 찍힌 후에 2와 3이 찍힌다.
 
 ## Duplex Event Handler
@@ -161,7 +161,7 @@ object : ChannelInitializer<Channel>() {
    }
 }
 ```
-![](/images/netty-event-handler-order/duplex-event-handler-order.png)  
+![](netty-event-handler-order/duplex-event-handler-order.png)  
 Inbound Handler는 Bottom-up 순서대로 실행되기 때문에
 1. 먼저 등록된 DuplexHandler3의 `3 - read` 출력
 1. 그 후 등록된 InboundHandler1의 `1` 출력

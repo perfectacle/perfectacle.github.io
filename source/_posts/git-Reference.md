@@ -4,7 +4,7 @@ date: 2016-11-19 16:55:28
 category: [Middle-end, git]
 tag: [형상 관리, 버전 관리, 배포, git]
 ---
-![](/images/git-Reference/thumb.png)
+![](git-Reference/thumb.png)
 **이 포스트는 git을 접하다 보면 마주치는 다양한 상황들에 대해 대처하기 위해 정리한 글이다.**  
 Ctrl+F 키를 눌러 원하시는 키워드를 검색하시면 다양한 케이스들을 볼 수 있다.  
 이 문서는 계속해서 업데이트 될 예정이고, 댓글로 제보 해주면 감사할 것 같다 >_<  

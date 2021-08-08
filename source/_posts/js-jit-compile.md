@@ -4,7 +4,7 @@ date: 2017-08-07 11:53:42
 category: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰, JIT]
 ---
-![](/images/js-jit-compile/thumb.png)
+![](js-jit-compile/thumb.png)
 
 ## 자알쓰란?
 `자`바스크립트 `알`고 `쓰`자. (잘 쓰자는 의미도 담겨있다.)  
@@ -34,7 +34,7 @@ tag: [JS, ES, 자알쓰, JIT]
 왜 10진수가 아닌 2진수를 사용하게 됐는지 궁금한 사람은 [컴퓨터에서 2진수, 8진수, 16진수를 쓰게 된 이유](/2017/08/07/computer-number-making-reason/)를 참고하자.
 
 따라서 우리가 작성한 `var a = 'a'`라는 코드를 기계어로 바꿔주는 행위를 해야한다.  
-![이게 귀찮은 사람은 처음부터 기계어로 코딩하면 된다. (뇌가 좋다면...)](/images/js-jit-compile/realprogrammers.png)  
+![이게 귀찮은 사람은 처음부터 기계어로 코딩하면 된다. (뇌가 좋다면...)](js-jit-compile/realprogrammers.png)  
 이걸 사람이 직접 바꿔줘야할까...?  
 매우 비효율적이므로 당연히 이를 도와주는 도구가 있는데 그 중 하나가 인터프리터이다.
 
@@ -45,7 +45,7 @@ tag: [JS, ES, 자알쓰, JIT]
 
 자바스크립트는 이런 인터프리트 방식을 채택한 프로그래밍 언어**였었다**라고...?  
 그럼 과거에는 그렇고 지금은 아니라는 말인가...?  
-![딩!동!댕!](/images/js-jit-compile/correct.jpeg)  
+![딩!동!댕!](js-jit-compile/correct.jpeg)  
 모던 브라우저의 자바스크립트 엔진은 모두 JIT 컴파일 방식으로 Javascript 코드를 해석하고 있다.  
 * 구글에서 개발한 V8(크롬, 오페라와 Node.js)  
 * 모질라에서 개발한 TraceMonkey(파이어폭스 3.5+부터 탑재)  

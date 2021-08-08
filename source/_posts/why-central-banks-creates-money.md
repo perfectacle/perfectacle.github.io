@@ -4,12 +4,12 @@ tags: [자본주의, 경제, 재테크, 인플레이션, 디플레이션, 중앙
 category: [기타, 경제]
 date: 2019-08-15 01:56:31
 ---
-![돈 많이 벌고싶다...](/images/why-central-banks-creates-money/thumb.jpg)
+![돈 많이 벌고싶다...](why-central-banks-creates-money/thumb.jpg)
 
 [EBS 다큐프라임 자본주의 제1부 돈은 빚이다](https://youtu.be/0LYMTsj_eqc)를 보고 나면 더 많은 인사이트를 얻을 수 있다.
 
 ## 물가는 왜 상승하는가? (feat. 인플레이션)
-![수요와 공급의 원칙을 알고 있는가?](/images/why-central-banks-creates-money/demand-and-supply.jpg)
+![수요와 공급의 원칙을 알고 있는가?](why-central-banks-creates-money/demand-and-supply.jpg)
 
 수요가 늘어나거나 공급이 줄어들면 가격이 올라간다.(공급 부족)  
 예를 들면 참외 농사가 흉년이 일어나서 참외를 먹고 싶은 사람은 전과 같이 10명으로 고정적인데 참외의 갯수가 5개로 확 줄어들은 상황이거나,
@@ -37,7 +37,7 @@ date: 2019-08-15 01:56:31
 그럼 더 많은 돈을 지불해야 참외 한 개를 살 수 있게 된다.  
 이렇게 통화량의 증가로 인해 화폐가치가 하락하고, 물가가 오르는 경제 현상을 `인플레이션(통화팽창)`이라고 한다.
 
-![출처: 한국은행](/images/why-central-banks-creates-money/korea-graphg.png)  
+![출처: 한국은행](why-central-banks-creates-money/korea-graphg.png)  
 우리나라 경제를 보면 꾸준하게 통화량도 증가했고, 그와 비슷한 추세로 물가도 같이 상승했음을 알 수 있다.
 
 ## 중앙은행

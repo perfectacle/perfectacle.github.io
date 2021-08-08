@@ -4,7 +4,7 @@ date: 2017-04-26 23:25:29
 category: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰, Hoisting]
 ---
-![](/images/js-002-hoisting/thumb.png)
+![](js-002-hoisting/thumb.png)
 
 ## 자알쓰란?
 `자`바스크립트 `알`고 `쓰`자. (잘 쓰자는 의미도 담겨있다.)  

@@ -9,7 +9,7 @@ date: 2018-12-21 11:00:45
 ---
 
 
-![](/images/effective-java-ch03-item14-comparable-interface/thumb.png)
+![](effective-java-ch03-item14-comparable-interface/thumb.png)
 
 이번 아이템은 모든 객체의 부모 클래스인 Object 클래스에 있는 메서드가 아니다.  
 아예 동떨어진 믹스인 인터페이스인 Comparable와 해당 인터페이스의 유일한 메서드인 compareTo에 대한 내용이다.  

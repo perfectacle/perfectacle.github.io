@@ -4,7 +4,7 @@ category: [Middle-end, 자료구조]
 tag: [자료구조, Queue]
 date: 2017-08-06 12:03:03
 ---
-![](/images/queue-making/thumb.png)  
+![](queue-making/thumb.png)  
 큐는 스택과 반대로 선입선출(FIFO, First In First Out)의 구조를 가지는 자료구조이다.  
 먼저 들어온 놈이 먼저 나가는 구조이니 입력 순서에 따른 처리를 위한 자료에서 많이 사용한다. (OS의 프로세스 스케쥴링)  
 스택과 비교해보면 push 대신에 offer, pop 대신에 offer를 메소드를 사용한다.  

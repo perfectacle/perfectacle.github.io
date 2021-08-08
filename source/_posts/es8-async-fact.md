@@ -10,7 +10,7 @@ category:
   - ECMAScript
 date: 2017-07-17 20:00:04
 ---
-![](/images/es8-async-fact/thumb.png)  
+![](es8-async-fact/thumb.png)  
 
 ```javascript
 const nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];

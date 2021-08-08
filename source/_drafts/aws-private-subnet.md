@@ -3,7 +3,7 @@ title: (AWS) Private Subnet
 tags: [AWS, VPC, Network, Subnet]
 category: [Middle-end, DevOps]
 ---
-![](thumb.png)  
+![](aws-private-subnet/thumb.png)  
 
 ## Subnet
 서브넷이란 Sub Network, 네트워크의 서브, 메인 네트워크를 쪼갰다고 보면 된다.  
@@ -14,7 +14,7 @@ Private Subnet이란 **외부에서 직접적으로 접근이 불가능한 네�
 
 Private Subnet을 만드려면 AWS 콘솔에서 VPC 서비스로 이동해서 좌측 탭 중에 Subnets를 클릭하고, Create Subnet를 클릭한다.
 
-![subnet 생성 화면](create-subnet.png)  
+![subnet 생성 화면](aws-private-subnet/create-subnet.png)  
 Name tag를 정하고 어떤 VPC에 Subnet을 생성할 것인지 선택하면 된다.  
 VPC가 Region에 생성되는 것에 반해 Subnet은 어떤 [AZ(Availability Zone)](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions-availability-zones)에 생성될 것인지도 정해야한다.  
 따라서 AZ가 다운돼서 장애가 발생하는 것을 방지하려면 Multi AZ로 Subnet을 생성해야하지만, 포스트에서는 단일 AZ로 진행하도록 하겠다.  
@@ -33,4 +33,4 @@ private subnet이 되기 위해서는 인터넷 게이트웨이가 물려있지 
 Route Table을 생성하려면 AWS 콘솔에서 Route Tables 서비스로 이동해서 Create Route Table 버튼을 클릭한다.  
 Name tag와 생성할 vpc를 설정하자.  
 
-![라우트 테이블의 경로들](route-table-routing.png)  
+![라우트 테이블의 경로들](aws-private-subnet/route-table-routing.png)  

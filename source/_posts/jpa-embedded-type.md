@@ -4,7 +4,7 @@ date: 2018-02-20 00:52:00
 tags: [DB, ORM, JPA, Hibernate]
 category: [Back-end, DB, JPA]
 ---
-![출처: http://www.datamodel.com/index.php/2014/06/24/big-data-nosql-and-data-modeling-big-challenges-in-data-modeling/](/images/jpa-embedded-type/thumb.png)
+![출처: http://www.datamodel.com/index.php/2014/06/24/big-data-nosql-and-data-modeling-big-challenges-in-data-modeling/](jpa-embedded-type/thumb.png)
 
 ## 일반적인 테이블 구조의 문제점
 일반적인 DB 테이블 구조에 맞춰 엔티티를 만들다보면 아래와 같이 만들게 된다.

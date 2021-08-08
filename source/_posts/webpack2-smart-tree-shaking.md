@@ -4,7 +4,7 @@ date: 2017-04-12 09:10:25
 category: [Front-end, Webpack]
 tags: [npm, Node.js, Webpack2, babel, ES2015, ES6]
 ---
-![](/images/webpack2-smart-tree-shaking/thumb.png)
+![](webpack2-smart-tree-shaking/thumb.png)
 
 ## 들어가기에 앞서
 이 포스트는 [(Webpack 2) 트리 쉐이킹을 해보자!](/2017/03/12/webpack2-tree-shaking/)의 후속작이다.  

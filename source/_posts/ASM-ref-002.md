@@ -4,7 +4,7 @@ date: 2017-01-24 09:52:21
 category: [Programming, ASM]
 tag: [ASM, Assembly, Endian]
 ---
-![](/images/ASM-ref-002/thumb.png)  
+![](ASM-ref-002/thumb.png)  
 엔디안은 시스템 프로그래밍에서 많이 쓰이는 용어이다.  
 엔디안은 메모리의 저장 및 처리 방식을 말하는 것이다.  
 이는 바이트 순서(Byte Order)와도 큰 관련이 있다.

@@ -4,7 +4,7 @@ date: 2017-10-16 20:29:58
 category: [Middle-end, Web Server]
 tag: [HTTP, HTTPS, GET, POST, Web Server]
 ---
-![](/images/http-status-code-307-vs-308/thumb.png)  
+![](http-status-code-307-vs-308/thumb.png)  
 
 redirect를 위한 HTTP 상태 코드 301과 302에 대해 잘 모르겠다면 아래 링크를 참고하고 글을 읽도록 하자.  
 [301리디렉션 & 302리디렉션의 차이(사용법)](http://www.aun-korea.com/301%EB%A6%AC%EB%94%94%EB%A0%89%EC%85%98-302%EB%A6%AC%EB%94%94%EB%A0%89%EC%85%98%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%82%AC%EC%9A%A9%EB%B2%95/)  
@@ -43,7 +43,7 @@ yum 으로 설치해도 사용이 가능한지는 모르겠다. ~~(절대 귀찮
 [What's difference between HTTP 301 and 308 status codes?](https://stackoverflow.com/questions/42136829/whats-difference-between-http-301-and-308-status-codes)에 더 자세한 답변이 있고,  
 [Why doesn't HTTP have POST redirect?](https://softwareengineering.stackexchange.com/questions/99894/why-doesnt-http-have-post-redirect)도 참고하자.  
 그리고 아래 그림이 정말 잘 정리가 돼있는 것 같다.  
-![출처: http://racksburg.com/choosing-an-http-status-code/](/images/http-status-code-307-vs-308/status.png)  
+![출처: http://racksburg.com/choosing-an-http-status-code/](http-status-code-307-vs-308/status.png)  
 
 
 

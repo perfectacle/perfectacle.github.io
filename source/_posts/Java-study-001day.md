@@ -4,7 +4,7 @@ date: 2016-12-30 17:18:24
 category: [Note, Java]
 tag: [Java, 자바의 정석]
 ---
-![](/images/Java-study-001day/thumb.png)
+![](Java-study-001day/thumb.png)
 
 ## 컴퓨터는 왜 2진수를 사용할까?
 10진법이 익숙한 이유는 손가락이 10개이기 때문이지 않을까?  

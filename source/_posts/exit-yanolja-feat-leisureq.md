@@ -10,7 +10,7 @@ category:
 date: 2019-08-23 08:16:36
 ---
 
-![](/images/exit-yanolja-feat-leisureq/thumb.gif)  
+![](exit-yanolja-feat-leisureq/thumb.gif)  
 오늘은 야놀자 서류상 **퇴사일**이다. (오늘까지 남은 연차를 사용했다.)  
 총 세 번의 이직 시도 끝에 성공할 수 있었다.  
 여태까지 신입으로만 이직(프론트엔드 신입(5개월 재직) -> 백엔드 중고 신입)했고, 지인 추천을 통해서만 면접을 봤는데

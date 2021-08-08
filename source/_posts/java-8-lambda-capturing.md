@@ -4,7 +4,7 @@ tags: [Java, Lambda, Java8]
 category: [Programming, Java]
 date: 2019-06-30 14:18:57
 ---
-![](/images/java-8-lambda-capturing/thumb.png)
+![](java-8-lambda-capturing/thumb.png)
 
 람다의 바디에서는 파라미터 말고 바디 외부에 있는 변수를 참조할 수 있다.
 

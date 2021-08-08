@@ -4,7 +4,7 @@ tags: [Deployment]
 category: [Middle-end, DevOps]
 date: 2019-04-21 23:03:23
 ---
-![](/images/non-stop-deployment/thumbs.jpg)
+![](non-stop-deployment/thumbs.jpg)
 
 실제로 우리가 간단하게 서버를 배포하는 시나리오를 생각해보자.
 1. 80포트(혹은 다른 포트)에 우리의 서버를 띄운다.
@@ -21,7 +21,7 @@ date: 2019-04-21 23:03:23
 비용을 줄이려면 배포할 때만 새롭게 서버를 띄우고 배포가 완료된 후에 기존 서버는 죽이면 된다.
 
 ### Rolling Deployment
-![SPOF를 피하려면 어플리케이션 서버는 물론이고 로드 밸런서도 이중화해야한다.](/images/non-stop-deployment/elb-basic.png)
+![SPOF를 피하려면 어플리케이션 서버는 물론이고 로드 밸런서도 이중화해야한다.](non-stop-deployment/elb-basic.png)
 HA(High Availability)을 위해 프로덕션 환경은 2대 이상의 서버로 구성한다.  
 이런 환경에서 무중단 배포하기 가장 간단한 방법이 바로 Rolling 배포이다.  
 시나리오는 다음과 같다.  
@@ -38,13 +38,13 @@ HA(High Availability)을 위해 프로덕션 환경은 2대 이상의 서버로 
 또한 1대에 배포하는 거보다 최소 2배 이상 느리다. (아무리 못해도 2번 이상의 배포가 진행되기 때문에)
 
 ### Canary Deployment
-![](/images/non-stop-deployment/canary.png)
+![](non-stop-deployment/canary.png)
 광부들이 광산에서 유독가스가 나오는 것을 알아내기 위해서 가스에 민감한 카나리아(조류)를 광산 안에서 키웠다고 해서 유래된 배포이다.  
 소수의 유저(혹은 사내)만 사용하는 환경(Canary 환경)에 신규 버전을 배포하고 문제가 없다고 판단됐을 때 다른 모든 서버에 배포한다.  
 Canary 환경은 뭐 QA Phase가 될 수도 있고, 랜덤하게 유저를 Canary 환경으로 라우팅시킬 수도 있고 구현하기 나름이다.  
 
 ### Blue/Green Deployment
-![](/images/non-stop-deployment/thumbs.jpg)  
+![](non-stop-deployment/thumbs.jpg)  
 **실제로 서비스 중인 환경(Blue)**과 **새롭게 배포할 환경(Green)**을 세트로 준비해서 배포하는 방식을 말한다.  
 장점으로는 새롭게 배포할 환경에만 배포하면 되기 때문에 배포 속도가 매우 빠르다. (배포할 서버가 N대라 하더라도 N대의 Green 서버에 동시에 배포하면 되기 때문에)  
 또한 언제나 Green 환경이 떠있기 때문에 만약에 잘못된 버전으로 배포를 했을 경우에 신속하게 롤백이 가능하다. (수 백대의 서버에 거의 수 초 이내에 롤백이 가능함.)  
@@ -57,15 +57,15 @@ Canary 환경은 뭐 QA Phase가 될 수도 있고, 랜덤하게 유저를 Canar
 또한 하나의 서버에 두 대의 어플리케이션을 띄우는 걸로 설명했지만 별도의 서버에 하나의 어플리케이션만 각각 띄워서 구성해도 된다.)
 
 #### Deployment
-![젠킨스와 같은 CI를 사용해서 Green 환경에 배포를 완료한다.](/images/non-stop-deployment/blue-green-02.png)
+![젠킨스와 같은 CI를 사용해서 Green 환경에 배포를 완료한다.](non-stop-deployment/blue-green-02.png)
 
-![Nginx와 같은 프록시 서버에서 80포트로 들어오면 Green 환경으로 라우팅하도록 설정한다.](/images/non-stop-deployment/blue-green-03.jpg)  
+![Nginx와 같은 프록시 서버에서 80포트로 들어오면 Green 환경으로 라우팅하도록 설정한다.](non-stop-deployment/blue-green-03.jpg)  
 
 #### Rollback
-![만약에 새로 배포한 Blue 환경에서 버그가 발생했다고 가정해보자.](/images/non-stop-deployment/blue-green-04.jpg)  
+![만약에 새로 배포한 Blue 환경에서 버그가 발생했다고 가정해보자.](non-stop-deployment/blue-green-04.jpg)  
 
-![이 때 프록시 서버에서 80포트의 라우팅을 Green 환경으로만 옮겨서 Blue와 Green을 바꾸기만 하면 롤백이 끝난다.](/images/non-stop-deployment/blue-green-05.jpg)  
+![이 때 프록시 서버에서 80포트의 라우팅을 Green 환경으로만 옮겨서 Blue와 Green을 바꾸기만 하면 롤백이 끝난다.](non-stop-deployment/blue-green-05.jpg)  
 
-![물론 Green 환경이 사망해계신 상태에서는 롤백이 불가능하다.](/images/non-stop-deployment/blue-green-06.jpg)
+![물론 Green 환경이 사망해계신 상태에서는 롤백이 불가능하다.](non-stop-deployment/blue-green-06.jpg)
 
 더 자세한 설명은 [Martin Fowler가 쓴 블로그 글](https://martinfowler.com/bliki/BlueGreenDeployment.html)을 참고하자.

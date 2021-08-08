@@ -4,14 +4,14 @@ date: 2016-12-23 09:37:53
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Number]
 ---
-![](/images/ES6-Number-type/thumb.png)  
+![](ES6-Number-type/thumb.png)  
 이 글을 읽고 [(ES6) Number 객체와 함수](/2016/12/24/ES6-Number-object-and-function/)를 이어서 보는 걸 추천한다.
 
 # 자료형
 ES에서 숫자형은 단 하나의 자료형 뿐이다.  
 Double: 자바나 C 등등의 언어에서 실수를 표현하기 위한 자료형, 8Byte = 64Bit  
 [Double-precision floating-point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)  
-![ES에서 쓰는 숫자의 형태](/images/ES6-Number-type/IEEE-754-Double-Floating-Point-Format.png)  
+![ES에서 쓰는 숫자의 형태](ES6-Number-type/IEEE-754-Double-Floating-Point-Format.png)  
 1. 부호(sign)를 표현하기 위한 1비트 (+, -)  
 2. 지수부(exponent part)를 표현하기 위한 11비트  
 3. 가수부(fraction part)를 표현하기 위한 52비트

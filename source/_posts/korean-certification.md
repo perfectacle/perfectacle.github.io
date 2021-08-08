@@ -9,7 +9,7 @@ category:
 date: 2020-01-24 15:52:03
 ---
 
-![npki라는 디렉리토리 안에 보관돼있는 공인인증서의 공개키(*.der)와 비밀키(*.key)](/images/korean-certification/thumb.png)
+![npki라는 디렉리토리 안에 보관돼있는 공인인증서의 공개키(*.der)와 비밀키(*.key)](korean-certification/thumb.png)
 
 ## 인증서는 왜 쓸까
 A가 데이터를 보냈는데 이게 진짜 A가 보낸 건지 아닌지를 검증할 수가 없다.  
@@ -17,7 +17,7 @@ A가 데이터를 보냈는데 이게 진짜 A가 보낸 건지 아닌지를 검
 따라서 A한테 메세지가 올 때 A의 인증서가 오지 않는다면 A라고 취급을 하지 않으면 된다.  
 하지만 개나소나 인증서를 발급할 수 있으면 A 행세를 아무나 낼테니까 **인증된 기관(CA, Certificate Authority)**으로부터 적절한 절차를 거쳐 인증서를 발급받을 수 있다.
 
-![구글에서 사용 중인 인증서](/images/korean-certification/google-certificate.png)
+![구글에서 사용 중인 인증서](korean-certification/google-certificate.png)
 우리가 알고 있는 TLS 인증서(https 도메인마다 발라져있는) 같은 경우에도 이런 절차를 거쳐 발급된다.
 그리고 이런 인증서들은 **X.509(공개키 인증서 포맷의 표준)**라는 표준을 준수한다.
 
@@ -36,7 +36,7 @@ A가 데이터를 보냈는데 이게 진짜 A가 보낸 건지 아닌지를 검
 (그 때문에 사용자만 엄청 고생하는 ㅠㅠ...)
 
 ## 공인인증서 구조
-![공인인증서와 개인키 파일](/images/korean-certification/certifiacate-and-key.png)
+![공인인증서와 개인키 파일](korean-certification/certifiacate-and-key.png)
 MacOS는 /Users/사용자이름/Library/Preferences/NPKI,  
 Windows 10는 C:\Users\사용자이름\AppData\LocalLow\NPKI에 위치하고 있다.
 
@@ -48,7 +48,7 @@ PKCS#12는 다수의 `X.509 인증서 + 개인키` 묶음을 하나의 파일로
 ## 공인인증서
 *.cer(Canonical Encoding Rules) 또는 *.der(Distinguished Encoding Representation)과 같은 확장자를 가지며 바이너리 형태로 인코딩 돼있다.
 
-![MacOS의 Keychain Access에서 본 공인인증서 정보](/images/korean-certification/certificate.png)  
+![MacOS의 Keychain Access에서 본 공인인증서 정보](korean-certification/certificate.png)  
 공인인증서는 **X.509 V3**을 따른다.
 또한 공인인증서 소유자의 **공개키** + CA(Certificate Authority, 발행기관) 정보 및 **전자서명** + 사용목적 + 유효기간 등등이 저장돼있다.
 
@@ -61,12 +61,12 @@ CA(인증서 발급 기관, Certificate Authority)에게 인증서 발급을 요
 그리고 인증서 안에는 **인증서 발급 요청자의 공개키**가 포함돼있고, 어떤 용도의 인증서인지,
 어느 기관(CA, Certificate Authority)에서 발급한 건지 등등의 정보가 포함돼있다.
 
-![MacOS의 Keychain Access에서 공인인증서는 신뢰할 수 없다고 나온다.](/images/korean-certification/not-trusted-certificate.png)  
+![MacOS의 Keychain Access에서 공인인증서는 신뢰할 수 없다고 나온다.](korean-certification/not-trusted-certificate.png)  
 또한 공인인증서는 국내에서만 사용하는 인증서이기 때문에 OS 레벨에서는 해당 인증서가 신뢰된 CA로부터 발급받은 인증서인지 알 수가 없다.
 (그냥 은행이나 공공기관 등등을 믿고 쓰는 수 밖에...)
 
 ## 비밀키 (*.key)
-![](/images/korean-certification/key-format-desc.png)  
+![](korean-certification/key-format-desc.png)  
 [전자서명인증관리센터](https://www.rootca.or.kr/kor/accredited/accredited06_01.jsp)에 보면 PKCS#5와 PKCS#8 형식이라고 나와있다.
 
 > In cryptography, PKCS #8 is a standard syntax for storing private key information.
@@ -89,22 +89,22 @@ PBKDF1과 PBKDF2가 있는데 공인인증서는 두 가지 방식을 모두 지
 X.509 인증서의 데이터 구조는 ASN.1 표기법에 의해 표기된다.
 따라서 디코딩해보면 더 많은 정보를 얻어낼 수 있는데 온라인에서 디코딩을 할 수 있다.  
 
-![공인인증서를 ASN.1 표기법으로 표기](/images/korean-certification/asn1-certificate.png)  
+![공인인증서를 ASN.1 표기법으로 표기](korean-certification/asn1-certificate.png)  
 [https://lapo.it/asn1js](https://lapo.it/asn1js)에 들어가서 공인인증서나 개인키 파일을 Base64로 인코딩한 텍스트를 입력한 후에 decode 버튼을 누르면 더 자세한 정보를 볼 수 있다.  
 
-![개인키를 ASN.1 표기법으로 표기](/images/korean-certification/asn1-key.png)  
+![개인키를 ASN.1 표기법으로 표기](korean-certification/asn1-key.png)  
 개인키 파일을 디코딩해보면 어떤 암호화 알고리즘을 사용했는지, 어떤 KDF(Key Derivation Function)를 사용했는지 나온다.
 object identifer를 [http://oid-info.com/get/1.2.410.200004.1.4](http://oid-info.com/get/1.2.410.200004.1.4)에서 검색하면 더 자세한 정보가 나온다.
 
-![개인키를 ASN.1 표기법으로 표기](/images/korean-certification/seed-iv.png)  
+![개인키를 ASN.1 표기법으로 표기](korean-certification/seed-iv.png)  
 또한 [SEED 알고리즘 규격 문서](http://www.rootca.or.kr/kcac/down/TechSpec/2.3-KCAC.TS.ENC.pdf)를 보면 OID에 따라서 초기 벡터 값을 어떻게 세팅해야하는지 나온다.
 
 ## ActiveX로 깔은 모듈(delfino, Xecure 등등)에서는 무슨 일을 할까...?
-![Ajax나 WebSocket을 통해서 주기적으로 로컬과 통신한다.](/images/korean-certification/activex-commuicate-local.png)  
+![Ajax나 WebSocket을 통해서 주기적으로 로컬과 통신한다.](korean-certification/activex-commuicate-local.png)  
 그 안에서 공인인증서도 가져오고, 개인키 파일을 복호화 해서 개인키를 획득하기도 하고...  
 여러가지 행위들을 한다.
 
-![PKCS7이란 파라미터에 Base64 인코딩 된 스트링을 보내고 있다.](/images/korean-certification/kb-login.png)  
+![PKCS7이란 파라미터에 Base64 인코딩 된 스트링을 보내고 있다.](korean-certification/kb-login.png)  
 PKCS #7(Cryptographic Message Syntax)이 뭔지 찾아보니 전자서명에 대한 표준 같아 보였다.  
 실제로 어떤 카드사의 경우에는 PKCS7 방식으로 전자서명 하는 모듈을 쓰는 곳도 있다.
 
@@ -114,7 +114,7 @@ ASN.1 Decoder로 보니 내 공인인증서였다.
 하지만 공개키 인증서는 기본적으로 여기저기 공유가 돼도 문제 없도록 만들었다.  
 따라서 저 공인인증서를 내가 전달한 건지, 남이 전달한 건지 서버는 알 길이 없다.
 
-![VID_RANDOM 파라미터에 Base64 인코딩 된 스트링을 보내고 있다.](/images/korean-certification/kb-login-vid-random.png)  
+![VID_RANDOM 파라미터에 Base64 인코딩 된 스트링을 보내고 있다.](korean-certification/kb-login-vid-random.png)  
 [식별번호를 이용한 본인확인 기술규격](http://www.rootca.or.kr/kcac/down/TechSpec/1.5-KCAC.TS.SIVID.pdf)을 보면 다음과 같은 부분이 나와있다.  
 `VID = h(h(IDN, R)`
 
@@ -125,7 +125,7 @@ ASN.1 Decoder로 보니 내 공인인증서였다.
 - R: 비트열 난수
   `본 규격에서는 적어도 160비트 이상의 안전한 임의의 난수를 생성하여 사용해야한다. 난수는 가상 식별번호를 생성하는데 사용되며 가상 식별번호와 함께 공인인증기관에 전달되어 공인인증기관이 식별번호를 검증하는데 사용된다.`
   국민은행 측에 보낸 VID_RANDOM 값을 Base64 디코딩해보면 20바이트(160비트)의 데이터가 나온다.
-  ![R 값은 개인을 식별하기 위한 아주 중요한 정보이다.](/images/korean-certification/vid-random.png)
+  ![R 값은 개인을 식별하기 위한 아주 중요한 정보이다.](korean-certification/vid-random.png)
 
 따라서 보안 모듈에서는 다음과 같은 행동이 일어났다.
 

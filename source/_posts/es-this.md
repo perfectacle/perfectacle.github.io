@@ -4,7 +4,7 @@ date: 2017-02-15 09:00:37
 category: [Programming, ECMAScript]
 tags: [JS, ES, this]
 ---
-![](/images/es-this/thumb.png)  
+![](es-this/thumb.png)  
 자바스크립트에서 this는 상황에 따라 다른 값을 반환해서 아주 짜증나기 마련이다.  
 이와 관련해서 하나하나 낱낱이 테스트해보자.
 
@@ -379,12 +379,12 @@ const e = {
   }
 };
 ```
-![](/images/es-this/01.png)  
+![](es-this/01.png)  
 함수 선언 시점의 this는 e object이다.  
-![](/images/es-this/02.png)  
+![](es-this/02.png)  
 하지만 함수 실행 시점의 this는 window가 된다.  
 바로 setTimeout이 별도의 컨텍스트를 만들기 때문이다.  
-![](/images/es-this/03.png)  
+![](es-this/03.png)  
 함수로 래핑해봐도 마찬가지다.  
-![](/images/es-this/04.png)  
+![](es-this/04.png)  
 하지만 애로우 펑션으로 래핑하면 클로저를 형성해서 우리가 원하는 결과를 얻어낼 수 있다.

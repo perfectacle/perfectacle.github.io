@@ -4,7 +4,7 @@ tags: [Time, Unix]
 category: [기타, 등등]
 date: 2018-09-25 23:05:08
 ---
-![https://en.wikipedia.org/wiki/Unix_time](/images/unix-timestamp/thumb.jpg)
+![https://en.wikipedia.org/wiki/Unix_time](unix-timestamp/thumb.jpg)
 
 들어가기 앞서 Unix Timestamp의 동의어를 살펴보자.  
 

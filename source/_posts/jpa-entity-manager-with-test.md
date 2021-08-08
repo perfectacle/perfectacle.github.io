@@ -8,7 +8,7 @@ category:
 date: 2019-05-01 17:26:48
 ---
 
-![이미지 출처: http://bemil.chosun.com/nbrd/bbs/view.html?b_bbs_id=10044&pn=0&num=128739](/images/jpa-entity-manager-with-test/thumb.png)
+![이미지 출처: http://bemil.chosun.com/nbrd/bbs/view.html?b_bbs_id=10044&pn=0&num=128739](jpa-entity-manager-with-test/thumb.png)
 
 오랜만에 Spring Data JPA를 가지고 뭔가 뻘뻘 대보고 있었다.  
 하지만 내 의도대로 동작하지 않았다.  

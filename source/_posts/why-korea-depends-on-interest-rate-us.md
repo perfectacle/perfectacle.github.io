@@ -31,7 +31,7 @@ date: 2019-08-15 10:14:29
 35 달러를 가져오면 금 1oz로 교환해주겠다고 `1944년 미국 브레튼우즈 협정`에서 정해졌다. (이를 `금 본위제 또는 금 태환제`라고 부른다.)
   
 즉, `달러는 금 보관증`으로써 작용하기 시작했다. 
-![TEN DOLLARS IN GOLD COIN이라는 문구를 주목해라.](/images/why-korea-depends-on-interest-rate-us/dollar-in-past.jpeg)
+![TEN DOLLARS IN GOLD COIN이라는 문구를 주목해라.](why-korea-depends-on-interest-rate-us/dollar-in-past.jpeg)
 
 하지만 그 이후에 베트남 전쟁으로 달러의 가치가 하락하기 시작했다.  
 달러의 가치가 하락했다는 것은 수요/공급 법칙에 의해 달러의 공급이 많아졌음을 의미한다.  
@@ -47,7 +47,7 @@ date: 2019-08-15 10:14:29
 왜냐하면 돈은 종이 쪼가리에 불과하기 때문에 중앙은행에서 찍어대기만 하면 되지만, 금은 실물이기 때문에 돈보다 생성(혹은 확보)해내기가 훨씬 어려웠기 때문이다.  
 물론 폐지할 때도 영구적으로 폐지한다고 하면 달러(금 보관증)를 소유한 나라의 반발이 심할 것이므로 미국의 경제가 살아날 때까지 임시 방편으로 폐지하는 것처럼 얘기했지만 그 이후 금 본위제는 부활하지 않고 있다.
 
-![1971년 이후의 달러는 GOLD와 관련된 문구가 어디에도 적혀있지 않다.](/images/why-korea-depends-on-interest-rate-us/dollar-in-present.jpg)  
+![1971년 이후의 달러는 GOLD와 관련된 문구가 어디에도 적혀있지 않다.](why-korea-depends-on-interest-rate-us/dollar-in-present.jpg)  
 이제 달러는 금으로부터 자유로워졌고, 단순히 종이 쪼가리에 불과하게 된다.  
 즉, 금의 보유량과 상관없이 이제 마구잡이로 찍어댈 수 있게 됐다.
 

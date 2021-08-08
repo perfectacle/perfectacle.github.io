@@ -4,7 +4,7 @@ date: 2017-09-05 09:35:53
 tags: [Java, DI, Spring]
 category: [Back-end, Spring]
 ---
-![](/images/spring-di-v2/thumb.png)
+![](spring-di-v2/thumb.png)
 
 beans.xml 파일을 수정해보자.  
 ```xml

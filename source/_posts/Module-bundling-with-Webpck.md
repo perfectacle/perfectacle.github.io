@@ -4,7 +4,7 @@ date: 2016-11-18 09:38:50
 category: [Front-end, Webpack]
 tags: [Cross Browsing, npm, Node.js, Webpack]
 ---
-![](/images/Module-bundling-with-Webpck/thumb.png)  
+![](Module-bundling-with-Webpck/thumb.png)  
 
 ## 목차
 1. [들어가기에 앞서](#들어가기에-앞서)
@@ -225,7 +225,7 @@ module.exports = {
 2. entry  
 [JavaScript 모듈화 도구, webpack](http://d2.naver.com/helloworld/0239818)에서는 아래와 같이 말하고 있다.
 <blockquote>
-![](/images/Module-bundling-with-Webpck/01.png)  
+![](Module-bundling-with-Webpck/01.png)  
 서로 의존 관계에 있는 다양한 모듈을 사용하는 시작점이 되는 파일이다.
 </blockquote>
 [Webpack 적용기 2 : 어떻게 사용하는가?](https://hjlog.me/post/118)에서는 다음과 같이 설명하고 있다.  
@@ -268,9 +268,9 @@ Ctrl+C 키를 누르면 빠져나올 수 있다.
 2. bundle.js.map
 
 한번 index.html 파일을 열어보고 콘솔창을 보자.  
-![index.html은 bundle.js만 로드했지만 bundle.js.map이 원본 파일 정보를 들고 있어서 어떠한 파일에서 오류가 났는지 쉽게 알 수 있다.](/images/Module-bundling-with-Webpck/02.png)  
+![index.html은 bundle.js만 로드했지만 bundle.js.map이 원본 파일 정보를 들고 있어서 어떠한 파일에서 오류가 났는지 쉽게 알 수 있다.](Module-bundling-with-Webpck/02.png)  
 디버깅하여 모듈은 어떠한 스코프를 가지는지 알아보자.  
-![모듈은 로컬 스코프에 별도의 객체를 만들어 스코프를 관리한다.](/images/Module-bundling-with-Webpck/03.png)  
+![모듈은 로컬 스코프에 별도의 객체를 만들어 스코프를 관리한다.](Module-bundling-with-Webpck/03.png)  
 6번 라인에 브레이크 포인트를 걸고 새로고침을 해보았다.  
 module-c는 import 시켰지만 모듈의 변수를 사용하지 않았으므로  
 불필요하게 스코프를 생성하지 않았다.
@@ -429,7 +429,7 @@ filename에 그 템플릿을 토대로 새롭게 만들어질 html 파일을 지
 test에는 정규표현식이 들어가고, 로더의 순서는 바뀌면 오류가 난다.  
 아마 오른쪽에서부터 왼쪽으로 적용이 되는 게 아닐까 싶다.  
 또한 소스맵 옵션을 제거하면 아래와 같이 난독화된 소스를 보게돼 디버깅하기가 쉽지 않다.  
-![스타일의 규모가 크다고 가정하면 생각만해도 끔찍하다](/images/Module-bundling-with-Webpck/04.png)
+![스타일의 규모가 크다고 가정하면 생각만해도 끔찍하다](Module-bundling-with-Webpck/04.png)
 
 ## 개발용? 배포용?  
 뭔가 이제 그럴듯 하게 보이긴 하지만 현재 프로젝트 디렉토리를 보자.
@@ -453,7 +453,7 @@ test에는 정규표현식이 들어가고, 로더의 순서는 바뀌면 오류
 이는 나중에 개발 & 배포를 할 때 상당한 혼란을 초래한다.
 
 또한 스타일 시트를 bundle.js 안에 번들링하면 아래와 같은 현상이 발생한다.  
-![새로고침을 하면 일시적으로 스타일이 적용되지 않은 모습이 보인다.](/images/Module-bundling-with-Webpck/05.gif)  
+![새로고침을 하면 일시적으로 스타일이 적용되지 않은 모습이 보인다.](Module-bundling-with-Webpck/05.gif)  
 위 현상은 스타일 시트의 규모가 커질 수록 스타일이 적용되지 않은 모습이 노출되는 시간이 길어진다.  
 이를 해결하고자 css 파일에 소스맵을 안 붙여서 내부 스타일 시트로 배포하는 수가 있지만,  
 bundle.js의 몸뚱아리만 키워 로딩속도를 저하시키는 요인이 되기도 한다.  
@@ -744,7 +744,7 @@ $ npm run build
 ```
 
 우선 개발용 서버로 진입해서 살펴보자.  
-![http://localhost:8080/ 으로 접속해보자.](/images/Module-bundling-with-Webpck/06.png)
+![http://localhost:8080/ 으로 접속해보자.](Module-bundling-with-Webpck/06.png)
 js 파일에서 스타일을 렌더링하는 코드가 있기 때문에 js파일을 전부 로드한 이후에  
 스타일 시트가 적용돼서 초반에 스타일 시트가 적용되지 않은 모습이 잠깐 보이게 된다.  
 또한 html 파일에 넣지 않았던 번들링된 파일과 스타일 시트가 들어가있다.
@@ -758,7 +758,7 @@ h1 {
 }
 ```
 
-![크롬의 네트워크탭을 보면 처음부터 리퀘스트를 때리는 게 아니라 필요한 부분만 때린다.](/images/Module-bundling-with-Webpck/07.gif)  
+![크롬의 네트워크탭을 보면 처음부터 리퀘스트를 때리는 게 아니라 필요한 부분만 때린다.](Module-bundling-with-Webpck/07.gif)  
 위와 같이 새로고침 없이 필요한 부분만 갱신하는 게 HMR이다.
 
 그럼 index.html 파일을 고쳐보자.
@@ -775,7 +775,7 @@ h1 {
 </body>
 </html>
 ```
-![크롬의 네트워크탭을 보면 처음부터 리퀘스트를 때린다.](/images/Module-bundling-with-Webpck/07.gif)  
+![크롬의 네트워크탭을 보면 처음부터 리퀘스트를 때린다.](Module-bundling-with-Webpck/07.gif)  
 이는 js 파일도 마찬가지인데, js 파일과 html 파일은 핫모듈이 아니기 때문에 핫리로드를 하는 것이다.
 
 그럼 이제 실제 배포를 진행해보자.  
@@ -793,8 +793,8 @@ h1 {
 트래픽을 줄이고 로딩 속도를 높여 퍼포먼스를 향상시켰다.
 
 이제 index.html 파일을 브라우저에서 열어보자.
-![우리가 html 소스 코드에 넣지 않았던 css 파일과 js 파일이 들어있다.](/images/Module-bundling-with-Webpck/09.png)  
-![우리가 테스트 용도로 넣었던 로그가 지워져있다.](/images/Module-bundling-with-Webpck/10.png)
+![우리가 html 소스 코드에 넣지 않았던 css 파일과 js 파일이 들어있다.](Module-bundling-with-Webpck/09.png)  
+![우리가 테스트 용도로 넣었던 로그가 지워져있다.](Module-bundling-with-Webpck/10.png)
 
 실제로 웹팩으로 모듈 번들링을 할 때는 이렇게 개발용과 배포용으로 나누어서 진행하고,  
 개발용 서버로 개발하다 개발을 완료하면  
@@ -908,14 +908,14 @@ $('#btn').click(function() {
 btn 아이디를 가진 엘리먼트를 클릭하면 경고창이 뜨게 제이쿼리를 사용하였다.
 
 이제 $ npm run dev를 치고 실제 개발용 서버에서 보자.  
-![제이쿼리, 부트스트랩, 폰트어썸 모두 동작을 잘 한다.](/images/Module-bundling-with-Webpck/11.png)  
+![제이쿼리, 부트스트랩, 폰트어썸 모두 동작을 잘 한다.](Module-bundling-with-Webpck/11.png)  
 버튼을 누르면 경고창도 뜨고, (s)css와 js의 소스맵 모두 잘 붙는다.
 
 이제 $ npm run build를 치고 실제 배포용 파일을 보자.  
-![확장자 별로 잘 분리가 되었다.](/images/Module-bundling-with-Webpck/12.png)
+![확장자 별로 잘 분리가 되었다.](Module-bundling-with-Webpck/12.png)
 
 index.html을 브라우저에 띄워보자.  
-![아주 잘 나온다.](/images/Module-bundling-with-Webpck/13.png)  
+![아주 잘 나온다.](Module-bundling-with-Webpck/13.png)  
 디버깅 용 로그도 사라졌고, 디버깅 할 필요가 없으니 소스맵도 안 붙였다.
 
 기본적인 외부 모듈들 사용방법은 이러하고,  
@@ -1186,16 +1186,16 @@ module.exports = {
 new ExtractTextPlugin()에서도 [name]은 각 엔트리 별 이름이 들어간다.
 
 $ npm run dev 를 치고 한 번 확인해보자.  
-![번들된 index 엔트리가 잘 붙었다.](/images/Module-bundling-with-Webpck/14.png)
+![번들된 index 엔트리가 잘 붙었다.](Module-bundling-with-Webpck/14.png)
 
 http://127.0.0.1/8080/sub.html 으로 접속해보자.  
-![번들된 sub 엔트리가 잘 붙었다.](/images/Module-bundling-with-Webpck/15.png)
+![번들된 sub 엔트리가 잘 붙었다.](Module-bundling-with-Webpck/15.png)
 
 $ npm run build 를 치고 배포용 파일을 확인해보자.  
-![각 페이지 별로 쓸 모듈들이 번들링 된 파일들이 잘 뽑아졌다.](/images/Module-bundling-with-Webpck/16.png)
+![각 페이지 별로 쓸 모듈들이 번들링 된 파일들이 잘 뽑아졌다.](Module-bundling-with-Webpck/16.png)
 
 하지만 IE8에서 결과를 확인하면 처참한 결과를 확인할 수 있다.  
-![노답](/images/Module-bundling-with-Webpck/17.png)
+![노답](Module-bundling-with-Webpck/17.png)
 
 이를 위해서는
 
@@ -1385,7 +1385,7 @@ ES5 폴리필이 붙기 전에 HMR이 먼저 로딩돼서 오류가 난다.
 
 2. preRender.polyfill을 번들링했다.
 
-![콘솔 창에 오류가 나오는 게 찝찝하지만 잘 나온다.](/images/Module-bundling-with-Webpck/18.png)
+![콘솔 창에 오류가 나오는 게 찝찝하지만 잘 나온다.](Module-bundling-with-Webpck/18.png)
 
 이번에는 배포용 설정 파일을 손대자.
 ```javascript
@@ -1471,7 +1471,7 @@ module.exports = {
 크게 바뀐 건 없고, 바뀐 사항은 위에서 다 설명하였다.
 
 $ npm run build를 쳐서 빌드를 하고 dist/sub.html을 IE8에서 켜보자.  
-![IE8에서도 잘 작동한다.](/images/Module-bundling-with-Webpck/19.png)
+![IE8에서도 잘 작동한다.](Module-bundling-with-Webpck/19.png)
 
 ## 마치며...
 이번 글은 작성하는데 엄청난 시간이 걸렸다.  

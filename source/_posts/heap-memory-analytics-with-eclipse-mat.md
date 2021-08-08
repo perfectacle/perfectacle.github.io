@@ -10,7 +10,7 @@ category:
 date: 2019-04-28 23:25:38
 ---
 
-![](/images/heap-memory-analytics-with-eclipse-mat/thumb.png)
+![](heap-memory-analytics-with-eclipse-mat/thumb.png)
 
 어느 날 서비스가 갑자기 다운되는 사례가 발생했다.  
 다행히 서버를 이중화시켜놓아서 장애가 발생하진 않았지만 그래도 왜 다운된 건지 원인 분석을 해야했다.   
@@ -31,14 +31,14 @@ date: 2019-04-28 23:25:38
 [Eclipse Memory Analyzer 소개](https://spoqa.github.io/2012/02/06/eclipse-mat.html)와 [하나의 메모리 누수를 잡기까지](https://d2.naver.com/helloworld/1326256)에서 힙 덤프를 분석하는데 Eclipse MAT를 사용했다길래 나도 한 번 사용해보았다.  
 [다운로드](https://www.eclipse.org/mat/downloads.php) 페이지에서 OS에 맞는 어플리케이션을 받으면 되는데 나는 MacOSX 버전을 다운받았다.  
 
-![식별되지 않은 개발자가 만든 앱이라고 실행되지 않는다... 역시 보안에 빡센 애플](/images/heap-memory-analytics-with-eclipse-mat/01.png)  
-![Security & Privacy의 General 탭에서 빨간색 표시친 곳에서 Open Anyway를 누르자.](/images/heap-memory-analytics-with-eclipse-mat/02.png)  
-![그럼 MAT를 열 수 있게 된다.](/images/heap-memory-analytics-with-eclipse-mat/03.png)  
-![함정카드 발동... 아직도 열 수가 없다.](/images/heap-memory-analytics-with-eclipse-mat/04.png)  
-![MAT를 Applications 디렉토리로 옮긴 후에 열어보자.](/images/heap-memory-analytics-with-eclipse-mat/05.png)  
-![드디어 정상적으로 열렸다 ㅠㅠ... 이제 빨간색 표시친 Open a Heap Dump를 통해 로컬로 복사한 힙 덤프 파일을 열어보자.](/images/heap-memory-analytics-with-eclipse-mat/06.png)  
-![Heap Dump 파싱이 끝난 후 Leak Suspects Report를 체크 후 finish를 누르자.](/images/heap-memory-analytics-with-eclipse-mat/07.png)  
-![Leak Suspects Report를 보니 com.mysql.jdbc.JDBC42ResultSet 클래스의 인스턴스가 1.8GB나 존재했다.](/images/heap-memory-analytics-with-eclipse-mat/08.png)  
+![식별되지 않은 개발자가 만든 앱이라고 실행되지 않는다... 역시 보안에 빡센 애플](heap-memory-analytics-with-eclipse-mat/01.png)  
+![Security & Privacy의 General 탭에서 빨간색 표시친 곳에서 Open Anyway를 누르자.](heap-memory-analytics-with-eclipse-mat/02.png)  
+![그럼 MAT를 열 수 있게 된다.](heap-memory-analytics-with-eclipse-mat/03.png)  
+![함정카드 발동... 아직도 열 수가 없다.](heap-memory-analytics-with-eclipse-mat/04.png)  
+![MAT를 Applications 디렉토리로 옮긴 후에 열어보자.](heap-memory-analytics-with-eclipse-mat/05.png)  
+![드디어 정상적으로 열렸다 ㅠㅠ... 이제 빨간색 표시친 Open a Heap Dump를 통해 로컬로 복사한 힙 덤프 파일을 열어보자.](heap-memory-analytics-with-eclipse-mat/06.png)  
+![Heap Dump 파싱이 끝난 후 Leak Suspects Report를 체크 후 finish를 누르자.](heap-memory-analytics-with-eclipse-mat/07.png)  
+![Leak Suspects Report를 보니 com.mysql.jdbc.JDBC42ResultSet 클래스의 인스턴스가 1.8GB나 존재했다.](heap-memory-analytics-with-eclipse-mat/08.png)  
 
 일단 툴의 사용방법도 잘 몰라서 무작정 메세지를 가지고 검색해보았다.  
 우선 최대한 일반적인 메세지만 뽑아서 `One instance of "com.mysql.jdbc.JDBC42ResultSet" loaded by`를 통해 구글링을 하니
@@ -58,14 +58,14 @@ CTO 님께 말씀드려보니 CTO 님도 보시더니 아마도 저 문제가 �
 그래서 다른 시니어 개발자 분의 도움을 받아 MAT의 간단한 사용 방법을 익혔다.  
 
 ## 분석 및 해결
-![Leak Suspects Report에서 Details를 클릭하자.](/images/heap-memory-analytics-with-eclipse-mat/09.png)
-![그럼 위와 같은 정보를 발견할 수 있는데 위 정보를 토대로 대략 120만 Row의 데이터를 불러왔다는 걸 알 수 있다.](/images/heap-memory-analytics-with-eclipse-mat/10.png)  
-![최상위 Object를 클릭해서 List objects > with outgoing references를 클릭하자.](/images/heap-memory-analytics-with-eclipse-mat/11.png)  
+![Leak Suspects Report에서 Details를 클릭하자.](heap-memory-analytics-with-eclipse-mat/09.png)
+![그럼 위와 같은 정보를 발견할 수 있는데 위 정보를 토대로 대략 120만 Row의 데이터를 불러왔다는 걸 알 수 있다.](heap-memory-analytics-with-eclipse-mat/10.png)  
+![최상위 Object를 클릭해서 List objects > with outgoing references를 클릭하자.](heap-memory-analytics-with-eclipse-mat/11.png)  
 incoming이면 해당 object를 참조하는 object를, outgoing이면 해당 object가 참조하고 있는 object를 포함해서 보여준다.  
 자세한 설명은 [Eclipse MAT — Incoming, Outgoing References](https://dzone.com/articles/eclipse-mat-incoming-outgoing-references)를 참고하자.  
 
-![해당 Object에서 참조 중인 수많은 Row 데이터들을 볼 수 있다.](/images/heap-memory-analytics-with-eclipse-mat/12.png)  
-![임의의 Row를 까봤는데 metadata라는 의미심장한 필드가 보이고 그 안에 완벽하진 않지만 쿼리문이나 테이블 이름 등등의 정보를 볼 수 있다.](/images/heap-memory-analytics-with-eclipse-mat/13.png)  
+![해당 Object에서 참조 중인 수많은 Row 데이터들을 볼 수 있다.](heap-memory-analytics-with-eclipse-mat/12.png)  
+![임의의 Row를 까봤는데 metadata라는 의미심장한 필드가 보이고 그 안에 완벽하진 않지만 쿼리문이나 테이블 이름 등등의 정보를 볼 수 있다.](heap-memory-analytics-with-eclipse-mat/13.png)  
 다른 Row들도 까봤더니 모두 동일한 필드 및 테이블에서 데이터를 가지고 오고 있었다.  
 이를 통해 해당 테이블의 모든 Row를 가져오는 거라고 의심했고 해당 테이블을 실제로 보니 대략 120만 Row의 데이터가 있었다.  
 실제로 소스코드도 보았더니 해당 테이블을 토대로 엑셀을 다운로드 받는 기능이 어딘가에 ~~숨겨져~~있었고 제대로 조건문이 걸려있지 않았다.  

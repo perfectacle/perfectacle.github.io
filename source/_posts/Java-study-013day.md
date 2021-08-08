@@ -4,7 +4,7 @@ category: [Note, Java]
 tag: [Java, 자바의 정석]
 date: 2017-08-03 15:05:34
 ---
-![](/images/Java-study-013day/thumb.png)  
+![](Java-study-013day/thumb.png)  
 
 어제 잠이 안 와서 늦잠을 잤더니 오늘은 어제꺼 복습이랑 연습문제 밖에 못 풀었다...  
 내일부터 또 다시 진짜 빡세게 이빠이 달려야겠다 ㅠㅠ

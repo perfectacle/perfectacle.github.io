@@ -4,7 +4,7 @@ date: 2018-03-30 00:41:17
 tags: [Test, Java]
 category: [Middle-end, TDD]
 ---
-![타임머신을 타고 시간 여행을 떠나보자.](/images/mock-time-with-time-machine/thumb.png)  
+![타임머신을 타고 시간 여행을 떠나보자.](mock-time-with-time-machine/thumb.png)  
 
 ## 문제의 발단
 가끔 현재 시간을 기준으로 코드를 짜야할 때가 있다.  

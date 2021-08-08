@@ -40,7 +40,7 @@ date: 2019-08-24 15:03:12
 금과 은의 가격이 등락하는 이유는 미국이 달러의 금본위제도를 폐지하면서 돈이 인쇄 가능한 종이 쪼가리(수준으로 전락)에 불과하기 때문이다.  
 
 ### 부채
-![부채는 내 지갑에서 돈을 꺼내가는 모든 것이다.](/images/assets-debts-cash-flow-and-captial-gains/debt.png)  
+![부채는 내 지갑에서 돈을 꺼내가는 모든 것이다.](assets-debts-cash-flow-and-captial-gains/debt.png)  
 일반적으로 생각하는 빚(은행이나 각종 방법으로 빌린 돈) 말고도 다양한 종류의 부채가 존재한다.
 
 * 자동차  
@@ -111,10 +111,10 @@ date: 2019-08-24 15:03:12
 [인플레이션(feat. 물가 상승률)에 대한 내용은 포스트](/2019/08/15/why-central-banks-creates-money/)에 작성해 뒀으니 꼭 이해해야하는 내용 중 하나이다. 
 
 ## 현금흐름과 자본이득
-![현금흐름은 자산으로부터 내 지갑으로 현금이 흘러들어오는 걸 뜻한다.](/images/assets-debts-cash-flow-and-captial-gains/cash-flow.png)  
+![현금흐름은 자산으로부터 내 지갑으로 현금이 흘러들어오는 걸 뜻한다.](assets-debts-cash-flow-and-captial-gains/cash-flow.png)  
 자신이 가진 부동산 자산에서 나오는 전/월세가 이 경우에 해당한다. (수익형)
 
-![자본이득은 자산의 가치가 상승하는 걸 의미한다.](/images/assets-debts-cash-flow-and-captial-gains/capital-gains.png)  
+![자본이득은 자산의 가치가 상승하는 걸 의미한다.](assets-debts-cash-flow-and-captial-gains/capital-gains.png)  
 부동산 가격이 오르거나, 금/은 등의 가격이 오르거나, 주가가 오르는 등이 자본이득이다.  
 대부분 투기꾼들이 저가에 사서 **거품**을 잔뜩 끼게 한 다음에 고가에 팔아 치우곤 한다. (시세 차익형)  
 이게 과연 거품인지 아닌지를 보는 눈이 있어야 개미들이 피해보지 않을 것이다.  

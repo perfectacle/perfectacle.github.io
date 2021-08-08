@@ -39,7 +39,7 @@ class SomeService(
 
 먼저 알아둬야할 사항은 JpaRepository 인터페이스의 기본 구현체인 [SimpleJpaRepository](https://github.com/spring-projects/spring-data-jpa/blob/main/src/main/java/org/springframework/data/jpa/repository/support/SimpleJpaRepository.java#L83)에 대해 알아야한다.    
 우리가 만든 인터페이스 SomeRepository도 결국 실행될 때는 객체화 돼야하는데 이 때 JpaRepository 구현체인 SimpleJpaRepository를 상속받아서 구현되기 때문이다.  
-![Spring AOP는 인터페이스 타입에 대해서는 JDK Dynamic Proxy를 사용하여 프록시 객체를 생성한다.](/images/entity-manager-lifecycle/simple-jpa-repository.png)  
+![Spring AOP는 인터페이스 타입에 대해서는 JDK Dynamic Proxy를 사용하여 프록시 객체를 생성한다.](entity-manager-lifecycle/simple-jpa-repository.png)  
 ```java
 @Repository
 @Transactional(readOnly = true)

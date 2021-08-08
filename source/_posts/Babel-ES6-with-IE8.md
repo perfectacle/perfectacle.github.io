@@ -4,7 +4,7 @@ date: 2016-11-11 23:09:39
 category: [Front-end, Babel]
 tags: [Babel, ES6, ES2015, ES, JS, Cross Browsing, npm, Node.js]
 ---
-![](/images/Babel-ES6-with-IE8/thumb.png)  
+![](Babel-ES6-with-IE8/thumb.png)  
 
 ## 목차
 1. [들어가기에 앞서](#들어가기에-앞서)
@@ -139,9 +139,9 @@ console.log(getColor());
   
 ## ES6에서 ES5로 트랜스파일하기
 [ES6의 호환성 보기](http://kangax.github.io/compat-table/es6/)  
-![IE11의 ES6 지원율은 심히 안습이다.](/images/Babel-ES6-with-IE8/es6-compatibility.png)  
-![혹시나 문제가 있는 짤이라면 말씀해주세요.](/images/Babel-ES6-with-IE8/babel.jpg)  
-![ES5는 IE8을 제외하고는 많이 커버가 된다.](/images/Babel-ES6-with-IE8/es5-compatibility.png)  
+![IE11의 ES6 지원율은 심히 안습이다.](Babel-ES6-with-IE8/es6-compatibility.png)  
+![혹시나 문제가 있는 짤이라면 말씀해주세요.](Babel-ES6-with-IE8/babel.jpg)  
+![ES5는 IE8을 제외하고는 많이 커버가 된다.](Babel-ES6-with-IE8/es5-compatibility.png)  
 하지만 우리에게는 방법이 있다!  
 바로 **트랜스파일러**인 **바벨**을 이용하는 것이다.  
 **컴파일**은 사람이 이해할 수 있는 **하이 레벨의 코드**를  
@@ -295,7 +295,7 @@ $ npm i -S babel-polyfill
 ```
 
 그리고 IE8에서 실행해보자.  
-![역시 IE는 실망을 저버리지 않는다.](/images/Babel-ES6-with-IE8/ie8.png)  
+![역시 IE는 실망을 저버리지 않는다.](Babel-ES6-with-IE8/ie8.png)  
 addEventListener, removeEventListener 등등의 Polyfill을 수동으로 추가해줘야한다.  
 아래 링크로 가면 minify 버전의 소스코드도 볼 수 있다.  
 [Polyfill the EventListener interface in IE8](https://gist.github.com/jonathantneal/3748027)
@@ -339,7 +339,7 @@ addEventListener, removeEventListener 등등의 Polyfill을 수동으로 추가�
 <script src="./script/script.js"></script>
 ```
 
-![저렇게 오류를 뿜어도 작동은 제대로 한다.](/images/Babel-ES6-with-IE8/ie8-2.png)  
+![저렇게 오류를 뿜어도 작동은 제대로 한다.](Babel-ES6-with-IE8/ie8-2.png)  
 아직 끝난 게 아니다.  
 아래와 같은 코드를 보자.
 
@@ -361,7 +361,7 @@ foo.catch();
 ```
 
 위와 같은 코드를 IE8에서 테스트 해보자.  
-![결과는 참담하다.](/images/Babel-ES6-with-IE8/ie8-3.png)  
+![결과는 참담하다.](Babel-ES6-with-IE8/ie8-3.png)  
 2번 라인과 4번 라인에서 객체의 메소드와 메소드 호출로 **catch**를 사용하였다.  
 IE8은 ES3를 지원하고, ES3에서는 catch 같은 키워드를 저렇게 식별자로 쓰게 되면 오류를 뿜는다.  
 ES3를 위한 플러그인이 바벨에는 또 존재한다.

@@ -4,7 +4,7 @@ date: 2016-11-14 22:48:48
 category: [Front-end, Webpack]
 tags: [npm, Node.js, Webpack, Debugging, Performance, Source Map]
 ---
-![](/images/Webpack-devtool-option-Performance/thumb.png)
+![](Webpack-devtool-option-Performance/thumb.png)
 
 ## 목차
 1. [들어가기에 앞서](#들어가기에-앞서)
@@ -21,10 +21,10 @@ tags: [npm, Node.js, Webpack, Debugging, Performance, Source Map]
 소스맵은 원본 소스와 난독화된 소스를 매핑해주는 방법 중 하나이다.  
 *.map 파일을 통해 제공되고, json 형태로 돼있다.  
 사진을 통해 한번 보자.  
-![](/images/Webpack-devtool-option-Performance/01.png)  
-![난독화된 파일을 통해서는 어떤 부분에서 오류가 났는지 알기 힘들다.](/images/Webpack-devtool-option-Performance/02.png)  
-![소스맵을 통하면 원본 파일의 어떠한 부분에서 오류가 났는지 볼 수 있다.](/images/Webpack-devtool-option-Performance/03.png)  
-![디버깅도 가능하다.](/images/Webpack-devtool-option-Performance/04.png)  
+![](Webpack-devtool-option-Performance/01.png)  
+![난독화된 파일을 통해서는 어떤 부분에서 오류가 났는지 알기 힘들다.](Webpack-devtool-option-Performance/02.png)  
+![소스맵을 통하면 원본 파일의 어떠한 부분에서 오류가 났는지 볼 수 있다.](Webpack-devtool-option-Performance/03.png)  
+![디버깅도 가능하다.](Webpack-devtool-option-Performance/04.png)  
 
 ## devtool
 
@@ -95,7 +95,7 @@ module.exports = {
 };
 ```
 
-![배포용은 수정하면서 작업하는 게 아니기 때문에 빌드 시간, 로그, 디버깅보다 용량이 제일 중요하다.](/images/Webpack-devtool-option-Performance/05.png)  
+![배포용은 수정하면서 작업하는 게 아니기 때문에 빌드 시간, 로그, 디버깅보다 용량이 제일 중요하다.](Webpack-devtool-option-Performance/05.png)  
 이제 개발용 설정 파일을 보자.  
 아래와 같은 설정이 들어있다.
 
@@ -151,7 +151,7 @@ module.exports = {
 };
 ```
 
-![개발용은 수정이 빈번하고 디버깅을 해야하기 때문에 용량보다 빌드 시간, 로그, 디버깅이 더 중요하다.](/images/Webpack-devtool-option-Performance/06.png)
+![개발용은 수정이 빈번하고 디버깅을 해야하기 때문에 용량보다 빌드 시간, 로그, 디버깅이 더 중요하다.](Webpack-devtool-option-Performance/06.png)
 
 ## 마치며...
 

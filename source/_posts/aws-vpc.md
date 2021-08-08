@@ -10,7 +10,7 @@ category:
 date: 2018-04-25 06:00:53
 ---
 
-![](/images/aws-vpc/thumb.png)  
+![](aws-vpc/thumb.png)  
 자세한 내용을 보고 싶으면 [Amazon VPC란 무엇인가?](https://docs.aws.amazon.com/ko_kr/AmazonVPC/latest/UserGuide/VPC_Introduction.html)를 참고하면 된다.
 
 ## VPC(Virtual Private Cloud)란?
@@ -21,14 +21,14 @@ date: 2018-04-25 06:00:53
 이렇듯 클라우드 컴퓨팅은 많은 레이어들을 추상화 해놓고, 자동화 해놓음으로써 물리적으로 구축하기 힘든 환경을 손쉽게 제공해준다는 장점이 존재한다.
 
 ## VPC 생성
-![region](/images/aws-vpc/region.png)
+![region](aws-vpc/region.png)
 VPC는 [Region](https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/using-regions-availability-zones.html)에 생성되므로  
 서비스하려는 region을 고민하고 신중하게 생성해야한다.
  
 여기서는 VPC Wizards 대신에 직접 VPC를 만들어 볼 것이다.  
 AWS 콘솔에서 VPC 서비스로 이동해서 좌측 탭 중에 Your VPCs를 클릭하고, Create VPC를 클릭한다.  
 
-![vpc 생성 화면](/images/aws-vpc/create-vpc.png)  
+![vpc 생성 화면](aws-vpc/create-vpc.png)  
 Name Tag와 IPv4 <a href="https://ko.wikipedia.org/wiki/%EC%82%AC%EC%9D%B4%EB%8D%94_(%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%82%B9)" target="_blank">CIDR Block</a>을 정해줘야하는데,
 [AWS 공식 문서](https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html#VPC_Sizing)에서는
 [RFC 1918](http://www.faqs.org/rfcs/rfc1918.html)에 명시된 private ip를 권장하고 있다.  

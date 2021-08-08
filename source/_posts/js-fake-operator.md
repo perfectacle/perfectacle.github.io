@@ -5,7 +5,7 @@ category: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰, Unary, Operator]
 ---
 
-![함정카드 발동](/images/js-fake-operator/thumb.png)  
+![함정카드 발동](js-fake-operator/thumb.png)  
 ## 자알쓰란?
 `자`바스크립트 `알`고 `쓰`자. (잘 쓰자는 의미도 담겨있다.)  
 자바스크립트라는 언어 자체는 내 기준에서는 설계 상 미스가 참 많다.  
@@ -63,7 +63,7 @@ const b = function() {};
 단항 연산자가 뭐라고 훼이크 연산자라고 말하는지 모르겠다면  
 최신 스펙 문서인 ES2017 스펙의 Unary Operator 부분에서 대표적으로 [Unary + Operator](https://www.ecma-international.org/ecma-262/7.0/#sec-unary-plus-operator)만 살펴보자.  
 
-![영어라고 겁먹지 말자](/images/js-fake-operator/01.png)  
+![영어라고 겁먹지 말자](js-fake-operator/01.png)  
 맨 위에 보이듯이 우선 우리가 예측하는, + 연산자의 기능은 뒤에 있는 표현`식`의 평가 결과로써 얻어지는 `값`을 숫자형으로 변환해주는 기능을 한다.  
 그렇다. + 뒤에있는 녀석은 무조건 표현`식`으로 취급한다.  
 그 뒤에 있는 녀석이 표현`식`으로서의 문법만 지켰다면 선언`문`이어도 표현`식`인 것처럼 강제로 문변환? 식변환?이 일어나게 되는 것이다.  

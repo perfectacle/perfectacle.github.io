@@ -10,7 +10,7 @@ category:
 date: 2019-05-07 01:43:52
 ---
 
-![PermGen은 자바 8에서 Metaspcae로 대체됐다. 이미지 출처: https://help.sap.com/](/images/jvm-gc-basic/thumb.png)  
+![PermGen은 자바 8에서 Metaspcae로 대체됐다. 이미지 출처: https://help.sap.com/](jvm-gc-basic/thumb.png)  
 
 ## 읽기 전 주의사항(그림을 보는 법)
 그림을 그리다보니 Stack에 있는 동그라미 모양과 힙 메모리에 있는 동그라미 모양이 동일한 그림들이 많이 있습니다.  
@@ -20,13 +20,13 @@ date: 2019-05-07 01:43:52
 이 점 참고하셔서 보시길 바랍니다!
 
 ## 들어가기에 앞서
-![](/images/jvm-gc-basic/optimizing-java.jpeg)
+![](jvm-gc-basic/optimizing-java.jpeg)
 이 글은 이일웅 님께서 번역하신 [자바 최적화](https://book.naver.com/bookdb/book_detail.nhn?bid=14796595)란 책을 읽던 도중 공부한 내용을 정리한 글입니다.  
 절대 해당 책의 홍보는 아니며 좋은 책을 써준 사람과 번역해주신 분께 진심으로 감사하는 마음에 썼습니다. 
 
 자바는 C언어와 달리 프로그래머가 일일이 쓰지 않는 메모리(가비지)를 회수할 필요가 없게 끔 가비지 컬렉터가 알아서 열일한다.  
 자바의 모든 가비지 컬렉션에는 Stop the World(어플리케이션 스레드를 모두 멈추기 때문에 어플리케이션이 멈추게 된다.)가 발생하고 GC 쓰레드만 열일하게 된다.  
-![죠죠의 기묘한 모험이 떠오르는 건 왜일까... 출처: https://www.youtube.com/watch?v=_cNXjmuhCCc](/images/jvm-gc-basic/stop-the-world.png)  
+![죠죠의 기묘한 모험이 떠오르는 건 왜일까... 출처: https://www.youtube.com/watch?v=_cNXjmuhCCc](jvm-gc-basic/stop-the-world.png)  
 저수준 세부를 일일이 신경쓰지 않는 대가로 저수준 제어권을 포기한다는 사상이 자바의 핵심이다.
 
 > 자바는 블루 컬러(주로 생산직에 종사하는 육체 노동자) 언어입니다.
@@ -49,10 +49,10 @@ C언어에서는 살아있는 객체(접근 가능한 객체)를 해제하면 Da
 
 자바의 GC 알고리듬의 기본은 Mark(살아있는 객체를 표시) and Sweep(쓸어담기) 알고리듬이다.
 
-![GC 루트(스택 프레임, 전역 객체 등등과 같이 메모리 풀 외부에서 내부를 가리키는 포인터)로부터 살아있는 객체(접근 가능한 객체)를 찾는다.](/images/jvm-gc-basic/mark-and-sweep-01.png)
-![살아있는 객체를 찾으면 mark bit를 true(혹은 1)로 세팅한다.](/images/jvm-gc-basic/mark-and-sweep-02.png)
-![모든 객체에 대해 마크가 끝났으면 이제 mark bit가 false(혹은 0)인 객체를 찾는다.](/images/jvm-gc-basic/mark-and-sweep-03.png)
-![mark bit가 false(혹은 0)인 객체는 죽은 객체(접근 불가능한 객체)이므로 가비지 컬렉터가 수거해간다.](/images/jvm-gc-basic/mark-and-sweep-04.png)
+![GC 루트(스택 프레임, 전역 객체 등등과 같이 메모리 풀 외부에서 내부를 가리키는 포인터)로부터 살아있는 객체(접근 가능한 객체)를 찾는다.](jvm-gc-basic/mark-and-sweep-01.png)
+![살아있는 객체를 찾으면 mark bit를 true(혹은 1)로 세팅한다.](jvm-gc-basic/mark-and-sweep-02.png)
+![모든 객체에 대해 마크가 끝났으면 이제 mark bit가 false(혹은 0)인 객체를 찾는다.](jvm-gc-basic/mark-and-sweep-03.png)
+![mark bit가 false(혹은 0)인 객체는 죽은 객체(접근 불가능한 객체)이므로 가비지 컬렉터가 수거해간다.](jvm-gc-basic/mark-and-sweep-04.png)
 
 ## Weak Generational 가설
 
@@ -76,8 +76,8 @@ Hotspot VM에서는 카드 테이블(JVM이 관리하는 바이트 배열로 각
 따라서 Young Generation의 GC가 수행될 때 늙은 객체가 젊은 객체를 참조하는지도 확인해봐야한다.
 하지만 이 때는 늙은 객체를 전부 뒤져보는 게 아니라 카드 테이블만 뒤져보면 돼서 GC의 수행 속도를 높여준다.
 
-![또한 메모리의 raw address를 가지고 데이터에 접근(역참조) 가능한 C언어 같은 언어는 이렇게 이분법적으로 메모리 영역을 나눈 구조와 맞지 않는다.](/images/jvm-gc-basic/c-01.png)  
-![Young Generation에서 Old Generation으로 이동한 데이터는 메모리의 raw address도 바뀔텐데, 해당 raw address로 역참조를 했을 때 메모리 재할당으로 인해 다른 값이 튀어나올 가능성이 높기 때문이다.](/images/jvm-gc-basic/c-02.png)  
+![또한 메모리의 raw address를 가지고 데이터에 접근(역참조) 가능한 C언어 같은 언어는 이렇게 이분법적으로 메모리 영역을 나눈 구조와 맞지 않는다.](jvm-gc-basic/c-01.png)  
+![Young Generation에서 Old Generation으로 이동한 데이터는 메모리의 raw address도 바뀔텐데, 해당 raw address로 역참조를 했을 때 메모리 재할당으로 인해 다른 값이 튀어나올 가능성이 높기 때문이다.](jvm-gc-basic/c-02.png)  
 다행히 자바는 메모리의 raw address를 사용하지도 않고, offset 연산자(. 연산자)만으로 필드나 메서드에 액세스 할 수 있기 때문에 이런 문제로부터 자유롭다.
 
 ## Young Generation
@@ -106,12 +106,12 @@ https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/sizing.html
 
 ### Eden Space
 Young Generation의 일부분이다.
-![새롭게 생성된 객체의 용량이 Eden Space의 용량보다 큰 경우를 제외하고는 Eden 영역에 할당된다.](/images/jvm-gc-basic/eden-space-01.png)    
-![그러다가 새롭게 할당할 객체의 메모리 확보를 하지 못한 경우, 즉 Eden 영역이 꽉 찬 경우에 Minor GC를 수행하게 된다.](/images/jvm-gc-basic/eden-space-02.png)  
-![이 때 GC를 수행하게 되면 메모리 단편화가 생기게 되고 이로 인해 객체를 할당할 전체적인 용량은 확보됐지만 연속된 메모리 공간이 없게 된다.](/images/jvm-gc-basic/eden-space-03.png)  
+![새롭게 생성된 객체의 용량이 Eden Space의 용량보다 큰 경우를 제외하고는 Eden 영역에 할당된다.](jvm-gc-basic/eden-space-01.png)    
+![그러다가 새롭게 할당할 객체의 메모리 확보를 하지 못한 경우, 즉 Eden 영역이 꽉 찬 경우에 Minor GC를 수행하게 된다.](jvm-gc-basic/eden-space-02.png)  
+![이 때 GC를 수행하게 되면 메모리 단편화가 생기게 되고 이로 인해 객체를 할당할 전체적인 용량은 확보됐지만 연속된 메모리 공간이 없게 된다.](jvm-gc-basic/eden-space-03.png)  
 OS 레벨에서는 연속된 메모리 공간에 할당하지 않고 쪼개서 할당해도 되긴 하지만 할당하는 데도 오랜 시간이 걸리고, 데이터를 불러올 때도 순차적인 접근이 아니기 때문에 오래 걸리게 된다.  
 또한 JVM의 메모리 할당은 [알아두면 좋을 상식](#알아두면-좋을-상식)에도 나오다시피 bump-the-pointer라는 기술을 써서 저렇게 중간에 메모리를 할당하는 일은 없다.  
-![아니면 GC 이후에 메모리 Compaction을 수행해야하기 때문에 오버헤드가 발생할 수 밖에 없다.](/images/jvm-gc-basic/eden-space-04.png)  
+![아니면 GC 이후에 메모리 Compaction을 수행해야하기 때문에 오버헤드가 발생할 수 밖에 없다.](jvm-gc-basic/eden-space-04.png)  
 
 
 ### Survivor Space
@@ -119,8 +119,8 @@ OS 레벨에서는 연속된 메모리 공간에 할당하지 않고 쪼개서 �
 이 영역 또한 Young Generaion의 일부이다.
 Survivor 영역은 동일한 사이즈의 두 개의 영역으로 구분되는데 각각의 이름은 from과 to이다.
 (VisualVM 같은 모니터링 툴에는 S0, S1으로 표시되곤 한다.)
-![Eden 영역에서 생존한 객체들이 Survivor 영역의 연속된 메모리 공간으로 넘어오게 되고](/images/jvm-gc-basic/survivor-space-01.png)
-![Eden 영역은 싹 비우게 됨으로써 Eden 영역의 제일 처음부터 할당하면 되므로 Eden 영역의 메모리 단편화 문제를 해결했다.](/images/jvm-gc-basic/survivor-space-02.png)  
+![Eden 영역에서 생존한 객체들이 Survivor 영역의 연속된 메모리 공간으로 넘어오게 되고](jvm-gc-basic/survivor-space-01.png)
+![Eden 영역은 싹 비우게 됨으로써 Eden 영역의 제일 처음부터 할당하면 되므로 Eden 영역의 메모리 단편화 문제를 해결했다.](jvm-gc-basic/survivor-space-02.png)  
 
 또한 -XX:SurvivorRatio 속성을 통해 Eden Space 사이즈와 Survivor Generation 사이즈의 비율을 정할 수 있다.
 예를 들어 -XX:SurvivorRatio=6으로 지정하면 1:6=Survivor:Eden 라고 보면 된다.
@@ -134,12 +134,12 @@ Survivor 영역은 동일한 사이즈의 두 개의 영역으로 구분되는�
 퍼포먼스에 영향을 주는 경우는 드물다고 적혀있지 않으니 굳이 쓸 필요는 없을 것 같다.
 
 #### Survivor Space는 왜 2개일까?
-![그 이유는 Minor GC의 대상이 Eden에만 국한되는 게 아니라 Survivor 영역까지 Minor GC를 하기 때문이다.](/images/jvm-gc-basic/survivor-space-03.png)  
-![Survivor 영역을 Minor GC를 수행하면 어떻게 될까? Eden 영역만 존재할 때와 마찬가지로 Survivor 영역에도 메모리 단편화가 존재하게 된다.](/images/jvm-gc-basic/survivor-space-04.png)  
+![그 이유는 Minor GC의 대상이 Eden에만 국한되는 게 아니라 Survivor 영역까지 Minor GC를 하기 때문이다.](jvm-gc-basic/survivor-space-03.png)  
+![Survivor 영역을 Minor GC를 수행하면 어떻게 될까? Eden 영역만 존재할 때와 마찬가지로 Survivor 영역에도 메모리 단편화가 존재하게 된다.](jvm-gc-basic/survivor-space-04.png)  
 
 [알아두면 좋을 상식](#알아두면-좋을-상식)에도 나오다시피 bump-the-pointer라는 기술을 써서 중간에 빈 공간이 있더라도 해당 공간에 할당하지 않는다.  
 그럼 Survivor Space의 단편화를 없애려면 어떻게 하면 될까?  
-![Eden 영역에서 Survivor 영역을 만든 것과 같이 새로운 영역을 추가하면 된다!](/images/jvm-gc-basic/survivor-space-05.png)  
+![Eden 영역에서 Survivor 영역을 만든 것과 같이 새로운 영역을 추가하면 된다!](jvm-gc-basic/survivor-space-05.png)  
 따라서 새롭게 영역을 추가하다보니 Survivor Space가 두 개가 된 거다.
 
 ### Minor GC
@@ -147,40 +147,40 @@ Survivor 영역은 동일한 사이즈의 두 개의 영역으로 구분되는�
 그럼 이제 Young Generation에서 일어나는 Minor GC에 대해서 알아보자.
 (물론 JVM 플래그를 어떻게 주느냐에 따라서 Minor GC의 알고리듬이 달라질 수 있고, 여기서 설명하는 Minor GC의 알고리듬은 아주 간단하고 기본적인 수준에서 설명하고 있다.)
 
-![새롭게 생성된 객체는 전부 Eden Space에 할당된다. 이 때 객체의 generational count는 0이다.](/images/jvm-gc-basic/minor-gc-01.png)
-![새롭게 생성된 객체를 또 할당하려는데 Eden Space에 할당할 공간이 없으면 Minor GC를 수행하게 된다. 이제부터 Stop the World의 시작이다.](/images/jvm-gc-basic/minor-gc-02.png)
-![Eden 영역에 할당된 객체를 순회하면서 GC 루트로부터 접근 가능한 객체만 mark를 한다.](/images/jvm-gc-basic/minor-gc-03.png)
-![생존한 모든 객체(mark 당한 객체)는 Survivor Space로 복사한다.](/images/jvm-gc-basic/minor-gc-04.png)
-![GC로부터 살아남은 객체는 이제 generational count가 1로 증가한다. (이렇게 generational count를 1씩 늘리는 프로세스를 aging이라고 부른다... 나이를 먹어가는 ㅠㅠ)](/images/jvm-gc-basic/minor-gc-05.png)
-![Eden Space를 비운다. (Sweep) 이제 Stop the World가 끝났다.](/images/jvm-gc-basic/minor-gc-06.png)  
-![이제 Eden Space의 공간 확보가 됐으니 새롭게 생성된 객체를 Eden Space에 할당한다.](/images/jvm-gc-basic/minor-gc-07.png)
-![새롭게 생성된 객체를 또 할당하려는데 Eden Space에 할당할 공간이 없으면 Minor GC를 수행하게 된다. (Stop the World의 시작)](/images/jvm-gc-basic/minor-gc-08.png)
-![이번에는 Eden 영역과 더불어 Survivor Space에 할당된 객체를 순회하면서 GC 루트로부터 접근 가능한 객체만 mark를 한다.](/images/jvm-gc-basic/minor-gc-09.png)  
-![Survivor Space에서 생존하지 못한(mark 당하지 않은) 모든 객체를 수거해간다. (Sweep)](/images/jvm-gc-basic/minor-gc-10.png)  
-![이 때 Survivor Space에서 생존한 객체는 generational count가 2로 증가한다.](/images/jvm-gc-basic/minor-gc-11.png)
-![Eden Space에서 mark된(생존한) 객체는 Survivor Space로 복사된다.](/images/jvm-gc-basic/minor-gc-12.png)
-![이 때 Eden에서 복사되는 객체는 generational count가 1로 증가한다.](/images/jvm-gc-basic/minor-gc-13.png)
-![이제 Eden Space를 비워준다, Sweep. (Stop the World의 끝)](/images/jvm-gc-basic/minor-gc-14.png)  
-![이제 새로운 객체를 할당하면 된다.](/images/jvm-gc-basic/minor-gc-15.png)
-![위 과정들을 반복하다가 또 Eden Space가 꽉 차서 GC를 수행하게 됐다고 가정하자. (Stop the world의 시작)](/images/jvm-gc-basic/minor-gc-16.png)
-![모든 과정을 마치고 이제 Eden Space에서 생존한 객체들을 Survivor Space로 옮기려고 했더니 Survivor Space에 연속된 메모리 공간을 확보하지 못해서 더 이상 메모리 할당이 불가능하다고 가정해보자.](/images/jvm-gc-basic/minor-gc-17.png)
-![이 때 From Survivor Space에서 생존한 모든 객체들을 To Survivor Space의 연속된 공간에 먼저 옮기고, 그 후에 Eden Space에서 생존한 객체를 To Survivor Space의 연속된 공간에 옮긴다.](/images/jvm-gc-basic/minor-gc-18.png)  
+![새롭게 생성된 객체는 전부 Eden Space에 할당된다. 이 때 객체의 generational count는 0이다.](jvm-gc-basic/minor-gc-01.png)
+![새롭게 생성된 객체를 또 할당하려는데 Eden Space에 할당할 공간이 없으면 Minor GC를 수행하게 된다. 이제부터 Stop the World의 시작이다.](jvm-gc-basic/minor-gc-02.png)
+![Eden 영역에 할당된 객체를 순회하면서 GC 루트로부터 접근 가능한 객체만 mark를 한다.](jvm-gc-basic/minor-gc-03.png)
+![생존한 모든 객체(mark 당한 객체)는 Survivor Space로 복사한다.](jvm-gc-basic/minor-gc-04.png)
+![GC로부터 살아남은 객체는 이제 generational count가 1로 증가한다. (이렇게 generational count를 1씩 늘리는 프로세스를 aging이라고 부른다... 나이를 먹어가는 ㅠㅠ)](jvm-gc-basic/minor-gc-05.png)
+![Eden Space를 비운다. (Sweep) 이제 Stop the World가 끝났다.](jvm-gc-basic/minor-gc-06.png)  
+![이제 Eden Space의 공간 확보가 됐으니 새롭게 생성된 객체를 Eden Space에 할당한다.](jvm-gc-basic/minor-gc-07.png)
+![새롭게 생성된 객체를 또 할당하려는데 Eden Space에 할당할 공간이 없으면 Minor GC를 수행하게 된다. (Stop the World의 시작)](jvm-gc-basic/minor-gc-08.png)
+![이번에는 Eden 영역과 더불어 Survivor Space에 할당된 객체를 순회하면서 GC 루트로부터 접근 가능한 객체만 mark를 한다.](jvm-gc-basic/minor-gc-09.png)  
+![Survivor Space에서 생존하지 못한(mark 당하지 않은) 모든 객체를 수거해간다. (Sweep)](jvm-gc-basic/minor-gc-10.png)  
+![이 때 Survivor Space에서 생존한 객체는 generational count가 2로 증가한다.](jvm-gc-basic/minor-gc-11.png)
+![Eden Space에서 mark된(생존한) 객체는 Survivor Space로 복사된다.](jvm-gc-basic/minor-gc-12.png)
+![이 때 Eden에서 복사되는 객체는 generational count가 1로 증가한다.](jvm-gc-basic/minor-gc-13.png)
+![이제 Eden Space를 비워준다, Sweep. (Stop the World의 끝)](jvm-gc-basic/minor-gc-14.png)  
+![이제 새로운 객체를 할당하면 된다.](jvm-gc-basic/minor-gc-15.png)
+![위 과정들을 반복하다가 또 Eden Space가 꽉 차서 GC를 수행하게 됐다고 가정하자. (Stop the world의 시작)](jvm-gc-basic/minor-gc-16.png)
+![모든 과정을 마치고 이제 Eden Space에서 생존한 객체들을 Survivor Space로 옮기려고 했더니 Survivor Space에 연속된 메모리 공간을 확보하지 못해서 더 이상 메모리 할당이 불가능하다고 가정해보자.](jvm-gc-basic/minor-gc-17.png)
+![이 때 From Survivor Space에서 생존한 모든 객체들을 To Survivor Space의 연속된 공간에 먼저 옮기고, 그 후에 Eden Space에서 생존한 객체를 To Survivor Space의 연속된 공간에 옮긴다.](jvm-gc-basic/minor-gc-18.png)  
 To Survivor Space에 Eden Space에 있는 내용보다 From Survivor Space에 있는 내용을 먼저 복사하는 이유는
 generational count가 적은 객체(Eden Space에 거주중인 객체들)보다 generational count가 높은 객체(From Survivor Space에 거주중인 객체들)의
 수명이 더 길 가능성이 높기 때문이다. (Weak Generational 가설에 의해...)  
 수명이 더 길 가능성이 높은 메모리를 먼저 배치하는 이유는 메모리의 단편화를 줄이기 위함이다.  
-![생존한 모든 객체를 옮겼으므로 From Survivor Space와 Eden Space를 비운다.](/images/jvm-gc-basic/minor-gc-19.png)
-![기존 From Survivor Space의 역할을 To Survivor Space가 대신하게 됐으므로 둘의 이름을 바꾼다. (Stop the World의 끝)](/images/jvm-gc-basic/minor-gc-20.png)
-![GC가 끝났으므로 새로운 객체를 Eden Space에 할당한다.](/images/jvm-gc-basic/minor-gc-21.png)
-![위 과정을 반복하다가 생존을 반복한 From Survivor Space에 있는 객체가 적당히 나이를 먹었다고 가정해보자.](/images/jvm-gc-basic/minor-gc-22.png)  
-![그럼 해당 객체는 Promotion(승진)을 한다.](/images/jvm-gc-basic/minor-gc-23.png)  
-![그러다 다시 Minor GC를 해야되게 됐다.](/images/jvm-gc-basic/minor-gc-24.png)  
-![이 경우에는 흔치 않게 Old Generation에서 Young Generation을 참조하고 있어서 GC 로직이 복잡해보이는데 간단하게 카드 테이블에 저장된 객체만 추가로 검사해서 Old Generation에서 Young Generation으로 참조 중인 객체를 쉽고 빠르게 찾을 수 있다.](/images/jvm-gc-basic/minor-gc-25.png)  
+![생존한 모든 객체를 옮겼으므로 From Survivor Space와 Eden Space를 비운다.](jvm-gc-basic/minor-gc-19.png)
+![기존 From Survivor Space의 역할을 To Survivor Space가 대신하게 됐으므로 둘의 이름을 바꾼다. (Stop the World의 끝)](jvm-gc-basic/minor-gc-20.png)
+![GC가 끝났으므로 새로운 객체를 Eden Space에 할당한다.](jvm-gc-basic/minor-gc-21.png)
+![위 과정을 반복하다가 생존을 반복한 From Survivor Space에 있는 객체가 적당히 나이를 먹었다고 가정해보자.](jvm-gc-basic/minor-gc-22.png)  
+![그럼 해당 객체는 Promotion(승진)을 한다.](jvm-gc-basic/minor-gc-23.png)  
+![그러다 다시 Minor GC를 해야되게 됐다.](jvm-gc-basic/minor-gc-24.png)  
+![이 경우에는 흔치 않게 Old Generation에서 Young Generation을 참조하고 있어서 GC 로직이 복잡해보이는데 간단하게 카드 테이블에 저장된 객체만 추가로 검사해서 Old Generation에서 Young Generation으로 참조 중인 객체를 쉽고 빠르게 찾을 수 있다.](jvm-gc-basic/minor-gc-25.png)  
 
 #### Promotion
 아래 나오는 그림에서 동그라미 안의 숫자는 객체의 나이(객체가 GC로부터 살아남은 횟수)를 의미한다.  
-![Promotion(승진)은 Young Generation에서 적당히 나이를 먹어서(GC로 부터 살아남아서 계속해서 generational count가 늘어나서 적당한 generational count가 됐음을 의미)](/images/jvm-gc-basic/promotion-01.png)
-![이제 Old Generation으로 갈 나이가 됐으니 Old Generation으로 이동하는 걸 의미한다.](/images/jvm-gc-basic/promotion-02.png)
+![Promotion(승진)은 Young Generation에서 적당히 나이를 먹어서(GC로 부터 살아남아서 계속해서 generational count가 늘어나서 적당한 generational count가 됐음을 의미)](jvm-gc-basic/promotion-01.png)
+![이제 Old Generation으로 갈 나이가 됐으니 Old Generation으로 이동하는 걸 의미한다.](jvm-gc-basic/promotion-02.png)
 generational count가 어느정도 있으려면~~(짬밥을 어느정도 먹었으려면)~~ 당연히 Survivor Space에 있는 객체가 이동됨을 의미한다.
 
 적당한 나이는 -XX:InitialTenuringThreshold와 -XX:MaxTenuringThreshold 파라미터로 정할 수 있다.  
@@ -189,13 +189,13 @@ generational count가 어느정도 있으려면~~(짬밥을 어느정도 먹었�
 #### Premature Promotion
 적당한 나이(TenuringThreshold)를 먹지 않았는데 어쩔 수 없이 Old Generation으로 이동하는 행위를 premature promotion(조기 승진)이라고 부른다.  
 아래 나오는 그림에서 동그라미 안의 숫자는 객체의 나이(객체가 GC로부터 살아남은 횟수)를 의미한다.  
-![주로 메모리 할당이 잦다보니 Survivor Space에 적당한 공간이 없어서](/images/jvm-gc-basic/premature-promotion-01.png)  
-![나이를 먹지 않았음에도 Old Generation으로 옮겨지는 경우도 Premature Promotion이고,](/images/jvm-gc-basic/premature-promotion-02.png)  
-![새롭게 할당될 객체의 용량이 Eden Space의 용량보다 큰 경우에는](/images/jvm-gc-basic/premature-promotion-03.png)  
-![바로 Old Generation에 할당되게 되는데 이 경우에도 Premature Promotion이고,](/images/jvm-gc-basic/premature-promotion-04.png)
-![원래 같으면 Eden Space의 내용이 From Survivor Space 영역의 바로 아래 공간에 할당되면 되는데, -XX:TargetSurvivorRatio(기본값 50)에 의해 할당되지 못하는 경우가 있다.](/images/jvm-gc-basic/premature-promotion-04.png)  
+![주로 메모리 할당이 잦다보니 Survivor Space에 적당한 공간이 없어서](jvm-gc-basic/premature-promotion-01.png)  
+![나이를 먹지 않았음에도 Old Generation으로 옮겨지는 경우도 Premature Promotion이고,](jvm-gc-basic/premature-promotion-02.png)  
+![새롭게 할당될 객체의 용량이 Eden Space의 용량보다 큰 경우에는](jvm-gc-basic/premature-promotion-03.png)  
+![바로 Old Generation에 할당되게 되는데 이 경우에도 Premature Promotion이고,](jvm-gc-basic/premature-promotion-04.png)
+![원래 같으면 Eden Space의 내용이 From Survivor Space 영역의 바로 아래 공간에 할당되면 되는데, -XX:TargetSurvivorRatio(기본값 50)에 의해 할당되지 못하는 경우가 있다.](jvm-gc-basic/premature-promotion-04.png)  
 -XX:TargetSurvivorRatio는 Minor GC 이후의 From Survivor Space의 사용률(%)을 제한하는 옵션이다.  
-![적당한 나이가 되지 않은 어린 객체가 Old Generation으로 이동하는 것도 Premature Promotion이다.](/images/jvm-gc-basic/premature-promotion-06.png)
+![적당한 나이가 되지 않은 어린 객체가 Old Generation으로 이동하는 것도 Premature Promotion이다.](jvm-gc-basic/premature-promotion-06.png)
 
 이 premature promotion의 경우에는 Old Generation에 놓기 때문에 Major GC 혹은 Full GC가 일어나기 전에는 회수해가지 않으며
 적당한 나이를 먹지 않고 와서 단명할 가능성이 높음에도 불구하고 쓸데없이 Old Generation을 차지하고 있기 때문에
@@ -250,7 +250,7 @@ Metadata에 대한 관리는 OS에서 함으로 믿고 맡겨도 된다고 생�
 우선 메모리가 부족하면 가비지 컬렉터는 힙메모리의 가비지 컬렉션을 수행한다.
 가비지 컬렉션을 수행했음에도 불구하고 새로운 객체를 더이상 할당할 수 없는 경우에 OOME가 발생하게 된다.
 이 때는 아주 급한 경우에는 일단 -Xmx와 -Xms로 메모리를 늘리고 보고,
-![](/images/jvm-gc-basic/mat.png)  
+![](jvm-gc-basic/mat.png)  
 ```bash
 -XX:+HeapDumpOnOutOfMemoryError 
 -XX:HeapDumpPath=${PATH}/${FILE_NAME}.hprof
@@ -258,7 +258,7 @@ Metadata에 대한 관리는 OS에서 함으로 믿고 맡겨도 된다고 생�
 위 두가지 설정을 주고 실행해서 재발하면 힙덤프를 생성하거나 아니면
 jmap 등등으로 살아있는 서버의 힙덤프를 떠서 어디서 메모리 릭이 발생했는지 Eclipse MAT 등등으로 분석하거나
 
-![](/images/jvm-gc-basic/visual-vm.png)  
+![](jvm-gc-basic/visual-vm.png)  
 ```bash
 -Dcom.sun.management.jmxremote
 -Dcom.sun.management.jmxremote.port=${JMX_PORT}

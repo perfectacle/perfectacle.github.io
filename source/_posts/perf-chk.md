@@ -4,7 +4,7 @@ title: (자작) perf-chk (Node.js 애플리케이션)
 date: 2017-03-01 16:24:02
 tags: [npm, Node.js, CLI, Performance]
 ---
-![](/images/perf-chk/thumb.png)  
+![](perf-chk/thumb.png)  
 
 # perf-chk (Performance Check)
 ## 왜 perf-chk를 만들었나?

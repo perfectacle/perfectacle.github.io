@@ -4,7 +4,7 @@ date: 2017-02-09 13:53:40
 category: [Note, Java]
 tag: [Java, 자바의 정석, OOP]
 ---
-![](/images/Java-study-007day/thumb.png)  
+![](Java-study-007day/thumb.png)  
 드디어 오늘부터 객체지향 프로그래밍(OOP, Object Oriented Programming) 파트를 나가기 시작했다.  
 이전까지는 다른 언어에도 대부분 있는 개념이었는데,  
 이제부터는 자바의 특성을 배울 차례인 것 같다.  
@@ -110,7 +110,7 @@ new 없이도 클래스의 인스턴스의 `생성`은 가능하다.
 오해가 아니라 맞는 말이었다.
 
 1. `TV t;`  
-![](/images/Java-study-007day/memory01.png)  
+![](Java-study-007day/memory01.png)  
 변수의 타입을 TV로 지정했다.  
 하지만 TV라는 변수 타입은 없으므로 참조 타입이라고 봐야할 것 같다.  
 그 참조 변수의 타입은 클래스의 이름인 것 같다.  
@@ -121,7 +121,7 @@ new 없이도 클래스의 인스턴스의 `생성`은 가능하다.
 2. `t = new TV();`  
 이 부분을 세 가지 관점에서 나눠서 보고자 한다.  
 * t = new `TV()`;
-![](/images/Java-study-007day/memory02.png)  
+![](Java-study-007day/memory02.png)  
 TV()라는 생성자(여기서는 기본 생성자)만 호출해도  
 ~~클래스의 인스턴스는 생성되게 된다.~~  
 인스턴스 변수의 초기화(생성자 호출)만 이루어진다.  

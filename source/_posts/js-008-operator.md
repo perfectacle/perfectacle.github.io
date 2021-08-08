@@ -14,7 +14,7 @@ category:
 date: 2017-06-02 09:35:42
 ---
 
-![](/images/js-008-operator/thumb.png)  
+![](js-008-operator/thumb.png)  
 
 ## 자알쓰란?
 `자`바스크립트 `알`고 `쓰`자. (잘 쓰자는 의미도 담겨있다.)  

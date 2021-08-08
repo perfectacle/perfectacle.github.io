@@ -4,7 +4,7 @@ date: 2017-01-25 18:37:49
 category: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6+, ES2015+, ajax]
 ---
-![](/images/ES6-ajax-with-fetch/thumb.png)  
+![](ES6-ajax-with-fetch/thumb.png)  
 이 글을 읽기 전에 [(ES6) ajax 위주의 promise 실습](/2017/01/21/ES6-Promise-with-ajax/)를 먼저 읽을 것을 권한다.  
 ajax(XMLHttpRequest)와 promise에 대한 기본적인 이해가 있다면 상관없긴 하다.  
 [조현영](https://www.facebook.com/zerohch0?fref=ufi) 님의 제보에 의하면 ie에서 fetch가 안 되고,  
@@ -67,7 +67,7 @@ fetch API는 XMLHttpRequest를 대신하기 위한 방안 중 하나이다.
 ```javascript
 console.dir(fetch("https://perfectacle.github.io/mock/test.json"));
 ```
-![크롬 콘솔창에서 본 fetch의 반환값](/images/ES6-ajax-with-fetch/01.png)  
+![크롬 콘솔창에서 본 fetch의 반환값](ES6-ajax-with-fetch/01.png)  
 Promise 인스턴스가 반환된다.  
 Promise에서 실제로 쓰고 싶은 값은 [[PromiseValue]]에 들어있는데 이를 직접 접근하지 못한다.  
 따라서 then() 메소드를 써야한다.  
@@ -75,7 +75,7 @@ Promise에서 실제로 쓰고 싶은 값은 [[PromiseValue]]에 들어있는데
 fetch("https://perfectacle.github.io/mock/test.json")
 .then(res => console.dir(res));
 ```
-![크롬 콘솔창에서 본 [[PromiseValue]]의 반환값](/images/ES6-ajax-with-fetch/02.png)  
+![크롬 콘솔창에서 본 [[PromiseValue]]의 반환값](ES6-ajax-with-fetch/02.png)  
 반환된 결과를 보니 Response의 인스턴스가 반환됐다.  
 처음 보는 놈이다.  
 뭐 쓰고 싶은 값을 찾아낼 수가 없다.  
@@ -84,7 +84,7 @@ fetch("https://perfectacle.github.io/mock/test.json")
 fetch("https://perfectacle.github.io/mock/test.json")
 .then(res => console.dir(res.json()));
 ```
-![Response 인스턴스의 JSON화](/images/ES6-ajax-with-fetch/03.png)  
+![Response 인스턴스의 JSON화](ES6-ajax-with-fetch/03.png)  
 Response 인스턴스는 문자열이 아니다.  
 따라서 toJSON() 대신에 json() 메소드를 쓰면 json 형태로 바꿀 수 있다.  
 바꿨더니 또 promise 인스턴스다.  
@@ -94,7 +94,7 @@ fetch("https://perfectacle.github.io/mock/test.json")
 .then(res => res.json())
 .then(data => console.dir(data));
 ```
-![또 다시 벗겨낸 [[PromiseValue]]](/images/ES6-ajax-with-fetch/04.png)  
+![또 다시 벗겨낸 [[PromiseValue]]](ES6-ajax-with-fetch/04.png)  
 드디어 우리가 원하는 값을 얻어냈다.  
 기존의 XMLHttpRequest와 Promise를 사용했을 때보다 then을 한 번 더 타야한다는 단점이 있다.  
 근데 뭐 간단해지니 장점이 더 많은 것 같다.  

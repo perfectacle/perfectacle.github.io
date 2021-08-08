@@ -4,7 +4,7 @@ date: 2017-10-30 21:43:03
 category: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰]
 ---
-![](/images/js-014-call-by-value-vs-call-by-reference/thumb.png)
+![](js-014-call-by-value-vs-call-by-reference/thumb.png)
 
 ## 자알쓰란?
 `자`바스크립트 `알`고 `쓰`자. (잘 쓰자는 의미도 담겨있다.)  
@@ -126,14 +126,14 @@ console.log(a); // {}
 이해하기 쉽게 도식화 하면 다음과 같다.  
 
 **메모리 주소는 임의로 지정.**
-![](/images/js-014-call-by-value-vs-call-by-reference/01.png)  
+![](js-014-call-by-value-vs-call-by-reference/01.png)  
 변수 a에 담기는 것은 객체 {}가 담겨있는 메모리 주소 0x12이다. (원시값이 아닌 참조 타입이기 때문)
 
-![](/images/js-014-call-by-value-vs-call-by-reference/02.png)  
+![](js-014-call-by-value-vs-call-by-reference/02.png)  
 a에 대한 참조값을 복사한 value(b)가 새로 생성된다.  
 아직까지는 이 참조된 값이 {} 객체를 가리키고 있다.  
 
-![](/images/js-014-call-by-value-vs-call-by-reference/03.png)
+![](js-014-call-by-value-vs-call-by-reference/03.png)
 `=` 연산자로 참조값을 재할당하기 때문에 기존에 참조하던 {}에서 1로 참조 대상이 변경되었다.  
 
 C++을 배웠던 사람이라면 알고있던 call by value와는 다르단 느낌에 매우 혼동을 하게 된다.  

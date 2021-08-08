@@ -4,7 +4,7 @@ category: [Middle-end, 자료구조]
 tag: [자료구조, LinkedList, List]
 date: 2017-08-06 11:03:03
 ---
-![](/images/linked-list-making/thumb.png)  
+![](linked-list-making/thumb.png)  
 List는 데이터를 순차적으로 저장하므로 선형 구조(한 줄로 계속 되며, 데이터가 끊어지지 않음)이다.  
 또한 여기서 말하는 노드는 하나의 데이터 덩어리라고 보면 될 것 같다.  
 

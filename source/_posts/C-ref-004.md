@@ -4,12 +4,12 @@ date: 2017-02-09 14:31:26
 category: [Programming, C/C++]
 tag: [C, C++, Variable, Static]
 ---
-![](/images/C-ref-004/thumb.png)
+![](C-ref-004/thumb.png)
 
 프로그램을 실행하게 되면 OS는 메모리(RAM)에 공간을 할당해준다.  
 할당해주는 메모리 공간은 4가지(Code, Data, Stack, Heap)으로 나눌 수 있다.  
 
-![메모리의 구조](/images/C-ref-004/memory.png)  
+![메모리의 구조](C-ref-004/memory.png)  
 이미지 출처: [C언어의 메모리 구조](http://dsnight.tistory.com/50)
 
 ## Code  

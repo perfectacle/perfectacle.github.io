@@ -4,10 +4,10 @@ date: 2017-01-24 09:02:39
 category: [기타, 등등]
 tag: [IT, Computer, 인터넷, 속도, 암호, 보안]
 ---
-![](/images/Wifi-password-fact/thumb.png)  
+![](Wifi-password-fact/thumb.png)  
 
 ## 공유기에 암호를 걸어놓는다는 것의 의미
-![인증이 1번 내용, 암호화가 2번 내용](/images/Wifi-password-fact/01.png)  
+![인증이 1번 내용, 암호화가 2번 내용](Wifi-password-fact/01.png)  
 무선 공유기의 보안 때문에 AP에 암호를 걸어놓는 경우가 많다.  
 여기서 무선 공유기에 암호를 건다는 것은...  
 1. 무선 공유기에 타인이 접속하는 걸 방지하고자 암호를 건다.  
@@ -67,7 +67,7 @@ SSID를 지정하면 쉽게 찾아낼 수가 없을 것이다.
 암호화 방법이 여러 개 있고, 암호화 방법에 따라서 인터넷 속도도 천차 만별이다.  
 출처는 아래 링크와 같다.  
 [iptime 암호화 방법에 따라 속도 차이가 엄청나군요.](http://www.clien.net/cs2/bbs/board.php?bo_table=cm_iphonien&wr_id=1061462)  
-![이는 암호화 알고리즘 때문에 나타나는 현상이다](/images/Wifi-password-fact/speed.jpg)  
+![이는 암호화 알고리즘 때문에 나타나는 현상이다](Wifi-password-fact/speed.jpg)  
 복잡한 알고리즘, 안전한 알고리즘일 수록 느리지 않을까...  
 뭐 꼭 그렇다는 것만은 아니지만...
 
