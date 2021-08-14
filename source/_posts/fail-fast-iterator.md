@@ -1,10 +1,9 @@
 ---
 title: (Java) Fail Fast Iterator
-tags: []
 category:
   - Programming
   - Java
-tag:
+tags:
   - Java
   - Collection
   - Iterator
