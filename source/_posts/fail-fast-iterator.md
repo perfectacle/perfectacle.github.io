@@ -12,12 +12,14 @@ date: 2021-08-14 19:20:03
 
 
 ## 문제상황
-```kotlin
-private fun clear(cardCompanyCode: CardCompanyCode) {
-    mappings.entries.forEach {
-        if (it.value != cardCompanyCode) return@forEach
-        mappings.remove(it.key)
-    }
+```java
+private Map<String, String> mappings;
+
+public void clear(final CardCompanyCode cardCompanyCode) {
+    mappings.entrySet().forEach(e -> {
+        if (e.getValue() != cardCompanyCode) return;
+        mappings.remove(e.getKey());
+    });
 }
 ```
 
@@ -113,12 +115,12 @@ public Set<Map.Entry<K,V>> entrySet() {
 }
 
 final class EntrySet extends AbstractSet<Map.Entry<K,V>> {
-		public final int size()                 { return size; }
-		public final void clear()               { HashMap.this.clear(); }
-		public final Iterator<Map.Entry<K,V>> iterator() {
-		    return new EntryIterator();
-		}
-		// ...
+    public final int size()                 { return size; }
+    public final void clear()               { HashMap.this.clear(); }
+    public final Iterator<Map.Entry<K,V>> iterator() {
+        return new EntryIterator();
+    }
+    // ...
 }
 
 final class EntryIterator extends HashIterator
@@ -141,7 +143,7 @@ abstract class HashIterator {
             do {} while (index < t.length && (next = t[index++]) == null);
         }
     }
-		// ...
+    // ...
 }
 ```
 
@@ -154,8 +156,8 @@ final class EntryIterator extends HashIterator
 }
 
 abstract class HashIterator {
-		// ...
-		final Node<K,V> nextNode() {
+    // ...
+    final Node<K,V> nextNode() {
         Node<K,V>[] t;
         Node<K,V> e = next;
         if (modCount != expectedModCount)
@@ -167,7 +169,7 @@ abstract class HashIterator {
         }
         return e;
     }
-		// ...
+    // ...
 }
 ```
 
@@ -178,16 +180,16 @@ EntryIterator의 next 메서드는 부모 클래스인 HashIterator의 nextNode(
 
 그럼 다시 문제상황에서 어떻게 코드가 내부적으로 돌아갔을지 확인해보자.
 
-```kotlin
-private fun clear(cardCompanyCode: CardCompanyCode) {
-    mappings.entries.forEach {
-        if (it.value != cardCompanyCode) return@forEach
-        mappings.remove(it.key)
-    }
+```java
+public void clear(final CardCompanyCode cardCompanyCode) {
+    mappings.entrySet().forEach(e -> {
+        if (e.getValue() != cardCompanyCode) return;
+        mappings.remove(e.getKey());
+    });
 }
 ```
 
-1. mappings.entries 메서드에 의해 entrySet 메서드가 호출되고, EntrySet 타입을 반환받는다.
+1. mappings.entrySet 메서드가 호출되고, EntrySet 타입을 반환받는다.
 2. forEach에서 반복문을 돌리기 위해 EntrySet의 iterator 메서드가 호출됨에 따라 EntryIterator를 반환받는다.
 3. EntryIterator의 부모인 HashIterator 생성자에서는 fail-fast를 위해 현재 Map의 modCount를 expectedModCount 변수에 저장한다.
 4. forEach 메서드 안에서는 iterator.hasNext()가 호출되고 true를 반환함에 따라 iterator.next() 메서드가 호출되고, 그 반환값은 it라는 변수에 저장된다.
@@ -199,8 +201,8 @@ private fun clear(cardCompanyCode: CardCompanyCode) {
 
 ```java
 abstract class HashIterator {
-		// ...
-		public final void remove() {
+    // ...
+    public final void remove() {
         Node<K,V> p = current;
         if (p == null)
             throw new IllegalStateException();
@@ -218,14 +220,15 @@ iterator.remove() 메서드 안에서도 실제로 removeNode(map.remove에서�
 
 따라서 위 예시는 아래와 같이 바꾸면 해결된다.
 
-```kotlin
-private fun clear(cardCompanyCode: CardCompanyCode) {
-    val iterator = mappings.entries.iterator()
-
+```java
+public void clear(final CardCompanyCode cardCompanyCode) {
+    final Iterator<Map.Entry<String, CardCompanyCode>> iterator = mappings.entrySet().iterator();
+    
     while (iterator.hasNext()) {
-        val entry = iterator.next()
-        if (entry.value != cardCompanyCode) continue
-        iterator.remove()
+        final Map.Entry<String, CardCompanyCode> entry = iterator.next();
+
+        if (entry.getValue() != cardCompanyCode) return;
+        iterator.remove();
     }
 }
 ```
