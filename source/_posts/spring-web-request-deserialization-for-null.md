@@ -1,5 +1,5 @@
 ---
-title: (Spring) Request 객체를 만들 때 null을 주의하자
+title: (Spring) 외부에서 호출하는 Request 객체를 만들 때 null을 주의하자
 tags:
   - Spring
   - Web
@@ -12,7 +12,8 @@ date: 2021-09-20 02:04:28
 
 소스코드 외부 세계에서 내부 세계로 데이터를 전달하기 위해서는 미리 정해진 프로토콜 및 API를 통해 데이터를 주고받게 된다.  
 일반적으로 우리가 많이 사용하는 Restful API(혹은 HTTP API)는 대부분 json의 형태로 데이터를 주고 받게 된다.  
-그럼 json 문자열이 우리가 정의한 Request 객체로 매핑을 할 때 null을 어떻게 핸들링 해야할까에 집중해서 간단히 정리해보았다.  
+그럼 json 문자열이 우리가 정의한 Request 객체로 매핑을 할 때 null을 어떻게 핸들링 해야할까에 집중해서 간단히 정리해보았다.
+해당 포스트와 연관성이 높은 [(Spring) 외부 API의 Response 객체를 만들 때 null을 주의하자](/2021/09/20/spring-web-response-deserialization-for-null)도 읽는 것을 추천한다.
 
 ## 코틀린
 코틀린은 nullable을 지원하다보니 소스코드에서 null에 대한 체크를 매번하지 않아도 돼서 매우 편하다.  
@@ -115,8 +116,9 @@ data class RequestV3(
 }
 ```
 
-생성자 함수가 아닌 멤버변수에 어노테이션을 설정하기 위해 @field이라고 정확히 명시했다.
+생성자 함수가 아닌 멤버변수에 어노테이션을 설정하기 위해 @field라고 어노테이션 타겟을 명시했다.
 (참고: [Annotation use-site targets](https://kotlinlang.org/docs/annotations.html#annotation-use-site-targets))
+또한 jackson은 기본 생성자를 리플렉션하여 객체를 생성하는데 기본 생성자가 없으니 객체 생성을 위해 사용할 생성자에 @JsonCreator 어노테이션을 달아주었다.
 
 ## 자바
 자바에서도 똑같이 null에 대한 검증을 모두 끝마친 깔끔한 request dto 객체를 원할 것이다.  
