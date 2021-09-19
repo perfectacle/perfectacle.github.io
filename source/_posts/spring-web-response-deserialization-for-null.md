@@ -116,7 +116,7 @@ data class ResponseV3(
 jackson은 기본 생성자를 리플렉션하여 객체를 생성하는데 기본 생성자가 없으니 객체 생성을 위해 사용할 생성자에 @JsonCreator 어노테이션을 달아주었다.
 
 ## 자바
-자바에서도 똑같이 null에 대한 검증을 모두 끝마친 깔끔한 request dto 객체를 원할 것이다.
+자바에서도 똑같이 null에 대한 검증을 모두 끝마친 깔끔한 response dto 객체를 원할 것이다.
 ```java
 public class Response {
     public final int number;
