@@ -55,7 +55,8 @@ internal class ControllerTest {
 }
 ```
 
-클라이언트에서 http 요청을 보낼 때 충분히 필수 필드를 누락할 수 있고, 이 때 서버에서 HttpMessageNotReadableException 예외를 던지게 된다.  
+클라이언트에서 http 요청을 보낼 때 충분히 필수 필드를 누락할 수 있고, 이 때 서버에서 HttpMessageNotReadableException 예외를 던지게 된다.
+`org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot construct instance of ... problem: Parameter specified as non-null is null: method example.web.mvc.RequestV1.<init>, parameter text`
 기본적으로 이 경우에는 DefaultHandlerExceptionResolver에서 예외를 핸들링하여 warn 로그를 찍게 된다.  
 이런 경우에는 HttpMessageNotReadableException 보다는 MethodArgumentNotValidException 예외를 던지는 것이 더 적합해보인다.  
 
@@ -78,7 +79,25 @@ class Controller {
 }
 ```
 우선 생성자를 전부 nullable로 정의해서 객체의 성공을 보장하고, 멤버변수는 전부 기본값을 정의해서 non-null을 보장하였다.
-생성자의 인자를 기준으로 요청을 검증하는 게 아니라 이미 생성된 객체를 기준으로 검증을 하기 때문에 멤버변수에 할당된 기본값 기준으로 어노테이션을 설정해야한다.  
+생성자의 인자를 기준으로 요청을 검증하는 게 아니라 이미 생성된 객체를 기준으로 검증을 하기 때문에 멤버변수에 할당된 기본값 기준으로 어노테이션을 설정해야한다.
+
+```kotlin
+@Test
+fun `요청 객체 전송 시에 유효하지 않은 필드가 존재하면 MethodArgumentNotValidException 예외를 던진다`() {
+    val expected = MethodArgumentNotValidException::class.java
+
+    val actual = mockMvc.post("/") {
+        contentType = MediaType.APPLICATION_JSON
+        content = """{"number": 13}"""
+    }.andDo { print() }.andExpect {
+        status { isBadRequest() }
+        // 응답으로 어떤 필드가 유효하지 않은지 추가하려면 @ExceptionHandler를 사용하여 MethodArgumentNotValidException를 핸들링 해야한다.
+        content { string("") }
+    }.andReturn().resolvedException
+
+    assertThat(actual).isInstanceOf(expected)
+}
+```
 
 혹시나 Data Class를 꼭 사용해야한다면 아래와 같이도 할 수 있다.
 ```kotlin
