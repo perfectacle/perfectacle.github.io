@@ -1,2 +1,3 @@
 /* remove disqus ad */
 iframe[src*="ads-iframe"] { display: none; }
+#ad-container {display: none; }
