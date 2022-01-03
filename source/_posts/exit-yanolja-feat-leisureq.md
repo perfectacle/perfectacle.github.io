@@ -272,12 +272,6 @@ date: 2019-08-23 08:16:36
 그로부터 1주일 정도가 흘러 최종 **합격** 메일이 왔다.  
 면접자를 배려하는 점은 굉장히 좋은 경험이었지만 길었던 면접 과정에 몸과 마음이 많이 지친 것 같았다.
 
-<ins class="adsbygoogle"
-     style="display:block;margin:60px auto;width:728px;height:90px"
-     data-ad-client="ca-pub-3881550906962162"
-     data-ad-slot="8264718850"></ins>
-<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-
 ## 나는 어떻게 합격할 수 있었을까?
 자만이 아니라 내 주관적인 판단 하에 어떤 이유 때문에 생각지도 못한 기업들에 합격할 수 있었는지 고민해봤다.  
 하나하나 나열해서 과거로 올라가자면 끝이 없을테니 적당히 추려보았다.
