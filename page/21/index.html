@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">213</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">212</span>
+          <span class="site-state-item-count">213</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,126 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/12/25/es6-interface/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2016/12/25/es6-interface/" class="post-title-link" itemprop="url">(ES6) Interface</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2016-12-25 22:17:14" itemprop="dateCreated datePublished" datetime="2016-12-25T22:17:14+00:00">2016-12-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/ES2015/" itemprop="url" rel="index"><span itemprop="name">ES2015+</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/12/25/es6-interface/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/25/es6-interface/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2016/12/25/es6-interface/thumb.png" class>
+
+<p>이 포스트는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://festi.kr/festi/gdg-korea-2016-devfest-seoul/">GDG 2016</a>에서 발표하신 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.facebook.com/hika00">맹기완</a> 님의 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.bsidesoft.com/?p=2913">발표</a>를 듣고 감명을 받아 정리해본 글이다.<br><a href="/2017/04/22/ES6-Iterator/">이터레이터 인터페이스와 이터러블 인터페이스</a>는 다음 포스트에서 정리할 예정이다.<br>이 글을 읽고난 후에 <a href="/2017/04/16/ES6-Symbol/">(ES6) Symbol</a>에 대한 글부터 읽어보길 바란다.<br>다소 짧아서 어디 공유하기 부끄럽지만 이렇게 짧은 내용들이 집중해서 읽기에 참 좋은 것 같다.</p>
+<h1 id="Interface"><a href="#Interface" class="headerlink" title="Interface"></a>Interface</h1><p>ECMAScript2015(이하 ES6) 들어서서 <code>인터페이스</code>는 <code>고유 명사</code>가 되었다.</p>
+<blockquote>
+<p>고유명사(固有名詞)<br>낱낱의 특정한 사물이나 사람을 다른 것들과 구별하여 부르기 위하여 고유의 기호를 붙인 이름.</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/12/25/es6-interface/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/12/24/ES6-Number-object-and-function/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +381,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -390,7 +510,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -507,7 +627,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -624,7 +744,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -759,7 +879,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -877,7 +997,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -995,7 +1115,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1108,7 +1228,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1230,7 +1350,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1282,125 +1402,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2016/11/14/Webpack-devtool-option-Performance/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/11/11/Babel-ES6-with-IE8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2016/11/11/Babel-ES6-with-IE8/" class="post-title-link" itemprop="url">(Babel) ES6를 IE8에서도 써보자</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2016-11-11 23:09:39" itemprop="dateCreated datePublished" datetime="2016-11-11T23:09:39+00:00">2016-11-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Front-end/" itemprop="url" rel="index"><span itemprop="name">Front-end</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Front-end/Babel/" itemprop="url" rel="index"><span itemprop="name">Babel</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2016/11/11/Babel-ES6-with-IE8/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/11/11/Babel-ES6-with-IE8/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2016/11/11/Babel-ES6-with-IE8/thumb.png" class>  
-
-<h2 id="목차"><a href="#목차" class="headerlink" title="목차"></a>목차</h2><ol>
-<li><a href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C">들어가기에 앞서</a></li>
-<li><a href="#ES6-%EC%99%9C-%EC%8D%A8">ES6 왜 써?</a></li>
-<li><a href="#ES6%EC%97%90%EC%84%9C-ES5%EB%A1%9C-%ED%8A%B8%EB%9E%9C%EC%8A%A4%ED%8C%8C%EC%9D%BC%ED%95%98%EA%B8%B0">ES6에서 ES5로 트랜스파일하기</a></li>
-<li><a href="#ES5%EB%A5%BC-IE8%EC%97%90%EC%84%9C%EB%8F%84-%EC%A7%80%EC%9B%90%ED%95%98%EA%B8%B0">ES5를 IE8에서도 지원하기</a></li>
-<li><a href="#%EB%B0%94%EB%B2%A8%EC%9D%80-%EC%95%88%EC%A0%84%ED%95%9C%EA%B0%80">바벨은 안전한가?</a></li>
-</ol>
-<h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>아주 많이 참조한 링크<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://meetup.toast.com/posts/85">지금 바로 시작하는 ES6</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/11/11/Babel-ES6-with-IE8/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

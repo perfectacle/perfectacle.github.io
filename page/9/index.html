@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">213</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">212</span>
+          <span class="site-state-item-count">213</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,125 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/02/20/jpa-embedded-type/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2018/02/20/jpa-embedded-type/" class="post-title-link" itemprop="url">(JPA) Embedded Type</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-02-20 00:52:00" itemprop="dateCreated datePublished" datetime="2018-02-20T00:52:00+00:00">2018-02-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/" itemprop="url" rel="index"><span itemprop="name">Back-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/" itemprop="url" rel="index"><span itemprop="name">DB</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/JPA/" itemprop="url" rel="index"><span itemprop="name">JPA</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/02/20/jpa-embedded-type/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/02/20/jpa-embedded-type/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2018/02/20/jpa-embedded-type/thumb.png" class title="출처: http:&#x2F;&#x2F;www.datamodel.com&#x2F;index.php&#x2F;2014&#x2F;06&#x2F;24&#x2F;big-data-nosql-and-data-modeling-big-challenges-in-data-modeling&#x2F;">
+
+<h2 id="일반적인-테이블-구조의-문제점"><a href="#일반적인-테이블-구조의-문제점" class="headerlink" title="일반적인 테이블 구조의 문제점"></a>일반적인 테이블 구조의 문제점</h2><p>일반적인 DB 테이블 구조에 맞춰 엔티티를 만들다보면 아래와 같이 만들게 된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Deal</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="keyword">private</span> LocalDate saleStartDate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="keyword">private</span> LocalDate saleEndDate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> normalPrice;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> discountPrice;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Long <span class="title function_">getId</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setId</span><span class="params">(Long id)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> LocalDate <span class="title function_">getSaleStartDate</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> saleStartDate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSaleStartDate</span><span class="params">(LocalDate saleStartDate)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.saleStartDate = saleStartDate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> LocalDate <span class="title function_">getSaleEndDate</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> saleEndDate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSaleEndDate</span><span class="params">(LocalDate saleEndDate)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.saleEndDate = saleEndDate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getNormalPrice</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> normalPrice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setNormalPrice</span><span class="params">(<span class="type">int</span> normalPrice)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.normalPrice = normalPrice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getDiscountPrice</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> discountPrice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setDiscountPrice</span><span class="params">(<span class="type">int</span> discountPrice)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.discountPrice = discountPrice;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>객체 지향 관점에서 봤을 때 판매 시작&#x2F;종료 날짜와 일반가&#x2F;할인가는 전혀 관련이 없는 데이터이다.<br>응집력이 낮은 데이터들끼리 모여있으므로 테이블을 아래와 같이 설계하는 게 더 응집도 높은 엔티티가 될 것 같다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/02/20/jpa-embedded-type/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/01/16/jackson-local-date-time-serialize/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +380,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
 
   
@@ -363,7 +482,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
 
   
@@ -465,7 +584,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -582,7 +701,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:23" itemprop="dateModified" datetime="2022-03-12T15:01:23+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -697,7 +816,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -807,7 +926,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:23" itemprop="dateModified" datetime="2022-03-12T15:01:23+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -917,7 +1036,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1034,7 +1153,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1148,7 +1267,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1209,123 +1328,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/11/06/mysql-to-elasitcsearch/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/10/30/js-014-call-by-value-vs-call-by-reference/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/10/30/js-014-call-by-value-vs-call-by-reference/" class="post-title-link" itemprop="url">(자알쓰) call by value vs call by reference</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2017-10-30 21:43:03" itemprop="dateCreated datePublished" datetime="2017-10-30T21:43:03+00:00">2017-10-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/ECMAScript/%EC%9E%90%EC%95%8C%EC%93%B0/" itemprop="url" rel="index"><span itemprop="name">자알쓰</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2017/10/30/js-014-call-by-value-vs-call-by-reference/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/10/30/js-014-call-by-value-vs-call-by-reference/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2017/10/30/js-014-call-by-value-vs-call-by-reference/thumb.png" class>
-
-<h2 id="자알쓰란"><a href="#자알쓰란" class="headerlink" title="자알쓰란?"></a>자알쓰란?</h2><p><code>자</code>바스크립트 <code>알</code>고 <code>쓰</code>자. (잘 쓰자는 의미도 담겨있다.)<br>자바스크립트라는 언어 자체는 내 기준에서는 설계 상 미스가 참 많다.<br>함수 단위의 스코프, 호이스팅, 동적 타입 등등<br>자바와 같은 깐깐(?)한 언어를 배우고 바라본 자스는 허점 투성이처럼 보였다.<br>애초에 자바스크립트는 어떠한 프로그램을 만들기 위해서 탄생했다기 보다는<br>웹 페이지에 입력값에 대한 유효성 검사(데이터가 공란인지 아닌지 등등)와 같은<br>페이지의 동적 제어가 주된 목적 + 짧은 개발 기간(넷 스케이프 사의 새로운 브라우저에 탑재 예정) 때문에<br>설계 상에 미스가 있을 수 밖에 없다고 나는 생각된다.<br>일종의 안전 장치가 없어서 개발자가 일일이 구현해주고, 신경써야 하는 느낌이었다.<br>그렇다고 해서 자바스크립트를 극혐하거나 그런 것은 아니고 매우 사랑한다.<br>또한 그 허점을 아는 사람은 허점을 보완해서 요리조리 피해서 잘 쓰겠지만…<br>잘 모르는 부분들은 잘못 써도 동작이 잘 되기 마련이다.<br>이는 지금 당장에는 큰 문제가 안 될지 모르겠지만, 추후에 대규모 웹 어플리케이션을 만들거나<br>직면할 문제로부터 미리 해방시키기 위해 처음부터 좋은 습관을 들여가는 것이 좋다고 생각한다.<br>그 열 네 번째 시리즈는 call by value vs call by reference를 주제로 진행하겠다.</p>
-<h2 id="call-by-뭐시기…"><a href="#call-by-뭐시기…" class="headerlink" title="call by 뭐시기…?"></a>call by 뭐시기…?</h2><p>Call by 뭐시기 하는 것은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/%ED%8F%89%EA%B0%80_%EC%A0%84%EB%9E%B5_(%EC%BB%B4%ED%93%A8%ED%84%B0_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)">평가 전략(Evaluation Strategy)</a> 중에 하나이며 위키피디아에서는 아래와 같이 서술하고 있다.  </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/10/30/js-014-call-by-value-vs-call-by-reference/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

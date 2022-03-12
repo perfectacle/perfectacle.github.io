@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">213</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">212</span>
+          <span class="site-state-item-count">213</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,120 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/11/24/aes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2019/11/24/aes/" class="post-title-link" itemprop="url">AES 256 CBC + PBKDF2</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2019-11-24 09:59:51" itemprop="dateCreated datePublished" datetime="2019-11-24T09:59:51+00:00">2019-11-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/11/24/aes/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/11/24/aes/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2019/11/24/aes/thumb.png" class>  
+
+<p>막연하게 양방향 암호화 하면 당연스레 AES를 떠올리고, 제대로 모른 채로 사용했다.<br>이제부터라도 조금은 알고 써야겠다는 생각이 들어서 살짝 정리해봤다.</p>
+<h2 id="양방향-x2F-단방향-암호화"><a href="#양방향-x2F-단방향-암호화" class="headerlink" title="양방향&#x2F;단방향 암호화"></a>양방향&#x2F;단방향 암호화</h2><p>양방향 암호화는 암호화 및 복호화가 가능하다는 소리다.<br>휴대폰 번호 등등 민감한 개인정보는 암호화 해서 저장해야하는데 고객 정보를 식별하기 위해선 복호화도 가능해야한다.<br>혹시나 키와 DB가 털린다면 복호화가 가능하므로 적어도 개인정보는 마스킹 한 후에 암호화해서 저장해야한다.<br>양방향 암호화 알고리즘에는 DES(보안에 취약), <strong>AES</strong>, SEED(국내에서 개발, 공인인증서에 사용됨) 등등이 있다.</p>
+<p>단방향 암호화는 암호화만 가능하고 복호화는 불가능하다는 소리다.<br>비밀번호와 같이 암호화 한 값들끼리 단순히 비교만 하면 되고, 복호화 할 필요가 없는 정보들은 단방향 암호화 해야한다.<br>혹시나 키와 DB가 털려도 복호화가 불가능하기 때문에 암호화된 값만 알 수 있지 원본 비밀번호는 알 수 없기 때문에 양방향 암호화 보다는 좀 더 안전하다.<br>이런 특성 때문에 비밀번호 찾기 대신에 비밀번호 재설정 기능 밖에 지원 할 수 없다. (비밀번호 찾기를 지원해주는 사이트는 보안이 매우 안 좋은 사이트이다.)<br>단방향 암호화 알고리즘에는 해시 알고리즘이 사용되며 SHA256, SHA512, MD5(무작위 대입 공격에 약함) 등등이 있다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/24/aes/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/09/18/kotlin-request-nullable-non-null/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +375,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -374,7 +488,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -486,7 +600,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -601,7 +715,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -717,7 +831,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -830,7 +944,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:23" itemprop="dateModified" datetime="2022-03-12T15:01:23+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -942,7 +1056,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:23" itemprop="dateModified" datetime="2022-03-12T15:01:23+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1057,7 +1171,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1171,7 +1285,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1221,120 +1335,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2019/06/30/java-8-lambda-capturing/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/06/23/auto-scanning-annotation-based-bean/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2019/06/23/auto-scanning-annotation-based-bean/" class="post-title-link" itemprop="url">어노테이션이 달린 빈의 자동 스캔 (Without Spring Boot)</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2019-06-23 12:08:10" itemprop="dateCreated datePublished" datetime="2019-06-23T12:08:10+00:00">2019-06-23</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Back-end/" itemprop="url" rel="index"><span itemprop="name">Back-end</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Back-end/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2019/06/23/auto-scanning-annotation-based-bean/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/23/auto-scanning-annotation-based-bean/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2019/06/23/auto-scanning-annotation-based-bean/thumb.png" class>
-
-<p>스프링 부트부터 접한 스프링 알못이라 스프링에 대해 공부를 하다보니 너무나 모르고 있는 게 많아서 정리해봤다.<br>되게 간단한 건데 스프링 부트부터 접하면 몰라도 코드 짜는데는 문제가 없지만 개인적으로는 알고 있으면 너무나 좋은 내용같다.</p>
-<h2 id="어노테이션-없이-빈-설정"><a href="#어노테이션-없이-빈-설정" class="headerlink" title="어노테이션 없이 빈 설정"></a>어노테이션 없이 빈 설정</h2><p>스프링이 관리하는 객체인 빈으로 생성하기 위해서 아래와 같은 어노테이션이 필수<strong>인 줄 알았</strong>다.<br>@Component, @Configuration, @Bean, @Service, @Controller, @Repository</p>
-<p>하지만 직접 코딩을 해보니 이 생각은 거짓이었다.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/06/23/auto-scanning-annotation-based-bean/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

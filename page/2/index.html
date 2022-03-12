@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">213</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">212</span>
+          <span class="site-state-item-count">213</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,116 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/09/20/spring-web-request-deserialization-for-null/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/20/spring-web-request-deserialization-for-null/" class="post-title-link" itemprop="url">(Spring) 외부에서 호출하는 Request 객체를 만들 때 null을 주의하자</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2021-09-20 02:04:28" itemprop="dateCreated datePublished" datetime="2021-09-20T02:04:28+00:00">2021-09-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/09/20/spring-web-request-deserialization-for-null/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/09/20/spring-web-request-deserialization-for-null/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>소스코드 외부 세계에서 내부 세계로 데이터를 전달하기 위해서는 미리 정해진 프로토콜 및 API를 통해 데이터를 주고받게 된다.<br>일반적으로 우리가 많이 사용하는 Restful API(혹은 HTTP API)는 대부분 json의 형태로 데이터를 주고 받게 된다.<br>그럼 json 문자열이 우리가 정의한 Request 객체로 매핑을 할 때 null을 어떻게 핸들링 해야할까에 집중해서 간단히 정리해보았다.<br>해당 포스트와 연관성이 높은 <a href="/2021/09/20/spring-web-response-deserialization-for-null">(Spring) 외부 API의 Response 객체를 만들 때 null을 주의하자</a>도 읽는 것을 추천한다.</p>
+<h2 id="코틀린"><a href="#코틀린" class="headerlink" title="코틀린"></a>코틀린</h2><p>코틀린은 nullable을 지원하다보니 소스코드에서 null에 대한 체크를 매번하지 않아도 돼서 매우 편하다.<br>하지만 이건 우리 소스코드 내부의 사정이고 소스코드 외부에서 들어오는 데이터의 경우에는 단정지을 수 없다.<br>그 단적인 예가 네트워크를 통해 들어오는 HTTP API의 요청이다.  </p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RequestV1</span></span>(</span><br><span class="line">    <span class="keyword">val</span> number: <span class="built_in">Int</span>,</span><br><span class="line">    <span class="keyword">val</span> text: String</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Controller</span> </span>&#123;</span><br><span class="line">    <span class="meta">@PostMapping</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">api</span><span class="params">(<span class="meta">@RequestBody</span> request: <span class="type">RequestV1</span>)</span></span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이런 요청 객체와 API가 있다고 할 때 과연 number와 text는 non-null을 100% 보장할 수 있을까??  </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/20/spring-web-request-deserialization-for-null/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/08/14/fail-fast-iterator/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +371,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -379,7 +489,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -499,7 +609,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -620,7 +730,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -740,7 +850,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -861,7 +971,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -978,7 +1088,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1090,7 +1200,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1203,7 +1313,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1254,118 +1364,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/02/28/netty-glossary/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/02/14/simple-client-http-request-factory-connection-pool/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/14/simple-client-http-request-factory-connection-pool/" class="post-title-link" itemprop="url">(Spring Boot) SimpleClientHttpRequestFactory와 Connection Pool</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2021-02-14 13:04:05" itemprop="dateCreated datePublished" datetime="2021-02-14T13:04:05+00:00">2021-02-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:23" itemprop="dateModified" datetime="2022-03-12T15:01:23+00:00">2022-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Spring-Boot/" itemprop="url" rel="index"><span itemprop="name">Spring Boot</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2021/02/14/simple-client-http-request-factory-connection-pool/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/02/14/simple-client-http-request-factory-connection-pool/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="N줄-요약"><a href="#N줄-요약" class="headerlink" title="N줄 요약"></a>N줄 요약</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/client/SimpleClientHttpRequestFactory.html">SimpleClientHttpRequestFactory</a>(RestTemplate을 기본생성자로 만들었을 때 사용하는)를 사용하더라도 내부에서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/frohoff/jdk8u-jdk/blob/master/src/share/classes/sun/net/www/http/KeepAliveCache.java">KeepAliveCache</a>를 사용하여 커넥션 풀을 관리한다.<br>기본적으로 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/frohoff/jdk8u-jdk/blob/master/src/share/classes/sun/net/www/http/KeepAliveCache.java#L295">KeepAliveKey(protocol, host, port)</a> 당 5개의 풀을 가지며 시스템 프로퍼티 <code>http.maxConnections</code>를 할당해주면 늘릴 수 있다.<br>커넥션 풀을 초과하면 커넥션은 바로 종료되며, 커넥션 풀 내의 커넥션은 매번 연결을 맺고 끊는 게 아니라 재사용 된다.<br>당연하게도 서버에서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Keep-Alive">Keep-Alive</a>를 사용하지 않으면 매번 커넥션이 종료된다.<br>그럼에도 불구하고 SimpleClientHttpRequestFactory는 다음의 단점이 있기 때문에 토이 프로젝트가 아닌 이상 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/client/HttpComponentsClientHttpRequestFactory.html">HttpComponentsClientHttpRequestFactory</a> 같은 다른 구현체를 사용해야할 것 같다.  </p>
-<ul>
-<li>http.maxConnections라는 시스템 프로퍼티를 설정해야하는데 설정을 위해 자주 사용하던 properties(yml)에는 설정할 수 없다보니 다른 방법으로 설정을 해줘야하고, 그러다 보면 설정을 파악하려면 한 군데(properties 또는 yml)만 집중해서는 파악할 수 없는 내용도 있다보니 실수할 여지가 발생할 수 있다.  </li>
-<li>KeepAliveCache가 static 변수이다보니 서로 다른 SimpleClientHttpRequestFactory여도 동일한 커넥션 풀을 참조한다.</li>
-<li>route(프로토콜, 호스트, 포트) 별 커넥션 풀은 설정할 수 있지만 토탈 커넥션 풀은 제한이 없다.</li>
-</ul>
-<h2 id="SimpleClientHttpRequestFactory가-뭐지"><a href="#SimpleClientHttpRequestFactory가-뭐지" class="headerlink" title="SimpleClientHttpRequestFactory가 뭐지??"></a>SimpleClientHttpRequestFactory가 뭐지??</h2><p>RestTemplate의 기본 생성자를 사용하면 ClientHttpRequestFactory를 별도로 초기화하지 않으므로 기본값인 SimpleClientHttpRequestFactory를 사용한다.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/14/simple-client-http-request-factory-connection-pool/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

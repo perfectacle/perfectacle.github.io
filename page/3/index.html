@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">213</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">212</span>
+          <span class="site-state-item-count">213</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,118 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/02/14/simple-client-http-request-factory-connection-pool/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/02/14/simple-client-http-request-factory-connection-pool/" class="post-title-link" itemprop="url">(Spring Boot) SimpleClientHttpRequestFactory와 Connection Pool</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2021-02-14 13:04:05" itemprop="dateCreated datePublished" datetime="2021-02-14T13:04:05+00:00">2021-02-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring-Boot/" itemprop="url" rel="index"><span itemprop="name">Spring Boot</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/02/14/simple-client-http-request-factory-connection-pool/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/02/14/simple-client-http-request-factory-connection-pool/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="N줄-요약"><a href="#N줄-요약" class="headerlink" title="N줄 요약"></a>N줄 요약</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/client/SimpleClientHttpRequestFactory.html">SimpleClientHttpRequestFactory</a>(RestTemplate을 기본생성자로 만들었을 때 사용하는)를 사용하더라도 내부에서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/frohoff/jdk8u-jdk/blob/master/src/share/classes/sun/net/www/http/KeepAliveCache.java">KeepAliveCache</a>를 사용하여 커넥션 풀을 관리한다.<br>기본적으로 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/frohoff/jdk8u-jdk/blob/master/src/share/classes/sun/net/www/http/KeepAliveCache.java#L295">KeepAliveKey(protocol, host, port)</a> 당 5개의 풀을 가지며 시스템 프로퍼티 <code>http.maxConnections</code>를 할당해주면 늘릴 수 있다.<br>커넥션 풀을 초과하면 커넥션은 바로 종료되며, 커넥션 풀 내의 커넥션은 매번 연결을 맺고 끊는 게 아니라 재사용 된다.<br>당연하게도 서버에서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Keep-Alive">Keep-Alive</a>를 사용하지 않으면 매번 커넥션이 종료된다.<br>그럼에도 불구하고 SimpleClientHttpRequestFactory는 다음의 단점이 있기 때문에 토이 프로젝트가 아닌 이상 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/client/HttpComponentsClientHttpRequestFactory.html">HttpComponentsClientHttpRequestFactory</a> 같은 다른 구현체를 사용해야할 것 같다.  </p>
+<ul>
+<li>http.maxConnections라는 시스템 프로퍼티를 설정해야하는데 설정을 위해 자주 사용하던 properties(yml)에는 설정할 수 없다보니 다른 방법으로 설정을 해줘야하고, 그러다 보면 설정을 파악하려면 한 군데(properties 또는 yml)만 집중해서는 파악할 수 없는 내용도 있다보니 실수할 여지가 발생할 수 있다.  </li>
+<li>KeepAliveCache가 static 변수이다보니 서로 다른 SimpleClientHttpRequestFactory여도 동일한 커넥션 풀을 참조한다.</li>
+<li>route(프로토콜, 호스트, 포트) 별 커넥션 풀은 설정할 수 있지만 토탈 커넥션 풀은 제한이 없다.</li>
+</ul>
+<h2 id="SimpleClientHttpRequestFactory가-뭐지"><a href="#SimpleClientHttpRequestFactory가-뭐지" class="headerlink" title="SimpleClientHttpRequestFactory가 뭐지??"></a>SimpleClientHttpRequestFactory가 뭐지??</h2><p>RestTemplate의 기본 생성자를 사용하면 ClientHttpRequestFactory를 별도로 초기화하지 않으므로 기본값인 SimpleClientHttpRequestFactory를 사용한다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/02/14/simple-client-http-request-factory-connection-pool/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2020/12/27/detecting-test-configuration-in-spring-boot-test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +373,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -372,7 +484,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -482,7 +594,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -591,7 +703,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:23" itemprop="dateModified" datetime="2022-03-12T15:01:23+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -705,7 +817,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -822,7 +934,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -939,7 +1051,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:48" itemprop="dateModified" datetime="2022-03-12T17:42:48+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1056,7 +1168,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1165,7 +1277,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 17:42:49" itemprop="dateModified" datetime="2022-03-12T17:42:49+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1213,120 +1325,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/01/24/korean-certification/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/11/24/aes/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2019/11/24/aes/" class="post-title-link" itemprop="url">AES 256 CBC + PBKDF2</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2019-11-24 09:59:51" itemprop="dateCreated datePublished" datetime="2019-11-24T09:59:51+00:00">2019-11-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 15:01:22" itemprop="dateModified" datetime="2022-03-12T15:01:22+00:00">2022-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Note/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2019/11/24/aes/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/11/24/aes/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2019/11/24/aes/thumb.png" class>  
-
-<p>막연하게 양방향 암호화 하면 당연스레 AES를 떠올리고, 제대로 모른 채로 사용했다.<br>이제부터라도 조금은 알고 써야겠다는 생각이 들어서 살짝 정리해봤다.</p>
-<h2 id="양방향-x2F-단방향-암호화"><a href="#양방향-x2F-단방향-암호화" class="headerlink" title="양방향&#x2F;단방향 암호화"></a>양방향&#x2F;단방향 암호화</h2><p>양방향 암호화는 암호화 및 복호화가 가능하다는 소리다.<br>휴대폰 번호 등등 민감한 개인정보는 암호화 해서 저장해야하는데 고객 정보를 식별하기 위해선 복호화도 가능해야한다.<br>혹시나 키와 DB가 털린다면 복호화가 가능하므로 적어도 개인정보는 마스킹 한 후에 암호화해서 저장해야한다.<br>양방향 암호화 알고리즘에는 DES(보안에 취약), <strong>AES</strong>, SEED(국내에서 개발, 공인인증서에 사용됨) 등등이 있다.</p>
-<p>단방향 암호화는 암호화만 가능하고 복호화는 불가능하다는 소리다.<br>비밀번호와 같이 암호화 한 값들끼리 단순히 비교만 하면 되고, 복호화 할 필요가 없는 정보들은 단방향 암호화 해야한다.<br>혹시나 키와 DB가 털려도 복호화가 불가능하기 때문에 암호화된 값만 알 수 있지 원본 비밀번호는 알 수 없기 때문에 양방향 암호화 보다는 좀 더 안전하다.<br>이런 특성 때문에 비밀번호 찾기 대신에 비밀번호 재설정 기능 밖에 지원 할 수 없다. (비밀번호 찾기를 지원해주는 사이트는 보안이 매우 안 좋은 사이트이다.)<br>단방향 암호화 알고리즘에는 해시 알고리즘이 사용되며 SHA256, SHA512, MD5(무작위 대입 공격에 약함) 등등이 있다.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/11/24/aes/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>
