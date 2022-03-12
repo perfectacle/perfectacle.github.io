@@ -6,15 +6,12 @@
   },
   "scripts": {
     "start": "hexo serve --draft",
-    "deploy": "npm run push && npm run build",
-    "push": "git add . && git commit -m \"update on `date +\"%Y/%m/%d %H:%M:%S\"`\" && git push origin gh-pages; exit 0",
     "build": "hexo clean && hexo deploy; exit 0"
   },
   "dependencies": {
     "hexo": "^5.4.0",
     "hexo-auto-canonical": "^0.1.1",
     "hexo-autonofollow": "^1.0.1",
-    "hexo-deployer-git": "^2.1.0",
     "hexo-excerpt": "^1.1.6",
     "hexo-filter-emoji": "^2.2.2",
     "hexo-generator-archive": "^1.0.0",
