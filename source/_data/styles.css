@@ -1,3 +1,0 @@
-/* remove disqus ad */
-#disqus_thread > iframe { display: none; }
-iframe[src*="https://disqus.com/embed/comments/?"] { display: block !important; }
