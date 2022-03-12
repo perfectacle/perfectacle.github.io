@@ -11,16 +11,16 @@ date: 2022-03-12 19:43:25
 3. [api](#api)가 필요한 건지 100번 고민하고 설계가 잘못된 건 아닌지 의심해 본 후 api를 사용한다. (api는 consumer의 compile/runtimeClassPath에 모두 추가된다.)
 
 ## 들어가기에 앞서
-의존성(라이브러리/프레임워크)을 추가하기 위해 build.gradle(or build.gradle.kts)에 아래와 같이 디펜던시들을 추가하게 됨.
+의존성(라이브러리/프레임워크)을 추가하기 위해 build.gradle(or build.gradle.kts)에 아래와 같이 디펜던시들을 추가하게 된다.
 
-```kotlin
+```groovy
 dependencies {
     api("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 }
 ```
 
-참고로 compile은 depreacate 됐기 때문에 사용하면 안 되고 implementation을 쓰라고 나옴. (compile은 api와 마찬가지로 consumer의 (test)compile/runtimeClassPath에 모두 추가되니 사용하지 않는 게 좋다.)
+참고로 compile은 depreacate 됐기 때문에 사용하면 안 되고 implementation을 쓰라고 나와있다. (compile은 api와 마찬가지로 consumer의 (test)compile/runtimeClassPath에 모두 추가되니 사용하지 않는 게 좋다.)
 
 > The compile configuration has been deprecated for dependency declaration. 
 > This will fail with an error in Gradle 7.0. Please use the implementation configuration instead.
@@ -35,7 +35,7 @@ fun DependencyHandler.`compile`(dependencyNotation: Any): Dependency? =
 그럼 implementation은 뭐고 api는 뭘까??
 
 ## implementation
-[implementation](https://docs.gradle.org/current/userguide/java_plugin.html#tab:configurations)으로 의존성을 관리하기 위해서는 [java 플러그인](https://docs.gradle.org/current/userguide/java_plugin.html)을 활성화해야함.
+[implementation](https://docs.gradle.org/current/userguide/java_plugin.html#tab:configurations)으로 의존성을 관리하기 위해서는 [java 플러그인](https://docs.gradle.org/current/userguide/java_plugin.html)을 활성화해야한다.
 
 ```groovy
 plugins {
@@ -43,7 +43,7 @@ plugins {
 }
 ```
 
-멀티 모듈인 경우 아래와 같이 활성화 시켜줘야함. (java는 gradle core 플러그인이기 때문에 plugins 모듈에 별도로 정의 안 하고도 서브 모듈들에게 적용이 가능함.)
+멀티 모듈인 경우 아래와 같이 활성화 시켜줘야한다. (java는 gradle core 플러그인이기 때문에 plugins 모듈에 별도로 정의 안 하고도 서브 모듈들에게 적용이 가능하다.)
 
 ```groovy
 subprojects {
@@ -51,7 +51,7 @@ subprojects {
 }
 ```
 
-build.gradle.kts에서는 kotlin jvm 플러그인만 활성화 시켜주면 됨
+build.gradle.kts에서는 kotlin jvm 플러그인만 활성화 시켜주면 된다.
 
 ```kotlin
 plugins {
@@ -59,7 +59,7 @@ plugins {
 }
 ```
 
-멀티 모듈인 경우 아래와 같이 활성화 시켜줘야함. (kotlin jvm 플러그인은 gradle core 플러그인이 아니기 때문에 plugins 모듈에 별도로 정의 해놔야 서브 모듈들에게 적용이 가능함.)
+멀티 모듈인 경우 아래와 같이 활성화 시켜줘야한다. (kotlin jvm 플러그인은 gradle core 플러그인이 아니기 때문에 plugins 모듈에 별도로 정의 해놔야 서브 모듈들에게 적용이 가능하다.)
 
 ```kotlin
 plugins {
@@ -84,7 +84,7 @@ subprojects {
 실제로 implementation으로 jackson-core 모듈을 추가하고 보면 4가지 클래스패스에 모두 추가된 걸 볼 수 있다.
 
 ## api
-api로 의존성을 관리하기 위해서는 [java-library](https://docs.gradle.org/current/userguide/java_library_plugin.html) 플러그인을 사용해야함.
+api로 의존성을 관리하기 위해서는 [java-library](https://docs.gradle.org/current/userguide/java_library_plugin.html) 플러그인을 사용해야한다.
 
 ```groovy
 plugins {
@@ -92,7 +92,7 @@ plugins {
 }
 ```
 
-멀티 모듈인 경우 아래와 같이 활성화 시켜줘야함. (java-library는 gradle core 플러그인이기 때문에 plugins 모듈에 별도로 정의 안 하고도 서브 모듈들에게 적용이 가능함.)
+멀티 모듈인 경우 아래와 같이 활성화 시켜줘야한다. (java-library는 gradle core 플러그인이기 때문에 plugins 모듈에 별도로 정의 안 하고도 서브 모듈들에게 적용이 가능하다.)
 
 ```groovy
 subprojects {
@@ -100,7 +100,7 @@ subprojects {
 }
 ```
 
-build.gradle.kts에서는 똑같이 kotlin jvm 플러그인만 활성화 시켜주면 됨
+build.gradle.kts에서는 똑같이 kotlin jvm 플러그인만 활성화 시켜주면 된다.
 
 ```groovy
 plugins {
@@ -108,7 +108,7 @@ plugins {
 }
 ```
 
-멀티 모듈인 경우 아래와 같이 활성화 시켜줘야함. (kotlin jvm 플러그인은 gradle core 플러그인이 아니기 때문에 plugins 모듈에 별도로 정의 해놔야 서브 모듈들에게 적용이 가능함.)
+멀티 모듈인 경우 아래와 같이 활성화 시켜줘야한다. (kotlin jvm 플러그인은 gradle core 플러그인이 아니기 때문에 plugins 모듈에 별도로 정의 해놔야 서브 모듈들에게 적용이 가능하다.)
 
 ```kotlin
 plugins {
