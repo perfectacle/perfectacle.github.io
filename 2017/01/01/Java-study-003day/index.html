@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="형변환(캐스팅, Casting)기본형(primitive type)에서 boolean을 제외한 나머지 타입들은 형변환이 가능.역시 자스를 먼저 배우고 나니 자스의 자유로운 형변환이 그리울 때가 있다.또한 기본형과 참조형(reference type)간의 형변환은 불가능하다.또한 실수형을 정수형으로 바꾸면 반올림 하지 않고 소수점 이하를 다 짜른다.왜냐하면">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자">
+<meta property="og:url" content="https://perfectacle.github.io/2017/01/01/Java-study-003day/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="형변환(캐스팅, Casting)기본형(primitive type)에서 boolean을 제외한 나머지 타입들은 형변환이 가능.역시 자스를 먼저 배우고 나니 자스의 자유로운 형변환이 그리울 때가 있다.또한 기본형과 참조형(reference type)간의 형변환은 불가능하다.또한 실수형을 정수형으로 바꾸면 반올림 하지 않고 소수점 이하를 다 짜른다.왜냐하면">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/01/Java-study-003day/thumb.png">
+<meta property="article:published_time" content="2017-01-01T20:00:22.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.279Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="자바의 정석">
+<meta property="article:tag" content="형변환">
+<meta property="article:tag" content="정규화">
+<meta property="article:tag" content="연산자">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/01/01/Java-study-003day/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/01/01/Java-study-003day/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/01/01/Java-study-003day/","path":"2017/01/01/Java-study-003day/","title":"(Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%98%95%EB%B3%80%ED%99%98-%EC%BA%90%EC%8A%A4%ED%8C%85-Casting"><span class="nav-number">1.</span> <span class="nav-text">형변환(캐스팅, Casting)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%AD%EC%A7%84%EC%88%98%EB%A5%BC-2%EC%A7%84%EC%88%98%EB%A1%9C-%EB%B3%B4%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text">십진수를 2진수로 보기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%A0%95%EA%B7%9C%ED%99%94"><span class="nav-number">3.</span> <span class="nav-text">정규화</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%B0%EC%82%B0%EC%9E%90-operator"><span class="nav-number">4.</span> <span class="nav-text">연산자(operator)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%B0%EC%8A%B5%EB%AC%B8%EC%A0%9C-%EC%98%A4%EB%8B%B5"><span class="nav-number">5.</span> <span class="nav-text">연습문제 오답</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/01/01/Java-study-003day/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-01-01 20:00:22" itemprop="dateCreated datePublished" datetime="2017-01-01T20:00:22+00:00">2017-01-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/01/01/Java-study-003day/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/01/Java-study-003day/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/01/01/Java-study-003day/thumb.png" class>
+
+<h2 id="형변환-캐스팅-Casting"><a href="#형변환-캐스팅-Casting" class="headerlink" title="형변환(캐스팅, Casting)"></a>형변환(캐스팅, Casting)</h2><p>기본형(primitive type)에서 boolean을 제외한 나머지 타입들은 형변환이 가능.<br>역시 자스를 먼저 배우고 나니 자스의 자유로운 형변환이 그리울 때가 있다.<br>또한 기본형과 참조형(reference type)간의 형변환은 불가능하다.<br>또한 실수형을 정수형으로 바꾸면 반올림 하지 않고 소수점 이하를 다 짜른다.<br>왜냐하면 정수형에서는 소수점 이하를 표현할 방법이 없기 때문이다.<br>형변환을 할 때 캐스팅 연산자를 써줘야하지만 생략하면 자동으로 컴파일러가 붙여준다.<br>하지만 손실이 발생할 수 있는 경우에는 오류가 발생한다.<br>따라서 손실이 발생하는 경우에는 무조건 캐스팅 연산자를 써줘야한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">char</span> <span class="variable">ch</span> <span class="operator">=</span> <span class="string">&#x27;A&#x27;</span>;</span><br><span class="line">        <span class="type">short</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">255</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">num2</span> <span class="operator">=</span> num;</span><br><span class="line">        num2 = ch;</span><br><span class="line">        <span class="type">long</span> <span class="variable">num3</span> <span class="operator">=</span> <span class="number">12345678781234L</span>;</span><br><span class="line">        <span class="comment">// float은 4byte지만 부동 소수점 형태로 표현되기 때문에 8byte인 long보다 더 넓은 범위를 표현할 수 있다.</span></span><br><span class="line">        <span class="comment">// 하지만 정밀도 때문에 오차가 발생할 수는 있다.</span></span><br><span class="line">        <span class="type">float</span> <span class="variable">num4</span> <span class="operator">=</span> num3;</span><br><span class="line">        <span class="type">double</span> <span class="variable">num5</span> <span class="operator">=</span> num3;</span><br><span class="line">        <span class="comment">// ch와 num은 둘 다 2byte지만 ch는 unsigned short와 같이 부호가 없으므로 표현 범위가 다름.</span></span><br><span class="line">        <span class="comment">// 따라서 서로 손실이 발생하므로 형변환 연산자가 꼭 존재해야함.</span></span><br><span class="line">        ch = (<span class="type">char</span>)num;</span><br><span class="line">        num = (<span class="type">short</span>)ch;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="십진수를-2진수로-보기"><a href="#십진수를-2진수로-보기" class="headerlink" title="십진수를 2진수로 보기"></a>십진수를 2진수로 보기</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> (<span class="type">int</span>)-<span class="number">2.8d</span>;</span><br><span class="line">        <span class="comment">// num = 11111111111111111111111111111110</span></span><br><span class="line">        System.out.println(<span class="string">&quot;num = &quot;</span> + Integer.toBinaryString(num));</span><br><span class="line">        num = (<span class="type">int</span>)<span class="number">2.8d</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;num = &quot;</span> + Integer.toBinaryString(num)); <span class="comment">// num = 10</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="정규화"><a href="#정규화" class="headerlink" title="정규화"></a>정규화</h2><p>정규표현식의 정규는 많이 들어봤는데 그것과는 많이 다른 것이다.<br>기본적으로 부동소수점에 대한 이해를 하고 있어야한다.<br>우선 정의부터 살펴보면  </p>
+<blockquote>
+<p>2진수로 변환된 실수를 저장기 전에 1.xxx x 2<sup>n</sup>의 형태로 변환하는 과정.<br>2진수로 변환된 실수를 정수부에 1만 남기고 소수점에 관한 정보는 2<sup>n</sup>으로 표현한 것.</p>
+</blockquote>
+<p>십진 실수 10.625를 2진 실수로 바꾸면 1010.101이다.<br>2진수로 변환된 실수를 정규화하면 1.010101 x 2<sup>3</sup>가 된다.<br>이를 지수 표기법(Exponential Notation)으로 바꾸면 1.010101e3이 된다.<br>이 정규화된 수를 토대로 IEE754로 표기하여 저장하는 것이다.</p>
+<h2 id="연산자-operator"><a href="#연산자-operator" class="headerlink" title="연산자(operator)"></a>연산자(operator)</h2><ul>
+<li>식(expression)<br>연산자와 피연산자를 조합하여 계산하고자 하는 바를 표현한 것.<br>2+3 등등</li>
+<li>식을 평가(evaluation)하다.<br>식을 계산하여 결과를 얻는 것<br>단 하나의 식을 평가(계산)하면 단 하나의 결과를 얻음.  </li>
+<li>문(statement)<br>식을 프로그램에 포함시키려면 식의 끝에 세미콜론을 붙여 하나의 문으로 만들어야함.<br>2+3; 등등<br>하지만 결과를 얻었지만 쓰이지 않고 사라지기 때문에 무의미함.<br>나중에 사용하기 위해 메모리 상의 공간(변수, 상수)에 저장한 후 꺼내 쓰면 됨.<br>int num &#x3D; 1 + 2;<br>int num2 &#x3D; num * 3;<br>변수 선언 &#x3D; 식; &#x3D;&gt; 하나의 문장.<br>하지만 다른 곳에서도 쓰이지 않을 결과라면 굳이 식을 문으로 바꾸지 않아도 됨.<br>아래와 같이 메소드의 매개변수로 쓰이는 등등의 경우와 같음.<br>System.out.println(2+3);<br>식을 혼자 쓴 게 아니라 문 안에 식이 쓰인 것이다.</li>
+</ul>
+<h2 id="연습문제-오답"><a href="#연습문제-오답" class="headerlink" title="연습문제 오답"></a>연습문제 오답</h2><ul>
+<li><p>char의 형변환!</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">      System.out.println(<span class="string">&#x27;A&#x27;</span> + <span class="string">&#x27;B&#x27;</span>); <span class="comment">// 65 + 66 = 131</span></span><br><span class="line">      System.out.println(<span class="string">&#x27;1&#x27;</span> + <span class="number">2</span>); <span class="comment">// 49 + 2 = 51</span></span><br><span class="line">      System.out.println(<span class="string">&#x27;1&#x27;</span> + <span class="string">&#x27;2&#x27;</span>); <span class="comment">// 49 + 50 = 99</span></span><br><span class="line">      System.out.println(<span class="string">&quot;&quot;</span> + <span class="literal">true</span>); <span class="comment">// &quot;true&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>문자열 + any type → 문자열 + 문자열 → 문자열<br>any type + 문자열 → 문자열 + 문자열 → 문자열</p>
+</li>
+<li><p>System은 키워드가 아니었다!</p>
+</li>
+<li><p>참조형 변수(reference type) 4byte이다!!<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://labofengineer.wordpress.com/2013/07/08/java-%EB%B3%80%EC%88%98%ED%83%80%EC%9E%85/">JAVA 변수타입</a><br>참조형 변수는 null 또는 객체의 주소(4 byte, 0x0~0xffffffff)를 값으로 갖는다.<br>null은 어떤 값도 갖고 있지 않음, 즉 어떠한 객체도 참조하고 있지 않다는 것을 뜻한다.</p>
+</li>
+<li><p>캐스팅 연산자 생략</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">      <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">      <span class="comment">// 표현할 수 있는 범위더라도 int =&gt; 4byte, byte =&gt; 1byte 이므로 캐스팅 연산자 꼭 써줘야함.</span></span><br><span class="line">      <span class="type">byte</span> <span class="variable">num2</span> <span class="operator">=</span> num;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>접근 지정자, 지정 예약어, 메소드<br>접근 지정자 - public, protect, default, private<br>지정 예약어 - this, static, final<br>메소드 - 리턴타입 이름(매개변수) {}<br>지정 예약어 this를 빼고 설명.  </p>
+<ul>
+<li>지정 예약어끼리는 순서 상관 없음 &#x3D;&gt; static final이던 final static이던  </li>
+<li>접근 지정자와 지정 예약어도 순서 상관 없음 &#x3D;&gt; public static이던 static public이던  </li>
+<li>하지만 메소드는 무조건 접근 지정자와 지정 예약어 뒤에 와야함.  </li>
+<li>접근 지정자를 생략하면 default 접근 지정자가 적용됨.  </li>
+<li>지정 예약어는 생략 가능하며 생략해도 기본값이 없음.</li>
+<li>메소드에서는 매개변수를 제외한 모든 것은 생략 불가능. 즉 기본 값이 없음.</li>
+</ul>
+</li>
+<li><p>변수의 기본값  </p>
+<ul>
+<li>참조형 - null  </li>
+<li>기본형  <ul>
+<li>boolean - false  </li>
+<li>char - ‘\u0000’  </li>
+<li>byte - 0  </li>
+<li>short - 0  </li>
+<li>int - 0  </li>
+<li>long - 0L or 0l  </li>
+<li>float - 0.0F or 0.0f  </li>
+<li>double - 0.0 or 0.0D or 0.0d<br>byte, short는 컴파일 할 때 자동으로 int 타입으로 바꿈.<br>long에 접미어 L을 붙이는 이유는 int와 다른 메모리 공간을 차지하게 하기 위함.<br>float도 double과 차별을 두기 위해 접미어를 붙이게 끔 설계됨.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%A0%95%EC%84%9D/" rel="tag"># 자바의 정석</a>
+              <a href="/tags/%ED%98%95%EB%B3%80%ED%99%98/" rel="tag"># 형변환</a>
+              <a href="/tags/%EC%A0%95%EA%B7%9C%ED%99%94/" rel="tag"># 정규화</a>
+              <a href="/tags/%EC%97%B0%EC%82%B0%EC%9E%90/" rel="tag"># 연산자</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/12/31/Java-study-002day/" rel="prev" title="(Java) 자바의 정석 3판 002일차 - char의 형변환과 실수형(부동 소수점)">
+                  <i class="fa fa-chevron-left"></i> (Java) 자바의 정석 3판 002일차 - char의 형변환과 실수형(부동 소수점)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/01/02/Java-study-004day/" rel="next" title="(Java) 자바의 정석 3판 004일차 - 연산자(우선 순위 및 결합 규칙), switch 문">
+                  (Java) 자바의 정석 3판 004일차 - 연산자(우선 순위 및 결합 규칙), switch 문 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="어제는 친구들이랑 노느라 공부를 조금 밖에 못 했다.그만큼 오늘은 좀 빡시게 달려야겠다.   재귀함수(recursive function)함수 내에서 자기 자신을 호출하는 것이다.배열의 요소를 모두 더하는 메소드는 아래와 같이 작성이 가능하다.   1234567891011121314class test &amp;#123;    static int sumArr(in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Java) 자바의 정석 3판 009일차 - 재귀함수, 클래스 설계, 오버로딩, 가변 인자">
+<meta property="og:url" content="https://perfectacle.github.io/2017/02/11/Java-study-009day/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="어제는 친구들이랑 노느라 공부를 조금 밖에 못 했다.그만큼 오늘은 좀 빡시게 달려야겠다.   재귀함수(recursive function)함수 내에서 자기 자신을 호출하는 것이다.배열의 요소를 모두 더하는 메소드는 아래와 같이 작성이 가능하다.   1234567891011121314class test &amp;#123;    static int sumArr(in">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/02/11/Java-study-009day/thumb.png">
+<meta property="article:published_time" content="2017-02-11T13:07:43.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.283Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="자바의 정석">
+<meta property="article:tag" content="OOP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/02/11/Java-study-009day/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/02/11/Java-study-009day/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/02/11/Java-study-009day/","path":"2017/02/11/Java-study-009day/","title":"(Java) 자바의 정석 3판 009일차 - 재귀함수, 클래스 설계, 오버로딩, 가변 인자"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Java) 자바의 정석 3판 009일차 - 재귀함수, 클래스 설계, 오버로딩, 가변 인자 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9E%AC%EA%B7%80%ED%95%A8%EC%88%98-recursive-function"><span class="nav-number">1.</span> <span class="nav-text">재귀함수(recursive function)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%84%A4%EA%B3%84%ED%95%98%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text">클래스 설계하기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%A9%A4%EB%B2%84-%EB%B3%80%EC%88%98-%ED%81%B4%EB%9E%98%EC%8A%A4-%EB%B3%80%EC%88%98-amp-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4-%EB%B3%80%EC%88%98-%EC%84%A4%EA%B3%84%ED%95%98%EA%B8%B0"><span class="nav-number">2.1.</span> <span class="nav-text">멤버 변수(클래스 변수 &amp; 인스턴스 변수) 설계하기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%A9%94%EC%86%8C%EB%93%9C-%EB%A9%A4%EB%B2%84-%ED%95%A8%EC%88%98-%ED%81%B4%EB%9E%98%EC%8A%A4-%EB%A9%94%EC%86%8C%EB%93%9C-amp-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4-%EB%A9%94%EC%86%8C%EB%93%9C-%EC%84%A4%EA%B3%84%ED%95%98%EA%B8%B0"><span class="nav-number">2.2.</span> <span class="nav-text">메소드(멤버 함수, 클래스 메소드 &amp; 인스턴스 메소드) 설계하기</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A9%94%EC%86%8C%EB%93%9C-%EC%98%A4%EB%B2%84%EB%A1%9C%EB%94%A9-overloading-%EA%B3%BC-%EC%98%A4%EB%B2%84%EB%9D%BC%EC%9D%B4%EB%94%A9-overriding"><span class="nav-number">3.</span> <span class="nav-text">메소드 오버로딩(overloading)과 오버라이딩(overriding)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B0%80%EB%B3%80-%EC%9D%B8%EC%9E%90-variable-arguments"><span class="nav-number">4.</span> <span class="nav-text">가변 인자(variable arguments)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/02/11/Java-study-009day/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Java) 자바의 정석 3판 009일차 - 재귀함수, 클래스 설계, 오버로딩, 가변 인자 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Java) 자바의 정석 3판 009일차 - 재귀함수, 클래스 설계, 오버로딩, 가변 인자
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-02-11 13:07:43" itemprop="dateCreated datePublished" datetime="2017-02-11T13:07:43+00:00">2017-02-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/02/11/Java-study-009day/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/11/Java-study-009day/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/02/11/Java-study-009day/thumb.png" class>
+
+<p>어제는 친구들이랑 노느라 공부를 조금 밖에 못 했다.<br>그만큼 오늘은 좀 빡시게 달려야겠다.  </p>
+<h2 id="재귀함수-recursive-function"><a href="#재귀함수-recursive-function" class="headerlink" title="재귀함수(recursive function)"></a>재귀함수(recursive function)</h2><p>함수 내에서 자기 자신을 호출하는 것이다.<br>배열의 요소를 모두 더하는 메소드는 아래와 같이 작성이 가능하다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">sumArr</span><span class="params">(<span class="type">int</span>[] arr)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> num : arr) &#123;</span><br><span class="line">            sum += num;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> arr[] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span> , <span class="number">8</span>, <span class="number">9</span>&#125;;</span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> sumArr(arr);</span><br><span class="line">        System.out.println(sum);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>이걸 재귀함수로 바꾸면 아래와 같다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">sumArr</span><span class="params">(<span class="type">int</span>[] arr, <span class="type">int</span> i)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(i &lt; arr.length) &#123; <span class="comment">// 재귀함수를 호출하는 조건</span></span><br><span class="line">            <span class="keyword">return</span> arr[i] + sumArr(arr, i+<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 재귀함수를 탈출하는 조건</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> arr[] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span> , <span class="number">8</span>, <span class="number">9</span>&#125;;</span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> sumArr(arr, <span class="number">0</span>);</span><br><span class="line">        System.out.println(sum);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>위에서 보듯이 재귀 함수에서는 두 가지 조건이 중요하다.  </p>
+<ol>
+<li>호출 조건<br>이게 없으면 재귀함수를 호출하지 않을 것이고, 재귀함수라 불릴 수가 없다.  </li>
+<li>탈출 조건<br>이게 없으면 stack에 무한정 재귀함수가 쌓이게 될 것이다.<br>이렇게 되면 가용 가능한 메모리 영역을 넘어설 것이다.<br>이 때 stack overflow가 발생하는 것이다.<br>아래와 같이 말이다.  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// Exception in thread &quot;main&quot; java.lang.StackOverflowError</span></span><br><span class="line">        main(<span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+for문에 비해 재귀함수는 stack의 많은 공간을 차지하게 된다.<br>또한 매개 변수 복사 및 복귀할 주소 저장 등등의 추가적인 작업이 발생해서 더 느리다.<br>그럼에도 불구하고 재귀함수가 존재하는 이유는 논리적인 간결함이 있기 때문이다.<br>즉 가독성이 좋아져서 유지 보수 함에 있어서 한결 용이해진다는 소리이다.<br>반복문을 썼을 때 코드가 복잡해져서 한 눈에 파악하기 어려운 경우,<br>재귀함수를 한번 고려해보면 좋을 것 같다.<br>하지만 재귀함수는 퍼포먼스가 안 좋아지고, 엄청난 반복을 통해 호출하는 경우에는<br>stack overflow 등등 고려해야할 내용이 있다는 점은 유념해서 써야한다.</li>
+</ol>
+<h2 id="클래스-설계하기"><a href="#클래스-설계하기" class="headerlink" title="클래스 설계하기"></a>클래스 설계하기</h2><h3 id="멤버-변수-클래스-변수-amp-인스턴스-변수-설계하기"><a href="#멤버-변수-클래스-변수-amp-인스턴스-변수-설계하기" class="headerlink" title="멤버 변수(클래스 변수 &amp; 인스턴스 변수) 설계하기"></a>멤버 변수(클래스 변수 &amp; 인스턴스 변수) 설계하기</h3><ol>
+<li>모든 인스턴스에 공통적으로 사용해야하는 변수에는 static 키워드를 붙여 클래스 변수로 만들어준다.<br>인스턴스가 생성되기 전에 프로그램이 시작되면 자동적으로 메모리의 Method Area(Data) 영역에 적재된다.<br>모든 인스턴스가 동일한 주소를 참조하므로 값을 공유하게 된다.<br>공통적으로 사용하려면 값을 공유해야하므로 클래스 변수로 만들어줘야한다.<br>프로그램이 종료될 때까지 메모리에 계속 적재돼있는다.<br><code>클래스 이름.변수</code>와 같이 사용한다.  </li>
+<li>인스턴스 마다 따로 사용해야하는 변수에는 static을 붙이지 않아 인스턴스 변수로 만들어준다.<br>프로그램이 시작되어도 메모리에 자동적으로 적재되지 않는다.<br>new 연산자와 생성자 호출로 인스턴스를 생성해야 비로소 메모리의 Heap 영역에 적재된다.<br>각각의 인스턴스가 다른 주소를 참조하므로 개별적으로 값을 가지게 된다.<br>참조 관계가 끊기는 순간 가비지 컬렉터가 메모리에서 자동적으로 회수해간다.(해제한다.)<br><code>인스턴스 이름.변수</code>와 같이 사용한다.</li>
+</ol>
+<h3 id="메소드-멤버-함수-클래스-메소드-amp-인스턴스-메소드-설계하기"><a href="#메소드-멤버-함수-클래스-메소드-amp-인스턴스-메소드-설계하기" class="headerlink" title="메소드(멤버 함수, 클래스 메소드 &amp; 인스턴스 메소드) 설계하기"></a>메소드(멤버 함수, 클래스 메소드 &amp; 인스턴스 메소드) 설계하기</h3><ol>
+<li>인스턴스 변수를 사용하지 않는 메소드는 static 키워드를 붙여 클래스 메소드로 만드는 게 일반적이다.<br>인스턴스가 생성되기 전에 프로그램이 시작되면 자동적으로 메모리의 Method Area(Data) 영역에 적재된다.<br>하지만 인스턴스 변수가 메소드 내에 존재한다면,<br>존재하지 않는 변수(메모리 공간 상에 할당되지 않은 변수)를<br>참조해야하는 경우가 생기게 되므로 오류를 유발하게 된다.<br>또한 static 키워드를 붙이지 않으면 실행 시 호출되어야할<br>메소드를 찾는 과정이 추가적으로 필요해 퍼포먼스 적으로 안 좋다.<br>프로그램이 종료될 때까지 메모리에 계속 적재돼있는다.<br><code>클래스 이름.메소드()</code>와 같이 사용한다.  </li>
+<li>인스턴스 변수를 사용하는 경우에는 static 키워드를 붙이지 않아 인스턴스 메소드로 만들어야한다.<br>프로그램이 시작되어도 메모리에 자동적으로 적재되지 않는다.<br>생성자 함수를 호출해서 인스턴스를 생성해야 비로소 메모리의 Heap 영역에 적재된다.<br>인스턴스 변수는 인스턴스가 생성되어야지만 메모리에 적재되고, 비로소 사용할 수 있게 된다.<br>이런 인스턴스 변수를 쓰려면 인스턴스가 생성된 이후이므로,<br>메소드도 인스턴스 변수가 생성된 이후에 사용이 가능해지는 것이므로<br>클래스 메소드(인스턴스 변수가 생성되기 이전에 생성됨)로 선언하면 안된다.<br>참조 관계가 끊기는 순간 가비지 컬렉터가 메모리에서 자동적으로 회수해간다.(해제한다.)<br><code>인스턴스 이름.메소드()</code>와 같이 사용한다.  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="comment">// 멤버 변수 중 인스턴스 변수</span></span><br><span class="line">    <span class="type">int</span> a=<span class="number">3</span>, b=<span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 인스턴스 변수를 쓰므로 인스턴스 메소드로 만들어줌.</span></span><br><span class="line">    <span class="type">int</span> <span class="title function_">add</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> a+b; <span class="comment">// 인스턴스 변수</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 인스턴스 변수를 쓰지 않으므로 클래스 메소드로 만들어줌.</span></span><br><span class="line">    <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> &#123; <span class="comment">// 매개 변수(Parameter) a, b</span></span><br><span class="line">        <span class="keyword">return</span> a + b; <span class="comment">// 지역 변수</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 클래스 변수(변수, 메소드)는 프로그램이 실행되는 순간 자동적으로 메모리의 Method Area(Data)에 할당된다.</span></span><br><span class="line">        <span class="comment">// 같은 클래스 내에 존재하는 클래스 변수(변수, 메소드)는 클래스 이름 생략이 가능하다.</span></span><br><span class="line">        System.out.println(add(<span class="number">1</span>, <span class="number">2</span>)); <span class="comment">// 3, 인자(Argument)로 1과 2를 넘겨준 클래스 메소드</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 인스턴스 변수(변수, 메소드)는 생성자를 통해 인스턴스를 생성하기 전까지 메모리의 Heap에 할당되지 않는다.</span></span><br><span class="line">        <span class="type">test</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">test</span>();</span><br><span class="line">        System.out.println(t.add()); <span class="comment">// 5, 인스턴스 변수인 t.a와 t.b를 이용한 인스턴스 메소드</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="comment">// 멤버 변수 중 인스턴스 변수</span></span><br><span class="line">    <span class="type">int</span> a=<span class="number">3</span>, b=<span class="number">2</span>;</span><br><span class="line">    <span class="comment">// static int c = a; // 에러</span></span><br><span class="line">    <span class="comment">// static 컨텍스트에서는 인스턴스 멤버를 사용하려면 먼저 인스턴스를 생성해줘야함.</span></span><br><span class="line">    <span class="keyword">static</span> <span class="type">int</span> <span class="variable">c</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">test</span>().a;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="title function_">add</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 인스턴스 컨텍스트에서는 따로 처리해주지 않아도 됨.</span></span><br><span class="line">        <span class="comment">// 인스턴스 멤버가 존재한다는 것은</span></span><br><span class="line">        <span class="comment">// 클래스 멤버도 존재한다는 가정이기 때문.</span></span><br><span class="line">        <span class="keyword">return</span> a+b+c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">add2</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// return c + a + b; // 에러</span></span><br><span class="line">        <span class="comment">// static 컨텍스트에서는 인스턴스 멤버를 사용하려면 먼저 인스턴스를 생성해줘야함.</span></span><br><span class="line">        <span class="comment">// 클래스 멤버가 존재해도 인스턴스 멤버가 존재하지 않을 수도 있기 때문임.</span></span><br><span class="line">        <span class="comment">// 이럴 경우에는 클래스 메소드가 아닌 인스턴스 메소드를 권장하는 바임.</span></span><br><span class="line">        <span class="type">test</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">test</span>();</span><br><span class="line">        <span class="keyword">return</span> t.a + t.b + c;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="메소드-오버로딩-overloading-과-오버라이딩-overriding"><a href="#메소드-오버로딩-overloading-과-오버라이딩-overriding" class="headerlink" title="메소드 오버로딩(overloading)과 오버라이딩(overriding)"></a>메소드 오버로딩(overloading)과 오버라이딩(overriding)</h2><p>두 개가 너무 헷갈려서 간단하게 정리한다.  </p>
+<ol>
+<li>오버 라이딩<br>ride: 타다<br>부모 클래스로 올라<code>탄다</code>라는 생각으로 외웠다.<br>상속받은 부모 클래스의 메소드를 <code>재정의</code>하는 것.  </li>
+<li>오버 로딩<br>다형성, 메소드 이름이 똑같아도<br><code>매개 변수의 타입</code>, <code>매개 변수의 갯수</code>에 따라<br>호출되는 메소드가 다른 것을 의미.<br><code>매개 변수의 이름</code>과 <code>반환 타입</code>은 중요치 않다.<br>load: 적재하다<br>원래는 하나의 메소드 이름에는 하나의 메소드만 적재해야하는데<br>그걸 초과한 하나의 메소드 이름에 여러 메소드를 적재하기 때문에<br>이런 이름이 붙은 게 아닐까 싶다.<br>이는 동적 타입 언어인 JS에는 없는 기능이다.</li>
+</ol>
+<h2 id="가변-인자-variable-arguments"><a href="#가변-인자-variable-arguments" class="headerlink" title="가변 인자(variable arguments)"></a>가변 인자(variable arguments)</h2><p>정적 타입 언어인 Java에서는 매개 변수의 갯수가 고정적이었다.<br>동적 타입 언어인 JS를 먼저 접한 나로선 매우 빡빡하다고 생각이 들었다.<br>하지만 Java5부터는 동적으로 지정해줄 수 있게 됐다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> String <span class="title function_">concatenate</span><span class="params">(String str, String str2)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> str + str2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> String <span class="title function_">concatenate</span><span class="params">(String str, String str2, String str3)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> str + str2 + str3;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> String <span class="title function_">concatenate</span><span class="params">(String str, String str2, String str3, String str4)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> str + str2 + str3 + str4;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 매개변수가 n개인 메소드를 계속 오버로딩할 것인가?</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>가변인자를 쓰면 아래와 같이 바꿀 수 있다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> String <span class="title function_">concatenate</span><span class="params">(String ...str)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(String arg : str) &#123;</span><br><span class="line">            result += arg;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>가변인자는 내부적으로 배열을 생성한다.<br>이런 비효율이 존재하므로 꼭 필요한 경우에만 가변 인자를 사용해야한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="comment">// 가변 인자는 제일 나중에 선언해야 한다.</span></span><br><span class="line">    <span class="keyword">static</span> String <span class="title function_">concatenate</span><span class="params">(String ...str, <span class="type">int</span> num)</span> &#123; <span class="comment">// 에러</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(String arg : str) &#123;</span><br><span class="line">            result += arg;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> String <span class="title function_">concatenate</span><span class="params">(String string, String... str)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(String arg : str) &#123;</span><br><span class="line">            result += arg;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> String <span class="title function_">concatenate</span><span class="params">(String... str)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(String arg : str) &#123;</span><br><span class="line">            result += arg;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// String concatenate(String string, String... str)</span></span><br><span class="line">        <span class="comment">// String concatenate(String... str)</span></span><br><span class="line">        <span class="comment">// 둘 중에 뭘 호출해야할지 모르므로 컴파일 에러</span></span><br><span class="line">        System.out.println(concatenate(<span class="string">&quot;2&quot;</span>, <span class="string">&quot;aass&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%A0%95%EC%84%9D/" rel="tag"># 자바의 정석</a>
+              <a href="/tags/OOP/" rel="tag"># OOP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/02/10/Java-study-008day/" rel="prev" title="(Java) 자바의 정석 3판 008일차 - JVM의 메모리 구조">
+                  <i class="fa fa-chevron-left"></i> (Java) 자바의 정석 3판 008일차 - JVM의 메모리 구조
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/02/11/blahblah01/" rel="next" title="양 보다는 꾸준히">
+                  양 보다는 꾸준히 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

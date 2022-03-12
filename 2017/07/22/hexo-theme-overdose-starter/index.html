@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="깃헙 저장소로 바로가기 만든 계기기본적으로 헥소로 블로그 테마를 얹히는 것은 크게 어렵지 않다.하지만 적용한 테마를 깃헙에 올리고 다른 컴퓨터에서 다운받으려고 하면 참담한 결과를 맞이하게 된다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(자작) Hexo theme overdose starter">
+<meta property="og:url" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="깃헙 저장소로 바로가기 만든 계기기본적으로 헥소로 블로그 테마를 얹히는 것은 크게 어렵지 않다.하지만 적용한 테마를 깃헙에 올리고 다른 컴퓨터에서 다운받으려고 하면 참담한 결과를 맞이하게 된다.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/03.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/04.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/05.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/06.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/07.png">
+<meta property="article:published_time" content="2017-07-22T09:58:01.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.651Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="blog">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="starter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/","path":"2017/07/22/hexo-theme-overdose-starter/","title":"(자작) Hexo theme overdose starter"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(자작) Hexo theme overdose starter | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A7%8C%EB%93%A0-%EA%B3%84%EA%B8%B0"><span class="nav-number">1.</span> <span class="nav-text">만든 계기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#overdose-%ED%85%8C%EB%A7%88%EC%9D%98-%EB%AC%B8%EC%A0%9C%EC%A0%90"><span class="nav-number">1.1.</span> <span class="nav-text">overdose 테마의 문제점</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B7%B8%EB%9E%98%EC%84%9C-%EC%96%B4%EB%96%BB%EA%B2%8C-%ED%95%B4%EA%B2%B0%ED%96%88%EB%82%98"><span class="nav-number">2.</span> <span class="nav-text">그래서 어떻게 해결했나?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B6%94%EA%B0%80%EB%90%9C-%EC%82%AC%ED%95%AD"><span class="nav-number">3.</span> <span class="nav-text">추가된 사항</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%82%A8%EC%9D%80-%EA%B3%BC%EC%A0%9C"><span class="nav-number">4.</span> <span class="nav-text">남은 과제</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/07/22/hexo-theme-overdose-starter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(자작) Hexo theme overdose starter | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (자작) Hexo theme overdose starter
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-07-22 09:58:01" itemprop="dateCreated datePublished" datetime="2017-07-22T09:58:01+00:00">2017-07-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/%EC%9E%90%EC%9E%91/" itemprop="url" rel="index"><span itemprop="name">자작</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/07/22/hexo-theme-overdose-starter/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/22/hexo-theme-overdose-starter/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/07/22/hexo-theme-overdose-starter/thumb.png" class title="이 테마에 중독될지도 모르니 주의 해야한다!">  
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/perfectacle/hexo-theme-overdose-starter">깃헙 저장소로 바로가기</a></p>
+<h2 id="만든-계기"><a href="#만든-계기" class="headerlink" title="만든 계기"></a>만든 계기</h2><p>기본적으로 헥소로 블로그 테마를 얹히는 것은 크게 어렵지 않다.<br>하지만 적용한 테마를 깃헙에 올리고 다른 컴퓨터에서 다운받으려고 하면 참담한 결과를 맞이하게 된다.  </p>
+<img src="/2017/07/22/hexo-theme-overdose-starter/01.png" class title="내가 여태까지 커스터마이징 한 테마 어디갔어!?">  
+<p>이유는 다음 스크린샷을 보면 알게 된다.  </p>
+<img src="/2017/07/22/hexo-theme-overdose-starter/02.png" class title="우리가 관리하는 블로그 프로젝트 안에 테마 프로젝트가 또 git으로 관리되고 있기 때문이다.">  
+<p>이러한 문제점은 모든 테마에서 발생하고 있으며 .git 폴더를 삭제하면 해결되는 문제이다.<br>하지만 이미 컴퓨터를 포맷한 이후라면 여태까지 커스터마이징한 내역을 복구가 불가능할 것이다. (지못미 ㅠㅠ)<br>물론 .gitignore도 삭제해야 우리가 여태까지 테마를 커스터마이징한 설정 파일인 _config.yml까지 형상관리가 가능하게 된다.  </p>
+<h3 id="overdose-테마의-문제점"><a href="#overdose-테마의-문제점" class="headerlink" title="overdose 테마의 문제점"></a>overdose 테마의 문제점</h3><p>일단 한국인이 만들었고, 테마도 깔끔하다는 점은 굉장히 높게 평가할만 하다.<br>하지만 다음과 같은 문제점이 존재한다.  </p>
+<p><strong>overdose에서 사용하는 패키지 중에 Node 8을 지원하지 않는 패키지가 있는데 명시돼있지 않다! (Node 7 버전 이하만 사용 가능한 테마이다.)</strong></p>
+<p>또한 테마를 설치하고 테마의 디렉토리로 이동해서 항상 아래 명령어를 입력해주어야한다.(<a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/HyunSeob/hexo-theme-overdose/blob/master/package.json">packge.json</a> 참조)  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run <span class="built_in">clone</span></span><br></pre></td></tr></table></figure>
+<p>해당 명령어는 다음과 같은 역할을 한다.  </p>
+<ol>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spoqa/spoqa-han-sans">https://github.com/spoqa/spoqa-han-sans</a> 저장소를 source&#x2F;libs&#x2F;spoqa-han-sans 폴더로 클론한다.<br>이 과정이 제일 문제가 많다. 해당 저장소를 가보면 Original과 VFB_FILES 디렉토리를 보면 폰트 개발자나 관심있을 법한 폰트 관련한 파일들이 존재한다.<br>우리에게 필요한 것은 웹폰트와 css 파일이 전부인데 쓸 데 없는 파일까지 클론을 받게 되는 것이다.<br>뭐 이게 무슨 대수냐고 볼 수도 있는데 두 디렉토리의 용량이 각각 238MiB와 195MiB에 달한다.<br>테마의 국제화를 겨냥한 것인지 일본어 폰트까지 제공해주는 테마에서 이렇게 큰 용량은 인터넷 속도가 빠른 한국에서도 부담이 될 수 밖에 없는 용량이다.  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hyunseob/noto-sans-kr">https://github.com/hyunseob/noto-sans-kr</a> 저장소를 source&#x2F;libs&#x2F;noto-sans-kr 폴더로 클론한다.<br>이 과정에서는 2MiB 정도의 데이터만 다운받기 때문에 큰 시간은 소요되지 않는다.</li>
+</ol>
+<p>하지만 위 과정에도 역시나 문제는 존재한다.  </p>
+<img src="/2017/07/22/hexo-theme-overdose-starter/03.png" class title="내 폰트 어디갔어?!">  
+<p>이유는 바로 클론을 받았기 때문에 해당 디렉토리 내에도 .git 디렉토리가 존재한다.<br>따라서 .git 디렉토리를 지워주고 다시 올려야 나중에 클론할 때도 폰트 파일까지 정상적으로 받아오게 된다.<br><del>물론 폰트파일만 400MiB가 넘을테지만…</del></p>
+<p>아마 최신의 폰트를 제공하고자 해당 저장소의 내용을 내포하고 있는 게 아니라 클론시키게 하다보니 이런 문제점이 발생하는 것 같다.<br>하지만 해당 폰트는 CJK(중국, 일본, 한국) 계열에서나 쓸 법한 폰트지 그 이외의 국가에서는 사용하지 않을 법 하므로 필수적으로 설치하지 않게 한 것은 높은 점수를 줄만하다.</p>
+<h2 id="그래서-어떻게-해결했나"><a href="#그래서-어떻게-해결했나" class="headerlink" title="그래서 어떻게 해결했나?"></a>그래서 어떻게 해결했나?</h2><ol>
+<li>overdose 테마가 저장소에 올라가지 않던 문제<br>테마를 커스터마이징한 내역을 내포하게 끔 하다보니 내가 작업한 현 시점의 overdose 최신 테마를 stater 저장소에 추가하였다.<br>v0.2.8이 최신이지만, 내가 업데이트하지 않는 한 해당 테마의 최신버전을 따라서 업데이트가 되긴 힘들 것이다.  </li>
+<li>spoqa-han-sans 폰트의 용량이 400MiB가 넘어가던 문제<br>이건 최소한으로 용량을 줄이고자 웹폰트(*.ttf 제외, 용량이 커서…)와 css 파일만 따로 뺀 저장소를 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/perfectacle/spoqa-han-sans-kr">한국어</a>, <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/perfectacle/spoqa-han-sans-jp">일본어</a> 버전으로 만들었다.<br>이것도 내가 spoqa-han-sans의 업데이트에 발맞춰 갱신하지 않는 이상은 해당 버전과 발맞춰 따라가기가 힘들 것이다.  </li>
+<li>설치한 폰트가 저장소에 올라가지 않던 문제<br>이 문제는 클론 받는 대신에 그냥 저장소 자체에 폰트 파일을 내장하면 되지만 그렇게 되면 두 가지 문제점이 존재한다.  </li>
+<li>폰트를 최신 버전이 아닌 내가 저장소에 추가한 시점의 폰트만 사용이 가능하다. (그렇다고 해서 내가 폰트 파일을 계속 업데이트 할 지는 모르겠지만…)  </li>
+<li>CJK 계열이 아닌 다른 국가에서도 해당 폰트를 필수로 설치해야한다. (용량이 20MiB에 달한다. 일어만 16MiB…)</li>
+</ol>
+<p>따라서 해당 문제는 클론을 받되 해당 디렉토리의 .git을 삭제하는 단계를 거치도록 하였다.<br>물론 명령어로 해결하면 되지만, 윈도우 유저와 Mac 폴더 삭제부터 명령어 차이가 나기 때문에(npm scripts에서 구분은 불가능한 걸로 알고 있다.)<br>node에서 지우도록 rm-git.js라는 파일을 만들었다. 클론이 끝난 이 후에 이 파일을 실행하게 된다.  </p>
+<p>또한 폰트 설치 옵션을 다음과 같이 세분화하였다.<br>왜냐하면 noto-sans-kr이나 spoqa-han-sans-kr은 각각 2MiB 남짓이라 크게 부담되지 않을 수 있는데,<br>spoqa-han-sans-jp는 한자 때문인지 16MiB에 달해 부담이 될만한 용량이라 각각 나눠놨다.  </p>
+<ol>
+<li>noto-sans-kr</li>
+<li>spoqa-han-sans-kr</li>
+<li>spoqa-han-sans-jp</li>
+<li>한국어 폰트(noto-sans-kr, spoqa-han-sans-kr),</li>
+<li>Spoqa 폰트(spoqa-han-sans-kr, spoqa-han-sans-jp),</li>
+<li>모든 폰트(noto-sans-kr, spoqa-han-sans-kr, spoqa-han-sans-jp)</li>
+</ol>
+<h2 id="추가된-사항"><a href="#추가된-사항" class="headerlink" title="추가된 사항"></a>추가된 사항</h2><ul>
+<li>정적인 html 파일들만 버전관리가 되는 문제  <img src="/2017/07/22/hexo-theme-overdose-starter/04.png" class title="읭? 내가 md로 작성한 포스트 파일은 어디로...?">  
+기존 헥소 블로그에는 위와 같은 고질적인 문제가 존재한다.<br>따라서 나는 이러한 문제를 해결하고자 과거에는 md나 기타 파일들을 관리하는 저장소를 따로 팠었는데 그냥 브랜치를 하나 파서 하나의 저장소에서 관리하게끔 하였다.<br>그리고 새로 만든 브랜치를 default 브랜치로 정해놓으면 더 편하다.    <img src="/2017/07/22/hexo-theme-overdose-starter/05.png" class title="gh-pages라는 브랜치를 새로 파서 거기서 기타 파일들을 버전관리">  </li>
+<li>포트폴리오를 블로그 위에 얹기<br>원래 깃헙 페이지는 블로그가 메인이 아니라 정적 페이지를 서비스하는 게 메인인 것으로 알고 있다. (아닌가…?)<br>그럼 블로그 위에 포트폴리오도 얹을 수 있다는 발상이 떠오르게 된다.  <img src="/2017/07/22/hexo-theme-overdose-starter/06.png" class title="&#x2F;source&#x2F;_static 디렉토리 안에 포트폴리오들을 얹으면 된다.">  
+물론 포트폴리오는 웹서버나 DB를 사용하지 않는 동적인 페이지만 가능하다. (예를 들면 홈페이지나 웹 어플리케이션)<br>이 디렉토리에 있는 파일들은 아래와 같이 접근이 가능하다.  <img src="/2017/07/22/hexo-theme-overdose-starter/07.png" class title="물론 자신의 깃헙 페이지에서도 확인이 가능하다.">  </li>
+<li>SEO 친화적으로 만들기(검색 엔진에 노출 잘 되게 만들기)</li>
+</ul>
+<ol>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/ludoviclefevre/hexo-generator-seo-friendly-sitemap">hexo-generator-seo-friendly-sitemap</a>을 이용하여 사이트맵 만들기.  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hexojs/hexo-generator-feed">hexo-generator-feed</a>을 이용하여 RSS Feed를 만들기.  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/liuzc/hexo-autonofollow">hexo-autonofollow</a>를 이용하여 크롤러를 위해 외부 링크에는 nofollow 속성이 달리게 끔 하기.  </li>
+<li>대표 URL(선호 URL)을 지정해주는 canonical 속성 추가하기.</li>
+</ol>
+<h2 id="남은-과제"><a href="#남은-과제" class="headerlink" title="남은 과제"></a>남은 과제</h2><p>overdose 테마의 컨트리뷰터가 되어 이렇게 스타터 저장소를 만들 게 아니라<br>근본적인 문제를 해결하고자 해당 저장소에 pull request를 몇 개 날려봐야겠다.  </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/blog/" rel="tag"># blog</a>
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/starter/" rel="tag"># starter</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/07/18/js-count-char-word/" rel="prev" title="(JS) 문자, 단어, 동음이의어 갯수 세기">
+                  <i class="fa fa-chevron-left"></i> (JS) 문자, 단어, 동음이의어 갯수 세기
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/08/01/Java-study-011day/" rel="next" title="(Java) 자바의 정석 3판 011일차 - 상속과 포함, 오버라이딩, super, 패키지와 클래스, 접근 지정자">
+                  (Java) 자바의 정석 3판 011일차 - 상속과 포함, 오버라이딩, super, 패키지와 클래스, 접근 지정자 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

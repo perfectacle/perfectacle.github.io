@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="perf-chk (Performance Check)왜 perf-chk를 만들었나?나는 코드 실행 시간에 굉장히 관심이 많다.따라서 코드 실행 시간 측정을 위해 테스트를 종종 해보곤 한다.그럴 때 아래와 같은 코드를 사용하였다.   1234567891011const iterations &#x3D; 10000000;console.time(&quot;functio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(자작) perf-chk (Node.js 애플리케이션)">
+<meta property="og:url" content="https://perfectacle.github.io/2017/03/01/perf-chk/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="perf-chk (Performance Check)왜 perf-chk를 만들었나?나는 코드 실행 시간에 굉장히 관심이 많다.따라서 코드 실행 시간 측정을 위해 테스트를 종종 해보곤 한다.그럴 때 아래와 같은 코드를 사용하였다.   1234567891011const iterations &#x3D; 10000000;console.time(&quot;functio">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/03/01/perf-chk/thumb.png">
+<meta property="article:published_time" content="2017-03-01T16:24:02.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.103Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="npm">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="Performance">
+<meta property="article:tag" content="CLI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/03/01/perf-chk/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/03/01/perf-chk/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/03/01/perf-chk/","path":"2017/03/01/perf-chk/","title":"(자작) perf-chk (Node.js 애플리케이션)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(자작) perf-chk (Node.js 애플리케이션) | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#perf-chk-Performance-Check"><span class="nav-number">1.</span> <span class="nav-text">perf-chk (Performance Check)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%99%9C-perf-chk%EB%A5%BC-%EB%A7%8C%EB%93%A4%EC%97%88%EB%82%98"><span class="nav-number">1.1.</span> <span class="nav-text">왜 perf-chk를 만들었나?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#perf-chk%EB%8A%94-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80"><span class="nav-number">1.2.</span> <span class="nav-text">perf-chk는 무엇인가?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0"><span class="nav-number">1.3.</span> <span class="nav-text">시작하기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%84%A4%EC%B9%98"><span class="nav-number">1.3.1.</span> <span class="nav-text">설치</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%82%AC%EC%9A%A9%EB%B2%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">사용법</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%ED%85%8C%EC%8A%A4%ED%8A%B8-%ED%95%A0-%EC%BD%94%EB%93%9C%EB%A5%BC-%EC%83%9D%EC%84%B1%ED%95%98%EC%9E%90-%EB%AA%A8%EB%93%88"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">1. 테스트 할 코드를 생성하자. (모듈)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0"><span class="nav-number">1.3.2.1.1.</span> <span class="nav-text">참고</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%EC%8B%A4%ED%96%89-%EC%8B%9C%EA%B0%84%EC%9D%84-%EC%B2%B4%ED%81%AC%ED%95%98%EC%9E%90"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">2. 실행 시간을 체크하자.</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#note"><span class="nav-number">1.3.2.2.1.</span> <span class="nav-text">note</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%A3%BC%EC%9D%98%EC%82%AC%ED%95%AD"><span class="nav-number">1.4.</span> <span class="nav-text">주의사항</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/03/01/perf-chk/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(자작) perf-chk (Node.js 애플리케이션) | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (자작) perf-chk (Node.js 애플리케이션)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-03-01 16:24:02" itemprop="dateCreated datePublished" datetime="2017-03-01T16:24:02+00:00">2017-03-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/%EC%9E%90%EC%9E%91/" itemprop="url" rel="index"><span itemprop="name">자작</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/03/01/perf-chk/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/01/perf-chk/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/03/01/perf-chk/thumb.png" class>  
+
+<h1 id="perf-chk-Performance-Check"><a href="#perf-chk-Performance-Check" class="headerlink" title="perf-chk (Performance Check)"></a>perf-chk (Performance Check)</h1><h2 id="왜-perf-chk를-만들었나"><a href="#왜-perf-chk를-만들었나" class="headerlink" title="왜 perf-chk를 만들었나?"></a>왜 perf-chk를 만들었나?</h2><p>나는 코드 실행 시간에 굉장히 관심이 많다.<br>따라서 코드 실행 시간 측정을 위해 테스트를 종종 해보곤 한다.<br>그럴 때 아래와 같은 코드를 사용하였다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> iterations = <span class="number">10000000</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">time</span>(<span class="string">&quot;function A&quot;</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;iterations; i++)&#123;</span><br><span class="line">  <span class="comment">// some code1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">timeEnd</span>(<span class="string">&quot;function A&quot;</span>); <span class="comment">// &#x27;Function A: xxx.xxx ms&#x27;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">time</span>(<span class="string">&quot;function B&quot;</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;iterations; i++)&#123;</span><br><span class="line">  <span class="comment">// some code2</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">timeEnd</span>(<span class="string">&quot;function B&quot;</span>); <span class="comment">// &#x27;Function B: xxx.xxx ms&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>하지만 위 코드를 엄청 자주 쓰지 않다보니 암기가 되질 않았다.<br>따라서 매일 어디선가 복사 붙여넣기 해서 썼다.<br>또한 함수명, 코드, 반복 횟수를 일일이 바꿔가는 것도 귀찮았다.<br>이러한 귀찮음을 조금이라도 줄여보고자 perf-chk를 만들게 되었다.</p>
+<h2 id="perf-chk는-무엇인가"><a href="#perf-chk는-무엇인가" class="headerlink" title="perf-chk는 무엇인가?"></a>perf-chk는 무엇인가?</h2><p>Node.js에서 코드의 실행 시간을 측정해주는 CLI 도구이다.<br>Node.js 어플리케이션이라고 하는 게 맞을라나…?<br>여튼 내가 짠 코드 중에 어떤 코드가 더 빠른지 알아보고자 할 때 쓰면 된다.  </p>
+<h2 id="시작하기"><a href="#시작하기" class="headerlink" title="시작하기"></a>시작하기</h2><p>perf-chk는 몇몇 ES6 문법들을 사용한다. (const, arrow function)<br>따라서 Node.js v6.4.0 이상이 설치돼있어야만 한다.</p>
+<h3 id="설치"><a href="#설치" class="headerlink" title="설치"></a>설치</h3><ul>
+<li>global로 설치하기 (권장)<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -g perf-chk</span><br></pre></td></tr></table></figure></li>
+<li>local로 설치하기  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -D perf-chk</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="사용법"><a href="#사용법" class="headerlink" title="사용법"></a>사용법</h3><h4 id="1-테스트-할-코드를-생성하자-모듈"><a href="#1-테스트-할-코드를-생성하자-모듈" class="headerlink" title="1. 테스트 할 코드를 생성하자. (모듈)"></a>1. 테스트 할 코드를 생성하자. (모듈)</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// some code</span></span><br><span class="line"><span class="comment">// blahblah</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">methodA</span>: <span class="keyword">function</span>(<span class="params"></span>) &#123; <span class="comment">// ES5 function 문법</span></span><br><span class="line">    <span class="comment">// blahblah</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="title function_">methodB</span>(<span class="params"></span>) &#123; <span class="comment">// ES6 Method 문법</span></span><br><span class="line">    <span class="comment">// blahblah</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">methodC</span>: <span class="function">() =&gt;</span> &#123; <span class="comment">// ES6 Arrow Function 문법</span></span><br><span class="line">    <span class="comment">// blahblah</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="참고"><a href="#참고" class="headerlink" title="참고"></a>참고</h5><ul>
+<li>module.exports &#x3D; {} 는 node.js의 모듈 추출 문법이다.<br>perf-chk는 node.js 어플리케이션이므로 이 문법을 준수해야만 정상 작동된다.  </li>
+<li>함수 문법은 입맛에 맞게 골라쓰면 된다.</li>
+</ul>
+<h4 id="2-실행-시간을-체크하자"><a href="#2-실행-시간을-체크하자" class="headerlink" title="2. 실행 시간을 체크하자."></a>2. 실행 시간을 체크하자.</h4><ol>
+<li>CLI 도구이므로 터미널을 열자. (윈도우에서는 cmd)</li>
+<li>명령어를 아래와 같이 치자.  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perf-chk &#123;모듈_이름&#125; [반복_횟수]</span><br></pre></td></tr></table></figure>
+만약 local로 설치했다면 아래와 같이 입력하자.  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./node_modules/perf-chk &#123;모듈_이름&#125; [반복_횟수]</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h5 id="note"><a href="#note" class="headerlink" title="note"></a>note</h5><p>모듈_이름은 필수적이고, &lt;파일이름&gt;.js나 &lt;파일이름&gt;과 같이 치면 된다.<br>반복_횟수는 선택사항이며 기본 값은 100,000,000이다.<br>반복_횟수는 신뢰할 수 있는 정수(자연수)여야만 하며,<br>범위는 1 ~ 9,007,199,254,740,991까지다.<br>만약 코드들의 실행 시간이 모두 비슷하다면 큰 차이가 없는 것이다.<br>그럼에도 불구하고 코드들 사이의 실행 시간 차이를 알아보고 싶다면<br>반복 횟수를 늘려가며 실험해보면 된다.</p>
+<h2 id="주의사항"><a href="#주의사항" class="headerlink" title="주의사항"></a>주의사항</h2><ul>
+<li>실행 시간은 매번 동일하지 않다.<br>이는 컴퓨터 사양에 따라 결과가 달라진다. (CPU, RAM 등등)<br>또한 동일한 컴퓨터 사양이라고 해서 결과가 모두 같은 건 아니다.<br>왜냐하면 CPU 사용량과 RAM 사용량이 항상 같은 것은 아니기 때문이다.<br>따라서 실행 시간은 단순 참고용 정도로만 사용하자.  </li>
+<li>perf-chk는 Node.js 위에서 돌아간다.<br>따라서 브라우저 내장 객체인 DOM(Document Object Model, 예를 들면 document.getElementById),<br>BOM(Browser Object Model, 예를 들면 window.alert)와 같은 걸 지원하지 않는다.<br>오직 ECMAScript만 테스트 할 수 있다.<br>Node.js 버전에 따라 ECMAScript 지원율도 다르다.<br>궁금한 사람은 아래 링크를 참조하자.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://node.green/">Node.js ECMAScript compatibility tables</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/npm/" rel="tag"># npm</a>
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+              <a href="/tags/Performance/" rel="tag"># Performance</a>
+              <a href="/tags/CLI/" rel="tag"># CLI</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/02/15/es-this/" rel="prev" title="(ES) this">
+                  <i class="fa fa-chevron-left"></i> (ES) this
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/03/12/webpack2-tree-shaking/" rel="next" title="(Webpack 2) 트리 쉐이킹을 해보자!">
+                  (Webpack 2) 트리 쉐이킹을 해보자! <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

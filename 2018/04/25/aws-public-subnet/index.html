@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Subnet서브넷이란 Sub Network, 네트워크의 서브, 메인 네트워크를 쪼갰다고 보면 된다.AWS 관점에서 봤을 때 메인 네트워크는 VPC라고 보면 된다.     Public SubnetPublic Subnet이란 외부에서 접근이 가능한 네트워크 정도로 이해하면 될 것 같다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(AWS) Public Subnet">
+<meta property="og:url" content="https://perfectacle.github.io/2018/04/25/aws-public-subnet/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="Subnet서브넷이란 Sub Network, 네트워크의 서브, 메인 네트워크를 쪼갰다고 보면 된다.AWS 관점에서 봤을 때 메인 네트워크는 VPC라고 보면 된다.     Public SubnetPublic Subnet이란 외부에서 접근이 가능한 네트워크 정도로 이해하면 될 것 같다.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2018/04/25/aws-public-subnet/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/04/25/aws-public-subnet/create-subnet.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/04/25/aws-public-subnet/enable-auto-assign-public-ip.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/04/25/aws-public-subnet/internet-gateway.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/04/25/aws-public-subnet/main-route-table.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/04/25/aws-public-subnet/main-route-table-edit.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/04/25/aws-public-subnet/ec2-subnet-setting.png">
+<meta property="article:published_time" content="2018-04-25T06:01:08.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.323Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="AWS">
+<meta property="article:tag" content="VPC">
+<meta property="article:tag" content="Network">
+<meta property="article:tag" content="Subnet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2018/04/25/aws-public-subnet/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2018/04/25/aws-public-subnet/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2018/04/25/aws-public-subnet/","path":"2018/04/25/aws-public-subnet/","title":"(AWS) Public Subnet"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(AWS) Public Subnet | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Subnet"><span class="nav-number">1.</span> <span class="nav-text">Subnet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Public-Subnet"><span class="nav-number">1.1.</span> <span class="nav-text">Public Subnet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Internet-Gateway"><span class="nav-number">1.2.</span> <span class="nav-text">Internet Gateway</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Route-Table"><span class="nav-number">1.3.</span> <span class="nav-text">Route Table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EC2-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4-%EC%83%9D%EC%84%B1"><span class="nav-number">1.4.</span> <span class="nav-text">EC2 인스턴스 생성</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%99%B8%EB%B6%80%EC%97%90%EC%84%9C-%EC%A0%91%EA%B7%BC-%EA%B0%80%EB%8A%A5%ED%95%98%EA%B2%8C-%ED%95%98%EA%B8%B0-%EC%9C%84%ED%95%9C-%EC%A1%B0%EA%B1%B4"><span class="nav-number">1.5.</span> <span class="nav-text">외부에서 접근 가능하게 하기 위한 조건</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/04/25/aws-public-subnet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(AWS) Public Subnet | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (AWS) Public Subnet
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-04-25 06:01:08" itemprop="dateCreated datePublished" datetime="2018-04-25T06:01:08+00:00">2018-04-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/" itemprop="url" rel="index"><span itemprop="name">Middle-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/04/25/aws-public-subnet/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/04/25/aws-public-subnet/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2018/04/25/aws-public-subnet/thumb.png" class>  
+
+<h2 id="Subnet"><a href="#Subnet" class="headerlink" title="Subnet"></a>Subnet</h2><p>서브넷이란 Sub Network, 네트워크의 서브, 메인 네트워크를 쪼갰다고 보면 된다.<br>AWS 관점에서 봤을 때 메인 네트워크는 <a href="/2018/04/25/aws-vpc">VPC</a>라고 보면 된다.    </p>
+<h3 id="Public-Subnet"><a href="#Public-Subnet" class="headerlink" title="Public Subnet"></a>Public Subnet</h3><p>Public Subnet이란 <strong>외부에서 접근이 가능한 네트워크</strong> 정도로 이해하면 될 것 같다.</p>
+<p>Public Subnet을 만드려면 AWS 콘솔에서 VPC 서비스로 이동해서 좌측 탭 중에 Subnets를 클릭하고, Create Subnet를 클릭한다.</p>
+<img src="/2018/04/25/aws-public-subnet/create-subnet.png" class title="subnet 생성 화면">  
+<p>Name tag를 정하고 어떤 VPC에 Subnet을 생성할 것인지 선택하면 된다.<br>VPC가 Region에 생성되는 것에 반해 Subnet은 어떤 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions-availability-zones">AZ(Availability Zone)</a>에 생성될 것인지도 정해야한다.<br>따라서 AZ가 다운돼서 장애가 발생하는 것을 방지하려면 Multi AZ로 Subnet을 생성해야하지만, 포스트에서는 단일 AZ로 진행하도록 하겠다.<br>그리고 Subnet의 <a href="https://ko.wikipedia.org/wiki/%EC%82%AC%EC%9D%B4%EB%8D%94_(%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%82%B9)" target="_blank" rel="external nofollow noopener noreferrer">CIDR Block</a>을 지정해야하는데,<br>Subnet은 VPC의 Subset이기 때문에 VPC의 cidr block을 초과해서 정할 수 없다.<br>또한 미리 생성한 Subnet의 cidr block과 겹쳐서도 안 된다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC_%ED%81%B4%EB%9E%98%EC%8A%A4">ip class</a>를 참고해서 네트워크 규모에 따라서 cidr block을 설정하면 된다.  </p>
+<p><code>또한 서브넷 내의 리소스(EC2 인스턴스, ELB 등등)는 무조건 private ip를 가지는데, private ip는 고정할 수 없고, 생성될 때 서브넷의 cidr block 내의 ip가 랜덤으로 할당된다.</code></p>
+<img src="/2018/04/25/aws-public-subnet/enable-auto-assign-public-ip.png" class>  
+<p>기본적으로 서브넷에는 설정에는 서브넷 내의 리소스에 대해 public ip를 자동으로 할당하지 않게 설정돼있다.<br>우리는 만드는 목적 자체가 public subnet이기 때문에 public ip를 자동으로 할당하도록 설정하자.</p>
+<h3 id="Internet-Gateway"><a href="#Internet-Gateway" class="headerlink" title="Internet Gateway"></a>Internet Gateway</h3><p>Internet Gateway는 VPC의 문지기와도 같은 역할을 한다.<br>VPC 외부에서 접근할 때 항상 Internet Gateway를 거쳐서 접근하게 된다.<br>따라서 Public Subnet을 구성하기 위해서는 Internet Gateway를 무조건 만들어야한다.<br>VPC 서비스 좌측 탭 중에 Internet Gateways를 클릭하고 Create internet gateway를 클릭하고 Name tag를 입력해서 Internet Gateway를 생성하자.  </p>
+<img src="/2018/04/25/aws-public-subnet/internet-gateway.png" class>  
+<p>Internet Gateway는 기본적으로 vpc에 안 붙어있기 때문에 vpc에 붙여주자.<br>여기서 끝이 아니고, Subnet에 Route Table을 설정해줘야한다.  </p>
+<h3 id="Route-Table"><a href="#Route-Table" class="headerlink" title="Route Table"></a>Route Table</h3><p>Route Table이란 어떤 IP 주소로 가야할 때 어디로 가야하는지를 나타낸 경로를 뜻한다.<br>기본적으로 VPC를 생성하면 Main Route Table이 생성되고, 라우트 테이블을 설정하지 않은 서브넷들은 암묵적으로 메인 라우트 테이블이 설정된다.<br>이 포스트에서는 메인 라우트 테이블을 수정하도록 하겠다.  </p>
+<p>Route Table을 수정하려면 AWS 콘솔에서 Route Tables 서비스로 이동해서 해당 vpc의 메인 라우트 테이블을 선택하고, Edit 버튼을 클릭한다.</p>
+<img src="/2018/04/25/aws-public-subnet/main-route-table.png" class>  
+<p>우선 메인 라우트 테이블의 Destination은 vpc의 cidr block이 할당돼있고, target은 local로 돼있다.<br>vpc 내부 자원에 대해서는 cidr block 범위에 해당하는 private ip가 할당돼있기 마련이다.<br>따라서 cidr block 내의 ip의 경우에는 local, vpc 내부에서 자원을 찾을 수 있다는 뜻이다.  </p>
+<p>우리는 외부와 통신을 해야하기 때문에 라우트 테이블에 인터넷 게이트웨이를 붙어야하기 때문에 Edit 버튼을 누르고 아래와 같이 설정하면 된다.  </p>
+<img src="/2018/04/25/aws-public-subnet/main-route-table-edit.png" class>  
+<p>0.0.0.0&#x2F;0, 즉 모든 ip에 대해서 인터넷 게이트웨이로 향하게 끔 설정을 했다.  </p>
+<p>목적지 ip가 cidr block 내의 private ip(10.0.0.0&#x2F;16)인 경우에 대해서는 vpc 내부(local)에서 자원을 찾게 끔 설정한 것이고,<br>목적지 ip가 cidr block 내의 private ip(10.0.0.0&#x2F;16)가 아닌 경우(0.0.0.0&#x2F;0)에 대해서는 인터넷 게이트웨이를 통해서 vpc 외부로 내보내는 것이다.  </p>
+<h3 id="EC2-인스턴스-생성"><a href="#EC2-인스턴스-생성" class="headerlink" title="EC2 인스턴스 생성"></a>EC2 인스턴스 생성</h3><p>다른 리소스(ELB 등등)을 해도 되지만 포스트에서는 가장 간단한 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://aws.amazon.com/ko/ec2/">EC2</a>로 선택했다.<br>EC2 인스턴스는 간단하게 설명하면 그냥 서버 장비 한 대라고 생각하면 된다.  </p>
+<p>AWS 콘솔에서 EC2 서비스로 이동해서 Launch Instance를 클릭하자.<br>입맛에 맞게 설정을 하면 되는데, Step 2에서 Review and Launch 대신에 Configure Instance Details를 선택해주자.  </p>
+<img src="/2018/04/25/aws-public-subnet/ec2-subnet-setting.png" class>  
+<p>Step3가 핵심이다.<br>위에서 만든 VPC와 Public Subnet을 설정하고, public ip 할당 부분을 enable로 하던가,<br>아니면 서브넷에 자동으로 public ip 할당 설정이 돼있다면 Use subnet setting을 그대로 내비두면 된다.  </p>
+<p>그 이후에는 입맛에 맞게 인스턴스를 생성하면 외부에서 접근 가능한 리소스를 만든 셈이다.  </p>
+<h3 id="외부에서-접근-가능하게-하기-위한-조건"><a href="#외부에서-접근-가능하게-하기-위한-조건" class="headerlink" title="외부에서 접근 가능하게 하기 위한 조건"></a>외부에서 접근 가능하게 하기 위한 조건</h3><ol>
+<li>Subnet에 설정된 Route Table에 Internet Gateway가 설정돼있어야한다. (Public Subnet)  </li>
+<li>결국 외부에서 접근하는 IP 주소는 Subnet 내의 리소스로 접근하기 때문에 리소스를 만들 때는 꼭 public ip를 할당해야한다.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AWS/" rel="tag"># AWS</a>
+              <a href="/tags/VPC/" rel="tag"># VPC</a>
+              <a href="/tags/Network/" rel="tag"># Network</a>
+              <a href="/tags/Subnet/" rel="tag"># Subnet</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/04/25/aws-vpc/" rel="prev" title="(AWS) VPC">
+                  <i class="fa fa-chevron-left"></i> (AWS) VPC
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/05/30/network-ethernet-mac-address-x-cast/" rel="next" title="후니의 쉽게 쓴 시스코 네트워킹 정리 - Ethernet, MAC Address, xCast">
+                  후니의 쉽게 쓴 시스코 네트워킹 정리 - Ethernet, MAC Address, xCast <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

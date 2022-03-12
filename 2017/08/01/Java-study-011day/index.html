@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="연습문제 실수 기존의 코드를 재사용할 수 있으면 하자.   123456789101112131415public class SutdaCard &amp;#123;    int num &#x3D; 0;    boolean isKwang &#x3D; false;    SutdaCard() &amp;#123;        &#x2F;&#x2F; 이 한줄로 커버 되고 이래야 유지보수 측면에서도 용이하다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Java) 자바의 정석 3판 011일차 - 상속과 포함, 오버라이딩, super, 패키지와 클래스, 접근 지정자">
+<meta property="og:url" content="https://perfectacle.github.io/2017/08/01/Java-study-011day/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="연습문제 실수 기존의 코드를 재사용할 수 있으면 하자.   123456789101112131415public class SutdaCard &amp;#123;    int num &#x3D; 0;    boolean isKwang &#x3D; false;    SutdaCard() &amp;#123;        &#x2F;&#x2F; 이 한줄로 커버 되고 이래야 유지보수 측면에서도 용이하다.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/08/01/Java-study-011day/thumb.png">
+<meta property="article:published_time" content="2017-08-01T18:30:01.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.283Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="자바의 정석">
+<meta property="article:tag" content="OOP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/08/01/Java-study-011day/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/08/01/Java-study-011day/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/08/01/Java-study-011day/","path":"2017/08/01/Java-study-011day/","title":"(Java) 자바의 정석 3판 011일차 - 상속과 포함, 오버라이딩, super, 패키지와 클래스, 접근 지정자"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Java) 자바의 정석 3판 011일차 - 상속과 포함, 오버라이딩, super, 패키지와 클래스, 접근 지정자 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%B0%EC%8A%B5%EB%AC%B8%EC%A0%9C-%EC%8B%A4%EC%88%98"><span class="nav-number">1.</span> <span class="nav-text">연습문제 실수</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%83%81%EC%86%8D"><span class="nav-number">2.</span> <span class="nav-text">상속</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8F%AC%ED%95%A8-Composite"><span class="nav-number">3.</span> <span class="nav-text">포함(Composite)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#extends-vs-composite"><span class="nav-number">4.</span> <span class="nav-text">extends vs composite</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#toString-%EB%A9%94%EC%86%8C%EB%93%9C"><span class="nav-number">5.</span> <span class="nav-text">toString() 메소드</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%8B%A8%EC%9D%BC-%EC%83%81%EC%86%8D-single-inheritance"><span class="nav-number">6.</span> <span class="nav-text">단일 상속(single inheritance)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%98%A4%EB%B2%84%EB%9D%BC%EC%9D%B4%EB%94%A9-overriding"><span class="nav-number">7.</span> <span class="nav-text">오버라이딩(overriding)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%98%A4%EB%B2%84%EB%A1%9C%EB%94%A9-vs-%EC%98%A4%EB%B2%84%EB%9D%BC%EC%9D%B4%EB%94%A9"><span class="nav-number">8.</span> <span class="nav-text">오버로딩 vs 오버라이딩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#super-vs-this"><span class="nav-number">9.</span> <span class="nav-text">super vs this</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this-vs-super"><span class="nav-number">10.</span> <span class="nav-text">this() vs super()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8C%A8%ED%82%A4%EC%A7%80%EC%99%80-%ED%81%B4%EB%9E%98%EC%8A%A4"><span class="nav-number">11.</span> <span class="nav-text">패키지와 클래스</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#import"><span class="nav-number">12.</span> <span class="nav-text">import</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#static-import-%EB%AC%B8"><span class="nav-number">13.</span> <span class="nav-text">static import 문</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%81%B4%EB%9E%98%EC%8A%A4-%EB%A9%A4%EB%B2%84-vs-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4-%EB%A9%A4%EB%B2%84"><span class="nav-number">14.</span> <span class="nav-text">클래스 멤버 vs 인스턴스 멤버</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#final"><span class="nav-number">15.</span> <span class="nav-text">final</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%A0%91%EA%B7%BC-%EC%A7%80%EC%A0%95%EC%9E%90"><span class="nav-number">16.</span> <span class="nav-text">접근 지정자</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/08/01/Java-study-011day/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Java) 자바의 정석 3판 011일차 - 상속과 포함, 오버라이딩, super, 패키지와 클래스, 접근 지정자 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Java) 자바의 정석 3판 011일차 - 상속과 포함, 오버라이딩, super, 패키지와 클래스, 접근 지정자
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-08-01 18:30:01" itemprop="dateCreated datePublished" datetime="2017-08-01T18:30:01+00:00">2017-08-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/08/01/Java-study-011day/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/01/Java-study-011day/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/08/01/Java-study-011day/thumb.png" class>
+
+<h2 id="연습문제-실수"><a href="#연습문제-실수" class="headerlink" title="연습문제 실수"></a>연습문제 실수</h2><ul>
+<li><p>기존의 코드를 재사용할 수 있으면 하자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SutdaCard</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">boolean</span> <span class="variable">isKwang</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    SutdaCard() &#123;</span><br><span class="line">        <span class="comment">// 이 한줄로 커버 되고 이래야 유지보수 측면에서도 용이하다.</span></span><br><span class="line">        <span class="built_in">this</span>(<span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line">        <span class="comment">// num = 1;</span></span><br><span class="line">        <span class="comment">// isKwang = true;</span></span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">    SutdaCard(<span class="type">int</span> num, <span class="type">boolean</span> isKwang) &#123;</span><br><span class="line">        <span class="built_in">this</span>.num = num;</span><br><span class="line">        <span class="built_in">this</span>.isKwang = isKwang;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>형변환<br>10f와 10.0f는 동일하니 쓸 데 없는 .0을 안 찍도록 하자.</p>
+</li>
+<li><p>지역변수</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>args도 지역변수다.<br>또한 main은 <strong>변수</strong>가 아니라 <strong>(클래스) 메소드</strong>이다.<br>자바스크립트에서는 함수를 변수에 담을 수 있어서 함수도 변수의 범주 안에 속하고,<br>함수와 메소드가 유사한 측면을 갖고 있다보니 main 메소드도 static 키워드를 썼으므로 클래스 변수인 줄 알았는데 아니었다.  </p>
+</li>
+<li><p>String vs StringBuffer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">change</span><span class="params">(String str)</span> &#123;</span><br><span class="line">        str += <span class="string">&quot;456&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">change</span><span class="params">(StringBuffer str)</span> &#123;</span><br><span class="line">        str.append(<span class="string">&quot;456&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;ABC123&quot;</span>;</span><br><span class="line">        System.out.println(str); <span class="comment">// ABC123</span></span><br><span class="line">        change(str);</span><br><span class="line">        System.out.println(<span class="string">&quot;After change:&quot;</span>+str); <span class="comment">// ABC123</span></span><br><span class="line">        <span class="type">StringBuffer</span> <span class="variable">str2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuffer</span>(<span class="string">&quot;ABC123&quot;</span>);</span><br><span class="line">        System.out.println(str2); <span class="comment">// ABC123</span></span><br><span class="line">        change(str2);</span><br><span class="line">        System.out.println(<span class="string">&quot;After change:&quot;</span>+str2); <span class="comment">// ABC123</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>String 클래스는 참조타입임에도 불구하고 내용을 변경할 수 없기 때문에 ABC123456이라는 새로운 변수를 지역변수 str에 만들고<br>메소드 종료와 더불어 해당 지역변수도 날아가서 원하는 결과가 나오지 않는다.<br>따라서 원하는 결과를 얻어내려면 return으로 반환 값을 받아오거나 StringBuffer 클래스를 이용해야한다.</p>
+</li>
+</ul>
+<h2 id="상속"><a href="#상속" class="headerlink" title="상속"></a>상속</h2><p>생성자와 초기화 블럭은 상속되지 않고, 멤버(변수, 메소드)만 상속된다.<br>접근 지정자가 private 또는 default는 상속은 받되, 자식 클래스에서 직접적인 접근이 불가능하다.  </p>
+<h2 id="포함-Composite"><a href="#포함-Composite" class="headerlink" title="포함(Composite)"></a>포함(Composite)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="type">int</span> x, y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Circle</span> &#123;</span><br><span class="line">    <span class="comment">//int x, y, r;</span></span><br><span class="line">    <span class="type">Point</span> <span class="variable">p</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Point</span>();</span><br><span class="line">    <span class="type">int</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이렇게 단위별로 클래스를 여러 개로 쪼개면 조합해서 사용할 수도 있어서 유지보수(재사용성, 적은 변경사항) 측면에서 뛰어나다.  </p>
+<h2 id="extends-vs-composite"><a href="#extends-vs-composite" class="headerlink" title="extends vs composite"></a>extends vs composite</h2><ul>
+<li>원은 점이다. - Circle is a Point, 상속(extends)  </li>
+<li><strong>원은 점을 가지고 있다. - Circle has a Point, 포함(composite)</strong></li>
+</ul>
+<h2 id="toString-메소드"><a href="#toString-메소드" class="headerlink" title="toString() 메소드"></a>toString() 메소드</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Card</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;asdf&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">      <span class="type">Card</span> <span class="variable">c</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Card</span>();</span><br><span class="line">      System.out.println(c.toString()); <span class="comment">// &quot;asdf&quot;</span></span><br><span class="line">      System.out.println(c); <span class="comment">// &quot;asdf&quot;</span></span><br><span class="line">      System.out.println(<span class="string">&quot;qwer&quot;</span> + c); <span class="comment">// &quot;qwerasdf&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>java.lang.Object 클래스에 있는 메소드를 오버라이딩한 것이다.<br>모든 객체(클래스, 인스턴스)는 Object 클래스를 상속 받는다.  </p>
+<h2 id="단일-상속-single-inheritance"><a href="#단일-상속-single-inheritance" class="headerlink" title="단일 상속(single inheritance)"></a>단일 상속(single inheritance)</h2><p>또 다른 객체지향 언어인 C++에서는 다중 상속을 허용하지만, 자바는 그렇지 않다.<br>다중 상속을 하면 복합적인 기능을 가진 클래스를 쉽게 작성할 수 있다는 장점이 존재하지만,<br>클래스 간의 관계가 복잡해질 수 있고, 다른 클래스로부터 상속받은 멤버간의 이름이 같으면 구별할 수 있는 방법이 없다.<br>static 멤버야 클래스 이름을 붙여서 구분이 가능하지만 인스턴스 멤버는 그렇지 않다.<br>다중 상속의 장점을 포기했지만, 그럼으로 인해서 클래스 간의 관계가 명확해지고 코드의 신뢰도가 올라간다는 장점이 존재한다.  </p>
+<p>물론 아래와 같이 다중 상속을 흉내낼 수 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TV</span> &#123;</span><br><span class="line">    <span class="type">boolean</span> power;</span><br><span class="line">    <span class="type">int</span> channel;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">power</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">channelUp</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">channelDown90</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">VCR</span> &#123;</span><br><span class="line">    <span class="type">boolean</span> power;</span><br><span class="line">    <span class="type">int</span> counter;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">power</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">play</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">rew</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">ff</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TVCR</span> <span class="keyword">extends</span> <span class="title class_">TV</span> &#123;</span><br><span class="line">    <span class="type">VCR</span> <span class="variable">vcr</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">VCR</span>();</span><br><span class="line">    <span class="type">int</span> <span class="variable">counter</span> <span class="operator">=</span> vcr.counter;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">play</span><span class="params">()</span> &#123;</span><br><span class="line">        vcr.play();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;</span><br><span class="line">        vcr.stop();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">rew</span><span class="params">()</span> &#123;</span><br><span class="line">        vcr.rew();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">ff</span><span class="params">()</span> &#123;</span><br><span class="line">        vcr.ff();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>TVCR은 TV이다. (상속)  </li>
+<li>TVCR은 VCR을 가지고 있다. (포함)</li>
+</ol>
+<p>위 관계를 잘 활용하면 다중 상속과 같은 효과를 낼 수 있다.<br>TVCR.play는 사실 VCR 클래스의 play 메소드를 실행하고 있다.  </p>
+<h2 id="오버라이딩-overriding"><a href="#오버라이딩-overriding" class="headerlink" title="오버라이딩(overriding)"></a>오버라이딩(overriding)</h2><p>발음상 overwrite(오버라이트)와 override(오버라이드)가 비슷하다.<br>따라서 override는 덮어쓴다고 생각하면 될 것 같다.<br><strong>부모 클래스의 메소드를 재정의</strong>하는 것이다.</p>
+<p>조건은 아래와 같다.  </p>
+<ol>
+<li>이름이 같아야한다.  </li>
+<li>매개변수가 같아야한다.  </li>
+<li>반환타입이 같아야한다.<br>Java5부터는 자손 클래스의 타입으로 변경하는 것이 가능하게 되었다.<br>covariant return type이라고도 부른다.(공변, 함께 변하는 이라는 뜻)</li>
+</ol>
+<p>즉 선언부는 아예 일치해야한다는 뜻이다.<br>하지만 접근 지정자와 예외 처리는 예외이다.</p>
+<ul>
+<li><p>부모 클래스 보다 접근 지정자가 넓어야한다. 보통은 같은 걸 쓴다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">a</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Child</span> <span class="keyword">extends</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">a</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="comment">// private가 protected 보다 범위가 좁아서 오류가 난다.</span></span><br><span class="line">    <span class="comment">// private void a()&#123;&#125; </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>부모 클래스보다 예외 처리할 수 있는 경우가 적어야한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">a</span><span class="params">()</span> <span class="keyword">throws</span> IOException, SQLException &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Child</span> <span class="keyword">extends</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">a</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;&#125;</span><br><span class="line">    <span class="comment">// 단순 갯수의 문제가 적어야하는 게 아니라 경우의 수의 문제이다.</span></span><br><span class="line">    <span class="comment">// Exception은 모든 예외의 경우를 커버하므로 경우의 수가 부모보다 훨씬 많다.</span></span><br><span class="line">    <span class="comment">// protected void a() throws Exception &#123;&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>인스턴스 메소드 &lt;-&gt; static 메소드가 불가능하다.<br>또한 부모 클래스의 static 메소드를 자식 클래스에서 static 메소드로 선언하는 것은 각 클래스에 별개의 static 메소드를 선언하는 것이므로 오버라이딩은 아니다.</p>
+</li>
+</ul>
+<h2 id="오버로딩-vs-오버라이딩"><a href="#오버로딩-vs-오버라이딩" class="headerlink" title="오버로딩 vs 오버라이딩"></a>오버로딩 vs 오버라이딩</h2><ol>
+<li>오버로딩(new): 기존에 없던 새로운 메소드(이름만 같은)를 선언하는 것  </li>
+<li>오버라이딩(modify): 상속받은 메소드를 수정하는 것</li>
+</ol>
+<h2 id="super-vs-this"><a href="#super-vs-this" class="headerlink" title="super vs this"></a>super vs this</h2><p>this가 인스턴스 자기 자신을 가리키는 참조 변수이듯, super는 상속받은 부모 인스턴스를 가리키는 참조 변수이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Child</span> <span class="keyword">extends</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;x=&quot;</span>+x); <span class="comment">// 10</span></span><br><span class="line">        System.out.println(<span class="string">&quot;this.x=&quot;</span>+<span class="built_in">this</span>.x); <span class="comment">// 10</span></span><br><span class="line">        System.out.println(<span class="string">&quot;super.x=&quot;</span>+<span class="built_in">super</span>.x); <span class="comment">// 10</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Child</span> <span class="variable">c</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Child</span>();</span><br><span class="line">        c.method();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>읭? 뭐지? 싶으면 아래를 보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Child</span> <span class="keyword">extends</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">20</span>;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">method</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;x=&quot;</span>+x); <span class="comment">// 20</span></span><br><span class="line">        System.out.println(<span class="string">&quot;this.x=&quot;</span>+<span class="built_in">this</span>.x); <span class="comment">// 20</span></span><br><span class="line">        System.out.println(<span class="string">&quot;super.x=&quot;</span>+<span class="built_in">super</span>.x); <span class="comment">// 10</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Child</span> <span class="variable">c</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Child</span>();</span><br><span class="line">        c.method();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>매개변수와 인스턴스 변수를 구분할 때 this를 썼 듯이,<br>부모 인스턴스 변수와 자식 인스턴스 변수를 구분할 때 super를 사용하면 유용하다.<br>물론 변수 뿐만 아니라 메소드도 가능하다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="type">int</span> x, y;</span><br><span class="line">    String <span class="title function_">getLocation</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;x: &quot;</span> + x + <span class="string">&quot;, y: &quot;</span> + y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3D</span> <span class="keyword">extends</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="type">int</span> z;</span><br><span class="line">    String <span class="title function_">getLocation</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// return &quot;x: &quot; + x + &quot;, y: &quot; + y + &quot;, z: &quot; + z;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.getLocation() + <span class="string">&quot;, z: &quot;</span> + z;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="this-vs-super"><a href="#this-vs-super" class="headerlink" title="this() vs super()"></a>this() vs super()</h2><p>this()는 같은 클래스 내의 생성자를 호출하기 위해 사용하는 데 비해,<br>super()는 부모 클래스의 생성자를 호출하기 위해 사용된다.<br>this와 마찬가지로 super도 제일 첫 줄에 호출해야하는데<br>자식 클래스가 부모 클래스의 멤버를 사용했을 수도 있으므로<br>먼저 부모 클래스의 생성자를 호출해서 멤버들을 초기화시켜야한다.<br>자식 생성자에서 다른 생성자(super()나 this())가 없는 경우에는 컴파일러가 자동으로 super()를 삽입한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Point3D</span> <span class="variable">p</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Point3D</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line">        System.out.println(p.x + <span class="string">&quot;, &quot;</span> + p.y + <span class="string">&quot;, &quot;</span> + p.z); <span class="comment">// 1, 2, 3</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 아무것도 상속받지 않으면 컴파일러가 자동적으로 extends Object를 붙여준다.</span></span><br><span class="line"><span class="comment">// 그래서 equals()나 toString() 같은 메소드는 모든 클래스에서 사용이 가능한 것이다.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="type">int</span> x, y;</span><br><span class="line">    Point(<span class="type">int</span> x, <span class="type">int</span> y) &#123;</span><br><span class="line">        <span class="comment">// super();</span></span><br><span class="line">        <span class="comment">// 여기에도 마찬가지로 다른 생성자(this()나 super())가 없으므로 자동으로 super()가 삽입된다.</span></span><br><span class="line">        <span class="comment">// 아마 최상위 부모인 Object까지 타고 가지 않을까 싶다.</span></span><br><span class="line">        <span class="built_in">this</span>.x = x;</span><br><span class="line">        <span class="built_in">this</span>.y = y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Point3D</span> <span class="keyword">extends</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="type">int</span> z;</span><br><span class="line">    Point3D(<span class="type">int</span> x, <span class="type">int</span> y, <span class="type">int</span> z) &#123;</span><br><span class="line">        <span class="comment">// super()가 자동으로 삽입되지만 부모 클래스에는 Point() 생성자는 없고 Point(int x, int y) 생성자만 존재한다.</span></span><br><span class="line">        <span class="comment">// this.x = x;</span></span><br><span class="line">        <span class="comment">// this.y = y;</span></span><br><span class="line">        <span class="built_in">super</span>(x, y);</span><br><span class="line">        <span class="built_in">this</span>.z = z;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>따라서 Point3D 클래스의 인스턴스의 생성 순서는 다음과 같다.  </p>
+<ol>
+<li>Point3D(int x, int y, int z)  </li>
+<li>Point(int x, int y)  </li>
+<li>Object()</li>
+</ol>
+<h2 id="패키지와-클래스"><a href="#패키지와-클래스" class="headerlink" title="패키지와 클래스"></a>패키지와 클래스</h2><p>클래스: 물리적으로 하나의 파일(*.class)<br>패키지: 물리적으로 하나의 디렉토리<br>java.lang.String -&gt; java 패키지(디렉토리) 안에 lang 패키지(디렉토리) 안에 String 클래스(파일)<br>패키지(디렉토리)가 다르면 클래스(파일)명은 같아도 된다.  </p>
+<p>모든 클래스는 반드시 패키지 안에 속해야하며 패키지를 명시하지 않으면 default package로 같은 패키지 안에 속하게 된다.  </p>
+<h2 id="import"><a href="#import" class="headerlink" title="import"></a>import</h2><p>import 문은 다른 패키지에 있는 클래스를 사용할 때 패키지 명을 붙이지 않고 사용할 수 있게 해준다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test2</span> &#123;</span><br><span class="line">    java.util.<span class="type">Scanner</span> <span class="variable">sc</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">java</span>.util.Scanner(System.in); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test4</span> &#123;</span><br><span class="line">    <span class="type">Scanner</span> <span class="variable">sc</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(System.in);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>import 문을 많이 쓰거나 import java.util.* 처럼 *을 썼다고 해서 실행할 때 퍼포먼스 상 차이는 없다.<br>단지 컴파일 시간이 조금 더 오래 걸릴 뿐이다.<br>하지만 *을 쓰면 어떤 패키지의 클래스인지 구분하기 어려울 때가 있다.<br>또한 *은 클래스에만 매칭되지 하위 패키지까지 매칭되는 것은 아니다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 이렇게 하면 java 패키지의 클래스만 매칭되지  </span></span><br><span class="line"><span class="comment">// java 패키지 내부에 있는 util 패키지까지 import 되는 것은 아니다.  </span></span><br><span class="line"><span class="keyword">import</span> java.*;</span><br></pre></td></tr></table></figure>
+
+<p><strong>같은 패키지 내의 클래스들은 import 없이도 사용이 가능하다!</strong></p>
+<p>또한 System이나 String 클래스는 어떻게 패키지를 import하지 않고도 사용이 가능했던 걸까?<br>같은 패키지 내의 클래스는 import 없이 사용 가능하다는데 그럼 모든 패키지에는 System이나 String 과 관련된 패키지가 삽입된 걸까?  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 컴파일러가 자동적으로 아래와 같은 import 문을 삽입해주기 때문이다.</span></span><br><span class="line"><span class="comment">// 해당 패키지의 클래스들은 매우 빈번하게 사용하기 때문이다.</span></span><br><span class="line"><span class="keyword">import</span> java.lang.*;</span><br></pre></td></tr></table></figure>
+
+<h2 id="static-import-문"><a href="#static-import-문" class="headerlink" title="static import 문"></a>static import 문</h2><p>import를 하면 패키지명을 생략할 수 있듯이<br>static 키워드를 사용하면 클래스명을 생략할 수 있다.<br>단 export 한 녀석은 public static이어야한다.   </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.lang.System.out;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> java.lang.Math.random;</span><br><span class="line"><span class="comment">// 아래와 같이 하면 Math 클래스의 모든 public static 메소드(random, ceil, abs 등등)에서 Math 클래스를 생략 가능하다.  </span></span><br><span class="line"><span class="comment">// import static java.lang.Math.*;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// System과 Math가 생략이 가능해졌다.</span></span><br><span class="line">        out.println(random());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>그냥 import는 package.*로 해서 모든 클래스들을 불러와서 패키지 명을 생략가능하게 했다면<br>static import는 package.class.*로 해서 클래스 내의 모든 멤버를 불러와서 클래스 명을 생략 가능하게 했다고 알아두면 될 것 같다.   </p>
+<h2 id="클래스-멤버-vs-인스턴스-멤버"><a href="#클래스-멤버-vs-인스턴스-멤버" class="headerlink" title="클래스 멤버 vs 인스턴스 멤버"></a>클래스 멤버 vs 인스턴스 멤버</h2><p>멤버: 변수, 메소드<br>클래스 멤버는 static 멤버라고도 부른다.<br>인스턴스 멤버를 사용하지 않는 인스턴스 메서드는 static 메서드로 바꾸는 걸 고려해보자.  </p>
+<p>다음과 같은 장점이 있다.  </p>
+<ol>
+<li>클래스가 메모리에 로드될 때 단 한번만 수행된다.  </li>
+<li>인스턴스를 생성하지 않고 호출이 가능하다.  </li>
+<li>더 편리하고 속도도 더 빠르다.</li>
+</ol>
+<h2 id="final"><a href="#final" class="headerlink" title="final"></a>final</h2><ul>
+<li>변수 -&gt; 상수로 만들어버림.  </li>
+<li>메소드 -&gt; 오버라이딩이 불가능해짐.  </li>
+<li>클래스 -&gt; 상속받지 못하는 클래스가 됨.</li>
+</ul>
+<p>예외로 인스턴스 변수는 상수로 선언만 했을 때는 생성자 함수에서 초기화가 가능하다.<br>그 이유는 생성자 함수에서 초기화가 불가능하다면 모든 인스턴스마다 같은 인스턴스 상수를 갖게 될 것이기 때문이다.<br>인스턴스 상수도 일단은 인스턴스 변수이니 인스턴스마다 다른 값을 가져야 의미가 있는 것이지 다 같은 값을 가지면 static 변수와 큰 차이점이 없게 된다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Test2</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">int</span> x;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">int</span> <span class="variable">y</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">    Test2() &#123;</span><br><span class="line">        x = <span class="number">10</span>; <span class="comment">// 초기화 되지 않은 상수를 초기화 시켜주지 않고 방치하면 오류가 발생한다.</span></span><br><span class="line">        <span class="comment">// y = 20; 초기화만 가능하지 재할당은 불가능하다.</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">a</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// x = 22; 생성자 함수 이외에는 불가능하다.</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="접근-지정자"><a href="#접근-지정자" class="headerlink" title="접근 지정자"></a>접근 지정자</h2><table>
+<thead>
+<tr>
+<th>제어자</th>
+<th>같은 클래스</th>
+<th>같은 패키지</th>
+<th>자식 클래스</th>
+<th>전체</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>public</td>
+<td>O</td>
+<td>O</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>protected</td>
+<td>O</td>
+<td>O</td>
+<td>O</td>
+<td>X</td>
+</tr>
+<tr>
+<td>(default)</td>
+<td>O</td>
+<td>O</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>private</td>
+<td>O</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>사용 가능한 접근 지정자</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>클래스</td>
+<td>public, (default)</td>
+</tr>
+<tr>
+<td>멤버</td>
+<td>public, protected, (default), private</td>
+</tr>
+<tr>
+<td>지역변수</td>
+<td>없음</td>
+</tr>
+</tbody></table>
+<p>접근 지정자를 사용하는 이유는 다음과 같다.  </p>
+<ol>
+<li>외부로부터 데이터를 보호하기 위해서  </li>
+<li>외부에는 불필요하고 내부적으로만 사용하는 부분들을 감추기 위해서<br>이러한 것들을 캡슐화(encapsulation)이라고 부른다.<br>데이터가 유효한 값을 유지하고, 비밀번호 같은 데이터를 외부에서 함부로 변경하지 못하게 하기 위함.<br>이렇게 접근 범위를 축소해나가다 보면 테스트를 할 때도 다른 패키지들을 다 커버할 필요없이 해당 코드가 접근 가능한 부분들만 테스트하면 되니 유지보수 측면에서도 용이하다.<br>또한 getter와 setter를 써서 변수의 유효성 검사도 할 수 있다.</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Time</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> hour;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getHour</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> hour;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHour</span><span class="params">(<span class="type">int</span> hour)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(hour &gt; <span class="number">0</span> &amp;&amp; hour &lt; <span class="number">24</span>) <span class="built_in">this</span>.hour = hour;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TimeTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Time</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Time</span>();</span><br><span class="line">        <span class="comment">// t.hour = 25; 접근지정자가 없으면 유효한 시간 값인지 검사할 방법이 없다.</span></span><br><span class="line">        t.setHour(<span class="number">25</span>);</span><br><span class="line">        System.out.println(t.getHour()); <span class="comment">// 0</span></span><br><span class="line">        t.setHour(<span class="number">11</span>);</span><br><span class="line">        System.out.println(t.getHour()); <span class="comment">// 11</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>또한 생성자에 접근 제어자를 사용하면 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.seotory.com/post/2016/03/java-singleton-pattern">싱글톤 패턴</a>을 구현할 수 있다.<br>싱글톤: 해당 클래스의 인스턴스가 하나만 만들어지고, 어디서든지 그 인스턴스에 접근할 수 있도록 하기 위한 패턴.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 싱글톤 객체는 상속이 불가능하다.</span></span><br><span class="line"><span class="comment">// 왜냐하면 자식 클래스에서 부모 클래스의 생성자 호출이 불가능하기 때문이다.</span></span><br><span class="line"><span class="comment">// 따라서 명시적으로 final 키워드를 붙여서 상속이 불가능한 클래스라는 것을 표기해주는 게 좋다.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Singleton</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">Singleton</span> <span class="variable">s</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Singleton</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="number">11</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SingletonTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// Singleton s = new Singleton(); private이므로 다른 클래스에서 생성자에 접근 불가</span></span><br><span class="line">        <span class="comment">// 클래스의 인스턴스를 얻으려면 이미 static 변수에 저장된 동일한 인스턴스만 불러오면 된다.</span></span><br><span class="line">        <span class="type">Singleton</span> <span class="variable">s</span> <span class="operator">=</span> Singleton.getInstance();</span><br><span class="line">        System.out.println(s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>또한 다음과 같은 주의사항이 있다.  </p>
+<ol>
+<li>메소드에 static과 abstract를 함께 사용할 수 없다.<br>abstract는 몸통이 없는 불완전한 애이고, static은 클래스가 로딩되자마자 메모리에 적재되므로<br>구현이 안 된 애를 메모리에 적재할 수는 없다.  </li>
+<li>클래스에도 abstract와 final을 함께 사용할 수 없다.<br>abstract는 선언부만 던져주고 상속받아서 알아서 구현하라는 키워드인데<br>final 키워드를 붙여 상속이 불가능하게 만들면 모순되는 말이다.  </li>
+<li>메소드에 abstract와 private를 함께 사용할 수 없다<br>abstract는 선언부만 던져주고 상속받아서 알아서 구현하라는 키워드인데<br>private 키워드는 그 상속받은 자식 클래스에서 조차 접근이 불가능하므로 모순되는 말이다.  </li>
+<li>메소드에 private과 final을 같이 사용할 필요는 없다.<br>private인 메소드는 자식에서도 접근이 불가능하기 때문에 오버라이딩 될 수 없다. 이미 둘 다 같은 역할을 하기 때문에 하나만 사용하면 된다.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%A0%95%EC%84%9D/" rel="tag"># 자바의 정석</a>
+              <a href="/tags/OOP/" rel="tag"># OOP</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/07/22/hexo-theme-overdose-starter/" rel="prev" title="(자작) Hexo theme overdose starter">
+                  <i class="fa fa-chevron-left"></i> (자작) Hexo theme overdose starter
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/08/02/Spring-boot-study-001day/" rel="next" title="(Spring Boot) 스타트 스프링 부트 001일차 - 스프링(부트), 빌드툴, VO, Lombok, 어노테이션, Jackson, ORM, JPA, Hibernate">
+                  (Spring Boot) 스타트 스프링 부트 001일차 - 스프링(부트), 빌드툴, VO, Lombok, 어노테이션, Jackson, ORM, JPA, Hibernate <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

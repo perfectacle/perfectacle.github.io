@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가기에 앞서여기선 기본적으로 웹팩 1, 바벨, ES2015(ES6)을 알고 있다는 전제로 진행한다.리액트 대신에 다른 서드 파티(라이브러리&#x2F;프레임워크) 가지고 테스트하면서 이 글을 봐도 된다.또한 이 글을 보고 나서 (Webpack 2) 코드를 분할해보자!도 보는 걸 추천한다. 트리 쉐이킹(Tree Shaking)??   트리 쉐이킹이란 나무를">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Webpack 2) 트리 쉐이킹을 해보자!">
+<meta property="og:url" content="https://perfectacle.github.io/2017/03/12/webpack2-tree-shaking/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="들어가기에 앞서여기선 기본적으로 웹팩 1, 바벨, ES2015(ES6)을 알고 있다는 전제로 진행한다.리액트 대신에 다른 서드 파티(라이브러리&#x2F;프레임워크) 가지고 테스트하면서 이 글을 봐도 된다.또한 이 글을 보고 나서 (Webpack 2) 코드를 분할해보자!도 보는 걸 추천한다. 트리 쉐이킹(Tree Shaking)??   트리 쉐이킹이란 나무를">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/03/12/webpack2-tree-shaking/thumb.png">
+<meta property="article:published_time" content="2017-03-12T19:32:22.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.227Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="ES6">
+<meta property="article:tag" content="ES2015">
+<meta property="article:tag" content="npm">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="Webpack2">
+<meta property="article:tag" content="babel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/03/12/webpack2-tree-shaking/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/03/12/webpack2-tree-shaking/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/03/12/webpack2-tree-shaking/","path":"2017/03/12/webpack2-tree-shaking/","title":"(Webpack 2) 트리 쉐이킹을 해보자!"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Webpack 2) 트리 쉐이킹을 해보자! | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C"><span class="nav-number">1.</span> <span class="nav-text">들어가기에 앞서</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8A%B8%EB%A6%AC-%EC%89%90%EC%9D%B4%ED%82%B9-Tree-Shaking"><span class="nav-number">2.</span> <span class="nav-text">트리 쉐이킹(Tree Shaking)??</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9A%B0%EB%A6%AC%EC%9D%98-%EC%BD%94%EB%93%9C%EB%A5%BC-%ED%8A%B8%EB%A6%AC-%EC%89%90%EC%9D%B4%ED%82%B9-%ED%95%B4%EB%B3%B4%EC%9E%90"><span class="nav-number">3.</span> <span class="nav-text">우리의 코드를 트리 쉐이킹 해보자</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%84%9C%EB%93%9C%ED%8C%8C%ED%8B%B0-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-x2F-%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8C%ED%81%AC-%EB%A5%BC-%ED%8A%B8%EB%A6%AC-%EC%89%90%EC%9D%B4%ED%82%B9-%ED%95%B4%EB%B3%B4%EC%9E%90"><span class="nav-number">4.</span> <span class="nav-text">서드파티(라이브러리&#x2F;프레임워크)를 트리 쉐이킹 해보자</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EC%A1%B0-%EB%A7%81%ED%81%AC"><span class="nav-number">5.</span> <span class="nav-text">참조 링크</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/03/12/webpack2-tree-shaking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Webpack 2) 트리 쉐이킹을 해보자! | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Webpack 2) 트리 쉐이킹을 해보자!
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-03-12 19:32:22" itemprop="dateCreated datePublished" datetime="2017-03-12T19:32:22+00:00">2017-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Front-end/" itemprop="url" rel="index"><span itemprop="name">Front-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Front-end/Webpack/" itemprop="url" rel="index"><span itemprop="name">Webpack</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/03/12/webpack2-tree-shaking/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/12/webpack2-tree-shaking/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>여기선 기본적으로 웹팩 1, 바벨, ES2015(ES6)을 알고 있다는 전제로 진행한다.<br>리액트 대신에 다른 서드 파티(라이브러리&#x2F;프레임워크) 가지고 테스트하면서 이 글을 봐도 된다.<br>또한 이 글을 보고 나서 <a href="/2017/03/13/webpack2-code-splitting/">(Webpack 2) 코드를 분할해보자!</a>도 보는 걸 추천한다.</p>
+<h2 id="트리-쉐이킹-Tree-Shaking"><a href="#트리-쉐이킹-Tree-Shaking" class="headerlink" title="트리 쉐이킹(Tree Shaking)??"></a>트리 쉐이킹(Tree Shaking)??</h2><img src="/2017/03/12/webpack2-tree-shaking/thumb.png" class title="나무를 흔들어 썩은 과일(필요없는 놈)을 떨어트리자!">  
+<p>트리 쉐이킹이란 나무를 흔들어서 필요없는 걸 떨어트리는 행위를 말한다.<br>여기서 우리에게 필요없는 것이란 쓰지 않는 코드를 뜻한다.  </p>
+<h2 id="우리의-코드를-트리-쉐이킹-해보자"><a href="#우리의-코드를-트리-쉐이킹-해보자" class="headerlink" title="우리의 코드를 트리 쉐이킹 해보자"></a>우리의 코드를 트리 쉐이킹 해보자</h2><p>기존 웹팩 1에서 번들링이 어떻게 이루어졌는지 보자.  </p>
+<p>우선 모듈을 하나 만들어보자. (module.js)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> a = <span class="number">123123123123</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> b = <span class="number">45645646456</span>;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 이 모듈을 불러다 쓰는 우리의 앱을 만들자. (app.js)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;a&#125; <span class="keyword">from</span> <span class="string">&#x27;./module&#x27;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a);</span><br></pre></td></tr></table></figure>
+
+<p>하지만 번들링을 해보면 아래와 같이 쓰지도 않은 b가 들어가있는 반쪽짜리 모듈화가 된 셈이다.<br>아마 이게 ES2015의 Native Import가 아닌 CommonJS 스타일?인 것으로 알고 있다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/************************************************************************/</span></span><br><span class="line"><span class="comment">/******/</span> ([</span><br><span class="line"><span class="comment">/* 0 */</span></span><br><span class="line"><span class="comment">/***/</span> <span class="keyword">function</span>(<span class="params"><span class="variable language_">module</span>, <span class="built_in">exports</span>, __webpack_require__</span>) &#123;</span><br><span class="line"></span><br><span class="line">	<span class="string">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> _moduleA = <span class="title function_">__webpack_require__</span>(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">	<span class="variable language_">console</span>.<span class="title function_">log</span>(_moduleA.<span class="property">a</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;,</span><br><span class="line"><span class="comment">/* 1 */</span></span><br><span class="line"><span class="comment">/***/</span> <span class="keyword">function</span>(<span class="params"><span class="variable language_">module</span>, <span class="built_in">exports</span></span>) &#123;</span><br><span class="line"></span><br><span class="line">	<span class="string">&quot;use strict&quot;</span>;</span><br><span class="line"></span><br><span class="line">	<span class="title class_">Object</span>.<span class="title function_">defineProperty</span>(<span class="built_in">exports</span>, <span class="string">&quot;__esModule&quot;</span>, &#123;</span><br><span class="line">	  <span class="attr">value</span>: <span class="literal">true</span></span><br><span class="line">	&#125;);</span><br><span class="line">	<span class="keyword">var</span> a = <span class="built_in">exports</span>.<span class="property">a</span> = <span class="number">123123123123</span>;</span><br><span class="line">	<span class="keyword">var</span> b = <span class="built_in">exports</span>.<span class="property">b</span> = <span class="number">45645646456</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;</span><br><span class="line"><span class="comment">/******/</span> ]);</span><br></pre></td></tr></table></figure>
+
+<p>하지만 웹팩 2에서는 이런 ES2015 Native Import를 지원함으로써<br>쓸 데 없는 녀석(const b)을 나무에서 떨어트리는 트리 쉐이킹이 가능해진 것이다.<br>바로 알아보자!  </p>
+<p>일단 프로젝트를 하나 만들고 웹팩을 설치해보자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm init --y</span><br><span class="line">npm i -D webpack</span><br></pre></td></tr></table></figure>
+
+<p>위에 적어놓은 app.js와 module.js를 똑같이 만들자.<br>그리고 webpack.config.js를 만들어서 아래와 같이 만들어주자.<br>바벨 없이 import&#x2F;export를 쓸 수 있는 건 혁명이다!!  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: <span class="string">&#x27;./app.js&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;bundle.js&#x27;</span>,</span><br><span class="line">    <span class="attr">path</span>: <span class="string">`./`</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 터미널에서 아래와 같이 번들링을 해보자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./node_modules/webpack/bin/webpack.js</span><br></pre></td></tr></table></figure>
+
+<p>하지만 번들링된 녀석을 보면 여전히 b가 남아있다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/************************************************************************/</span></span><br><span class="line"><span class="comment">/******/</span> ([</span><br><span class="line"><span class="comment">/* 0 */</span></span><br><span class="line"><span class="comment">/***/</span> (<span class="keyword">function</span>(<span class="params"><span class="variable language_">module</span>, __webpack_exports__, __webpack_require__</span>) &#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">&quot;use strict&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> a = <span class="number">123123123123</span>;</span><br><span class="line"><span class="comment">/* harmony export (immutable) */</span> __webpack_exports__[<span class="string">&quot;a&quot;</span>] = a;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> b = <span class="number">45645646456</span>;</span><br><span class="line"><span class="comment">/* unused harmony export b */</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;),</span><br><span class="line"><span class="comment">/* 1 */</span></span><br><span class="line"><span class="comment">/***/</span> (<span class="keyword">function</span>(<span class="params"><span class="variable language_">module</span>, __webpack_exports__, __webpack_require__</span>) &#123;</span><br><span class="line"></span><br><span class="line"><span class="meta">&quot;use strict&quot;</span>;</span><br><span class="line"><span class="title class_">Object</span>.<span class="title function_">defineProperty</span>(__webpack_exports__, <span class="string">&quot;__esModule&quot;</span>, &#123; <span class="attr">value</span>: <span class="literal">true</span> &#125;);</span><br><span class="line"><span class="comment">/* harmony import */</span> <span class="keyword">var</span> __WEBPACK_IMPORTED_MODULE_0__module__ = <span class="title function_">__webpack_require__</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(__WEBPACK_IMPORTED_MODULE_0__module__[<span class="string">&quot;a&quot;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;)</span><br><span class="line"><span class="comment">/******/</span> ]);</span><br></pre></td></tr></table></figure>
+
+<p>트리 쉐이킹을 위해선 웹팩 2의 플러그인인 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/mishoo/UglifyJS2">UglifyJS2</a>를 이용하면 된다.<br>이제 webpack.config.js를 수정해주자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">&#x27;webpack&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: <span class="string">&#x27;./app.js&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;bundle.js&#x27;</span>,</span><br><span class="line">    <span class="attr">path</span>: <span class="string">`./`</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 여기부터 추가된 내용</span></span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">UglifyJsPlugin</span>(&#123;</span><br><span class="line">      <span class="comment">// 사실 아래와 같이만 써도 트리 쉐이킹이 된다.</span></span><br><span class="line">      <span class="comment">// compress: true</span></span><br><span class="line">      </span><br><span class="line">      <span class="attr">compress</span>: &#123;</span><br><span class="line">        <span class="comment">// warnings: false, // 콘솔 창에 출력되는 게 보기 귀찮다면 요 놈을 주석 제거하면 된다.</span></span><br><span class="line">        <span class="attr">unused</span>: <span class="literal">true</span> <span class="comment">// 요 놈이 핵심</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">mangle</span>: <span class="literal">false</span>,    <span class="comment">// DEMO ONLY: Don&#x27;t change variable names.(난독화)</span></span><br><span class="line">      <span class="attr">beautify</span>: <span class="literal">true</span>,   <span class="comment">// DEMO ONLY: Preserve whitespace (가독성 좋게 함)</span></span><br><span class="line">      <span class="attr">output</span>: &#123;</span><br><span class="line">        <span class="attr">comments</span>: <span class="literal">true</span>  <span class="comment">// DEMO ONLY: Helpful comments (주석 삭제 안 함)</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>그리고 다시 아래와 같이 터미널에서 번들링을 해주자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./node_modules/webpack/bin/webpack.js</span><br></pre></td></tr></table></figure>
+<p>그럼 아래와 같은 로그가 터미널에 뜬다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WARNING <span class="keyword">in</span> bundle.js from UglifyJs</span><br><span class="line">Collapsing constant a [bundle.js:75,60]</span><br><span class="line">Dropping unused variable b [bundle.js:77,6]</span><br></pre></td></tr></table></figure>
+
+<p><code>Dropping unused variable b [bundle.js:77,6]</code><br>위 부분이 핵심이다.<br>다시 번들링 된 코드를 보면 깔끔하게 b가 제거된 것을 볼 수 있다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 0 */</span></span><br><span class="line"><span class="comment">/***/</span></span><br><span class="line"><span class="keyword">function</span>(<span class="params"><span class="variable language_">module</span>, __webpack_exports__, __webpack_require__</span>) &#123;</span><br><span class="line">    <span class="string">&quot;use strict&quot;</span>;</span><br><span class="line">    <span class="comment">/* harmony export (immutable) */</span></span><br><span class="line">    __webpack_exports__.<span class="property">a</span> = <span class="number">123123123123</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="서드파티-라이브러리-x2F-프레임워크-를-트리-쉐이킹-해보자"><a href="#서드파티-라이브러리-x2F-프레임워크-를-트리-쉐이킹-해보자" class="headerlink" title="서드파티(라이브러리&#x2F;프레임워크)를 트리 쉐이킹 해보자"></a>서드파티(라이브러리&#x2F;프레임워크)를 트리 쉐이킹 해보자</h2><p><code>이 챕터는 다소 문제가 많다.</code><br>서드파티마다 모듈화 한 방식이 제각각이라 트리 쉐이킹 하는 방법이 다양하고,<br>나도 처음 접하다 보니 모든 서드 파티를 테스트 할 수가 없어서 대표적으로<br>react-router(4는 너무 변경 사항이 많아서 3) 요 놈만 건드려보았다.  </p>
+<p>react-router를 사용하기 위해 react를 설치해야 하고,<br>react를 사용하려면 react-dom도 설치해야하고,<br>또한 react를 쓰기 위해선 babel-preset-react를 설치해야하는데,<br>babel-preset-react를 쓰기 위해선 babel-core도 설치해야하고,<br>webpack에서 bable을 사용하기 위해선 bable-loader도 설치해야 하고,<br>uglifyJS2가 ES2015를 완벽하게 지원하지 않아서<br>babel-preset-2015(여기선 babel-preset-env)를 설치해야한다.<br>위에 절차가 복잡하므로 이해하지 말고 그냥 설치해버리자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm i -S react react-dom react-router@^3.x</span><br><span class="line">npm i -D babel-core babel-preset-env babel-preset-react babel-loader</span><br></pre></td></tr></table></figure>
+
+<p>index.html 파일을 만들자.  </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;ko&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./bundle.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>라우팅 할 컴포넌트 Comp.js를 하나 만들자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Comp</span> = (<span class="params"></span>) =&gt; <span class="language-xml"><span class="tag">&lt;<span class="name">h2</span>&gt;</span>하이<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Comp</span>;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 app.js를 다음과 같이 수정해보자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react/lib/React&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">&#x27;react-dom/lib/ReactDOM&#x27;</span>; </span><br><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">Router</span>, <span class="title class_">Route</span>, hashHistory&#125; <span class="keyword">from</span> <span class="string">&#x27;react-router&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Comp</span> <span class="keyword">from</span> <span class="string">&#x27;./Comp&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">render</span>(</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">Router</span> <span class="attr">history</span>=<span class="string">&#123;hashHistory&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;/&quot;</span> <span class="attr">component</span>=<span class="string">&#123;Comp&#125;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">Router</span>&gt;</span></span>,</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;app&#x27;</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>webpack.config.json에 바벨 로더를 붙이자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">&#x27;webpack&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: <span class="string">&#x27;./app.js&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;bundle.js&#x27;</span>,</span><br><span class="line">    <span class="attr">path</span>: <span class="string">`./`</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">UglifyJsPlugin</span>(&#123;</span><br><span class="line">      <span class="comment">// 사실 아래와 같이만 써도 트리 쉐이킹이 된다.</span></span><br><span class="line">      <span class="comment">// compress: true</span></span><br><span class="line"></span><br><span class="line">      <span class="attr">compress</span>: &#123;</span><br><span class="line">        <span class="comment">// warnings: false, // 콘솔 창에 출력되는 게 보기 귀찮다면 요 놈을 주석 제거를 하면 된다.</span></span><br><span class="line">        <span class="attr">unused</span>: <span class="literal">true</span> <span class="comment">// 요 놈이 핵심</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">mangle</span>: <span class="literal">false</span>,    <span class="comment">// DEMO ONLY: Don&#x27;t change variable names.(난독화)</span></span><br><span class="line">      <span class="attr">beautify</span>: <span class="literal">true</span>,   <span class="comment">// DEMO ONLY: Preserve whitespace (가독성 좋게 함)</span></span><br><span class="line">      <span class="attr">output</span>: &#123;</span><br><span class="line">        <span class="attr">comments</span>: <span class="literal">true</span>  <span class="comment">// DEMO ONLY: Helpful comments (주석 삭제 안 함)</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 여기서부터 추가된 내용.</span></span><br><span class="line">    <span class="comment">// 로더들에게 옵션을 넣어주는 플러그인이다.</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">LoaderOptionsPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">minimize</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="comment">// 웹팩 1에서는 loaders를 썼지만 2에선 rules</span></span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">        <span class="comment">// 쿼리가 필요한 로더는 loader로 써줘야함.</span></span><br><span class="line">        <span class="comment">// 쿼리가 필요 없는 로더는 use로 써도 된다.</span></span><br><span class="line">        <span class="comment">// 웹팩 2에선 babel-loader와 같이 -loader 생략이 불가능해졌다.</span></span><br><span class="line">        <span class="attr">loader</span>: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">        <span class="comment">// babel-loader?머시기와 같은 쿼리나 query: 옵션 대신에</span></span><br><span class="line">        <span class="comment">// 웹팩 2에선 options: 로 바뀜.</span></span><br><span class="line">        <span class="comment">// .babelrc로 따로 빼줘도 상관 없다.</span></span><br><span class="line">        <span class="attr">options</span>: &#123;</span><br><span class="line">          <span class="attr">presets</span>: [</span><br><span class="line">            [</span><br><span class="line">              <span class="string">&quot;env&quot;</span>,</span><br><span class="line">              &#123;</span><br><span class="line">                <span class="attr">browsers</span>: [<span class="string">&#x27;last 2 versions&#x27;</span>, <span class="string">&#x27;&gt; 10%&#x27;</span>, <span class="string">&#x27;ie 9&#x27;</span>],</span><br><span class="line">                <span class="comment">// babel-preset-2015에서는 Native Module을 쓰지 않는 것인지</span></span><br><span class="line">                <span class="comment">// 아래 옵션을 주지 않으면 우리가 만든 코드(ES2015의 import/export Syntax)가</span></span><br><span class="line">                <span class="comment">// 트리 쉐이킹 되질 않는다.</span></span><br><span class="line">                <span class="string">&quot;modules&quot;</span>: <span class="literal">false</span></span><br><span class="line">              &#125;</span><br><span class="line">            ],</span><br><span class="line">            <span class="string">&quot;react&quot;</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DeprecationWarning: loaderUtils.parseQuery() received a non-string value which can be problematic, see https://github.com/webpack/loader-utils/issues/56</span></span><br><span class="line"><span class="comment">// parseQuery() will be replaced with getOptions() in the next major version of loader-utils.</span></span><br><span class="line"><span class="comment">// 위와 같이 로더 개발자를 위한 로그가 뜨는데 보기 싫다면 주석을 제거하면 된다.</span></span><br><span class="line"><span class="comment">// process.noDeprecation = true;</span></span><br></pre></td></tr></table></figure>
+
+<p>이제 번들링 된 파일을 보면 우리가 import 시키지도 않은 browserHistory가 들어있다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 211 */</span></span><br><span class="line"><span class="comment">/***/</span></span><br><span class="line"><span class="keyword">function</span>(<span class="params"><span class="variable language_">module</span>, __webpack_exports__, __webpack_require__</span>) &#123;</span><br><span class="line">    <span class="string">&quot;use strict&quot;</span>;</span><br><span class="line">    <span class="comment">/* harmony import */</span></span><br><span class="line">    <span class="keyword">var</span> __WEBPACK_IMPORTED_MODULE_0_history_lib_createBrowserHistory__ = <span class="title function_">__webpack_require__</span>(<span class="number">129</span>), __WEBPACK_IMPORTED_MODULE_0_history_lib_createBrowserHistory___default = __webpack_require__.<span class="title function_">n</span>(__WEBPACK_IMPORTED_MODULE_0_history_lib_createBrowserHistory__), __WEBPACK_IMPORTED_MODULE_1__createRouterHistory__ = <span class="title function_">__webpack_require__</span>(<span class="number">103</span>);</span><br><span class="line">    __webpack_require__.<span class="title function_">i</span>(__WEBPACK_IMPORTED_MODULE_1__createRouterHistory__.<span class="property">a</span>)(__WEBPACK_IMPORTED_MODULE_0_history_lib_createBrowserHistory___default.<span class="property">a</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이렇듯 서드 파티들은 트리 쉐이킹이 제대로 되지 않는다.<br>아마 서드파티 제작자들도 우리가 쓴 ES2015의 import&#x2F;export 문법을 썼지만 배포할 때는<br>babel-preset-2015의 Native가 아닌 모듈로 트랜스파일 된 놈이 배포되기 때문에 그런 게 아닐까 싶다.<br>따라서 아래와 같이 별개의 모듈일 일일이 불러오는 번거로운 작업을 해줘야한다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react/lib/React&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">&#x27;react-dom/lib/ReactDOM&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Router</span> <span class="keyword">from</span> <span class="string">&#x27;react-router/es/Router&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Route</span> <span class="keyword">from</span> <span class="string">&#x27;react-router/es/Route&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> hashHistory <span class="keyword">from</span> <span class="string">&#x27;react-router/es/hashHistory&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Comp</span> <span class="keyword">from</span> <span class="string">&#x27;./Comp&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">render</span>(</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">Router</span> <span class="attr">history</span>=<span class="string">&#123;hashHistory&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;/&quot;</span> <span class="attr">component</span>=<span class="string">&#123;Comp&#125;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">Router</span>&gt;</span></span>,</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;app&#x27;</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>다른 서드 파티들은 바로 import 시켜도 트리 쉐이킹 되는 애들도 있을 것이지만,<br>대부분의 서드 파티가 업데이트 되기 전까지는 저렇게 일일이 import 시켜줘야하는 번거로움이 있다.  </p>
+<h2 id="참조-링크"><a href="#참조-링크" class="headerlink" title="참조 링크"></a>참조 링크</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.zerocho.com/category/Javascript/post/58aa916d745ca90018e5301d">웹팩2(Webpack) 설정하기</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://moduscreate.com/webpack-2-tree-shaking-configuration/">Webpack 2 Tree Shaking Configuration</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://webpack.js.org/guides/">Webpack2 Guides</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/mishoo/UglifyJS2">UglifyJS2</a><br>등등 너무 많아서 증발함…</li>
+</ul>
+<p><code>혹시 틀린 내용이 있다면 무한 태클 환영입니다 ~</code></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ES6/" rel="tag"># ES6</a>
+              <a href="/tags/ES2015/" rel="tag"># ES2015</a>
+              <a href="/tags/npm/" rel="tag"># npm</a>
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+              <a href="/tags/Webpack2/" rel="tag"># Webpack2</a>
+              <a href="/tags/babel/" rel="tag"># babel</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/03/01/perf-chk/" rel="prev" title="(자작) perf-chk (Node.js 애플리케이션)">
+                  <i class="fa fa-chevron-left"></i> (자작) perf-chk (Node.js 애플리케이션)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/03/13/webpack2-code-splitting/" rel="next" title="(Webpack 2) 코드를 분할해보자!">
+                  (Webpack 2) 코드를 분할해보자! <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="async-to-syncasync-to-sync는 자바스크립트 비동기 함수를 동기 함수로 바꿔주는 헬퍼 함수이다.async&#x2F;await는 물론 Promise를 몰라도 된다!!    npm   github  왜 async-to-sync를 만들었는가?">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(자작) async-to-sync (자바스크립트 비동기 함수 헬퍼)">
+<meta property="og:url" content="https://perfectacle.github.io/2017/05/01/async-to-sync/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="async-to-syncasync-to-sync는 자바스크립트 비동기 함수를 동기 함수로 바꿔주는 헬퍼 함수이다.async&#x2F;await는 물론 Promise를 몰라도 된다!!    npm   github  왜 async-to-sync를 만들었는가?">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/05/01/async-to-sync/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/05/01/async-to-sync/chrome.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/05/01/async-to-sync/firefox.jpg">
+<meta property="og:image" content="https://perfectacle.github.io/2017/05/01/async-to-sync/IE.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/05/01/async-to-sync/node.png">
+<meta property="article:published_time" content="2017-05-01T12:47:00.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.319Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JS">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="ES6">
+<meta property="article:tag" content="ES2015">
+<meta property="article:tag" content="npm">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="Promise">
+<meta property="article:tag" content="async">
+<meta property="article:tag" content="await">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/05/01/async-to-sync/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/05/01/async-to-sync/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/05/01/async-to-sync/","path":"2017/05/01/async-to-sync/","title":"(자작) async-to-sync (자바스크립트 비동기 함수 헬퍼)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(자작) async-to-sync (자바스크립트 비동기 함수 헬퍼) | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#async-to-sync"><span class="nav-number">1.</span> <span class="nav-text">async-to-sync</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%99%9C-async-to-sync%EB%A5%BC-%EB%A7%8C%EB%93%A4%EC%97%88%EB%8A%94%EA%B0%80"><span class="nav-number">1.1.</span> <span class="nav-text">왜 async-to-sync를 만들었는가?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0"><span class="nav-number">1.2.</span> <span class="nav-text">시작하기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%84%A4%EC%B9%98"><span class="nav-number">1.2.1.</span> <span class="nav-text">설치</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#npm"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">npm</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#yarn"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">yarn</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%82%AC%EC%9A%A9%EB%B2%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">사용법</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#async-to-sync-%EB%AA%A8%EB%93%88%EC%9D%84-%EB%B6%88%EB%9F%AC%EC%98%A4%EB%8A%94-%EB%B0%A9%EB%B2%95"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">async-to-sync 모듈을 불러오는 방법</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%EC%9B%B9%ED%8C%A9"><span class="nav-number">1.2.2.1.1.</span> <span class="nav-text">웹팩</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#async-x2F-await-amp-Promise-%EC%A7%80%EC%9B%90-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%EC%9D%B8-%EA%B2%BD%EC%9A%B0"><span class="nav-number">1.2.2.1.1.1.</span> <span class="nav-text">async&#x2F;await &amp; Promise 지원 브라우저인 경우</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#async-x2F-await-amp-Promise-or-ES2015-%EB%AF%B8%EC%A7%80%EC%9B%90-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%EC%9D%B8-%EA%B2%BD%EC%9A%B0"><span class="nav-number">1.2.2.1.1.2.</span> <span class="nav-text">async&#x2F;await &amp; Promise or ES2015 미지원 브라우저인 경우</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-CDN%EC%9D%80-%EC%A7%80%EC%9B%90-%EC%98%88%EC%A0%95%EC%9D%B4%EB%8B%88-%EC%9E%A0%EC%8B%9C%EB%A7%8C-%EA%B8%B0%EB%8B%A4%EB%A6%AC%EC%9E%90"><span class="nav-number">1.2.2.1.2.</span> <span class="nav-text">브라우저 (CDN은 지원 예정이니 잠시만 기다리자!)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#async-x2F-await-amp-Promise-%EC%A7%80%EC%9B%90-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80"><span class="nav-number">1.2.2.1.2.1.</span> <span class="nav-text">async&#x2F;await &amp; Promise 지원 브라우저</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#async-x2F-await-amp-Promise-or-ES2015-%EB%AF%B8%EC%A7%80%EC%9B%90-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80"><span class="nav-number">1.2.2.1.2.2.</span> <span class="nav-text">async&#x2F;await &amp; Promise or ES2015 미지원 브라우저</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Node-js"><span class="nav-number">1.2.2.1.3.</span> <span class="nav-text">Node.js</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#async-x2F-await-amp-Promise%EB%A5%BC-%EC%A7%80%EC%9B%90%ED%95%A0-%EB%95%8C"><span class="nav-number">1.2.2.1.3.1.</span> <span class="nav-text">async&#x2F;await &amp; Promise를 지원할 때</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#In-async-x2F-await-amp-Promise-or-ES2015-not-support-Node"><span class="nav-number">1.2.2.1.3.2.</span> <span class="nav-text">In async&#x2F;await &amp; Promise or ES2015 not support Node</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EC%96%B4%EB%96%BB%EA%B2%8C-%EC%93%B0%EB%8A%94%EA%B0%80"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">어떻게 쓰는가</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%EC%A7%84%EC%A7%9C-%EC%82%AC%EC%9A%A9-%EB%B0%A9%EB%B2%95"><span class="nav-number">1.2.2.2.1.</span> <span class="nav-text">진짜 사용 방법</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#ats-Array-arrAsync-Function-fallback"><span class="nav-number">1.2.2.2.1.1.</span> <span class="nav-text">ats(Array arrAsync[, Function fallback])</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EC%A7%80%EC%9B%90%ED%95%98%EB%8A%94-%ED%94%8C%EB%9E%AB%ED%8F%BC"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">지원하는 플랫폼</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/05/01/async-to-sync/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(자작) async-to-sync (자바스크립트 비동기 함수 헬퍼) | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (자작) async-to-sync (자바스크립트 비동기 함수 헬퍼)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-05-01 12:47:00" itemprop="dateCreated datePublished" datetime="2017-05-01T12:47:00+00:00">2017-05-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/%EC%9E%90%EC%9E%91/" itemprop="url" rel="index"><span itemprop="name">자작</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/05/01/async-to-sync/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/01/async-to-sync/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/05/01/async-to-sync/thumb.png" class>
+<h1 id="async-to-sync"><a href="#async-to-sync" class="headerlink" title="async-to-sync"></a>async-to-sync</h1><p>async-to-sync는 자바스크립트 비동기 함수를 동기 함수로 바꿔주는 헬퍼 함수이다.<br>async&#x2F;await는 물론 Promise를 몰라도 된다!!  </p>
+<ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.npmjs.com/package/async-to-sync">npm</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/perfectacle/async-to-sync">github</a></li>
+</ul>
+<h2 id="왜-async-to-sync를-만들었는가"><a href="#왜-async-to-sync를-만들었는가" class="headerlink" title="왜 async-to-sync를 만들었는가?"></a>왜 async-to-sync를 만들었는가?</h2><p>드디어 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/tc39/ecmascript-asyncawait">async&#x2F;await</a>가 ES2017에 추가 되었다(아직 최종 스펙이 나온 건 아니지만).<br>async&#x2F;await는 자바스크립트 비동기 함수를 동기 함수로 바꿔주는 기능을 한다.<br>하지만 여전히 사용하기가 어렵고, 또한 ES2015의 Promise를 알고 있다는 전제 하에 사용이 가능하다.<br>그래서 비동기 함수를 동기 함수로 만들 때 사용하기 편하려고 만들었다.</p>
+<h2 id="시작하기"><a href="#시작하기" class="headerlink" title="시작하기"></a>시작하기</h2><h3 id="설치"><a href="#설치" class="headerlink" title="설치"></a>설치</h3><h4 id="npm"><a href="#npm" class="headerlink" title="npm"></a>npm</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -S async-to-sync</span><br></pre></td></tr></table></figure>
+<h4 id="yarn"><a href="#yarn" class="headerlink" title="yarn"></a>yarn</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add async-to-sync</span><br></pre></td></tr></table></figure>
+
+<h3 id="사용법"><a href="#사용법" class="headerlink" title="사용법"></a>사용법</h3><p>만약 타겟 브라우저&#x2F;노드의 async&#x2F;await 및 Promise 지원 여부를 모른다면 아래 링크를 확인하자.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://kangax.github.io/compat-table/es6/#test-Promise">ECMAScript 6 compatibility table | Promise</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://node.green/#ES2015-built-ins-Promise">Node.js ES2015&#x2F;ES6 | Promise</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://kangax.github.io/compat-table/es2016plus/#test-async_functions">ECMAScript 2016+ compatibility table | async</a><br><a href="hhttp://node.green/#ES2017-features-async-functions" rel="external nofollow noopener noreferrer" target="_blank">Node.js ES2017 support | async</a><br><code>주의!</code><br>async-to-sync는 babel-polyfill을 포함하지 않았다.<br>따라서 babel-polyfill을 사용해야한다면 설치를 하자.<br><code>npm</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -S babel-polyfill</span><br></pre></td></tr></table></figure>
+<p><code>yarn</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add babel-polyfill</span><br></pre></td></tr></table></figure>
+<p>혹은 CDN을 이용하면 된다.<br>아래 구구절절한 사용 방법 대신 빠르게 사용 방법을 익히고 싶다면 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/perfectacle/async-to-sync/tree/master/examples">examples</a>를 참조하자.</p>
+<h4 id="async-to-sync-모듈을-불러오는-방법"><a href="#async-to-sync-모듈을-불러오는-방법" class="headerlink" title="async-to-sync 모듈을 불러오는 방법"></a>async-to-sync 모듈을 불러오는 방법</h4><h5 id="웹팩"><a href="#웹팩" class="headerlink" title="웹팩"></a>웹팩</h5><h6 id="async-x2F-await-amp-Promise-지원-브라우저인-경우"><a href="#async-x2F-await-amp-Promise-지원-브라우저인-경우" class="headerlink" title="async&#x2F;await &amp; Promise 지원 브라우저인 경우"></a>async&#x2F;await &amp; Promise 지원 브라우저인 경우</h6><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ats <span class="keyword">from</span> <span class="string">&#x27;async-to-sync&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<h6 id="async-x2F-await-amp-Promise-or-ES2015-미지원-브라우저인-경우"><a href="#async-x2F-await-amp-Promise-or-ES2015-미지원-브라우저인-경우" class="headerlink" title="async&#x2F;await &amp; Promise or ES2015 미지원 브라우저인 경우"></a>async&#x2F;await &amp; Promise or ES2015 미지원 브라우저인 경우</h6><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://babeljs.io/docs/usage/polyfill/">babel-polyfill</a> 사용이 필수이다.<br>또한 async-to-sync 모듈을 불러오기 전에 babel-polyfill을 불러와야만 한다.<br>만약 바벨과 같은 트랜스파일러를 쓰지 않는다면, ES2015 문법 사용은 지양하자. (MS 진영은 암담하기에…)  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;babel-polyfill&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> ats <span class="keyword">from</span> <span class="string">&#x27;async-to-sync/module/no-es2017&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h5 id="브라우저-CDN은-지원-예정이니-잠시만-기다리자"><a href="#브라우저-CDN은-지원-예정이니-잠시만-기다리자" class="headerlink" title="브라우저 (CDN은 지원 예정이니 잠시만 기다리자!)"></a>브라우저 (CDN은 지원 예정이니 잠시만 기다리자!)</h5><h6 id="async-x2F-await-amp-Promise-지원-브라우저"><a href="#async-x2F-await-amp-Promise-지원-브라우저" class="headerlink" title="async&#x2F;await &amp; Promise 지원 브라우저"></a>async&#x2F;await &amp; Promise 지원 브라우저</h6><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;node_modules/async-to-sync/browser/es2017/index.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h6 id="async-x2F-await-amp-Promise-or-ES2015-미지원-브라우저"><a href="#async-x2F-await-amp-Promise-or-ES2015-미지원-브라우저" class="headerlink" title="async&#x2F;await &amp; Promise or ES2015 미지원 브라우저"></a>async&#x2F;await &amp; Promise or ES2015 미지원 브라우저</h6><p>babel-polyfill 사용이 필수이다.<br>또한 async-to-sync 모듈을 불러오기 전에 babel-polyfill을 불러와야만 한다.<br>만약 바벨과 같은 트랜스파일러를 쓰지 않는다면, ES2015 문법 사용은 지양하자. (MS 진영은 암담하기에…)</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;node_modules/async-to-sync/browser/no-es2017/index.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h5><h6 id="async-x2F-await-amp-Promise를-지원할-때"><a href="#async-x2F-await-amp-Promise를-지원할-때" class="headerlink" title="async&#x2F;await &amp; Promise를 지원할 때"></a>async&#x2F;await &amp; Promise를 지원할 때</h6><p>만약 import 문법을 쓰고 싶다면 바벨과 같은 트랜스파일러를 이용하자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ats = <span class="built_in">require</span>(<span class="string">&#x27;async-to-sync&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<h6 id="In-async-x2F-await-amp-Promise-or-ES2015-not-support-Node"><a href="#In-async-x2F-await-amp-Promise-or-ES2015-not-support-Node" class="headerlink" title="In async&#x2F;await &amp; Promise or ES2015 not support Node"></a>In async&#x2F;await &amp; Promise or ES2015 not support Node</h6><p>babel-polyfill 사용이 필수이다.<br>또한 async-to-sync 모듈을 불러오기 전에 babel-polyfill을 불러와야만 한다.<br>만약 import 문법을 쓰고 싶다면 바벨과 같은 트랜스파일러를 이용하자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>(<span class="string">&#x27;babel-polyfill&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> ats = <span class="built_in">require</span>(<span class="string">&#x27;async-to-sync/module/no-es2017&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="어떻게-쓰는가"><a href="#어떻게-쓰는가" class="headerlink" title="어떻게 쓰는가"></a>어떻게 쓰는가</h4><p>비동기 함수에는 몇 가지 종류가 있다.  </p>
+<ul>
+<li>setTimeout(or setInterval)  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">123</span>);</span><br><span class="line">  &#125;, <span class="number">2000</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">function</span>(<span class="params">b</span>) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(b);</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li>AJAX(Asynchronous Javascript And XML)<br>bluebird, axios, jQuery slim과 같은 써드 파티들을 사용해도 된다.<br>XHR(XMLHttpRequest)이나 fetch를 쓸 때는 Promise를 써야한다.<br>then 메소드는 성공 콜백 함수와 같고, catch 메소드는 실패 콜백 함수와 같다.<br><code>주의!</code><br>몇몇 AJAX 요청은 IE9에서 문제가 되지만 이것은 async-to-sync의 문제가 아니다.<br>아래 링크를 참조하자.  <ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://caniuse.com/#feat=cors">Can I Use Cross-Origin Resource Sharing?</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/10232017/ie9-jquery-ajax-with-cors-returns-access-is-denied">IE9 jQuery AJAX with CORS returns “Access is denied”</a>  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> fallback = <span class="keyword">function</span>(<span class="params">e</span>) &#123;</span><br><span class="line">  <span class="title function_">alert</span>(<span class="string">&#x27;Error: &#x27;</span> + e);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> xhr = <span class="keyword">function</span>(<span class="params">url, method</span>) &#123;</span><br><span class="line">  method = method || <span class="string">&#x27;get&#x27;</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="keyword">function</span>(<span class="params">res, rej</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">    xhr.<span class="title function_">open</span>(method, url, <span class="literal">true</span>);</span><br><span class="line">    xhr.<span class="property">responseType</span> = <span class="string">&quot;json&quot;</span>;</span><br><span class="line">    xhr.<span class="property">onreadystatechange</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="keyword">if</span>(xhr.<span class="property">readyState</span> === <span class="number">4</span>) &#123; <span class="comment">// 4 means request is done.</span></span><br><span class="line">        <span class="keyword">if</span>(xhr.<span class="property">status</span> === <span class="number">200</span>) &#123; <span class="comment">// 200 means status is successful</span></span><br><span class="line">          <span class="title function_">res</span>(xhr.<span class="property">response</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="title function_">rej</span>(xhr.<span class="property">status</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    xhr.<span class="title function_">send</span>();</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _fetch = <span class="keyword">function</span>(<span class="params">url, method, headers, body</span>) &#123;</span><br><span class="line">  method = method || <span class="string">&#x27;get&#x27;</span>;</span><br><span class="line">  headers = headers || <span class="literal">null</span>;</span><br><span class="line">  body = body || <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="title function_">fetch</span>(url, &#123;</span><br><span class="line">    method, headers, body</span><br><span class="line">  &#125;).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">res</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> res.<span class="title function_">json</span>(&#123;&#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> c = <span class="keyword">function</span>(<span class="params">url</span>) &#123;</span><br><span class="line">  <span class="title function_">xhr</span>(url).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(data);</span><br><span class="line">  &#125;).<span class="title function_">catch</span>(<span class="keyword">function</span>(<span class="params">e</span>) &#123;</span><br><span class="line">    <span class="title function_">fallback</span>(e)</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> d = <span class="keyword">function</span>(<span class="params">url</span>) &#123;</span><br><span class="line">  <span class="title function_">_fetch</span>(url).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(data);</span><br><span class="line">  &#125;).<span class="title function_">catch</span>(<span class="keyword">function</span>(<span class="params">e</span>) &#123;</span><br><span class="line">    <span class="title function_">fallback</span>(e)</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p><code>주의!</code><br>다음의 규칙들을 따라서 함수를 재작성하자.  </p>
+<ul>
+<li>함수의 파라미터에 콜백 함수를 추가해주자.  </li>
+<li>비동기 함수 맨 마지막에 콜백 함수를 실행해주자.  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 모든 비동기 함수마다 콜백 함수를 파라미터로 추가해줘야한다.</span></span><br><span class="line"><span class="keyword">var</span> a = <span class="keyword">function</span>(<span class="params">cb</span>) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">123</span>);</span><br><span class="line">    <span class="comment">// 비동기 함수의 맨 마지막에는 콜백 함수를 반드시 실행해줘야한다.</span></span><br><span class="line">    <span class="title function_">cb</span>();</span><br><span class="line">  &#125;, <span class="number">2000</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 콜백 함수는 파라미터 제일 끝 부분에 추가해주자.</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">function</span>(<span class="params">b, cb</span>) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(b);</span><br><span class="line">    <span class="title function_">cb</span>();</span><br><span class="line">  &#125;, <span class="number">1000</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> c = <span class="keyword">function</span>(<span class="params">url, cb</span>) &#123;</span><br><span class="line">  <span class="title function_">xhr</span>(url).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(data);</span><br><span class="line">    <span class="title function_">cb</span>();</span><br><span class="line">  &#125;).<span class="title function_">catch</span>(<span class="keyword">function</span>(<span class="params">e</span>) &#123;</span><br><span class="line">        <span class="title function_">fallback</span>(e)</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> d = <span class="keyword">function</span>(<span class="params">url, cb</span>) &#123;</span><br><span class="line">  <span class="title function_">_fetch</span>(url).<span class="title function_">then</span>(<span class="keyword">function</span>(<span class="params">data</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(data);</span><br><span class="line">    <span class="title function_">cb</span>();</span><br><span class="line">  &#125;).<span class="title function_">catch</span>(<span class="keyword">function</span>(<span class="params">e</span>) &#123;</span><br><span class="line">    <span class="title function_">fallback</span>(e)</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="진짜-사용-방법"><a href="#진짜-사용-방법" class="headerlink" title="진짜 사용 방법"></a>진짜 사용 방법</h5><h6 id="ats-Array-arrAsync-Function-fallback"><a href="#ats-Array-arrAsync-Function-fallback" class="headerlink" title="ats(Array arrAsync[, Function fallback])"></a>ats(Array arrAsync[, Function fallback])</h6><ol>
+<li>arrAsync의 타입은 배열이다.<br>이 배열은 비동기 함수들을 포함하고 있다.<br>이 함수들은 동기적으로 실행될 것이다.  </li>
+<li>fallback의 타입은 함수이며, 필수 사항이 아니다.<br>이 함수는 에러 발생시 실행되며, 그 이후에 실행될 함수들의 실행을 모두 멈춰버린다.  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arrUrl = [</span><br><span class="line">  <span class="string">&#x27;https://perfectacle.github.io/mock/test.json&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;https://perfectacle.github.io/mock/test2.json&#x27;</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arrAsync = [</span><br><span class="line">  a,</span><br><span class="line">  <span class="comment">// 인자를 넘겨주거나 this 값을 바인딩해야할 경우 bind 메소드를 사용하면 된다.</span></span><br><span class="line">  c.<span class="title function_">bind</span>(<span class="literal">null</span>, arrUrl[<span class="number">0</span>]),</span><br><span class="line">  <span class="comment">// 물론 인자를 넘길 때 ES2015의 arrow function을 사용해도 된다.</span></span><br><span class="line">  <span class="comment">// 하지만 이 때는 콜백 함수까지 같이 매개변수 및 인자로 넘겨줘야한다.</span></span><br><span class="line">  <span class="function"><span class="params">cb</span> =&gt;</span> <span class="title function_">b</span>(<span class="number">2</span>, cb),</span><br><span class="line">  a,</span><br><span class="line">  <span class="function"><span class="params">cb</span> =&gt;</span> <span class="title function_">d</span>(arrUrl[<span class="number">1</span>], cb),</span><br><span class="line">  b.<span class="title function_">bind</span>(<span class="literal">null</span>, <span class="number">33</span>)</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="title function_">ats</span>(arrAsync, fallback);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="지원하는-플랫폼"><a href="#지원하는-플랫폼" class="headerlink" title="지원하는 플랫폼"></a>지원하는 플랫폼</h4><img src="/2017/05/01/async-to-sync/chrome.png" class title="Chrome"> | <img src="/2017/05/01/async-to-sync/firefox.jpg" class title="Firefox"> | <img src="/2017/05/01/async-to-sync/IE.png" class title="IE">| <img src="/2017/05/01/async-to-sync/node.png" class title="Node.js">|
+<p>— | — | — | — |<br>Latest ✔ | Latest ✔ | 9+ ✔ |  6+ ✔ |</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"># JS</a>
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/ES6/" rel="tag"># ES6</a>
+              <a href="/tags/ES2015/" rel="tag"># ES2015</a>
+              <a href="/tags/npm/" rel="tag"># npm</a>
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+              <a href="/tags/Promise/" rel="tag"># Promise</a>
+              <a href="/tags/async/" rel="tag"># async</a>
+              <a href="/tags/await/" rel="tag"># await</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/04/27/js-003-scope/" rel="prev" title="(자알쓰) Scope Part. 1">
+                  <i class="fa fa-chevron-left"></i> (자알쓰) Scope Part. 1
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/05/03/js-async-number-animation/" rel="next" title="(JS) 숫자가 증가하는 애니메이션 구현하기">
+                  (JS) 숫자가 증가하는 애니메이션 구현하기 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

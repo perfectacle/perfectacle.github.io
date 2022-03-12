@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Netty의 개념이 하도 익숙하지 않아 자바 네트워크 소녀 네티를 보고 용어를 정리해봄. Netty Netty is an asynchronous event-driven network application frameworkfor rapid development of maintainable high performance protocol servers &amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Netty 용어사전">
+<meta property="og:url" content="https://perfectacle.github.io/2021/02/28/netty-glossary/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="Netty의 개념이 하도 익숙하지 않아 자바 네트워크 소녀 네티를 보고 용어를 정리해봄. Netty Netty is an asynchronous event-driven network application frameworkfor rapid development of maintainable high performance protocol servers &amp;">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2021/02/28/netty-glossary/nio-event-loop.png">
+<meta property="article:published_time" content="2021-02-28T00:32:51.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.099Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="TCP">
+<meta property="article:tag" content="Netty">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2021/02/28/netty-glossary/nio-event-loop.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2021/02/28/netty-glossary/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2021/02/28/netty-glossary/","path":"2021/02/28/netty-glossary/","title":"Netty 용어사전"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Netty 용어사전 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty"><span class="nav-number">1.</span> <span class="nav-text">Netty</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bootstrap"><span class="nav-number">2.</span> <span class="nav-text">Bootstrap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ServerBootstrap"><span class="nav-number">3.</span> <span class="nav-text">ServerBootstrap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EventLoopGroup"><span class="nav-number">4.</span> <span class="nav-text">EventLoopGroup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EventLoop"><span class="nav-number">5.</span> <span class="nav-text">EventLoop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ByteBuf"><span class="nav-number">6.</span> <span class="nav-text">ByteBuf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel"><span class="nav-number">7.</span> <span class="nav-text">Channel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel-Pipeline"><span class="nav-number">8.</span> <span class="nav-text">Channel Pipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Event"><span class="nav-number">9.</span> <span class="nav-text">Event</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Inbound-Event"><span class="nav-number">9.1.</span> <span class="nav-text">Inbound Event</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Outbound-Event"><span class="nav-number">9.2.</span> <span class="nav-text">Outbound Event</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Event-Handler"><span class="nav-number">10.</span> <span class="nav-text">Event Handler</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChannelHandlerContext"><span class="nav-number">11.</span> <span class="nav-text">ChannelHandlerContext</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Codec"><span class="nav-number">12.</span> <span class="nav-text">Codec</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Encoder-Outbound-Event-Handler"><span class="nav-number">12.1.</span> <span class="nav-text">Encoder (Outbound Event Handler)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Decoder-Inbound-Event-Handler"><span class="nav-number">12.2.</span> <span class="nav-text">Decoder (Inbound Event Handler)</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/02/28/netty-glossary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Netty 용어사전 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Netty 용어사전
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2021-02-28 00:32:51" itemprop="dateCreated datePublished" datetime="2021-02-28T00:32:51+00:00">2021-02-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Netty/" itemprop="url" rel="index"><span itemprop="name">Netty</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/02/28/netty-glossary/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/02/28/netty-glossary/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Netty의 개념이 하도 익숙하지 않아 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.hanbit.co.kr/media/books/book_view.html?p_code=B2683487348">자바 네트워크 소녀 네티</a>를 보고 용어를 정리해봄.</p>
+<h2 id="Netty"><a href="#Netty" class="headerlink" title="Netty"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="https://netty.io/">Netty</a></h2><blockquote>
+<p>Netty is an asynchronous event-driven network application framework<br>for rapid development of maintainable high performance protocol servers &amp; clients.</p>
+</blockquote>
+<p>네티는 비동기 이벤트 기반 네트워크 어플리케이션 프레임워크로써 유지보수를 고려한 고성능 프로토콜 서버와 클라이언트를 빠르게 개발할 수 있다.<br>즉, TCP 통신을 위해 무조건 Netty를 써야하는 건 아니지만 유지보수하기도 쉽고, 비동기 이벤트 기반이기 때문에 고성능도 보장하게 된다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.spring.io/spring-integration/reference/html/ip.html">Spring Integration</a> 또한 TCP 통신을 지원한다.</p>
+<blockquote>
+<p>Spring Integration provides channel adapters for receiving and sending messages over internet protocols.<br>  Both UDP (User Datagram Protocol) and TCP (Transmission Control Protocol) adapters are provided.</p>
+</blockquote>
+<h2 id="Bootstrap"><a href="#Bootstrap" class="headerlink" title="Bootstrap"></a>Bootstrap</h2><p>네티로 작성한 네트워크 어플리케이션의 동작 방식과 환경을 설정하는 도우미 클래스, 주로 클라이언트 어플리케이션에 사용된다.<br>추상화가 잘 돼있어서 블로킹 모드에서 논블로킹 모드로 바꾸는 등의 설정이 매우 쉬우며 아래 설정이 가능하다.    </p>
+<ul>
+<li>전송 계층 (소켓 모드 및 I&#x2F;O 종류)</li>
+<li>이벤트 루프 (단일 스레드, 다중 스레드)</li>
+<li>채널 파이프라인 설정</li>
+<li>소켓 주소와 포트</li>
+<li>소켓 옵션</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// BootStrap</span></span><br><span class="line">    <span class="keyword">val</span> bootstrap = Bootstrap()</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 이벤트 루프 (단일 스레드, 다중 스레드)</span></span><br><span class="line">    <span class="keyword">val</span> group: EventLoopGroup = NioEventLoopGroup()</span><br><span class="line"></span><br><span class="line">    bootstrap</span><br><span class="line">        .group(group) <span class="comment">// 이벤트 루프</span></span><br><span class="line">        .channel(NioServerSocketChannel::<span class="keyword">class</span>.java) <span class="comment">// 전송 계층 (소켓 모드 및 I/O 종류)</span></span><br><span class="line">        .option(ChannelOption.SO_BACKLOG, <span class="number">100</span>) <span class="comment">// 채널 옵션</span></span><br><span class="line">        .handler(<span class="keyword">object</span> : ChannelInitializer&lt;Channel&gt;() &#123; <span class="comment">// 채널 데이터 가공 핸들러</span></span><br><span class="line">            <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">initChannel</span><span class="params">(ch: <span class="type">Channel</span>)</span></span> &#123; <span class="comment">// 소켓 채널이 생성될 때(서버와 연결을 맺을 때) 실행됨</span></span><br><span class="line">                <span class="comment">// 채널 파이프라인 설정</span></span><br><span class="line">                ch.pipeline().addLast(ReadTimeoutHandler(<span class="number">60</span>, TimeUnit.SECONDS))</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 서버의 주소와 포트</span></span><br><span class="line">    <span class="keyword">val</span> f: ChannelFuture = bootstrap.connect(<span class="string">&quot;localhost&quot;</span>, <span class="number">8080</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ServerBootstrap"><a href="#ServerBootstrap" class="headerlink" title="ServerBootstrap"></a>ServerBootstrap</h2><p>Bootstrap 중에 서버의 설정을 돕기 위한 클래스, 주로 서버 어플리케이션에 사용된다.<br>아래 설정이 가능하다.  </p>
+<ul>
+<li>전송 계층 (소켓 모드 및 I&#x2F;O 종류)</li>
+<li>이벤트 루프 (단일 스레드, 다중 스레드)<ul>
+<li>서버 소켓 채널 이벤트 루프</li>
+<li>소켓 채널 이벤트 루프</li>
+</ul>
+</li>
+<li>채널 파이프라인 설정<ul>
+<li>서버 소켓 채널 파이프라인 설정</li>
+<li>소켓 채널 파이프라인 설정</li>
+</ul>
+</li>
+<li>소켓 주소와 포트</li>
+<li>소켓 옵션</li>
+</ul>
+<p>서버 소켓 채널은 특정 포트를 listen하고 있다가 해당 포트로 커넥션 요청이 들어오면 해당 커넥션을 요청한 클라이언트와 통신하기 위해 소켓 채널을 만든다.<br>실질적인 통신은 소켓 채널에서 이루어진다.  </p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// ServerBootStrap</span></span><br><span class="line">    <span class="keyword">val</span> bootstrap = ServerBootstrap()</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 이벤트 루프 (단일 스레드, 다중 스레드)</span></span><br><span class="line">    <span class="keyword">val</span> bossGroup: EventLoopGroup = NioEventLoopGroup()</span><br><span class="line">    <span class="keyword">val</span> workerGroup: EventLoopGroup = NioEventLoopGroup()</span><br><span class="line"></span><br><span class="line">    bootstrap</span><br><span class="line">        .group(</span><br><span class="line">            bossGroup, <span class="comment">// 서버 소켓 채널 이벤트 루프</span></span><br><span class="line">            workerGroup <span class="comment">// 소켓 채널 이벤트 루프</span></span><br><span class="line">        )</span><br><span class="line">        .channel(NioServerSocketChannel::<span class="keyword">class</span>.java) <span class="comment">// 전송 계층 (소켓 모드 및 I/O 종류)</span></span><br><span class="line">        .option(ChannelOption.SO_BACKLOG, <span class="number">100</span>) <span class="comment">// 서버 소켓 채널 옵션</span></span><br><span class="line">        .childOption(ChannelOption.TCP_NODELAY, <span class="literal">false</span>) <span class="comment">// 소켓 채널 옵션</span></span><br><span class="line">        .handler(<span class="keyword">object</span> : ChannelInitializer&lt;Channel&gt;() &#123; <span class="comment">// 서버 소켓 채널</span></span><br><span class="line">            <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">initChannel</span><span class="params">(ch: <span class="type">Channel</span>)</span></span> &#123; <span class="comment">// 서버 소켓 채널 데이터 가공 핸들러 (서버 소켓 채널이 생성될 때(서버 소켓에 포트가 바인딩될 때) 실행됨)</span></span><br><span class="line">                <span class="comment">// 서버 소켓 채널 파이프라인 설정</span></span><br><span class="line">                ch.pipeline().addLast(ReadTimeoutHandler(<span class="number">60</span>, TimeUnit.SECONDS))</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .childHandler(<span class="keyword">object</span> : ChannelInitializer&lt;Channel&gt;() &#123; <span class="comment">// 소켓 채널</span></span><br><span class="line">            <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">initChannel</span><span class="params">(ch: <span class="type">Channel</span>)</span></span> &#123; <span class="comment">// 소켓 채널 데이터 가공 핸들러 (소켓 채널이 생성될 때(클라이언트와 연결을 맺을 때) 실행됨)</span></span><br><span class="line">                <span class="comment">// 소켓 채널 파이프라인 설정</span></span><br><span class="line">                ch.pipeline().addLast(ReadTimeoutHandler(<span class="number">60</span>, TimeUnit.SECONDS))</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 서버 소켓 채널 주소와 포트</span></span><br><span class="line">    <span class="keyword">val</span> f: ChannelFuture = bootstrap.bind(<span class="number">123</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="EventLoopGroup"><a href="#EventLoopGroup" class="headerlink" title="EventLoopGroup"></a>EventLoopGroup</h2><p>EventLoop를 그룹핑한 것이다.<br>여러 EventLoop가 존재하는데 그 중에 나는 NioEventLoopGroup를 주로 사용한다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NioEventLoopGroup</span> <span class="keyword">extends</span> <span class="title class_">MultithreadEventLoopGroup</span> &#123;</span><br></pre></td></tr></table></figure>
+<p>NioEventLoopGroup은 멀티쓰레드 환경의 이벤트 루프 그룹이다.<br>또한 NioEventLoopGroup은 기본 생성자를 사용하면 <code>CPU 코어 수 * 2</code>개의 EventLoop가 생성된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NioEventLoopGroup</span> <span class="keyword">extends</span> <span class="title class_">MultithreadEventLoopGroup</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">NioEventLoopGroup</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">NioEventLoopGroup</span><span class="params">(<span class="type">int</span> nThreads, Executor executor, <span class="keyword">final</span> SelectorProvider selectorProvider,</span></span><br><span class="line"><span class="params">                             <span class="keyword">final</span> SelectStrategyFactory selectStrategyFactory)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(nThreads, executor, selectorProvider, selectStrategyFactory, RejectedExecutionHandlers.reject());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">MultithreadEventLoopGroup</span> <span class="keyword">extends</span> <span class="title class_">MultithreadEventExecutorGroup</span> <span class="keyword">implements</span> <span class="title class_">EventLoopGroup</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> DEFAULT_EVENT_LOOP_THREADS;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        DEFAULT_EVENT_LOOP_THREADS = Math.max(<span class="number">1</span>, SystemPropertyUtil.getInt(</span><br><span class="line">            <span class="string">&quot;io.netty.eventLoopThreads&quot;</span>, NettyRuntime.availableProcessors() * <span class="number">2</span>)); <span class="comment">// &lt;-- CPU 코어 갯수에 2를 곱하고  있다.</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="title function_">MultithreadEventLoopGroup</span><span class="params">(<span class="type">int</span> nThreads, Executor executor, Object... args)</span> &#123; </span><br><span class="line">        <span class="built_in">super</span>(nThreads == <span class="number">0</span> ? DEFAULT_EVENT_LOOP_THREADS : nThreads, executor, args); <span class="comment">// &lt;-- 기본 생성자는 nThreads가 0이다.</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">NettyRuntime</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">availableProcessors</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> holder.availableProcessors();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">AvailableProcessorsHolder</span> <span class="variable">holder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AvailableProcessorsHolder</span>();</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">AvailableProcessorsHolder</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> availableProcessors;</span><br><span class="line">        <span class="keyword">synchronized</span> <span class="type">int</span> <span class="title function_">availableProcessors</span><span class="params">()</span> &#123; </span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">this</span>.availableProcessors == <span class="number">0</span>) &#123; </span><br><span class="line">                <span class="keyword">final</span> <span class="type">int</span> <span class="variable">availableProcessors</span> <span class="operator">=</span> </span><br><span class="line">                        SystemPropertyUtil.getInt(</span><br><span class="line">                            <span class="string">&quot;io.netty.availableProcessors&quot;</span>, </span><br><span class="line">                            Runtime.getRuntime().availableProcessors() <span class="comment">// &lt;-- 여기에서 CPU 코어 갯수를 반환함.</span></span><br><span class="line">                        );</span><br><span class="line">                setAvailableProcessors(availableProcessors); </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>.availableProcessors; </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">setAvailableProcessors</span><span class="params">(<span class="keyword">final</span> <span class="type">int</span> availableProcessors)</span> &#123; </span><br><span class="line">            ObjectUtil.checkPositive(availableProcessors, <span class="string">&quot;availableProcessors&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">this</span>.availableProcessors != <span class="number">0</span>) &#123; </span><br><span class="line">                <span class="keyword">final</span> <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> String.format(</span><br><span class="line">                    Locale.ROOT, </span><br><span class="line">                    <span class="string">&quot;availableProcessors is already set to [%d], rejecting [%d]&quot;</span>, </span><br><span class="line">                    <span class="built_in">this</span>.availableProcessors, </span><br><span class="line">                    availableProcessors</span><br><span class="line">                );</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(message); </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">this</span>.availableProcessors = availableProcessors; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이제 CPU 코어수 * 2개라는 건 알았으니까 정말로 그만큼의 NioEventLoop이 생성되는지 보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">MultithreadEventLoopGroup</span> <span class="keyword">extends</span> <span class="title class_">MultithreadEventExecutorGroup</span> <span class="keyword">implements</span> <span class="title class_">EventLoopGroup</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="title function_">MultithreadEventLoopGroup</span><span class="params">(<span class="type">int</span> nThreads, Executor executor, Object... args)</span> &#123; </span><br><span class="line">        <span class="built_in">super</span>(nThreads == <span class="number">0</span> ? DEFAULT_EVENT_LOOP_THREADS : nThreads, executor, args); <span class="comment">// &lt;-- 기본 생성자는 nThreads가 0이다.</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">protected</span> <span class="title function_">MultithreadEventExecutorGroup</span><span class="params">(<span class="type">int</span> nThreads, Executor executor, Object... args)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>(nThreads, executor, DefaultEventExecutorChooserFactory.INSTANCE, args); </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> EventExecutor[] children;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="title function_">MultithreadEventExecutorGroup</span><span class="params">(<span class="type">int</span> nThreads, Executor executor,</span></span><br><span class="line"><span class="params">                                            EventExecutorChooserFactory chooserFactory, Object... args)</span> &#123; </span><br><span class="line">        <span class="keyword">if</span> (nThreads &lt;= <span class="number">0</span>) &#123; </span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(String.format(<span class="string">&quot;nThreads: %d (expected: &gt; 0)&quot;</span>, nThreads)); </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (executor == <span class="literal">null</span>) &#123; </span><br><span class="line">            executor = <span class="keyword">new</span> <span class="title class_">ThreadPerTaskExecutor</span>(newDefaultThreadFactory());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        children = <span class="keyword">new</span> <span class="title class_">EventExecutor</span>[nThreads]; <span class="comment">// 코어 갯수 * 2개의 배열 생성</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; nThreads; i ++) &#123; <span class="comment">// 코어 갯수 * 2개만큼 반복</span></span><br><span class="line">            <span class="type">boolean</span> <span class="variable">success</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">try</span> &#123; </span><br><span class="line">                children[i] = newChild(executor, args);</span><br><span class="line">                <span class="comment">// ...</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NioEventLoopGroup</span> <span class="keyword">extends</span> <span class="title class_">MultithreadEventLoopGroup</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> EventLoop <span class="title function_">newChild</span><span class="params">(Executor executor, Object... args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">EventLoopTaskQueueFactory</span> <span class="variable">queueFactory</span> <span class="operator">=</span> args.length == <span class="number">4</span> ? (EventLoopTaskQueueFactory) args[<span class="number">3</span>] : <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">NioEventLoop</span>(<span class="built_in">this</span>, executor, (SelectorProvider) args[<span class="number">0</span>], </span><br><span class="line">                ((SelectStrategyFactory) args[<span class="number">1</span>]).newSelectStrategy(), (RejectedExecutionHandler) args[<span class="number">2</span>], queueFactory); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="EventLoop"><a href="#EventLoop" class="headerlink" title="EventLoop"></a>EventLoop</h2><p>EventLoop는 이벤트가 올 때까지 무한 반복을 도는 쓰레드이다.<br>EventLoopGroup에 따라 어떤 EventLoop가 생성될지 모르는데 나는 주로 NioEventLoopGroup을 사용하다보니 NioEventLoop를 파보았다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">NioEventLoop</span> <span class="keyword">extends</span> <span class="title class_">SingleThreadEventLoop</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">selectCnt</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (; ; ) &#123; <span class="comment">// 무한 반복</span></span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>NioEventLoop는 단일 쓰레드 이벤트 루프이다. (하나의 이벤트 루프에 하나의 쓰레드 할당)<br>그럼 이벤트가 올 때까지 해당 쓰레드가 block되는 건 아닐까? 하는 의문이 들었다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">NioEventLoop</span> <span class="keyword">extends</span> <span class="title class_">SingleThreadEventLoop</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SelectorProvider provider;</span><br><span class="line">  </span><br><span class="line">    NioEventLoop(NioEventLoopGroup parent, Executor executor, SelectorProvider selectorProvider,</span><br><span class="line">                 SelectStrategy strategy, RejectedExecutionHandler rejectedExecutionHandler, </span><br><span class="line">                 EventLoopTaskQueueFactory queueFactory) &#123; </span><br><span class="line">        <span class="built_in">super</span>(parent, executor, <span class="literal">false</span>, newTaskQueue(queueFactory), newTaskQueue(queueFactory), </span><br><span class="line">                rejectedExecutionHandler);</span><br><span class="line">        <span class="built_in">this</span>.provider = ObjectUtil.checkNotNull(selectorProvider, <span class="string">&quot;selectorProvider&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.selectStrategy = ObjectUtil.checkNotNull(strategy, <span class="string">&quot;selectStrategy&quot;</span>);</span><br><span class="line">        <span class="keyword">final</span> <span class="type">SelectorTuple</span> <span class="variable">selectorTuple</span> <span class="operator">=</span> openSelector();</span><br><span class="line">        <span class="built_in">this</span>.selector = selectorTuple.selector;</span><br><span class="line">        <span class="built_in">this</span>.unwrappedSelector = selectorTuple.unwrappedSelector; </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">IntSupplier</span> <span class="variable">selectNowSupplier</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IntSupplier</span>() &#123;</span><br><span class="line">        <span class="meta">@Override</span> </span><br><span class="line">        <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">get</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123; </span><br><span class="line">            <span class="keyword">return</span> selectNow(); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> <span class="title function_">selectNow</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123; </span><br><span class="line">        <span class="keyword">return</span> selector.selectNow(); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<img src="/2021/02/28/netty-glossary/nio-event-loop.png" class>
+<p>selector는 io.netty.channel.nio.SelectedSelectionKeySetSelector 클래스이다.<br>그리고 그 안에 delegate는 KQueueSelectorImpl이다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://stackoverflow.com/questions/7916324/do-nio-selectors-use-event-notifications-by-default">JRE마다 SelectorImpl은 달라질 수 있다.</a>  </p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Windows </span><br><span class="line">sun.nio.ch.WindowsSelectorImpl</span><br><span class="line"></span><br><span class="line">Mac OS </span><br><span class="line">sun.nio.ch.KQueueSelectorImpl</span><br><span class="line"></span><br><span class="line">Linux </span><br><span class="line">sun.nio.ch.EPollSelectorImpl</span><br><span class="line"></span><br><span class="line">Solaris</span><br><span class="line">sun.nio.ch.PollSelectorImpl</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">SelectedSelectionKeySetSelector</span> <span class="keyword">extends</span> <span class="title class_">Selector</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SelectedSelectionKeySet selectionKeys;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Selector delegate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">selectNow</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        selectionKeys.reset();</span><br><span class="line">        <span class="keyword">return</span> delegate.selectNow();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">SelectorImpl</span></span><br><span class="line">        <span class="keyword">extends</span> <span class="title class_">AbstractSelector</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">selectNow</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="keyword">return</span> lockAndDoSelect(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">lockAndDoSelect</span><span class="params">(<span class="type">long</span> timeout)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!isOpen())</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ClosedSelectorException</span>();</span><br><span class="line">      <span class="keyword">synchronized</span> (publicKeys) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (publicSelectedKeys) &#123;</span><br><span class="line">          <span class="keyword">return</span> doSelect(timeout);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">KQueueSelectorImpl</span> <span class="keyword">extends</span> <span class="title class_">SelectorImpl</span> &#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="type">int</span> <span class="title function_">doSelect</span><span class="params">(<span class="type">long</span> var1)</span> <span class="keyword">throws</span> IOException &#123; </span><br><span class="line">        <span class="type">boolean</span> <span class="variable">var3</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.closed) &#123; </span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">ClosedSelectorException</span>(); </span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="built_in">this</span>.processDeregisterQueue();</span><br><span class="line">            </span><br><span class="line">            <span class="type">int</span> var7;</span><br><span class="line">            <span class="keyword">try</span> &#123; </span><br><span class="line">                <span class="built_in">this</span>.begin();</span><br><span class="line">                var7 = <span class="built_in">this</span>.kqueueWrapper.poll(var1); </span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123; </span><br><span class="line">                <span class="built_in">this</span>.end(); </span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="built_in">this</span>.processDeregisterQueue();</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>.updateSelectedKeys(var7); </span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">KQueueArrayWrapper</span> &#123; </span><br><span class="line">    <span class="type">int</span> <span class="title function_">poll</span><span class="params">(<span class="type">long</span> var1)</span> &#123; </span><br><span class="line">        <span class="built_in">this</span>.updateRegistrations();</span><br><span class="line">        <span class="comment">// var1은 timeout에서 넘어온 0이므로 블락시키지 않고 바로 다음 구문으로 간다.</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">var3</span> <span class="operator">=</span> <span class="built_in">this</span>.kevent0(<span class="built_in">this</span>.kq, <span class="built_in">this</span>.keventArrayAddress, <span class="number">128</span>, var1);</span><br><span class="line">        <span class="keyword">return</span> var3; </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">native</span> <span class="type">int</span> <span class="title function_">kevent0</span><span class="params">(<span class="type">int</span> var1, <span class="type">long</span> var2, <span class="type">int</span> var4, <span class="type">long</span> var5)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>selectNow 메서드는 KQueue의 timeout에 0을 넘기기 때문에 기다리지 않는다.</p>
+<h2 id="ByteBuf"><a href="#ByteBuf" class="headerlink" title="ByteBuf"></a>ByteBuf</h2><p>자바의 바이트 버퍼 클래스(java.nio.ByteBuffer)와 유사하지만 더 나은 성능과 편의성을 가진 Netty의 버퍼 클래스</p>
+<h2 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h2><p>일반적인 소켓 프로그래밍에서 말하는 소켓과 같다고 보면 된다고 함.</p>
+<h2 id="Channel-Pipeline"><a href="#Channel-Pipeline" class="headerlink" title="Channel Pipeline"></a>Channel Pipeline</h2><p>네티의 채널과 이벤트 핸들러 사이에서 연결 통로 역할을 수행.<br>채널에서 발생한 이벤트가 채널 파이프라인을 타고 흘러가고, 이벤트 핸들러는 이벤트를 수신한 후에 본인이 처리해야하는 이벤트인지 판단하고 처리한다.</p>
+<h2 id="Event"><a href="#Event" class="headerlink" title="Event"></a>Event</h2><h3 id="Inbound-Event"><a href="#Inbound-Event" class="headerlink" title="Inbound Event"></a>Inbound Event</h3><p>연결 상대방이 어떤 동작을 취했을 때 발생함</p>
+<ul>
+<li>channelRegistered - 채널이 이벤트 루프에 등록되었을 때 발생<br>서버 소켓 채널의 channelRegistered 이벤트는 서버 소켓 채널이 생성됐을 때 발생하고, 클라이언트 소켓 채널의 channelRegistered 이벤트는 새로운 클라이언트가 서버에 접속하며 클라이언트 소켓 채널이 생성될 때 발생한다.  </li>
+<li>channelActive - channelRegistered 이후에 발생<br>채널이 생성되고 이벤트 루프에 등록된 이후에 네티 API를 사용하여 입출력을 수행할 상태가 되었음을 알려주는 이벤트</li>
+<li>channelRead - 데이터가 수신될 때마다 발생하는 이벤트</li>
+<li>channelReadComplete - 데이터 수신이 완료됐을 때 발생하는 이벤트<br>channelRead 이벤트는 채널에 데이터가 있을 때 발생하고, channelReadComplete는 채널의 데이터를 다 읽어서 더 이상 데이터가 없을 때 발생한다.</li>
+<li>channelInactive -  채널이 비활성화되었을 때 발생</li>
+<li>channelUnregistered -  채널이 이벤트 루프에 제거되었을 대 발생</li>
+</ul>
+<h3 id="Outbound-Event"><a href="#Outbound-Event" class="headerlink" title="Outbound Event"></a>Outbound Event</h3><p>프로그래머가 요청한 동작에 해당하는 이벤트</p>
+<ul>
+<li>bind - 서버 소켓 채널이 클라이언트의 연결을 대기하는 IP와 포트가 설정되었을 때 발생</li>
+<li>connect - 클라이언트 소켓 채널이 서버에 연결되었을 때 발생</li>
+<li>disconnect -  클라이언트 소켓 채널의 연결이 끊어졌을 때 발생</li>
+<li>close - 클라이언트 소켓 채널의 연결이 닫혔을 때 발생</li>
+<li>write - 소켓 채널에 데이터가 기록되었을 때 발생</li>
+<li>flush - 소켓 채널에 flush 메서드가 호출되었을 때 발생</li>
+</ul>
+<h2 id="Event-Handler"><a href="#Event-Handler" class="headerlink" title="Event Handler"></a>Event Handler</h2><p>이벤트가 발생했을 때 이벤트를 처리하는 역할을 담당한다.<br>크게 이벤트 유형에 따라 ChannelInboundHandler, ChannelOutboundHandler 인터페이스로 나눌 수 있다.</p>
+<h2 id="ChannelHandlerContext"><a href="#ChannelHandlerContext" class="headerlink" title="ChannelHandlerContext"></a>ChannelHandlerContext</h2><p>채널에 대한 입출력 처리 및 채널 파이프라인에 대한 상호작용을 도와주는 인터페이스<br>ChannelHandlerContext의 writeAndFlush 메서드로 채널에 데이터를 기록하거나 close 메서드로 채널의 연결을 종료할 수 있다.<br>또한 ChannelHandlerContext는 채널이 초기화될 때 설정된 채널 파이프라인을 가져오는 메서드를 제공하기 때문에 채널 파이프라인을 수정할 수 있다.  </p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bootstrap.handler(<span class="keyword">object</span> : ChannelInitializer&lt;Channel&gt;() &#123;</span><br><span class="line">             <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">initChannel</span><span class="params">(ch: <span class="type">Channel</span>)</span></span> &#123;</span><br><span class="line">                 ch.pipeline().addLast(ReadTimeoutHandler(<span class="number">60</span>, TimeUnit.SECONDS))</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Codec"><a href="#Codec" class="headerlink" title="Codec"></a>Codec</h2><p>보통 동영상 압축 알고리즘을 코덱이라 부름.  </p>
+<ul>
+<li>원본 -&gt; 인코딩(압축) -&gt; 압축된 동영상 파일</li>
+<li>압축된 동영상 파일 -&gt; 디코딩 (압축 해제) -&gt; 원본 파일</li>
+</ul>
+<h3 id="Encoder-Outbound-Event-Handler"><a href="#Encoder-Outbound-Event-Handler" class="headerlink" title="Encoder (Outbound Event Handler)"></a>Encoder (Outbound Event Handler)</h3><p>송신 데이터 -&gt; 인코더 (데이터 변환 알고리즘) -&gt; 소켓 채널</p>
+<h3 id="Decoder-Inbound-Event-Handler"><a href="#Decoder-Inbound-Event-Handler" class="headerlink" title="Decoder (Inbound Event Handler)"></a>Decoder (Inbound Event Handler)</h3><p>소켓 채널 -&gt; 디코더 (데이터 변환 알고리즘) -&gt; 수신 데이터</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/TCP/" rel="tag"># TCP</a>
+              <a href="/tags/Netty/" rel="tag"># Netty</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/14/simple-client-http-request-factory-connection-pool/" rel="prev" title="(Spring Boot) SimpleClientHttpRequestFactory와 Connection Pool">
+                  <i class="fa fa-chevron-left"></i> (Spring Boot) SimpleClientHttpRequestFactory와 Connection Pool
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/02/28/netty-event-loop/" rel="next" title="Netty 이벤트 루프">
+                  Netty 이벤트 루프 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

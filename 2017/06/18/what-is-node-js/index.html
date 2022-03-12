@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이 글을 쓰게 된 계기는 다음과 같다.    Q: Node.js는 서버인가요?A: 네, 백엔드 개발자들이 Node.js를 씁니다.    ‘백엔드 개발자도 쓸 뿐, 프론트 엔드 개발자도 쓸 수 있다’가 내가 내린 결론이고,오늘은 그에 대해 하나 하나 검증해보는 시간을 가져보고, 다른 사람들에게 잘못된 지식이 전파되는 걸 막고자 한다.혹시 내가 내린 결론이">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Node.js란...?">
+<meta property="og:url" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="이 글을 쓰게 된 계기는 다음과 같다.    Q: Node.js는 서버인가요?A: 네, 백엔드 개발자들이 Node.js를 씁니다.    ‘백엔드 개발자도 쓸 뿐, 프론트 엔드 개발자도 쓸 수 있다’가 내가 내린 결론이고,오늘은 그에 대해 하나 하나 검증해보는 시간을 가져보고, 다른 사람들에게 잘못된 지식이 전파되는 걸 막고자 한다.혹시 내가 내린 결론이">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/03.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/04.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/05.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/06.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/07.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/08.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/09.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/10.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/11.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/12.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/13.png">
+<meta property="article:published_time" content="2017-06-18T21:12:33.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.227Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Node.js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/06/18/what-is-node-js/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/06/18/what-is-node-js/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/06/18/what-is-node-js/","path":"2017/06/18/what-is-node-js/","title":"Node.js란...?"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Node.js란...? | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Node-js%EB%9E%80%E2%80%A6"><span class="nav-number">1.</span> <span class="nav-text">Node.js란…?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Javascript-%EC%8B%A4%ED%96%89-%ED%99%98%EA%B2%BD"><span class="nav-number">1.1.</span> <span class="nav-text">Javascript 실행 환경?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B7%B8%EB%9F%BC-%EC%99%9C-Node-js%EB%8A%94-%EB%B0%B1%EC%97%94%EB%93%9C-%EC%98%81%EC%97%AD%EC%9D%B4%EB%9D%BC%EB%8A%94-%EC%98%A4%ED%95%B4%EA%B0%80-%EC%83%9D%EA%B2%BC%EC%9D%84%EA%B9%8C"><span class="nav-number">1.2.</span> <span class="nav-text">그럼 왜 Node.js는 백엔드 영역이라는 오해가 생겼을까?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B7%B8%EB%9F%BC-%ED%94%84%EB%A1%A0%ED%8A%B8-%EC%97%94%EB%93%9C-%EA%B0%9C%EB%B0%9C%EC%9E%90%EB%8A%94-%EC%96%B8%EC%A0%9C-Node-js%EB%A5%BC-%EC%93%B0%EB%8A%94%EA%B0%80"><span class="nav-number">1.3.</span> <span class="nav-text">그럼 프론트 엔드 개발자는 언제 Node.js를 쓰는가?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9B%B9%EC%9D%84-%EB%B2%97%EC%96%B4%EB%82%9C-Node-js"><span class="nav-number">1.4.</span> <span class="nav-text">웹을 벗어난 Node.js</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%8D%B0%EC%8A%A4%ED%81%AC%ED%83%91-%EC%96%B4%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%EC%9D%84-%EC%A0%9C%EC%9E%91%ED%95%B4%EC%A3%BC%EB%8A%94-%EC%9D%BC%EB%A0%89%ED%8A%B8%EB%A1%A0-Electron"><span class="nav-number">1.4.1.</span> <span class="nav-text">데스크탑 어플리케이션을 제작해주는 일렉트론(Electron)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B2%B0%EB%A1%A0"><span class="nav-number">1.5.</span> <span class="nav-text">결론</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EC%A1%B0-%EB%A7%81%ED%81%AC"><span class="nav-number">1.6.</span> <span class="nav-text">참조 링크</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/06/18/what-is-node-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Node.js란...? | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Node.js란...?
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-06-18 21:12:33" itemprop="dateCreated datePublished" datetime="2017-06-18T21:12:33+00:00">2017-06-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/Node-js/" itemprop="url" rel="index"><span itemprop="name">Node.js</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/06/18/what-is-node-js/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/18/what-is-node-js/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/06/18/what-is-node-js/thumb.png" class>
+<p>이 글을 쓰게 된 계기는 다음과 같다.  </p>
+<blockquote>
+<p>Q: Node.js는 서버인가요?<br>A: 네, 백엔드 개발자들이 Node.js를 씁니다.  </p>
+</blockquote>
+<p>‘백엔드 개발자<strong>도</strong> 쓸 뿐, 프론트 엔드 개발자도 쓸 수 있다’가 내가 내린 결론이고,<br>오늘은 그에 대해 하나 하나 검증해보는 시간을 가져보고, 다른 사람들에게 잘못된 지식이 전파되는 걸 막고자 한다.<br>혹시 내가 내린 결론이 잘못된 부분은 무한 태클을 환영한다.  </p>
+<h1 id="Node-js란…"><a href="#Node-js란…" class="headerlink" title="Node.js란…?"></a>Node.js란…?</h1><img src="/2017/06/18/what-is-node-js/01.png" class title="Node.js 공식 사이트에서 내린 Node.js의 정의">  
+<p>Node.js는 Chrome V8 Javascript 엔진으로 빌드된 Javascript <strong>런타임</strong>이다.<br>V8 자바스크립트 엔진은 여기서 중요한 포인트가 아니므로 직접 찾아보길 바란다.    </p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="http://asfirstalways.tistory.com/99">런타임에 대해 정리한 다른 블로그의 포스트</a>를 빌려보자면 다음과 같다.</p>
+<blockquote>
+<p>런타임이란 프로그래밍 언어가 구동되는 환경</p>
+</blockquote>
+<p>예전에는 자바스크립트 런타임이 <strong>브라우저</strong> 밖에 존재하질 않았다.<br>하지만 그러한 한계를 극복하고 Node.js가 나왔다.  </p>
+<h2 id="Javascript-실행-환경"><a href="#Javascript-실행-환경" class="headerlink" title="Javascript 실행 환경?"></a>Javascript 실행 환경?</h2><p>첫 번째로 Node.js는 REPL(Read, Eval, Print, Loop)을 통해서 런타임을 제공한다.  </p>
+<ol>
+<li>Read: 유저의 입력 값을 받아서 메모리에 저장  </li>
+<li>Eval: 입력 값의 평가, 실행  </li>
+<li>Print: Eval로 인해 반환된 값을 출력  </li>
+<li>Loop: 1~3을 반복.</li>
+</ol>
+<p>이러한 REPL은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://babeljs.io/repl/">Babel REPL</a>과 같이 웹에서 제공해주기도 하고,<br>Node.js에서 제공하는 REPL은 윈도우의 CMD, 맥의 터미널 등등에서 제공을 해준다.  </p>
+<img src="/2017/06/18/what-is-node-js/02.png" class title="터미널에서 node라고 입력을 하면 node repl이 실행된다.">  
+
+<p>두 번째로 따로 자바스크립트 파일을 Node.js에서 제공하는 자바스크립트 런타임을 통해 실행이 가능하다.<br>위와 같이 REPL에서 개발을 하면 간단한 테스트 정도면 몰라도 어플리케이션을 개발하는 데 적합하지 않다.<br>따라서 repl 보다는 따로 스크립트 파일을 만들어서 그 스크립트 파일을 node.js, V8이 해석 후 실행하는 형태로 작업을 많이 하게 된다.<br>아래 소스 코드를 node.js에서 돌리는 것은 위의 REPL에서 실행한 것과 동일하다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a.js</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">2</span>;</span><br><span class="line">a;</span><br><span class="line">a + <span class="number">4</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a);</span><br></pre></td></tr></table></figure>
+<img src="/2017/06/18/what-is-node-js/03.png" class>
+
+
+
+<h2 id="그럼-왜-Node-js는-백엔드-영역이라는-오해가-생겼을까"><a href="#그럼-왜-Node-js는-백엔드-영역이라는-오해가-생겼을까" class="headerlink" title="그럼 왜 Node.js는 백엔드 영역이라는 오해가 생겼을까?"></a>그럼 왜 Node.js는 백엔드 영역이라는 오해가 생겼을까?</h2><p>Node.js를 통해서 서버<strong>도</strong> 만들 수 있기 때문이다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// server.js</span></span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line">http.<span class="title function_">createServer</span>(<span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">    res.<span class="title function_">writeHead</span>(<span class="number">200</span>, &#123;<span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;text/plain&#x27;</span>&#125;);</span><br><span class="line">    res.<span class="title function_">end</span>(<span class="string">&quot;Hello World\n&quot;</span>);</span><br><span class="line">&#125;).<span class="title function_">listen</span>(<span class="number">8080</span>);</span><br></pre></td></tr></table></figure>
+<img src="/2017/06/18/what-is-node-js/04.png" class title="node.js를 통해 실행한 server.js">  
+<img src="/2017/06/18/what-is-node-js/05.png" class title="node.js를 통해 구현한 서버">  
+
+<h2 id="그럼-프론트-엔드-개발자는-언제-Node-js를-쓰는가"><a href="#그럼-프론트-엔드-개발자는-언제-Node-js를-쓰는가" class="headerlink" title="그럼 프론트 엔드 개발자는 언제 Node.js를 쓰는가?"></a>그럼 프론트 엔드 개발자는 언제 Node.js를 쓰는가?</h2><p>매우 빈번하게 쓰이는데 그 중에서 대표적으로 ES2015+ 문법을 ES5 문법으로 트랜스파일 해주는 <a href="/2016/11/11/Babel-ES6-with-IE8/">Babel</a>을 예로 들어보겠다.<br>먼저 babel의 기본적인 요소들을 설치하겠다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -S babel-cli babel-preset-env</span><br></pre></td></tr></table></figure>
+<p>babel-cli, CLI이기 때문에 터미널 위에서 돌아간다는 점을 염두해두자.  </p>
+<p>그리고 간단한 바벨 설정 파일(.babelrc)을 만들어주자.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;presets&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;env&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>그 다음에 package.json의 npm script 부분을 다음과 같이 추가해주면 된다.  </p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;babel&quot;</span><span class="punctuation">:</span> <span class="string">&quot;babel&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>그리고 ES2015+의 간단한 파일을 하나 만들어보겠다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a.js</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>터미널에서 babel-cli를 통해 해당 파일을 ES5로 트랜스파일 된 결과를 보자.  </p>
+<img src="/2017/06/18/what-is-node-js/06.png" class title="use strict 구문 부터가 실제로 트랜스파일 된 결과">  
+
+<p>이게 뭐가 Node.js를 통해 실행한 내용인지 확인해보자.<br>기본적으로 npm script는 node_modules 디렉토리 안의 .bin 디렉토리에 있는 디렉토리를 인식한다.  </p>
+<img src="/2017/06/18/what-is-node-js/07.png" class title="node_modules&#x2F;.bin 디렉토리 안에 babel 파일이 존재한다.">  
+
+<p>그리고 그 내용은 다음과 같다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">require</span>(<span class="string">&quot;../lib/babel&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p><code>#!/usr/bin/env node</code> 요 구문으로 인해 node.js에서 cli를 만들 수 있게 해주는 것이라고 생각하면 된다.<br>그럼 직접 <code>../lib/babel</code>을 찾아가보자.  </p>
+<img src="/2017/06/18/what-is-node-js/08.png" class title="node_modules&#x2F;babel-cli&#x2F;lib&#x2F;babel 디렉토리가 존재한다.">  
+<p>Node.js에서 기본적으로 디렉토리 뒤에 따로 파일이 명시되지 않으면 index.js 파일을 찾아가는 규칙이 있다.<br>index.js 파일의 상단 부분을 보면 다음과 같다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"><span class="meta">&quot;use strict&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _keys = <span class="built_in">require</span>(<span class="string">&quot;babel-runtime/core-js/object/keys&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> _keys2 = <span class="title function_">_interopRequireDefault</span>(_keys);</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">_interopRequireDefault</span>(<span class="params">obj</span>) &#123; <span class="keyword">return</span> obj &amp;&amp; obj.<span class="property">__esModule</span> ? obj : &#123; <span class="attr">default</span>: obj &#125;; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>);</span><br><span class="line"><span class="keyword">var</span> commander = <span class="built_in">require</span>(<span class="string">&quot;commander&quot;</span>);</span><br><span class="line"><span class="keyword">var</span> kebabCase = <span class="built_in">require</span>(<span class="string">&quot;lodash/kebabCase&quot;</span>);</span><br><span class="line"><span class="keyword">var</span> options = <span class="built_in">require</span>(<span class="string">&quot;babel-core&quot;</span>).<span class="property">options</span>;</span><br><span class="line"><span class="keyword">var</span> util = <span class="built_in">require</span>(<span class="string">&quot;babel-core&quot;</span>).<span class="property">util</span>;</span><br><span class="line"><span class="keyword">var</span> uniq = <span class="built_in">require</span>(<span class="string">&quot;lodash/uniq&quot;</span>);</span><br><span class="line"><span class="keyword">var</span> glob = <span class="built_in">require</span>(<span class="string">&quot;glob&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 이하 생략</span></span><br></pre></td></tr></table></figure>
+<p>소스 코드 첫 라인에 <code>#!/usr/bin/env node</code>을 보면 CLI임을 짐작할 수 있다.<br>그럼 다음과 같이도 실행을 해볼 수도 있다는 말이 된다.  </p>
+<img src="/2017/06/18/what-is-node-js/09.png" class title="npm script가 아닌 직접 파일로 접근해서 CLI를 실행">  
+
+<p>하지만 우리가 접근한 파일은 우리가 흔히 보고 있는 js 파일이다.<br>Node.js는 자바스크립트를 실행해줄 수 있는 환경인 런타임을 제공해주기 때문에 다음과 같이도 할 수 있다.  </p>
+<img src="/2017/06/18/what-is-node-js/10.png" class title="Node.js에서 바벨을 실행시킨 결과">  
+
+<p>즉, 바벨을 쓴다면, 프론트 엔드 개발자도 Node.js를 쓴다는 결론을 내릴 수가 있다.<br>바벨 뿐만 아니라 웹팩, 걸프, CRA, Vue-CLI 등등 npm으로 설치하는 모든 CLI는 Node.js를 이용한다고 보면 된다.<br>그리고 npm(Node Package Manger)을 쓴다는 것 자체가 Node.js를 이용한다고 보면 된다.  </p>
+<h2 id="웹을-벗어난-Node-js"><a href="#웹을-벗어난-Node-js" class="headerlink" title="웹을 벗어난 Node.js"></a>웹을 벗어난 Node.js</h2><img src="/2017/06/18/what-is-node-js/11.png" class title="Node.js 공홈 about 페이지">  
+<p>Node.js는 확장성 있는 <strong>네트워크 애플리케이션</strong>을 위해 설계했다고 나온다.<br>네트워크 어플리케이션, 즉 서버, 서버를 위해서 설계된 플랫폼이다.<br>따라서 Node.js로 실제 구현하는 내용도 서버가 많다는 것에는 동의한다.<br>또한 많은 프론트 엔드 개발자들이 주로 노드를 이용하는 사례인<br>npm으로 의존성 모듈 관리, 바벨, 웹팩과 같은 CLI를 Node.js 위에서 구동하는 경우<br>이 경우에 </p>
+<blockquote>
+<p>나 노드 할 줄 안다</p>
+</blockquote>
+<p>라고 누군가에게 어필하기에는 다소 무리가 있을 수가 있다.<br>왜냐면 노드로 서버를 구축하는 사례가 너무 많고, 이미 그런 오해가 정석처럼 받아들여지는 상황이라<br>필드에 나가서 노드 할 줄 안다고 했을 때  </p>
+<ul>
+<li>나 노드로 서버 만들 줄 안다.  </li>
+<li>나 노드로 의존성 모듈 관리하고 CLI를 Node.js 위에서 돌릴 줄 알아.<br>둘 중에 누구의 말로 받아들이는 경우가 더 많을까…<br>이런 고민을 하다보니 그럼 웹이 아닌 경우에는 무엇이 있을까 고민하게 됐다.</li>
+</ul>
+<h3 id="데스크탑-어플리케이션을-제작해주는-일렉트론-Electron"><a href="#데스크탑-어플리케이션을-제작해주는-일렉트론-Electron" class="headerlink" title="데스크탑 어플리케이션을 제작해주는 일렉트론(Electron)"></a>데스크탑 어플리케이션을 제작해주는 일렉트론(Electron)</h3><img src="/2017/06/18/what-is-node-js/12.png" class title="Electron의 정의">  
+<p>맥, 윈도우 등등의 크로스 플랫폼 데스크탑 어플리케이션을 HTML, CSS, JS를 통해 만들 수 있다.<br>자세히 몰라서 아래의 사진으로 대체하겠다.  </p>
+<img src="/2017/06/18/what-is-node-js/13.png" class title="출처: http:&#x2F;&#x2F;blog.dramancompany.com&#x2F;2015&#x2F;12&#x2F;electron%EC%9C%BC%EB%A1%9C-%EC%9B%B9-%EC%95%B1-%EB%A7%8C%EB%93%A4%EB%93%AF-%EB%8D%B0%EC%8A%A4%ED%81%AC%ED%86%B1-%EC%95%B1-%EB%A7%8C%EB%93%A4%EA%B8%B0&#x2F;">  
+<p>슬랙과 atom, vs code가 일렉트론으로 만들어졌다 하니 믿을만 하다고 할 수 있을 것 같다.  </p>
+<h2 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h2><p>Node.js를 할 줄 안다고 하면 <strong>Node.js로 서버를 구성할 줄 안다</strong>라고 인식되는 것은 어느 정도 이해할 수 있다.<br>하지만 Node.js 그 자체를 백엔드 자체만의 기술, 웹 서버 자체만으로 받아들이고<br>프론트 엔드 개발자들은 Node.js를 쓸 줄 모른다는 그런 잘못된 지식으로 남들에게 더 이상 인식되지 않는 환경이 조성되길 바란다.<br>명심하자.<br><strong>Node.js는 백엔드, 웹 서버가 아니라 자바스크립트 실행 환경에 불과하다</strong></p>
+<h2 id="참조-링크"><a href="#참조-링크" class="headerlink" title="참조 링크"></a>참조 링크</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://asfirstalways.tistory.com/99">런타임이란?</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://velopert.com/235">REPL 터미널</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://blog.dramancompany.com/2015/12/electron%EC%9C%BC%EB%A1%9C-%EC%9B%B9-%EC%95%B1-%EB%A7%8C%EB%93%A4%EB%93%AF-%EB%8D%B0%EC%8A%A4%ED%81%AC%ED%86%B1-%EC%95%B1-%EB%A7%8C%EB%93%A4%EA%B8%B0/">Electron으로 웹 앱 만들듯 데스크톱 앱 만들기</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/06/02/js-008-operator/" rel="prev" title="(자알쓰) 연산자">
+                  <i class="fa fa-chevron-left"></i> (자알쓰) 연산자
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/06/26/js-func-01-why-make/" rel="next" title="(함수형 JS) 왜 쓸까?">
+                  (함수형 JS) 왜 쓸까? <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

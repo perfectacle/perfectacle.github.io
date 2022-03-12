@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="자알쓰란?자바스크립트 알고 쓰자. (잘 쓰자는 의미도 담겨있다.)자바스크립트라는 언어 자체는 내 기준에서는 설계 상 미스가 참 많다.함수 단위의 스코프, 호이스팅, 동적 타입 등등자바와 같은 깐깐(?)한 언어를 배우고 바라본 자스는 허점 투성이처럼 보였다.애초에 자바스크립트는 어떠한 프로그램을 만들기 위해서 탄생했다기 보다는웹 페이지에 입력값에 대한 유">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(자알쓰) ECMASCript? ES?">
+<meta property="og:url" content="https://perfectacle.github.io/2017/04/26/js-001-es/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="자알쓰란?자바스크립트 알고 쓰자. (잘 쓰자는 의미도 담겨있다.)자바스크립트라는 언어 자체는 내 기준에서는 설계 상 미스가 참 많다.함수 단위의 스코프, 호이스팅, 동적 타입 등등자바와 같은 깐깐(?)한 언어를 배우고 바라본 자스는 허점 투성이처럼 보였다.애초에 자바스크립트는 어떠한 프로그램을 만들기 위해서 탄생했다기 보다는웹 페이지에 입력값에 대한 유">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/04/26/js-001-es/thumb.png">
+<meta property="article:published_time" content="2017-04-26T09:44:42.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.679Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JS">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="자알쓰">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/04/26/js-001-es/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/04/26/js-001-es/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/04/26/js-001-es/","path":"2017/04/26/js-001-es/","title":"(자알쓰) ECMASCript? ES?"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(자알쓰) ECMASCript? ES? | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9E%90%EC%95%8C%EC%93%B0%EB%9E%80"><span class="nav-number">1.</span> <span class="nav-text">자알쓰란?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES%EC%9D%98-%ED%83%84%EC%83%9D-%EB%B0%B0%EA%B2%BD"><span class="nav-number">2.</span> <span class="nav-text">ES의 탄생 배경</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JS-ES"><span class="nav-number">3.</span> <span class="nav-text">JS? ES?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES3-1999"><span class="nav-number">4.</span> <span class="nav-text">ES3 (1999)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES5-2009"><span class="nav-number">5.</span> <span class="nav-text">ES5 (2009)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES2015-ES6"><span class="nav-number">6.</span> <span class="nav-text">ES2015(ES6)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ES2015"><span class="nav-number">7.</span> <span class="nav-text">ES2015+</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0%E2%80%A6"><span class="nav-number">8.</span> <span class="nav-text">마치며…</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/04/26/js-001-es/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(자알쓰) ECMASCript? ES? | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (자알쓰) ECMASCript? ES?
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-04-26 09:44:42" itemprop="dateCreated datePublished" datetime="2017-04-26T09:44:42+00:00">2017-04-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/%EC%9E%90%EC%95%8C%EC%93%B0/" itemprop="url" rel="index"><span itemprop="name">자알쓰</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/04/26/js-001-es/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/26/js-001-es/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/04/26/js-001-es/thumb.png" class>
+
+<h2 id="자알쓰란"><a href="#자알쓰란" class="headerlink" title="자알쓰란?"></a>자알쓰란?</h2><p><code>자</code>바스크립트 <code>알</code>고 <code>쓰</code>자. (잘 쓰자는 의미도 담겨있다.)<br>자바스크립트라는 언어 자체는 내 기준에서는 설계 상 미스가 참 많다.<br>함수 단위의 스코프, 호이스팅, 동적 타입 등등<br>자바와 같은 깐깐(?)한 언어를 배우고 바라본 자스는 허점 투성이처럼 보였다.<br>애초에 자바스크립트는 어떠한 프로그램을 만들기 위해서 탄생했다기 보다는<br>웹 페이지에 입력값에 대한 유효성 검사(데이터가 공란인지 아닌지 등등)와 같은<br>페이지의 동적 제어가 주된 목적 + 짧은 개발 기간(넷 스케이프 사의 새로운 브라우저에 탑재 예정) 때문에<br>설계 상에 미스가 있을 수 밖에 없다고 나는 생각된다.<br>일종의 안전 장치가 없어서 개발자가 일일이 구현해주고, 신경써야 하는 느낌이었다.<br>그렇다고 해서 자바스크립트를 극혐하거나 그런 것은 아니고 매우 사랑한다.<br>또한 그 허점을 아는 사람은 허점을 보완해서 요리조리 피해서 잘 쓰겠지만…<br>잘 모르는 부분들은 잘못 써도 동작이 잘 되기 마련이다.<br>이는 지금 당장에는 큰 문제가 안 될지 모르겠지만, 추후에 대규모 웹 어플리케이션을 만들거나<br>직면할 문제로부터 미리 해방시키기 위해 처음부터 좋은 습관을 들여가는 것이 좋다고 생각한다.<br>그 첫 번째 시리즈는 ECMAScript(이하 ES)를 주제로 진행하겠다.  </p>
+<h2 id="ES의-탄생-배경"><a href="#ES의-탄생-배경" class="headerlink" title="ES의 탄생 배경"></a>ES의 탄생 배경</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80_%EC%A0%84%EC%9F%81">브라우저 전쟁</a> 시절 개발자들은 몸살을 앓았다.<br>넷 스케이프 사의 자바스크립트가 부러웠는지 사용자 층을 더 끌어내기 위해 MS의 IE 3에도 JScript라는 이름으로 자바스크립트를 탑재하였다.<br>하지만 둘의 내용이 매우 달랐는지, 같은 기능을 구현하기 위해 개발자가 해야하는 일들이 더 많아졌다.<br>날이 가면 갈 수록 사용자를 끌어내기 위해 서로 기능을 넣다보니 Javascript와 JScript는 날이 가면 갈 수록 달라지는 경향을 보였다.<br>이에 대한 심각성을 파악하고, <a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/Ecma_%EC%9D%B8%ED%84%B0%EB%82%B4%EC%85%94%EB%84%90">European Computer Manufacturers Association(ECMA, 현 ECMA International)</a>에서는<br>이러한 자바스크립트에 대한 표준을 내리게 된다.<br>또한 ECMA에서는 자바스크립트의 표준만 내리는 게 아니라 다른 표준안도 정하기 때문에 그와 구분하기 위해 숫자를 붙였는데 262다.<br>ECMA262라고 보인다면 <code>아, 자바스크립트 표준 규격이구나</code>라고 생각하면 될 것 같다.  </p>
+<h2 id="JS-ES"><a href="#JS-ES" class="headerlink" title="JS? ES?"></a>JS? ES?</h2><p>자바스크립트는 <strong>언어</strong>이고, ES는 <strong>스펙</strong>이다.<br>IE8에서는 <strong>ES3 스펙을 준수</strong>한 거고, IE9에서는 <strong>ES5 스펙을 준수</strong>한 거다.<br>그럼 우리가 여태까지 알고 있던 자바스크립트를 ES라고 불러야할까?<br>나도 이 문제에 대해서는 아직도 잘 모르겠다.<br>지금 내가 말할 뉘앙스대로라면 ES는 <code>자바스크립트의 표준을 세운 언어</code>라는 느낌이고,<br>그냥 자바스크립트하면 <code>비표준 언어</code>라는 느낌이 많이 드는데 나는 아래와 같이 구분해서 부른다.  </p>
+<ul>
+<li>자바스크립트<br>ES5까지의 내용을 나는 그냥 자바스크립트라고 부른다.<br>ES3나 5의 특징을 설명해야할 때는 콕 찝어서 ES3다 뭐다 하고 부르지만,<br>그렇지 않은 경우에는 그냥 자바스크립트라고 퉁쳐서 부른다.<br>또한 많은 사람들이 생각하는 웹 브라우저에서 돌아가는 자바스크립트의 기준은 아래의 범주도 포함하는 것 같다.<br>ES + DOM(Document Object Model) + BOM(Browser Object Model)<br>DOM은 document.뭐시기~ 요런 애들이고 BOM은 window.머시기~(window를 생략하기도 한다.) 이런 애들이라고 알아두면 될 것 같다.  </li>
+<li>ES<br>ES2015(a.k.a ES6)+나 ES3, 5의 특징과 같은 걸 콕 찝어 말할 때 ES라고 부른다.<br>왜 ES2015 이상의 내용을 얘기할 때 ES를 쓰냐면 ES5와 ES2015 사이에 너무나 큰 변화가 있었기 때문이다.<br>그래서 일반적으로 자바스크립트라고 알고 있는 ES5의 내용으로 사람들이 이해하지 않길 바라는 마음에 ES2015라고 구분해서 부르고 있다.<br>또한 위에 자바스크립트에서도 언급 했 듯이 ES에는 DOM과 BOM을 포함하지 않는다는 점을 유념해둬야한다.<br>즉 ES2015가 되건 2020이 되건 BOM과 DOM의 내용하고는 전혀 관련이 없다는 점을 알아둬야한다.</li>
+</ul>
+<h2 id="ES3-1999"><a href="#ES3-1999" class="headerlink" title="ES3 (1999)"></a>ES3 (1999)</h2><p>대중적으로 많이 아는 그냥 자바스크립트라고 생각하면 될 것 같다.<br><a href="/2016/11/10/ES6-Scope/#ES5%EC%9D%98-%ED%95%A8%EC%88%98-%EB%8B%A8%EC%9C%84%EC%9D%98-%EC%8A%A4%EC%BD%94%ED%94%84">함수 단위의 스코프</a>, 호이스팅, <a href="/2016/11/10/ES6-Scope/#%ED%95%A8%EC%88%98-%EB%8B%A8%EC%9C%84-%EC%8A%A4%EC%BD%94%ED%94%84%EC%9D%98-%EA%B7%B9%EB%B3%B5-%EB%AA%A8%EB%93%88%ED%99%94">모듈화 미지원</a>, <a target="_blank" rel="external nofollow noopener noreferrer" href="http://cafe.naver.com/hacosa/185157">프로토타입</a>, 클로저 등등 자바스크립트의 기본적인 특징들이 들어있다.<br>대부분의 브라우저에서 지원한다.<br>IE8까지 크로스브라우징하는 환경이면 ES3를 쓰고 있다고 생각하면 된다.  </p>
+<h2 id="ES5-2009"><a href="#ES5-2009" class="headerlink" title="ES5 (2009)"></a>ES5 (2009)</h2><p>4는 너무 급변하는 내용이 있었던지 거절되고, 그 후에 점진적인 개선을 하고자 5가 나온 것으로 알고있다.<br>기본적으로 IE9부터 본격적인 지원을 하지만 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/es-shims/es5-shim">es5-shim</a>을 사용하면 하위 버전에서도 특정 기능들을 지원해준다.<br>5부터는 아래와 같은 내용들이 추가되었다.  </p>
+<ul>
+<li>배열<br>배열과 관련해서 새로운 메소드들이 많이 생겼는데 대표적으로<br>forEach, map, filter, reduce, some, every와 같은 순환 메소드들이 생겼다.<br>이 메소드들은 개발자가 반복 횟수나 조건을 잘못 입력하는 등의 실수를 줄여주는 효과가 있다.  </li>
+<li>객체<br>일단 눈에 띄는 점은 객체의 프로퍼티에 대한 설정을 할 수 있다는 것이다.<br>객체를 생성&#x2F;수정&#x2F;복사하는 표준 메소드들(Object.create(), Object.defineProperty(), Object.freeze(), Object.assign() 등등)과 getter&#x2F;setter 등등<br>또한 Object.keys 메소드를 쓰면 for in 메소드도 대체할 수 있게 된다.  </li>
+<li>strict 모드<br>문법을 좀 더 깐깐하게 체크하는 모드이다.<br>물론 이유없이 그러는 게 아니라 좀 더 코드를 안전하게(에러가 안 나게, 미연에 방지하고자) 등장했다.<br>특징은 아래 링크를 통해 확인해보자.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Strict_mode">Strict mode - JavaScript | MDN</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">bind() 메소드</a><br>this를 강제로 bind 시켜주는 메소드이다.  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://huns.me/development/1407">실행 컨텍스트 내에 존재하는 Lexical Environment</a>  </li>
+<li>JSON(JavaScript Object Notation)<br>과거 통신을 할 때 데이터를 XML 형태로 많이 주고 받았다.<br>하지만 JSON이 좀 더 경량화 돼있는지 요새는 JSON이 대세다.<br>JSON은 자바스크립트의 객체 리터럴과 생긴 건 유사한데 다음과 같은 차이점이 존재한다.</li>
+</ul>
+<ol>
+<li>키는 무조건 쌍따옴표(“”)로 감싼 문자열이어야한다.  </li>
+<li>주석은 사용할 수 없다.  </li>
+<li>프로퍼티로 메소드는 불가능하다.</li>
+<li>프로퍼티에서도 메소드의 사용이 불가능하다.<br>통신을 위해 Object를 JSON으로 바꾸는 방법은 <code>JSON.stringify(obj)</code>이고, 자바스크립트 코드에서 사용하기 위해 JSON은 Object로 바꾸는 방법은 <code>JSON.parse(json)</code>이다.</li>
+</ol>
+<h2 id="ES2015-ES6"><a href="#ES2015-ES6" class="headerlink" title="ES2015(ES6)"></a>ES2015(ES6)</h2><p>원래는 ES6였는데 사람들이 끝자리인 6과 2016년을 연관짓는 습성 때문에 2016년에 나온 걸로 착각을 해서인지 ES2015로 바꾼 것 같다.<br>그냥 갤럭시 노트 6가 7으로 바로 건너뛴 것처럼 ES도 그냥 건너뛰면 어떨까… 싶은 생각이 든다. (개인적으로 연도 다 붙이기 너무 귀찮다.)<br>ES6 Harmony라고도 불리우는 것 같다.<br>ES2015 들어서면서 다음과 같은 문제점들이 해결되었다.  </p>
+<ul>
+<li><a href="/2016/11/10/ES6-Scope/#TDZ">호이스팅이 사라진 것 같은 효과</a>  </li>
+<li><a href="/2016/11/10/ES6-Scope/#ES6%EC%9D%98-%EB%B8%94%EB%A1%9D-%EB%8B%A8%EC%9C%84%EC%9D%98-%EC%8A%A4%EC%BD%94%ED%94%84">함수 단위 스코프에서 블록 단위 스코프로 변경</a>  </li>
+<li><a href="/2017/02/15/es-this/#%EC%95%A0%EB%A1%9C%EC%9A%B0-%ED%8E%91%EC%85%98%EC%9C%BC%EB%A1%9C%EC%84%9C-%ED%98%B8%EC%B6%9C%ED%95%A0-%EB%95%8C">this를 동적으로 바인딩하지 않는 애로우 펑션</a>  </li>
+<li>모듈화 지원  </li>
+<li>콜백 지옥의 구원자, Promise  <ul>
+<li><a href="/2017/01/21/ES6-Promise-with-ajax/">(ES6) ajax 위주의 promise 실습</a>  </li>
+<li><a href="/2017/04/04/js-promise-param/">(ES6) Promise에 파라미터를 넘겨서 사용해보자</a></li>
+</ul>
+</li>
+<li>Default, <a target="_blank" rel="external nofollow noopener noreferrer" href="http://cafe.naver.com/hacosa/187244">Rest 파라미터</a>  </li>
+<li>해체 할당, <a target="_blank" rel="external nofollow noopener noreferrer" href="http://cafe.naver.com/hacosa/187244">Spread 연산자</a>  </li>
+<li>템플릿 리터럴  </li>
+<li>클래스<br>이 외에도 특징은 엄청나게 많아서 사람들이 이 부분에서 많은 장벽을 느끼는 것 같다.<br>일단 브라우저(특히 MS 계역)에서 지원해주지 않는 경우가 많아<br><a href="/2016/11/11/Babel-ES6-with-IE8/">바벨</a>이라는 트랜스파일러를 써야하는데 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://babeljs.io/repl/">바벨 웹 사이트 REPL</a>에서도 즉시 변환이 가능하다.<br>하지만 매번 번거롭게 하기 귀찮으니 바벨을 설치해야하는데…  </li>
+<li>바벨은 웹 브라우저가 아닌 노드 JS 위에서 돌아가고…  </li>
+<li>노드 JS에서 바벨을 설치하려면 NPM을 알아야하고…  </li>
+<li>또 모듈화를 사용하려면 <a href="/2016/11/18/Module-bundling-with-Webpck/">웹팩</a>과 같은 모듈 번들러를 사용해야하고…</li>
+</ul>
+<p>이런 다양한 장벽 때문에 사람들이 ES2015를 겁내고 쉽사리 접근하지 못하는 경향도 있는 것 같다.<br>하지만 공부를 위해서라면 바벨 없이도 크롬에서 돌리면 원활한 공부가 가능하고,<br>모듈화 부분은 지원하는 브라우저가 없기 때문에 건너 뛰고 공부해야할 것 같다.</p>
+<h2 id="ES2015"><a href="#ES2015" class="headerlink" title="ES2015+"></a>ES2015+</h2><p>현재 ES2016이 작년 6월 경에 발표됐다.<br>ES2017은 조만간 발표될 예정이다.<br>ES2015에서 너무 내용이 많이 바뀌어 겁을 먹었다면 여기서부터는 크게 겁 낼 필요 없는 게 그렇게 큰 내용이 변하지 않았다는 점이다.<br>3에서 5까지 10년, 5에서 6까지 7년이라는 공백 때문에 엄청난 변화들이 있거나 했는데<br>이제는 매년 표준을 제정하면서 그런 혼란을 줄일 예정인 것 같다.<br>또한 이후에 나올 ES를 통칭해서 ES.Next라고도 부르는 것 같다.  </p>
+<h2 id="마치며…"><a href="#마치며…" class="headerlink" title="마치며…"></a>마치며…</h2><p>ES3 ~ ES.Next까지 많은 내용을 다룬 것 같은데 너무 ES2015+를 어려워하지 않았으면 좋겠다.<br>막상 공부해보면 새로운 특성도 있지만, 기존에 사용하던 패턴들을 조금씩 변경하는 내용들이 많고,<br>오히려 복잡하게 구현하던 것을 간편하게 구현할 수 있게 만들어줘서 더 편한 것 같다.<br>다음 시간에는 <a href="/2017/04/26/js-002-hoisting/">호이스팅(Hoisting)</a>과 함수 단위의 <a href="/2017/04/27/js-003-scope/">스코프</a>에 대해서 알아보도록 하자.  </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"># JS</a>
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/%EC%9E%90%EC%95%8C%EC%93%B0/" rel="tag"># 자알쓰</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/04/22/ES6-Generator/" rel="prev" title="ES6 Generator">
+                  <i class="fa fa-chevron-left"></i> ES6 Generator
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/04/26/js-002-hoisting/" rel="next" title="(자알쓰) Hoisting">
+                  (자알쓰) Hoisting <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

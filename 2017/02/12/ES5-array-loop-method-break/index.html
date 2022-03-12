@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이 글은 Outsider 님의 블로그 포스트 중forEach에 break문 대신 some 사용하기를 보고 큰 감명을 받아내가 이해한 내용을 토대로 정리해 본 글이다. for loopfor 반복문을 써서 배열을 순회하는 것은 할당, 프로퍼티 참조, 조건 분기 등등의 잡다한 일을 해야한다.이러한 잡다한 일을 실수로 코딩을 잘못하면 원하지 않는 결과가 나오">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(ES5) 배열의 순회 메소드에서 break 기능 구현하기">
+<meta property="og:url" content="https://perfectacle.github.io/2017/02/12/ES5-array-loop-method-break/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="이 글은 Outsider 님의 블로그 포스트 중forEach에 break문 대신 some 사용하기를 보고 큰 감명을 받아내가 이해한 내용을 토대로 정리해 본 글이다. for loopfor 반복문을 써서 배열을 순회하는 것은 할당, 프로퍼티 참조, 조건 분기 등등의 잡다한 일을 해야한다.이러한 잡다한 일을 실수로 코딩을 잘못하면 원하지 않는 결과가 나오">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/02/12/ES5-array-loop-method-break/thumb.png">
+<meta property="article:published_time" content="2017-02-12T22:51:05.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.259Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JS">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="Array">
+<meta property="article:tag" content="ES5">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/02/12/ES5-array-loop-method-break/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/02/12/ES5-array-loop-method-break/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/02/12/ES5-array-loop-method-break/","path":"2017/02/12/ES5-array-loop-method-break/","title":"(ES5) 배열의 순회 메소드에서 break 기능 구현하기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(ES5) 배열의 순회 메소드에서 break 기능 구현하기 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#for-loop"><span class="nav-number">1.</span> <span class="nav-text">for loop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#continue-%EA%B8%B0%EB%8A%A5%EB%A7%8C-%EC%9E%88%EB%8A%94-%EB%B0%B0%EC%97%B4-%EC%88%9C%ED%9A%8C-%EB%A9%94%EC%86%8C%EB%93%9C-ES5-IE9"><span class="nav-number">2.</span> <span class="nav-text">continue 기능만 있는 배열 순회 메소드(ES5, IE9+)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#break-%EA%B8%B0%EB%8A%A5%EA%B9%8C%EC%A7%80-%EC%9E%88%EB%8A%94-%EB%B0%B0%EC%97%B4-%EC%88%9C%ED%9A%8C-%EB%A9%94%EC%86%8C%EB%93%9C-ES5-IE9"><span class="nav-number">3.</span> <span class="nav-text">break 기능까지 있는 배열 순회 메소드(ES5, IE9+)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/02/12/ES5-array-loop-method-break/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(ES5) 배열의 순회 메소드에서 break 기능 구현하기 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (ES5) 배열의 순회 메소드에서 break 기능 구현하기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-02-12 22:51:05" itemprop="dateCreated datePublished" datetime="2017-02-12T22:51:05+00:00">2017-02-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/02/12/ES5-array-loop-method-break/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/12/ES5-array-loop-method-break/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/02/12/ES5-array-loop-method-break/thumb.png" class>  
+<p>이 글은 Outsider 님의 블로그 포스트 중<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://blog.outsider.ne.kr/847">forEach에 break문 대신 some 사용하기</a>를 보고 큰 감명을 받아<br>내가 이해한 내용을 토대로 정리해 본 글이다.</p>
+<h2 id="for-loop"><a href="#for-loop" class="headerlink" title="for loop"></a>for loop</h2><p>for 반복문을 써서 배열을 순회하는 것은 할당, 프로퍼티 참조, 조건 분기 등등의 잡다한 일을 해야한다.<br>이러한 잡다한 일을 실수로 코딩을 잘못하면 원하지 않는 결과가 나오고, 귀찮음이 몰려오기 마련이다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [</span><br><span class="line">  <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="string">&#x27;q&#x27;</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>,</span><br><span class="line">  <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 배열이 숫자로만 이루어져있는지 파악하는 함수</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isArrNum</span> = arr =&gt; &#123;</span><br><span class="line">  <span class="keyword">let</span> isNum = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 프로그래머가 실수로 let i = 1;이라고 초기화한다면?</span></span><br><span class="line">  <span class="comment">// 실수로 i&lt;arr.length+1; 이라고 조건식을 잘못 입력한다면?</span></span><br><span class="line">  <span class="comment">// i+=2; 라고 증감식을 잘못 입력한다면?</span></span><br><span class="line">  <span class="comment">// arr[i+1]로 잘못 참조한다면?</span></span><br><span class="line">  <span class="comment">// 이렇게 일일이 초기화, 조건식 지정, 증감식 지정 등등을 일일이 해줘야하므로 귀찮다.</span></span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;arr.<span class="property">length</span>; i++) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(arr[i]);</span><br><span class="line">    <span class="keyword">if</span>(!<span class="built_in">isNaN</span>(arr[i])) &#123; <span class="comment">// 숫자라면</span></span><br><span class="line">      <span class="comment">// 아래 있는 코드는 실행할 필요 없이 다음 요소를 검사해야함.</span></span><br><span class="line">      <span class="comment">// 즉 다음 반복문을 실행.</span></span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 숫자가 아니라면</span></span><br><span class="line">    isNum = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 바로 반복문을 종료해야함.</span></span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> isNum;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 3</span></span><br><span class="line"><span class="comment">// q</span></span><br><span class="line"><span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">isArrNum</span>(arr));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 사실은 아래와 같이 break와 continue를 쓸 필요도 없는 예제긴 하다.</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isArrNum2</span> = arr =&gt; &#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;arr.<span class="property">length</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">isNaN</span>(arr[i])) &#123; <span class="comment">// 숫자가 아니라면</span></span><br><span class="line">      <span class="comment">// 반복문 탈출이고 나발이고 return으로 바로 함수를 조기 종료 시키면서</span></span><br><span class="line">      <span class="comment">// false를 반환하게 하면됨.</span></span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 반복문이 무사히 끝났으면 모든 게 숫자였다고 판단하여 true를 반환.</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="continue-기능만-있는-배열-순회-메소드-ES5-IE9"><a href="#continue-기능만-있는-배열-순회-메소드-ES5-IE9" class="headerlink" title="continue 기능만 있는 배열 순회 메소드(ES5, IE9+)"></a>continue 기능만 있는 배열 순회 메소드(ES5, IE9+)</h2><p>따라서 그런 점을 해소하고자 ES5(IE9+)에서는 배열의 순환 메소드인<br>forEach, reduce, map, filter 등등이 추가됐다.<br>하지만!<br>이 메소드는 continue는 지원하지만 break는 지원하지 않는다.<br>또한 continue 기능은 continue 대신에 함수를 종료 시키는<br>return 키워드를 사용하며 반환하는 값은 중요치 않다.(continue 시키는 데에 있어서는)<br>return 키워드로 함수를 조기 종료 시켜도, 현재 요소에 대한 콜백 함수(continue)를 종료 시킨 것이지<br>모든 요소에 대한 콜백 함수(break)를 종료시켜버리는 것이 아니기 때문에 바로 다음 콜백함수의 실행이 일어난다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [</span><br><span class="line">  <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="string">&#x27;q&#x27;</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>,</span><br><span class="line">  <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 배열이 숫자로만 이루어져있는지 파악하는 함수</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isArrNum3</span> = arr =&gt; &#123;</span><br><span class="line">  <span class="keyword">let</span> isNum = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// forEach, map, reduce, filter 메소드가</span></span><br><span class="line">  <span class="comment">// continue만 지원하고, break를 지원하지 않아 콘솔창을 보면 비효율적임을 보여준다.</span></span><br><span class="line">  arr.<span class="title function_">forEach</span>(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 배열 중에 숫자가 아닌 값이 있어도 배열의 요소 끝까지 콜백 함수가 돈다.</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(v);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// forEach, map, filter, reduce에서 return은 continue와 같다.</span></span><br><span class="line">    <span class="comment">// 반환값은 중요치 않고, break를 지원하지 않는다.</span></span><br><span class="line">    <span class="comment">// return으로 함수를 종료 해도 해당 인덱스의 콜백함수이기 때문에</span></span><br><span class="line">    <span class="comment">// 다음 요소의 콜백 함수가 돈다.</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 배열 요소 중 숫자가 아닌 값이 있었다면 그 아래 값들은 실행할 필요가 없어짐.</span></span><br><span class="line">    <span class="keyword">if</span>(!isNum) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 숫자가 아니라면</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">isNaN</span>(v)) isNum = <span class="literal">false</span>;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> isNum;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 3</span></span><br><span class="line"><span class="comment">// q</span></span><br><span class="line"><span class="comment">// 5</span></span><br><span class="line"><span class="comment">// 6</span></span><br><span class="line"><span class="comment">// 3.3</span></span><br><span class="line"><span class="comment">// 5</span></span><br><span class="line"><span class="comment">// 6</span></span><br><span class="line"><span class="comment">// 3.3</span></span><br><span class="line"><span class="comment">// 5</span></span><br><span class="line"><span class="comment">// 6</span></span><br><span class="line"><span class="comment">// 3.3</span></span><br><span class="line"><span class="comment">// 5</span></span><br><span class="line"><span class="comment">// 6</span></span><br><span class="line"><span class="comment">// 3.3</span></span><br><span class="line"><span class="comment">// 5</span></span><br><span class="line"><span class="comment">// 6</span></span><br><span class="line"><span class="comment">// 3.3</span></span><br><span class="line"><span class="comment">// 5</span></span><br><span class="line"><span class="comment">// 6</span></span><br><span class="line"><span class="comment">// 3.3</span></span><br><span class="line"><span class="comment">// 5</span></span><br><span class="line"><span class="comment">// 6</span></span><br><span class="line"><span class="comment">// 3.3</span></span><br><span class="line"><span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">isArrNum3</span>(arr));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 사실은 return으로 continue 시킬 것도 없는 예제이다.</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isArrNum4</span> = arr =&gt; &#123;</span><br><span class="line">  <span class="keyword">let</span> isNum = <span class="literal">true</span>;</span><br><span class="line">  arr.<span class="title function_">forEach</span>(<span class="function"><span class="params">v</span> =&gt;</span> isNum = isNum &amp;&amp; !<span class="built_in">isNaN</span>(v));</span><br><span class="line">  <span class="keyword">return</span> isNum;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="break-기능까지-있는-배열-순회-메소드-ES5-IE9"><a href="#break-기능까지-있는-배열-순회-메소드-ES5-IE9" class="headerlink" title="break 기능까지 있는 배열 순회 메소드(ES5, IE9+)"></a>break 기능까지 있는 배열 순회 메소드(ES5, IE9+)</h2><blockquote>
+<p>falsy values: boolean으로 형변환 했을 때 false로 취급되는 값들<br>  false, 0, ‘’, null, undefined, NaN<br>  truthy values: boolean으로 형변환 했을 때 true로 취급되는 값들<br>  falsy value가 아닌 모든 값들.</p>
+</blockquote>
+<ul>
+<li>some<br>콜백함수가 반환하는 값이 하나라도 true인지 파악하는 메소드<br>하나라도 truthy value를 반환하는 순간 콜백함수를 멈춤.<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [</span><br><span class="line">  <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="string">&#x27;q&#x27;</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>,</span><br><span class="line">  <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 배열이 숫자로만 이루어져있는지 파악하는 함수</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isArrNum5</span> = arr =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> isNum = arr.<span class="title function_">some</span>(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(v);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">isNaN</span>(v)) &#123; <span class="comment">// 숫자가 아니라면</span></span><br><span class="line">      <span class="comment">// some에서 truthy value를 반환하면 break와 동일함.</span></span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// some에서 falsy value를 반환하면 continue와 동일함.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 숫자가 아니라면 some은 true를 반환하므로 not 연산자(!)를 써서 반환해줘야함.</span></span><br><span class="line">  <span class="keyword">return</span> !isNum;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 3</span></span><br><span class="line"><span class="comment">// q</span></span><br><span class="line"><span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">isArrNum5</span>(arr));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 사실 아래와 같이 줄여쓸 수 있는 예제이다.</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isArrNum6</span> = arr =&gt; !arr.<span class="title function_">some</span>(<span class="function"><span class="params">v</span> =&gt;</span> <span class="built_in">isNaN</span>(v));</span><br></pre></td></tr></table></figure></li>
+<li>every<br>콜백함수가 반환하는 값이 모두 true인지 파악하는 메소드<br>하나라도 falsy value를 반환하는 순간 콜백함수를 멈춤.<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [</span><br><span class="line">  <span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="string">&#x27;q&#x27;</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>,</span><br><span class="line">  <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3.3</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 배열이 숫자로만 이루어져있는지 파악하는 함수</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isArrNum7</span> = arr =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> isNum = arr.<span class="title function_">every</span>(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(v);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">isNaN</span>(v)) &#123; <span class="comment">// 숫자가 아니라면</span></span><br><span class="line">      <span class="comment">// every에서 falsy value를 반환하면 break와 동일함.</span></span><br><span class="line">      <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// every에서 truthy value를 반환하면 continue와 동일함.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> isNum;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br><span class="line"><span class="comment">// 3</span></span><br><span class="line"><span class="comment">// q</span></span><br><span class="line"><span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">isArrNum7</span>(arr));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 사실 아래와 같이 줄여쓸 수 있다.</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isArrNum8</span> = arr =&gt; arr.<span class="title function_">every</span>(<span class="function"><span class="params">v</span> =&gt;</span> !<span class="built_in">isNaN</span>(v));</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"># JS</a>
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/Array/" rel="tag"># Array</a>
+              <a href="/tags/ES5/" rel="tag"># ES5</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/02/11/blahblah01/" rel="prev" title="양 보다는 꾸준히">
+                  <i class="fa fa-chevron-left"></i> 양 보다는 꾸준히
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/02/13/es-logical-operator/" rel="next" title="(ES) 똑똑한 논리 연산자">
+                  (ES) 똑똑한 논리 연산자 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

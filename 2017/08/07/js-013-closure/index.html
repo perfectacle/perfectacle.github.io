@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="자알쓰란?자바스크립트 알고 쓰자. (잘 쓰자는 의미도 담겨있다.)자바스크립트라는 언어 자체는 내 기준에서는 설계 상 미스가 참 많다.함수 단위의 스코프, 호이스팅, 동적 타입 등등자바와 같은 깐깐(?)한 언어를 배우고 바라본 자스는 허점 투성이처럼 보였다.애초에 자바스크립트는 어떠한 프로그램을 만들기 위해서 탄생했다기 보다는웹 페이지에 입력값에 대한 유">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(자알쓰) 클로저">
+<meta property="og:url" content="https://perfectacle.github.io/2017/08/07/js-013-closure/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="자알쓰란?자바스크립트 알고 쓰자. (잘 쓰자는 의미도 담겨있다.)자바스크립트라는 언어 자체는 내 기준에서는 설계 상 미스가 참 많다.함수 단위의 스코프, 호이스팅, 동적 타입 등등자바와 같은 깐깐(?)한 언어를 배우고 바라본 자스는 허점 투성이처럼 보였다.애초에 자바스크립트는 어떠한 프로그램을 만들기 위해서 탄생했다기 보다는웹 페이지에 입력값에 대한 유">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/08/07/js-013-closure/thumb.png">
+<meta property="article:published_time" content="2017-08-07T11:53:42.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.695Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JS">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="자알쓰">
+<meta property="article:tag" content="Closure">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/08/07/js-013-closure/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/08/07/js-013-closure/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/08/07/js-013-closure/","path":"2017/08/07/js-013-closure/","title":"(자알쓰) 클로저"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(자알쓰) 클로저 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9E%90%EC%95%8C%EC%93%B0%EB%9E%80"><span class="nav-number">1.</span> <span class="nav-text">자알쓰란?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0-%EC%A0%84%EC%97%90"><span class="nav-number">2.</span> <span class="nav-text">들어가기 전에</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%99%9C-%EC%9D%B4%EB%9F%B0-%ED%98%84%EC%83%81%EC%9D%B4-%EB%B0%9C%EC%83%9D%ED%95%A0%EA%B9%8C"><span class="nav-number">3.</span> <span class="nav-text">왜 이런 현상이 발생할까?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%81%B4%EB%A1%9C%EC%A0%80%EB%8A%94-%EC%99%9C-%EC%93%B8%EA%B9%8C"><span class="nav-number">4.</span> <span class="nav-text">클로저는 왜 쓸까?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%81%B4%EB%A1%9C%EC%A0%80%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EA%B5%AC%ED%98%84%ED%95%B4%EC%95%BC%ED%95%A0%EA%B9%8C"><span class="nav-number">5.</span> <span class="nav-text">클로저는 어떻게 구현해야할까?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B7%B8%EB%9E%98%EC%84%9C-%ED%81%B4%EB%A1%9C%EC%A0%80%EA%B0%80-%EB%AD%94%EB%8D%B0"><span class="nav-number">6.</span> <span class="nav-text">그래서 클로저가 뭔데?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%81%B4%EB%A1%9C%EC%A0%80%EC%9D%98-%EC%9E%A5%EC%A0%90"><span class="nav-number">7.</span> <span class="nav-text">클로저의 장점</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%81%B4%EB%A1%9C%EC%A0%80%EC%9D%98-%EB%8B%A8%EC%A0%90"><span class="nav-number">8.</span> <span class="nav-text">클로저의 단점</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0"><span class="nav-number">9.</span> <span class="nav-text">마치며</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/08/07/js-013-closure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(자알쓰) 클로저 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (자알쓰) 클로저
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-08-07 11:53:42" itemprop="dateCreated datePublished" datetime="2017-08-07T11:53:42+00:00">2017-08-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/%EC%9E%90%EC%95%8C%EC%93%B0/" itemprop="url" rel="index"><span itemprop="name">자알쓰</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/08/07/js-013-closure/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/07/js-013-closure/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/08/07/js-013-closure/thumb.png" class>
+
+<h2 id="자알쓰란"><a href="#자알쓰란" class="headerlink" title="자알쓰란?"></a>자알쓰란?</h2><p><code>자</code>바스크립트 <code>알</code>고 <code>쓰</code>자. (잘 쓰자는 의미도 담겨있다.)<br>자바스크립트라는 언어 자체는 내 기준에서는 설계 상 미스가 참 많다.<br>함수 단위의 스코프, 호이스팅, 동적 타입 등등<br>자바와 같은 깐깐(?)한 언어를 배우고 바라본 자스는 허점 투성이처럼 보였다.<br>애초에 자바스크립트는 어떠한 프로그램을 만들기 위해서 탄생했다기 보다는<br>웹 페이지에 입력값에 대한 유효성 검사(데이터가 공란인지 아닌지 등등)와 같은<br>페이지의 동적 제어가 주된 목적 + 짧은 개발 기간(넷 스케이프 사의 새로운 브라우저에 탑재 예정) 때문에<br>설계 상에 미스가 있을 수 밖에 없다고 나는 생각된다.<br>일종의 안전 장치가 없어서 개발자가 일일이 구현해주고, 신경써야 하는 느낌이었다.<br>그렇다고 해서 자바스크립트를 극혐하거나 그런 것은 아니고 매우 사랑한다.<br>또한 그 허점을 아는 사람은 허점을 보완해서 요리조리 피해서 잘 쓰겠지만…<br>잘 모르는 부분들은 잘못 써도 동작이 잘 되기 마련이다.<br>이는 지금 당장에는 큰 문제가 안 될지 모르겠지만, 추후에 대규모 웹 어플리케이션을 만들거나<br>직면할 문제로부터 미리 해방시키기 위해 처음부터 좋은 습관을 들여가는 것이 좋다고 생각한다.<br>그 열 세 번째 시리즈는 클로저를 주제로 진행하겠다.</p>
+<h2 id="들어가기-전에"><a href="#들어가기-전에" class="headerlink" title="들어가기 전에"></a>들어가기 전에</h2><p>프로그래밍 언어에는 <strong>지역 변수</strong>란 게 존재한다.<br>이 지역변수는 변수의 <a href="/2017/04/27/js-003-scope/">스코프</a>에 의존적이다.<br>여타 프로그맹 언어에서 변수의 스코프는 <strong>{} 블록 단위</strong>지만,<br>자바스크립트의 변수의 스코프는 <strong>함수 단위</strong>이다. (물론 ES6의 const와 let의 스코프는 블록 단위)  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 글로벌 스코프 시작</span></span><br><span class="line"><span class="keyword">var</span> <span class="variable language_">global</span> = <span class="number">2</span>;</span><br><span class="line"><span class="keyword">var</span> func = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 로컬 스코프 func 시작</span></span><br><span class="line">  <span class="keyword">var</span> local = <span class="number">1</span>;</span><br><span class="line">  <span class="comment">// 로컬 스코프에서는 로컬 스코프와 글로벌 스코프에 접근 가능</span></span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">global</span>);</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(local);</span><br><span class="line">  <span class="comment">// 로컬 스코프 끝</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 글로벌 스코프에서는 글로벌 스코프만 접근 가능</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">global</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(local); <span class="comment">// Uncaught ReferenceError: local is not defined</span></span><br><span class="line"><span class="comment">// 글로벌 스코프 끝</span></span><br></pre></td></tr></table></figure>
+<p>스코프의 접근 가능한 스코프는 자기 자신을 포함한 상위 스코프이다.<br>글로벌 스코프의 접근 가능한 범위는 글로벌 스코프가 최상위 스코프이므로 글로벌 스코프 자기 자신 밖에 없고,<br>로컬 스코프 func의 접근 가능한 스코프는 자기 자신인 func와 자신의 상위 스코프인 global 스코프가 된다.</p>
+<h2 id="왜-이런-현상이-발생할까"><a href="#왜-이런-현상이-발생할까" class="headerlink" title="왜 이런 현상이 발생할까?"></a>왜 이런 현상이 발생할까?</h2><p>이는 전역 변수와 지역 변수가 메모리(RAM)의 어느 영역(<a href="/2017/02/09/C-ref-004/">Code, Data, Stack, Heap</a>)에 적재되는지와 관련이 있다.<br>전역 변수는 메모리의 Data라는 영역에 적재돼서 프로그램의 종료 시까지 계속 적재돼있다.<br>따라서 어디서나 사용이 가능하다.<br>지역 변수는 메모리의 Stack이라는 영역에 적재되고, 지역 변수의 생명주기(Lifecycle)는 <strong>함수 호출 시 생성되고 함수가 종료되면 시스템에 의해 반환</strong>된다.</p>
+<h2 id="클로저는-왜-쓸까"><a href="#클로저는-왜-쓸까" class="headerlink" title="클로저는 왜 쓸까?"></a>클로저는 왜 쓸까?</h2><p>위와 같이 지역변수는 함수 호출 시 메모리에 할당되고, 함수가 종료되면 메모리에서 해제된다.<br>따라서 지역변수는 <strong>호출할 때마다 항상 같은 값으로 초기화</strong>된다.<br>하지만 가끔 함수를 호출할 때 <strong>이전에 존재했던 값을 유지</strong>하고 싶어질 때가 있다.<br>그러려면 함수가 종료됐을 때 해당 지역 변수가 메모리에서 해제되면 안 된다.  </p>
+<h2 id="클로저는-어떻게-구현해야할까"><a href="#클로저는-어떻게-구현해야할까" class="headerlink" title="클로저는 어떻게 구현해야할까?"></a>클로저는 어떻게 구현해야할까?</h2><p>함수가 종료돼도 지역 변수가 메모리에서 해제되지 않으려면 어떻게 해야할까?<br>이를 위해서는 자바스크립트의 GC(Garbage Collector, 메모리 상에 쓸 데 없는 녀석 수거해가는 녀석)가 어떻게 동작하는지 간단하게나마 알아봐야한다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">name</span>: <span class="string">&#x27;양간장&#x27;</span>&#125;;</span><br><span class="line"><span class="keyword">var</span> obj2 = &#123;<span class="attr">name</span>: <span class="string">&#x27;간장냥&#x27;</span>&#125;;</span><br><span class="line">obj = obj2;</span><br></pre></td></tr></table></figure>
+<p>3번 라인에서 obj는 <code>&#123;name: &#39;간장냥&#39;&#125;</code>을 참조하게 만들었다.<br>그럼 <code>&#123;name: &#39;양간장&#39;&#125;</code>이라는 데이터는 참조가 불가능 해졌으므로 사용할 방법이 없는 쓸 데 없는 녀석이 된다.<br>이때 저 <code>&#123;name: &#39;양간장&#39;&#125;</code>은 GC(Garbage Collecting) 대상이 되며 GC(Garbage Collector)가 적절한 시점(개발자 도구 열닫 혹은 일정 시간 이후?)에 수거해간다.<br>따라서 메모리 상에서 데이터가 해제되지 않게 하려면 <strong>누군가는 해당 녀석을 참조</strong>하게 만들어서 GC(Garbage Collecting) 대상에서 제외시켜야한다.<br>이를 위해서는 다음과 같은 조건 제약이 따른다.  </p>
+<ul>
+<li>조건 1. 참조하는 대상이 참조하는 녀석과 접근 가능한 스코프에 있어야 한다.<br>가령 예를 들어 참조하는 대상(<code>&#123;name: &#39;양간장&#39;&#125;</code>)과 참조하는 녀석(<code>obj</code>)이 접근 가능한 스코프에 있어야한다는 소리이다.<br>접근 가능한 스코프 상에 존재해야 오류 없이 해당 데이터를 참조할 수 있기 때문이다.  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">1</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> c = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(b); <span class="comment">// Uncaught ReferenceError: b is not defined</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="title function_">c</span>();</span><br></pre></td></tr></table></figure>
+로컬 스코프 c의 접근 가능한 스코프는 자신을 포함한 상위 스코프이다.  </li>
+<li>로컬 스코프 c</li>
+<li>전역 스코프<br>따라서 로컬 스코프 c에서 로컬 스코프 b로 접근이 불가능하다.    <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">var</span> c = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(b++); <span class="comment">// 1</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="title function_">c</span>();</span><br><span class="line">&#125;;</span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+위 예제에서 로컬 스코프 c가 접근 가능한 스코프는 자신을 포함한 상위 스코프이다.  </li>
+<li>로컬 스코프 c  </li>
+<li>로컬 스코프 a  </li>
+<li>전역 스코프<br>위 코드는 참조하는 대상(<code>b</code>)이 로컬 스코프 a에 있고, 참조하는 녀석(<code>console.log(b)</code>)이 로컬 스코프 c에 있다.</li>
+</ul>
+<p><strong>참조하는 대상(로컬 스코프 a)이 참조하는 녀석(로컬 스포크 c)과 접근 가능한 스코프에 있어야 한다</strong>는 조건을 만족하고 있다.</p>
+<ul>
+<li>조건 2. 참조하는 대상이 존재하는 함수를 호출하는 게 아니라 참조하는 녀석이 존재하는 함수를 직접 호출해야한다.  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">var</span> c = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(b++); <span class="comment">// 1</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="title function_">c</span>();</span><br><span class="line">&#125;;</span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 1</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 1</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+기껏 위와 같이 로컬 스코프와 그 내부 스코프로 나누어서 b의 값을 유지하고자 했는데 함수 a를 호출할 때마다 계속해서 1이 출력된다.<br>우리는 b의 값이 유지돼서 b++을 하고 있으므로 호출할 때마다 1이 상승된 값을 원했는데 그게 아니다.<br>그러기 위해서는 조건 2를 만족시켜주면 된다.<br>즉 참조하는 대상(<code>b</code>)이 존재하는 함수 a를 호출할 게 아니라 참조하는 녀석(<code>console.log(b)</code>)이 존재하는 함수 c를 호출해야한다.<br>함수 a를 백날 호출해봤자 지역변수 b를 초기화 시켜주는 구문이 매번 실행되기 때문에 참조를 아무리 한들 b의 값이 유지되는 게 아니다.<br>하지만 스코프의 접근 가능한 스코프는 자신을 포함한 상위 스코프인데 전역 스코프에서 어떻게 로컬 스코프 a에 존재하는 c를 호출할 수 있을까?<br>이는 자바스크립트의 특성인 <strong>함수는 <a href="/2017/06/30/js-func-00-what/#%EC%9D%BC%EA%B8%89-%ED%95%A8%EC%88%98-%EC%9D%BC%EA%B8%89-%EA%B0%9D%EC%B2%B4-%EC%9D%BC%EA%B8%89-%EC%8B%9C%EB%AF%BC">first-class-citizen</a>임</strong>을 활용하면 된다.<br>전역 스코프에서 c를 호출할 수 있게 하려면 전역 변수와 함수 c 사이에 어떠한 매개체를 뚫어줘야한다.<br>이는 위에서 말한 일급 객체의 특성을 살려 함수 a를 호출했을 때 함수 c(를 호출하는 게 아님)를 리턴함으로써 전역 스코프와 함수 c 사이에 다리를 놔준다고 보면 된다.<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">var</span> c = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(b++);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;;</span><br><span class="line">a = <span class="title function_">a</span>();</span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 1</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 2</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 3</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 4</span></span><br></pre></td></tr></table></figure>
+함수 a를 호출한 결과(내부 함수 c)를 다시 a에 담는 과정이 불필요하다고 생각되니 IIFE(즉시 실행 함수, Immediately Invoked Function Expressions)를 이용하면 아래와 같이 줄일 수 있다.<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = (<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">var</span> c = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(b++);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;)();</span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 1</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 2</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 3</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 4</span></span><br></pre></td></tr></table></figure>
+함수 c를 리턴할 수도 있지만, 아래와 같이 익명함수로 리턴하는 게 대부분이다.  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = (<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(b++);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;)();</span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 1</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 2</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 3</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 4</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>함수 c와 같이 기명 함수를 리턴하는 경우는 함수 내에서 자기 자신을 호출하는 재귀 함수를 구현할 때 뿐인 것 같다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = (<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">var</span> c = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(b++);</span><br><span class="line">      <span class="keyword">if</span>(b &lt; <span class="number">10</span>) <span class="title function_">c</span>();</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;)();</span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 1 2 3 4 5 6 7 8 9</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 10</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 11</span></span><br><span class="line"><span class="title function_">a</span>(); <span class="comment">// 12</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>조건 3. 참조하는 대상이 전역 스코프가 아니어야한다.<br>전역 스코프는 어차피 프로그램 종료 시까지 메모리에 계속 할당돼있으므로 상관이 없는 이야기이다.</li>
+</ul>
+<h2 id="그래서-클로저가-뭔데"><a href="#그래서-클로저가-뭔데" class="headerlink" title="그래서 클로저가 뭔데?"></a>그래서 클로저가 뭔데?</h2><p>먼저 클로저를 설명하기 보다는 적절한 사용 사례를 설명하고 클로저가 뭔지를 풀어 놓는 게 독자의 흥미를 유발할 거 같아서 일부러 뒤로 배치하였다.<br>클로저는 다음과 같이 정의하고 있다.<br>인사이드 자바스크립트 책에서는 <strong>이미 생명 주기가 끝난 외부 함수의 변수를 참조하는 함수</strong>,<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://blog.javarouka.me/2012/01/blog-post_13.html">한 블로그</a>에서는 <strong>생성 당시의 스코프에 대한 연결을 갖는 블록</strong>이라고 정의하고 있다.<br>즉, 위에서 c가 클로저이다.<br>변수 b는 지역 변수이므로 a 함수 종료와 동시에 죽어야하는 변수이다.<br>하지만 그 생명 주기가 끝난 변수(b)를 참조하는 c라는 함수를 사용해서 클로저를 구현하였다.  </p>
+<h2 id="클로저의-장점"><a href="#클로저의-장점" class="headerlink" title="클로저의 장점"></a>클로저의 장점</h2><ol>
+<li>위에서 본 바와 같이 함수를 호출할 때마다 기존에 생성했던 값을 유지할 수 있다.  </li>
+<li>외부에 해당 변수(참조하고 있는 변수)를 노출시키지 않는다.<br>이게 무슨 장점이냐고 생각한다면 코드의 안정성을 보장해준다는 뜻이다.<br>이는 캡슐화(encapsulation)와도 관련이 있는데 알약을 먹는 사람이 알약만 먹어서 병이 치료만 되면 되지, 그 내부의 내용물은 중요하지 않다는 개념이다.<br>근데 만약 환자가 캡슐을 까서 내용물을 바꾸고 다시 캡슐을 씌우고 그 알약을 먹는다면?? 과연 환자의 상태를 보장할 수 있을까?<br>이렇듯 프로그래밍에서 말하는 캡슐화는 환자가 내용물을 바꾸지 못하게(클로저에서 참조하는 변수를 변경하지 못하게 해서),<br>즉 내가 개발한 소스를 사용하는 입장(내가 될 수도 있고 내가 만든 라이브러리를 사용하는 제 3자가 될 수도 있고)에서 코드의 안정성을 보장받게 되는 것이다.<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 개발자(약사) 입장에서 짠 코드</span></span><br><span class="line"><span class="keyword">var</span> a = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> b = <span class="number">1</span>; <span class="comment">// 개발자가 변수에 값을 넣었다. (약사가 약의 내용물을 넣었다.)</span></span><br><span class="line">    <span class="keyword">var</span> c = <span class="keyword">function</span>(<span class="params"></span>) &#123; <span class="comment">// 클로저를 이용하여 내용을 캡슐화 하였다. (약사가 약들을 캡슐로 감쌌다.)</span></span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(b++);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> c; <span class="comment">// 사용자(환자)가 해당 변수를 참조만 가능하고(약의 복용만 가능하고), 변경은 불가능하게(캡슐을 까서 그 안의 약물들을 못 갈아치우게) 했다.</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 실제 사용자(환자)는 해당 변수(약물)을 변경할 수 있는 방법이 없어서 코드의 안정성(환자의 상태)를 보장받을 수 있다.</span></span><br><span class="line"><span class="keyword">var</span> d = <span class="title function_">a</span>();</span><br><span class="line"><span class="title function_">d</span>();</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="클로저의-단점"><a href="#클로저의-단점" class="headerlink" title="클로저의 단점"></a>클로저의 단점</h2><p>클로저는 위와 같이 좋은 점도 존재하는데 역시 신은 공평하듯 모든 걸 주시지 않았는데 바로 아래와 같은 단점이 존재하기 때문이다.  </p>
+<ul>
+<li>클로저로 참조하는 변수는 프로그램 종료 시까지 계속 메모리에 할당돼있다.</li>
+</ul>
+<p>그게 뭐 어때서? 라고 생각하는 경우가 있을 수도 있고 위 경우가 크게 문제가 되지 않을 수도 있다.<br>하지만 사용 가능한 메모리(브라우저마다 다르겠지만…)를 초과하는 사태가 발생할 수도 있고, 성능 상 좋다고 말할 수 있는 사항은 아니다.<br>위와 같은 현상이 발생하는 이유는 계속해서 참조를 하고 있으므로 GC(Garbage Collecting) 대상이 되지 않기 때문이다.<br>따라서 클로저는 이러한 성능 이슈를 가지고 있기 때문에 항상 주의를 기울여 사용을 최소화해야하며 오남용해서는 안 된다.</p>
+<h2 id="마치며"><a href="#마치며" class="headerlink" title="마치며"></a>마치며</h2><p>클로저를 알아야 자바스크립트 고수니 중급으로 넘어가느니 등등의 얘기가 많이 들리는 것 같은데 실상 제대로 파고들어가 보면 별 거 아니란 사실을 알 수 있다.<br>하지만 이와 같은 사항들을 알기 위해서는 아래와 같은 사항은 반드시 짚고 넘어가야 할 것이다.  </p>
+<ol>
+<li><a href="/2017/04/27/js-003-scope/">변수의 스코프</a>  </li>
+<li><a href="#%EC%99%9C-%EC%9D%B4%EB%9F%B0-%ED%98%84%EC%83%81%EC%9D%B4-%EB%B0%9C%EC%83%9D%ED%95%A0%EA%B9%8C">변수의 생명주기(Lifecycle)</a>  </li>
+<li><a href="#%ED%81%B4%EB%A1%9C%EC%A0%80%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EA%B5%AC%ED%98%84%ED%95%B4%EC%95%BC%ED%95%A0%EA%B9%8C">GC(Garbage Collector)가 GC(Garbage Collecting)하는 대상</a>  </li>
+<li><a href="/2017/06/30/js-func-00-what/#%EC%9D%BC%EA%B8%89-%ED%95%A8%EC%88%98-%EC%9D%BC%EA%B8%89-%EA%B0%9D%EC%B2%B4-%EC%9D%BC%EA%B8%89-%EC%8B%9C%EB%AF%BC">First Class Citizen</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"># JS</a>
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/%EC%9E%90%EC%95%8C%EC%93%B0/" rel="tag"># 자알쓰</a>
+              <a href="/tags/Closure/" rel="tag"># Closure</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/08/07/js-jit-compile/" rel="prev" title="(자알쓰) JIT 컴파일">
+                  <i class="fa fa-chevron-left"></i> (자알쓰) JIT 컴파일
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/08/08/js-how-to-learn/" rel="next" title="자바스크립트 학습 방법">
+                  자바스크립트 학습 방법 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

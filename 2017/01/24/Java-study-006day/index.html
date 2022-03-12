@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="배열Java에서는 길이가 0인 배열의 선언도 가능하다.또한 길이는 int 범위의 양의 정수이다.   1234567891011121314151617181920212223242526272829303132333435363738394041import java.util.Arrays;public class test2 &amp;#123;    public static vo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Java) 자바의 정석 3판 006일차 - 배열">
+<meta property="og:url" content="https://perfectacle.github.io/2017/01/24/Java-study-006day/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="배열Java에서는 길이가 0인 배열의 선언도 가능하다.또한 길이는 int 범위의 양의 정수이다.   1234567891011121314151617181920212223242526272829303132333435363738394041import java.util.Arrays;public class test2 &amp;#123;    public static vo">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/24/Java-study-006day/thumb.png">
+<meta property="article:published_time" content="2017-01-24T10:17:58.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.283Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="자바의 정석">
+<meta property="article:tag" content="배열">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/01/24/Java-study-006day/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/01/24/Java-study-006day/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/01/24/Java-study-006day/","path":"2017/01/24/Java-study-006day/","title":"(Java) 자바의 정석 3판 006일차 - 배열"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Java) 자바의 정석 3판 006일차 - 배열 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%B0%B0%EC%97%B4"><span class="nav-number">1.</span> <span class="nav-text">배열</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%B0%B0%EC%97%B4%EC%9D%84-%EB%B3%B5%EC%82%AC%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95"><span class="nav-number">1.1.</span> <span class="nav-text">배열을 복사하는 방법</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-%ED%81%B4%EB%9E%98%EC%8A%A4%EC%9D%98-%EB%B0%B0%EC%97%B4"><span class="nav-number">1.2.</span> <span class="nav-text">String 클래스의 배열</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%96%A5%EC%83%81%EB%90%9C-for%EB%AC%B8"><span class="nav-number">1.3.</span> <span class="nav-text">향상된 for문</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%8B%A4%EC%B0%A8%EC%9B%90-%EB%B0%B0%EC%97%B4"><span class="nav-number">1.4.</span> <span class="nav-text">다차원 배열</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%B0%EC%8A%B5%EB%AC%B8%EC%A0%9C-%EC%98%A4%EB%8B%B5-%EC%A0%95%EB%A6%AC"><span class="nav-number">2.</span> <span class="nav-text">연습문제 오답 정리</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/01/24/Java-study-006day/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Java) 자바의 정석 3판 006일차 - 배열 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Java) 자바의 정석 3판 006일차 - 배열
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-01-24 10:17:58" itemprop="dateCreated datePublished" datetime="2017-01-24T10:17:58+00:00">2017-01-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/01/24/Java-study-006day/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/24/Java-study-006day/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/01/24/Java-study-006day/thumb.png" class>
+
+<h2 id="배열"><a href="#배열" class="headerlink" title="배열"></a>배열</h2><p>Java에서는 길이가 0인 배열의 선언도 가능하다.<br>또한 길이는 int 범위의 양의 정수이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 둘 다 가능하지만 후자가 C/C++에서 먹히는 스타일이라 이식성이 높다고 생각한다.</span></span><br><span class="line">        <span class="type">int</span>[] num = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">5</span>];</span><br><span class="line">        <span class="type">boolean</span> flag[] = <span class="keyword">new</span> <span class="title class_">boolean</span>[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 배열을 초기화하지 않으면 기본값으로 초기화 돼서 나온다.</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;num.length; i++) System.out.println(num[i]); <span class="comment">// 0</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;flag.length; i++) System.out.println(flag[i]); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">        <span class="type">double</span> num2[] = <span class="keyword">new</span> <span class="title class_">double</span>[]&#123;<span class="number">1.1</span>, <span class="number">4.5</span>&#125;; <span class="comment">// 선언과 동시에 초기화.</span></span><br><span class="line">        <span class="type">double</span> num3[] = <span class="keyword">new</span> <span class="title class_">double</span>[<span class="number">5</span>]&#123;<span class="number">1.1</span>, <span class="number">4.5</span>&#125;; <span class="comment">// 길이를 지정해주면 오류가 난다.</span></span><br><span class="line">        <span class="type">double</span> num4[] = &#123;<span class="number">1.5</span>, <span class="number">3.14</span>, <span class="number">15</span>&#125;; <span class="comment">// 선언과 동시에 초기화 할 때는 new 연산자를 뺄 수 있다.</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 선언과 초기화를 따로 할 때는 new 연산자를 써서 할당까지 해주어야 한다.</span></span><br><span class="line">        <span class="type">double</span> num5[];</span><br><span class="line">        num5 = <span class="keyword">new</span> <span class="title class_">double</span>[]&#123;<span class="number">33.123</span>, <span class="number">51.792</span>&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 아래와 같은 경우를 불허한다.</span></span><br><span class="line">        <span class="type">double</span> num6[] = <span class="keyword">new</span> <span class="title class_">double</span>[<span class="number">123</span>];</span><br><span class="line">        num6 = &#123;<span class="number">123.22</span>, <span class="number">33</span>&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 수정할 때는 new 연산자를 써서 새로 만들어줘야한다.</span></span><br><span class="line">        num2 = <span class="keyword">new</span> <span class="title class_">double</span>[]&#123;<span class="number">123</span>, <span class="number">456</span>, <span class="number">111.33</span>&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 아래 세 문장은 배열의 길이가 0이다.</span></span><br><span class="line">        <span class="type">int</span> num7[] = <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;&#125;;</span><br><span class="line">        <span class="type">int</span> num8[] = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">0</span>];</span><br><span class="line">        <span class="type">int</span> num9[] = &#123;&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// import java.util.Arrays;</span></span><br><span class="line">        <span class="comment">// java 패키지의 utill 패키지의 Arrays 클래스에 있는 toString이라는 메소드를 쓴다.</span></span><br><span class="line">        System.out.println(Arrays.toString(num4)); <span class="comment">// [1.5, 3.14, 15.0]</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// char 배열은 for 문이나 다른 메소드를 안 써도 된다.</span></span><br><span class="line">        <span class="type">char</span> ch[] = &#123;<span class="string">&#x27;h&#x27;</span>, <span class="string">&#x27;e&#x27;</span>, <span class="string">&#x27;l&#x27;</span>, <span class="string">&#x27;l&#x27;</span>, <span class="string">&#x27;o&#x27;</span>&#125;;</span><br><span class="line">        System.out.println(ch); <span class="comment">// hello</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="배열을-복사하는-방법"><a href="#배열을-복사하는-방법" class="headerlink" title="배열을 복사하는 방법"></a>배열을 복사하는 방법</h3><ul>
+<li><p>하드코딩(비효율적)  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 배열의 길이를 늘리고 싶다고 생각하면 아래와 같이 복사해야한다.</span></span><br><span class="line">        <span class="type">int</span> arrNum[] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line">        <span class="type">int</span> <span class="variable">arrNumLen</span> <span class="operator">=</span> arrNum.length;</span><br><span class="line">        <span class="comment">// 배열의 길이가 너무 길어지면 메모리에 부담이 되므로 x2 정도가 적당하다.</span></span><br><span class="line">        <span class="type">int</span> tmp[] = <span class="keyword">new</span> <span class="title class_">int</span>[arrNumLen*<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// for 문을 돌리는 부분에서도 상당한 비용을 소모한다.</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;arrNumLen; i++) &#123;</span><br><span class="line">            tmp[i] = arrNum[i];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        arrNum = tmp;</span><br><span class="line">        <span class="comment">// 원본 배열과의 참조 관계가 끊겼다는 걸 알 수 있다.</span></span><br><span class="line">        <span class="comment">// 즉 원본 배열 [1, 2, 3, 4, 5]는 가비지 컬렉팅 대상이 된다.</span></span><br><span class="line">        System.out.println(arrNum.length); <span class="comment">// 10</span></span><br><span class="line">        System.out.println(Arrays.toString(arrNum)); <span class="comment">// [1, 2, 3, 4, 5, 0, 0, 0, 0, 0]</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>내장된 API 사용(효율적)  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 배열의 길이를 늘리고 싶다고 생각하면 아래와 같이 복사해야한다.</span></span><br><span class="line">        <span class="type">int</span> arrNum[] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line">        <span class="type">int</span> <span class="variable">arrNumLen</span> <span class="operator">=</span> arrNum.length;</span><br><span class="line">        <span class="comment">// 배열의 길이가 너무 길어지면 메모리에 부담이 되므로 x2 정도가 적당하다.</span></span><br><span class="line">        <span class="type">int</span> tmp[] = <span class="keyword">new</span> <span class="title class_">int</span>[arrNumLen*<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// for 문은 요소 하나하나마다 접근하지만</span></span><br><span class="line">        <span class="comment">// 배열은 연속된 메모리 공간이라는 점을 활용하여</span></span><br><span class="line">        <span class="comment">// arraycopy 메소드는 하나의 값으로 취급하여 접근한다고 한다.</span></span><br><span class="line">        System.arraycopy(arrNum, <span class="number">0</span>, tmp, <span class="number">0</span>, arrNumLen);</span><br><span class="line"></span><br><span class="line">        arrNum = tmp;</span><br><span class="line">        <span class="comment">// 원본 배열과의 참조 관계가 끊겼다는 걸 알 수 있다.</span></span><br><span class="line">        <span class="comment">// 즉 원본 배열 [1, 2, 3, 4, 5]는 가비지 컬렉팅 대상이 된다.</span></span><br><span class="line">        System.out.println(arrNum.length); <span class="comment">// 10</span></span><br><span class="line">        System.out.println(Arrays.toString(arrNum)); <span class="comment">// [1, 2, 3, 4, 5, 0, 0, 0, 0, 0]</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="String-클래스의-배열"><a href="#String-클래스의-배열" class="headerlink" title="String 클래스의 배열"></a>String 클래스의 배열</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        String str[] = <span class="keyword">new</span> <span class="title class_">String</span>[<span class="number">3</span>]; <span class="comment">// [null, null, null]</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// String은 기본형이 아니기 때문에 전자와 같이 써야하지만 후자와 같이 간편히 쓰는 걸 허용한다.</span></span><br><span class="line">        <span class="comment">// 그리고 기본형이 아닌 참조 변수이기 때문에 값이 아닌 주소가 아닌 객체의 주소가 담겨있다.</span></span><br><span class="line">        <span class="comment">// 객체의 주소는 그냥 임의대로 넣은 거니 크게 의미를 담지 말길 바란다.</span></span><br><span class="line">        String str2[] = &#123;<span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;asdf&quot;</span>), <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;qwer&quot;</span>)&#125;; <span class="comment">// [0x100, 0x200]</span></span><br><span class="line">        String str3[] = &#123;<span class="string">&quot;asdf&quot;</span>, <span class="string">&quot;qwer&quot;</span>&#125;; <span class="comment">// [0x400, 0x500]</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>String 클래스는 char 배열에 기능을 추가하여 확장한 것.<br>객체 지향 이전의 절차 지향의 C언어의 경우에는<br>데이터와 기능을 따로 다루었지만(그래서 char 배열로 문자열을 표현),<br>객체 지향 개념인 Java에서는 데이터와 그와 관련된 기능을 하나의 클래스로 묶음.<br>기능 &#x3D; 함수 &#x3D; 메소드라고 보면 된다.  </p>
+<p>하지만 char 배열과 달리 String 클래스는 내용의 변경이 불가능하다.<br>변경 가능한 String 클래스는 StringBuffer라는 클래스가 따로 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;asd&quot;</span>;</span><br><span class="line">        str += <span class="string">&quot;8&quot;</span>; <span class="comment">// 변경되는 게 아니라 새로운 문자열이 생성된 것이다.</span></span><br><span class="line">        System.out.println(str); <span class="comment">// asd8</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>String 클래스와 char 배열의 변환은 아래와 같다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">char</span> ch[] = &#123;<span class="string">&#x27;h&#x27;</span>, <span class="string">&#x27;i&#x27;</span>&#125;;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(ch);</span><br><span class="line">        <span class="type">char</span> ch2[] = str.toCharArray();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="향상된-for문"><a href="#향상된-for문" class="headerlink" title="향상된 for문"></a>향상된 for문</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> nums[] = &#123;<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>&#125;;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> num : nums) &#123;</span><br><span class="line">            num = <span class="number">1</span>; <span class="comment">// 값이 변경 될까?</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> num : nums) &#123;</span><br><span class="line">            System.out.print(num ); <span class="comment">// 4 5 6</span></span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println();</span><br><span class="line">        </span><br><span class="line">        <span class="type">int</span> nums2[][] = &#123;</span><br><span class="line">                &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;,</span><br><span class="line">                &#123;<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>&#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">// 이중 배열 안에 있는 놈도 배열이므로</span></span><br><span class="line">        <span class="comment">// int num2[]와 같이 해줘야 함.</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> num2[] : nums2) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> num : num2) &#123;</span><br><span class="line">                System.out.print(num);</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="다차원-배열"><a href="#다차원-배열" class="headerlink" title="다차원 배열"></a>다차원 배열</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> nums[][] = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">3</span>][];</span><br><span class="line">        <span class="comment">// 아래와 같은 형태의 배열이 됨.</span></span><br><span class="line">        <span class="comment">// 정사각형이 아닌 배열을 만들 수 있게 됨.</span></span><br><span class="line">        <span class="comment">// int int</span></span><br><span class="line">        <span class="comment">// int int int</span></span><br><span class="line">        <span class="comment">// int int int int</span></span><br><span class="line">        nums[<span class="number">0</span>] = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">2</span>];</span><br><span class="line">        nums[<span class="number">1</span>] = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">3</span>];</span><br><span class="line">        nums[<span class="number">2</span>] = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">4</span>];</span><br><span class="line">        <span class="comment">// 아래와 같은 것도 가능하다.</span></span><br><span class="line">        <span class="type">int</span> nums2[][] = &#123;</span><br><span class="line">                &#123;<span class="number">1</span>, <span class="number">2</span>&#125;,</span><br><span class="line">                &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;,</span><br><span class="line">                &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>가변 배열 문제만 보고 있다보니 드럽게 재미없다.<br>좀 쉬다가 다른 공부나 해야지…</p>
+<p>+ 내용 추가(170125)</p>
+<h2 id="연습문제-오답-정리"><a href="#연습문제-오답-정리" class="headerlink" title="연습문제 오답 정리"></a>연습문제 오답 정리</h2><ul>
+<li>배열의 잘못된 선언 및 초기화<br>b. int[] arr &#x3D; {1,2,3,}; &#x2F;&#x2F; 마지막의 쉼표는 있어도 상관없음.<br>d. int[] arr &#x3D; new int[5]{1,2,3,4,5}; &#x2F;&#x2F; 두 번째 대괄호[]에 숫자 넣으면 안됨.<br>e. int arr[5]; &#x2F;&#x2F; 배열을 선언만 할 때는 배열의 크기를 지정할 수 없음.</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%A0%95%EC%84%9D/" rel="tag"># 자바의 정석</a>
+              <a href="/tags/%EB%B0%B0%EC%97%B4/" rel="tag"># 배열</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/01/24/ASM-ref-002/" rel="prev" title="(ASM) 참고용 정리 - 리틀 엔디안, 빅 엔디안">
+                  <i class="fa fa-chevron-left"></i> (ASM) 참고용 정리 - 리틀 엔디안, 빅 엔디안
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/01/25/C-ref-003/" rel="next" title="(C/C++) 참고용 정리 - 전역 변수 vs 지역 변수 vs static 변수">
+                  (C/C++) 참고용 정리 - 전역 변수 vs 지역 변수 vs static 변수 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

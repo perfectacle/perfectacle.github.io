@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="3줄 요약 @Transaction(readOnly &#x3D; true)로 설정해도 트랜잭션은 시작된다. (transaction isolation level 보장) readOnly 트랜잭션도 시작한 트랜잭션을 종료시켜야하기 때문에 커밋도 한다. readOnly 트랜잭션의 Hibernate Session의 FlushMode는 Manual로 강제하기 때문에 트">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다.">
+<meta property="og:url" content="https://perfectacle.github.io/2021/05/05/readonly-transaction-begin-transaction/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="3줄 요약 @Transaction(readOnly &#x3D; true)로 설정해도 트랜잭션은 시작된다. (transaction isolation level 보장) readOnly 트랜잭션도 시작한 트랜잭션을 종료시켜야하기 때문에 커밋도 한다. readOnly 트랜잭션의 Hibernate Session의 FlushMode는 Manual로 강제하기 때문에 트">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2021/05/05/readonly-transaction-begin-transaction/transaction-interceptor.png">
+<meta property="article:published_time" content="2021-05-05T17:46:16.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.111Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JPA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2021/05/05/readonly-transaction-begin-transaction/transaction-interceptor.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2021/05/05/readonly-transaction-begin-transaction/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2021/05/05/readonly-transaction-begin-transaction/","path":"2021/05/05/readonly-transaction-begin-transaction/","title":"(JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다."}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다. | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#3%EC%A4%84-%EC%9A%94%EC%95%BD"><span class="nav-number">1.</span> <span class="nav-text">3줄 요약</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Transaction-readOnly-x3D-true-%EB%A1%9C-%EC%84%A4%EC%A0%95%ED%95%B4%EB%8F%84-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9D%80-%EC%8B%9C%EC%9E%91%EB%90%9C%EB%8B%A4"><span class="nav-number">1.1.</span> <span class="nav-text">@Transaction(readOnly &#x3D; true)로 설정해도 트랜잭션은 시작된다.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transaction-readOnly-x3D-true-%EC%97%90-%EC%9D%98%ED%95%B4-%EC%8B%9C%EC%9E%91%EB%90%9C-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9D%80-flush%EB%A5%BC-%ED%95%98%EC%A7%80-%EC%95%8A%EB%8A%94%EB%8B%A4"><span class="nav-number">1.2.</span> <span class="nav-text">@Transaction(readOnly &#x3D; true)에 의해 시작된 트랜잭션은 flush를 하지 않는다.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transaction-readOnly-x3D-true-%EC%97%90-%EC%9D%98%ED%95%B4-%EC%8B%9C%EC%9E%91%EB%90%9C-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EB%8F%84-%EC%A2%85%EB%A3%8C%EB%A5%BC-%ED%95%B4%EC%95%BC%ED%95%98%EA%B8%B0-%EB%95%8C%EB%AC%B8%EC%97%90-%EC%BB%A4%EB%B0%8B%EC%9D%84-%ED%95%9C%EB%8B%A4"><span class="nav-number">1.3.</span> <span class="nav-text">@Transaction(readOnly &#x3D; true)에 의해 시작된 트랜잭션도 종료를 해야하기 때문에 커밋을 한다.</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/05/05/readonly-transaction-begin-transaction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다. | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다.
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2021-05-05 17:46:16" itemprop="dateCreated datePublished" datetime="2021-05-05T17:46:16+00:00">2021-05-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/" itemprop="url" rel="index"><span itemprop="name">Back-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/" itemprop="url" rel="index"><span itemprop="name">DB</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/JPA/" itemprop="url" rel="index"><span itemprop="name">JPA</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/05/05/readonly-transaction-begin-transaction/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/05/05/readonly-transaction-begin-transaction/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="3줄-요약"><a href="#3줄-요약" class="headerlink" title="3줄 요약"></a>3줄 요약</h1><ol>
+<li>@Transaction(readOnly &#x3D; true)로 설정해도 트랜잭션은 시작된다. (transaction isolation level 보장)</li>
+<li>readOnly 트랜잭션도 시작한 트랜잭션을 종료시켜야하기 때문에 커밋도 한다.</li>
+<li>readOnly 트랜잭션의 Hibernate Session의 FlushMode는 Manual로 강제하기 때문에 트랜잭션을 커밋하기 전에 flush를 하지 않는다. (readOnly 보장)</li>
+</ol>
+<h2 id="Transaction-readOnly-x3D-true-로-설정해도-트랜잭션은-시작된다"><a href="#Transaction-readOnly-x3D-true-로-설정해도-트랜잭션은-시작된다" class="headerlink" title="@Transaction(readOnly &#x3D; true)로 설정해도 트랜잭션은 시작된다."></a>@Transaction(readOnly &#x3D; true)로 설정해도 트랜잭션은 시작된다.</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">SomeEntityRepository</span> <span class="keyword">extends</span> <span class="title class_">JpaRepository</span>&lt;Parent, Long&gt; &#123;</span><br><span class="line">    <span class="meta">@Transactional(readOnly = true)</span></span><br><span class="line">    List&lt;Parent&gt; <span class="title function_">findByName</span><span class="params">(String name)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> SomeService &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> SomeEntityRepository repository;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">SomeService</span><span class="params">(<span class="keyword">final</span> SomeEntityRepository repository)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.repository = repository;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        repository.findByName(<span class="string">&quot;qwer&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/05/05/readonly-transaction-begin-transaction/transaction-interceptor.png" class>
+<p>repository의 구현체는 프록시 객체로써 인터페이스이기 때문에 jdk dynamic 프록시 객체가 생성이 된다.<br>또한 TransactionInterceptor라는 Advisor를 가지고 있으며 </p>
+<ol>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionInterceptor.java#L119">TransactionInterceptor.invoke()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionAspectSupport.java#L382">TransactionAspectSupport.invokeWithinTransaction()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionAspectSupport.java#L595">TransactionAspectSupport.createTransactionIfNecessary()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/support/AbstractPlatformTransactionManager.java#L373">AbstractPlatformTransactionManager.getTransaction()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/support/AbstractPlatformTransactionManager.java#L400">AbstractPlatformTransactionManager.startTransaction()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/JpaTransactionManager.java#L421">JpaTransactionManager.doBegin()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/vendor/HibernateJpaDialect.java#L164">HibernateJpaDialect.beginTransaction()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/engine/transaction/internal/TransactionImpl.java#L83">TransactionImpl.begin()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/resource/transaction/backend/jdbc/internal/JdbcResourceLocalTransactionCoordinatorImpl.java#L246">JdbcResourceLocalTransactionCoordinatorImpl.TransactionDriverControlImpl.begin()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/resource/jdbc/internal/LogicalConnectionManagedImpl.java#L285">LogicalConnectionManagedImpl.begin()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/resource/jdbc/internal/AbstractLogicalConnectionImplementor.java#L68">AbstractLogicalConnectionImplementor.begin()</a></li>
+</ol>
+<p>위와 같은 메서드 호출을 통해서 실제로 트랜잭션을 시작하게 된다.</p>
+<h2 id="Transaction-readOnly-x3D-true-에-의해-시작된-트랜잭션은-flush를-하지-않는다"><a href="#Transaction-readOnly-x3D-true-에-의해-시작된-트랜잭션은-flush를-하지-않는다" class="headerlink" title="@Transaction(readOnly &#x3D; true)에 의해 시작된 트랜잭션은 flush를 하지 않는다."></a>@Transaction(readOnly &#x3D; true)에 의해 시작된 트랜잭션은 flush를 하지 않는다.</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/vendor/HibernateJpaDialect.java#L136">HibernateJpaDialect.beginTransaction()</a> 을 타고 보다보면 아래와 같은 흐름을 따라가게 된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">beginTransaction</span><span class="params">(EntityManager entityManager, TransactionDefinition definition)</span></span><br><span class="line">        <span class="keyword">throws</span> PersistenceException, SQLException, TransactionException &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">Session</span> <span class="variable">session</span> <span class="operator">=</span> getSession(entityManager);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (definition.getTimeout() != TransactionDefinition.TIMEOUT_DEFAULT) &#123;</span><br><span class="line">        session.getTransaction().setTimeout(definition.getTimeout());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">boolean</span> <span class="variable">isolationLevelNeeded</span> <span class="operator">=</span> (definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT);</span><br><span class="line">    <span class="type">Integer</span> <span class="variable">previousIsolationLevel</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="type">Connection</span> <span class="variable">preparedCon</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isolationLevelNeeded || definition.isReadOnly()) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span>.prepareConnection) &#123;</span><br><span class="line">            preparedCon = HibernateConnectionHandle.doGetConnection(session);</span><br><span class="line">            previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(preparedCon, definition);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (isolationLevelNeeded) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">InvalidIsolationLevelException</span>(getClass().getSimpleName() +</span><br><span class="line">                    <span class="string">&quot; does not support custom isolation levels since the &#x27;prepareConnection&#x27; flag is off.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Standard JPA transaction begin call for full JPA context setup...</span></span><br><span class="line">    entityManager.getTransaction().begin();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Adapt flush mode and store previous isolation level, if any.</span></span><br><span class="line">    <span class="type">FlushMode</span> <span class="variable">previousFlushMode</span> <span class="operator">=</span> prepareFlushMode(session, definition.isReadOnly());</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="keyword">protected</span> FlushMode <span class="title function_">prepareFlushMode</span><span class="params">(Session session, <span class="type">boolean</span> readOnly)</span> <span class="keyword">throws</span> PersistenceException &#123;</span><br><span class="line">    <span class="type">FlushMode</span> <span class="variable">flushMode</span> <span class="operator">=</span> (FlushMode) ReflectionUtils.invokeMethod(getFlushMode, session);</span><br><span class="line">    Assert.state(flushMode != <span class="literal">null</span>, <span class="string">&quot;No FlushMode from Session&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (readOnly) &#123;</span><br><span class="line">        <span class="comment">// We should suppress flushing for a read-only transaction.</span></span><br><span class="line">        <span class="keyword">if</span> (!flushMode.equals(FlushMode.MANUAL)) &#123;</span><br><span class="line">            session.setFlushMode(FlushMode.MANUAL);</span><br><span class="line">            <span class="keyword">return</span> flushMode;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Transaction의 설정이 readOnly &#x3D; true라면 Hibernate Session의 FlushMode를 MANUAL(명시적으로 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html#flush--">EntityManager.flush()</a> 메서드를 호출하기 전까지 flush 되지 않음)로 강제하고 있다.</p>
+<p>그리고 나서 실질적인 로직이 끝난 이후에 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionAspectSupport.java#L380">TransactionAspectSupport.invokeWithinTransaction()</a> 메서드에서 아래와 같은 호출 흐름을 가진다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="keyword">protected</span> Object <span class="title function_">invokeWithinTransaction</span><span class="params">(Method method, <span class="meta">@Nullable</span> Class&lt;?&gt; targetClass,</span></span><br><span class="line"><span class="params">        <span class="keyword">final</span> InvocationCallback invocation)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">if</span> (txAttr == <span class="literal">null</span> || !(ptm <span class="keyword">instanceof</span> CallbackPreferringPlatformTransactionManager)) &#123;</span><br><span class="line">        <span class="comment">// Standard transaction demarcation with getTransaction and commit/rollback calls.</span></span><br><span class="line">        <span class="type">TransactionInfo</span> <span class="variable">txInfo</span> <span class="operator">=</span> createTransactionIfNecessary(ptm, txAttr, joinpointIdentification);</span><br><span class="line"></span><br><span class="line">        Object retVal;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// This is an around advice: Invoke the next interceptor in the chain.</span></span><br><span class="line">            <span class="comment">// This will normally result in a target object being invoked.</span></span><br><span class="line">            retVal = invocation.proceedWithInvocation();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">            <span class="comment">// target invocation exception</span></span><br><span class="line">            completeTransactionAfterThrowing(txInfo, ex);</span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">finally</span> &#123;</span><br><span class="line">            cleanupTransactionInfo(txInfo);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (retVal != <span class="literal">null</span> &amp;&amp; vavrPresent &amp;&amp; VavrDelegate.isVavrTry(retVal)) &#123;</span><br><span class="line">            <span class="comment">// Set rollback-only in case of Vavr failure matching our rollback rules...</span></span><br><span class="line">            <span class="type">TransactionStatus</span> <span class="variable">status</span> <span class="operator">=</span> txInfo.getTransactionStatus();</span><br><span class="line">            <span class="keyword">if</span> (status != <span class="literal">null</span> &amp;&amp; txAttr != <span class="literal">null</span>) &#123;</span><br><span class="line">                retVal = VavrDelegate.evaluateTryFailure(retVal, txAttr, status);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        commitTransactionAfterReturning(txInfo);</span><br><span class="line">        <span class="keyword">return</span> retVal;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ol>
+<li>invocation.proceedWithInvocation()에 의해 트랜잭션 내부 로직을 호출한다.  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionAspectSupport.java#L654">TransactionAspectSupport.commitTransactionAfterReturning()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/support/AbstractPlatformTransactionManager.java#L711">AbstractPlatformTransactionManager.commit()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/support/AbstractPlatformTransactionManager.java#L743">AbstractPlatformTransactionManager.processCommit()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/main/spring-orm/src/main/java/org/springframework/orm/jpa/JpaTransactionManager.java#L562">JpaTransactionManager.doCommit()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/engine/transaction/internal/TransactionImpl.java#L101">TransactionImpl.commit()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/resource/transaction/backend/jdbc/internal/JdbcResourceLocalTransactionCoordinatorImpl.java#L281">JdbcResourceLocalTransactionCoordinatorImpl.TransactionDriverControlImpl.commit()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/resource/transaction/backend/jdbc/internal/JdbcResourceLocalTransactionCoordinatorImpl.java#L183">JdbcResourceLocalTransactionCoordinatorImpl.beforeCompletionCallback()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/engine/jdbc/internal/JdbcCoordinatorImpl.java#L448">JdbcCoordinatorImpl.beforeTransactionCompletion()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/internal/SessionImpl.java#L2409">SessionImpl.beforeTransactionCompletion()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/internal/SessionImpl.java#L3268">SessionImpl.flushBeforeTransactionCompletion()</a></li>
+</ol>
+<p>SessionImpl.flushBeforeTransactionCompletion 코드를 보면 아래와 같다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">flushBeforeTransactionCompletion</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">boolean</span> <span class="variable">doFlush</span> <span class="operator">=</span> isTransactionFlushable()</span><br><span class="line">            &amp;&amp; getHibernateFlushMode() != FlushMode.MANUAL;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> ( doFlush ) &#123;</span><br><span class="line">            managedFlush();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (RuntimeException re) &#123;</span><br><span class="line">        <span class="keyword">throw</span> ExceptionMapperStandardImpl.INSTANCE.mapManagedFlushFailure( <span class="string">&quot;error during managed flush&quot;</span>, re, <span class="built_in">this</span> );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>위에서 readOnly이면 Hibernate Session의 Flush 모드를 MANUAL로 강제했기 때문에 getHibernateFlushMode()는 MANUAL이 나오기 때문에<br><code>getHibernateFlushMode() != FlushMode.MANUAL</code>는 false이기 때문에 doFlush는 false라서 managedFlush 메서드를 호출하지 않아서 실질적으로 flush가 호출되지 않는다.</p>
+<h2 id="Transaction-readOnly-x3D-true-에-의해-시작된-트랜잭션도-종료를-해야하기-때문에-커밋을-한다"><a href="#Transaction-readOnly-x3D-true-에-의해-시작된-트랜잭션도-종료를-해야하기-때문에-커밋을-한다" class="headerlink" title="@Transaction(readOnly &#x3D; true)에 의해 시작된 트랜잭션도 종료를 해야하기 때문에 커밋을 한다."></a>@Transaction(readOnly &#x3D; true)에 의해 시작된 트랜잭션도 종료를 해야하기 때문에 커밋을 한다.</h2><p>flush는 하지 않았지만 트랜잭션을 시작했기 때문에 트랜잭션을 종료해야 정상적으로 커넥션을 반환하게 된다.<br>다시 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/resource/transaction/backend/jdbc/internal/JdbcResourceLocalTransactionCoordinatorImpl.java#L282">JdbcResourceLocalTransactionCoordinatorImpl.TransactionDriverControlImpl.commit()</a> 로 돌아오면</p>
+<ol>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/resource/jdbc/internal/AbstractLogicalConnectionImplementor.java#L86">AbstractLogicalConnectionImplementor.commit()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/brettwooldridge/HikariCP/blob/dev/src/main/java/com/zaxxer/hikari/pool/ProxyConnection.java#L387">ProxyConnection.commit()</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/javase/7/docs/api/java/sql/Connection.html#commit()">Connection.commit()</a></li>
+</ol>
+<p>위와 같은 메서드 호출을 통해 실제 DB 물리 커넥션에 commit을 날리기 때문에 위에서 시작한 트랜잭션을 종료하게 된다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JPA/" rel="tag"># JPA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/02/28/netty-event-handler-order/" rel="prev" title="Netty 이벤트 핸들러 실행 순서">
+                  <i class="fa fa-chevron-left"></i> Netty 이벤트 핸들러 실행 순서
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/24/entity-manager-lifecycle/" rel="next" title="(JPA) 엔티티 매니저는 리퀘스트 당 하나만 생성되지 않을 수 있다.">
+                  (JPA) 엔티티 매니저는 리퀘스트 당 하나만 생성되지 않을 수 있다. <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

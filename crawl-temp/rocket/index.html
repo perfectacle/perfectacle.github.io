@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <title>프론트 엔드 개발자 관련 기술 스택 키워드</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="프론트 엔드 개발자 관련 기술 스택 키워드">
+  <meta property="og:url" content="https://perfectacle.github.io/crawl-temp/">
+  <meta property="og:site_name" content="프론트 엔드 개발자 관련 기술 스택 키워드">
+  <meta property="og:description" content="2017/07/20 로켓펀치 프론트 엔드 개발자 관련 기술 스택 키워드">
+  <meta property="og:image" content="http://perfectacle.github.io/crawl-temp/thumb.png">
+  <meta property="og:updated_time" content="2017-07-18T01:57:59.000Z">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="프론트 엔드 개발자 관련 기술 스택 키워드">
+  <meta name="twitter:description" content="2017/07/20 로켓펀치 프론트 엔드 개발자 관련 기술 스택 키워드">
+  <meta name="twitter:image" content="http://perfectacle.github.io/crawl-temp/thumb.png">
+</head>
+<body>
+<h1>2017/07/20 로켓펀치 프론트 엔드 개발자 관련 기술 스택 키워드</h1>
+<canvas id="chart"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.2/axios.min.js"></script>
+<script>
+  const rand = (min, max) => Math.floor((Math.random() * max) + min);
+  axios.get('./skills.json')
+  .then(res => {
+    const la = [];
+    const da = [];
+    const back = [];
+    const border = [];
+    for(const d of res.data) {
+      la.push(d.word);
+      da.push(d.count);
+      back.push(`rgba(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)}, ${Math.random()})`);
+      border.push(`rgba(${rand(0, 255)}, ${rand(0, 255)}, ${rand(0, 255)}, ${Math.random()})`);
+    }
+    const ctx = document.getElementById("chart");
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: la,
+        datasets: [{
+          label: '',
+          data: da,
+          backgroundColor: back,
+          borderColor: border,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        tooltips: {
+          enabled: true,
+          mode: 'single',
+          callbacks: {
+            label: function(tooltipItem, data) {
+              //get the concerned dataset
+              var dataset = data.datasets[tooltipItem.datasetIndex];
+              //calculate the total of this data set
+              var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                return previousValue + currentValue;
+              });
+              //get the current items value
+              var currentValue = dataset.data[tooltipItem.index];
+              //calculate the precentage based on the total and current item, also this does a rough rounding to give a whole number
+              var precentage = (((currentValue/total) * 100)+0.5).toFixed(2);
+              return precentage + '%';
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>

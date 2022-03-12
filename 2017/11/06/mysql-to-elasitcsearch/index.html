@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="MySQL의 데이터를 Elasticsearch로 마이그레이션 할 때 다음과 같은 방법이 존재한다.    일일이 노가다로 집어넣기 Logstash의 logstash-input-jdbc 플러그인 사용하기.   go-mysql-elasticsearch 사용하기.  logstash-input-jdbc 같은 경우에는 다음과 같은 단점이 존재한다.    테이블 명">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(DB) MySQL의 데이터를 Elasticsearch로 마이그레이션하기">
+<meta property="og:url" content="https://perfectacle.github.io/2017/11/06/mysql-to-elasitcsearch/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="MySQL의 데이터를 Elasticsearch로 마이그레이션 할 때 다음과 같은 방법이 존재한다.    일일이 노가다로 집어넣기 Logstash의 logstash-input-jdbc 플러그인 사용하기.   go-mysql-elasticsearch 사용하기.  logstash-input-jdbc 같은 경우에는 다음과 같은 단점이 존재한다.    테이블 명">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/11/06/mysql-to-elasitcsearch/thumb.png">
+<meta property="article:published_time" content="2017-11-06T14:40:55.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.095Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="DB">
+<meta property="article:tag" content="Elasticsearch">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/11/06/mysql-to-elasitcsearch/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/11/06/mysql-to-elasitcsearch/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/11/06/mysql-to-elasitcsearch/","path":"2017/11/06/mysql-to-elasitcsearch/","title":"(DB) MySQL의 데이터를 Elasticsearch로 마이그레이션하기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(DB) MySQL의 데이터를 Elasticsearch로 마이그레이션하기 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%82%AC%EC%A0%84-%EC%84%A4%EC%B9%98-%EC%82%AC%ED%95%AD"><span class="nav-number">1.</span> <span class="nav-text">사전 설치 사항</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL-bin-log-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text">MySQL bin log 설정하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#golang-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0"><span class="nav-number">3.</span> <span class="nav-text">golang 설치하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#go-mysql-elasticsearch-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0"><span class="nav-number">4.</span> <span class="nav-text">go-mysql-elasticsearch 설치하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0"><span class="nav-number">5.</span> <span class="nav-text">사용하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#server-id%EB%A5%BC-%EB%AA%A8%EB%A5%B4%EB%8A%94-%EA%B2%BD%EC%9A%B0"><span class="nav-number">6.</span> <span class="nav-text">server_id를 모르는 경우</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A6%AC%EC%85%8B%ED%95%98%EA%B8%B0"><span class="nav-number">7.</span> <span class="nav-text">리셋하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%A4%ED%97%98%EC%A0%81-%EA%B8%B0%EB%8A%A5"><span class="nav-number">8.</span> <span class="nav-text">실험적 기능</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EB%82%B4%EC%97%90-%EC%A1%B4%EC%9E%AC%ED%95%98%EB%8A%94-%EB%AA%A8%EB%93%A0-%ED%85%8C%EC%9D%B4%EB%B8%94%EC%9D%84-%EC%8B%B1%ED%81%AC%ED%95%98%EB%8A%94-%EA%B8%B0%EB%8A%A5"><span class="nav-number">8.1.</span> <span class="nav-text">데이터베이스 내에 존재하는 모든 테이블을 싱크하는 기능</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Primary-Key%EA%B0%80-%EC%97%86%EB%8A%94-%ED%85%8C%EC%9D%B4%EB%B8%94-%EC%8B%B1%ED%81%AC-%EC%95%88-%EB%A7%9E%EC%B6%94%EA%B8%B0"><span class="nav-number">8.2.</span> <span class="nav-text">Primary Key가 없는 테이블 싱크 안 맞추기</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/11/06/mysql-to-elasitcsearch/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(DB) MySQL의 데이터를 Elasticsearch로 마이그레이션하기 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (DB) MySQL의 데이터를 Elasticsearch로 마이그레이션하기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-11-06 14:40:55" itemprop="dateCreated datePublished" datetime="2017-11-06T14:40:55+00:00">2017-11-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/" itemprop="url" rel="index"><span itemprop="name">Back-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/" itemprop="url" rel="index"><span itemprop="name">DB</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/Elasticsearch/" itemprop="url" rel="index"><span itemprop="name">Elasticsearch</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/11/06/mysql-to-elasitcsearch/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/11/06/mysql-to-elasitcsearch/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/11/06/mysql-to-elasitcsearch/thumb.png" class>
+
+<p>MySQL의 데이터를 Elasticsearch로 마이그레이션 할 때 다음과 같은 방법이 존재한다.  </p>
+<ol>
+<li><del>일일이 노가다로 집어넣기</del></li>
+<li>Logstash의 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.elastic.co/guide/en/logstash/current/plugins-inputs-jdbc.html">logstash-input-jdbc</a> 플러그인 사용하기.  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/siddontang/go-mysql-elasticsearch">go-mysql-elasticsearch</a> 사용하기.</li>
+</ol>
+<p>logstash-input-jdbc 같은 경우에는 다음과 같은 단점이 존재한다.  </p>
+<ol>
+<li>테이블 명 일일이 입력  </li>
+<li>테이블 별 프라이머리 키 일일이 입력  </li>
+<li>메모리도 많이 잡아먹고, 엄청나게 오래 걸림(성공해본 적이 단 한 번도… ㅜㅜ)</li>
+</ol>
+<p>하지만 단점만 존재하는 것은 아니고 SQL 쿼리문을 써서 사용할 데이터를 뽑아올 수 있다는 점이 큰 메리트라고 할 수 있다.  </p>
+<p>go-mysql-elasticsearch의 장단점은 logstash-input-jdbc와 반대가 아닐까 싶다.<br>따라서 go-mysql-elasticsearch를 토대로 마이그레이션하는 방법을 설명하겠다.<br>(내가 Mac을 쓰므로 맥 기반으로 설명을…)</p>
+<h2 id="사전-설치-사항"><a href="#사전-설치-사항" class="headerlink" title="사전 설치 사항"></a>사전 설치 사항</h2><ul>
+<li>MySQL  </li>
+<li>Elasticsearch  </li>
+<li>Git</li>
+</ul>
+<h2 id="MySQL-bin-log-설정하기"><a href="#MySQL-bin-log-설정하기" class="headerlink" title="MySQL bin log 설정하기"></a>MySQL bin log 설정하기</h2><p>기본적으로 go-mysql-elasticsearch는 MySQL의 bin log를 토대로 싱크를 맞추기 때문에 설치하기 전에 bin log를 세팅해주자.<br>기존적이르 replication DB(혹은 Slave DB) 말고 Master 쪽에 bin log를 만들어주자.<br>replication DB(혹은 Slave DB)는 Master DB의 bin log를 토대로 싱크를 맞추기 때문에 Master DB 쪽에 bin log를 세팅해주는 게 정신 건강에 좋다.  </p>
+<p>먼저 MySQL의 설정을 고쳐야하는데 다음 커맨드로 설정 파일을 찾아낼 수 있다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql --verbose --<span class="built_in">help</span> | grep my.cnf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 그럼 아마 다음과 비슷한 결과가 나올 것이다.</span></span><br><span class="line"><span class="comment"># /etc/my.cnf /etc/mysql/my.cnf ~/.my.cnf</span></span><br></pre></td></tr></table></figure>
+<p>왼쪽에 있는 파일부터 순차적으로 참조하여 하나라도 걸리는 게 있으면 그 녀석이 설정 파일이 되는 것이다.  </p>
+<p>나의 경우에는 &#x2F;usr&#x2F;local&#x2F;etc&#x2F;my.cnf 파일을 제외하고 아무런 설정파일이 미존재 파일이라 해당 파일을 다음과 같이 수정해주었다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">bind-address = 127.0.0.1</span><br><span class="line">log-bin = mysql-bin</span><br><span class="line">server-id = 1001</span><br><span class="line">binlog_format = ROW</span><br></pre></td></tr></table></figure>
+<p>log-bin은 bin log가 만들어질 경로이고, server-id는 go-mysql-elasticsearch와 맞춰줘야한다.<br>또한 go-mysql-elasticsearch가 binlog_format &#x3D; ROW만 지원하므로 위와 같이 적어주자.  </p>
+<p>설정 파일을 바꿨으므로 MySQL을 다시 시작하자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql.server restart</span><br></pre></td></tr></table></figure>
+
+<p>서버가 재시작 됐다면 아래 쿼리를 입력해서 bin log가 제대로 생성되고 있는지 알아보자.  </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;log_bin&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="golang-설치하기"><a href="#golang-설치하기" class="headerlink" title="golang 설치하기"></a>golang 설치하기</h2><p>우선 go-mysql-elasticsearch는 golang으로 만들어져있으므로 golang부터 설치해보자.<br>설치는 다양한 방법이 있지만 가장 간단한 brew로 진행을 하겠다.    </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install go</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/golang/go/wiki/Setting-GOPATH">Setting GOPATH</a>를 참고하여 GOPATH를 지정해주자.<br>본인이 bash를 쓰는지 zsh를 쓰는지 잘 판단해서 GOPATH를 지정해주자.<br>그리고 해당 설정 파일에 다음과 같은 내용을 추가해주자.<br>아래는 brew를 이용하여 설치한 GOPATH이니 버전과 본인이 설치한 버전에 맞춰서 GOPATH를 알맞게 지정해줘야한다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> GOPATH=/usr/local/Cellar/go/1.9.2</span><br></pre></td></tr></table></figure>
+
+<p>그리고 터미널을 새로 띄우거나 껐다 켜야 GOPATH가 제대로 잡히는데 아래 커맨드를 입력하면 새로고침(?) 효과가 있다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br><span class="line"><span class="comment"># 또는 아래와 같이...</span></span><br><span class="line"><span class="comment"># source ~/.bash_profile</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="go-mysql-elasticsearch-설치하기"><a href="#go-mysql-elasticsearch-설치하기" class="headerlink" title="go-mysql-elasticsearch 설치하기"></a>go-mysql-elasticsearch 설치하기</h2><p><del>해당 저장소의 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/siddontang/go-mysql-elasticsearch#install">Install</a>을 보고 따라하면 된다.</del><br>아래 명령어들을 따라 치자.<br>혹시나 <a href="#%EC%8B%A4%ED%97%98%EC%A0%81-%EA%B8%B0%EB%8A%A5">실험적 기능</a>을 이용해보고 싶은 사람은 깃헙 주소를 <code>github.com/perfectacle/go-mysql-elasticsearch</code>과 같이 고쳐서 설치하자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># package github.com/siddontang/go-mysql-elasticsearch: no Go files in ... 이런 에러가 나면 무시해주자.</span></span><br><span class="line">go get github.com/siddontang/go-mysql-elasticsearch</span><br><span class="line"></span><br><span class="line"><span class="comment"># cd: no such file or directory: ... 이런 에러가 나면 GOPATH가 제대로 설정되지 않은 것이니 PATH를 다시 잡거나 터미널을 다시 열고 시도해보자.</span></span><br><span class="line"><span class="variable">$GOPATH</span>/src/github.com/siddontang/go-mysql-elasticsearch</span><br><span class="line"></span><br><span class="line"><span class="comment"># Makefile에 있는 스크립트들을 실행하는 커맨드이다. 코드를 수정하고 컴파일하려면 해당 커맨드를 실행해야한다.</span></span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<h2 id="사용하기"><a href="#사용하기" class="headerlink" title="사용하기"></a>사용하기</h2><p>대충 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/siddontang/go-mysql-elasticsearch#how-to-use">문서</a> 보고, <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/siddontang/go-mysql-elasticsearch/blob/master/etc/river.toml">설정 예제 파일</a> 보면 어떻게 해야할지 각이 나온다.<br>DB와 테이블 관련 내용은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/siddontang/go-mysql-elasticsearch#source">Source</a>를 만지면 되고, 특정 컬럼만 싱크를 맞추는 등등의 복잡한 설정을 하려면 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/siddontang/go-mysql-elasticsearch#rule">Rule</a>를 만져야한다.<br>또한 기본적으로 go-mysql-elasticsearch는 하나의 인덱스(RDS로 치면 DB)에 여러 타입(RDS로 치면 테이블)을 두는 게 아니라<br>한 인덱스에 하나의 타입(테이블 명과 일치하게끔)을 넣는 걸 디폴트 동작으로 두었으니 하나의 인덱스에 다 때려박고 싶거나 한다면 위의 Rule 파트를 참조해야한다.<br>또한 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/siddontang/go-mysql-elasticsearch#wildcard-table">Wildcard table</a>을 이용하면 테이블 이름을 일일이 입력해야하는 수고를 줄일 수 있는데, 아직은 그 기능이 좀 미약하다.<br>혹시나 데이터베이스 내에 존재하는 모든 테이블의 싱크를 맞추고자 한다면 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/perfectacle/go-mysql-elasticsearch">포크 뜬 저장소</a>를 다시 go get 메소드로 받아서<br>*.toml 파일에서 <code>tables = [&quot;*&quot;]</code>로 설정해주면 된다.<br>모든 설정을 마쳤으면 아래 커맨드를 입력해서 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 반드시 go-mysql-elasticsearch가 저장된 곳으로 이동 후에 아래 커맨드를 입력해야한다.</span></span><br><span class="line"><span class="comment"># toml 파일의 디렉토리도 꼭 설정해주자.</span></span><br><span class="line">./bin/go-mysql-elasticsearch -config=*.toml</span><br></pre></td></tr></table></figure>
+
+<h2 id="server-id를-모르는-경우"><a href="#server-id를-모르는-경우" class="headerlink" title="server_id를 모르는 경우"></a>server_id를 모르는 경우</h2><p>AWS RDS의 경우 my.cnf를 수정하는 대신 Parameter Group를 정하게 되는데 거기서 server_id를 직접 지정하는 게 아니라 generate 되는 값이다.<br>따라서 우리가 직접 지정하는 것이 아니기 때문에 어떤 값으로 generation 됐는지 확인하기 위해서는 아래 쿼리문을 실행해보고 *.toml 파일에 적용시켜주면 된다.  </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> @<span class="variable">@server</span>_id</span><br></pre></td></tr></table></figure>
+
+<h2 id="리셋하기"><a href="#리셋하기" class="headerlink" title="리셋하기"></a>리셋하기</h2><p>go-mysql-elasticsearch를 맨 처음에 켰을 때는 싱크가 아주 잘 맞는다.<br>하지만 실수(?)로 해당 프로그램을 종료했다가 재시작하면 빈로그가 종료된 시점 이후의 데이터에 대해서만 싱크를 맞추기 시작한다.<br>이럴 땐 *.toml 파일의 data_dir로 설정한 디렉토리로 가서 master.info 파일을 삭제한 후 프로그램을 재시작하면 된다.  </p>
+<h2 id="실험적-기능"><a href="#실험적-기능" class="headerlink" title="실험적 기능"></a>실험적 기능</h2><p>go-mysql-elasticsearch 저장소로 풀리퀘를 날렸지만 나의 실력 미숙으로 인해 컨벤션이나 테스트 코드 등등의 부분이 부족하여 아직 머지되지 않은 기능들이다.<br>그렇기 때문에 글을 작성하는 17&#x2F;11&#x2F;06에는 최신버전임을 장담하지만 그 이후에는 디프리케잇 된 버전이 될 가능성도 높다.  </p>
+<h3 id="데이터베이스-내에-존재하는-모든-테이블을-싱크하는-기능"><a href="#데이터베이스-내에-존재하는-모든-테이블을-싱크하는-기능" class="headerlink" title="데이터베이스 내에 존재하는 모든 테이블을 싱크하는 기능"></a>데이터베이스 내에 존재하는 모든 테이블을 싱크하는 기능</h3><p>간단하게 아래와 같이 tables에 *를 넣는 것만으로 가능하다.  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[[source]]</span><br><span class="line">schema = &quot;test&quot;</span><br><span class="line">tables = [&quot;*&quot;]</span><br><span class="line"></span><br><span class="line"># *을 쓰면 테이블을 2개 이상 넣으면 오류가 난다.</span><br><span class="line"># tables = [&quot;*&quot;, &quot;table&quot;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="Primary-Key가-없는-테이블-싱크-안-맞추기"><a href="#Primary-Key가-없는-테이블-싱크-안-맞추기" class="headerlink" title="Primary Key가 없는 테이블 싱크 안 맞추기"></a>Primary Key가 없는 테이블 싱크 안 맞추기</h3><p>만약 Primary Key가 없는 테이블이 있는 경우, *으로 모든 테이블과 동기화를 맞추는데 다음과 같은 에러와 마주치게 될 것이다.<br><code>.../go-mysql-elasticsearch/river/river.go:244: schema.table must have a PK for a column</code><br>그럼 또 일일이 PK가 존재하는 테이블을 입력해야한다.<br>이런 수고를 미연에 방지하고자 *.toml 파일에서 아래 속성만 true로 바꿔주면 PK가 없는 테이블은 자동 무시하게 된다.  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># Primary Key가 없는 테이블은 무시</span><br><span class="line">skip_non_pk = true</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+              <a href="/tags/DB/" rel="tag"># DB</a>
+              <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/10/30/js-014-call-by-value-vs-call-by-reference/" rel="prev" title="(자알쓰) call by value vs call by reference">
+                  <i class="fa fa-chevron-left"></i> (자알쓰) call by value vs call by reference
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/11/21/domain-register-godaddy/" rel="next" title="(DNS) 1331원에 .com 도메인 사기 (feat. GoDaddy)">
+                  (DNS) 1331원에 .com 도메인 사기 (feat. GoDaddy) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

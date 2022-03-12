@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가기에 앞서웹팩 2, 웹팩 1, 바벨, 리액트 등등에 대해서 기본적인 부분은 설명하지 않는다.또한 (Webpack 2) 트리 쉐이킹을 해보자!를 보고 나서 이 포스팅을 읽는 걸 추천한다. 코드를 왜 분할하지?   SPA(Single Page Application)은 한 번에 모든 리소스를 로딩해서초기 로딩 이후에 페이지 이동이 매우 빠르다는 장점을 가지">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Webpack 2) 코드를 분할해보자!">
+<meta property="og:url" content="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="들어가기에 앞서웹팩 2, 웹팩 1, 바벨, 리액트 등등에 대해서 기본적인 부분은 설명하지 않는다.또한 (Webpack 2) 트리 쉐이킹을 해보자!를 보고 나서 이 포스팅을 읽는 걸 추천한다. 코드를 왜 분할하지?   SPA(Single Page Application)은 한 번에 모든 리소스를 로딩해서초기 로딩 이후에 페이지 이동이 매우 빠르다는 장점을 가지">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/03.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/04.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/05.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/06.png">
+<meta property="article:published_time" content="2017-03-13T09:32:22.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.215Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="ES6">
+<meta property="article:tag" content="ES2015">
+<meta property="article:tag" content="npm">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="Webpack2">
+<meta property="article:tag" content="babel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/","path":"2017/03/13/webpack2-code-splitting/","title":"(Webpack 2) 코드를 분할해보자!"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Webpack 2) 코드를 분할해보자! | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C"><span class="nav-number">1.</span> <span class="nav-text">들어가기에 앞서</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%BD%94%EB%93%9C%EB%A5%BC-%EC%99%9C-%EB%B6%84%ED%95%A0%ED%95%98%EC%A7%80"><span class="nav-number">2.</span> <span class="nav-text">코드를 왜 분할하지?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1%EB%8B%A8%EA%B3%84-%EB%82%B4-%EC%BD%94%EB%93%9C%EC%99%80-%EC%84%9C%EB%93%9C-%ED%8C%8C%ED%8B%B0-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-x2F-%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8C%ED%81%AC-%EC%BD%94%EB%93%9C%EB%A5%BC-%EB%B6%84%EB%A6%AC%ED%95%B4%EB%B3%B4%EC%9E%90"><span class="nav-number">3.</span> <span class="nav-text">1단계: 내 코드와 서드 파티(라이브러리&#x2F;프레임워크) 코드를 분리해보자.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%9D%BC%EC%9A%B0%ED%84%B0%EC%9D%98-%EC%BD%94%EB%93%9C%EB%A5%BC-%EB%B6%84%ED%95%A0%ED%95%B4%EB%B3%B4%EC%9E%90"><span class="nav-number">4.</span> <span class="nav-text">라우터의 코드를 분할해보자!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hash-vs-chunkhash"><span class="nav-number">4.1.</span> <span class="nav-text">hash vs chunkhash</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EC%A1%B0%EB%A7%81%ED%81%AC"><span class="nav-number">5.</span> <span class="nav-text">참조링크</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Webpack 2) 코드를 분할해보자! | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Webpack 2) 코드를 분할해보자!
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-03-13 09:32:22" itemprop="dateCreated datePublished" datetime="2017-03-13T09:32:22+00:00">2017-03-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Front-end/" itemprop="url" rel="index"><span itemprop="name">Front-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Front-end/Webpack/" itemprop="url" rel="index"><span itemprop="name">Webpack</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/03/13/webpack2-code-splitting/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/13/webpack2-code-splitting/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>웹팩 2, 웹팩 1, 바벨, 리액트 등등에 대해서 기본적인 부분은 설명하지 않는다.<br>또한 <a href="/2017/03/12/webpack2-tree-shaking/">(Webpack 2) 트리 쉐이킹을 해보자!</a>를 보고 나서 이 포스팅을 읽는 걸 추천한다.</p>
+<h2 id="코드를-왜-분할하지"><a href="#코드를-왜-분할하지" class="headerlink" title="코드를 왜 분할하지?"></a>코드를 왜 분할하지?</h2><img src="/2017/03/13/webpack2-code-splitting/thumb.png" class>  
+<p>SPA(Single Page Application)은 한 번에 모든 리소스를 로딩해서<br>초기 로딩 이후에 페이지 이동이 매우 빠르다는 장점을 가지고 있다.<br>하지만 앱의 규모가 커지면 모든 리소스를 한 번에 로딩하므로<br><code>초기 로딩</code>이 느려져 사용자 이탈을 유발하는 양날의 검을 가지고 있다.  </p>
+<h2 id="1단계-내-코드와-서드-파티-라이브러리-x2F-프레임워크-코드를-분리해보자"><a href="#1단계-내-코드와-서드-파티-라이브러리-x2F-프레임워크-코드를-분리해보자" class="headerlink" title="1단계: 내 코드와 서드 파티(라이브러리&#x2F;프레임워크) 코드를 분리해보자."></a>1단계: 내 코드와 서드 파티(라이브러리&#x2F;프레임워크) 코드를 분리해보자.</h2><p>HTTP 1.1 프로토콜은 2개의 http 요청을 병렬로 수행하게 돼있지만,<br>모던 브라우저는 4개의 http 요청을 병렬로 수행한다.<br>아래 링크를 참조하자.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://programmingsummaries.tistory.com/285">브라우저의 리소스 병렬 다운로드를 가로막는 자바스크립트 | 감성 프로그래밍</a><br>따라서 내 코드와 서드 파티 코드를 동시에 다운로드 받으면 더 빠른 로딩이 가능하다.<br>따라서 내 코드(app)와 서드 파티 코드(vendor)를 하나의 bundle.js에서 분리시키는 단계가 필요하다.<br>리액트 대신에 다른 서드 파티로 진행해도 무방하다.</p>
+<p>일단 프로젝트를 생성하자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm init --y</span><br><span class="line">npm i -S react react-dom</span><br><span class="line">npm i -D babel-core babel-preset-env babel-preset-react babel-loader webapck</span><br></pre></td></tr></table></figure>
+
+<p><code>소스 코드는 src 폴더를 만들어 그 안에서 관리하도록 하겠다.</code><br>엔트리의 진입점인 main.js를 만들자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">&#x27;react-dom&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">render</span>(</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">h2</span>&gt;</span>히히헤헤<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span>,</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;app&#x27;</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>webpack.config.js를 만들자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">&#x27;webpack&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="attr">app</span>: <span class="string">&#x27;./src/main.js&#x27;</span>,</span><br><span class="line">    <span class="comment">// 아래와 같이 수동적으로 서드 파티들을 다 추가해줘야한다.</span></span><br><span class="line">    <span class="comment">// 장점으로는 자기가 빼고 싶은 서드 파티만 지정할 수 있다는 점이다.</span></span><br><span class="line">    <span class="comment">// 자신의 앱과 벤더의 크기를 균형있게 맞출 수가 있다.</span></span><br><span class="line">    <span class="attr">vendor</span>: [<span class="string">&#x27;react&#x27;</span>, <span class="string">&#x27;react-dom&#x27;</span>]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="comment">// entry에 존재하는 app.js, vendor.js로 뽑혀 나온다.</span></span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;[name].js&#x27;</span>,</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&#x27;./dist/&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">UglifyJsPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">compress</span>: &#123;</span><br><span class="line">        <span class="attr">warnings</span>: <span class="literal">false</span>, <span class="comment">// 터미널 창에 출력되는 게 보기 귀찮아서 추가.</span></span><br><span class="line">        <span class="attr">unused</span>: <span class="literal">true</span> <span class="comment">// tree shaking</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 로더들에게 옵션을 넣어주는 플러그인이다.</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">LoaderOptionsPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">minimize</span>: <span class="literal">true</span></span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// app.js에 들어갈만한 내용을 vendor로 빼주는 플러그인</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">CommonsChunkPlugin</span>(&#123;</span><br><span class="line">      <span class="comment">// 위에 vendor와 통일시켜줘야한다.</span></span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;vendor&#x27;</span></span><br><span class="line">    &#125;),</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 브라우저의 콘솔 창에 리액트를 프로덕션 모드로 빌드하라는 오류가 뜨는데 그걸 없애주는 플러그인</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">DefinePlugin</span>(&#123;</span><br><span class="line">      <span class="string">&#x27;process.env&#x27;</span>: &#123;</span><br><span class="line">        <span class="attr">NODE_ENV</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(<span class="string">&#x27;production&#x27;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">        <span class="attr">loader</span>: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">        <span class="attr">options</span>: &#123;</span><br><span class="line">          <span class="attr">presets</span>: [</span><br><span class="line">            [</span><br><span class="line">              <span class="string">&quot;env&quot;</span>,</span><br><span class="line">                &#123;</span><br><span class="line">                  <span class="attr">browsers</span>: [<span class="string">&#x27;last 2 versions&#x27;</span>, <span class="string">&#x27;&gt; 10%&#x27;</span>, <span class="string">&#x27;ie 9&#x27;</span>],</span><br><span class="line">                  <span class="comment">// tree shaking</span></span><br><span class="line">                  <span class="string">&quot;modules&quot;</span>: <span class="literal">false</span></span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">            <span class="string">&quot;react&quot;</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 로더 개발자를 위한 로그 제거</span></span><br><span class="line">process.<span class="property">noDeprecation</span> = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+
+<p>위와 같이 해줘도 되는데 일일이 서드 파티를 적기 귀찮은 사람은 아래와 같이 하면 된다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">&#x27;webpack&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="attr">app</span>: <span class="string">&#x27;./src/main.js&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="comment">// entry에 존재하는 app.js,</span></span><br><span class="line">    <span class="comment">// new webpack.optimize.CommonsChunkPlugin의 name 값인 vendor.js로 뽑혀 나온다.</span></span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;[name].js&#x27;</span>,</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&#x27;./dist/&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">UglifyJsPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">compress</span>: &#123;</span><br><span class="line">        <span class="attr">warnings</span>: <span class="literal">false</span>, <span class="comment">// 터미널 창에 출력되는 게 보기 귀찮아서 추가.</span></span><br><span class="line">        <span class="attr">unused</span>: <span class="literal">true</span> <span class="comment">// tree shaking</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 로더들에게 옵션을 넣어주는 플러그인이다.</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">LoaderOptionsPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">minimize</span>: <span class="literal">true</span></span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// app.js에 들어갈만한 내용을 vendor로 빼주는 플러그인</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">CommonsChunkPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;vendor&#x27;</span>,</span><br><span class="line">      <span class="comment">// 아래 부분이 핵심</span></span><br><span class="line">      <span class="attr">minChunks</span>: <span class="keyword">function</span> (<span class="params"><span class="variable language_">module</span></span>) &#123;</span><br><span class="line">        <span class="comment">// this assumes your vendor imports exist in the node_modules directory</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">module</span>.<span class="property">context</span> &amp;&amp; <span class="variable language_">module</span>.<span class="property">context</span>.<span class="title function_">indexOf</span>(<span class="string">&#x27;node_modules&#x27;</span>) !== -<span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 브라우저의 콘솔 창에 프로덕션 모드로 빌드하라는 오류가 뜨는데 그걸 없애주는 플러그인</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">DefinePlugin</span>(&#123;</span><br><span class="line">      <span class="string">&#x27;process.env&#x27;</span>: &#123;</span><br><span class="line">        <span class="attr">NODE_ENV</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(<span class="string">&#x27;production&#x27;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">        <span class="attr">loader</span>: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">        <span class="attr">options</span>: &#123;</span><br><span class="line">          <span class="attr">presets</span>: [</span><br><span class="line">            [</span><br><span class="line">              <span class="string">&quot;env&quot;</span>,</span><br><span class="line">                &#123;</span><br><span class="line">                  <span class="attr">browsers</span>: [<span class="string">&#x27;last 2 versions&#x27;</span>, <span class="string">&#x27;&gt; 10%&#x27;</span>, <span class="string">&#x27;ie 9&#x27;</span>],</span><br><span class="line">                  <span class="comment">// tree shaking</span></span><br><span class="line">                  <span class="string">&quot;modules&quot;</span>: <span class="literal">false</span></span><br><span class="line">                &#125;</span><br><span class="line">            ],</span><br><span class="line">            <span class="string">&quot;react&quot;</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 로더 개발자를 위한 로그 제거</span></span><br><span class="line">process.<span class="property">noDeprecation</span> = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+
+<p>빌드를 할 때 마다 dist 폴더를 제거해야하므로 npm 스크립트를 이용하자.<br>packge.json의 scripts 부분을 다음과 같이 수정하자.  </p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;test&quot;</span><span class="punctuation">:</span> <span class="string">&quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;rm -rf dist &amp;&amp; ./node_modules/webpack/bin/webpack.js&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>rm -rf는 유닉스 기반 명령어이기 때문에 Mac OS, Linux, Unix 등등에서만 쓸 수 있다.<br>윈도우에서는 아마 아래와 같이 하면 될 거다. (될런지는 모르겠다.)  </p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;test&quot;</span><span class="punctuation">:</span> <span class="string">&quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;rmdir dist /s &amp;&amp; ./node_modules/webpack/bin/webpack.js&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>그리고 터미널에 아래와 같이 치면 npm script를 쓸 수 있다.<br>test, build, start만 아래와 같이 칠 수 있고 나머지는<br>npm run scriptName과 같이 입력해야한다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm build</span><br></pre></td></tr></table></figure>
+
+<img src="/2017/03/13/webpack2-code-splitting/01.png" class>  
+<p>결과를 보면 벤더로 서드파티가 다 빠져서 파일 크기가 더 큰 걸 볼 수 있다.<br>아마 우리가 작성한 앱은 아직 규모가 작기 때문일 것이다.</p>
+<p>그리고 index.html을 만들어 테스트 해보자.<br>vendor 보다 app이 더 먼저 삽입되면 오류가 난다.  </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;ko&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./vendor.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./app.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="라우터의-코드를-분할해보자"><a href="#라우터의-코드를-분할해보자" class="headerlink" title="라우터의 코드를 분할해보자!"></a>라우터의 코드를 분할해보자!</h2><p>모든 사용자가 우리 앱의 모든 페이지를 돌아다니지 않는다.<br>하지만 app.js에는 우리 앱의 모든 페이지 코드가 담겨있다.<br>라우터를 통해 구분했던 페이지대로 코드를 분할시켜보자!  </p>
+<h3 id="hash-vs-chunkhash"><a href="#hash-vs-chunkhash" class="headerlink" title="hash vs chunkhash"></a>hash vs chunkhash</h3><ul>
+<li>hash가 뭐지??<br>기본적으로 브라우저에는 임시 파일, 캐시 데이터라고 불리는 임시 저장공간이 존재한다.<br>이 임시 저장공간은 자신의 하드 공간의 일부에 해당한다.<br>브라우저 속성에서 찾아보면 나올 것이다.<br>만약 파일에 대한 요청이 있으면 처음에는 웹서버에서 다운 받고 임시 저장공간에 저장한다.<br>하지만 동일한 요청이 또 오면 웹서버를 거치지 않고 하드에 있는 임시 저장공간에서 뒤져서<br>해당 파일을 응답해줘서 더 빠른 응답을 하기 위한 기법이다.<br>하지만 파일의 내용이 바뀌었는데도 임시 저장 공간에 있는 내용을 내려줘서<br>변경된 파일이 보이지 않아 당황한 적이 많을 것이다.<br>이렇게 파일이 변경 됐음에도 반영되지 않는 걸 방지하고자<br>파일 이름에 hash라는 걸 붙이는 방법이다.<br>hash는 복잡한데 그냥 <code>암호화된 문자</code>라고 대충 생각하면 될 것 같다.<br>하지만 파일이 변경되지 않았을 때도 계속해서 다른 해쉬를 생성해서<br>캐시 데이터의 장점을 전혀 이용할 수가 없다.<br>이래서 나온 게 chunkhash다.  </li>
+<li>chunkhash 짱짱맨!<br>chunkhash는 해당 파일이 변경 됐을 때만 파일에 hash를 바꿔서 저장하는 것이다.<br>즉 파일이 바뀌지 않았으면 똑같은 파일 이름에 대한 요청이므로 캐시 데이터를 쓰고,<br>파일이 바뀌었으면 다른 해쉬가 파일 이름에 들어가 웹서버에 새로 요청해서<br>수정된 내용을 즉각적으로 볼 수 있는 것이다.<br>그렇담 chunk는??<br>나도 잘 모르는데 그냥 페이지 별로 소스를 나눈 게 청크인 것으로 안다.</li>
+</ul>
+<p>hash의 사용법은 어렵지 않으므로 chunkhash만 설명하겠다.<br>일단 chunkhash를 테스트하기 위해 리액트 라우터를 설치하자.<br>또한 HTML5의 History API(리액트 라우터의 browserHistory)를 사용하기 위해<br>node.js의 http 모듈을 사용해서 서버를 띄워보자.<br>쌩으로 코딩하면 번거로우니까 express 모듈을 사용하도록 하자.<br>react-router v4는 너무 변경사항이 많아서 일단은 3 버전을 토대로 설명한다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm i -S react-router@^3.x</span><br><span class="line">npm i -D express</span><br></pre></td></tr></table></figure>
+<p>라우터를 테스트 하기 위해 두 개의 컴포넌트를 만들자.<br>일단은 Comp.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Link</span> <span class="keyword">from</span> <span class="string">&#x27;react-router/es/Link&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Comp</span> = (<span class="params"></span>) =&gt; (</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">&quot;aa/bb/cc&quot;</span>&gt;</span>하이<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>Comp2.js도 만들자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Link</span> <span class="keyword">from</span> <span class="string">&#x27;react-router/es/Link&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">Comp2</span> = (<span class="params"></span>) =&gt; (</span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span><span class="tag">&lt;<span class="name">Link</span> <span class="attr">to</span>=<span class="string">&quot;/&quot;</span>&gt;</span>바이<span class="tag">&lt;/<span class="name">Link</span>&gt;</span><span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title class_">Comp2</span>;</span><br></pre></td></tr></table></figure>
+
+<p>엔트리의 진입점인 main.js도 수정하자.<br>청크의 코드를 분할하는 방법에는 세 가지가 있다.  </p>
+<ol>
+<li>System.import<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://webpack.js.org/guides/code-splitting-import/#system-import-is-deprecated">System.import is deprecated</a><br>deprecated 되었다. 쓰지 말자.  </li>
+<li>import(module)<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://webpack.js.org/guides/code-splitting-import/">Dynamic import</a><br>귀찮다.<br>바벨 플러그인(babel-plugin-syntax-dynamic-import)을 설치하고 설정해줘야 한다.<br>청크의 이름을 지정할 수 없다.<br>하지만 오류가 났을 때 catch()를 써서 처리 할 수 있다는데,<br>뭐 그렇게 처리할만한 상황이 얼마나 있을까 싶다.  </li>
+<li>require.ensure<br>다른 거 설치 안 해도 되고, 청크의 이름을 지정할 수 있다.<br>이 포스팅에서는 3번을 통해 청크 스플리팅을 해보겠다.  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">&#x27;react-dom&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span>  <span class="title class_">Router</span>  <span class="keyword">from</span> <span class="string">&#x27;react-router/es/Router&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span>  <span class="title class_">Route</span>  <span class="keyword">from</span> <span class="string">&#x27;react-router/es/Route&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span>  browserHistory  <span class="keyword">from</span> <span class="string">&#x27;react-router/es/browserHistory&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">render</span>(</span><br><span class="line">  <span class="comment">// HTML5의 History API를 쓰기 위해 hashHistory 대신에 browserHistory를 사용하였다.</span></span><br><span class="line">  <span class="language-xml"><span class="tag">&lt;<span class="name">Router</span> <span class="attr">history</span>=<span class="string">&#123;browserHistory&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    // component 대신에 getComponent를 사용하는 점을 주목하자.</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;/&quot;</span> <span class="attr">getComponent</span>=<span class="string">&#123;(location,</span> <span class="attr">callback</span>) =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-xml">      // 아래 코드 부분이 핵심이다.</span></span><br><span class="line"><span class="language-xml">      // [] 부분 안에 디펜던시가 들어간다는데 언제 쓰게 되는지는 잘 모르겠다.</span></span><br><span class="line"><span class="language-xml">      require.ensure([], (require) =&gt; &#123;</span></span><br><span class="line"><span class="language-xml">        callback(null, require(&#x27;./Comp&#x27;).default);</span></span><br><span class="line"><span class="language-xml">        // 두 번째 인자로 청크의 이름이 들어간다.</span></span><br><span class="line"><span class="language-xml">      &#125;, &#x27;Comp&#x27;);</span></span><br><span class="line"><span class="language-xml">    &#125;&#125; /&gt;</span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">Route</span> <span class="attr">path</span>=<span class="string">&quot;/aa/bb/cc&quot;</span> <span class="attr">getComponent</span>=<span class="string">&#123;(location,</span> <span class="attr">callback</span>) =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-xml">      require.ensure([], (require) =&gt; &#123;</span></span><br><span class="line"><span class="language-xml">        callback(null, require(&#x27;./Comp2&#x27;).default);</span></span><br><span class="line"><span class="language-xml">      &#125;, &#x27;Comp2&#x27;);</span></span><br><span class="line"><span class="language-xml">    &#125;&#125; /&gt;</span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">Router</span>&gt;</span></span>,</span><br><span class="line">  <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;app&#x27;</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>이번엔 index.html를 수정하자.<br>어떤 청크해쉬가 들어갈지 모르므로 script 태그를 빼버렸다.  </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;ko&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>이제 webpack.config.js를 수정해보자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">&#x27;webpack&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="attr">app</span>: <span class="string">&#x27;./src/main.js&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="comment">// 요 놈은 저 위에 엔트리의 app에 대한 내용</span></span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;[name].[chunkhash].js&#x27;</span>,</span><br><span class="line">    <span class="comment">// 요 놈은 페이지 별 청크에 대한 내용</span></span><br><span class="line">    <span class="attr">chunkFilename</span>: <span class="string">&#x27;[name].[chunkhash].js&#x27;</span>,</span><br><span class="line">    <span class="attr">path</span>: <span class="string">`./dist`</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">UglifyJsPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">compress</span>: &#123;</span><br><span class="line">        <span class="attr">warnings</span>: <span class="literal">false</span>, <span class="comment">// 콘솔 창에 출력되는 게 보기 귀찮아서 추가.</span></span><br><span class="line">        <span class="attr">unused</span>: <span class="literal">true</span> <span class="comment">// tree shaking</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 로더들에게 옵션을 넣어주는 플러그인이다.</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">LoaderOptionsPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">minimize</span>: <span class="literal">true</span></span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// app.js에 들어갈만한 내용을 vendor로 빼주는 플러그인</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">CommonsChunkPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;vendor&#x27;</span>,</span><br><span class="line">      <span class="attr">minChunks</span>: <span class="keyword">function</span> (<span class="params"><span class="variable language_">module</span></span>) &#123;</span><br><span class="line">        <span class="comment">// this assumes your vendor imports exist in the node_modules directory</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">module</span>.<span class="property">context</span> &amp;&amp; <span class="variable language_">module</span>.<span class="property">context</span>.<span class="title function_">indexOf</span>(<span class="string">&#x27;node_modules&#x27;</span>) !== -<span class="number">1</span>;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="comment">// 요 놈은 vendor에 대한 내용</span></span><br><span class="line">      <span class="attr">fileName</span>: <span class="string">&#x27;[name].[chunkhash]&#x27;</span></span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 브라우저의 콘솔 창에 프로덕션 모드로 빌드하라는 오류가 뜨는데 그걸 없애주는 플러그인</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">DefinePlugin</span>(&#123;</span><br><span class="line">      <span class="string">&#x27;process.env&#x27;</span>: &#123;</span><br><span class="line">        <span class="attr">NODE_ENV</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(<span class="string">&#x27;production&#x27;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">        <span class="attr">loader</span>: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">        <span class="attr">options</span>: &#123;</span><br><span class="line">          <span class="attr">presets</span>: [</span><br><span class="line">            [</span><br><span class="line">              <span class="string">&quot;env&quot;</span>,</span><br><span class="line">              &#123;</span><br><span class="line">                <span class="attr">browsers</span>: [<span class="string">&#x27;last 2 versions&#x27;</span>, <span class="string">&#x27;&gt; 10%&#x27;</span>, <span class="string">&#x27;ie 9&#x27;</span>],</span><br><span class="line">                <span class="comment">// tree shaking</span></span><br><span class="line">                <span class="string">&quot;modules&quot;</span>: <span class="literal">false</span></span><br><span class="line">              &#125;</span><br><span class="line">            ],</span><br><span class="line">            <span class="string">&quot;react&quot;</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 로더 개발자를 위한 로그 제거</span></span><br><span class="line">process.<span class="property">noDeprecation</span> = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+
+<p>이제 빌드를 해보자</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm build</span><br></pre></td></tr></table></figure>
+
+<img src="/2017/03/13/webpack2-code-splitting/02.png" class>  
+<p>빌드된 파일을 보면 두 가지 문제점이 존재한다.  </p>
+<ol>
+<li>뒤에 해쉬 값을 예측할 수가 없다.  </li>
+<li>html 파일이 dist에 복사되지 않는다.</li>
+</ol>
+<p>이럴 때 필요한 것은 html-webpack-plugin!<br>설치하자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -D html-webpack-plugin</span><br></pre></td></tr></table></figure>
+
+<p>webpack.config.js를 수정하자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">&#x27;webpack&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="title class_">HtmlWebpackPlugin</span> = <span class="built_in">require</span>(<span class="string">&#x27;html-webpack-plugin&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="attr">app</span>: <span class="string">&#x27;./src/main.js&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="comment">// 요 놈은 저 위에 엔트리의 app에 대한 내용</span></span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;[name].[chunkhash].js&#x27;</span>,</span><br><span class="line">    <span class="comment">// 요 놈은 페이지 별 청크에 대한 내용</span></span><br><span class="line">    <span class="attr">chunkFilename</span>: <span class="string">&#x27;[name].[chunkhash].js&#x27;</span>,</span><br><span class="line">    <span class="attr">path</span>: <span class="string">&#x27;./dist&#x27;</span>,</span><br><span class="line">    <span class="comment">// HTML5의 History API를 쓰다보면 라우터가</span></span><br><span class="line">    <span class="comment">// http://localhost/aa/bb/cc 와 같이 뎁스가 깊어지는데</span></span><br><span class="line">    <span class="comment">// 그럴 때 js 파일은 localhost를 기준으로 잡아야하므로</span></span><br><span class="line">    <span class="comment">// 루트를 기준으로 잡아준 것이다.</span></span><br><span class="line">    <span class="attr">publicPath</span>: <span class="string">&#x27;/&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">UglifyJsPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">compress</span>: &#123;</span><br><span class="line">        <span class="attr">warnings</span>: <span class="literal">false</span>, <span class="comment">// 콘솔 창에 출력되는 게 보기 귀찮아서 추가.</span></span><br><span class="line">        <span class="attr">unused</span>: <span class="literal">true</span> <span class="comment">// tree shaking</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 로더들에게 옵션을 넣어주는 플러그인이다.</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">LoaderOptionsPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">minimize</span>: <span class="literal">true</span></span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// app.js에 들어갈만한 내용을 vendor로 빼주는 플러그인</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="property">optimize</span>.<span class="title class_">CommonsChunkPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;vendor&#x27;</span>,</span><br><span class="line">      <span class="attr">minChunks</span>: <span class="keyword">function</span> (<span class="params"><span class="variable language_">module</span></span>) &#123;</span><br><span class="line">        <span class="comment">// this assumes your vendor imports exist in the node_modules directory</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">module</span>.<span class="property">context</span> &amp;&amp; <span class="variable language_">module</span>.<span class="property">context</span>.<span class="title function_">indexOf</span>(<span class="string">&#x27;node_modules&#x27;</span>) !== -<span class="number">1</span>;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="comment">// 요 놈은 vendor에 대한 내용</span></span><br><span class="line">      <span class="attr">fileName</span>: <span class="string">&#x27;[name].[chunkhash]&#x27;</span></span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 브라우저의 콘솔 창에 프로덕션 모드로 빌드하라는 오류가 뜨는데 그걸 없애주는 플러그인</span></span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">DefinePlugin</span>(&#123;</span><br><span class="line">      <span class="string">&#x27;process.env&#x27;</span>: &#123;</span><br><span class="line">        <span class="attr">NODE_ENV</span>: <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(<span class="string">&#x27;production&#x27;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line"></span><br><span class="line">    <span class="comment">// htmlWebpackPlugin을 쓰면 html 파일 복사 및 js, css inject를 할 수 있다.</span></span><br><span class="line">    <span class="comment">// 물론 minify도 가능하다.</span></span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">HtmlWebpackPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">template</span>: <span class="string">&#x27;./src/index.html&#x27;</span></span><br><span class="line">    &#125;)</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.js$/</span>,</span><br><span class="line">        <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">        <span class="attr">loader</span>: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">        <span class="attr">options</span>: &#123;</span><br><span class="line">          <span class="attr">presets</span>: [</span><br><span class="line">            [</span><br><span class="line">              <span class="string">&quot;env&quot;</span>,</span><br><span class="line">              &#123;</span><br><span class="line">                <span class="attr">browsers</span>: [<span class="string">&#x27;last 2 versions&#x27;</span>, <span class="string">&#x27;&gt; 10%&#x27;</span>, <span class="string">&#x27;ie 9&#x27;</span>],</span><br><span class="line">                <span class="comment">// tree shaking</span></span><br><span class="line">                <span class="string">&quot;modules&quot;</span>: <span class="literal">false</span></span><br><span class="line">              &#125;</span><br><span class="line">            ],</span><br><span class="line">            <span class="string">&quot;react&quot;</span></span><br><span class="line">          ]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 로더 개발자를 위한 로그 제거</span></span><br><span class="line">process.<span class="property">noDeprecation</span> = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+
+<p>이제 빌드를 해보자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm build</span><br></pre></td></tr></table></figure>
+
+<p>dist 디렉토리를 보면 index.html이 생성되있고, 소스 코드를 봐보자.</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;ko&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;/vendor.916f26b9c3a11d8f3204.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;/app.f11205f23697a92f4153.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>해쉬가 정상적으로 붙어서 들어갔고, vendor가 먼저 들어갔고, 다른 페이지 청크는 들어가지 않았다.<br>또한 루트 디렉토리를 뜻하는 &#x2F;도 정상적으로 들어가있다.<br>HTML5의 History API를 확인해보려면 실제 서버를 띄워야하므로 서버 코드를 작성해보자.<br>server.js를 프로젝트의 최상위 디렉토리에 만들자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">express</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 루트 디렉토리(/)로 오면 dist 디렉토리에 있는 index.html을 불러옴.</span></span><br><span class="line"><span class="comment">// 서버 라우터일 거다. 아마도...</span></span><br><span class="line">app.<span class="title function_">use</span>(<span class="string">&#x27;/&#x27;</span>, express.<span class="title function_">static</span>(__dirname + <span class="string">`/dist`</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 8080 포트로 서버 오픈</span></span><br><span class="line">app.<span class="title function_">listen</span>(<span class="number">8080</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;Express listening on port&#x27;</span>, <span class="number">8080</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 클라이언트 라우터(일거다... 아마도...)인 react-router의 HTML5 History API를 사용하기 위함.</span></span><br><span class="line"><span class="comment">// http 메소드 중에 get을 사용해서 모든 라우터(*)로 접근할 경우에(요청할 경우에)</span></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;*&#x27;</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 요청(request)에 대한 응답(response)으로 dist 디렉토리의 index.html을 돌려준다.  </span></span><br><span class="line">  <span class="comment">// __dirname은 노드 js의 전역 변수인데 현재 디렉토리(풀 디렉토리, 절대 경로)를 반환하는 변수이다.</span></span><br><span class="line">  res.<span class="title function_">sendFile</span>(__dirname + <span class="string">&#x27;/dist/index.html&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>터미널에서 이제 노드 서버를 켜보자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node server</span><br></pre></td></tr></table></figure>
+
+<p>브라우저에서 실제로 테스트 해보자.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://localhost:8080/">http://localhost:8080</a> 으로 접속한 결과다.</p>
+<img src="/2017/03/13/webpack2-code-splitting/03.png" class title="Comp 컴포넌트">  
+<p>크롬 개발자 도구의 네트워크 탭을 보면 Comp.[chunkhash]만 있고 Comp2는 로드하지 않았다.<br>하이 라는 링크를 클릭하면 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://localhost:8080/aa/bb/cc%EB%A1%9C">http://localhost:8080/aa/bb/cc로</a> 이동한다.<br>여기서 다시 네트워크 탭을 봐보자.  </p>
+<img src="/2017/03/13/webpack2-code-splitting/04.png" class title="Comp2 컴포넌트">  
+<p>페이지를 처음부터 로딩하는 게 아니라 새로운 부분인<br>Comp2.[chunkhash] 부분만 로딩한 것을 볼 수 있다.<br>여기서 새로고침을 해보자.  </p>
+<img src="/2017/03/13/webpack2-code-splitting/05.png" class title="Comp2 컴포넌트">  
+<p>역시 Comp2.[chunkhash]만 로드하고 Comp는 로드하지 않았다.<br>바이 라는 링크를 클릭하면 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://localhost:8080/%EC%9C%BC%EB%A1%9C">http://localhost:8080/으로</a> 이동한다.  </p>
+<img src="/2017/03/13/webpack2-code-splitting/06.png" class title="Comp 컴포넌트">  
+<p>역시 페이지를 처음부터 로딩하는 게 아니라 새로운 부분인<br>Comp.[chunkhash] 부분만 로딩한 것을 볼 수 있다.  </p>
+<p>조금이나마 최적화에 한 단계 다가간 것 같아 뿌듯하다.<br>끝 !!</p>
+<h2 id="참조링크"><a href="#참조링크" class="headerlink" title="참조링크"></a>참조링크</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.zerocho.com/category/Javascript/post/58ad4c9d1136440018ba44e7">웹팩2로 청크 관리 및 코드 스플리팅 하기</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://programmingsummaries.tistory.com/285">브라우저의 리소스 병렬 다운로드를 가로막는 자바스크립트 | 감성 프로그래밍</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://webpack.js.org/guides/code-splitting-libraries/">Code Splitting - Libraries</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://brotzky.co/blog/code-splitting-react-router-webpack-2/">A beginner’s step-by-step guide to Code Splitting with Webpack 2 and React Router</a><br>등등…</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ES6/" rel="tag"># ES6</a>
+              <a href="/tags/ES2015/" rel="tag"># ES2015</a>
+              <a href="/tags/npm/" rel="tag"># npm</a>
+              <a href="/tags/Node-js/" rel="tag"># Node.js</a>
+              <a href="/tags/Webpack2/" rel="tag"># Webpack2</a>
+              <a href="/tags/babel/" rel="tag"># babel</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/03/12/webpack2-tree-shaking/" rel="prev" title="(Webpack 2) 트리 쉐이킹을 해보자!">
+                  <i class="fa fa-chevron-left"></i> (Webpack 2) 트리 쉐이킹을 해보자!
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/03/25/react-router-v4/" rel="next" title="(React Router) v4로 마이그레이션 해보자!">
+                  (React Router) v4로 마이그레이션 해보자! <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

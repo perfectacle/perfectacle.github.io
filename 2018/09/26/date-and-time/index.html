@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="GMT(Greenwich Mean Time) vs. UTC(Coordinated Universal Time)세계 표준 시간 관련해서 위 두 키워드가 자주 나오길래 구글에서 검색해보았다.    There is no time difference between Greenwich Mean Time and Coordinated Universal Time.6:13">
+<meta property="og:type" content="article">
+<meta property="og:title" content="날짜와 시간">
+<meta property="og:url" content="https://perfectacle.github.io/2018/09/26/date-and-time/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="GMT(Greenwich Mean Time) vs. UTC(Coordinated Universal Time)세계 표준 시간 관련해서 위 두 키워드가 자주 나오길래 구글에서 검색해보았다.    There is no time difference between Greenwich Mean Time and Coordinated Universal Time.6:13">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2018/09/26/date-and-time/thumb.jpg">
+<meta property="og:image" content="https://perfectacle.github.io/2018/09/26/date-and-time/date-format-by-country.svg">
+<meta property="article:published_time" content="2018-09-26T00:27:20.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.379Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Time">
+<meta property="article:tag" content="Date">
+<meta property="article:tag" content="UTC">
+<meta property="article:tag" content="GMT">
+<meta property="article:tag" content="Zulu">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2018/09/26/date-and-time/thumb.jpg">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2018/09/26/date-and-time/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2018/09/26/date-and-time/","path":"2018/09/26/date-and-time/","title":"날짜와 시간"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>날짜와 시간 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#GMT-Greenwich-Mean-Time-vs-UTC-Coordinated-Universal-Time"><span class="nav-number">1.</span> <span class="nav-text">GMT(Greenwich Mean Time) vs. UTC(Coordinated Universal Time)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Time-Zone"><span class="nav-number">1.1.</span> <span class="nav-text">Time Zone</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#GMT-Greenwich-Mean-Time"><span class="nav-number">1.1.1.</span> <span class="nav-text">GMT(Greenwich Mean Time)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Time-Standard"><span class="nav-number">1.2.</span> <span class="nav-text">Time Standard</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UT-Universal-Time"><span class="nav-number">1.2.1.</span> <span class="nav-text">UT(Universal Time)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GMT%EC%97%90%EC%84%9C-UTC%EB%A1%9C%E2%80%A6"><span class="nav-number">1.2.2.</span> <span class="nav-text">GMT에서 UTC로…</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UTC-Coordinated-Universal-Time"><span class="nav-number">1.3.</span> <span class="nav-text">UTC(Coordinated Universal Time)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Zulu-Time"><span class="nav-number">1.4.</span> <span class="nav-text">Zulu Time</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B7%B8%EB%9E%98%EC%84%9C-%EC%9A%B0%EB%A6%AC%EB%82%98%EB%9D%BC%EB%8A%94%E2%80%A6"><span class="nav-number">2.</span> <span class="nav-text">그래서 우리나라는…?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ISO-8601-Date-and-time-format"><span class="nav-number">3.</span> <span class="nav-text">ISO-8601 - Date and time format</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/09/26/date-and-time/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="날짜와 시간 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          날짜와 시간
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-09-26 00:27:20" itemprop="dateCreated datePublished" datetime="2018-09-26T00:27:20+00:00">2018-09-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/%EB%93%B1%EB%93%B1/" itemprop="url" rel="index"><span itemprop="name">등등</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/09/26/date-and-time/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/09/26/date-and-time/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2018/09/26/date-and-time/thumb.jpg" class title="출처: https:&#x2F;&#x2F;www.sitepoint.com&#x2F;suggesting-carbon-with-composer-date-and-time-the-right-way&#x2F;">
+
+<h2 id="GMT-Greenwich-Mean-Time-vs-UTC-Coordinated-Universal-Time"><a href="#GMT-Greenwich-Mean-Time-vs-UTC-Coordinated-Universal-Time" class="headerlink" title="GMT(Greenwich Mean Time) vs. UTC(Coordinated Universal Time)"></a>GMT(Greenwich Mean Time) vs. UTC(Coordinated Universal Time)</h2><p>세계 표준 시간 관련해서 위 두 키워드가 자주 나오길래 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.google.co.kr/search?newwindow=1&hl=en-KR&rlz=1C5CHFA_enKR721KR721&ei=zc2pW-WIHYq88QXQmKzABQ&q=gmt+vs+utc&oq=gmt+vs+utc&gs_l=psy-ab.3..0i67k1j0i20i263k1j0l3.1063480.1067397.0.1067832.22.18.2.0.0.0.289.2326.0j9j4.14.0....0...1.1j4.64.psy-ab..6.16.2500.6..0i131k1j0i10k1j35i39k1j0i203k1.171.hKhy4qSkjm4">구글</a>에서 검색해보았다.  </p>
+<blockquote>
+<p>There is no time difference between Greenwich Mean Time and Coordinated Universal Time.<br>6:13 AM Tuesday, Greenwich Mean Time (GMT) is 6:13 AM Tuesday, Coordinated Universal Time (UTC)  </p>
+</blockquote>
+<p>둘의 차이점이 없다고 한다.<br>그래서 다른 사이트를 뒤져보았다.</p>
+<blockquote>
+<p>GMT is a time zone and UTC is a time standard.<br>Although GMT and UTC share the same current time in practice.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.timeanddate.com/time/gmt-utc-time.html">https://www.timeanddate.com/time/gmt-utc-time.html</a></p>
+</blockquote>
+<p>Time Zone과 Time Standard인 게 차이라는데…<br>둘의 차이는 무엇일까… 찾아보았다.  </p>
+<h3 id="Time-Zone"><a href="#Time-Zone" class="headerlink" title="Time Zone"></a>Time Zone</h3><p>세계에는 다양한 Time Zone이 존재한다.<br>우선 우리나라에서 사용하는 KST(Korea Standard Timezone), 하와이에서 사용하는 HST(Hawaii Standard Time), UK 등등에서 사용하는 <a href="#GMT-Greenwich-Mean-Time">GMT</a> 등등이 있다.</p>
+<h4 id="GMT-Greenwich-Mean-Time"><a href="#GMT-Greenwich-Mean-Time" class="headerlink" title="GMT(Greenwich Mean Time)"></a>GMT(Greenwich Mean Time)</h4><blockquote>
+<p>GMT is a time zone officially used in some European and African countries.<br>The time can be displayed using both the 24-hour format (0 - 24) or the 12-hour format (1 - 12 am&#x2F;pm).<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.timeanddate.com/time/gmt-utc-time.html">https://www.timeanddate.com/time/gmt-utc-time.html</a>  </p>
+</blockquote>
+<p>뭐, 유럽과 아프리카 쪽에서 주로 사용되는 <strong>타임존</strong>이란다.<br>의문점은 왜 0 ~ 23이 아니라 0 ~ 24라고 표기했을까…<br>0 ~ 23이라고 표기하는 국가도 있고, 1 ~ 24라고 표기하는 국가도 있어서 그런 걸까…?<br>뭐, 짜치는 문제이므로 건너 뛰자.</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/Greenwich">Greenwich</a>는 영국에 위치한 도시이고, 경도(longitude)가 0도인 곳이다.<br>다른 경도가 0인 도시도 많을텐데 아마 이런 표준을 제정할 때 영국이 강대국이었을 것이고, 지리 및 정치 기타 등등의 요소로 인해 Greenwich가 선정된 게 아닐까 싶다.  </p>
+<blockquote>
+<p>GMT is based on the Earth’s motion, mainly its daily rotation.<br>  The day is the “mean (average) solar day” of 86,400 (mean solar) seconds.<br>  That’s simply 24 hours of 60 minutes, each with 60 seconds.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.quora.com/What-is-difference-between-GMT-and-UTC">https://www.quora.com/What-is-difference-between-GMT-and-UTC</a></p>
+</blockquote>
+<p>GMT는(아마 다른 타임존들도 동일할 것이다.) 지구의 자전(daily rotation)을 기반으로 한다.<br>따라서 하루(The day)는 지구의 자전을 의미하고, 지구의 자전 주기를 86,400으로 나눈 단위를 <strong>초(Second)<strong>라고 부른다.<br>즉, 천재지변의 사유로 지구의 자전 주기가 조금 느려졌다 하더라도 하루는 86,400</strong>초</strong>로 동일하다.<br><strong>초</strong>의 단위가 절대적이지 않음을 의미한다. </p>
+<h3 id="Time-Standard"><a href="#Time-Standard" class="headerlink" title="Time Standard"></a>Time Standard</h3><p>세계 어디서나 사용할 수 있는 시간의 표준을 의미한다.<br>그 대표는 어디를 기준으로 해야할까?<br>시간은 경도(longitude)에 따라 달라지지, 위도(longitude)에 따라 달라지지 않는다.<br>따라서 경도가 0°인 곳을 기준으로 하다보니 GMT가 Time Standard로 선정됐<strong>었</strong>다.<br>과거형이니 현재는 GMT가 Time Standard가 아님을 의미한다.<br>현재는 UTC가 Time Standard라는 뜻이다.<br>왜 GMT는 Time Standard에서 탈락하게 된 것일까…?  </p>
+<h4 id="UT-Universal-Time"><a href="#UT-Universal-Time" class="headerlink" title="UT(Universal Time)"></a>UT(Universal Time)</h4><blockquote>
+<p>Universal Time (UT) was created at the International Meridian Conference in 1884.<br>  This is the basis for the 24-hour time zone system we know today.<br>  At the time, Greenwich Mean Time (GMT) was chosen as the world’s time standard.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.timeanddate.com/time/aboututc.html">https://www.timeanddate.com/time/aboututc.html</a> </p>
+</blockquote>
+<p>1884년에 UT(24시간 시스템의 기본)가 만들어졌다.<br>이 때 선정된 표준 시간(Time Standard)이 <a href="#GMT-Greenwich-Mean-Time">GMT</a>이다.  </p>
+<h4 id="GMT에서-UTC로…"><a href="#GMT에서-UTC로…" class="headerlink" title="GMT에서 UTC로…"></a>GMT에서 UTC로…</h4><blockquote>
+<p>In 1960, the International Radio Consultative Committee formalized the concept of UTC, and it was put into practice the year after.<br>The name Coordinated Universal Time was officially adopted in 1967.<br>UTC was adjusted several times until 1972.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.timeanddate.com/time/aboututc.html">https://www.timeanddate.com/time/aboututc.html</a></p>
+</blockquote>
+<p>UTC는 1972년까지 여러 번 제정되었다.</p>
+<blockquote>
+<p>Until 1972, Greenwich Mean Time (also known as Zulu time) was the same as Universal Time (UT).<br>Since then, GMT is no longer a time standard.<br>Today, Greenwich Mean Time (GMT) is only the name of a time zone.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.timeanddate.com/time/aboututc.html">https://www.timeanddate.com/time/aboututc.html</a></p>
+</blockquote>
+<p>동시에 1972년부터 GMT는 Time Standard의 자리를 박탈당하고 일개 Time Zone에 불과하게 되었다.</p>
+<h3 id="UTC-Coordinated-Universal-Time"><a href="#UTC-Coordinated-Universal-Time" class="headerlink" title="UTC(Coordinated Universal Time)"></a>UTC(Coordinated Universal Time)</h3><blockquote>
+<p>UTC is not a time zone, but a time standard that is the basis for civil time and time zones worldwide.<br>This means that no country or territory officially uses UTC as a local time.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.timeanddate.com/time/gmt-utc-time.html">https://www.timeanddate.com/time/gmt-utc-time.html</a>    </p>
+</blockquote>
+<p>GMT와는 달리 세계에서 공통적으로 쓰이는 **시간 표준(time standard)**이란다.<br>KST, GMT와 같이 현지 시간을 반영한 Time Zone과 달리 UTC는 현지 시간(local time)이 반영되지 않은, 즉 Time Zone에 얽매이지 않는 게 특징이다.<br>그래서 세계 표준 시간을 언급할 때 UTC가 많이 언급되는 것 같다.</p>
+<blockquote>
+<p>UTC is almost the same as GMT, but it’s based on the scientific definition of a second (the SI second), which does not depend on the time it takes the Earth to rotate.<br>  The day length, based on UTC, is also 86,400 seconds, but they are SI seconds.<br>  The “mean solar day” is about 86,400.002 “SI seconds”.<br>  That difference is very slowly increasing as the rotation period of Earth very slowly increases.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.quora.com/What-is-difference-between-GMT-and-UTC">https://www.quora.com/What-is-difference-between-GMT-and-UTC</a></p>
+</blockquote>
+<p>UTC는 지구의 자전(the Earth to rotate)에 기반하지 않고, <a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/International_System_of_Units">SI 기준</a>의 초(이하 SI Second)에 기반하고 있다.<br>즉 UTC에서는 하루(The day length)는 SI Second로 86,400초이다.<br>절대적인 기준으로 하루를 세기 때문에 GMT(지구의 자전을 기반으로 하는)와는 미세한 차이가 존재한다.<br>이를 보정하기 위해 UTC에서는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/%EC%9C%A4%EC%B4%88">윤초(Leap Second)</a>라는 개념을 도입했다.</p>
+<p>UTC를 위에 Coordinated Universal Time라고 적어놨는데 왜 UTC라고 줄여서 부르는 걸까…?<br>원래 UTC는 표준 명칭이 CUT(Coordinated Universal Time in English), TUC(Temps Universel Coordonné in French)로 두 개였다.<br>혼란을 줄이기 위해 표준을 정해야하는데 한 쪽의 손을 들어주면 정치적 싸움판이 될테므로 아마 둘 다 택하지 않고 쌩뚱맞은 UTC로 간 게 아닐까… 싶다.<br>하지만 왜 Universal Coordinated Time이 아닌 Coordinated Universal Time이라고 부르는지는 잘 모르겠다…<br>영어가 불어보다는 글로벌하기 때문에 풀네임은 영어권의 손을 들어준 것일까…?</p>
+<h3 id="Zulu-Time"><a href="#Zulu-Time" class="headerlink" title="Zulu Time"></a>Zulu Time</h3><blockquote>
+<p>Zulu (short for “Zulu time”) is used in the military and in navigation generally as a term for Universal Coordinated Time (UCT), sometimes called Universal Time Coordinated ( UTC ) or Coordinated Universal Time (but abbreviated UTC), and formerly called Greenwich Mean Time.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://whatis.techtarget.com/definition/Zulu-Zulu-time">https://whatis.techtarget.com/definition/Zulu-Zulu-time</a></p>
+</blockquote>
+<p>짧게는 Zulu라고 부르고, 군사적이나 배, 비행기 항법 등등에서 주로 사용한다.  </p>
+<blockquote>
+<p>Zulu Time Zone (Z) has no offset from Coordinated Universal Time (UTC).<br>  Zulu Time Zone is often used in aviation and the military as another name for UTC +0.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.timeanddate.com/time/zones/z">https://www.timeanddate.com/time/zones/z</a></p>
+</blockquote>
+<p>UTC +0(GMT가 아니다)의 또다른 이름으로 이해하면 될 것 같다.</p>
+<h2 id="그래서-우리나라는…"><a href="#그래서-우리나라는…" class="headerlink" title="그래서 우리나라는…?"></a>그래서 우리나라는…?</h2><p>우리나라는 **KST(Korea Standard Time)**를 사용하고 있다.<br>KST는 UTC에 9시간을 더한 시간으로 <strong>UTC +9</strong> 와 같이 표기하고 있다.<br>그리고 UTC +9을 사용하는 나라가 더 있는데 대표적으로 일본이 있다.<br>하지만 KST는 우리나라에서나 사용하지, 일본에서는 **JST(Japan Standard Time)**를 사용하고 있다.<br>따라서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.zeitverschiebung.net/en/difference/country/kr/city/1850147">일본과 우리나라는 세계 시간이 동일</a>하다.    </p>
+<p>또한 영토가 좌우로 쭉 뻗은 미국 같은 경우에는 여러 타임존(HST(Hawaii Standard Time), PDT(Pacific Daylight Time) 등등)을 사용하고 있다.</p>
+<p>이러한 사유로 AWS RDS의 기본 타임존은 UTC이고, 우리는 현재 시간을 저장(now())했다고 판단했는데 DB에 저장된 시간을 보면 9시간 이전의 시간이 저장된 사례를 볼 수 있다.<br>이게 바로 우리나라가 UTC +9인 KST를 사용하고 있기 때문이다.  </p>
+<h2 id="ISO-8601-Date-and-time-format"><a href="#ISO-8601-Date-and-time-format" class="headerlink" title="ISO-8601 - Date and time format"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/ISO_8601">ISO-8601 - Date and time format</a></h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/International_Organization_for_Standardization">ISO(International Organization for Standardization)</a>는 세계에서 인정하는 표준을 정의하는 기관이다.<br>이 기관에서 시간과 날짜에 관한 표준을 지정하였는데 이게 이 기관에서 정한 8601번 째 표준이라는 의미이다.<br>자바를 비롯해서 많은 프로그래밍 언어에서 날짜와 시간을 표기할 때 위 표준을 준수하고 있다.  </p>
+<img src="/2018/09/26/date-and-time/date-format-by-country.svg" class title="나라별 날짜 형식, 청록색이 일-월-연, 황색이 연-월-일, 자주색이 월-일-연, 적색이 일-월-연과 월-일-연 혼용">
+<p>사진에서 보다싶이 동아시아권(한국, 일본, 중국 등등)에서는 연-월-일의 순서로 표기한다.<br>하지만 다른 많은 나라에서는 일-월-연, 월-일-연 등등 아주 다양하게 쓰고 있다.<br>우리나라에서는 1970년 01월 02일을 표기할 때 1970-01-02이지만, 미국에서는 02-01-1970이 된다.<br>이런 혼란을 줄이고자 ISO 8601이 나오게 된 것이다.  </p>
+<p>기본적인 규칙은 다음과 같다.  </p>
+<ul>
+<li>큰 단위부터 작은 단위로(연 월 일 시 분 초) 표기한다.  </li>
+<li>0 ~ 9의 숫자는 00 ~ 09와 같이 표기한다.  </li>
+<li>날짜는 **-**을 구분자(delimiter)로 사용하고, 시간은 **:**을 구분자(delimiter)로 사용한다.  </li>
+<li>Time Zone(KST, GMC 등등) 대신에 UTC를 기준으로 시간대를 ±기호를 사용해서 표기한다.</li>
+</ul>
+<p>포스팅 날짜 및 시간인 2018년 9월 26일 00시 10분 13초 KST를 ISO 8601 표기법으로 나타내면 다음과 같다.<br>2018-09-26T00:10:13+09:00<br>2018-09-25T15:10:13+00:00<br>2018-09-25T15:10:13Z<br>여기서 T는 날짜와 시간의 구분자(delimiter)이고, Z는 <a href="#Zulu-Time">Zulu Time</a>을 의미한다.  </p>
+<p>꼭 날짜와 시간을 함께 표시할 필요는 없고 날짜만 표기해도 ISO 8601 표준을 준수했다고 볼 수 있다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Time/" rel="tag"># Time</a>
+              <a href="/tags/Date/" rel="tag"># Date</a>
+              <a href="/tags/UTC/" rel="tag"># UTC</a>
+              <a href="/tags/GMT/" rel="tag"># GMT</a>
+              <a href="/tags/Zulu/" rel="tag"># Zulu</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/09/25/unix-timestamp/" rel="prev" title="Unix Timestamp">
+                  <i class="fa fa-chevron-left"></i> Unix Timestamp
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/26/java8-date-time/" rel="next" title="(Java8) 날짜와 시간 API">
+                  (Java8) 날짜와 시간 API <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

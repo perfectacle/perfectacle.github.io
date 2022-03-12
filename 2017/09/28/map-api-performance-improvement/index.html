@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="문제점   Time은 데이터 전체를 파싱하는데 걸린 시간이니 무시하고…트래픽이 13MB 남짓…사용자가 조건을 바꿔서 검색을 한다면 데이터 광탈범이 될 가능성이 다분한 상황이었다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="지도 API 성능 개선기">
+<meta property="og:url" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="문제점   Time은 데이터 전체를 파싱하는데 걸린 시간이니 무시하고…트래픽이 13MB 남짓…사용자가 조건을 바꿔서 검색을 한다면 데이터 광탈범이 될 가능성이 다분한 상황이었다.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/03.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/16.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/17.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/05.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/08.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/09.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/10.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/11.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/12.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/18.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/19.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/20.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/21.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/26.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/27.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/30.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/31.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/32.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/33.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/15.png">
+<meta property="article:published_time" content="2017-09-28T23:29:16.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.067Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Performance">
+<meta property="article:tag" content="API">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/","path":"2017/09/28/map-api-performance-improvement/","title":"지도 API 성능 개선기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>지도 API 성능 개선기 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%AC%B8%EC%A0%9C%EC%A0%90"><span class="nav-number">1.</span> <span class="nav-text">문제점</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9B%90%EC%9D%B8-%ED%8C%8C%EC%95%85"><span class="nav-number">2.</span> <span class="nav-text">원인 파악</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%BF%BC%EB%A6%AC"><span class="nav-number">2.1.</span> <span class="nav-text">쿼리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9A%A9%EB%9F%89"><span class="nav-number">2.2.</span> <span class="nav-text">용량</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0"><span class="nav-number">3.</span> <span class="nav-text">문제 해결</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%95%84%EC%98%88-API-%EC%84%9C%EB%B2%84%EB%A1%9C-%EB%94%B0%EB%A1%9C-%EB%B6%84%EB%A6%AC"><span class="nav-number">3.1.</span> <span class="nav-text">아예 API 서버로 따로 분리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%B9%A0%EB%A5%B8-%EC%9D%91%EB%8B%B5%EC%86%8D%EB%8F%84-%EB%B3%B4%EC%9E%A5"><span class="nav-number">3.2.</span> <span class="nav-text">빠른 응답속도 보장</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A4%91%EA%B0%84-%EC%A0%90%EA%B2%80"><span class="nav-number">3.3.</span> <span class="nav-text">중간 점검</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%BA%90%EC%8B%B1%ED%95%98%EA%B8%B0"><span class="nav-number">3.4.</span> <span class="nav-text">캐싱하기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%98%90-%EB%8B%A4%EC%8B%9C-%EC%A4%91%EA%B0%84-%EC%A0%90%EA%B2%80"><span class="nav-number">3.5.</span> <span class="nav-text">또 다시 중간 점검</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%98%90-%EB%8B%A4%EC%8B%9C-%EC%BA%90%EC%8B%B1-%EC%A0%84%EB%9E%B5-%EC%84%B8%EC%9A%B0%EA%B8%B0"><span class="nav-number">4.</span> <span class="nav-text">또 다시 캐싱 전략 세우기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%A8%ED%9B%84-%EA%B0%9C%EC%84%A0-%EC%82%AC%ED%95%AD-%EC%8B%9C%EA%B0%84-%EB%AC%B8%EC%A0%9C-%EB%B0%8F-%EA%B3%B5%EC%88%98%EC%99%80-%ED%9A%A8%EC%9C%A8%EC%84%B1-%EB%AC%B8%EC%A0%9C"><span class="nav-number">5.</span> <span class="nav-text">차후 개선 사항 (시간 문제 및 공수와 효율성 문제)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="지도 API 성능 개선기 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          지도 API 성능 개선기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-09-28 23:29:16" itemprop="dateCreated datePublished" datetime="2017-09-28T23:29:16+00:00">2017-09-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/09/28/map-api-performance-improvement/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/28/map-api-performance-improvement/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/09/28/map-api-performance-improvement/thumb.png" class>  
+
+<h2 id="문제점"><a href="#문제점" class="headerlink" title="문제점"></a>문제점</h2><img src="/2017/09/28/map-api-performance-improvement/01.png" class title="크롬 개발자 도구 네트워크 탭에서 본 API 호출">  
+<p>Time은 데이터 전체를 파싱하는데 걸린 시간이니 무시하고…<br>트래픽이 13MB 남짓…<br>사용자가 조건을 바꿔서 검색을 한다면 데이터 광탈범이 될 가능성이 다분한 상황이었다.  </p>
+<img src="/2017/09/28/map-api-performance-improvement/03.png" class title="순수 응답 시간을 알고 싶어서 다운로드 받아봄">  
+<p>응답 시간이 22초 남짓…  </p>
+<img src="/2017/09/28/map-api-performance-improvement/16.png" class title="StopWatch를 통해 어느 작업에서 병목이 가장 많이 발생하는지 파악">  
+
+<h2 id="원인-파악"><a href="#원인-파악" class="headerlink" title="원인 파악"></a>원인 파악</h2><h3 id="쿼리"><a href="#쿼리" class="headerlink" title="쿼리"></a>쿼리</h3><img src="/2017/09/28/map-api-performance-improvement/17.png" class title="숙박 연동사 실제 가격 주입하는 부분">  
+<p>숙박 연동 최저가는 jooq로 불러오고 있고, 숙박 연동사 테이블은 jpa로 불러오고 있음.<br>순수 네이티브 쿼리가 아닌 이상 퍼포먼스가 제대로 나오지 않을 것으로 판단됨.  </p>
+<img src="/2017/09/28/map-api-performance-improvement/05.png" class title="딜 목록 불러오는 쿼리">  
+<p>실제로 필요한 건 특정 필드 뿐인데 모든 필드를 다 긁어오고 있어서 쿼리 실행속도가 느려진 것임.  </p>
+<h3 id="용량"><a href="#용량" class="headerlink" title="용량"></a>용량</h3><img src="/2017/09/28/map-api-performance-improvement/08.png" class title="실제로 저장된 응답값">  
+<p>이 응답값에는 세 가지 문제점이 존재한다.</p>
+<img src="/2017/09/28/map-api-performance-improvement/09.png" class title="쓸 데 없는 공백을 포함하고 있었다.">  
+<p>이 데이터를 줄였을 때 1MB 정도 가량이 줄어들었다.</p>
+<img src="/2017/09/28/map-api-performance-improvement/10.png" class title="쓸 데 없는 컬럼들도 포함하고 있었다.">  
+<p>treeAllId라던지, clusterName이나 빈 배열 등등 다른 값들을 가지고 유추할 수 있는 값들을 제거하였다.<br>딱히 이 부분에서는 데이터를 크게 줄일 수가 없었다.  </p>
+<img src="/2017/09/28/map-api-performance-improvement/11.png" class title="컬럼의 값을 가공하지 않고 그대로 들고 있다.">  
+<p>이미지의 URL을 담고 있는 컬럼을 불러와서 필요한 정보만 뿌려주는 게 아니라 모든 데이터를 가공없이 뿌려주고 있었다.<br>이 컬럼의 데이터가 하나의 딜에 대한 데이터의 3&#x2F;4 이상을 차지하고 있었다.<br>대부분의 쓸 데 없는 데이터가 여기서 낭비되고 있었다.</p>
+<h2 id="문제-해결"><a href="#문제-해결" class="headerlink" title="문제 해결"></a>문제 해결</h2><h3 id="아예-API-서버로-따로-분리"><a href="#아예-API-서버로-따로-분리" class="headerlink" title="아예 API 서버로 따로 분리"></a>아예 API 서버로 따로 분리</h3><p>맵 API는 방대한 양의 데이터를 가져오므로 서버의 리소스 사용이 많아 아예 별도의 서버로 구축하기로 판단했다.    </p>
+<h3 id="빠른-응답속도-보장"><a href="#빠른-응답속도-보장" class="headerlink" title="빠른 응답속도 보장"></a>빠른 응답속도 보장</h3><p>클러스터와 딜을 함께 내려주다보니 초기에 유저가 기다려야하는 속도는 15~20초 남짓 대기해야한다.    </p>
+<img src="/2017/09/28/map-api-performance-improvement/12.png" class title="이 화면에서 클러스터를 그리기 위한 정보는 중심 좌표, 지역 코드, 딜 갯수가 끝이다.">  
+<p>굳이 딜 목록까지 내려 줄 필요가 없다고 판단이 들어서 클러스터(갯수 포함) 따로 딜 따로 내려주게 끔 API를 두 개로 분리하였다.  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/api/v4/map/hotel (클러스터)</span><br><span class="line">/api/v4/map/hotel/deals (딜, 기존 API)</span><br></pre></td></tr></table></figure>
+<p>클러스터를 그리기 위한 클러스터 API는 응답 속도가 1~2초 남짓이라 유저가 불편을 느끼지 못할 수준이다.<br>유저가 방심(?)하는 사이에 몰래(?) 딜을 뿌려주는 API를 호출하고 있으면 웬만한 유저들에게는 불편함을 주지 않을 것이다.  </p>
+<h3 id="중간-점검"><a href="#중간-점검" class="headerlink" title="중간 점검"></a>중간 점검</h3><img src="/2017/09/28/map-api-performance-improvement/18.png" class title="데이터는 2MB 남짓으로 줄어들었고, 응답속도도 11초 가량 걸렸다.">
+<img src="/2017/09/28/map-api-performance-improvement/19.png" class title="가장 오래 걸리는 게 숙박 딜 실제 가격 주입 부분이다.">  
+<p>아직 이정도 시간 가지고는 서비스 하기에는 무리가 있어 보였다.  </p>
+<h3 id="캐싱하기"><a href="#캐싱하기" class="headerlink" title="캐싱하기"></a>캐싱하기</h3><p><strong>딜들과 카테고리 ID를 매핑하는 부분</strong>과 <strong>숙박 딜의 실제 가격을 주입하는 부분</strong>은 애초부터 판매 중인 모든 딜에 대한 정보만 들고있으면 된다.<br>즉, 조건에 구애받지 않는다는 뜻이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Job</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> HotelDealMinPricesMapper hotelDealMinPricesMapper;</span><br><span class="line">    <span class="keyword">private</span> DealPartnersMapper dealPartnersMapper;</span><br><span class="line">    <span class="keyword">private</span> TreeDealMapMapper treeDealMapMapper;</span><br><span class="line">    <span class="keyword">private</span> CategoryIds categoryIds;</span><br><span class="line">    <span class="keyword">private</span> HotelPartnersAndPrices hotelPartnersAndPrices;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Job</span><span class="params">(</span></span><br><span class="line"><span class="params">            HotelDealMinPricesMapper hotelDealMinPricesMapper, DealPartnersMapper dealPartnersMapper,</span></span><br><span class="line"><span class="params">            TreeDealMapMapper treeDealMapMapper, CategoryIds categoryIds, HotelPartnersAndPrices hotelPartnersAndPrices</span></span><br><span class="line"><span class="params">    )</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.hotelDealMinPricesMapper = hotelDealMinPricesMapper;</span><br><span class="line">        <span class="built_in">this</span>.dealPartnersMapper = dealPartnersMapper;</span><br><span class="line">        <span class="built_in">this</span>.treeDealMapMapper = treeDealMapMapper;</span><br><span class="line">        <span class="built_in">this</span>.categoryIds = categoryIds;</span><br><span class="line">        <span class="built_in">this</span>.hotelPartnersAndPrices = hotelPartnersAndPrices;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** crontab</span></span><br><span class="line"><span class="comment">     1.Seconds</span></span><br><span class="line"><span class="comment">     2.Minutes</span></span><br><span class="line"><span class="comment">     3.Hours</span></span><br><span class="line"><span class="comment">     4.Day-of-Month</span></span><br><span class="line"><span class="comment">     5.Month</span></span><br><span class="line"><span class="comment">     6.Day-of-Week</span></span><br><span class="line"><span class="comment">     7.Year (optional field)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="meta">@Scheduled(cron = &quot;0 0 */2 * * ?&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setLeisureAndHotelCategoryIds</span><span class="params">()</span> &#123;</span><br><span class="line">        categoryIds.setLeisureCategoryIds(treeDealMapMapper.selectLeisureCategoryId());</span><br><span class="line">        categoryIds.setHotelCategoryIds(treeDealMapMapper.selectHotelCategoryId());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="meta">@Scheduled(cron = &quot;0 0 */2 * * ?&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setPricesAndPartners</span><span class="params">()</span> &#123;</span><br><span class="line">        hotelPartnersAndPrices.setPartners(dealPartnersMapper.selectDealPartnersAll());</span><br><span class="line">        hotelPartnersAndPrices.setPrices(hotelDealMinPricesMapper.selectMinPricesAll());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>서버를 띄웠을 때 최초 1회, 2시간 마다 캐싱하도록 설정하였다.  </p>
+<h3 id="또-다시-중간-점검"><a href="#또-다시-중간-점검" class="headerlink" title="또 다시 중간 점검"></a>또 다시 중간 점검</h3><img src="/2017/09/28/map-api-performance-improvement/20.png" class title="4~6초 가량으로 줄어들었다.">  
+
+<img src="/2017/09/28/map-api-performance-improvement/21.png" class title="최대 오래 걸리는 게 딜 목록을 불러오는 부분이다.">  
+
+<img src="/2017/09/28/map-api-performance-improvement/26.png" class title="제일 데이터가 큰 컬럼인 LIST_IMAGE_JSON 컬럼을 빼자 속도가 3배 가량 빨라졌다.">
+
+<h2 id="또-다시-캐싱-전략-세우기"><a href="#또-다시-캐싱-전략-세우기" class="headerlink" title="또 다시 캐싱 전략 세우기"></a>또 다시 캐싱 전략 세우기</h2><p>따라서 모든 딜의 LIST_IMAGE_JSON 컬럼 또한 캐시하도록 하였다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostConstruct</span></span><br><span class="line"><span class="meta">@Scheduled(cron = &quot;0 0 */2 * * ?&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setDealsThumbnail</span><span class="params">()</span> &#123;</span><br><span class="line">    thumbs.setLeisureThumbs(dealMMapper.selectLeisureThumbnail());</span><br><span class="line">    thumbs.setHotelThumbs(dealMMapper.selectHotelThumbnail());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 캐시한 썸네일과 DB에서 불러온 딜 목록을 매핑하도록 변경하였다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">mappingDealAndThumbnail</span><span class="params">(List&lt;DealInMap&gt; dealList, Map&lt;Long, String&gt; thumbs)</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (DealInMap deal : dealList) &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">thumb</span> <span class="operator">=</span> thumbs.get(deal.getId());</span><br><span class="line">        <span class="keyword">if</span>(thumb != <span class="literal">null</span>) deal.setThumb(thumb);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2017/09/28/map-api-performance-improvement/27.png" class title="훨씬 빨라진 실행 속도들">
+
+<p>하지만 여전히 2~4초 가량 걸리는 상황이었고, 숙박 연동사의 가격을 주입하는 부분은 쿼리문을 쓰지도 않는데 왜 이렇게 오래 걸리는지 한번 파보았다.  </p>
+<img src="/2017/09/28/map-api-performance-improvement/30.png" class title="수많은 리스트 사이에서 딜 아이디 가지고 원하는 요소를 찾는 구문">  
+<p>기본적으로 List에서 데이터를 검색할 때는 입력되는 데이터의 양에 따라 비례하여 처리시간이 증가하는 알고리즘 -O(N)- 이고,<br>(ArrayList는 인덱스를 가지고 순차적으로 탐색하지 않지만 순차적인 숫자 이외에 인덱스를 가지지 않으므로 순서를 모르면 말짱꽝이다.)<br>Map의 경우에는 key, value의 쌍으로 이루어져있어서 입력되는 데이터의 크기에 상관없이 항상 같은 처리 시간을 보장 받는 알고리즘 -O(1)- 이다.<br>Big-O 표기법에 관해서는 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.mydiyworld.net/?p=440">초보자를 위한 Big O 표기법 따라잡기</a>을 참고하자.<br>따라서 해당 자료구조를 전부 해시맵으로 바꿔주었다.  </p>
+<img src="/2017/09/28/map-api-performance-improvement/31.png" class title="총 실행 시간이 2초 내외로 줄어들었다.">  
+
+<img src="/2017/09/28/map-api-performance-improvement/32.png" class title="클러스터 목록을 불러오는 쿼리문">
+<p>딜 카운트를 세는 것까지 포함하다보니 빨간 박스 안에서 distinct를 쓰게 되었고 그로 인해 속도가 매우 느려졌다.<br>따라서 클러스터 목록을 불러오는 부분도 다음과 같이 캐싱을 했다.  </p>
+<ul>
+<li><p>처음부터 모든 클러스터 목록을 다 불러온다.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ct.id treeId, cts.sub_category_tree_id treeAllId,</span><br><span class="line">    ct.tree_code, cts.boundary_n, cts.boundary_e, cts.boundary_w, cts.boundary_s</span><br><span class="line"><span class="keyword">FROM</span> DEAL_M d</span><br><span class="line"><span class="keyword">JOIN</span> TREE_DEAL_MAP tdm</span><br><span class="line">    <span class="keyword">ON</span> d.id <span class="operator">=</span> tdm.deal_id</span><br><span class="line"><span class="keyword">JOIN</span> CATEGORY_TREE ct</span><br><span class="line">    <span class="keyword">ON</span> tdm.category_tree_id <span class="operator">=</span> ct.id <span class="keyword">AND</span> ct.tree_group_id <span class="operator">=</span> <span class="number">27</span> <span class="keyword">AND</span> <span class="number">3</span> <span class="operator">&gt;</span> ct.depth</span><br><span class="line"><span class="keyword">JOIN</span> CATEGORY_TREE_SPATIAL cts <span class="keyword">ON</span> ct.id <span class="operator">=</span> cts.category_tree_id</span><br><span class="line"><span class="keyword">WHERE</span> deal_status <span class="operator">=</span> <span class="string">&#x27;IN_SALE&#x27;</span> <span class="keyword">AND</span> d.display_yn <span class="operator">=</span> <span class="string">&#x27;Y&#x27;</span> <span class="keyword">AND</span> display_standard_yn <span class="operator">=</span> <span class="string">&#x27;Y&#x27;</span> <span class="keyword">AND</span> del_yn <span class="operator">=</span> <span class="string">&#x27;N&#x27;</span></span><br><span class="line">    <span class="keyword">AND</span> d.lat <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">AND</span> d.lon <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">AND</span> deal_type <span class="operator">!=</span> <span class="string">&#x27;DEAL&#x27;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>모든 딜들도 함께 다 불러온다.  </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> d.id, d.deal_nm, d.`STANDARD_PRICE`, d.zeropass_price, d.group_price, d.lat, d.lon,</span><br><span class="line">    ct.`tree_code`, d.deal_type</span><br><span class="line"><span class="keyword">FROM</span> DEAL_M d</span><br><span class="line"><span class="keyword">JOIN</span> TREE_DEAL_MAP tdm</span><br><span class="line">    <span class="keyword">ON</span> d.id <span class="operator">=</span> tdm.deal_id</span><br><span class="line"><span class="keyword">JOIN</span> `CATEGORY_TREE` ct</span><br><span class="line">    <span class="keyword">ON</span> tdm.`CATEGORY_TREE_ID` <span class="operator">=</span> ct.id <span class="keyword">AND</span> ct.tree_group_id <span class="operator">=</span> <span class="number">27</span> <span class="keyword">AND</span> ct.depth <span class="operator">=</span> <span class="number">2</span></span><br><span class="line"><span class="keyword">WHERE</span> deal_status <span class="operator">=</span> <span class="string">&#x27;IN_SALE&#x27;</span> <span class="keyword">AND</span> d.display_yn <span class="operator">=</span> <span class="string">&#x27;Y&#x27;</span> <span class="keyword">AND</span> display_standard_yn <span class="operator">=</span> <span class="string">&#x27;Y&#x27;</span> <span class="keyword">AND</span> del_yn <span class="operator">=</span> <span class="string">&#x27;N&#x27;</span></span><br><span class="line">    <span class="keyword">AND</span> d.lat <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">AND</span> d.lon <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">AND</span> deal_type <span class="operator">!=</span> <span class="string">&#x27;DEAL&#x27;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>1과 2를 일정 시간 간격으로 캐싱한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostConstruct</span></span><br><span class="line"><span class="meta">@Scheduled(cron = &quot;0 0 */2 * * ?&quot;)</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">setLeisureCache</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;Cluster&gt; clusters = Cluster.group(clusterAndDealMapper.selectForClusters(<span class="literal">true</span>));</span><br><span class="line">    List&lt;DealInMap&gt; deals = clusterAndDealMapper.selectForClustersWithDeals(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    clusterCache.setLeisureClusters(clusters);</span><br><span class="line">    clusterCache.setLeisureClustersWithDeals(clustersWithDeals);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>요청이 들어오면 필터링 조건에 부합하는 딜의 ID만 구한다.<br>distinct나 group by로 중복된 딜을 제거할 수 있으나 성능 이슈가 있어서 자바에서 중복 딜을 제거하는 방향으로 개발함.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> deal_id <span class="keyword">FROM</span> HOTEL_DEAL_MIN_PRICES</span><br><span class="line"><span class="keyword">WHERE</span> expire_at <span class="operator">&gt;</span> now() <span class="keyword">AND</span> ymd <span class="keyword">BETWEEN</span> <span class="string">&#x27;2017-10-11&#x27;</span> <span class="keyword">AND</span> <span class="string">&#x27;2017-10-14&#x27;</span> <span class="keyword">AND</span> max_capacity <span class="operator">&gt;=</span> <span class="number">1</span></span><br></pre></td></tr></table></figure></li>
+<li><p>캐싱한 딜 목록과 조건에 부합하는 딜 ID 목록을 비교하여 조건에 맞는 딜들만 남긴다.  </p>
+</li>
+<li><p>딜과 클러스터를 매핑하고 딜의 갯수를 구한다.</p>
+</li>
+</ul>
+<p>조건에 구애 받지 않는 모든 쿼리를 캐싱하고 최소한의 쿼리만 날리고 데이터들을 매핑하게 끔 하다보니 0.5초 내외로 시간을 단축시킬 수 있었다.  </p>
+<img src="/2017/09/28/map-api-performance-improvement/33.png" class> 
+
+<h2 id="차후-개선-사항-시간-문제-및-공수와-효율성-문제"><a href="#차후-개선-사항-시간-문제-및-공수와-효율성-문제" class="headerlink" title="차후 개선 사항 (시간 문제 및 공수와 효율성 문제)"></a>차후 개선 사항 (시간 문제 및 공수와 효율성 문제)</h2><ul>
+<li>2MB로 줄였다 하더라도 필터를 계속해서 바꾸다 보면 유저 입장에서는 부담되는 용량일 수도 있다.  <img src="/2017/09/28/map-api-performance-improvement/15.png" class title="딜을 내려주는 API에서 반복되는 키값을 빼고 순서를 보장한 배열로 만들어 내려주는 형태로 바꿔주면 데이터를 0.5MB 이상 단축할 수 있다."></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Performance/" rel="tag"># Performance</a>
+              <a href="/tags/API/" rel="tag"># API</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/09/23/Spring-boot-gradle-profile/" rel="prev" title="(Spring Boot) Gradle의 Profile(dev/production)을 구분지어보자.">
+                  <i class="fa fa-chevron-left"></i> (Spring Boot) Gradle의 Profile(dev/production)을 구분지어보자.
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/10/05/letsencrypt-with-certbot-feat-aws/" rel="next" title="(Certbot) 공짜로 HTTPS 서버를 열어보자. (feat. AWS)">
+                  (Certbot) 공짜로 HTTPS 서버를 열어보자. (feat. AWS) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

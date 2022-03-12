@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="연산자 우선순위x &lt;&lt; 2 **+** 1 &#x3D;&gt; x &lt;&lt; (2 + 1)data &amp; 0xFF **&#x3D;&#x3D;** 0 &#x3D;&gt; data &amp; (0xFF &#x3D;&#x3D; 0)x &lt; -1 || x &gt; 3 &amp;&amp; x &lt; 5 &#x3D;&gt; x &lt; -1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Java) 자바의 정석 3판 004일차 - 연산자(우선 순위 및 결합 규칙), switch 문">
+<meta property="og:url" content="https://perfectacle.github.io/2017/01/02/Java-study-004day/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="연산자 우선순위x &lt;&lt; 2 **+** 1 &#x3D;&gt; x &lt;&lt; (2 + 1)data &amp; 0xFF **&#x3D;&#x3D;** 0 &#x3D;&gt; data &amp; (0xFF &#x3D;&#x3D; 0)x &lt; -1 || x &gt; 3 &amp;&amp; x &lt; 5 &#x3D;&gt; x &lt; -1">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/02/Java-study-004day/thumb.png">
+<meta property="article:published_time" content="2017-01-02T09:05:49.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.279Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="자바의 정석">
+<meta property="article:tag" content="연산자">
+<meta property="article:tag" content="조건문">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/01/02/Java-study-004day/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/01/02/Java-study-004day/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/01/02/Java-study-004day/","path":"2017/01/02/Java-study-004day/","title":"(Java) 자바의 정석 3판 004일차 - 연산자(우선 순위 및 결합 규칙), switch 문"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Java) 자바의 정석 3판 004일차 - 연산자(우선 순위 및 결합 규칙), switch 문 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%B0%EC%82%B0%EC%9E%90-%EC%9A%B0%EC%84%A0%EC%88%9C%EC%9C%84"><span class="nav-number">1.</span> <span class="nav-text">연산자 우선순위</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%B0%EC%82%B0%EC%9E%90-%EA%B2%B0%ED%95%A9-%EA%B7%9C%EC%B9%99"><span class="nav-number">2.</span> <span class="nav-text">연산자 결합 규칙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%98%95%EB%B3%80%ED%99%98"><span class="nav-number">3.</span> <span class="nav-text">형변환</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%82%B0%EC%88%A0-%EC%97%B0%EC%82%B0"><span class="nav-number">4.</span> <span class="nav-text">산술 연산</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%AC%B8%EC%9E%90%EC%97%B4-%EB%B9%84%EA%B5%90-%EB%A9%94%EC%86%8C%EB%93%9C-equals"><span class="nav-number">5.</span> <span class="nav-text">문자열 비교 메소드 equals()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%AC%B8%EC%9E%90%EA%B0%80-%EC%88%AB%EC%9E%90%EC%9D%B8%EA%B0%80-%EC%98%81%EB%AC%B8%EC%9E%90%EC%9D%B8%EA%B0%80"><span class="nav-number">6.</span> <span class="nav-text">문자가 숫자인가? 영문자인가?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%9A%A8%EC%9C%A8%EC%A0%81%EC%9D%B8-%EB%85%BC%EB%A6%AC-%EC%97%B0%EC%82%B0%EC%9E%90"><span class="nav-number">7.</span> <span class="nav-text">효율적인 논리 연산자</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%B9%84%ED%8A%B8-%EC%97%B0%EC%82%B0%EC%9E%90"><span class="nav-number">8.</span> <span class="nav-text">비트 연산자</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%89%AC%ED%94%84%ED%8A%B8-%EC%97%B0%EC%82%B0%EC%9E%90"><span class="nav-number">9.</span> <span class="nav-text">쉬프트 연산자</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%82%BC%ED%95%AD-%EC%97%B0%EC%82%B0%EC%9E%90"><span class="nav-number">10.</span> <span class="nav-text">삼항 연산자</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%8C%80%EC%9E%85-%EC%97%B0%EC%82%B0%EC%9E%90-%ED%95%A0%EB%8B%B9-%EC%97%B0%EC%82%B0%EC%9E%90"><span class="nav-number">11.</span> <span class="nav-text">대입 연산자(할당 연산자)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%B3%B5%ED%95%A9-%EC%97%B0%EC%82%B0%EC%9E%90"><span class="nav-number">12.</span> <span class="nav-text">복합 연산자</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%B0%98%EB%B3%B5%EB%AC%B8-switch"><span class="nav-number">13.</span> <span class="nav-text">반복문 - switch</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9E%A5%EB%8B%A8%EC%A0%90"><span class="nav-number">13.1.</span> <span class="nav-text">장단점</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A0%9C%EC%95%BD%EC%A1%B0%EA%B1%B4"><span class="nav-number">13.2.</span> <span class="nav-text">제약조건</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%B0%EC%8A%B5-%EB%AC%B8%EC%A0%9C-%EC%98%A4%EB%8B%B5"><span class="nav-number">14.</span> <span class="nav-text">연습 문제 오답</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/01/02/Java-study-004day/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Java) 자바의 정석 3판 004일차 - 연산자(우선 순위 및 결합 규칙), switch 문 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Java) 자바의 정석 3판 004일차 - 연산자(우선 순위 및 결합 규칙), switch 문
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-01-02 09:05:49" itemprop="dateCreated datePublished" datetime="2017-01-02T09:05:49+00:00">2017-01-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/01/02/Java-study-004day/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/02/Java-study-004day/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/01/02/Java-study-004day/thumb.png" class>
+
+<h2 id="연산자-우선순위"><a href="#연산자-우선순위" class="headerlink" title="연산자 우선순위"></a>연산자 우선순위</h2><p>x &lt;&lt; 2 **+** 1 &#x3D;&gt; x &lt;&lt; (2 + 1)<br>data &amp; 0xFF **&#x3D;&#x3D;** 0 &#x3D;&gt; data &amp; (0xFF &#x3D;&#x3D; 0)<br>x &lt; -1 || x &gt; 3 <strong>&amp;&amp;</strong> x &lt; 5 &#x3D;&gt; x &lt; -1 || (x &gt; 3 &amp;&amp; x &lt; 5)  </p>
+<p>괄호는 연산자가 아닌 우선순위를 임의로 정하는 기호임.</p>
+<h2 id="연산자-결합-규칙"><a href="#연산자-결합-규칙" class="headerlink" title="연산자 결합 규칙"></a>연산자 결합 규칙</h2><p>x &#x3D; <strong>y &#x3D; 3</strong> &#x3D;&gt; <strong>x &#x3D; 3</strong> &#x3D;&gt; x &#x3D; 3, y &#x3D; 3<br>식을 평가하면 단 하나의 결과를 얻을 수 있음.<br>할당 연산자인 y &#x3D; 3도 하나의 식으로 쓸 수 있으며<br>저장된 값, 즉 3을 결과로 반환함.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> num;</span><br><span class="line">        System.out.println(num = <span class="number">3</span>); <span class="comment">// 3</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="형변환"><a href="#형변환" class="headerlink" title="형변환"></a>형변환</h2><p>타입이 다른 피 연산자끼리의 연산은 값 손실 최소화를 위해 큰 타입으로 자동 변환.<br>형변환 연산자 생략해도 자동으로 붙음.<br>연산 결과도 큰 타입의 결과로 반환.<br>1.1f + 1L &#x3D;&gt; 1.1f + (float)1L &#x3D;&gt; 1.1f + 1.0f &#x3D; 2.1f<br>int보다 작은 byte, short, char는 자동으로 int로 바뀜.<br>1 + ‘A’ &#x3D;&gt; 1 + (int)’A’ &#x3D;&gt; 1 + 65 &#x3D; 66<br>boolean을 제외한 기본형은 연산이 가능함.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">j</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">// 다 오류다.</span></span><br><span class="line">        System.out.println(j + <span class="string">&#x27;A&#x27;</span>);</span><br><span class="line">        System.out.println(j + <span class="number">1</span>);</span><br><span class="line">        System.out.println(j + <span class="number">2.1</span>);</span><br><span class="line">        System.out.println(++j);</span><br><span class="line">        System.out.println(j &lt;&lt; <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="산술-연산"><a href="#산술-연산" class="headerlink" title="산술 연산"></a>산술 연산</h2><p>0으로 나눴을 때 무조건 오류가 나는 게 아니었다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="number">3.0</span> / <span class="number">0</span>); <span class="comment">// Infinity, 3.0 / 0.0 으로 형변환이 일어나기 때문.</span></span><br><span class="line">        System.out.println(<span class="number">3</span> / <span class="number">0</span>); <span class="comment">// java.lang.ArithmeticException: / by zero</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>나머지 연산자도 한번 보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="number">3.0</span> % <span class="number">0</span>); <span class="comment">// NaN</span></span><br><span class="line">        System.out.println(<span class="number">3</span> % <span class="number">0</span>); <span class="comment">// java.lang.ArithmeticException: / by zero</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>int 보다 작은 타입끼리의 연산은 형변환이 필수적이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">byte</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">1</span>, num2 = <span class="number">3</span>, num3;</span><br><span class="line">        num3 = <span class="number">1</span> + <span class="number">2</span>; <span class="comment">// 에러 발생 안함.</span></span><br><span class="line">        num3 = (<span class="type">byte</span>)(num + num2); <span class="comment">// 이렇게 해줘야함.</span></span><br><span class="line">        <span class="comment">// (byte)num + num2 =&gt; (byte)num + (int)num2 =&gt; (int)num + (int)num2와 같아짐.</span></span><br><span class="line">        num3 = (<span class="type">byte</span>)num + num2; <span class="comment">// 에러 발생.</span></span><br><span class="line">        <span class="comment">// + 때문에 형변환이 발생.</span></span><br><span class="line">        num3 = num + num2; <span class="comment">// (int)num + (int)num2 =&gt; (int)(num + num2)가 됨.</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>더 큰 타입으로 선언했다고 해도 형변환 연산을 적절하게 써줘야 손실이 일어나지 않는다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">1000000</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">num2</span> <span class="operator">=</span> <span class="number">2000000</span>;</span><br><span class="line">        <span class="comment">// int 형을 long으로 변환 후에 저장. (long)(num * num2)</span></span><br><span class="line">        <span class="comment">// 이미 오버플로우가 발생한 int를 long으로 변환한들 원래 값으로 돌아오지 않음.</span></span><br><span class="line">        <span class="type">long</span> <span class="variable">num3</span> <span class="operator">=</span> num * num2;</span><br><span class="line">        System.out.println(num3); <span class="comment">// -1454759936</span></span><br><span class="line">        <span class="comment">// 아래 3가지 중 하나처럼 하면 됨.</span></span><br><span class="line">        num3 = (<span class="type">long</span>)num * num2;</span><br><span class="line">        num3 = num * (<span class="type">long</span>)num2;</span><br><span class="line">        num3 = (<span class="type">long</span>)num * (<span class="type">long</span>)num2;</span><br><span class="line">        System.out.println(num3);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>리터럴과 상수 간의 연산은 실행 과정동안 변하는 값이 아니기 때문에<br>컴파일러가 미리 덧셈 연산을 수행한 후 그 결과를 저장함.<br>int num &#x3D; 11 * 11이라고 치면 컴파일 후에는<br>int num &#x3D; 121이 저장되는 거임.<br>하지만 변수가 들어간 연산은 계산 결과를 예측할 수가 없음.<br>int num &#x3D; num2 * 11이라고 치면 컴파일 후에도<br>int num &#x3D; num2 * 11이 저장됨.</p>
+<p>위와 같은 이유로 리터럴과 상수 간의 연산은 계산 결과를 예측가능하기 때문에<br>형변환 연산자가 생략이 가능한 경우도 있음.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="type">char</span> <span class="variable">c1</span> <span class="operator">=</span> <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">char</span> <span class="variable">c2</span> <span class="operator">=</span> <span class="string">&#x27;b&#x27;</span>;</span><br><span class="line">        <span class="type">char</span> <span class="variable">c3</span> <span class="operator">=</span> <span class="string">&#x27;a&#x27;</span> + <span class="number">1</span>; <span class="comment">// 리터럴 간의 연산이므로 컴파일 후엔 &#x27;b&#x27;가 저장됨.</span></span><br><span class="line">        <span class="type">char</span> <span class="variable">c4</span> <span class="operator">=</span> c2 + <span class="number">1</span>; <span class="comment">// 상수와 리터럴 간의 연산이므로 컴파일 후엔 &#x27;c&#x27;가 저장됨.</span></span><br><span class="line">        <span class="comment">// 에러, 변수가 껴있는 연산이므로 컴파일 후에도 c1 + 1로 저장됨.</span></span><br><span class="line">        <span class="comment">// 컴파일 후에 c1이 int보다 작으므로 (int)c1 + 1과 같이 변하게 됨.</span></span><br><span class="line">        <span class="type">char</span> <span class="variable">c5</span> <span class="operator">=</span> c1 + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="문자열-비교-메소드-equals"><a href="#문자열-비교-메소드-equals" class="headerlink" title="문자열 비교 메소드 equals()"></a>문자열 비교 메소드 equals()</h2><p>문자열 클래스 String은 기본형이 아니다.<br>따라서 String 클래스의 인스턴스들은 참조형이다.<br>참조형은 변수, 상수에 값을 저장하는 게 아니라 주소(번지)를 저장한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;ab&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">str2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;ab&quot;</span>);</span><br><span class="line">        System.out.println(str == str2); <span class="comment">// false, 둘은 다른 주소값을 참조함.</span></span><br><span class="line">        System.out.println(str.equals(str2)); <span class="comment">// true, 둘은 같은 문자열을 갖고 있음.</span></span><br><span class="line">        str = str2 = <span class="string">&quot;ab&quot;</span>;</span><br><span class="line">        <span class="comment">// new 키워드를 쓰지 않으면 클래스의 인스턴스가 되지 않아서인지 둘 다 true</span></span><br><span class="line">        System.out.println(str == str2); <span class="comment">// true</span></span><br><span class="line">        System.out.println(str.equals(str2)); <span class="comment">// true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="문자가-숫자인가-영문자인가"><a href="#문자가-숫자인가-영문자인가" class="headerlink" title="문자가 숫자인가? 영문자인가?"></a>문자가 숫자인가? 영문자인가?</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="type">char</span> <span class="variable">ch</span> <span class="operator">=</span> <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">        System.out.println(<span class="string">&#x27;0&#x27;</span> &lt;= ch &amp;&amp; ch &lt;= <span class="string">&#x27;9&#x27;</span>); <span class="comment">// 숫자면 true</span></span><br><span class="line">        ch = <span class="string">&#x27;c&#x27;</span>;</span><br><span class="line">        <span class="comment">// 괄호가 없어도 되지만 가독성을 위해 넣음.</span></span><br><span class="line">        System.out.println((<span class="string">&#x27;A&#x27;</span> &lt;= ch &amp;&amp; ch &lt;= <span class="string">&#x27;Z&#x27;</span>) || (<span class="string">&#x27;a&#x27;</span> &lt;= ch &amp;&amp; ch &lt;= <span class="string">&#x27;z&#x27;</span>)); <span class="comment">// 영어 대소문자면 true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="효율적인-논리-연산자"><a href="#효율적인-논리-연산자" class="headerlink" title="효율적인 논리 연산자"></a>효율적인 논리 연산자</h2><p>x || y &#x3D;&gt; x가 참이면 무조건 참.<br>즉 x가 참이면 y는 평가하지도 않음.<br>x &amp;&amp; y &#x3D;&gt; x가 거짓이면 무조건 거짓.<br>즉 x가 거짓이면 y는 평가하지도 않음.<br>이렇게 좌변에 어떤 값을 넣는가에 따라서 연산 속도에 영향을 미침.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">0</span>, num2 = <span class="number">1</span>;</span><br><span class="line">        System.out.println(num == <span class="number">0</span> || ++num2 != <span class="number">0</span>);</span><br><span class="line">        <span class="comment">// num == 0이 참이되자 ++num2는 실행도 안 됨.</span></span><br><span class="line">        System.out.println(num + <span class="string">&quot; &quot;</span> + num2); <span class="comment">// 0 1</span></span><br><span class="line"></span><br><span class="line">        System.out.println(num != <span class="number">0</span> || ++num2 == <span class="number">0</span>);</span><br><span class="line">        <span class="comment">// num != 0이 거짓이되자 ++num2가 실행됨.</span></span><br><span class="line">        System.out.println(num + <span class="string">&quot; &quot;</span> + num2); <span class="comment">// 0 2</span></span><br><span class="line"></span><br><span class="line">        System.out.println(num != <span class="number">0</span> &amp;&amp; ++num2 == <span class="number">0</span>);</span><br><span class="line">        <span class="comment">// num != 0이 거짓이되자 ++num2는 실행도 안 됨.</span></span><br><span class="line">        System.out.println(num + <span class="string">&quot; &quot;</span> + num2); <span class="comment">// 0 2</span></span><br><span class="line"></span><br><span class="line">        System.out.println(num == <span class="number">0</span> &amp;&amp; ++num2 == <span class="number">0</span>);</span><br><span class="line">        <span class="comment">// num == 0이 참이되자 ++num2가 실행 됨.</span></span><br><span class="line">        System.out.println(num + <span class="string">&quot; &quot;</span> + num2); <span class="comment">// 0 3</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="비트-연산자"><a href="#비트-연산자" class="headerlink" title="비트 연산자"></a>비트 연산자</h2><p>전자 계산기를 배우니까 드디어 이해가 간다.<br>논리 게이트에서  </p>
+<ul>
+<li>AND 연산자(&amp;)<br>특정 비트의 값을 뽑아낼 때 사용.  </li>
+<li>OR 연산자(|)<br>특정 비트의 값을 변경할 때 사용.  </li>
+<li>XOR 연산자(^)<br>XOR을 한 번 때리면 암호화, 두 번 때리면 복호화  </li>
+<li>NOT 연산자(~)<br>1의 보수를 얻을 때 사용.<br>십진수를 이진수로 바꾼 후 각 비트별로 연산을 때린 후 다시 십진수로 바꾼 결과를 반환한다.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> String <span class="title function_">toBinaryString</span><span class="params">(<span class="type">int</span> num)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">zero</span> <span class="operator">=</span> <span class="string">&quot;00000000000000000000000000000000&quot;</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">tmp</span> <span class="operator">=</span> zero + Integer.toBinaryString(num);</span><br><span class="line">        <span class="keyword">return</span> tmp.substring(tmp.length()-<span class="number">32</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">            num = 0XAB                  00000000000000000000000010101011</span></span><br><span class="line"><span class="comment">            num2 = 0XF                  00000000000000000000000000001111</span></span><br><span class="line"><span class="comment">            0XAB &amp; 0XF = 0XB            00000000000000000000000000001011</span></span><br><span class="line"><span class="comment">            0XAB | 0XF = 0XAF           00000000000000000000000010101111</span></span><br><span class="line"><span class="comment">            0XAB ^ 0XF = 0XA4           00000000000000000000000010100100</span></span><br><span class="line"><span class="comment">            0XAB ^ 0XF ^ 0XF = 0XAB     00000000000000000000000010101011</span></span><br><span class="line"><span class="comment">            num3 = 0X2                  00000000000000000000000000000010</span></span><br><span class="line"><span class="comment">            ~num3 = -3                  11111111111111111111111111111101</span></span><br><span class="line"><span class="comment">            num3 + ~num3 = -1           11111111111111111111111111111111</span></span><br><span class="line"><span class="comment">            ~num3 + 1 = -2              11111111111111111111111111111110</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">0xAB</span>, num2 = <span class="number">0xF</span>, num3 = <span class="number">2</span>;</span><br><span class="line">        System.out.printf(<span class="string">&quot;num = %#X\t\t\t\t\t%s%n&quot;</span>, num, toBinaryString(num));</span><br><span class="line">        System.out.printf(<span class="string">&quot;num2 = %#X\t\t\t\t\t%s%n&quot;</span>, num2, toBinaryString(num2));</span><br><span class="line">        <span class="comment">// 1인 비트들만 뽑아냄.</span></span><br><span class="line">        System.out.printf(<span class="string">&quot;%#X &amp; %#X = %#X\t\t\t%s%n&quot;</span>, num, num2, num &amp; num2, toBinaryString(num &amp; num2));</span><br><span class="line">        <span class="comment">// 특정 비트들을 1로 바꿈.</span></span><br><span class="line">        System.out.printf(<span class="string">&quot;%#X | %#X = %#X\t\t\t%s%n&quot;</span>, num, num2, num | num2, toBinaryString(num | num2));</span><br><span class="line">        <span class="comment">// 간단한 암호화.</span></span><br><span class="line">        System.out.printf(<span class="string">&quot;%#X ^ %#X = %#X\t\t\t%s%n&quot;</span>, num, num2, num ^ num2, toBinaryString(num ^ num2));</span><br><span class="line">        <span class="comment">// 간단히 암호화한 것을 복호화.</span></span><br><span class="line">        System.out.printf(<span class="string">&quot;%#X ^ %#X ^ %#X = %#X\t\t%s%n&quot;</span>, num, num2, num2, num ^ num2 ^ num2, toBinaryString(num ^ num2 ^ num2));</span><br><span class="line">        System.out.printf(<span class="string">&quot;num3 = %#X\t\t\t\t\t%s%n&quot;</span>, num3, toBinaryString(num3));</span><br><span class="line">        <span class="comment">// 1의 보수를 구함.</span></span><br><span class="line">        System.out.printf(<span class="string">&quot;~num3 = %d\t\t\t\t\t%s%n&quot;</span>, ~num3, toBinaryString(~num3));</span><br><span class="line">        <span class="comment">// 직접 더해보니 모든 비트가 1이 되는 걸 보니 1의 보수가 맞음.</span></span><br><span class="line">        System.out.printf(<span class="string">&quot;num3 + ~num3 = %d\t\t\t%s%n&quot;</span>, num3 + ~num3, toBinaryString(num3 + ~num3));</span><br><span class="line">        <span class="comment">// 1의 보수에 1을 더하면 2의 보수, 즉 음수를 구할 수 있음.</span></span><br><span class="line">        System.out.printf(<span class="string">&quot;~num3 + 1 = %d\t\t\t\t%s%n&quot;</span>, ~num3 + <span class="number">1</span>, toBinaryString(~num3 + <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="쉬프트-연산자"><a href="#쉬프트-연산자" class="headerlink" title="쉬프트 연산자"></a>쉬프트 연산자</h2><p>연산 속도가 상당히 빠르다.<br>하지만 가독성이 안 좋다.<br>피연산자의 타입을 일치시키지 않는다.<br>byte, short, char는 int로 자동 형변환이 일어난다.<br>속도가 엄청 중요시되는 곳이 아니면 곱셈, 나눗셈을 쓰자.  </p>
+<h2 id="삼항-연산자"><a href="#삼항-연산자" class="headerlink" title="삼항 연산자"></a>삼항 연산자</h2><p>역시 형변환이 일어난다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="literal">true</span> ? <span class="number">0</span> : <span class="number">.1</span>); <span class="comment">// 0.0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="대입-연산자-할당-연산자"><a href="#대입-연산자-할당-연산자" class="headerlink" title="대입 연산자(할당 연산자)"></a>대입 연산자(할당 연산자)</h2><p>lvalue &#x3D; rvalue<br>l은 left, r은 right의 준말.<br>lvalue에는 변수와 이 값을 변경할 수 있는 것만 들어갈 수 있고,<br>rvalue에는 변수 뿐만 아니라 식, 상수, 리터럴 등등이 가능하다.  </p>
+<ol>
+<li>x &#x3D; y &#x3D; 3  </li>
+<li>y &#x3D; 3 &#x3D;&gt; 3  </li>
+<li>x &#x3D; 3</li>
+</ol>
+<h2 id="복합-연산자"><a href="#복합-연산자" class="headerlink" title="복합 연산자"></a>복합 연산자</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>, j = <span class="number">2</span>;</span><br><span class="line">        i += <span class="number">1</span> + j; <span class="comment">// i = i + (1 + j) = i + 1 + j</span></span><br><span class="line">        System.out.println(i); <span class="comment">// 4</span></span><br><span class="line">        i *= <span class="number">1</span> + j; <span class="comment">// i = i * (1 + j)</span></span><br><span class="line">        System.out.println(i); <span class="comment">// 12</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="반복문-switch"><a href="#반복문-switch" class="headerlink" title="반복문 - switch"></a>반복문 - switch</h2><h3 id="장단점"><a href="#장단점" class="headerlink" title="장단점"></a>장단점</h3><ul>
+<li>가독성이 좋아짐.  </li>
+<li>조건을 한 번만 검사하면 돼서 속도가 빠름.  </li>
+<li>if 문으로 표현 가능하나 switch 문으로 표현 불가능한 경우가 있음.</li>
+</ul>
+<h3 id="제약조건"><a href="#제약조건" class="headerlink" title="제약조건"></a>제약조건</h3><ul>
+<li>switch 조건식은 (정수)리터럴, 변수, 상수, (문자)리터럴, 변수, 상수, (문자열)리터럴, 변수, 상수만 가능  </li>
+<li>case 문의 값은 정수 리터럴, 정수 상수, 문자 리터럴, 문자 상수, 문자열 리터럴, 문자열 상수만 가능함.  </li>
+<li>문자는 자동으로 int형으로 변환돼서 정수와 같이 취급됨.  </li>
+<li>자바7부터 문자열 관련 내용이 추가됨.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">48</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">num2</span> <span class="operator">=</span> <span class="number">47</span>;</span><br><span class="line">        <span class="keyword">switch</span> (<span class="string">&#x27;1&#x27;</span>) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">49</span>: <span class="comment">// 조건식은 char이지만 int와 호환 가능</span></span><br><span class="line">                System.out.println(<span class="string">&quot;str&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> num: <span class="comment">// num은 final 지정 예약어를 써서 상수로 만들었으므로 가능함.</span></span><br><span class="line">                System.out.println(<span class="string">&quot;str&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> num2: <span class="comment">// 변수는 불가능!</span></span><br><span class="line">                System.out.println(<span class="string">&quot;str&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;asdf&quot;</span>: <span class="comment">// 조건식은 char인데 값은 string이라서 오류.</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="연습-문제-오답"><a href="#연습-문제-오답" class="headerlink" title="연습 문제 오답"></a>연습 문제 오답</h2><ul>
+<li><p>연산자의 우선 순위<br>사칙 연산이 시프트 연산자보다 우선순위가 높다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">x</span> <span class="operator">=</span> <span class="number">2</span>;</span><br><span class="line">        <span class="comment">// int는 32비트, 33 % 32 = 1;</span></span><br><span class="line">        System.out.println(<span class="number">1</span> + x &lt;&lt; <span class="number">33</span>); <span class="comment">// 3 &lt;&lt; 33 = 3 &lt;&lt; 1 = 3 * 2^1 = 3 * 2 = 6</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>나의 머리를 때린 문제  </p>
+<blockquote>
+<p>아래는 변수 num의 값보다 크면서도 가장 가까운 10의 배수에서 변수 num의 값을<br>뺀 나머지를 구하는 코드이다. 예를 들어 24의 크면서도 가장 가까운 10의 배수는 30이다.<br>19의 경우 20이고, 81의 경우 90이 된다. 30에서 24를 뺀 나머지는 6이기 때문에<br>변수 num의 값이 24라면 6을 결과로 얻어야 한다.</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">24</span>;</span><br><span class="line">        <span class="comment">// 내가 생각한 답.</span></span><br><span class="line">        System.out.println((num / <span class="number">10</span> + <span class="number">1</span>) * <span class="number">10</span> - num);</span><br><span class="line">        <span class="comment">// 저자가 생각한 답. 진짜 천재다. 문제는 함정 투성이었다 ㅠㅠ</span></span><br><span class="line">        System.out.println(<span class="number">10</span> - num%<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>실수형 비교<br>boolean result &#x3D; d&#x3D;&#x3D;f2; → boolean result &#x3D; (float)d&#x3D;&#x3D;f2;<br>비교연산자도 이항연산자이므로 연산 시에 두 피연산자의 타입을 맞추기 위해 형변환이 발생한다.<br>그래서 double과 float의 연산은 double과 double의 연산으로 자동형변환 되는데<br>실수는 정수와 달리 근사값으로 표현을 하기 때문에 float를 double로 형변환했을 때 오차가 발생할 수 있다.<br>그래서 float값을 double로 형변환하기 보다는 double값을 유효자리수가 적은<br>float로 형변환해서 비교하는 것이 정확한 결과를 얻는다.<br>&amp;nbsp;<br>이제부터 나만의 해설.<br>같은 수가 있을 때 float로 표현한 실수가 double로 표현한 실수보다 오차가 클 수 있다.<br>따라서 오차가 큰 float를 double로 바꿔도 오차가 큰 double이 된다.<br>따라서 float를 double로 바꿨다 하더라도<br>오차가 큰 double와 오차가 작은 double을 비교하면 신뢰할 수 없는 값이 나온다.<br>그럼 역으로 오차가 작은 double을 오차가 큰 float로 형변환 시키는 것이다.<br>이러한 역발상을 통해 둘 다 오차가 큰 float로 만들어서 비교하면 신뢰할 수 있는 결과가 나온다.</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%A0%95%EC%84%9D/" rel="tag"># 자바의 정석</a>
+              <a href="/tags/%EC%97%B0%EC%82%B0%EC%9E%90/" rel="tag"># 연산자</a>
+              <a href="/tags/%EC%A1%B0%EA%B1%B4%EB%AC%B8/" rel="tag"># 조건문</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/01/01/Java-study-003day/" rel="prev" title="(Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자">
+                  <i class="fa fa-chevron-left"></i> (Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/01/02/Cpp-ref-001/" rel="next" title="(C++) 참고용 정리 - 변수의 주소">
+                  (C++) 참고용 정리 - 변수의 주소 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

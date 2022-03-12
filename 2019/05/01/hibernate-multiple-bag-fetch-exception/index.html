@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="TroubleSpring Data JPA를 이용하다보면 종종 org.hibernate.loader.MultipleBagFetchException: cannot simultaneously fetch multiple bags이란 메세지를 보게 된다.우선 어떤 상황에 나타나는지 한 번 살펴보자.   123456789101112131415161718192021">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Troubleshooting) Hibernate MultipleBagFetchException 정복하기">
+<meta property="og:url" content="https://perfectacle.github.io/2019/05/01/hibernate-multiple-bag-fetch-exception/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="TroubleSpring Data JPA를 이용하다보면 종종 org.hibernate.loader.MultipleBagFetchException: cannot simultaneously fetch multiple bags이란 메세지를 보게 된다.우선 어떤 상황에 나타나는지 한 번 살펴보자.   123456789101112131415161718192021">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/01/hibernate-multiple-bag-fetch-exception/thumb.jpg">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/01/hibernate-multiple-bag-fetch-exception/01.png">
+<meta property="article:published_time" content="2019-05-01T20:04:41.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.655Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="ORM">
+<meta property="article:tag" content="JPA">
+<meta property="article:tag" content="Hibernate">
+<meta property="article:tag" content="Troubleshooting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2019/05/01/hibernate-multiple-bag-fetch-exception/thumb.jpg">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2019/05/01/hibernate-multiple-bag-fetch-exception/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2019/05/01/hibernate-multiple-bag-fetch-exception/","path":"2019/05/01/hibernate-multiple-bag-fetch-exception/","title":"(Troubleshooting) Hibernate MultipleBagFetchException 정복하기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Troubleshooting) Hibernate MultipleBagFetchException 정복하기 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Trouble"><span class="nav-number">1.</span> <span class="nav-text">Trouble</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bag"><span class="nav-number">2.</span> <span class="nav-text">Bag</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Troubleshooting"><span class="nav-number">3.</span> <span class="nav-text">Troubleshooting</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/05/01/hibernate-multiple-bag-fetch-exception/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Troubleshooting) Hibernate MultipleBagFetchException 정복하기 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Troubleshooting) Hibernate MultipleBagFetchException 정복하기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2019-05-01 20:04:41" itemprop="dateCreated datePublished" datetime="2019-05-01T20:04:41+00:00">2019-05-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Troubleshooting/" itemprop="url" rel="index"><span itemprop="name">Troubleshooting</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/05/01/hibernate-multiple-bag-fetch-exception/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/05/01/hibernate-multiple-bag-fetch-exception/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2019/05/01/hibernate-multiple-bag-fetch-exception/thumb.jpg" class title="이미지 출처: https:&#x2F;&#x2F;pgr21.com&#x2F;pb&#x2F;pb.php?id&#x3D;humor&amp;no&#x3D;166185">
+
+<h2 id="Trouble"><a href="#Trouble" class="headerlink" title="Trouble"></a>Trouble</h2><p>Spring Data JPA를 이용하다보면 종종 <code>org.hibernate.loader.MultipleBagFetchException: cannot simultaneously fetch multiple bags</code>이란 메세지를 보게 된다.<br>우선 어떤 상황에 나타나는지 한 번 살펴보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Mother</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;mother&quot;, cascade = CascadeType.ALL, fetch = FetchType.EAGER)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Daughter&gt; daughters = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;mother&quot;, cascade = CascadeType.ALL, fetch = FetchType.EAGER)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Son&gt; sons = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Builder</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Mother</span><span class="params">(<span class="keyword">final</span> Long id, <span class="keyword">final</span> List&lt;Daughter&gt; daughters, <span class="keyword">final</span> List&lt;Son&gt; sons)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.id = id;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(daughters == <span class="literal">null</span>) <span class="built_in">this</span>.daughters = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            daughters.forEach(daughter -&gt; daughter.setMother(<span class="built_in">this</span>));</span><br><span class="line">            <span class="built_in">this</span>.daughters = daughters;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(sons == <span class="literal">null</span>) <span class="built_in">this</span>.sons = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            sons.forEach(son -&gt; son.setMother(<span class="built_in">this</span>));</span><br><span class="line">            <span class="built_in">this</span>.sons = sons;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bearDaughters</span><span class="params">(<span class="keyword">final</span> List&lt;Daughter&gt; babyDaughters)</span> &#123;</span><br><span class="line">        babyDaughters.forEach(daughter -&gt; daughter.setMother(<span class="built_in">this</span>));</span><br><span class="line">        daughters.addAll(babyDaughters);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bearSons</span><span class="params">(<span class="keyword">final</span> List&lt;Son&gt; babySons)</span> &#123;</span><br><span class="line">        babySons.forEach(son -&gt; son.setMother(<span class="built_in">this</span>));</span><br><span class="line">        sons.addAll(babySons);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>엄마가 있고, 아들&#x2F;딸들이 있는데 아들&#x2F;딸들을 EAGER로 fetch해 올 때 발생한다.<br><strong>(즉, OneToMany, ManyToMany인 Bag 두 개 이상을 EAGER로 fetch할 때 발생한다.)</strong><br>EAGER로 땡겨오면 N+1 쿼리 문제가 존재하기 때문에 fetchType을 전부 LAZY로 바꾼 후 한 방 쿼리로 불러와도 문제는 재발한다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">MotherRepository</span> <span class="keyword">extends</span> <span class="title class_">JpaRepository</span>&lt;Mother, Long&gt; &#123;</span><br><span class="line">    <span class="meta">@EntityGraph(attributePaths = &#123;&quot;daughters&quot;, &quot;sons&quot;&#125;)</span></span><br><span class="line">    List&lt;Mother&gt; <span class="title function_">findAllWithChildrenBy</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Bag"><a href="#Bag" class="headerlink" title="Bag"></a>Bag</h2><p>우선 MultipleBagFetchException 파일을 둘러보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Exception used to indicate that a query is attempting to simultaneously fetch multiple</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> org.hibernate.type.BagType bags&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<p>여러 BagType을 동시에 fetch 해 올 때 발생하는 예외라고 한다.<br>그럼 Bag이 뭘까…?  </p>
+<blockquote>
+<p>A generalization of the notion of a set is that of a multiset or bag, which is similar to a set but allows repeated (“equal”) values (duplicates).<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)#Multiset">https://en.wikipedia.org/wiki/Set_(abstract_data_type)#Multiset</a></p>
+</blockquote>
+<blockquote>
+<p>A Bag is a java collection that stores elements without caring about the sequencing, but allow duplicate elements in the list.<br>  A bag is a random grouping of the objects in the list.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)#Multiset">https://en.wikipedia.org/wiki/Set_(abstract_data_type)#Multiset</a></p>
+</blockquote>
+<blockquote>
+<p>A <bag> is an unordered collection, which can contain duplicated elements.<br>  That means if you persist a bag with some order of elements, you cannot expect the same order retains when the collection is retrieved.<br>  There is not a “bag” concept in Java collections framework, so we just use a java.util.List corresponds to a <bag>.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://stackoverflow.com/questions/13812283/difference-between-set-and-bag-in-hibernate">https://stackoverflow.com/questions/13812283/difference-between-set-and-bag-in-hibernate</a></bag></bag></p>
+</blockquote>
+<p>즉, Bag(Multiset)은 Set과 같이 순서가 없고, List와 같이 중복을 허용하는 자료구조이다.<br>하지만 자바 컬렉션 프레임워크에서는 Bag이 없기 때문에 하이버네이트에서는 List를 Bag으로써 사용하고 있는 것이다.</p>
+<h2 id="Troubleshooting"><a href="#Troubleshooting" class="headerlink" title="Troubleshooting"></a>Troubleshooting</h2><p>우선 두 Bag을 Set으로 바꾸면 우리가 원하는대로 한 방 쿼리로 날아간다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Mother</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;mother&quot;, cascade = CascadeType.ALL)</span></span><br><span class="line">    <span class="keyword">private</span> Set&lt;Daughter&gt; daughters = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;mother&quot;, cascade = CascadeType.ALL)</span></span><br><span class="line">    <span class="keyword">private</span> Set&lt;Son&gt; sons = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Builder</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Mother</span><span class="params">(<span class="keyword">final</span> Long id, <span class="keyword">final</span> Set&lt;Daughter&gt; daughters, <span class="keyword">final</span> Set&lt;Son&gt; sons)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.id = id;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(daughters == <span class="literal">null</span>) <span class="built_in">this</span>.daughters = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            daughters.forEach(daughter -&gt; daughter.setMother(<span class="built_in">this</span>));</span><br><span class="line">            <span class="built_in">this</span>.daughters = daughters;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(sons == <span class="literal">null</span>) <span class="built_in">this</span>.sons = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            sons.forEach(son -&gt; son.setMother(<span class="built_in">this</span>));</span><br><span class="line">            <span class="built_in">this</span>.sons = sons;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bearDaughters</span><span class="params">(<span class="keyword">final</span> Set&lt;Daughter&gt; babyDaughters)</span> &#123;</span><br><span class="line">        babyDaughters.forEach(daughter -&gt; daughter.setMother(<span class="built_in">this</span>));</span><br><span class="line">        daughters.addAll(babyDaughters);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bearSons</span><span class="params">(<span class="keyword">final</span> Set&lt;Son&gt; babySons)</span> &#123;</span><br><span class="line">        babySons.forEach(son -&gt; son.setMother(<span class="built_in">this</span>));</span><br><span class="line">        sons.addAll(babySons);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>실무에서 급하면 딱 이 수준까지만 하면 끝이고 이제 왜 Multiple Bag을 Fetch해 올 수 없는지 알아보자.  </p>
+<p>우선 두 Bag 중 하나만 Set으로 바꾼 후 결과를 보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Mother</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;mother&quot;, cascade = CascadeType.ALL)</span></span><br><span class="line">    <span class="keyword">private</span> Set&lt;Daughter&gt; daughters = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;mother&quot;, cascade = CascadeType.ALL)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Son&gt; sons = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Builder</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Mother</span><span class="params">(<span class="keyword">final</span> Long id, <span class="keyword">final</span> Set&lt;Daughter&gt; daughters, <span class="keyword">final</span> List&lt;Son&gt; sons)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.id = id;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(daughters == <span class="literal">null</span>) <span class="built_in">this</span>.daughters = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            daughters.forEach(daughter -&gt; daughter.setMother(<span class="built_in">this</span>));</span><br><span class="line">            <span class="built_in">this</span>.daughters = daughters;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(sons == <span class="literal">null</span>) <span class="built_in">this</span>.sons = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            sons.forEach(son -&gt; son.setMother(<span class="built_in">this</span>));</span><br><span class="line">            <span class="built_in">this</span>.sons = sons;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bearDaughters</span><span class="params">(<span class="keyword">final</span> Set&lt;Daughter&gt; babyDaughters)</span> &#123;</span><br><span class="line">        babyDaughters.forEach(daughter -&gt; daughter.setMother(<span class="built_in">this</span>));</span><br><span class="line">        daughters.addAll(babyDaughters);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">bearSons</span><span class="params">(<span class="keyword">final</span> List&lt;Son&gt; babySons)</span> &#123;</span><br><span class="line">        babySons.forEach(son -&gt; son.setMother(<span class="built_in">this</span>));</span><br><span class="line">        sons.addAll(babySons);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 MotherRepository#findAllWithChildrenBy() 메서드를 통해 호출하면 아래와 같은 결과를 볼 수 있다.<br>일단 날아간 쿼리는 아래와 같다. (혹시나 join 했을 때 자식들이 없을까봐 엄마라도 불러오려고 기본적으로 outer join을 하고 있다.)  </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">    mother0_.id <span class="keyword">as</span> id1_1_0_,</span><br><span class="line">    daughters1_.id <span class="keyword">as</span> id1_0_1_,</span><br><span class="line">    sons2_.id <span class="keyword">as</span> id1_2_2_,</span><br><span class="line">    daughters1_.mother_id <span class="keyword">as</span> mother_i2_0_1_,</span><br><span class="line">    daughters1_.mother_id <span class="keyword">as</span> mother_i2_0_0__,</span><br><span class="line">    daughters1_.id <span class="keyword">as</span> id1_0_0__,</span><br><span class="line">    sons2_.mother_id <span class="keyword">as</span> mother_i2_2_2_,</span><br><span class="line">    sons2_.mother_id <span class="keyword">as</span> mother_i2_2_1__,</span><br><span class="line">    sons2_.id <span class="keyword">as</span> id1_2_1__ </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    mother mother0_ </span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span></span><br><span class="line">    daughter daughters1_ </span><br><span class="line">        <span class="keyword">on</span> mother0_.id<span class="operator">=</span>daughters1_.mother_id </span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span></span><br><span class="line">    son sons2_ </span><br><span class="line">        <span class="keyword">on</span> mother0_.id<span class="operator">=</span>sons2_.mother_id</span><br></pre></td></tr></table></figure>
+
+<img src="/2019/05/01/hibernate-multiple-bag-fetch-exception/01.png" class title="주목할 부분은 파란색으로 쳐놓은 부분이다.">  
+<p>Set으로 저장한 딸들은 중복없이 잘 불러와졌고, List(Bag)로 저장한 아들들은 중복있이 잘 불러와졌다.<br>(List라고 무조건 중복이 발생하는 건 아니다. 단일 List(Bag)만 Fetch 해오면 중복없이 잘 불러온다.)  </p>
+<p>이 결과를 Row로 표시해보자면 다음과 같다.  </p>
+<table>
+<thead>
+<tr>
+<th>mother.id</th>
+<th>daughter.id</th>
+<th>son.id</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>3</td>
+</tr>
+</tbody></table>
+<p>만약 daughters 마저도 중복도 보장이 안 되고, 순서도 보장이 안 됐다면 어떤 기준을 가지고 Row를 매핑할 수 있을까?<br>(뭐, 물론 이 경우에는 될 수도 있겠지만 좀 더 엔터티의 관계가 복잡한 경우에는 매핑이 불가능하거나 너무 복잡해지는 거 아닐까?)<br>그렇기 때문에 Multiple Bag은 Fetch가 안 되는 게 아닐까 싶다.</p>
+<p>실제로 List로 저장한 데이터를 하이버네이트에서는 BagType으로 취급하고 있고, Set으로 저장한 데이터는 SetType으로 취급하고 있다.<br>ListType 클래스도 있긴 한데 언제 어떻게 써야하는지는 잘 모르겠다 ㅠㅠ…</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ORM/" rel="tag"># ORM</a>
+              <a href="/tags/JPA/" rel="tag"># JPA</a>
+              <a href="/tags/Hibernate/" rel="tag"># Hibernate</a>
+              <a href="/tags/Troubleshooting/" rel="tag"># Troubleshooting</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/05/01/jpa-entity-manager-with-test/" rel="prev" title="(삽질기) Spring Data JPA에서 Entity Manager 관련 삽질기">
+                  <i class="fa fa-chevron-left"></i> (삽질기) Spring Data JPA에서 Entity Manager 관련 삽질기
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/" rel="next" title="(삽질기) SSH 터널링을 통해 원격지에 존재하는 도커 컨테이너 안의 JMX 모니터링하기">
+                  (삽질기) SSH 터널링을 통해 원격지에 존재하는 도커 컨테이너 안의 JMX 모니터링하기 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

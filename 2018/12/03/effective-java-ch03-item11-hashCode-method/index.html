@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.(그 이유는 모르겠지만… 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)따라서 final이 아닌 메서드(equals, hashCode, toString, clone, finalize는)는 모두 메서드 오버라이딩을 염두">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라">
+<meta property="og:url" content="https://perfectacle.github.io/2018/12/03/effective-java-ch03-item11-hashCode-method/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.(그 이유는 모르겠지만… 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)따라서 final이 아닌 메서드(equals, hashCode, toString, clone, finalize는)는 모두 메서드 오버라이딩을 염두">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2018/12/03/effective-java-ch03-item11-hashCode-method/thumb.png">
+<meta property="article:published_time" content="2018-12-03T20:42:39.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.415Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2018/12/03/effective-java-ch03-item11-hashCode-method/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2018/12/03/effective-java-ch03-item11-hashCode-method/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2018/12/03/effective-java-ch03-item11-hashCode-method/","path":"2018/12/03/effective-java-ch03-item11-hashCode-method/","title":"(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C%E2%80%A6"><span class="nav-number">1.</span> <span class="nav-text">들어가기에 앞서…</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hashCode"><span class="nav-number">2.</span> <span class="nav-text">hashCode</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/12/03/effective-java-ch03-item11-hashCode-method/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-12-03 20:42:39" itemprop="dateCreated datePublished" datetime="2018-12-03T20:42:39+00:00">2018-12-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/12/03/effective-java-ch03-item11-hashCode-method/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/03/effective-java-ch03-item11-hashCode-method/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2018/12/03/effective-java-ch03-item11-hashCode-method/thumb.png" class>
+
+<p>Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.<br>(그 이유는 모르겠지만… 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)<br>따라서 final이 아닌 메서드(<a href="/2018/11/26/effective-java-ch03-item10-equals-method">equals</a>, <a href="#hashCode">hashCode</a>, toString, <a href="/2018/12/16/effective-java-ch03-item13-clone-method">clone</a>, finalize는)는 모두 메서드 오버라이딩을 염두하고 설계된 메서드이다.<br>따라서 해당 메서드를 오버라이딩 할 때는 각 메서드마다 지켜야할 규칙들이 존재한다.<br>이 규칙을 지키지 않았을 때 뻑나는 경우가 있다.<br>일반적인 클래스들(Collection Framework 등등)은 이러한 규칙들은 지켰겠지~ 하고 작성된 코드들이 많다.<br>따라서 위와 같은 규칙을 지키지 않은 채 오버라이딩을 한 클래스를 사용하면 제대로 동작하지 않을 가능성이 존재한다.</p>
+<h2 id="들어가기에-앞서…"><a href="#들어가기에-앞서…" class="headerlink" title="들어가기에 앞서…"></a>들어가기에 앞서…</h2><p>equals 메서드와 마찬가지로 hashCode를 오버라이딩 할 경우는 거의 없다.<br>대부분 hashCode를 쓰는 쪽은 HashMap, HashSet 등등이다.<br>이 마저도 키에다가 equals를 오버라이딩 한 클래스를 사용할 때이다.<br>실무에서 대부분 키로 String, Integer를 쓰지, 해당 클래스를 써본 적은 한 번도 없다.<br>(물론 특수한 경우에는 존재할 수도 있지만, 아주 특수할 것이다.)<br>따라서 이런 아주 특수한 경우를 제외하고는 딱히 hashCode를 오버라이딩 할 이유가 없으니 이 글도 딱히 읽을 필요도 없다.<br>그래도 혹여나 실무에서 당장 hashCode를 오버라이딩 하려면 세 가지 방법이 존재한다.<br><del>내가 당신의 시간을 아껴주겠다.</del><br>그래도 공부 측면 등등에서 꼭 알아야하는 내용임에는 틀림이 없는 것 같다.</p>
+<ol>
+<li>구글에서 만든 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/google/auto/tree/master/value">AutoValue</a> 사용하기. (권장)<br>아주 사용하기가 간단하다.<br>바로 클래스 위에 <code>@AutoValue</code> 어노테이션만 달아주면 끝이다.<br>(물론 equals, hashCode, toString 메서드까지 다 오버라이딩 해준다.)<br>클래스가 변경돼도 hashCode 쪽 소스코드를 수정할 필요가 없다.<br>얘는 자바 6부터 지원한다.  </li>
+<li>IDEA가 생성해준 소스 코드 사용하기.<br>여러가지 규칙을 직접 찾아보며 구현하기 귀찮으니까 생성해주는 코드를 사용하면 된다.<br>인텔리제이 IDEA가 생성한 코드니 신뢰하고 써도 될 것이다.<br>단점으로 클래스가 변경될 때마다 hashCode 쪽 소스도 넣어줘야해서 귀찮다.    </li>
+<li>직접 구현하기<br>이 글을 보고 직접 구현해보면 될 것 같다.</li>
+</ol>
+<h2 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode"></a>hashCode</h2><blockquote>
+<p>Returns a hash code value for the object.<br>  This method is supported for the benefit of hash tables such as those provided by HashMap.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#hashCode()">https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#hashCode()</a></p>
+</blockquote>
+<p>object의 해시 값을 반환하는 메서드이다.<br>key를 해싱해서 인덱스를 만들고, 해당 인덱스의 버킷(저장 공간)에 값을 저장하는 자료구조인 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/Hash_table">Hash Table</a>에서 사용된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> V <span class="title function_">get</span><span class="params">(Object key)</span> &#123;</span><br><span class="line">    Node&lt;K,V&gt; e;</span><br><span class="line">    <span class="keyword">return</span> (e = getNode(hash(key), key)) == <span class="literal">null</span> ? <span class="literal">null</span> : e.value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="title function_">hash</span><span class="params">(Object key)</span> &#123;</span><br><span class="line">    <span class="type">int</span> h;</span><br><span class="line">    <span class="keyword">return</span> (key == <span class="literal">null</span>) ? <span class="number">0</span> : (h = key.hashCode()) ^ (h &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>위 코드는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/HashMap.html">HashMap</a> 클래스의 get 메서드인데 내부적으로 타고들어가다보면 Object의 hashCode 메서드를 사용해서 key의 hashCode를 구해서 원하는 value를 구하고 있다.    </p>
+<p>이제 hashCode의 규약을 알아보자.  </p>
+<ol>
+<li>Whenever it is invoked on the same object more than once during an execution of a Java application, the hashCode method must consistently return the same integer, provided no information used in equals comparisons on the object is modified.<br>This integer need not remain consistent from one execution of an application to another execution of the same application.<br>equals 비교에 사용되는 정보가 변경되지 않았다면, 애플리케이션이 실행되는 동안 그 객체의 hashCode 메서드는 몇 번을 호출해도 일관되게 항상 같은 값을 반환해야 한다.<br>단, 어플리케이션을 다시 실행한다면 이 값이 달라져도 상관없다.</li>
+<li>If two objects are equal according to the equals(Object) method, then calling the hashCode method on each of the two objects must produce the same integer result.<br>equals(Object)가 두 객체를 같다고 판단했다면, 두 객체의 hashCode는 똑같은 값을 반환해야한다.  </li>
+<li>It is not required that if two objects are unequal according to the equals(java.lang.Object) method, then calling the hashCode method on each of the two objects must produce distinct integer results. However, the programmer should be aware that producing distinct integer results for unequal objects may improve the performance of hash tables.<br>equals(Object)가 두 객체를 다르다고 판단했더라도, 두 객체의 hashCode가 서로 다른 값을 반환할 필요는 없다.<br>단, 다른 객체에 대해서는 다른 값을 반환해야 해시 테이블의 성능이 좋아진다.</li>
+</ol>
+<p>어, 지루하게 hashCode의 규약에 대해 살펴봤으니 우리가 간단하게 만든 클래스가 hashCode의 규약을 준수하는지 알아보자.<br>우선 간단한 클래스를 만들어보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> x;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> y;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Point</span><span class="params">(<span class="keyword">final</span> <span class="type">int</span> x, <span class="keyword">final</span> <span class="type">int</span> y)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.x = x;</span><br><span class="line">        <span class="built_in">this</span>.y = y;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span> == o) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Point)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">var</span> <span class="variable">obj</span> <span class="operator">=</span> (Point) o;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(obj.x != <span class="built_in">this</span>.x) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(obj.y != <span class="built_in">this</span>.y) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이 클래스가 동치 관계를 준수하면서 equals 메서드를 구현했는지 간단하게 검증해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// reflexive</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    assertEquals(x, x);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// symmetric</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">y</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    assertEquals(x, y);</span><br><span class="line">    assertEquals(y, x);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// transitive</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">z</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    assertEquals(y, z);</span><br><span class="line">    assertEquals(x, z);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// consistent</span></span><br><span class="line">    assertEquals(x, x);</span><br><span class="line">    assertEquals(x, y);</span><br><span class="line">    assertEquals(y, x);</span><br><span class="line">    assertEquals(y, z);</span><br><span class="line">    assertEquals(x, z);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// For any non-null reference value x, x.equals(null) should return false.</span></span><br><span class="line">    assertNotEquals(x, <span class="literal">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5가지 규칙을 모두 지킨 참된 equals 메서드이다.<br>그럼 이 클래스가 HashMap에서도 key로써 제대로 역할을 수행하는지 알아보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 두 인스턴스가 같다고 판단(내부적으로 equals 메서드 사용)</span></span><br><span class="line">    assertEquals(<span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>), <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1번 규칙에 의하면 몇 번을 호출하더라도 동일한 hashCode가 나와야하는데 동일한 값이 나오지 않았음.</span></span><br><span class="line">    <span class="comment">// 사실 이 스트림은 한 번만 호출되더라도 !h.equals(hashCode) 조건을 만족하기 때문에 한 번 밖에 돌지 않음.</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">hashCode</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>).hashCode();</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">result</span> <span class="operator">=</span> IntStream.range(<span class="number">1</span>, <span class="number">100</span>)</span><br><span class="line">                                .mapToObj(i -&gt; <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>).hashCode())</span><br><span class="line">                                .anyMatch(h -&gt; !h.equals(hashCode));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 단 두 번만 호출했는데도 불구하고 둘이 다른 해시코드가 나옴.</span></span><br><span class="line">    assertNotEquals(<span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>).hashCode(), <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>).hashCode());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 서로 다른 해시코드를 내뱉기 때문에 키의 역할을 제대로 수행하지 못하고 있음.</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">map</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;Point, Integer&gt;();</span><br><span class="line">    map.put(<span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>), <span class="number">1</span>);</span><br><span class="line">    assertNull(map.get(<span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">1</span>)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>제대로 규칙을 이행하는 게 하나도 없다.<br>그렇다면 기본 메서드인 Object.hashCode()는 어떻게 구현이 돼있길래 저런 결과가 나온 걸까…?  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@HotSpotIntrinsicCandidate</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">native</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span>;</span><br></pre></td></tr></table></figure>
+<p>내부 구현이 다 숨겨져 있다.<br>주석을 살펴보면 아래와 같이 나와있다.  </p>
+<blockquote>
+<p>As much as is reasonably practical, the hashCode method defined by class Object does return distinct integers for distinct objects.<br>  (The hashCode may or may not be implemented as some function of an object’s memory address at some point in time.)<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#hashCode()">https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#hashCode()</a></p>
+</blockquote>
+<p><strong>object’s memory address</strong>가 핵심인 것 같다.<br>객체의 참조값을 가지고 해싱을 한다는 것 같은데, 모든 객체 인스턴스는 싱글턴이 아닌 이상 각각 고유한 참조값을 가지고 있으므로<br>hashCode의 기본 메서드로를 모든 인스턴스마다 고유한 hashCode를 생산한다.<br>하지만 우리가 구현한 equals 메서드에 따르면 각 인스턴스마다 equals 값이 true로 나오고 있으므로 hashCode도 동일한 값이 나와야하는데<br>그러고 있지 않으므로, 우리가 만든 클래스는 hashCode의 규약을 준수하지 못한 경우이다.<br>따라서 equals 메서드를 오버라이딩 했으면 거의 hashCode도 같이 오버라이딩 해줘야 hashCode의 규약을 준수해서 hashMap 등등에서 key로써 제대로 된 역할을 수행한다고 말할 수 있다.  </p>
+<p>아주 간단하게 해시 코드를 작성해보면 다음과 같다.<del>(실무에서 절대 쓰면 안된다.)</del>  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>이렇게 구현하면 물론 <code>equals 비교에 사용되는 정보가 변경됐는데도 똑같은 해시 값을 반환</code>하므로 1번 규약을 지키지는 못한다.<br>또한 모두 같은 해시 값을 반환하기 때문에 충돌이 발생하게 되는데 이 경우에는 index가 가리키고 있는 LinkedList 혹은 Tree에 값을 추가해서 데이터의 유실을 방지한다.<br>따라서 해시 테이블의 단 하나의 버킷에 저장하기 때문에 평균 수행 시간이 O(n)으로 느려진다.<br>이상적인 해시 값이라면 hashCode 규약을 준수하고, O(1)의 수행속도를 가져야한다. (각기 다른 버킷에 값을 저장하고, 따라서 충돌이 아주 적은…)  </p>
+<p>책에 나와있는 hashCode 작성법을 글로만 읽으면 이해가 안 되니 코드와 함께 이해해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Type</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> x;</span><br><span class="line">    <span class="keyword">private</span> String y;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span>[] z;</span><br><span class="line">    <span class="keyword">private</span> Type t;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span> == o) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Type)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">var</span> <span class="variable">obj</span> <span class="operator">=</span> (Type) o;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 첫 번째 핵심 필드 x</span></span><br><span class="line">        <span class="keyword">if</span>(obj.x != <span class="built_in">this</span>.x) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(obj.y.equals(<span class="built_in">this</span>.y)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(Arrays.equals(obj.z, <span class="built_in">this</span>.z)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="comment">// 필드 t는 아예 equals 메서드에서 제외하였다.</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 첫 번째 핵심 필드 x의 해시값을 구함.</span></span><br><span class="line">        <span class="comment">// primitive type이기 때문에 WrapperClass.hashCode() 메서드를 통해 해시값을 구함.</span></span><br><span class="line">        <span class="type">var</span> <span class="variable">result</span> <span class="operator">=</span> Integer.hashCode(x);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 그 다음 핵심필드 y는 참조 타입이기 때문에 참조 타입의 hashCode() 메서드 사용.</span></span><br><span class="line">        result = result * <span class="number">31</span> + y.hashCode();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 그 다음 핵심필드 z는 배열이고, 그 내부 원소가 모두 equals에 사용된 핵심 원소이므로 Arrays.hashCode() 메서드를 통해 구현.</span></span><br><span class="line">        <span class="comment">// 만약 특정 원소만 핵심 원소라면 해당 원소들에 대해서 for-loop 돌면서 hashCode를 구하면 됨.</span></span><br><span class="line">        result = result * <span class="number">31</span> + Arrays.hashCode(z);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// equals 메서드에 사용되지 않은, 핵심필드가 아닌 t는 hashCode에서 사용하면 안 됨.</span></span><br><span class="line">        <span class="comment">// equals 메서드를 통해 같다고 판단한 객체가 서로 다른 hashCode를 내뱉는 현상이 발생해 hashCode 규약을 지키지 못할 수 있음.</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 위에서 구한 result를 반환.</span></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Q: 왜 기존 값에 해시코드를 더하지 않고, 31을 곱한 후에 더하는가?</strong><br>A: 아래의 예제를 통해 알아보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Type</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> x;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> y;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span> == o) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Type)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">var</span> <span class="variable">obj</span> <span class="operator">=</span> (Type) o;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 첫 번째 핵심 필드 x</span></span><br><span class="line">        <span class="keyword">if</span>(obj.x != <span class="built_in">this</span>.x) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(obj.y != <span class="built_in">this</span>.y) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 첫 번째 핵심 필드 x의 해시값을 구함.</span></span><br><span class="line">        <span class="comment">// primitive type이기 때문에 WrapperClass.hashCode() 메서드를 통해 해시값을 구함.</span></span><br><span class="line">        <span class="type">var</span> <span class="variable">result</span> <span class="operator">=</span> Integer.hashCode(x);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 그 다음 핵심필드 y도 primitive type이기 때문에 WrapperClass.hashCode() 메서드를 통해 해시값을 구함.</span></span><br><span class="line">        result += Integer.hashCode(y);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 위에서 구한 result를 반환.</span></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>여기서 {x&#x3D;1, y&#x3D;2}와 {x&#x3D;2, y&#x3D;1}은 동등(equals)하지 않다.<br>하지만 각 원소의 집합은 {1, 2}로 동일하기 때문에 해시코드를 구하면 일치하게 된다.<br>이런 충돌을 줄이고자 31을 곱하는 것이다. (이는 String의 hashCode 메서드를 봐도 마찬가지다.)  </p>
+<p><strong>Q: 왜 31을 곱하는가?</strong><br>A: 31이 소수이기 때문이란다.  </p>
+<p><strong>Q: 왜 소수를 곱하는가?</strong><br>A: Modulo operation(나머지 연산)에서 충돌을 줄이기 위함이라고 한다.<br>해시 함수의 예제를 구글링해보면 나머지 연산을 통해 해시 값을 구하는 예제가 참 많다.<br>실제로 나머지 연산을 통해 해시값을 구할 때는 소수로 나누는 것이 훨씬 충돌 횟수가 적다. (입력값이 균일하게 분포돼있지 않다는 전제 하에…)<br>그래서인지 곱하는 수도 소수를 곱하는 것 같다.<br>하지만 명확하게 왜 소수를 곱하는지는 아직 찾지 못했다.</p>
+<p><strong>Q: 충돌이 일어나면 어떻게 동작하는가?</strong><br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://d2.naver.com/helloworld/831311">Java HashMap은 어떻게 동작하는가?</a>에 자세히 설명돼있다.<br>우선 데이터의 유실을 막기 위해 어디다가 저장하긴 해야한다.<br>이를 위한 여러가지 동작 방식이 있는데 자바에서는 Separate Chaining 방식을 채택해서 버킷을 Linked List로 구현했다.<br>자바 8에서는 <strong>데이터의 개수가 일정 이상일 때에는 링크드 리스트 대신 트리를 사용하는 것이 성능상 이점</strong>이 있다는 점을 토대로<br>동일한 버킷에 데이터가 8개가 되면 Tree로 변경하고, 다시 6개로 줄어들면 LinkedList로 변경한다.<br>8과 6 사이에 2라는 차이를 둔 것은 삽입과 삭제가 빈번하게 일어났을 때 Tree &lt;-&gt; LinkedList의 잦은 변환을 막고자 그렇게 구현했다고 한다.<br>또한 Tree가 메모리를 더 많이 먹고, 데이터 갯수가 적을 때는 Worst Case가 LinkedList와 큰 차이가 없기 때문에 처음에는 LinkedList로 만든다고 한다.<br>따라서 해시 코드가 충돌되더라도 일단 데이터는 저장되니 데이터의 유실은 막는다.<br>하지만 충돌이 잦을 수록 검색 성능은 나빠지니 최대한 충돌이 적은 알고리즘을 찾아야한다.<br>그리고 충돌이 발생하더라도 해당 키값에 대한 동등(equals) 비교가 일치하는 키 값이 없으면 null을 반환하게 된다.</p>
+<p><strong>Q: 그 많은 소수 중에 왜 31인가? (추측)</strong><br>31은 2⁵ - 1이다.<br>이를 비트 연산자로 표기하면 2 &lt;&lt; 5 - 1이다.<br>왼쪽으로 n칸 이동하면 2ⁿ만큼 곱했다고 보면 된다.<br>cpu는 비트 연산에 매우 최적화 돼있다.<br>그리고 31은 1만 빼면 되는데, 37((2 &lt;&lt; 5) + 6)은 6을 더해야하니 31이 더 빠르지 않을까?<br>31보다는 37이 더 충돌 횟수가 적긴 할텐데, 아마 31만으로도 충분히 충돌 횟수를 많이 줄일 수 있어서 굳이 37을 안 쓰는 게 아닐까 싶다…<br>즉, 성능과 충돌 사이의 밸런스를 찾다보니 31이 나온 건 아닌가 싶다.  </p>
+<p>그리고 해시값을 구하는데 소수를 이용하는 거 보다 더 나은 알고리즘들이 있다고 하니 직접 찾아보는 것도 좋을 것 같다.</p>
+<p>또한 위와 같이 일일이 귀찮게 hashCode를 계산하기 보다는 아래와 같이 할 수 있다.<br>하지만 박싱&#x2F;언박싱 및 입력값을 담기 위한 배열 생성 비용 등등으로 인해 성능 측면에서는 조금 아쉽긴 하다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// Array가 아닌 타입은 모두 Objects.hash() 메서드로 해시값을 구할 수 있다.</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">result</span> <span class="operator">=</span> Objects.hash(x, y, t);</span><br><span class="line">    result = <span class="number">31</span> * result + Arrays.hashCode(z);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 어차피 Objects.hash() 메서드를 따라들어가보면 Arrays.hashCode()를 사용하고 있다.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">hash</span><span class="params">(Object... values)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> Arrays.hashCode(values);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>혹은 클래스가 불변인 경우에는 생성 당시에 해시코드 값을 미리 캐싱해놓는 것도 좋다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> hash;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">Type</span><span class="params">(<span class="keyword">final</span> <span class="type">int</span> x, <span class="keyword">final</span> String y, <span class="keyword">final</span> <span class="type">double</span>[] z, <span class="keyword">final</span> Type t)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.x = x;</span><br><span class="line">    <span class="built_in">this</span>.y = y;</span><br><span class="line">    <span class="built_in">this</span>.z = z;</span><br><span class="line">    <span class="built_in">this</span>.t = t;</span><br><span class="line">    <span class="built_in">this</span>.hash = hashCode();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>하지만 해시코드 생성 비용이 큰 경우에는 해시코드 값을 사용하기 전까지는 지연 초기화를 시켜놓으면 된다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(hash != <span class="number">0</span>) <span class="keyword">return</span> hash;</span><br><span class="line">    </span><br><span class="line">    <span class="type">var</span> <span class="variable">result</span> <span class="operator">=</span> Objects.hash(x, y, t);</span><br><span class="line">    result = <span class="number">31</span> * result + Arrays.hashCode(z);</span><br><span class="line">    hash = result;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> hash;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/11/26/effective-java-ch03-item10-equals-method/" rel="prev" title="(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals는 일반 규약을 지켜 재정의하라">
+                  <i class="fa fa-chevron-left"></i> (이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals는 일반 규약을 지켜 재정의하라
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/12/16/effective-java-ch03-item13-clone-method/" rel="next" title="(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, clone 재정의는 주의해서 진행해라">
+                  (이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, clone 재정의는 주의해서 진행해라 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

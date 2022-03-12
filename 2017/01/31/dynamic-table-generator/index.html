@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="개발 배경예전부터 테이블 태그는 참 헷갈렸다.어떤 게 행이고 어떤 게 열인지…가끔은 행과 열 조차도 헷갈렸다.    scope&#x3D;”row”, scope&#x3D;”col”   rowspan, colspan   row, col  그래서 그냥 내 맘대로 합치고 바꾸고 제목 설정하고 싶었다.한글이나 엑셀에서는 가능한 것 같지만 HTML에서는 불가능">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(자작) 동적 테이블 생성기">
+<meta property="og:url" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="개발 배경예전부터 테이블 태그는 참 헷갈렸다.어떤 게 행이고 어떤 게 열인지…가끔은 행과 열 조차도 헷갈렸다.    scope&#x3D;”row”, scope&#x3D;”col”   rowspan, colspan   row, col  그래서 그냥 내 맘대로 합치고 바꾸고 제목 설정하고 싶었다.한글이나 엑셀에서는 가능한 것 같지만 HTML에서는 불가능">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/01.gif">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/02.gif">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/03.gif">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/04.gif">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/05.gif">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/06.gif">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/07.gif">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/08.gif">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/09.png">
+<meta property="article:published_time" content="2017-01-31T09:59:04.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.399Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="IT">
+<meta property="article:tag" content="Computer">
+<meta property="article:tag" content="HTML">
+<meta property="article:tag" content="Table">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/01/31/dynamic-table-generator/","path":"2017/01/31/dynamic-table-generator/","title":"(자작) 동적 테이블 생성기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(자작) 동적 테이블 생성기 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B0%9C%EB%B0%9C-%EB%B0%B0%EA%B2%BD"><span class="nav-number">1.</span> <span class="nav-text">개발 배경</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%82%AC%EC%9A%A9-%EB%B0%A9%EB%B2%95"><span class="nav-number">2.</span> <span class="nav-text">사용 방법</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EA%B8%B0%EB%B3%B8-%EC%82%AC%EC%9A%A9-%EB%B0%A9%EB%B2%95"><span class="nav-number">2.1.</span> <span class="nav-text">기본 사용 방법</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%88%98%EC%A0%95-%EB%AA%A8%EB%93%9C"><span class="nav-number">2.2.</span> <span class="nav-text">수정 모드</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-%EC%82%AC%EC%9A%A9%EC%9E%90-%ED%8E%B8%EC%9D%98-%EA%B3%A0%EB%A0%A4"><span class="nav-number">2.3.</span> <span class="nav-text">JSON, 사용자 편의 고려</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%95%98%EC%A7%80%EB%A7%8C-%EA%B0%80%EB%8F%85%EC%84%B1%EC%9D%B4-%EA%B5%AC%EB%A6%B0-%EB%AC%B8%EC%A0%9C%EC%A0%90%EC%9D%B4%E2%80%A6-%EC%A7%80%EB%AA%BB%EB%AF%B8%E2%80%A6"><span class="nav-number">2.4.</span> <span class="nav-text">하지만 가독성이 구린 문제점이… 지못미…</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%85%80-%EB%B3%91%ED%95%A9%EC%97%90-%EC%9E%88%EC%96%B4%EC%84%9C-%EB%98%90-%EB%8B%A4%EB%A5%B8-%EB%AC%B8%EC%A0%9C%EC%A0%90"><span class="nav-number">2.5.</span> <span class="nav-text">셀 병합에 있어서 또 다른 문제점</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%B0%B1%EC%97%85%EC%9D%80-%ED%95%84%EC%88%98"><span class="nav-number">2.6.</span> <span class="nav-text">백업은 필수</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0%E2%80%A6"><span class="nav-number">3.</span> <span class="nav-text">마치며…</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/01/31/dynamic-table-generator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(자작) 동적 테이블 생성기 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (자작) 동적 테이블 생성기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-01-31 09:59:04" itemprop="dateCreated datePublished" datetime="2017-01-31T09:59:04+00:00">2017-01-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/%EC%9E%90%EC%9E%91/" itemprop="url" rel="index"><span itemprop="name">자작</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/01/31/dynamic-table-generator/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/31/dynamic-table-generator/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/01/31/dynamic-table-generator/thumb.png" class>  
+
+<h2 id="개발-배경"><a href="#개발-배경" class="headerlink" title="개발 배경"></a>개발 배경</h2><p>예전부터 테이블 태그는 참 헷갈렸다.<br>어떤 게 행이고 어떤 게 열인지…<br>가끔은 행과 열 조차도 헷갈렸다.  </p>
+<ol>
+<li>scope&#x3D;”row”, scope&#x3D;”col”  </li>
+<li>rowspan, colspan  </li>
+<li>row, col</li>
+</ol>
+<p>그래서 그냥 내 맘대로 합치고 바꾸고 제목 설정하고 싶었다.<br>한글이나 엑셀에서는 가능한 것 같지만 HTML에서는 불가능 한 것 같았다.<br>그러한 불편함을 감수하고자 1년 전에 몇 시간동안 간단히 만든 적이 있다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://jsfiddle.net/czfdLkhq/4/">동적 테이블 생성 초기 버전</a>  </p>
+<p>하지만 그냥 써보기만 해도 문제가 참 많다는 걸 알 수 있다.<br>그렇게 기억 속에 묻혀있었는데, 어느 한 분께서 친절하게 해당 사항에 대해 얘기를 꺼내셨고,<br>설날에 잉여였던 나는 길어야 2일 걸릴 줄 알았는데, 4일 밤낮을 샌 것 같다…<br><a href="https://perfectacle.github.io/dynamic-table-generator/">동적 테이블 생성기 v1.0</a></p>
+<p>혹시 미천한 프로젝트가 궁금하시거나 개선하고 싶으신 분은 아래 링크로 들어가길 바란다.<br>(스타도 박아주심 헤헤헤…)<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/perfectacle/tbl-maker">동적 테이블 깃헙 링크</a>  </p>
+<h2 id="사용-방법"><a href="#사용-방법" class="headerlink" title="사용 방법"></a>사용 방법</h2><h3 id="기본-사용-방법"><a href="#기본-사용-방법" class="headerlink" title="기본 사용 방법"></a>기본 사용 방법</h3><p>기본적인 사용 방법은 아래와 같다.<br>제목행(th scope&#x3D;”col”), 제목열(th scope&#x3D;”row”)<br>캡션, colspan, rowspan에 중점을 뒀다.  </p>
+<img src="/2017/01/31/dynamic-table-generator/01.gif" class>  
+
+<img src="/2017/01/31/dynamic-table-generator/02.gif" class>
+
+<h3 id="수정-모드"><a href="#수정-모드" class="headerlink" title="수정 모드"></a>수정 모드</h3><p>초기 버전과는 다르게 수정모드도 붙여 보았다.<br>엔터를 누르면 저장, ESC를 누르면 취소가 된다.</p>
+<img src="/2017/01/31/dynamic-table-generator/03.gif" class>  
+
+<img src="/2017/01/31/dynamic-table-generator/04.gif" class>
+
+<h3 id="JSON-사용자-편의-고려"><a href="#JSON-사용자-편의-고려" class="headerlink" title="JSON, 사용자 편의 고려"></a>JSON, 사용자 편의 고려</h3><p>표가 복잡하면 다시 새롭게 만들기 귀찮은데,<br>이런 유저를 위해 제이슨 형태로 저장할 수 있게 제공하였다.  </p>
+<img src="/2017/01/31/dynamic-table-generator/05.gif" class>
+
+<h3 id="하지만-가독성이-구린-문제점이…-지못미…"><a href="#하지만-가독성이-구린-문제점이…-지못미…" class="headerlink" title="하지만 가독성이 구린 문제점이… 지못미…"></a>하지만 가독성이 구린 문제점이… 지못미…</h3><p>제이슨에서 다른 셀과 구분 짓기 위해 병합된 셀의 정보는 다음과 같이 나타난다.<br><code>%데이터:rowspan,colspan%</code><br>병합된 셀은 <code>%collapsedCell%</code>과 같이 나타냈다.<br>가독성이 안 좋지만 딱히 방법이 떠오르지 않았다… ㅠㅠ<br>여하튼 이렇게 가독성이 구린 데이터를 함부로 손 댔다가는 테이블 조차 만들 수도 없을 것이다.  </p>
+<img src="/2017/01/31/dynamic-table-generator/06.gif" class>
+
+<h3 id="셀-병합에-있어서-또-다른-문제점"><a href="#셀-병합에-있어서-또-다른-문제점" class="headerlink" title="셀 병합에 있어서 또 다른 문제점"></a>셀 병합에 있어서 또 다른 문제점</h3><p>또한 제목 행은 &lt;thead&gt; 안에 있고, 나머지 행은 &lt;tbody&gt;에 있기 때문에<br>제목 행과 다른 행을 합칠 순 없다.  </p>
+<img src="/2017/01/31/dynamic-table-generator/07.gif" class>
+
+<h3 id="백업은-필수"><a href="#백업은-필수" class="headerlink" title="백업은 필수"></a>백업은 필수</h3><p>테이블을 새로 생성하면 기존 데이터는 날아가기 때문에<br>귀찮더라도 제이슨 데이터는 항상 백업해두자.  </p>
+<img src="/2017/01/31/dynamic-table-generator/08.gif" class>
+
+<h2 id="마치며…"><a href="#마치며…" class="headerlink" title="마치며…"></a>마치며…</h2><p>내가 이 짓을 할 시간에 리액트, 자바, ES6 등등을 공부했더라면<br>엄청나게 많은 지식을 습득했을 것 같은데 그래도 후회는 없다.  </p>
+<img src="/2017/01/31/dynamic-table-generator/09.png" class title="테스트 코드만 하루 반 나절은 작성한 것 같다.">  
+<p>일단 지금 공부하고 있는 자스민, 카르마를 연동해서 TDD를 해보았다.(+ESLint)<br>TDD가 없었다면 이 많은 케이스를 테스트 할 엄두가 나지 않았을 것이다.<br>물론 아직도 귀찮거나 미처 테스트하지 못한 케이스들이 존재할테지만…<br>어느정도 예상 가는 부분드은 중간중간 앱을 먼저 개발하기도 했다.<br>또한 처음엔 규모가 별로 크지 않을 줄 알고 script.js 파일 하나 안에 다 때려 박았다가<br>도저히 감당이 안 돼서 객체 지향의 원리를 곱씹어봐서 쪼개긴 했는데…<br>매우 허술하고 설계를 먼저 끝내고 코딩을 한 게 아니라<br>생각나는 대로 쪼개고 귀찮으면 하나에 몰아넣기도 한 것 같다.<br>또한 모듈로 쪼개다보니 어쩔 수 없이 웹팩을 쓰게 됐고 바벨까지 얹어서<br>복습할 좋은 기회가 된 것 같다.<br>또한 뷰나 리액트로 만들었으면 좋았을 것 같은데, 너무 산으로 가는 느낌과<br>공부하려면 시간이 곱절로 들 것 같아서 일단 포기.  </p>
+<p>주절주절 많은 걸 쓰고 느낀 것 같다…<br>이런 것도 포트폴리오로 쓸 수 있으려나??</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/IT/" rel="tag"># IT</a>
+              <a href="/tags/Computer/" rel="tag"># Computer</a>
+              <a href="/tags/HTML/" rel="tag"># HTML</a>
+              <a href="/tags/Table/" rel="tag"># Table</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/01/25/ES6-ajax-with-fetch/" rel="prev" title="(ES6+) ajax를 위한 fetch와 async/await">
+                  <i class="fa fa-chevron-left"></i> (ES6+) ajax를 위한 fetch와 async/await
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/02/09/Java-study-007day/" rel="next" title="(Java) 자바의 정석 3판 007일차 - OOP(객체, 클래스, 인스턴스), new 연산자, 참조 타입, 클래스 변수">
+                  (Java) 자바의 정석 3판 007일차 - OOP(객체, 클래스, 인스턴스), new 연산자, 참조 타입, 클래스 변수 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

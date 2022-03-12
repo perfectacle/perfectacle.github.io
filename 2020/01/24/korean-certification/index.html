@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="인증서는 왜 쓸까A가 데이터를 보냈는데 이게 진짜 A가 보낸 건지 아닌지를 검증할 수가 없다.인증서는 A라는 사람이라는 것을 보증해주는 문서라고 보면 된다.따라서 A한테 메세지가 올 때 A의 인증서가 오지 않는다면 A라고 취급을 하지 않으면 된다.하지만 개나소나 인증서를 발급할 수 있으면 A 행세를 아무나 낼테니까 **인증된 기관(CA, Certific">
+<meta property="og:type" content="article">
+<meta property="og:title" content="공인인증서">
+<meta property="og:url" content="https://perfectacle.github.io/2020/01/24/korean-certification/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="인증서는 왜 쓸까A가 데이터를 보냈는데 이게 진짜 A가 보낸 건지 아닌지를 검증할 수가 없다.인증서는 A라는 사람이라는 것을 보증해주는 문서라고 보면 된다.따라서 A한테 메세지가 올 때 A의 인증서가 오지 않는다면 A라고 취급을 하지 않으면 된다.하지만 개나소나 인증서를 발급할 수 있으면 A 행세를 아무나 낼테니까 **인증된 기관(CA, Certific">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/google-certificate.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/certifiacate-and-key.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/certificate.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/not-trusted-certificate.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/key-format-desc.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/asn1-certificate.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/asn1-key.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/seed-iv.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/activex-commuicate-local.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/kb-login.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/kb-login-vid-random.png">
+<meta property="og:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/vid-random.png">
+<meta property="article:published_time" content="2020-01-24T15:52:03.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.735Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="보안">
+<meta property="article:tag" content="공인인증서">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2020/01/24/korean-certification/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2020/01/24/korean-certification/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2020/01/24/korean-certification/","path":"2020/01/24/korean-certification/","title":"공인인증서"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>공인인증서 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9D%B8%EC%A6%9D%EC%84%9C%EB%8A%94-%EC%99%9C-%EC%93%B8%EA%B9%8C"><span class="nav-number">1.</span> <span class="nav-text">인증서는 왜 쓸까</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B3%B5%EC%9D%B8%EC%9D%B8%EC%A6%9D%EC%84%9C%EB%8A%94-%EC%99%9C-%EB%82%98%EC%99%94%EC%9D%84%EA%B9%8C"><span class="nav-number">2.</span> <span class="nav-text">공인인증서는 왜 나왔을까</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B3%B5%EC%9D%B8%EC%9D%B8%EC%A6%9D%EC%84%9C-%EA%B5%AC%EC%A1%B0"><span class="nav-number">3.</span> <span class="nav-text">공인인증서 구조</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B3%B5%EC%9D%B8%EC%9D%B8%EC%A6%9D%EC%84%9C"><span class="nav-number">4.</span> <span class="nav-text">공인인증서</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%B9%84%EB%B0%80%ED%82%A4-key"><span class="nav-number">5.</span> <span class="nav-text">비밀키 (*.key)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ASN-1-Abstract-Syntax-Notation-One"><span class="nav-number">6.</span> <span class="nav-text">ASN.1(Abstract Syntax Notation One)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ActiveX%EB%A1%9C-%EA%B9%94%EC%9D%80-%EB%AA%A8%EB%93%88-delfino-Xecure-%EB%93%B1%EB%93%B1-%EC%97%90%EC%84%9C%EB%8A%94-%EB%AC%B4%EC%8A%A8-%EC%9D%BC%EC%9D%84-%ED%95%A0%EA%B9%8C%E2%80%A6"><span class="nav-number">7.</span> <span class="nav-text">ActiveX로 깔은 모듈(delfino, Xecure 등등)에서는 무슨 일을 할까…?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EC%A1%B0-%EB%A7%81%ED%81%AC"><span class="nav-number">8.</span> <span class="nav-text">참조 링크</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2020/01/24/korean-certification/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="공인인증서 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          공인인증서
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2020-01-24 15:52:03" itemprop="dateCreated datePublished" datetime="2020-01-24T15:52:03+00:00">2020-01-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/%EC%82%BD%EC%A7%88/" itemprop="url" rel="index"><span itemprop="name">삽질</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/01/24/korean-certification/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/01/24/korean-certification/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2020/01/24/korean-certification/thumb.png" class title="npki라는 디렉리토리 안에 보관돼있는 공인인증서의 공개키(*.der)와 비밀키(*.key)">
+
+<h2 id="인증서는-왜-쓸까"><a href="#인증서는-왜-쓸까" class="headerlink" title="인증서는 왜 쓸까"></a>인증서는 왜 쓸까</h2><p>A가 데이터를 보냈는데 이게 진짜 A가 보낸 건지 아닌지를 검증할 수가 없다.<br>인증서는 A라는 사람이라는 것을 <strong>보증해주는 문서</strong>라고 보면 된다.<br>따라서 A한테 메세지가 올 때 A의 인증서가 오지 않는다면 A라고 취급을 하지 않으면 된다.<br>하지만 개나소나 인증서를 발급할 수 있으면 A 행세를 아무나 낼테니까 **인증된 기관(CA, Certificate Authority)**으로부터 적절한 절차를 거쳐 인증서를 발급받을 수 있다.</p>
+<img src="/2020/01/24/korean-certification/google-certificate.png" class title="구글에서 사용 중인 인증서">
+<p>우리가 알고 있는 TLS 인증서(https 도메인마다 발라져있는) 같은 경우에도 이런 절차를 거쳐 발급된다.<br>그리고 이런 인증서들은 **X.509(공개키 인증서 포맷의 표준)**라는 표준을 준수한다.</p>
+<h2 id="공인인증서는-왜-나왔을까"><a href="#공인인증서는-왜-나왔을까" class="headerlink" title="공인인증서는 왜 나왔을까"></a>공인인증서는 왜 나왔을까</h2><p>인터넷 뱅킹이나 온라인 쇼핑몰 등등을 이용하기 위해서는 보안이 취약해서는 안되며 이를 위해서 인증서 사용은 필수이다.</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://news.joins.com/article/521864">https://news.joins.com/article/521864</a><br>하지만 과거에는 미국의 수출 금지법에 의해 미국을 제외한 나라에서는 브라우저에서 56bit 길이 이하의 약한 암호화 방식 밖에 사용할 수 없었다.</p>
+<p>따라서 국내에서 직접 암호화 알고리즘인 SEED(128bit 길이, 2009년부터는 256bit 길이도 제공)를 개발하고,<br>해당 알고리즘을 사용하는 <strong>공인인증서</strong>도 만들게 되었다. 하지만 국제 표준 암호 알고리즘도 아니고 국내에서만 인증된 CA에서 발급한 인증서이다보니 웹 브라우저에서 사용할 수 없었다.<br>따라서 당시 국내 점유율이 압도적인 IE에서 사용이 가능한 ActiveX라는 기술을 사용하여 공인인증서를 사용할 수 있게 만들었다.</p>
+<p>과거에는 어쩔 수 없는 선택일 수 밖에 없었을 것 같은데 브라우저에서 해당 제약이 사라진 요즘같은 시대에<br>비표준 기술을 위해 ActiveX나 설치형 프로그램을 잔뜩 깔아야하는 건 아마 여러 이해관계가 얽혀있기 때문이 아닐까 싶다.<br>(그 때문에 사용자만 엄청 고생하는 ㅠㅠ…)</p>
+<h2 id="공인인증서-구조"><a href="#공인인증서-구조" class="headerlink" title="공인인증서 구조"></a>공인인증서 구조</h2><img src="/2020/01/24/korean-certification/certifiacate-and-key.png" class title="공인인증서와 개인키 파일">
+<p>MacOS는 &#x2F;Users&#x2F;사용자이름&#x2F;Library&#x2F;Preferences&#x2F;NPKI,<br>Windows 10는 C:\Users\사용자이름\AppData\LocalLow\NPKI에 위치하고 있다.</p>
+<p>공인인증서(*.der, *.cer 등등)와 개인키(*.key)파일로 이루어져있다.<br>아니면 공인인증서와 개인키 파일이 합쳐진 형태(*.p12, *.pfx 등등)로 이루어진 경우도 있다.<br>공인인증서와 개인키 파일이 합쳐진 형태는 PKCS#12(<strong>P</strong>ublic <strong>K</strong>ey <strong>C</strong>ryptography <strong>S</strong>tandards, 공개키 암호화 표준의 12번째 표준)을 준수하고 있다.<br>PKCS#12는 다수의 <code>X.509 인증서 + 개인키</code> 묶음을 하나의 파일로 저장하기 위한 표준이다.</p>
+<h2 id="공인인증서"><a href="#공인인증서" class="headerlink" title="공인인증서"></a>공인인증서</h2><p>*.cer(Canonical Encoding Rules) 또는 *.der(Distinguished Encoding Representation)과 같은 확장자를 가지며 바이너리 형태로 인코딩 돼있다.</p>
+<img src="/2020/01/24/korean-certification/certificate.png" class title="MacOS의 Keychain Access에서 본 공인인증서 정보">  
+<p>공인인증서는 <strong>X.509 V3</strong>을 따른다.<br>또한 공인인증서 소유자의 <strong>공개키</strong> + CA(Certificate Authority, 발행기관) 정보 및 <strong>전자서명</strong> + 사용목적 + 유효기간 등등이 저장돼있다.</p>
+<p>위 인증서는 은행에서 사용 중인 공인인증서인데 은행에 대한 정보는 1도 없다.<br>아마 은행은 CA가 아니기 때문에 CA에게 대신 발급 요청(CSR, Certificate Signing Request)을 하고 발급받은 인증서를 개인에게 전달해주는 시스템 같다.<br>아마 보안모듈은 공인인증서를 전달받으면 해당 CA로부터 발급된 인증서가 맞는지 검증까지 해주는 것 같다.<br>(TLS 인증서였다면 이런 행위는 브라우저가 알아서 해주겠지만…)<br>CA(인증서 발급 기관, Certificate Authority)에게 인증서 발급을 요청할 때 요청자의 공개키를 함께 보낸다.<br>그러면 CA는 서명(CA의 개인키로 암호화)한 인증서를 발급해준다.<br>그리고 인증서 안에는 <strong>인증서 발급 요청자의 공개키</strong>가 포함돼있고, 어떤 용도의 인증서인지,<br>어느 기관(CA, Certificate Authority)에서 발급한 건지 등등의 정보가 포함돼있다.</p>
+<img src="/2020/01/24/korean-certification/not-trusted-certificate.png" class title="MacOS의 Keychain Access에서 공인인증서는 신뢰할 수 없다고 나온다.">  
+<p>또한 공인인증서는 국내에서만 사용하는 인증서이기 때문에 OS 레벨에서는 해당 인증서가 신뢰된 CA로부터 발급받은 인증서인지 알 수가 없다.<br>(그냥 은행이나 공공기관 등등을 믿고 쓰는 수 밖에…)</p>
+<h2 id="비밀키-key"><a href="#비밀키-key" class="headerlink" title="비밀키 (*.key)"></a>비밀키 (*.key)</h2><img src="/2020/01/24/korean-certification/key-format-desc.png" class>  
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.rootca.or.kr/kor/accredited/accredited06_01.jsp">전자서명인증관리센터</a>에 보면 PKCS#5와 PKCS#8 형식이라고 나와있다.</p>
+<blockquote>
+<p>In cryptography, PKCS #8 is a standard syntax for storing private key information.<br>  The PKCS #8 private key may be encrypted with a passphrase using the PKCS #5 standards,<br>  which supports multiple ciphers.</p>
+</blockquote>
+<p>PKCS#8(Private-Key Information Syntax Standard)이 뭔지 찾아보니 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/PKCS_8">위키피디아</a>에서는 개인키 저장을 위한 문법 표준이라고 하고 있다.<br>웬만한 개인키는 다 이 형식을 따르는 것 같다.<br>여기서 말하는 passphrase는 사용자가 공인인증서를 만들 때 입력한 비밀번호를 의미한다.</p>
+<p>이번엔 PKCS#5(Password-Based Cryptography Standard)가 뭔지 찾아보니 패스워드를 깨먹기 어렵게 하기 위한 표준 같아 보였다.<br>그 안에는 Key Derivation Functions라는 게 있는데 패스워드 + salt + 이터레이션 카운트(해당 함수를 몇 번 이터레이션 돌릴지) 등등을 인자로 받아서 추가 연산을 진행하는 함수인데,<br>패스워드를 빠르게 계산하기 어렵게 해서 해커가 공격을 빠르게 하지 못하게 막기 위해 사용하는 함수 같다.<br>이런 Key Derivation Function을 커스텀하게 구현해도 되지만 좀 더 검증되고 표준에 등재된<br>PBKDF1과 PBKDF2가 있는데 공인인증서는 두 가지 방식을 모두 지원한다.</p>
+<p>그리고 공인인증서의 개인키는 SEED 알고리즘으로 암호화해서 저장돼있다고 하니 개인키를 얻어오려면 복호화를 해야한다.</p>
+<h2 id="ASN-1-Abstract-Syntax-Notation-One"><a href="#ASN-1-Abstract-Syntax-Notation-One" class="headerlink" title="ASN.1(Abstract Syntax Notation One)"></a>ASN.1(Abstract Syntax Notation One)</h2><p>X.509 인증서의 데이터 구조는 ASN.1 표기법에 의해 표기된다.<br>따라서 디코딩해보면 더 많은 정보를 얻어낼 수 있는데 온라인에서 디코딩을 할 수 있다.  </p>
+<img src="/2020/01/24/korean-certification/asn1-certificate.png" class title="공인인증서를 ASN.1 표기법으로 표기">  
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://lapo.it/asn1js">https://lapo.it/asn1js</a>에 들어가서 공인인증서나 개인키 파일을 Base64로 인코딩한 텍스트를 입력한 후에 decode 버튼을 누르면 더 자세한 정보를 볼 수 있다.  </p>
+<img src="/2020/01/24/korean-certification/asn1-key.png" class title="개인키를 ASN.1 표기법으로 표기">  
+<p>개인키 파일을 디코딩해보면 어떤 암호화 알고리즘을 사용했는지, 어떤 KDF(Key Derivation Function)를 사용했는지 나온다.<br>object identifer를 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://oid-info.com/get/1.2.410.200004.1.4">http://oid-info.com/get/1.2.410.200004.1.4</a>에서 검색하면 더 자세한 정보가 나온다.</p>
+<img src="/2020/01/24/korean-certification/seed-iv.png" class title="개인키를 ASN.1 표기법으로 표기">  
+<p>또한 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.rootca.or.kr/kcac/down/TechSpec/2.3-KCAC.TS.ENC.pdf">SEED 알고리즘 규격 문서</a>를 보면 OID에 따라서 초기 벡터 값을 어떻게 세팅해야하는지 나온다.</p>
+<h2 id="ActiveX로-깔은-모듈-delfino-Xecure-등등-에서는-무슨-일을-할까…"><a href="#ActiveX로-깔은-모듈-delfino-Xecure-등등-에서는-무슨-일을-할까…" class="headerlink" title="ActiveX로 깔은 모듈(delfino, Xecure 등등)에서는 무슨 일을 할까…?"></a>ActiveX로 깔은 모듈(delfino, Xecure 등등)에서는 무슨 일을 할까…?</h2><img src="/2020/01/24/korean-certification/activex-commuicate-local.png" class title="Ajax나 WebSocket을 통해서 주기적으로 로컬과 통신한다.">  
+<p>그 안에서 공인인증서도 가져오고, 개인키 파일을 복호화 해서 개인키를 획득하기도 하고…<br>여러가지 행위들을 한다.</p>
+<img src="/2020/01/24/korean-certification/kb-login.png" class title="PKCS7이란 파라미터에 Base64 인코딩 된 스트링을 보내고 있다.">  
+<p>PKCS #7(Cryptographic Message Syntax)이 뭔지 찾아보니 전자서명에 대한 표준 같아 보였다.<br>실제로 어떤 카드사의 경우에는 PKCS7 방식으로 전자서명 하는 모듈을 쓰는 곳도 있다.</p>
+<p>근데 PKCS7에 보낸 데이터를 보니 Base64 인코딩 된 스트링이고 이 데이터는 전자서명한 데이터는 아니고,<br>ASN.1 Decoder로 보니 내 공인인증서였다.<br>내 공인인증서를 보냄으로써 내가 맞는지 검증하는 것 같다.<br>하지만 공개키 인증서는 기본적으로 여기저기 공유가 돼도 문제 없도록 만들었다.<br>따라서 저 공인인증서를 내가 전달한 건지, 남이 전달한 건지 서버는 알 길이 없다.</p>
+<img src="/2020/01/24/korean-certification/kb-login-vid-random.png" class title="VID_RANDOM 파라미터에 Base64 인코딩 된 스트링을 보내고 있다.">  
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.rootca.or.kr/kcac/down/TechSpec/1.5-KCAC.TS.SIVID.pdf">식별번호를 이용한 본인확인 기술규격</a>을 보면 다음과 같은 부분이 나와있다.<br><code>VID = h(h(IDN, R)</code></p>
+<ul>
+<li>VID: 가상식별번호</li>
+<li>h( ) : 해쉬 함수</li>
+<li>IDN : 식별번호</li>
+<li>식별번호 : 전자서명법 시행규칙 제13조의2에 의한 주민등록번호, 사업자등록번호 및 고유번호</li>
+<li>R: 비트열 난수<br><code>본 규격에서는 적어도 160비트 이상의 안전한 임의의 난수를 생성하여 사용해야한다. 난수는 가상 식별번호를 생성하는데 사용되며 가상 식별번호와 함께 공인인증기관에 전달되어 공인인증기관이 식별번호를 검증하는데 사용된다.</code><br>국민은행 측에 보낸 VID_RANDOM 값을 Base64 디코딩해보면 20바이트(160비트)의 데이터가 나온다.<img src="/2020/01/24/korean-certification/vid-random.png" class title="R 값은 개인을 식별하기 위한 아주 중요한 정보이다."></li>
+</ul>
+<p>따라서 보안 모듈에서는 다음과 같은 행동이 일어났다.</p>
+<ol>
+<li>공인인증서 목록을 불러온다.</li>
+<li>비밀번호를 입력받아서 개인키를 복호화한다.</li>
+<li>복호화한 개인키에서 R값을 가져온다.</li>
+<li>js에서 보안모듈(127.0.0.1)과 통신을 해서 R값과 공인인증서 값을 받아와서 국민은행 사이트에게 ajax로 요청을 보낸다.</li>
+<li>해당 유저의 공인인증서와 R값이 맞다면 로그인을 성공시킨다.</li>
+</ol>
+<p>모듈마다 어떻게 인증 절차를 거치는지 다 다르다.<br>어떤 모듈은 PKCS7 방식으로 전자서명한 데이터를 보내는 모듈도 있고, 어떤 모듈은 추출한 R 값을 한 번 더 암호화 해서 보내는 곳도 있고,<br>어떤 곳은 Base64 인코딩이 아닌 Hex 인코딩을 사용하는 곳도 있다.<br>하지만 같은 모듈을 사용하는 은행&#x2F;카드사가 있다면 비슷한 방식을 통해 로그인 과정이 이뤄진다.<br>(하나를 뚫으면 여러 벤더사를 함께 뚫을 수 있게 된다.)</p>
+<h2 id="참조-링크"><a href="#참조-링크" class="headerlink" title="참조 링크"></a>참조 링크</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.letmecompile.com/certificate-file-format-extensions-comparison/https://www.letmecompile.com/certificate-file-format-extensions-comparison/">https://www.letmecompile.com/certificate-file-format-extensions-comparison/</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://indienote.tistory.com/272">https://indienote.tistory.com/272</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://indienote.tistory.com/273">https://indienote.tistory.com/273</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.slideshare.net/ied206/4th-inc0gnito">https://www.slideshare.net/ied206/4th-inc0gnito</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0">https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://news.joins.com/article/521864">https://news.joins.com/article/521864</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.rootca.or.kr/kcac/down/TechSpec/2.3-KCAC.TS.ENC.pdf">SEED 암호 알고리즘 규격</a> </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.rootca.or.kr/kcac/down/TechSpec/1.1-KCAC.TS.CERTPROF.pdf">전자서명 인증서 프로파일 규격</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%EB%B3%B4%EC%95%88/" rel="tag"># 보안</a>
+              <a href="/tags/%EA%B3%B5%EC%9D%B8%EC%9D%B8%EC%A6%9D%EC%84%9C/" rel="tag"># 공인인증서</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/11/24/aes/" rel="prev" title="AES 256 CBC + PBKDF2">
+                  <i class="fa fa-chevron-left"></i> AES 256 CBC + PBKDF2
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/31/how-to-set-read-more-in-next-theme/" rel="next" title="(Hexo) NexT 테마에서 '더 읽어보기'를 설정하는 방법">
+                  (Hexo) NexT 테마에서 '더 읽어보기'를 설정하는 방법 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

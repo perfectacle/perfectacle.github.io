@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.(그 이유는 모르겠지만… 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)따라서 final이 아닌 메서드(equals, hashCode, toString, clone, finalize는)는 모두 메서드 오버라이딩을 염두">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals는 일반 규약을 지켜 재정의하라">
+<meta property="og:url" content="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.(그 이유는 모르겠지만… 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)따라서 final이 아닌 메서드(equals, hashCode, toString, clone, finalize는)는 모두 메서드 오버라이딩을 염두">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/02.png">
+<meta property="article:published_time" content="2018-11-26T01:16:30.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.415Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/","path":"2018/11/26/effective-java-ch03-item10-equals-method/","title":"(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals는 일반 규약을 지켜 재정의하라"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals는 일반 규약을 지켜 재정의하라 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C%E2%80%A6"><span class="nav-number">1.</span> <span class="nav-text">들어가기에 앞서…</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#equals"><span class="nav-number">2.</span> <span class="nav-text">equals</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#equivalence-relation-%EB%8F%99%EC%B9%98-%EA%B4%80%EA%B3%84"><span class="nav-number">2.1.</span> <span class="nav-text">equivalence relation(동치 관계)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Reflexive-%EB%B0%98%EC%82%AC%EC%84%B1"><span class="nav-number">2.1.1.</span> <span class="nav-text">Reflexive(반사성)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Symmetric-%EB%8C%80%EC%B9%AD%EC%84%B1"><span class="nav-number">2.1.2.</span> <span class="nav-text">Symmetric(대칭성)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Transitive-%EC%B6%94%EC%9D%B4%EC%84%B1"><span class="nav-number">2.1.3.</span> <span class="nav-text">Transitive(추이성)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Consistent-%EC%9D%BC%EA%B4%80%EC%84%B1"><span class="nav-number">2.1.4.</span> <span class="nav-text">Consistent(일관성)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#null%EC%9D%B4-%EC%95%84%EB%8B%8C-%EA%B0%9D%EC%B2%B4%EB%8A%94-null%EA%B3%BC-%EA%B0%99%EC%A7%80-%EC%95%8A%EC%95%84%EC%95%BC%ED%95%9C%EB%8B%A4"><span class="nav-number">2.2.</span> <span class="nav-text">null이 아닌 객체는 null과 같지 않아야한다.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Best-Practice"><span class="nav-number">2.3.</span> <span class="nav-text">Best Practice</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals는 일반 규약을 지켜 재정의하라 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals는 일반 규약을 지켜 재정의하라
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-11-26 01:16:30" itemprop="dateCreated datePublished" datetime="2018-11-26T01:16:30+00:00">2018-11-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/11/26/effective-java-ch03-item10-equals-method/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/11/26/effective-java-ch03-item10-equals-method/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2018/11/26/effective-java-ch03-item10-equals-method/thumb.png" class>
+
+<p>Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.<br>(그 이유는 모르겠지만… 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)<br>따라서 final이 아닌 메서드(<a href="#equals">equals</a>, <a href="/2018/12/03/effective-java-ch03-item11-hashCode-method">hashCode</a>, toString, <a href="/2018/12/16/effective-java-ch03-item13-clone-method">clone</a>, finalize는)는 모두 메서드 오버라이딩을 염두하고 설계된 메서드이다.<br>따라서 해당 메서드를 오버라이딩 할 때는 각 메서드마다 지켜야할 규칙들이 존재한다.<br>이 규칙을 지키지 않았을 때 뻑나는 경우가 있다.<br>일반적인 클래스들(Collection Framework 등등)은 이러한 규칙들은 지켰겠지~ 하고 작성된 코드들이 많다.<br>따라서 위와 같은 규칙을 지키지 않은 채 오버라이딩을 한 클래스를 사용하면 제대로 동작하지 않을 가능성이 존재한다.  </p>
+<h2 id="들어가기에-앞서…"><a href="#들어가기에-앞서…" class="headerlink" title="들어가기에 앞서…"></a>들어가기에 앞서…</h2><p>equals 메서드를 오버라이딩 할 경우는 거의 없다.<br>대부분 핵심 필드의 값이 일치하는지 파악하기 위해서 오버라이딩 할 것이다.<br>그런 경우를 제외하고는 대부분 기본적인 레퍼런스 값 비교만으로도 충분히 비교가 가능하기 때문이다.<br>equals 메서드를 오버라이딩 하는 건 그렇게 어렵지 않지만 몇가지 원칙이 있고, 글의 길이가 짧은 편도 아니고 얻는 수확이 크지 않다. (애초에 오버라이딩 할 일이 거의 없으니…)<br>그래서 <code>지금 당장 오버라이딩을 해야한다!</code> 싶을 때는 두 가지 방법이 있다.<br><del>내가 당신의 시간을 아껴주겠다.</del><br>그래도 공부 측면 등등에서 꼭 알아야하는 내용임에는 틀림이 없는 것 같다.</p>
+<ol>
+<li>구글에서 만든 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/google/auto/tree/master/value">AutoValue</a> 사용하기. (권장)<br>아주 사용하기가 간단하다.<br>바로 클래스 위에 <code>@AutoValue</code> 어노테이션만 달아주면 끝이다.<br>(물론 equals, hashCode, toString 메서드까지 다 오버라이딩 해준다.)<br>클래스가 변경돼도 hashCode 쪽 소스코드를 수정할 필요가 없다.<br>얘는 자바 6부터 지원한다.  </li>
+<li>IDEA가 생성해준 소스 코드 사용하기.<br>사람이라면 실수를 하게 되니 IDE의 도움을 절실히 원하게 된다.<br>하지만 클래스가 변하는 경우에 equals 코드도 계속해서 변경해줘야하니 구찮다…<br>또 잘 짰는지 테스트 코드도 짜야하고… 테스트 코드도 변경해야하고…</li>
+</ol>
+<h2 id="equals"><a href="#equals" class="headerlink" title="equals"></a>equals</h2><p>equals 메서드는 오버라이딩 하기 쉬워보이지만 자칫했다가는 규칙을 어길 가능성도 곳곳에 존재한다.<br>따라서 책에서 이런 가능성을 없애는 가장 좋은 방법은 오버라이딩 하지 않는 것이라고 한다.<br>나도 내가 딱히 이런 equals 메서드를 직접 정의해본 기억은 거의 없다.  </p>
+<p>우선 우리가 오버라이딩 하지 않았을 때는 어떤 비즈니스 로직을 수행하고 있는지 모든 클래스의 부모 격인 Object 클래스의 equals 메서드를 까보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="built_in">this</span> == obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>정말 별 거 없다.<br>그냥 &#x3D;&#x3D; 연산을 통해 레퍼런스를 비교하는 정도이다.<br>만약 클래스의 논리적 동치성(같은 레퍼런스가 아닐지라도 특정 필드의 값이 같다던지… 등등)을 확인하고 싶다면 equals 메서드를 오버라이딩 해야한다.<br>가장 좋은 예가 Integer, String 클래스 등등이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (obj <span class="keyword">instanceof</span> Integer) &#123;</span><br><span class="line">        <span class="type">return</span> <span class="variable">value</span> <span class="operator">=</span>= ((Integer)obj).intValue();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>위 예는 Integer 클래스의 equals 메서드이다.<br>레퍼런스를 가지고 비교하는 게 아니라 인스턴스가 가지고 있는 value(primitive type인 int)들끼리 비교하고 있다.<br>혹은 인스턴스가 하나 뿐이라고 보장된 클래스(싱글턴)는 레퍼런스 비교만으로도 논리적 동치성을 보장하니 굳이 equals 메서드를 오버라이딩 할 필요가 없다.</p>
+<p>그렇다면 equals에 어떤 규칙이 있는지는 아래 문서를 참고해 하나씩 알아보자.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)">https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)</a>  </p>
+<h3 id="equivalence-relation-동치-관계"><a href="#equivalence-relation-동치-관계" class="headerlink" title="equivalence relation(동치 관계)"></a>equivalence relation(동치 관계)</h3><blockquote>
+<p>The equals method implements an equivalence relation on non-null object references<br>  euqals 메서드는 non-null object 레퍼런스에 대해 equivalence relation(동치 관계)를 구현해야한다.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)">https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)</a></p>
+</blockquote>
+<p>아까부터 논리적 동치성이니, 동치 관계니, 계속 동치 동치 거리는데 일단 동치가 뭔지 알아보자.<br>~~동치미도 아니고…~~~</p>
+<p>책에서는 <code>동치 관계</code>에 대해 아래와 같이 설명하고 있다.  </p>
+<blockquote>
+<p>집합을 서로 같은 원소들로 이뤄진 부분집합으로 나누는 연산이다.<br>  이 부분집합을 동치류(equivalence class; 동치 클래스)라 한다.<br>  equals 메서드가 쓸모 있으려면 모든 원소가 같은 동치류에 속한 어떤 원소와도 서로 교환할 수 있어야한다.</p>
+</blockquote>
+<p>그냥 읽어선 뭔 소린지 모르겠다.<br>그림으로 이해를 해보자. (마우스 없는 환경에서 그리려니까 너무 힘들다…)  </p>
+<img src="/2018/11/26/effective-java-ch03-item10-equals-method/01.png" class>  
+<p>위 그림은 아래와 같은 기호를 통해 표현할 수 있다.<br><code>X = &#123;a, b, c, a, b, c&#125;</code><br>이제 이 집합 X를 서로 같은 원소들로 이뤄진 부분집합으로 나눠보자.  </p>
+<img src="/2018/11/26/effective-java-ch03-item10-equals-method/02.png" class>  
+<p>위 그림은 아래와 같은 기호를 통해 표현할 수 있다.  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">X = &#123;a, b, c, a, b, c&#125;</span><br><span class="line">A = &#123;a, a&#125;</span><br><span class="line">B = &#123;b, b&#125;</span><br><span class="line">C = &#123;c, c&#125;</span><br></pre></td></tr></table></figure>
+<p>이제 이 부분집합 A, B, C는 서로 같은 원소들끼리 뭉쳐있으므로 동치류(equivalence class; 동치 클래스)라고 부를 수 있다.<br>equals 메서드가 쓸모 있으려면 동치류에 속한 어떤 원소와도 서로 교환할 수 있어야한다고 한다.  </p>
+<p>그냥 뭔소린지 모르겠고 그냥 둘이 같아야한다는 걸 뭘 어렵게 풀어쓴 거 같다.<br><del>수학을 모르니 ㅠㅠ…</del><br>그럼 동치 관계가 가지는 특성에 대해 하나씩 알아보자.</p>
+<h4 id="Reflexive-반사성"><a href="#Reflexive-반사성" class="headerlink" title="Reflexive(반사성)"></a>Reflexive(반사성)</h4><blockquote>
+<p>for any non-null reference value x, x.equals(x) should return true.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)">https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)</a></p>
+</blockquote>
+<p>null이 아니고, 참조값 x에 대해서 x.equals(x)는 true를 반환해야한다.<br>위 규칙을 어기는 코드를 바로 작성해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NotReflexive</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 아래와 같이 테스트 코드를 작성해서 위 규칙을 어겼는지 검증해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotReflexive</span>();</span><br><span class="line">    assertNotEquals(x, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>테스트는 깔끔하게 통과한다.  </p>
+<p>그럼 이제 위 규칙을 어겼을 때 어떤 오동작을 유발하는지 살펴보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotReflexive</span>();</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">list</span> <span class="operator">=</span> List.of(x);</span><br><span class="line">    assertFalse(list.contains(x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>reflexive 하지 못한 인스턴스는 List(및 다른 Collection)에 포함돼었는지 제대로 파악할 수 없다.<br>이유는 아래 보다싶이 List 클래스의 contains 메서드는 인스턴스의 equals 메서드를 활용하기 때문이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">contains</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> indexOf(o) &gt;= <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">indexOf</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">    Objects.requireNonNull(o);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>, s = size(); i &lt; s; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (o.equals(get(i))) &#123;</span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이런 경우에는 딱히 필드도 없고(극단적인 경우지만) 하니 메서드 오버라이딩 자체를 하지 않으면 문제가 해결된다.</p>
+<h4 id="Symmetric-대칭성"><a href="#Symmetric-대칭성" class="headerlink" title="Symmetric(대칭성)"></a>Symmetric(대칭성)</h4><blockquote>
+<p>for any non-null reference values x and y, x.equals(y) should return true if and only if y.equals(x) returns true.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)">https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)</a></p>
+</blockquote>
+<p>null이 아니고, 참조값 x와 y에 대해서 x.equals(y)가 true를 반환하면 y.equals(x)도 true를 반환해야한다.<br>위 규칙을 어기는 코드를 바로 작성해보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NotSymmetric</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(o <span class="keyword">instanceof</span> NotSymmetric) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">return</span> o <span class="keyword">instanceof</span> String;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 아래와 같이 테스트 코드를 작성해서 위 규칙을 어겼는지 검증해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotSymmetric</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// reflexive!!</span></span><br><span class="line">    assertEquals(x, x);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">y</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// not symmetric!!</span></span><br><span class="line">    assertEquals(x, y);</span><br><span class="line">    assertNotEquals(y, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>테스트가 깔끔하게 통과한다.<br>NotSymmetric은 String을 알지만, String은 NotSymmetric을 알지 못하기 때문이다.  </p>
+<p>그럼 이제 위 규칙을 어겼을 때 어떤 오동작을 유발하는지 살펴보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotSymmetric</span>();</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">y</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">list</span> <span class="operator">=</span> List.of(y);</span><br><span class="line">    assertTrue(list.contains(x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>대칭성이 없는 인스턴스 역시 List(및 다른 Collection)에 포함돼었는지 제대로 파악할 수 없다.<br>이유는 위에서 얘기했다싶이 List 클래스의 contains 메서드는 인스턴스의 equals 메서드를 활용하기 때문이다.<br>x(NotSymmetric)의 잘못 구현된 equals 메서드를 사용하기 때문에 포함되지도 않았는데 포함됐다고 판단하고 있다.  </p>
+<p>이런 경우에는 String에 대해 비교하는 구문을 아예 없애버리면 해결이된다.</p>
+<h4 id="Transitive-추이성"><a href="#Transitive-추이성" class="headerlink" title="Transitive(추이성)"></a>Transitive(추이성)</h4><blockquote>
+<p>for any non-null reference values x, y, and z, if x.equals(y) returns true and y.equals(z) returns true, then x.equals(z) should return true.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)">https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)</a>  </p>
+</blockquote>
+<p>null이 아니고, 참조값 x와 y, z에 대해서 x.equals(y)가 true를 반환하고 y.equals(z)가 true를 반환하면, x.equals(z)도 true를 반환해야한다.<br>마치 3단 논법같은 이 명제를 부셔버리는 예제를 작성해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> o <span class="keyword">instanceof</span> Parent;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NotTransitive</span> <span class="keyword">extends</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> a;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">NotTransitive</span><span class="params">(<span class="keyword">final</span> <span class="type">int</span> a)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.a = a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">super</span>.equals(o)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Parent 인스턴스 경우</span></span><br><span class="line">        <span class="keyword">if</span>(!(o <span class="keyword">instanceof</span> NotTransitive)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// NotTransitive 인스턴스인 경우</span></span><br><span class="line">        <span class="type">return</span> <span class="variable">a</span> <span class="operator">=</span>= ((NotTransitive) o).a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이제 테스트 코드로 검증을 해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotTransitive</span>(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// reflexive!!</span></span><br><span class="line">    assertEquals(x, x);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">y</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Parent</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// symmetric!!</span></span><br><span class="line">    assertEquals(x, y);</span><br><span class="line">    assertEquals(y, x);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">z</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotTransitive</span>(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// not transitive!!</span></span><br><span class="line">    assertEquals(x, y);</span><br><span class="line">    assertEquals(y, z);</span><br><span class="line">    assertNotEquals(x, z);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위와 같이 transitive하지 못한 경우에도 아래와 같이 당연히 오작동하기 마련이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotTransitive</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">y</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Parent</span>();</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">list</span> <span class="operator">=</span> List.of(x);</span><br><span class="line">    </span><br><span class="line">    assertTrue(list.contains(y));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이를 해결하기 위해서는 Parent 클래스에 equals 메서드에서 instanceof 연산자 대신에 getClass() 메서드를 쓰면 해결된다. (정말?)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (o != <span class="literal">null</span>) &amp;&amp; (o.getClass() == <span class="built_in">this</span>.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>테스트 코드로 검증을 해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotTransitive</span>(<span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// reflexive!!</span></span><br><span class="line">    assertEquals(x, x);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">y</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Parent</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// symmetric!!</span></span><br><span class="line">    assertEquals(x, y);</span><br><span class="line">    assertEquals(y, x);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">z</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotTransitive</span>(<span class="number">2</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// transitive!!</span></span><br><span class="line">    assertNotEquals(x, y);</span><br><span class="line">    assertNotEquals(y, z);</span><br><span class="line">    assertNotEquals(x, z);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">list</span> <span class="operator">=</span> List.of(x);</span><br><span class="line"></span><br><span class="line">    assertFalse(list.contains(y));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>위 테스트에서 문제가 됐던 x.equals(y), y.equals(z), !x.equals(z) 문제는 발생하지 않았고,<br>list.contains() 메서드에서 말썽이 발생했던 문제도 해결됐다.</p>
+<p>하지만 이는 논리적 동치성을 검증하지 못했고, <strong>리스코프 치환 원칙</strong>을 위배했기 때문에 올바르게 해결했다고 하기 거시기하다…</p>
+<blockquote>
+<p>LSP(Liskov substitution principle, 바바라 리스코프란 사람이 만들었다고 함.)<br>  어떤 타입에 있어 중요한 속성이라면 그 하위 타입에서도 마찬가지로 중요하고,<br>  따라서 그 타입의 메서드가 하위 타입에서도 똑같이 잘 동작해야한다.</p>
+</blockquote>
+<p>간단한 예를 통해 알아보자.<br>우선 Parent 클래스를 다음과 같이 바꿔보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> List&lt;Parent&gt; z = List.of(<span class="keyword">new</span> <span class="title class_">Parent</span>());</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (o != <span class="literal">null</span>) &amp;&amp; (o.getClass() == <span class="built_in">this</span>.getClass());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">test</span><span class="params">(<span class="keyword">final</span> Parent p)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> z.contains(p);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 간단한 테스트 클래스를 통해 의도한 대로 동작하는지 보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Parent</span>();</span><br><span class="line">    assertTrue(x.test(x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>무슨 일을 하는 코드인지는 모르겠지만 우리가 의도한 대로 잘 동작한다.<br>리스코프 치환 원칙을 준수했다면 Parent의 하위 클래스인 NotTransitive 클래스로 타입을 <strong>치환</strong>해도 정상 동작해야한다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotTransitive</span>(<span class="number">1</span>);</span><br><span class="line">    assertTrue(x.test(x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>상위 타입(Parent)에서 하위 타입(NotTransitive)로 치환했는데 테스트가 깨진다.<br>이는 하위 타입인 NotTransitive 클래스를 리스코프 치환 원칙에 위배했다는 증거가 된다.<br>리스코프 치환 원칙은 객체 지향의 5대 원칙 중 하나이므로 이는 객체 지향적으로 설계하지 못했다는 증거가 된다.  </p>
+<p>그럼 하위 클래스에 필드를 추가하면서 equals 메서드를 오버라이딩 하는데 동치 관계를 준수하면서 객체 지향적으로 설계까지 하는 방법은 없는 걸까?<br>답은 없다.<br>그럼 어떻게 해야할까?<br>하위 클래스(상속)로 만드는 대신에 Composition을 활용하는 것이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NotTransitive</span> &#123;</span><br><span class="line">    <span class="comment">// 상속을 쓰지 않으니 부모 클래스로 접근할 수 있는 루트를 필드로써 제공하면 된다.</span></span><br><span class="line">    <span class="keyword">private</span> Parent p;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> a;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">NotTransitive</span><span class="params">(<span class="keyword">final</span> Parent p, <span class="keyword">final</span> <span class="type">int</span> a)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.p = p;</span><br><span class="line">        <span class="built_in">this</span>.a = a;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 부모 클래스의 기능을 쓰고 싶다면 이 메서드를 통해 접근하면 된다.</span></span><br><span class="line">    <span class="keyword">public</span> Parent <span class="title function_">asParent</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 논리적 동치성을 검증.</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(!(o <span class="keyword">instanceof</span> NotTransitive)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="type">return</span> <span class="variable">a</span> <span class="operator">=</span>= ((NotTransitive) o).a;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>하지만 자바 라이브러리를 보면 하위 클래스에 필드를 추가하면서 equals를 재정의한 경우가 있다.<br>바로 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Date.html">java.util.Date</a> 클래스를 상속 받은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/Timestamp.html">java.sql.Timestamp</a>가 그 예이다.<br>따라서 Timestamp API 문서에는 아래와 같은 문구가 적혀있다.  </p>
+<blockquote>
+<p>This type is a composite of a java.util.Date and a separate nanoseconds value.<br>  Only integral seconds are stored in the java.util.Date component.<br>  The fractional seconds - the nanos - are separate.<br>  The Timestamp.equals(Object) method never returns true when passed an object that isn’t an instance of java.sql.Timestamp, because the nanos component of a date is unknown.<br>  As a result, the Timestamp.equals(Object) method is not symmetric with respect to the java.util.Date.equals(Object) method.<br>  Also, the hashCode method uses the underlying java.util.Date implementation and therefore does not include nanos in its computation.</p>
+</blockquote>
+<p>위 클래스는 대칭성을 준수하지 못하고 있다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">long</span> <span class="variable">epochMilli</span> <span class="operator">=</span> Instant.now().toEpochMilli();</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">date</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Date</span>(epochMilli);</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">timestamp</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Timestamp</span>(epochMilli);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// not symmetric!!</span></span><br><span class="line">    assertEquals(date, timestamp);</span><br><span class="line">    assertNotEquals(timestamp, date);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>물론 하위 클래스에 필드를 추가하면서 equals 메서드를 오버라이딩 하는데 동치 관계를 준수하면서 객체 지향적으로 설계하는 경우도 있긴 하다.<br>바로 부모 클래스가 추상 클래스인 경우이다.<br>추상 클래스는 인스턴스를 만들 수 없으므로 위에 얘기했던 문제가 발생하지 않는다.  </p>
+<h4 id="Consistent-일관성"><a href="#Consistent-일관성" class="headerlink" title="Consistent(일관성)"></a>Consistent(일관성)</h4><blockquote>
+<p>for any non-null reference values x and y, multiple invocations of x.equals(y) consistently return true or consistently return false, provided no information used in equals comparisons on the objects is modified.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)">https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)</a></p>
+</blockquote>
+<p>equals 메서드의 결과가</p>
+<ol>
+<li>가변 클래스의 경우에는 수정되기 전까지 항상 똑같아야한다.</li>
+<li>불변 클래스의 경우에는 항상 똑같아야한다.</li>
+</ol>
+<p>equals 판단에 신뢰할 수 없는 자원이 끼어있는 경우 일관성을 해칠 수 있다.</p>
+<p>그럼 일관성을 준수하지 못하는 경우를 작성해보자. (물론 Reflexive, 대칭성, Transitive도 준수하지 못하지만…)  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NotConsistent</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(!(o <span class="keyword">instanceof</span> NotConsistent)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">return</span> Instant.now().toEpochMilli() % <span class="number">2</span> == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>equals 판단에 신뢰할 수 없는 자원으로 <strong>시간</strong>을 넣었다.<br>과연 이 경우에 일관성을 해치는지 검증해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotConsistent</span>();</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">y</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotConsistent</span>();</span><br><span class="line">    <span class="comment">// 숫자를 너무 작게하거나 운이 나쁘면 원하는 결과가 안 나올 수도...</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">resultSet</span> <span class="operator">=</span> IntStream.range(<span class="number">1</span>, <span class="number">1000000</span>).mapToObj(i -&gt; x.equals(y)).collect(toSet());</span><br><span class="line">    assertNotEquals(resultSet.size(), <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>하지만 이런 일관성을 깨뜨리면서 equals를 오버라이딩한 경우가 자바 라이브러리에도 존재한다.<br>바로 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URL.html">java.net.URL</a> 클래스가 그 예이다.<br>java.net.URL의 equals 메서드는 URL과 매핑된 IP 주소를 이용해 비교한다.<br>URL을 통해 매핑된 IP 주소를 알아내려면 네트워크를 이용해야한다.<br>하지만 이 <strong>네트워크</strong>도 <strong>equals 판단에 신뢰할 수 없는 자원</strong> 중 하나이다.<br>하지만 이 경우에는 하위 호환성 때문에 문제를 고치지 못하고 있다고 한다.</p>
+<h3 id="null이-아닌-객체는-null과-같지-않아야한다"><a href="#null이-아닌-객체는-null과-같지-않아야한다" class="headerlink" title="null이 아닌 객체는 null과 같지 않아야한다."></a>null이 아닌 객체는 null과 같지 않아야한다.</h3><blockquote>
+<p>For any non-null reference value x, x.equals(null) should return false.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)">https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)</a></p>
+</blockquote>
+<p>이름만 들어도 뭔소린지 바로 파악이 된다.<br>이 지키기 어려운 경우도 바로 아래와 같이 예제를 구현해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NotNull</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span>(o == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">return</span> o <span class="keyword">instanceof</span> NotNull;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>바로 비교하려는 대상이 null일 때 true를 리턴하면 된다.  </p>
+<p>그럼 이 규칙을 잘 어겼는지 검증해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// reflexive!</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">x</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotNull</span>();</span><br><span class="line">    assertEquals(x, x);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// symmetric!</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">y</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotNull</span>();</span><br><span class="line">    assertEquals(x, y);</span><br><span class="line">    assertEquals(y, x);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// transitive!</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">z</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotNull</span>();</span><br><span class="line">    assertEquals(y, z);</span><br><span class="line">    assertEquals(x, z);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// consistent!</span></span><br><span class="line">    assertEquals(x, x);</span><br><span class="line">    assertEquals(x, y);</span><br><span class="line">    assertEquals(y, x);</span><br><span class="line">    assertEquals(y, z);</span><br><span class="line">    assertEquals(x, z);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// x is null!!</span></span><br><span class="line">    assertEquals(x, <span class="literal">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>모든 규칙을 지켰는데 <code>null이 아닌 객체는 null과 같지 않아야한다</code>를 지키지 못했으니 위의 경우에는 동치 관계를 준수하면서 equals 메서드를 구현한 게 아니다.<br>간단하게 첫 번째 줄인 <code>if(o == null) return true;</code>만 삭제하면 모든 조건을 만족시키게 되는 것이다.<br>instansof는 null safe한 연산자이기 때문에 굳이 null 체크를 안 해도 NullPointerException을 유발하지 않는다.</p>
+<h3 id="Best-Practice"><a href="#Best-Practice" class="headerlink" title="Best Practice"></a>Best Practice</h3><ol>
+<li><p>가장 처음에는 레퍼런스 비교를 하자.<br>애초에 같은 레퍼런스 값을 가진다면 동일한 객체(논리적으로도)로 봐도 무방하다.<br>따라서 뒤에 있을 로직들을 쓸 데 없이 처리하지 않아도 돼서 성능 측면에서 좋아질 것이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">    <span class="type">return</span> <span class="variable">o</span> <span class="operator">=</span>= <span class="built_in">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>instanceof 연산자로 올바른 타입인지 확인한다.<br>올바른 타입인지 확인하지 않으면 뒤에 나오는 핵심 필드의 값을 비교할 수 없다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">    <span class="comment">// instanceof 연산자는 null safe 하기 때문에 아래 구문은 필요 없다.</span></span><br><span class="line">    <span class="comment">// if(o == null) return false;</span></span><br><span class="line">    <span class="comment">// 혹은 인터페이스를 구현한 것이면 클래스 대신에 인터페이스를 넣어서 비교할 수도 있다.</span></span><br><span class="line">    <span class="keyword">return</span> o <span class="keyword">instanceof</span> Type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>올바른 타입으로 형변환 하고, <strong>핵심</strong> 필드의 값만 비교하자.<br>모든 필드의 값이 일치하지 않아도 되는 경우에는 모든 필드를 비교하면 성능 상에 좋지 않다.<br>혹은 인터페이스의 구현체라면 인터페이스의 메서드를 사용해서 필드에 접근해야할 것이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">    <span class="comment">// 올바른 타입인지 비교하지 않으면 ClassCastException을 면치 못할 것이다.</span></span><br><span class="line">    <span class="keyword">if</span>(!(o <span class="keyword">instanceof</span> Type)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">obj</span> <span class="operator">=</span> (Type) o;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 모든 필드를 비교할 필요는 없고 핵심적인 필드만 비교하면 된다.</span></span><br><span class="line">    <span class="keyword">if</span>(!obj.a.equals(<span class="built_in">this</span>.a)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>float과 double을 제외한 primitive type은 &#x3D;&#x3D; 연산자를 통해 값을 비교하고,<br>float과 double은 Float.NaN, -0.0D 등등의 특수한 경우 때문에 &#x3D;&#x3D; 연산자로는 비교가 불가능하다.<br>그렇다고 equals 메서드를 통해 비교하면 오토박싱 때문에 성능상 좋지 않을 수도 있으니 compare 메서드를 통해 비교하도록 하자.<br>그 외에 자바가 제공해주는 라이브러리의 경우에는 대부분 동치관계를 준수했을 것이므로 equals 메서드로 비교하자. (이 마저도 주의해서 사용하긴 해야한다.)<br>혹은 특정 타입의 경우에는 <code>null이 아닌 객체는 null과 같지 않아야한다</code>는 원칙을 준수하지 않고 equals 메서드를 오버라이딩 했을 수 있기 때문에 Objects.equals를 쓰는 게 좀 더 안전하긴 하다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">var</span> <span class="variable">obj</span> <span class="operator">=</span> (Type) o;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(obj.a != <span class="built_in">this</span>.a) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span>(Double.compare(obj.b, <span class="built_in">this</span>.b) != <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span>(!(obj.c.equals(<span class="built_in">this</span>.c))) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span>(!Objects.equals(obj.d, <span class="built_in">this</span>.d)) <span class="keyword">return</span> <span class="literal">false</span>; </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>특정 필드로부터 값이 추론되는 필드는 검증하지 말자.<br>사각형은 너비(width), 높이(height)만으로 넓이(area)가 결정되기 때문에 너비와 높이만 비교했으면 넓이는 비교할 필요가 없다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Rectangle</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">double</span> width;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">double</span> height;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">double</span> area;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Rectangle</span><span class="params">(<span class="keyword">final</span> <span class="type">double</span> width, <span class="keyword">final</span> <span class="type">double</span> height)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.width = width;</span><br><span class="line">        <span class="built_in">this</span>.height = height;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// width(너비)와 height(높이)를 통해 area(너비)가 결정된다.</span></span><br><span class="line">        <span class="built_in">this</span>.area = width * height;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">var</span> <span class="variable">obj</span> <span class="operator">=</span> (Rectangle) o;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(obj.width != <span class="built_in">this</span>.width) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(obj.height != <span class="built_in">this</span>.height) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// width와 height만 알면 area 값은 자동으로 알 수 있으니 굳이 비교할 필요가 없다.</span></span><br><span class="line">        <span class="comment">// if(obj.area != this.area) return false;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>변경 가능성이 높은 필드부터 비교하자.<br>변경 가능성이 높은 필드부터 비교하면 더 빠르게 해당 타입의 논리적 동치성을 검출할 수 있다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Type</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> a;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> b;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Type</span><span class="params">(<span class="keyword">final</span> <span class="type">int</span> b, <span class="keyword">final</span> <span class="type">int</span> a)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.b = b;</span><br><span class="line">        <span class="built_in">this</span>.a = a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setB</span><span class="params">(<span class="type">int</span> b)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.b = b;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">var</span> <span class="variable">obj</span> <span class="operator">=</span> (Type) o;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 변경이 불가능한 a를 먼저 검사하기 보단 변경이 가능한 b를 검사해야 더 빠르게 논리적 동치성을 검출할 수 있다.</span></span><br><span class="line">        <span class="keyword">if</span>(obj.b != <span class="built_in">this</span>.b) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(obj.a != <span class="built_in">this</span>.a) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>@Override 어노테이션을 사용하자.<br>잘못 오버라이딩 한 경우 컴파일 에러를 내주기 때문에 버그를 최대한 빨리 찾을 수 있다.<br>만약 해당 어노테이션이 없다면 메서드 오버라이딩(재정의)가 아니라 메서드 오버로딩 취급해서 새로운 메서드를 추가한 거라고 생각한다.<br>그리고 새로 추가한 메서드를 통해 equals 메서드를 호출하는 게 아니라 부모 클래스에 있는 원본 클래스의 equals 메서드를 호출하게 된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// method does not override or implement a method from a supertype</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(<span class="keyword">final</span> Type o)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>위 규칙들을 준수해서 간단하게 equals 메서드를 구현해보자면 아래와 같다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> x;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> y;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span> center;</span><br><span class="line">    <span class="keyword">private</span> Color color;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Point</span><span class="params">(<span class="keyword">final</span> <span class="type">int</span> x, <span class="keyword">final</span> <span class="type">int</span> y, <span class="keyword">final</span> <span class="type">double</span> center, <span class="keyword">final</span> Color color)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.x = x;</span><br><span class="line">        <span class="built_in">this</span>.y = y;</span><br><span class="line">        <span class="built_in">this</span>.center = center;</span><br><span class="line">        <span class="built_in">this</span>.color = color;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">this</span> == o) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (!(o <span class="keyword">instanceof</span> Point)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">var</span> <span class="variable">obj</span> <span class="operator">=</span> (Point) o;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span>(obj.x != <span class="built_in">this</span>.x) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(obj.y != <span class="built_in">this</span>.y) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(Double.compare(obj.center, <span class="built_in">this</span>.center) != <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">if</span>(!Objects.equals(obj.color, <span class="built_in">this</span>.color)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/09/26/java8-date-time/" rel="prev" title="(Java8) 날짜와 시간 API">
+                  <i class="fa fa-chevron-left"></i> (Java8) 날짜와 시간 API
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/12/03/effective-java-ch03-item11-hashCode-method/" rel="next" title="(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라">
+                  (이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

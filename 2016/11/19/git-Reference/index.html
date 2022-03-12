@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이 포스트는 git을 접하다 보면 마주치는 다양한 상황들에 대해 대처하기 위해 정리한 글이다.Ctrl+F 키를 눌러 원하시는 키워드를 검색하시면 다양한 케이스들을 볼 수 있다.이 문서는 계속해서 업데이트 될 예정이고, 댓글로 제보 해주면 감사할 것 같다 &gt;_&lt;혹시 문제 해결이 되지 않는다면 검색 키워드들을 조합해서 검색해보길 바란다.취소, 되돌">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(git) 정리 노트">
+<meta property="og:url" content="https://perfectacle.github.io/2016/11/19/git-Reference/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="이 포스트는 git을 접하다 보면 마주치는 다양한 상황들에 대해 대처하기 위해 정리한 글이다.Ctrl+F 키를 눌러 원하시는 키워드를 검색하시면 다양한 케이스들을 볼 수 있다.이 문서는 계속해서 업데이트 될 예정이고, 댓글로 제보 해주면 감사할 것 같다 &gt;_&lt;혹시 문제 해결이 되지 않는다면 검색 키워드들을 조합해서 검색해보길 바란다.취소, 되돌">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2016/11/19/git-Reference/thumb.png">
+<meta property="article:published_time" content="2016-11-19T16:55:28.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.639Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="형상 관리">
+<meta property="article:tag" content="버전 관리">
+<meta property="article:tag" content="배포">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2016/11/19/git-Reference/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2016/11/19/git-Reference/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2016/11/19/git-Reference/","path":"2016/11/19/git-Reference/","title":"(git) 정리 노트"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(git) 정리 노트 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#gitignore%EA%B0%80-%EC%9E%91%EB%8F%99%ED%95%98%EC%A7%80-%EC%95%8A%EC%9D%84-%EB%95%8C"><span class="nav-number">1.</span> <span class="nav-text">.gitignore가 작동하지 않을 때</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8A%B9%EC%A0%95-%EB%B8%8C%EB%9E%9C%EC%B9%98-%ED%81%B4%EB%A1%A0%ED%95%98%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text">특정 브랜치 클론하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8A%B9%EC%A0%95-%EC%BB%A4%EB%B0%8B-%ED%81%B4%EB%A1%A0%ED%95%98%EA%B8%B0"><span class="nav-number">3.</span> <span class="nav-text">특정 커밋 클론하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#add%ED%95%9C-%ED%8C%8C%EC%9D%BC-%EC%B7%A8%EC%86%8C%EC%8B%9C%ED%82%A4%EA%B8%B0"><span class="nav-number">4.</span> <span class="nav-text">add한 파일 취소시키기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8A%B9%EC%A0%95-%EC%BB%A4%EB%B0%8B%EC%9C%BC%EB%A1%9C-%EB%8F%8C%EC%95%84%EA%B0%80%EA%B8%B0"><span class="nav-number">5.</span> <span class="nav-text">특정 커밋으로 돌아가기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A1%9C%EC%BB%AC%EC%97%90%EC%84%9C-%EA%B0%80%EC%9E%A5-%EC%B5%9C%EA%B7%BC-%EC%BB%A4%EB%B0%8B-%EC%82%AD%EC%A0%9C"><span class="nav-number">6.</span> <span class="nav-text">로컬에서 가장 최근 커밋 삭제</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A6%AC%EB%AA%A8%ED%8A%B8-%EC%A0%80%EC%9E%A5%EC%86%8C-%ED%8A%B9%EC%A0%95-%EC%BB%A4%EB%B0%8B%EA%B9%8C%EC%A7%80-%EC%82%AD%EC%A0%9C"><span class="nav-number">7.</span> <span class="nav-text">리모트 저장소 특정 커밋까지 삭제</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9B%8C%ED%82%B9-%EB%94%94%EB%A0%89%ED%86%A0%EB%A6%AC-%EA%B9%94%EB%81%94%ED%95%98%EA%B2%8C-%ED%95%98%EA%B8%B0"><span class="nav-number">8.</span> <span class="nav-text">워킹 디렉토리 깔끔하게 하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A1%9C%EC%BB%AC-x2F-%EB%A6%AC%EB%AA%A8%ED%8A%B8-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EC%82%AD%EC%A0%9C%ED%95%98%EA%B8%B0"><span class="nav-number">9.</span> <span class="nav-text">로컬&#x2F;리모트 브랜치 삭제하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Alias"><span class="nav-number">10.</span> <span class="nav-text">Alias</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#add%EC%99%80-commit-%EB%8F%99%EC%8B%9C%EC%97%90-%ED%95%98%EA%B8%B0"><span class="nav-number">11.</span> <span class="nav-text">add와 commit 동시에 하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#alias-%EA%B4%80%EB%A6%AC"><span class="nav-number">12.</span> <span class="nav-text">alias 관리</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#commit-%EB%A9%94%EC%84%B8%EC%A7%80%EC%97%90-timestamp-%EB%84%A3%EA%B8%B0"><span class="nav-number">13.</span> <span class="nav-text">commit 메세지에 timestamp 넣기.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A1%9C%EC%BB%AC-%EC%A0%80%EC%9E%A5%EC%86%8C%EB%A5%BC-%EC%9B%90%EA%B2%A9-%EC%A0%80%EC%9E%A5%EC%86%8C%EB%A1%9C%EB%B6%80%ED%84%B0-%EC%8B%B1%ED%81%AC-%EB%A7%9E%EC%B6%94%EA%B8%B0"><span class="nav-number">14.</span> <span class="nav-text">로컬 저장소를 원격 저장소로부터 싱크 맞추기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A1%9C%EC%BB%AC-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EC%9D%B4%EB%A6%84-%EB%B0%94%EA%BE%B8%EA%B8%B0"><span class="nav-number">15.</span> <span class="nav-text">로컬 브랜치 이름 바꾸기</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/11/19/git-Reference/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(git) 정리 노트 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (git) 정리 노트
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2016-11-19 16:55:28" itemprop="dateCreated datePublished" datetime="2016-11-19T16:55:28+00:00">2016-11-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/" itemprop="url" rel="index"><span itemprop="name">Middle-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/11/19/git-Reference/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/11/19/git-Reference/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2016/11/19/git-Reference/thumb.png" class>
+<p><strong>이 포스트는 git을 접하다 보면 마주치는 다양한 상황들에 대해 대처하기 위해 정리한 글이다.</strong><br>Ctrl+F 키를 눌러 원하시는 키워드를 검색하시면 다양한 케이스들을 볼 수 있다.<br>이 문서는 계속해서 업데이트 될 예정이고, 댓글로 제보 해주면 감사할 것 같다 &gt;_&lt;<br>혹시 문제 해결이 되지 않는다면 검색 키워드들을 조합해서 검색해보길 바란다.<br>취소, 되돌아가기, 삭제: undo, reset, remove<br>되돌아가기: revert, retrieve<br>특정: specific<br>미작동: not working  </p>
+<h2 id="gitignore가-작동하지-않을-때"><a href="#gitignore가-작동하지-않을-때" class="headerlink" title=".gitignore가 작동하지 않을 때"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/11451535/gitignore-not-working">.gitignore가 작동하지 않을 때</a></h2><p>검색 키워드: .gitignore not working</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git rm -r --cached .</span><br><span class="line">git add .</span><br><span class="line">git commit -m &quot;fixed untracked files&quot;</span><br></pre></td></tr></table></figure>
+<p>커밋 메시지는 자기 입맛에 맞게 수정하면 된다.</p>
+<h2 id="특정-브랜치-클론하기"><a href="#특정-브랜치-클론하기" class="headerlink" title="특정 브랜치 클론하기"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/1911109/how-to-clone-a-specific-git-branch">특정 브랜치 클론하기</a></h2><p>검색 키워드: git specific branch clone</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone -b &lt;브랜치명&gt; &lt;원격 저장소 주소&gt; &lt;폴더명&gt;</span><br></pre></td></tr></table></figure>
+<p>폴더명을 입력하지 않으면 원격 저장소 이름으로 폴더가 생성된다.</p>
+<h2 id="특정-커밋-클론하기"><a href="#특정-커밋-클론하기" class="headerlink" title="특정 커밋 클론하기"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/3555107/git-clone-particular-version-of-remote-repository">특정 커밋 클론하기</a></h2><p>검색 키워드: git clone specific commit</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone &lt;원격 저장소 주소&gt; &lt;폴더명&gt;</span><br><span class="line">cd &lt;폴더명&gt;</span><br><span class="line">git reset --hard &lt;커밋 해시&gt;</span><br></pre></td></tr></table></figure>
+<p>한 번에 땡겨오는 명령어는 없는 것 같다.</p>
+<h2 id="add한-파일-취소시키기"><a href="#add한-파일-취소시키기" class="headerlink" title="add한 파일 취소시키기"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/348170/how-to-undo-git-add-before-commit">add한 파일 취소시키기</a></h2><p>검색 키워드: git undo add</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset &lt;file&gt;</span><br></pre></td></tr></table></figure>
+<p>커밋을 하기 전에 add한 파일을 취소시킬 때 유용하다.<br>add한 모든 파일을 취소 시키려면 file을 빼고 입력하면 된다.<br>git status를 찍어보면 untracked 상태로 돌아간 걸 확인할 수 있다.</p>
+<h2 id="특정-커밋으로-돌아가기"><a href="#특정-커밋으로-돌아가기" class="headerlink" title="특정 커밋으로 돌아가기"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/17667023/git-how-to-reset-origin-master-to-a-commit">특정 커밋으로 돌아가기</a></h2><p>검색 키워드: git reset commit to master</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard &lt;커밋 해시&gt;</span><br><span class="line">// 아래까지 하면 리모트 저장소까지 돌림.</span><br><span class="line">git push --force origin master</span><br></pre></td></tr></table></figure>
+
+<h2 id="로컬에서-가장-최근-커밋-삭제"><a href="#로컬에서-가장-최근-커밋-삭제" class="headerlink" title="로컬에서 가장 최근 커밋 삭제"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/927358/how-to-undo-last-commits-in-git">로컬에서 가장 최근 커밋 삭제</a></h2><p>검색 키워드: git reset recent commit</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD~</span><br></pre></td></tr></table></figure>
+<p>git log –oneline을 찍어보면 가장 최근 커밋이 날아간 걸 볼 수 있다.</p>
+<h2 id="리모트-저장소-특정-커밋까지-삭제"><a href="#리모트-저장소-특정-커밋까지-삭제" class="headerlink" title="리모트 저장소 특정 커밋까지 삭제"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/1270514/undoing-a-git-push">리모트 저장소 특정 커밋까지 삭제</a></h2><p>검색 키워드: git undo remote push</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -f &lt;리모트 저장소 이름&gt; &lt;삭제하기 직전 커밋 해시:브랜치 이름&gt;</span><br></pre></td></tr></table></figure>
+<p>삭제하기 직전 커밋까지만 살고 그 이후의 커밋은 날아간다.</p>
+<h2 id="워킹-디렉토리-깔끔하게-하기"><a href="#워킹-디렉토리-깔끔하게-하기" class="headerlink" title="워킹 디렉토리 깔끔하게 하기"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/4327708/git-reset-hard-head-leaves-untracked-files-behind">워킹 디렉토리 깔끔하게 하기</a></h2><p>검색 키워드: git reset untracked files</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clean -f -d</span><br></pre></td></tr></table></figure>
+<p>untracked 파일들이 날아간다.<br>특정 커밋으로 돌아갔을 때 잡다구레한 파일들을 날릴 때 유용하다.</p>
+<h2 id="로컬-x2F-리모트-브랜치-삭제하기"><a href="#로컬-x2F-리모트-브랜치-삭제하기" class="headerlink" title="로컬&#x2F;리모트 브랜치 삭제하기"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/2003505/how-to-delete-a-git-branch-both-locally-and-remotely">로컬&#x2F;리모트 브랜치 삭제하기</a></h2><p>검색 키워드: git remove remote branch</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch -d branch_name</span><br><span class="line">git push origin :&lt;branch_name&gt;</span><br></pre></td></tr></table></figure>
+<p>순서대로 로컬&#x2F;리모트 저장소에서 브랜치를 삭제하는 명령어이다.</p>
+<h2 id="Alias"><a href="#Alias" class="headerlink" title="Alias"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="https://git-scm.com/book/ko/v2/Git%EC%9D%98-%EA%B8%B0%EC%B4%88-Git-Alias">Alias</a></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global alias.unstage &quot;reset HEAD --&quot;</span><br><span class="line">git unstage fileA</span><br><span class="line">git reset HEAD fileA</span><br></pre></td></tr></table></figure>
+<p>첫 번째 라인에서 alias(별칭)을 글로벌로 선언함.<br>2, 3번 라인은 동일함.</p>
+<h2 id="add와-commit-동시에-하기"><a href="#add와-commit-동시에-하기" class="headerlink" title="add와 commit 동시에 하기"></a><a href="#">add와 commit 동시에 하기</a></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global alias.commitx &#x27;!git add . &amp;&amp; git commit -a -m &#x27;</span><br><span class="line">git commitx &quot;커밋 메시지&quot;</span><br></pre></td></tr></table></figure>
+<p>명령어 두 개가 혼재돼있을 때는 첫 명령어에 !을 붙여야 정상 작동한다.<br>윈도우에서는 ‘’ 대신에 “”을 써야 작동하는 것 같다<br>add와 commit을 매번하기 귀찮으므로 필자가 자주 쓰는 alias이다.</p>
+<h2 id="alias-관리"><a href="#alias-관리" class="headerlink" title="alias 관리"></a><a href="#">alias 관리</a></h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --get-regexp alias</span><br><span class="line">git config --global --unset alias.untage</span><br></pre></td></tr></table></figure>
+<p>첫 번째 라인은 alias 목록을 보여주고,<br>두 번째 라인은 alias를 삭제해주는 역할을 한다.</p>
+<h2 id="commit-메세지에-timestamp-넣기"><a href="#commit-메세지에-timestamp-넣기" class="headerlink" title="commit 메세지에 timestamp 넣기."></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/4654437/how-to-set-current-date-as-git-commit-message">commit 메세지에 timestamp 넣기.</a></h2><p>검색 키워드: git commit message time</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git commit -m &quot;`date`&quot;</span><br><span class="line">git commit -m &quot;`date +\&quot;%Y/%m/%d %H:%M:%S\&quot;`&quot;</span><br></pre></td></tr></table></figure>
+<p>첫 번째 라인은 Sun Dec 4 22:12:42 KST 2016 같은 형식으로 커밋 메시지가 나오고<br>두 번째 라인은 2016&#x2F;12&#x2F;04 22:25:13 같은 형식으로 커밋 메시지가 나온다.</p>
+<h2 id="로컬-저장소를-원격-저장소로부터-싱크-맞추기"><a href="#로컬-저장소를-원격-저장소로부터-싱크-맞추기" class="headerlink" title="로컬 저장소를 원격 저장소로부터 싱크 맞추기"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/6373277/git-sync-local-repo-with-remote-one">로컬 저장소를 원격 저장소로부터 싱크 맞추기</a></h2><p>검색 키워드: git sync with remote</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git fetch // 커밋 로그들만 받아옴.</span><br><span class="line">git reset --hard origin/&lt;your-working-branch&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="로컬-브랜치-이름-바꾸기"><a href="#로컬-브랜치-이름-바꾸기" class="headerlink" title="로컬 브랜치 이름 바꾸기"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/6591213/how-do-i-rename-a-local-git-branch">로컬 브랜치 이름 바꾸기</a></h2><p>검색 키워드: git branch rename</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch -m &lt;oldname&gt; &lt;newname&gt;</span><br><span class="line">git branch -m &lt;newname&gt; // 현재 브랜치</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%ED%98%95%EC%83%81-%EA%B4%80%EB%A6%AC/" rel="tag"># 형상 관리</a>
+              <a href="/tags/%EB%B2%84%EC%A0%84-%EA%B4%80%EB%A6%AC/" rel="tag"># 버전 관리</a>
+              <a href="/tags/%EB%B0%B0%ED%8F%AC/" rel="tag"># 배포</a>
+              <a href="/tags/git/" rel="tag"># git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/11/18/Module-bundling-with-Webpck/" rel="prev" title="(Webpack) 모듈? 번들링?">
+                  <i class="fa fa-chevron-left"></i> (Webpack) 모듈? 번들링?
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/11/26/Markdown-Badge/" rel="next" title="(Markdown) 개발자스러운 뱃지">
+                  (Markdown) 개발자스러운 뱃지 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

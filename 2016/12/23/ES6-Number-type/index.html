@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이 글을 읽고 (ES6) Number 객체와 함수를 이어서 보는 걸 추천한다. 자료형ES에서 숫자형은 단 하나의 자료형 뿐이다.Double: 자바나 C 등등의 언어에서 실수를 표현하기 위한 자료형, 8Byte &#x3D; 64BitDouble-precision floating-point format">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(ES6) 숫자형">
+<meta property="og:url" content="https://perfectacle.github.io/2016/12/23/ES6-Number-type/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="이 글을 읽고 (ES6) Number 객체와 함수를 이어서 보는 걸 추천한다. 자료형ES에서 숫자형은 단 하나의 자료형 뿐이다.Double: 자바나 C 등등의 언어에서 실수를 표현하기 위한 자료형, 8Byte &#x3D; 64BitDouble-precision floating-point format">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2016/12/23/ES6-Number-type/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2016/12/23/ES6-Number-type/IEEE-754-Double-Floating-Point-Format.png">
+<meta property="article:published_time" content="2016-12-23T09:37:53.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.271Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JS">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="ES6">
+<meta property="article:tag" content="ES2015">
+<meta property="article:tag" content="Number">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2016/12/23/ES6-Number-type/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2016/12/23/ES6-Number-type/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2016/12/23/ES6-Number-type/","path":"2016/12/23/ES6-Number-type/","title":"(ES6) 숫자형"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(ES6) 숫자형 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%9E%90%EB%A3%8C%ED%98%95"><span class="nav-number">1.</span> <span class="nav-text">자료형</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%AC%B8%EC%A0%9C%EC%A0%90"><span class="nav-number">1.1.</span> <span class="nav-text">문제점</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8A%B9%EC%88%98%ED%95%9C-%EC%88%AB%EC%9E%90%EB%93%A4"><span class="nav-number">1.2.</span> <span class="nav-text">특수한 숫자들</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9D%8C%EC%88%98-0"><span class="nav-number">1.2.1.</span> <span class="nav-text">음수 0</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%ED%95%84%EC%9A%94%EC%84%B1"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">필요성</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%A7%84%EC%88%98-%EB%A6%AC%ED%84%B0%EB%9F%B4"><span class="nav-number">2.</span> <span class="nav-text">진수 리터럴</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2%EC%A7%84%EC%88%98"><span class="nav-number">2.1.</span> <span class="nav-text">2진수</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8%EC%A7%84%EC%88%98"><span class="nav-number">2.2.</span> <span class="nav-text">8진수</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#16%EC%A7%84%EC%88%98"><span class="nav-number">2.3.</span> <span class="nav-text">16진수</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%A3%BC%EC%9D%98%EC%82%AC%ED%95%AD"><span class="nav-number">2.4.</span> <span class="nav-text">주의사항</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/12/23/ES6-Number-type/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(ES6) 숫자형 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (ES6) 숫자형
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2016-12-23 09:37:53" itemprop="dateCreated datePublished" datetime="2016-12-23T09:37:53+00:00">2016-12-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/ES2015/" itemprop="url" rel="index"><span itemprop="name">ES2015+</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/12/23/ES6-Number-type/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/23/ES6-Number-type/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2016/12/23/ES6-Number-type/thumb.png" class>  
+<p>이 글을 읽고 <a href="/2016/12/24/ES6-Number-object-and-function/">(ES6) Number 객체와 함수</a>를 이어서 보는 걸 추천한다.</p>
+<h1 id="자료형"><a href="#자료형" class="headerlink" title="자료형"></a>자료형</h1><p>ES에서 숫자형은 단 하나의 자료형 뿐이다.<br>Double: 자바나 C 등등의 언어에서 실수를 표현하기 위한 자료형, 8Byte &#x3D; 64Bit<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">Double-precision floating-point format</a>  </p>
+<img src="/2016/12/23/ES6-Number-type/IEEE-754-Double-Floating-Point-Format.png" class title="ES에서 쓰는 숫자의 형태">  
+<ol>
+<li>부호(sign)를 표현하기 위한 1비트 (+, -)  </li>
+<li>지수부(exponent part)를 표현하기 위한 11비트  </li>
+<li>가수부(fraction part)를 표현하기 위한 52비트</li>
+</ol>
+<p>유효 범위: -(2<sup>53</sup>-1) ~ 2<sup>53</sup>-1</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>.<span class="property">MIN_SAFE_INTEGER</span>); <span class="comment">// -9007199254740991</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(-(<span class="title class_">Math</span>.<span class="title function_">pow</span>(<span class="number">2</span>, <span class="number">53</span>) - <span class="number">1</span>)); <span class="comment">// -9007199254740991</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>.<span class="property">MAX_SAFE_INTEGER</span>); <span class="comment">// 9007199254740991</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Math</span>.<span class="title function_">pow</span>(<span class="number">2</span>, <span class="number">53</span>) - <span class="number">1</span>); <span class="comment">// 9007199254740991</span></span><br></pre></td></tr></table></figure>
+
+<p>즉 ES에서 정수형(Integer)은 존재하지 않는다.<br>모든 숫자는 부동 소수점(Floating Point) 형태로 표현되는 실수(Real Number)이다.<br>실수는 소수 표현이 가능하고, 실수를 표현하는 방법으로 고정 소수점(Fixed Point)와<br>부동 소수점(Floating Point)이 있으니 직접 찾아보길 바란다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span> === <span class="number">1.0</span>); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span> .<span class="title function_">toString</span>() === <span class="number">1.0</span>.<span class="title function_">toString</span>()); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="문제점"><a href="#문제점" class="headerlink" title="문제점"></a>문제점</h2><ul>
+<li>실수 계산</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">.1</span> + <span class="number">.2</span>); <span class="comment">// 0.30000000000000004</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0.1</span> + <span class="number">0.2</span> === <span class="number">0.3</span>); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+<p>ES에서는 위와 같이 소수점 계산에서 고질적인 문제를 안고 있다.<br>이는 아마 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/IEEE_754">IEEE에서 제정한 부동소수점 표현 형식인 IEE754의 고질적인 문제</a>라고 보여진다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://karmainearth.tistory.com/143">실수 표현 문제 발생 이유 or 오차 발생 이유</a></p>
+<blockquote>
+<p>자바스크립트의 숫자는 십진 부동 소수점 숫자로 접근하는데 반해<br>  그 내부 동작 원리는 이진 부동 소수점 숫자이기 때문에 오차가 발생한다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://speakingjs.com/es5/ch11.html#rounding_errors">원문 보기</a><br>JavaScript’s numbers are usually entered as decimal floating-point numbers,<br>but they are internally represented as binary floating-point numbers.<br>That leads to imprecision.</p>
+</blockquote>
+<p>위와 같은 문제는 IEE754를 사용하는 Java에서도 동일하게 발생한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="number">0.1</span> + <span class="number">0.2</span>);      <span class="comment">// 0.30000000000000004</span></span><br><span class="line">        System.out.println(<span class="number">0.3</span> == <span class="number">0.1</span>+<span class="number">0.2</span>); <span class="comment">// false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>이를 위한 해결방안으로 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://ponyfoo.com/articles/es6-number-improvements-in-depth#numberepsilon">Number.EPSILON</a>이 나왔다.  </p>
+<ul>
+<li>신뢰할 수 없는 범위</li>
+</ul>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="http://thrillfighter.tistory.com/349">부동 소수점에 대한 이해</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://slame.tistory.com/2">수의 표현범위가 다른 int와 float, 그리고 신뢰할 수 없는 부동소수점</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(-<span class="number">9007199254740992</span> === -<span class="number">9007199254740993</span>); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">9007199254740992</span> === <span class="number">9007199254740993</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>부동 소수점의 단점은 일정 범위를 넘어가면 계산의 결과를 신뢰할 수 없다는 점이다.<br>ES에서 쓰이는 숫자형에서 신뢰할 수 있는 범위는 위에 적어논 바와 같다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &quot;-9007199254740991 ~ 9007199254740991&quot;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(-(<span class="title class_">Math</span>.<span class="title function_">pow</span>(<span class="number">2</span>, <span class="number">53</span>) - <span class="number">1</span>) + <span class="string">&#x27; ~ &#x27;</span> + (<span class="title class_">Math</span>.<span class="title function_">pow</span>(<span class="number">2</span>, <span class="number">53</span>) - <span class="number">1</span>));</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>.<span class="property">MIN_SAFE_INTEGER</span> + <span class="string">&#x27; ~ &#x27;</span> + <span class="title class_">Number</span>.<span class="property">MAX_SAFE_INTEGER</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="특수한-숫자들"><a href="#특수한-숫자들" class="headerlink" title="특수한 숫자들"></a>특수한 숫자들</h2><p>또한 숫자형에서는 특수한 네 가지 값이 존재한다.  </p>
+<ol>
+<li>NaN(Not a Number)  </li>
+<li>(+)Infinity  </li>
+<li>-Infinity  </li>
+<li>-0(Negative Zero)</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span> / <span class="string">&quot;A&quot;</span>); <span class="comment">// NaN</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>.<span class="property">MAX_VALUE</span> + <span class="number">1e+291</span>); <span class="comment">// 1.7976931348623157e+308</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>.<span class="property">MAX_VALUE</span> + <span class="number">1e+292</span>); <span class="comment">// Infinity</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>.<span class="property">MAX_VALUE</span> / -<span class="number">0.5</span>); <span class="comment">// -Infinity</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>.<span class="property">MAX_VALUE</span> * <span class="number">1.000000000000001</span>); <span class="comment">// Infinity</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>.<span class="property">MAX_VALUE</span> * <span class="number">1.0000000000000001</span>); <span class="comment">// 1.7976931348623157e+308</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1.0000000000000001</span> === <span class="number">1</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="음수-0"><a href="#음수-0" class="headerlink" title="음수 0"></a>음수 0</h3><p>+0과 -0은 같다??</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> == -<span class="number">0</span>); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> === -<span class="number">0</span>); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> != -<span class="number">0</span>); <span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> !== -<span class="number">0</span>); <span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> &lt; -<span class="number">0</span>); <span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> &gt; -<span class="number">0</span>); <span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;&quot;</span> + -<span class="number">0</span>); <span class="comment">// &quot;0&quot;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">String</span>(-<span class="number">0</span>)); <span class="comment">// &quot;0&quot;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(-<span class="number">0</span>)); <span class="comment">// &quot;0&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>하지만 아래 현상은 어떻게 설명할 수 있을까?</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span> / <span class="number">0</span>); <span class="comment">// Infinity</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">1</span> / -<span class="number">0</span>); <span class="comment">// -Infinity</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Infinity</span> === -<span class="title class_">Infinity</span>); <span class="comment">// false</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(-<span class="number">0.0</span>.<span class="title function_">toString</span>()); <span class="comment">// -0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(-<span class="number">0</span> .<span class="title function_">toString</span>()); <span class="comment">// -0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(-<span class="number">.0</span>.<span class="title function_">toString</span>()); <span class="comment">// -0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(+<span class="string">&quot;-0&quot;</span>); <span class="comment">// -0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Number</span>(<span class="string">&quot;-0&quot;</span>)); <span class="comment">// -0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">JSON</span>.<span class="title function_">parse</span>(<span class="string">&quot;-0&quot;</span>)); <span class="comment">// -0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Math</span>.<span class="title function_">max</span>(-<span class="number">0</span>, <span class="number">0</span>)); <span class="comment">// 0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Math</span>.<span class="title function_">min</span>(-<span class="number">0</span>, <span class="number">0</span>)); <span class="comment">// -0</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">Object</span>.<span class="title function_">is</span>(<span class="number">0</span>, -<span class="number">0</span>)); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="필요성"><a href="#필요성" class="headerlink" title="필요성"></a>필요성</h4><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/getify/You-Dont-Know-JS/blob/master/types%20%26%20grammar/ch2.md#zeros">You Don’t Know JS: Types &amp; Grammar - Zeros</a><br>스피드나 x, y와 같은 방향 같은 요소를 쓰는 어플리케이션에서 만약 -0이 0으로 바뀐다면,<br>속도나 방향 등등의 정보를 잃게될 것이다.  </p>
+<blockquote>
+<p>There are certain applications where developers use the magnitude of a value to represent one piece of information (like speed of movement per animation frame) and the sign of that number to represent another piece of information (like the direction of that movement).<br>In those applications, as one example, if a variable arrives at zero and it loses its sign, then you would lose the information of what direction it was moving in before it arrived at zero. Preserving the sign of the zero prevents potentially unwanted information loss.&#96;</p>
+</blockquote>
+<h1 id="진수-리터럴"><a href="#진수-리터럴" class="headerlink" title="진수 리터럴"></a>진수 리터럴</h1><h2 id="2진수"><a href="#2진수" class="headerlink" title="2진수"></a>2진수</h2><p>수학식: 11<sub>(2)</sub><br>기타 프로그래밍 언어: 0b11, 0B11</p>
+<p><strong>in ES</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="built_in">parseInt</span>(<span class="string">&#x27;11&#x27;</span>, <span class="number">2</span>)); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>in ES6</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0b11</span>); <span class="comment">// 3</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0B11</span>); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="8진수"><a href="#8진수" class="headerlink" title="8진수"></a>8진수</h2><p>수학식: 71<sub>(8)</sub><br>기타 프로그래밍 언어: 071</p>
+<p><strong>in ES</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">071</span>); <span class="comment">// 57</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>in strict mode</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">071</span>); <span class="comment">// Uncaught SyntaxError: Octal literals are not allowed in strict mode.</span></span><br></pre></td></tr></table></figure>
+<p>ES5의 strict mode에서는 8진수 리터럴이 적용되지 않는다.<br>왜냐하면 ES5에는 8진수 문법이 존재하지 않기 때문이다.<br>그럼에도 불구하고 브라우저 벤더들은 비표준 요소인 8진수 리터럴을 지원하게끔 구현하였다.<br>따라서 strict mode에 따라서 8진수 리터럴의 사용 가능 여부가 달려있다.</p>
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Strict_mode#Converting_mistakes_into_errors">MDN Strict mode</a>  </p>
+<blockquote>
+<p>strict mode in ECMAScript 5 forbids octal syntax.<br>Octal syntax isn’t part of ECMAScript 5,<br>but it’s supported in all browsers by prefixing the octal number with a zero:<br>0644 &#x3D;&#x3D;&#x3D; 420 and “\045” &#x3D;&#x3D;&#x3D; “%”.&#96;</p>
+</blockquote>
+<p><strong>in ES6</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0o71</span>); <span class="comment">// 57</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0O71</span>); <span class="comment">// 57</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="16진수"><a href="#16진수" class="headerlink" title="16진수"></a>16진수</h2><p>수학식: FF<sub>(16)</sub><br>기타 프로그래밍 언어: 0xFF, xFF, hFF, etc.</p>
+<p><strong>in ES</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0xff</span>); <span class="comment">// 255</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0Xff</span>); <span class="comment">// 255</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0xA</span>); <span class="comment">// 10</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0XA</span>); <span class="comment">// 10</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="주의사항"><a href="#주의사항" class="headerlink" title="주의사항"></a>주의사항</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0b11</span><span class="number">.1</span>); <span class="comment">// Uncaught SyntaxError: missing ) after argument list</span></span><br></pre></td></tr></table></figure>
+
+<p>10진수를 제외한 진수 리터럴은 정수만 표현 가능하다.<br>.을 붙인다고 해서 실수가 되는 게 아니라 Number.prototype.1로 접근을 하게 된다.<br>10진수의 경우에는 실수 취급한다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Number</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">Aa</span> = <span class="string">&#x27;Aa&#x27;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0b11</span>.<span class="property">Aa</span>); <span class="comment">// &#x27;Aa&#x27;</span></span><br><span class="line"><span class="number">1.</span><span class="title class_">Aa</span>; <span class="comment">// Uncaught SyntaxError: Invalid or unexpected token</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"># JS</a>
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/ES6/" rel="tag"># ES6</a>
+              <a href="/tags/ES2015/" rel="tag"># ES2015</a>
+              <a href="/tags/Number/" rel="tag"># Number</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/12/18/JetBrains-License/" rel="prev" title="JetBrains 회사 제품의 라이센스">
+                  <i class="fa fa-chevron-left"></i> JetBrains 회사 제품의 라이센스
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/12/24/ES6-Number-object-and-function/" rel="next" title="(ES6) Number 객체와 함수">
+                  (ES6) Number 객체와 함수 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

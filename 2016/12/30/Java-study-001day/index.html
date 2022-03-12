@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="컴퓨터는 왜 2진수를 사용할까?10진법이 익숙한 이유는 손가락이 10개이기 때문이지 않을까?에니악은 10진법 체계였지만 전기회로는 전압이 불안정해서 전압을 10단계로 나누어 처리하는데 한계가 있음에드박은 단 두가지 단계, 전기가 흐르면 1, 전기가 흐르지 않으면 0만으로 동작하게 설계되었다따라서 컴퓨터와 같은 전기회로는 2진 체계를 사용하게 되었다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Java) 자바의 정석 3판 001일차 - 컴퓨터 이론, 리터럴 &amp; 변수 &amp; 변수">
+<meta property="og:url" content="https://perfectacle.github.io/2016/12/30/Java-study-001day/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="컴퓨터는 왜 2진수를 사용할까?10진법이 익숙한 이유는 손가락이 10개이기 때문이지 않을까?에니악은 10진법 체계였지만 전기회로는 전압이 불안정해서 전압을 10단계로 나누어 처리하는데 한계가 있음에드박은 단 두가지 단계, 전기가 흐르면 1, 전기가 흐르지 않으면 0만으로 동작하게 설계되었다따라서 컴퓨터와 같은 전기회로는 2진 체계를 사용하게 되었다.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2016/12/30/Java-study-001day/thumb.png">
+<meta property="article:published_time" content="2016-12-30T17:18:24.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.279Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="자바의 정석">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2016/12/30/Java-study-001day/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2016/12/30/Java-study-001day/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2016/12/30/Java-study-001day/","path":"2016/12/30/Java-study-001day/","title":"(Java) 자바의 정석 3판 001일차 - 컴퓨터 이론, 리터럴 & 변수 & 변수"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Java) 자바의 정석 3판 001일차 - 컴퓨터 이론, 리터럴 & 변수 & 변수 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%BB%B4%ED%93%A8%ED%84%B0%EB%8A%94-%EC%99%9C-2%EC%A7%84%EC%88%98%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%A0%EA%B9%8C"><span class="nav-number">1.</span> <span class="nav-text">컴퓨터는 왜 2진수를 사용할까?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B7%B8%EB%A0%87%EB%8B%A4%EB%A9%B4-8%EC%A7%84%EC%88%98%EC%99%80-16%EC%A7%84%EC%88%98%EB%8A%94-%EC%99%9C-%EC%83%9D%EA%B2%BC%EC%9D%84%EA%B9%8C"><span class="nav-number">2.</span> <span class="nav-text">그렇다면 8진수와 16진수는 왜 생겼을까?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#boolean%EC%9D%80-1bit%EA%B0%80-%EC%95%84%EB%8B%8C-%EC%99%9C-1byte%EC%9D%BC%EA%B9%8C"><span class="nav-number">3.</span> <span class="nav-text">boolean은 1bit가 아닌 왜 1byte일까?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1byte%EB%8A%94-%EC%99%9C-8bit%EC%9D%BC%EA%B9%8C"><span class="nav-number">4.</span> <span class="nav-text">1byte는 왜 8bit일까?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A6%AC%ED%84%B0%EB%9F%B4-%EB%B3%80%EC%88%98-%EC%83%81%EC%88%98"><span class="nav-number">5.</span> <span class="nav-text">리터럴, 변수, 상수</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/12/30/Java-study-001day/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Java) 자바의 정석 3판 001일차 - 컴퓨터 이론, 리터럴 & 변수 & 변수 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Java) 자바의 정석 3판 001일차 - 컴퓨터 이론, 리터럴 & 변수 & 변수
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2016-12-30 17:18:24" itemprop="dateCreated datePublished" datetime="2016-12-30T17:18:24+00:00">2016-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/12/30/Java-study-001day/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/30/Java-study-001day/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2016/12/30/Java-study-001day/thumb.png" class>
+
+<h2 id="컴퓨터는-왜-2진수를-사용할까"><a href="#컴퓨터는-왜-2진수를-사용할까" class="headerlink" title="컴퓨터는 왜 2진수를 사용할까?"></a>컴퓨터는 왜 2진수를 사용할까?</h2><p>10진법이 익숙한 이유는 손가락이 10개이기 때문이지 않을까?<br>에니악은 10진법 체계였지만 전기회로는 전압이 불안정해서 전압을 10단계로 나누어 처리하는데 한계가 있음<br>에드박은 단 두가지 단계, 전기가 흐르면 1, 전기가 흐르지 않으면 0만으로 동작하게 설계되었다<br>따라서 컴퓨터와 같은 전기회로는 2진 체계를 사용하게 되었다.  </p>
+<h2 id="그렇다면-8진수와-16진수는-왜-생겼을까"><a href="#그렇다면-8진수와-16진수는-왜-생겼을까" class="headerlink" title="그렇다면 8진수와 16진수는 왜 생겼을까?"></a>그렇다면 8진수와 16진수는 왜 생겼을까?</h2><p>2진수는 숫자를 표현하기 위해 상당히 많은 자릿수를 차지한다.<br>코딩할 때도 이렇게 많은 자릿수는 가독성을 해칠 수 있다.<br>따라서 이런 단점을 보완하기 위해 8진수와 16진수가 등장했다.<br>그렇다면 왜 8진수와 16진수일까?<br>2진수 2자리로는 4진수를<br>2진수 3자리로는 8진수를<br>2진수 4자리로는 16진수를 표현할 수 있다.<br>2진수 2자리는 그닥 많은 자릿수를 절약할 수 없어서 사용을 안 하게 된 게 아닐까 싶다…<br>8진수를 사용하는 대표적인 예는 리눅스나 FTP 등에서 파일이나 폴더에 관한 권한을 표현하기 위해 많이 쓰인다.<br>777 을 예로 들면<br>r 읽기 허용(4) w 쓰기 허용(2) x 실행 허용(1) 을 다 더하면 7이 나오고<br>u 사용자(소유자) g 그룹 o 기타(사용자와 그룹을 제외한 사람) 순서로 기술하면 된다.<br>16진수를 사용하는 대표적인 예는 rgb 컬러 코드(#ff00ff), 유니코드(\u0061, U+0061, 0x0061 등등)에서 쓰인다.</p>
+<h2 id="boolean은-1bit가-아닌-왜-1byte일까"><a href="#boolean은-1bit가-아닌-왜-1byte일까" class="headerlink" title="boolean은 1bit가 아닌 왜 1byte일까?"></a>boolean은 1bit가 아닌 왜 1byte일까?</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="http://stackoverflow.com/questions/4626815/why-is-a-boolean-1-byte-and-not-1-bit-of-size">Why is a boolean 1 byte and not 1 bit of size?</a><br>CPU가 메모리(RAM)의 주소(address)에 접근해야하는데<br>하나의 메모리 주소가 가지는 데이터의 크기는 1byte(8bit)이다.<br>따라서 CPU가 메모리 주소에 접근해서 사용할 수 있는 최소한의 단위는 1byte가 된다.<br>따라서 boolean은 1bit가 아니라 1byte가 된 것이다.</p>
+<h2 id="1byte는-왜-8bit일까"><a href="#1byte는-왜-8bit일까" class="headerlink" title="1byte는 왜 8bit일까?"></a>1byte는 왜 8bit일까?</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="http://air802.tistory.com/72">아스키(Ascii)</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://kldp.org/node/153459">메모리 하나당 차지하는 바이트 수에 대해 궁금한 점이 있습니다.</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://kldp.org/node/149091">메모리 주소당 데이터용량이 1바이트인 이유가 먼가요??</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://zepeh.tistory.com/313">1바이트는 왜 8비트일까?</a><br>과거에는 1byte가 7bit, 9bit 등등이던 시절이 있다고 하지만 현재는 8비트로 거의 표준이 된 것 같다.<br>이에 대한 이유로 내 나름대로 결론을 내린 것은 미국에서 컴퓨터를 개발했기 때문이라고 본다.<br>미국에서 문자를 사용하기 위한 코드로 ascii 코드(7bit)가 있는데<br>왜 7bit가 아닌 8bit가 1byte가 되었을까?<br>내 나름대로 추측을 해보자면  </p>
+<ol>
+<li>데이터 송수신의 오류를 검출하기 위한 패리티 비트로 1비트가 추가됐다.  </li>
+<li>유럽권을 고려해서 확장 아스키 코드를 베이스로 정했다.</li>
+</ol>
+<p>정확히 뭔지는 모르겠으나 ascii 코드를 베이스로 1byte의 bit수가 정해진 것에는 틀림이 없는 것 같다.</p>
+<h2 id="리터럴-변수-상수"><a href="#리터럴-변수-상수" class="headerlink" title="리터럴, 변수, 상수"></a>리터럴, 변수, 상수</h2><ul>
+<li>리터럴 - 짧게 얘기하면 변하지 않는 값<br>길게 얘기하면 우리는 변하지 않는 값을 일상생활에서는 상수라고 불렀다.<br>하지만 상수는 프로그래밍 세계에서는 좀 다른 뜻으로 불리기 때문에<br>그와 차별성을 부여하기 위해 리터럴이라고 붙였다.<br>“ch”, ‘c’, 123, 123.55 등등 모두 리터럴이다.  </li>
+<li>변수 - 짧게 얘기하면 변하는 수<br>길게 얘기하면 단 하나의 값을 저장할 수 있는 메모리 상의 공간.<br>int num &#x3D; 2;<br>int num;<br>까지만 하면 램(RAM, Random Access Memory)에서<br>사용 중이지 않은 주소 4개를 랜덤하게 접근해서 공간 확보만 함.<br>램은 여러 프로그램이 공유하는 자원이므로 이전에 다른 프로그램에 의해 저장된 값이 남아있을 수 있음.<br>그 다른 프로그램에 의해 저장된 알 수 없는 값을 쓰레기값(garbage value)이라고 함.  </li>
+<li>상수 - 짧게 얘기하면 변하지 않는 수<br>길게 얘기하면 단 하나의 <strong>변하지 않는</strong> 값을 저장할 수 있는 메모리 상의 공간.<br>상수가 필요한 이유는 리터럴에 <strong>의미있는 이름</strong>을 붙여서 가독성을 높이기 위함이다.  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 상수를 사용하지 않음.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">triangleArea</span> <span class="operator">=</span> <span class="number">20</span> * <span class="number">10</span> / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 상수를 사용함.</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">int</span> <span class="variable">WIDTH</span> <span class="operator">=</span> <span class="number">20</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">int</span> <span class="variable">HEIGHT</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">triangleArea</span> <span class="operator">=</span> WIDTH * HEIGHT / <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%A0%95%EC%84%9D/" rel="tag"># 자바의 정석</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/12/25/es6-interface/" rel="prev" title="(ES6) Interface">
+                  <i class="fa fa-chevron-left"></i> (ES6) Interface
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/12/31/Java-study-002day/" rel="next" title="(Java) 자바의 정석 3판 002일차 - char의 형변환과 실수형(부동 소수점)">
+                  (Java) 자바의 정석 3판 002일차 - char의 형변환과 실수형(부동 소수점) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

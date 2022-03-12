@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이제 사람들이 IT에 많은 관심이 생겨서1TB 짜리 저장장치를 사도 온전히 1TiB가 아님을 알 수 있다.내가 여기서 TB와 TiB를 사용했는데, 이에 대해 알아보자.   SI 단위프랑스어로 Système international d’unités현 과학계에서 사용하는 표준단위.표준화의 대표적인 성공사례이자 현재의 국제 과학계가 있을 수 있게 해 준 일등">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(상식) 컴퓨터 용량 단위에 대한 진실">
+<meta property="og:url" content="https://perfectacle.github.io/2017/01/23/Computer-capacity-fact/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="이제 사람들이 IT에 많은 관심이 생겨서1TB 짜리 저장장치를 사도 온전히 1TiB가 아님을 알 수 있다.내가 여기서 TB와 TiB를 사용했는데, 이에 대해 알아보자.   SI 단위프랑스어로 Système international d’unités현 과학계에서 사용하는 표준단위.표준화의 대표적인 성공사례이자 현재의 국제 과학계가 있을 수 있게 해 준 일등">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/01/23/Computer-capacity-fact/thumb.png">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/4/4f/Binaryvdecimal.svg">
+<meta property="article:published_time" content="2017-01-23T17:57:03.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.255Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="IT">
+<meta property="article:tag" content="Computer">
+<meta property="article:tag" content="용량">
+<meta property="article:tag" content="상식">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/01/23/Computer-capacity-fact/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/01/23/Computer-capacity-fact/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/01/23/Computer-capacity-fact/","path":"2017/01/23/Computer-capacity-fact/","title":"(상식) 컴퓨터 용량 단위에 대한 진실"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(상식) 컴퓨터 용량 단위에 대한 진실 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SI-%EB%8B%A8%EC%9C%84"><span class="nav-number">1.</span> <span class="nav-text">SI 단위</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IEC-%ED%91%9C%EC%A4%80-%EC%A0%91%EB%91%90%EC%96%B4-IEC-60027-2"><span class="nav-number">2.</span> <span class="nav-text">IEC 표준 접두어(IEC 60027-2)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EC%A1%B0-%EB%A7%81%ED%81%AC"><span class="nav-number">3.</span> <span class="nav-text">참조 링크</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/01/23/Computer-capacity-fact/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(상식) 컴퓨터 용량 단위에 대한 진실 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (상식) 컴퓨터 용량 단위에 대한 진실
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-01-23 17:57:03" itemprop="dateCreated datePublished" datetime="2017-01-23T17:57:03+00:00">2017-01-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/%EB%93%B1%EB%93%B1/" itemprop="url" rel="index"><span itemprop="name">등등</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/01/23/Computer-capacity-fact/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/23/Computer-capacity-fact/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/01/23/Computer-capacity-fact/thumb.png" class>
+
+<p>이제 사람들이 IT에 많은 관심이 생겨서<br>1TB 짜리 저장장치를 사도 온전히 1TiB가 아님을 알 수 있다.<br>내가 여기서 TB와 TiB를 사용했는데, 이에 대해 알아보자.  </p>
+<h2 id="SI-단위"><a href="#SI-단위" class="headerlink" title="SI 단위"></a>SI 단위</h2><p>프랑스어로 Système international d’unités<br>현 과학계에서 사용하는 표준단위.<br>표준화의 대표적인 성공사례이자 현재의 국제 과학계가 있을 수 있게 해 준 일등공신.<br>컴퓨터 용량과 관련된 단위들만 살펴보자.</p>
+<table>
+<thead>
+<tr>
+<th>단위</th>
+<th>이름</th>
+<th>배수(10진법)</th>
+<th>배수(2진법)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Y</td>
+<td>yotta</td>
+<td>10<sup>24</sup></td>
+<td>≒2<sup>80</sup></td>
+</tr>
+<tr>
+<td>Z</td>
+<td>zetta</td>
+<td>10<sup>21</sup></td>
+<td>≒2<sup>70</sup></td>
+</tr>
+<tr>
+<td>E</td>
+<td>exa</td>
+<td>10<sup>18</sup></td>
+<td>≒2<sup>60</sup></td>
+</tr>
+<tr>
+<td>P</td>
+<td>peta</td>
+<td>10<sup>15</sup></td>
+<td>≒2<sup>50</sup></td>
+</tr>
+<tr>
+<td>T</td>
+<td>tera</td>
+<td>10<sup>12</sup></td>
+<td>≒2<sup>40</sup></td>
+</tr>
+<tr>
+<td>G</td>
+<td>giga</td>
+<td>10<sup>9</sup></td>
+<td>≒2<sup>30</sup></td>
+</tr>
+<tr>
+<td>M</td>
+<td>mega</td>
+<td>10<sup>6</sup></td>
+<td>≒2<sup>20</sup></td>
+</tr>
+<tr>
+<td>k</td>
+<td>kilo</td>
+<td>10<sup>3</sup></td>
+<td>≒2<sup>10</sup></td>
+</tr>
+</tbody></table>
+<p>위와 같이 SI 단위의 접두어는 과학계에서 사용하는 표준 단위이다.<br>참고로 k는 온도를 나타내는 K와 헷갈린다고 소문자로 표기하였다.<br>저장장치 제조 회사는 이를 저장장치의 용량을 표기하는데 사용했다.<br>저장장치 제조 회사가 말하는 1kB &#x3D; 10<sup>3</sup>Byte &#x3D; 1000Byte<br>하지만 전기회로는 전압이 불안정해서 컴퓨터에서도 전압을 두 가지로만 나누었다.<br>이게 컴퓨터가 0과 1로만 이루어진 까닭이다.<br>이러한 탓에 컴퓨터는 1kB &#x3D; 2<sup>10</sup>Byte &#x3D; 1024Byte로 인식한다.<br>우리가 생각하는 1024Byte에서 24Byte의 오차가 생긴다.<br><code>1000Byte ≒ 1024Byte</code><br>1kB니까 24Byte의 차이 밖에 안 나는데, 1TB라면…?<br>2<sup>40</sup> - 10<sup>12</sup> &#x3D; 99511627776(Byte) &#x3D;  92.6774253845214844(GB)의 오차가 난다.<br>물론 저장 장치에 따라 달라지기도 한다.<br><img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Binaryvdecimal.svg" alt="실제 용량과 표기 용량사이의 차이"><br>내가 보기엔 이거 분명 상술이다.<br>애초에 십진 표기법을 사용하는 SI 단위를 이진 표기법을 사용하는 컴퓨터에 사용하는 것 자체가 맞지 않았다.<br>이진 표기법의 표준이 정해지기 전에 컴퓨터가 나와서 어쩔 수 없었을지도 모르기도 하지만…  </p>
+<h2 id="IEC-표준-접두어-IEC-60027-2"><a href="#IEC-표준-접두어-IEC-60027-2" class="headerlink" title="IEC 표준 접두어(IEC 60027-2)"></a>IEC 표준 접두어(IEC 60027-2)</h2><p>국제 전기 기술위원회(International Electrotechnical Commission, IEC)에서 정의한 이진 표준 접두어이다.</p>
+<table>
+<thead>
+<tr>
+<th>단위</th>
+<th>이름</th>
+<th>배수(10진법)</th>
+<th>배수(2진법)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Yi</td>
+<td>yobi</td>
+<td>2<sup>80</sup></td>
+<td>≒10<sup>24</sup></td>
+</tr>
+<tr>
+<td>Zi</td>
+<td>zebi</td>
+<td>2<sup>70</sup></td>
+<td>≒10<sup>21</sup></td>
+</tr>
+<tr>
+<td>Ei</td>
+<td>exbi</td>
+<td>2<sup>60</sup></td>
+<td>≒10<sup>18</sup></td>
+</tr>
+<tr>
+<td>Pi</td>
+<td>pebi</td>
+<td>2<sup>50</sup></td>
+<td>≒10<sup>15</sup></td>
+</tr>
+<tr>
+<td>Ti</td>
+<td>tebi</td>
+<td>2<sup>40</sup></td>
+<td>≒10<sup>12</sup></td>
+</tr>
+<tr>
+<td>Gi</td>
+<td>gibi</td>
+<td>2<sup>30</sup></td>
+<td>≒10<sup>9</sup></td>
+</tr>
+<tr>
+<td>Mi</td>
+<td>mebi</td>
+<td>2<sup>20</sup></td>
+<td>≒10<sup>6</sup></td>
+</tr>
+<tr>
+<td>Ki</td>
+<td>kibi</td>
+<td>2<sup>10</sup></td>
+<td>≒10<sup>3</sup></td>
+</tr>
+</tbody></table>
+<p>1KiB &#x3D; 2<sup>10</sup>Byte &#x3D; 1024Byte로 우리가 생각하는 단위가 맞다.  </p>
+<p>그나마 다행인 것은 하드 디스크나 플래시 메모리(USB, SD 카드, SSD 등등)과는 달리<br>RAM이나 CD(거의 쓰지 않게 됐지만…)는 SI 단위를 쓰면서 IEC 표준 접두어와 같은 결과를 낸다고 한다.<br>쉽게 말해 RAM이나 CD는 상술을 쓰지 않는다는 뜻이다.<br>아마 RAM의 경우에는 메모리 주소와 관련이 있지도 않을까… 싶다.</p>
+<p>하지만 이름이 뭔가 이상하고 어색해서 많이들 쓰지 않는다.<br>이러면 이럴 수록 그들의 상술에 놀아나기 때문에 조금이라도 써야겠다.  </p>
+<p>또한 이러한 상술은 인터넷 업체에서도 쓰고 있다.<br>아래 링크를 참조하자.<br><a href="/2017/01/23/giga-internet-fact/">(상식) 인터넷 속도에 대한 진실</a></p>
+<h2 id="참조-링크"><a href="#참조-링크" class="headerlink" title="참조 링크"></a>참조 링크</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://namu.wiki/w/SI%20%EB%8B%A8%EC%9C%84">SI 단위</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/%EC%9D%B4%EC%A7%84_%EC%A0%91%EB%91%90%EC%96%B4">이진 접두어</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/IT/" rel="tag"># IT</a>
+              <a href="/tags/Computer/" rel="tag"># Computer</a>
+              <a href="/tags/%EC%9A%A9%EB%9F%89/" rel="tag"># 용량</a>
+              <a href="/tags/%EC%83%81%EC%8B%9D/" rel="tag"># 상식</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/01/23/C-ref-002/" rel="prev" title="(C/C++) 참고용 정리 - 변수와 리터럴, 그리고 메모리">
+                  <i class="fa fa-chevron-left"></i> (C/C++) 참고용 정리 - 변수와 리터럴, 그리고 메모리
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/01/23/giga-internet-fact/" rel="next" title="(상식) 인터넷 속도에 대한 진실">
+                  (상식) 인터넷 속도에 대한 진실 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

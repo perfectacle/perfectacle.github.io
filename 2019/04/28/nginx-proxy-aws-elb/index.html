@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="얼마 전에 서버를 새롭게 이전했다.기존에 있던 local의 upstream server 대신에 새로운 서버로 업스트림을 걸어놨다.   1234567http &amp;#123;    server &amp;#123;        location &#x2F; &amp;#123;            proxy_pass http:&#x2F;&#x2F;elb-dns.ap-northeast-2.elb.amazo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Troubleshooting) Nginx upstream에 AWS ELB DNS를 걸 때 주의사항">
+<meta property="og:url" content="https://perfectacle.github.io/2019/04/28/nginx-proxy-aws-elb/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="얼마 전에 서버를 새롭게 이전했다.기존에 있던 local의 upstream server 대신에 새로운 서버로 업스트림을 걸어놨다.   1234567http &amp;#123;    server &amp;#123;        location &#x2F; &amp;#123;            proxy_pass http:&#x2F;&#x2F;elb-dns.ap-northeast-2.elb.amazo">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2019/04/28/nginx-proxy-aws-elb/thumb.png">
+<meta property="article:published_time" content="2019-04-28T21:53:56.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.099Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="AWS">
+<meta property="article:tag" content="Troubleshooting">
+<meta property="article:tag" content="ELB">
+<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="Proxy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2019/04/28/nginx-proxy-aws-elb/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2019/04/28/nginx-proxy-aws-elb/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2019/04/28/nginx-proxy-aws-elb/","path":"2019/04/28/nginx-proxy-aws-elb/","title":"(Troubleshooting) Nginx upstream에 AWS ELB DNS를 걸 때 주의사항"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Troubleshooting) Nginx upstream에 AWS ELB DNS를 걸 때 주의사항 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Trouble"><span class="nav-number">1.</span> <span class="nav-text">Trouble</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ELB-%EB%8F%99%EC%9E%91-%EB%B0%A9%EC%8B%9D"><span class="nav-number">2.</span> <span class="nav-text">ELB 동작 방식</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Nginx-%EB%8F%99%EC%9E%91-%EB%B0%A9%EC%8B%9D"><span class="nav-number">3.</span> <span class="nav-text">Nginx 동작 방식</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#Shooting"><span class="nav-number"></span> <span class="nav-text">Shooting</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0-%EB%A7%81%ED%81%AC"><span class="nav-number">1.</span> <span class="nav-text">참고 링크</span></a></li></ol></li></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/04/28/nginx-proxy-aws-elb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Troubleshooting) Nginx upstream에 AWS ELB DNS를 걸 때 주의사항 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Troubleshooting) Nginx upstream에 AWS ELB DNS를 걸 때 주의사항
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2019-04-28 21:53:56" itemprop="dateCreated datePublished" datetime="2019-04-28T21:53:56+00:00">2019-04-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Troubleshooting/" itemprop="url" rel="index"><span itemprop="name">Troubleshooting</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/04/28/nginx-proxy-aws-elb/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/04/28/nginx-proxy-aws-elb/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2019/04/28/nginx-proxy-aws-elb/thumb.png" class title="ALB는 Cross-Zone Load Balancing 옵션이 무조건 활성화돼있다.">  
+<p>얼마 전에 서버를 새롭게 이전했다.<br>기존에 있던 local의 upstream server 대신에 새로운 서버로 업스트림을 걸어놨다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_pass http://elb-dns.ap-northeast-2.elb.amazonaws.com;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>LB에 바로 도메인을 붙여도 되지만 롤백을 최대한 빨리하기 위해 기존 서버에서 LB로 업스트림 걸어놓았다.</p>
+<ol>
+<li>만약 새로운 서버에서 문제가 생겼다고 가정  </li>
+<li>이 때 LB에 바로 도메인을 달아놓았다면…<br>2-1. 기존의 서버로 다시 도메인 변경<br>2-2. DNS 캐시가 날아갈 때까지 유저에게 장애 발생<br>2-3. 클라이언트의 설정에 따라서 DNS 캐시가 언제 날아갈지 모르는 상황… (과연 일반 유저들이 브라우저의 DNS 캐시 지우는 방법을 알고 있을까?)</li>
+<li>이 때 기존 서버는 내비두고 LB로 업스트림을 걸어놓았다면…<br>3-1. 기존 로컬 서버를 업스트림 서버로 변경<br>3-2. nginx -s reload<br>3-3. 수 초 이내로 원래 서버로 원복</li>
+</ol>
+<h2 id="Trouble"><a href="#Trouble" class="headerlink" title="Trouble"></a>Trouble</h2><p>하지만 문제는 며칠 후 발생했다.<br>ELB의 DNS로 접속하면 잘 되는데 기존 서버 도메인으로 접속하면(LB를 upstream으로 걸어놓은) 1분 가까운 시간이 흐른 후에 502 Bad Gateway가 나는 것이었다.<br>우선 급한 마음에 <code>nginx -s reload</code> 명령어를 입력했더니 다시 또 정상 동작하는 것이었다.<br>Nginx의 Access Log까지는 정상적으로 남은 걸 보니 LB를 찾지 못해서 일정 시간동안 기다리다가 502를 뱉었던 것 같았다.<br>나는 딱히 설정을 바꾼 것도 없는데… 잘 동작하니 귀신이 곡할 노릇이었다.  </p>
+<h2 id="ELB-동작-방식"><a href="#ELB-동작-방식" class="headerlink" title="ELB 동작 방식"></a>ELB 동작 방식</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://aws.amazon.com/articles/best-practices-in-evaluating-elastic-load-balancing/">Best Practices in Evaluating Elastic Load Balancing</a>을 보면 다음과 같은 구문이 나온다.</p>
+<blockquote>
+<p>The controller will also monitor the load balancers and manage the capacity that is used to handle the client requests.<br>  The Elastic Load Balancing service will update the Domain Name System (DNS) record of the load balancer when it scales so that the new resources have their respective IP addresses registered in DNS.<br>  The DNS record that is created includes a Time-to-Live (TTL) setting of 60 seconds, with the expectation that clients will re-lookup the DNS at least every 60 seconds.<br>  컨트롤러는 로드 밸런서를 모니터링하고 클라이언트의 요청을 핸들링하는 capacity를 관리한다.<br>  Elastic Load Balancing은 스케일링할 때 로드 밸런서의 DNS 레코드를 업데이트한다. (새로운 리소스의 IP는 DNS에 등록된다.)<br>  DNS 레코드의 TTL은 60초로 세팅돼있고, 60초가 지나면 클라이언트는 다시 lookup한다.</p>
+</blockquote>
+<p>ELB는 트래픽에 따라서 알아서 스케일링되는 모양이다.<br>또한 TTL은 60초이다.<br>따라서 ELB의 아이피 주소는 매우 유동적이다. (늘어났다가 줄어들었다가… 혹은 LB가 다운되면 새로 생성한다던지…)</p>
+<h2 id="Nginx-동작-방식"><a href="#Nginx-동작-방식" class="headerlink" title="Nginx 동작 방식"></a>Nginx 동작 방식</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.nginx.com/blog/dns-service-discovery-nginx-plus/">Using DNS for Service Discovery with NGINX and NGINX Plus</a>  </p>
+<blockquote>
+<p>NGINX caches the DNS records until the next restart or configuration reload, ignoring the records’ TTL values.<br>  NGINX는 restart나 reload가 발생할 때까지 DNS record를 캐시하고 record의 TTL을 무시한다.</p>
+</blockquote>
+<p>즉, ELB의 TTL인 60초는 무시되고, 설정파일을 읽을 당시에 DNS Lookup이 진행되기 때문에 ELB Scaling이 진행된 후에는 정상 동작하리란 보장을 할 수 없다.<br>설정파일을 읽을 당시에 DNS Lookup을 통해 얻어온 LB의 IP 주소가 트래픽 감소에 의해 더 이상 유효하지 않은 IP 주소가 됐을 가능성이 높기 때문이다.  </p>
+<h1 id="Shooting"><a href="#Shooting" class="headerlink" title="Shooting"></a>Shooting</h1><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.nginx.com/blog/dns-service-discovery-nginx-plus/">Using DNS for Service Discovery with NGINX and NGINX Plus</a></p>
+<blockquote>
+<p>When you use a variable to specify the domain name in the proxy_pass directive, NGINX re‑resolves the domain name when its TTL expires.<br>  You must include the resolver directive to explicitly specify the name server (NGINX does not refer to &#x2F;etc&#x2F;resolv.conf).<br>  By including the valid parameter to the resolver directive, you can tell NGINX to ignore the TTL and re‑resolve names at a specified frequency instead.<br>  proxy_pass directive의 domain name에 변수를 명시할 경우, NGINX는 domain name의 TTL이 만료됐을 때 다시 resolve한다.<br>  resolver directive에 name server를 꼭 명시해줘야한다. (NGINX는 &#x2F;etc&#x2F;resolv.conf 파일을 참조하지 않는다.)<br>  resolver directive에 valid parameter를 명시하면 TTL을 무시하고 valid parameter의 주기로 다시 resolve한다.</p>
+</blockquote>
+<p>우리가 해야할 일은 이제 다음과 같다.</p>
+<ol>
+<li><code>/etc/resolv.conf</code> 파일을 참조하여 resolver directive에 name server를 명시해준다.  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/resolv.conf</span><br><span class="line"><span class="comment"># ; generated by /usr/sbin/dhclient-script</span></span><br><span class="line"><span class="comment"># search ap-northeast-2.compute.internal</span></span><br><span class="line"><span class="comment"># options timeout:2 attempts:5</span></span><br><span class="line"><span class="comment"># nameserver 10.12.0.2</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        resolver 10.12.0.2;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_pass http://elb-dns.ap-northeast-2.elb.amazonaws.com;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>resolver directive에 valid parameter에 ELB DNS의 TTL인 60보다 작은 값을 세팅한다.<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        resolver 10.12.0.2 valid=30s;</span><br><span class="line">        location / &#123;</span><br><span class="line">            proxy_pass http://elb-dns.ap-northeast-2.elb.amazonaws.com;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>proxy_pass directive의 domain name에 변수를 명시한다.<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">    server &#123;</span><br><span class="line">        resolver 10.12.0.2 valid=30s;</span><br><span class="line">        location / &#123;</span><br><span class="line">            <span class="built_in">set</span> <span class="variable">$elb</span>-dns elb-dns.ap-northeast-2.elb.amazonaws.com;</span><br><span class="line">            proxy_pass http://<span class="variable">$elb</span>-dns;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><code>nginx -s reload</code>를 통해 다운타임 없이 설정파일을 재적용한다.</li>
+</ol>
+<h2 id="참고-링크"><a href="#참고-링크" class="headerlink" title="참고 링크"></a>참고 링크</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://aws.amazon.com/articles/best-practices-in-evaluating-elastic-load-balancing/">Best Practices in Evaluating Elastic Load Balancing</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://stackoverflow.com/questions/3821333/amazon-ec2-elastic-load-balancer-does-its-ip-ever-change">Amazon EC2 Elastic Load Balancer: Does its IP ever Change?</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://medium.com/@circlee7/nginx-proxy-pass-%EC%9D%98-aws-elb-%EC%97%B0%EA%B2%B0-%EC%84%A4%EC%A0%95-f0c4b792ef71">Nginx proxy_pass 의 AWS ELB 연결 문제</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://tech.kkung.net/blog/nginx-with-elb/">Nginx를 ELB Reverse Proxy로 사용할때 주의 점</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://serverfault.com/questions/560632/some-nginx-reverse-proxy-configs-stops-working-once-a-day">Some nginx reverse proxy configs stops working once a day</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AWS/" rel="tag"># AWS</a>
+              <a href="/tags/Troubleshooting/" rel="tag"># Troubleshooting</a>
+              <a href="/tags/ELB/" rel="tag"># ELB</a>
+              <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+              <a href="/tags/Proxy/" rel="tag"># Proxy</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/04/21/non-stop-deployment/" rel="prev" title="무중단 배포란...?">
+                  <i class="fa fa-chevron-left"></i> 무중단 배포란...?
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/04/28/heap-memory-analytics-with-eclipse-mat/" rel="next" title="(Troubleshooting) 생애 첫 Heap 메모리 분석기 (feat. Eclipse MAT)">
+                  (Troubleshooting) 생애 첫 Heap 메모리 분석기 (feat. Eclipse MAT) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

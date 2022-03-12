@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가기 앞서 Unix Timestamp의 동의어를 살펴보자.    Epoch Posix Time Epoch Posix Timestamp Epoch Unix Time Epoch Unix Timestamp Posix Epoch Posix Epoch Time Posix Epoch Timestamp Posix Time Posix Timestamp   Unix">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix Timestamp">
+<meta property="og:url" content="https://perfectacle.github.io/2018/09/25/unix-timestamp/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="들어가기 앞서 Unix Timestamp의 동의어를 살펴보자.    Epoch Posix Time Epoch Posix Timestamp Epoch Unix Time Epoch Unix Timestamp Posix Epoch Posix Epoch Time Posix Epoch Timestamp Posix Time Posix Timestamp   Unix">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2018/09/25/unix-timestamp/thumb.jpg">
+<meta property="article:published_time" content="2018-09-25T23:05:08.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.211Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Time">
+<meta property="article:tag" content="Unix">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2018/09/25/unix-timestamp/thumb.jpg">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2018/09/25/unix-timestamp/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2018/09/25/unix-timestamp/","path":"2018/09/25/unix-timestamp/","title":"Unix Timestamp"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Unix Timestamp | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Epoch%EA%B0%80-%EB%AD%90%EC%A7%80"><span class="nav-number">1.</span> <span class="nav-text">Epoch가 뭐지?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B7%B8%EB%9E%98%EC%84%9C-%EA%B7%B8%EA%B2%8C-%EB%AD%94%EB%8D%B0"><span class="nav-number">2.</span> <span class="nav-text">그래서 그게 뭔데?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%99%9C-1970%EB%85%84-01%EC%9B%94-01%EC%9D%BC-00%EC%8B%9C-00%EB%B6%84-00%EC%B4%88%EB%A5%BC-%EA%B8%B0%EC%A4%80%EC%9C%BC%EB%A1%9C-%ED%96%88%EC%9D%84%EA%B9%8C"><span class="nav-number">3.</span> <span class="nav-text">왜 1970년 01월 01일 00시 00분 00초를 기준으로 했을까?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2038%EB%85%84-%EB%AC%B8%EC%A0%9C"><span class="nav-number">4.</span> <span class="nav-text">2038년 문제</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/09/25/unix-timestamp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Unix Timestamp | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Unix Timestamp
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-09-25 23:05:08" itemprop="dateCreated datePublished" datetime="2018-09-25T23:05:08+00:00">2018-09-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/%EB%93%B1%EB%93%B1/" itemprop="url" rel="index"><span itemprop="name">등등</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/09/25/unix-timestamp/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/09/25/unix-timestamp/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2018/09/25/unix-timestamp/thumb.jpg" class title="https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Unix_time">
+
+<p>들어가기 앞서 Unix Timestamp의 동의어를 살펴보자.  </p>
+<ul>
+<li>Epoch Posix Time</li>
+<li>Epoch Posix Timestamp</li>
+<li>Epoch Unix Time</li>
+<li>Epoch Unix Timestamp</li>
+<li>Posix Epoch</li>
+<li>Posix Epoch Time</li>
+<li>Posix Epoch Timestamp</li>
+<li>Posix Time</li>
+<li>Posix Timestamp  </li>
+<li>Unix Epoch  </li>
+<li>Unix Epoch Time  </li>
+<li>Unix Epoch Timestamp  </li>
+<li>Unix Time  </li>
+<li>Unix Timestamp</li>
+</ul>
+<p>그냥 Epoch, Unix, Posix, Time, Timestamp 등의 조합으로 이뤄진 것 같다…</p>
+<h2 id="Epoch가-뭐지"><a href="#Epoch가-뭐지" class="headerlink" title="Epoch가 뭐지?"></a>Epoch가 뭐지?</h2><blockquote>
+<p>An epoch means an instant in time chosen as the origin of a particular era.<br>  The “epoch” then serves as a reference point from which time is measured.<br>  Time measurement units are counted from the epoch so that the date and time of events can be specified unambiguously.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.symantec.com/connect/articles/what-epoch-time-and-how-convert-human-understandable-format">https://www.symantec.com/connect/articles/what-epoch-time-and-how-convert-human-understandable-format</a></p>
+</blockquote>
+<p>시간을 측정하는 기준점을 Epoch라고 부르는 것 같다.  </p>
+<blockquote>
+<p>In a machine, time is represented by a counter: At the center of a system is a quartz-crystal heart that pulses every second, and each second is added to the count.<br>  For a computer to have any comprehension of now, it must determine how many seconds have elapsed since then – and the earliest then is called the “epoch,” or the theoretical time the clock began ticking.<br>  <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.wired.com/2001/09/unix-tick-tocks-to-a-billion/">https://www.wired.com/2001/09/unix-tick-tocks-to-a-billion/</a></p>
+</blockquote>
+<p>PC에서 시간은 카운터로 표시되고, 매 초마다 카운트가 증가한다.<br>컴퓨터는 현재 시간(now)을 알려면 “epoch”라고 불리는 것으로부터 얼마나 흘렀는지 알아야한다.</p>
+<h2 id="그래서-그게-뭔데"><a href="#그래서-그게-뭔데" class="headerlink" title="그래서 그게 뭔데?"></a>그래서 그게 뭔데?</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> 표기법 1970-01-01T00:00:00Z 기준으로 현재까지 몇 초가 지났는지를 나타내는 것이다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/%EC%9C%A4%EC%B4%88">윤초(Leap Second)</a>는 포함하지 않는다.<br>1970-01-01T00:00:00Z는 Unix Timestamp가 0이고, 1970-01-01T00:00:01Z은 Unix Timestamp가 1이고, 1969-12-31T23:59:59Z는 Unix Timestamp가 -1이다.  </p>
+<h2 id="왜-1970년-01월-01일-00시-00분-00초를-기준으로-했을까"><a href="#왜-1970년-01월-01일-00시-00분-00초를-기준으로-했을까" class="headerlink" title="왜 1970년 01월 01일 00시 00분 00초를 기준으로 했을까?"></a>왜 1970년 01월 01일 00시 00분 00초를 기준으로 했을까?</h2><p>Unix의 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://namu.wiki/w/10%EC%96%B5%20%EC%B4%88%20%EB%AC%B8%EC%A0%9C">10억 초 문제</a>를 기념해 2001년 9월 8일에 쓰여진 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.wired.com/2001/09/unix-tick-tocks-to-a-billion/">UNIX TICK TOCKS TO A BILLION</a>의 기사를 찾아보니 그 설명이 나온다.  </p>
+<blockquote>
+<p>The Unix epoch is midnight on January 1, 1970. It’s important to remember that this isn’t Unix’s “birthday” – rough versions of the operating system were around in the 1960s.<br>  Instead, the date was programmed into the system sometime in the early 70s only because it was convenient to do so, according to Dennis Ritchie, one the engineers who worked on Unix at Bell Labs at its inception.</p>
+</blockquote>
+<p>Unix Epoch(Unix OS에서 사용되는 Epoch)는 Unix OS의 탄생일이 아니다. (이미 1960년대에 Unix의 대략적인 버전은 이미 존재했다는 것 같다.)<br>그냥 1970년이 프로그래밍 하기 편리해보여서 지정한 걸로 보인다.</p>
+<blockquote>
+<p>“At the time we didn’t have tapes and we had a couple of file-systems running and we kept changing the origin of time,” he said.<br>  “So finally we said, ‘Let’s pick one thing that’s not going to overflow for a while.’ 1970 seemed to be as good as any.”</p>
+</blockquote>
+<p>그냥 1970년이 진짜 날짜&#x2F;시간을 계산하기에 <strong>당분간</strong> 편리해보여서 선택했다고 한다.<br>왜 <strong>당분간</strong>일까?</p>
+<h2 id="2038년-문제"><a href="#2038년-문제" class="headerlink" title="2038년 문제"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="https://namu.wiki/w/2038%EB%85%84%20%EB%AC%B8%EC%A0%9C">2038년 문제</a></h2><p>위에 언급한 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://namu.wiki/w/10%EC%96%B5%20%EC%B4%88%20%EB%AC%B8%EC%A0%9C">10억 초 문제</a>를 비롯해 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://namu.wiki/w/497%EC%9D%BC%20%EB%AC%B8%EC%A0%9C">497일 문제</a> 등등이 있지만 여기서는 2038년 문제만 다뤄보겠다.  </p>
+<p>이는 32bit Integer의 Overflow 현상을 이해하면 된다.<br>Unix Timestamp가 만들어질 당시 대부분 32bit OS 밖에 존재하지 않았다.<br>32bit Integer의 범위는 −2,147,483,648 (−2³²) ~ 2,147,483,647 (2³¹ − 1)이다.<br>Unsigned Integer를 사용할 경우 부호를 없애서 0 ~ 4,294,967,295 (2³² − 1)까지 가능하지만 1970-01-01T00:00:00Z 이전을 나타낼 수 없으므로 어쩔 수 없이 Signed Integer를 사용했다.<br>따라서 1970-01-01T00:00:00Z에서 2,147,483,647초를 더하면 2038-01-19T03:14:07Z인데(Unix Timestamp 2,147,483,647),<br>여기서 1초가 추가된 2038-01-19T03:14:08Z이 되는 순간 Unix Timestamp 0이 되어 시스템은 1970-01-01T00:00:00Z와 동일한 시간으로 인식한다.<br>즉, 타임머신을 돌렸다고 보면 된다. </p>
+<p>그냥 와, 타임머신 탔다~ 신기하다~로 끝나는 게 아니다.<br>대부분의 서버는 Unix 기반(Linux도 Unix 기반이고 Mac OS도 Unix 기반이므로 시스템의 시간을 나타낼 때 Unix Timestamp를 사용한다.)이기 때문에<br>현재 시간이 1970년대로 표시되고, 시간을 처리하는 로직들(금융권, 각종 행정 처리, 특정 기간 동안의 이벤트 등등)이 망가질 것이다.  </p>
+<p>해결책으로는 아주~ 간단하게 생각했을 때 64bit OS를 사용하면 해결될 일이다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Time/" rel="tag"># Time</a>
+              <a href="/tags/Unix/" rel="tag"># Unix</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/08/30/aws-security-group-reference-another-security-group/" rel="prev" title="(AWS) Security Group에서 다른 Security Group을 참조하는 경우">
+                  <i class="fa fa-chevron-left"></i> (AWS) Security Group에서 다른 Security Group을 참조하는 경우
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/26/date-and-time/" rel="next" title="날짜와 시간">
+                  날짜와 시간 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

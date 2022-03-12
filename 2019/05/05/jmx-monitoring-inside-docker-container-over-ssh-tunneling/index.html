@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가기에 앞서JMX를 모니터링 하려면 VisualVM이나 JDK에 기본적으로 내장돼있는 JConsole을 사용해야한다. 로컬에서 JMX 모니터링하기우선 로컬에 어플리케이션을 띄우고 JMX 모니터링하기란 참 쉽다.우선 자바 어플리케이션을 띄워보자.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(삽질기) SSH 터널링을 통해 원격지에 존재하는 도커 컨테이너 안의 JMX 모니터링하기">
+<meta property="og:url" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="들어가기에 앞서JMX를 모니터링 하려면 VisualVM이나 JDK에 기본적으로 내장돼있는 JConsole을 사용해야한다. 로컬에서 JMX 모니터링하기우선 로컬에 어플리케이션을 띄우고 JMX 모니터링하기란 참 쉽다.우선 자바 어플리케이션을 띄워보자.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/03.png">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/04.png">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/aws-bastion-host.png">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/aws-ssh-local-port-forwading.png">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/05.png">
+<meta property="og:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/06.png">
+<meta property="article:published_time" content="2019-05-05T08:36:13.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.667Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="JMX">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/","path":"2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/","title":"(삽질기) SSH 터널링을 통해 원격지에 존재하는 도커 컨테이너 안의 JMX 모니터링하기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(삽질기) SSH 터널링을 통해 원격지에 존재하는 도커 컨테이너 안의 JMX 모니터링하기 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C"><span class="nav-number">1.</span> <span class="nav-text">들어가기에 앞서</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A1%9C%EC%BB%AC%EC%97%90%EC%84%9C-JMX-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81%ED%95%98%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text">로컬에서 JMX 모니터링하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%8F%84%EC%BB%A4-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88-%EC%95%88%EC%9D%98-JMX-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%ED%95%98%EA%B8%B0"><span class="nav-number">3.</span> <span class="nav-text">도커 컨테이너 안의 JMX 모니터링 하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSH-Tunneling%EC%9D%84-%ED%86%B5%ED%95%B4-%EC%9B%90%EA%B2%A9%EC%A7%80%EC%9D%98-JMX-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81%ED%95%98%EA%B8%B0"><span class="nav-number">4.</span> <span class="nav-text">SSH Tunneling을 통해 원격지의 JMX 모니터링하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EC%A1%B0-%EB%A7%81%ED%81%AC"><span class="nav-number">5.</span> <span class="nav-text">참조 링크</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(삽질기) SSH 터널링을 통해 원격지에 존재하는 도커 컨테이너 안의 JMX 모니터링하기 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (삽질기) SSH 터널링을 통해 원격지에 존재하는 도커 컨테이너 안의 JMX 모니터링하기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2019-05-05 08:36:13" itemprop="dateCreated datePublished" datetime="2019-05-05T08:36:13+00:00">2019-05-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/%EC%82%BD%EC%A7%88/" itemprop="url" rel="index"><span itemprop="name">삽질</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/thumb.png" class title="네가 알던 로컬호스트가 아냐! (로컬호스트처럼 보이지만 실제론 원격지에 있는 서버에 붙었음을 의미)">
+
+<h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>JMX를 모니터링 하려면 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://visualvm.github.io/">VisualVM</a>이나 JDK에 기본적으로 내장돼있는 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://openjdk.java.net/tools/svc/jconsole/">JConsole</a>을 사용해야한다.</p>
+<h2 id="로컬에서-JMX-모니터링하기"><a href="#로컬에서-JMX-모니터링하기" class="headerlink" title="로컬에서 JMX 모니터링하기"></a>로컬에서 JMX 모니터링하기</h2><p>우선 로컬에 어플리케이션을 띄우고 JMX 모니터링하기란 참 쉽다.<br>우선 자바 어플리케이션을 띄워보자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar air.jar</span><br></pre></td></tr></table></figure>
+
+<img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/01.png" class title="그리고 모니터링 툴을 보면 바로 해당 어플리케이션이 잡혀있다.">
+
+<h2 id="도커-컨테이너-안의-JMX-모니터링-하기"><a href="#도커-컨테이너-안의-JMX-모니터링-하기" class="headerlink" title="도커 컨테이너 안의 JMX 모니터링 하기"></a>도커 컨테이너 안의 JMX 모니터링 하기</h2><p>우선 도커 이미지 파일부터 만들어야한다.  </p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> openjdk:<span class="number">11</span>-jdk-slim</span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /root</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> build/libs/air.jar .</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> (java \</span></span><br><span class="line"><span class="language-bash">          -Dcom.sun.management.jmxremote \</span></span><br><span class="line"><span class="language-bash">          -Dcom.sun.management.jmxremote.port=9090 \</span></span><br><span class="line"><span class="language-bash">          -Dcom.sun.management.jmxremote.authenticate=<span class="literal">false</span> \</span></span><br><span class="line"><span class="language-bash">          -Dcom.sun.management.jmxremote.ssl=<span class="literal">false</span> \</span></span><br><span class="line"><span class="language-bash">          -Dcom.sun.management.jmxremote.rmi.port=9090 \</span></span><br><span class="line"><span class="language-bash">          -Djava.rmi.server.hostname=localhost \</span></span><br><span class="line"><span class="language-bash">          -jar air.jar)</span></span><br></pre></td></tr></table></figure>
+<p>jmxremote.port와 jmxremote.rmi.port를 달리 해도 되는데 그럼 docker container의 port 2개를 host os port 2개랑 바인딩해야한다.<br>그냥 둘을 하나로 통일하면 하나만 바인딩하면 되기 때문에 굳이 두 개로 해야할 필요성을 느끼진 못했다.<br>java.rmi.server.hostname에 로컬의 사설 IP(private ip)를 넣어도 되는데 굳이 귀찮게 그렇게 할 필요성도 느끼지 못했다.<br>또한 SSH Tunneling을 거치게 됐을 때 서버의 사설 IP를 적었을 때는 접속이 불가능했으므로 <strong>무조건 localhost라고 적어주자.</strong> </p>
+<p>해당 이미지를 빌드하고 이제 이미지를 container로 띄워보자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># JMX를 모니터링 하는 것이기 때문에 어플리케이션의 포트는 바인딩하지 않았다.</span></span><br><span class="line"><span class="comment"># JMX remote port(9090)와 다른 포트를 Host OS에 매핑하면 모니터링이 불가능하다.</span></span><br><span class="line"><span class="comment"># 9091:9090 이렇게 하면 못 붙는다 무조건 9090:9090(jmx remote port를 다르게 했다면 해당 포트를...)을 바인딩 해야한다.</span></span><br><span class="line"><span class="comment"># 혹시 jmx remote port와 jmx remote rmi port를 다르게 했다면 두 포트를 모두 바인딩 시켜줘야한다.</span></span><br><span class="line"><span class="comment"># jmx remote port가 9090이고 jmx remote rmi port가 9091이라면 -p 9090:9090 -p 9091:9091 이렇게 해줘야한다.</span></span><br><span class="line">docker run -p 9090:9090 air </span><br></pre></td></tr></table></figure>
+
+<p>Host OS에 자바 어플리케이션이 뜬 게 아니라 컨테이너 안에서 뜬 거고, HostOS는 JMX remort port만 바인딩 된 거기 때문에 모니터링 툴을 보면 바로 잡혀있지 않다.  </p>
+<img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/02.png" class title="좌측 상단의 해당 버튼을 클릭해주자.">  
+<img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/03.png" class title="localhost와 jmx remote port를 입력해주고 적당히 보기 쉬운 이름으로 Display name에 채워주고 스크린샷을 따라서 작성한 후에 OK 버튼을 눌러주자.">  
+<p>만약 jmx remote port와 jmx remote rmi port를 다르게 했더라도 입력하는 포트는 jmx remote port를 입력해줘야한다.  </p>
+<img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/04.png" class title="성공적으로 불러와졌다.">  
+<p>아쉽지만 도커 컨테이너로 띄우게 되면 쓰레드 덤프는 떠지지만 힙 덤프는 안 떠진다.<br><strong>혹시 도커 컨테이너로 띄웠을 때도 힙 덤프를 뜨게 하려면 어떻게 해야하는지 댓글에 남겨주시면 정말 감사하겠습니다.</strong></p>
+<h2 id="SSH-Tunneling을-통해-원격지의-JMX-모니터링하기"><a href="#SSH-Tunneling을-통해-원격지의-JMX-모니터링하기" class="headerlink" title="SSH Tunneling을 통해 원격지의 JMX 모니터링하기"></a>SSH Tunneling을 통해 원격지의 JMX 모니터링하기</h2><p>서버를 퍼블릭 존에 두는 건 매우 위험하다. (크래커가 직접 SSH로 붙을 가능성이 존재하거나 각종 공격에 직접적으로 노출되기 때문에…)<br>따라서 프라이빗 존에 둬야하는데 VPN을 쓸 경제적 여력이 안 되는 가난한 환경이나 VPN을 적용하지 않은 환경에서는 매우 귀찮아진다.<br><del>(우리 회사가 가난하다는 게 아니다.)</del>  </p>
+<img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/aws-bastion-host.png" class title="따라서 퍼블릭 존에 Bastion Host를 두고 해당 Host를 경유해 프라이빗 존에 있는 서버에 접근하게 된다.">  
+<img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/aws-ssh-local-port-forwading.png" class title="이런 환경에서는 Bastion Host를 거쳐 SSH Tunneling의 일종인 Local Port Forwading을 해야한다.">
+<p>기본적인 명령어는 위 사진에서 보는 바와 같고 명령어의 예시를 들어보겠다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># JMX remote port(9090)와 다른 포트를 Localhost에 매핑하면 모니터링이 불가능하다.</span></span><br><span class="line"><span class="comment"># 9091:$&#123;application_server_ip&#125;:9090 이렇게 하면 못 붙는다.</span></span><br><span class="line"><span class="comment"># 무조건 9090:$&#123;application_server_ip&#125;:9090(jmx remote port를 다르게 했다면 해당 포트를...)을 바인딩 해야한다.</span></span><br><span class="line">ssh -N -L 9090:<span class="variable">$&#123;application_server_ip&#125;</span>:9090 -i ~/.ssh/key.pem ec2-user@&#123;bastion_host_ip&#125; </span><br></pre></td></tr></table></figure>
+<p>이번에도 역시 Host OS에 자바 어플리케이션이 뜬 게 아니라 원격지의 도커 컨테이너 안에서 뜬 거고, Localhost에는 JMX remort port만 바인딩 된 거기 때문에 모니터링 툴을 보면 바로 잡혀있지 않다.  </p>
+<img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/02.png" class title="좌측 상단의 해당 버튼을 클릭해주자.">  
+<img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/05.png" class title="localhost와 jmx remote port를 입력해주고 적당히 보기 쉬운 이름으로 Display name에 채워주고 스크린샷을 따라서 작성한 후에 OK 버튼을 눌러주자.">  
+<img src="/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/06.png" class title="정상적으로 접속됐다.">
+
+<p>JMX remote port(9090)와 다른 포트를 매핑하는 바람에 몇 시간을 삽질했는지 모르겠다…<br><strong>혹시 이거보다 더 간단하게 연결하는 방법이 있다면 댓글로 남겨주시면 정말 감사하겠습니다.</strong></p>
+<h2 id="참조-링크"><a href="#참조-링크" class="headerlink" title="참조 링크"></a>참조 링크</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://stackoverflow.com/questions/1609961/visualvm-over-ssh">VisualVM over ssh</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.popit.kr/docker-jmx-profiling-tip/">Docker 안에 숨어 있는 Web application JMX profiling Tip</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+              <a href="/tags/JMX/" rel="tag"># JMX</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/05/01/hibernate-multiple-bag-fetch-exception/" rel="prev" title="(Troubleshooting) Hibernate MultipleBagFetchException 정복하기">
+                  <i class="fa fa-chevron-left"></i> (Troubleshooting) Hibernate MultipleBagFetchException 정복하기
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/05/07/jvm-gc-basic/" rel="next" title="(JVM) Garbage Collection Basic">
+                  (JVM) Garbage Collection Basic <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

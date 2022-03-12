@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="어이쿠야… 정말 백만년만에 포스팅하는 것 같다…나태하게 살지 말기로 작심만 몇 번째 하는 건지 ㅠㅠ여튼 이번에 JPA를 통해 엔터티를 용도에 맞게 잘게 쪼개보다 보니 겪었던 이슈를 간단히 정리해봤다.   엔터티 상속먼저 Deal(상품) 클래스이다.이 녀석은 베이스(부모) 클래스이다.   1234567891011121314@Getterpublic clas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(JPA) 엔터티 상속">
+<meta property="og:url" content="https://perfectacle.github.io/2018/07/10/jpa-entity-inheritance/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="어이쿠야… 정말 백만년만에 포스팅하는 것 같다…나태하게 살지 말기로 작심만 몇 번째 하는 건지 ㅠㅠ여튼 이번에 JPA를 통해 엔터티를 용도에 맞게 잘게 쪼개보다 보니 겪었던 이슈를 간단히 정리해봤다.   엔터티 상속먼저 Deal(상품) 클래스이다.이 녀석은 베이스(부모) 클래스이다.   1234567891011121314@Getterpublic clas">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2018/07/10/jpa-entity-inheritance/thumb.png">
+<meta property="article:published_time" content="2018-07-10T01:13:20.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.679Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="ORM">
+<meta property="article:tag" content="JPA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2018/07/10/jpa-entity-inheritance/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2018/07/10/jpa-entity-inheritance/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2018/07/10/jpa-entity-inheritance/","path":"2018/07/10/jpa-entity-inheritance/","title":"(JPA) 엔터티 상속"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(JPA) 엔터티 상속 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%94%ED%84%B0%ED%8B%B0-%EC%83%81%EC%86%8D"><span class="nav-number">1.</span> <span class="nav-text">엔터티 상속</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%AC%B8%EC%A0%9C"><span class="nav-number">2.</span> <span class="nav-text">문제</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%95%B4%EA%B2%B0"><span class="nav-number">3.</span> <span class="nav-text">해결</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DiscriminatorColumn"><span class="nav-number">3.1.</span> <span class="nav-text">@DiscriminatorColumn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DiscriminatorFormula"><span class="nav-number">3.2.</span> <span class="nav-text">@DiscriminatorFormula</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/07/10/jpa-entity-inheritance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(JPA) 엔터티 상속 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (JPA) 엔터티 상속
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-07-10 01:13:20" itemprop="dateCreated datePublished" datetime="2018-07-10T01:13:20+00:00">2018-07-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/" itemprop="url" rel="index"><span itemprop="name">Back-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/" itemprop="url" rel="index"><span itemprop="name">DB</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/JPA/" itemprop="url" rel="index"><span itemprop="name">JPA</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/07/10/jpa-entity-inheritance/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/07/10/jpa-entity-inheritance/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2018/07/10/jpa-entity-inheritance/thumb.png" class title="출처: https:&#x2F;&#x2F;blog.naver.com&#x2F;PostView.nhn?blogId&#x3D;dyner&amp;logNo&#x3D;100177467201">
+
+<p>어이쿠야… 정말 백만년만에 포스팅하는 것 같다…<br>나태하게 살지 말기로 작심만 몇 번째 하는 건지 ㅠㅠ<br>여튼 이번에 JPA를 통해 엔터티를 용도에 맞게 잘게 쪼개보다 보니 겪었던 이슈를 간단히 정리해봤다.  </p>
+<h2 id="엔터티-상속"><a href="#엔터티-상속" class="headerlink" title="엔터티 상속"></a>엔터티 상속</h2><p>먼저 Deal(상품) 클래스이다.<br>이 녀석은 베이스(부모) 클래스이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Deal</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> id;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="meta">@Column(name =&quot;deal_type&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> DealType type;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> price;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;deal&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;CategoryDealMap&gt; categoryDealMaps;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>기본적으로 pk, 상품 유형, 가격, 해당 상품에 해당하는 카테고리 목록들을 가지고 있다.</p>
+<p>그 다음으로 Deal과 매핑된 CategoryDealMap 엔터티 클래스이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CategoryDealMap</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ManyToOne</span></span><br><span class="line">    <span class="keyword">private</span> Deal deal;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> categoryId;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이제 자식이 되는 항공권 상품(Air)이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;deal&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Air</span> <span class="keyword">extends</span> <span class="title class_">Deal</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> LocalDate departure;</span><br><span class="line">    <span class="keyword">private</span> LocalDate arrival;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>언제 출발해서 언제 도착하는지 정보를 포함한 컬럼이다.</p>
+<p>이제 또 다른 자식인 숙박 상품(Lodge)이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;deal&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lodge</span> <span class="keyword">extends</span> <span class="title class_">Deal</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> LocalDate checkIn;</span><br><span class="line">    <span class="keyword">private</span> LocalDate checkOut;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>언제 체크인 해서 언제 체크아웃 하는지 정보를 포함한 컬럼들이다.</p>
+<h2 id="문제"><a href="#문제" class="headerlink" title="문제"></a>문제</h2><ol>
+<li>Deal 클래스는 엔터티가 아니라 CategoryDealMap 엔터티와 매핑할 수가 없다.  </li>
+<li>CategoryDealMaps 컬럼이 없더라도 where 절에 아래와 같은 요상한 조건이 붙어서 쿼리 자체를 실행할 수가 없다.<br><code>where dtype = &#39;AIR&#39; 또는 where dtype = &#39;Lodge&#39;</code></li>
+</ol>
+<h2 id="해결"><a href="#해결" class="headerlink" title="해결"></a>해결</h2><p>@Inheritance 어노테이션, 그리고 @DiscriminatorColumn과 @DiscriminatorFormula 어노테이션을 적절히 잘 쓰면 된다.  </p>
+<h3 id="DiscriminatorColumn"><a href="#DiscriminatorColumn" class="headerlink" title="@DiscriminatorColumn"></a>@DiscriminatorColumn</h3><p><strong>어떤 컬럼을 가지고 어떤 자식 엔터티를 판별할 것인가</strong>에 대한 힌트를 주는 어노테이션이다.<br>여기선 type 컬럼을 가지고 엔터티를 구분하므로 Deal 클래스를 다시 아래와 같이 설정해주자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Inheritance</span></span><br><span class="line"><span class="meta">@DiscriminatorColumn(name = &quot;deal_type&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Deal</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;deal&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;CategoryDealMap&gt; categoryDealMaps;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> price;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="meta">@Column(name =&quot;deal_type&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> DealType type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>@Entity 어노테이션도 붙여주고, @Inheritance 어노테이션, @DiscriminatorColumn 어노테이션도 붙여줬다.<br>@Inheritance 어노테이션의 기본 strategy 필드값은 SINGLE_TABLE이다.<br>name은 실제 필드명을 입력해주면 된다.<br>그리고 @DiscriminatorColumn 어노테이션의 name field를 보면 위에 dtype이라는 조건이 왜 붙었었는지 알게 된다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(&#123;TYPE&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> DiscriminatorColumn &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * (Optional) The name of column to be used for the discriminator.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    String <span class="title function_">name</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;DTYPE&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>name 필드의 기본값이 DTYPE이기 때문에 요상한 조건 절이 붙었던 것이다.  </p>
+<p>그리고 Air 엔터티와 Lodge 엔터티를 아래와 같이 고치면 된다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@DiscriminatorValue(&quot;AIR&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Air</span> <span class="keyword">extends</span> <span class="title class_">Deal</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> LocalDate departure;</span><br><span class="line">    <span class="keyword">private</span> LocalDate arrival;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@DiscriminatorValue(&quot;LODGE&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lodge</span> <span class="keyword">extends</span> <span class="title class_">Deal</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> LocalDate checkIn;</span><br><span class="line">    <span class="keyword">private</span> LocalDate checkOut;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>@Table 어노테이션은 부모 클래스에 있는 걸 가져다 쓰면 되니 사라졌고, @DiscriminatorValue 어노테이션이 붙었다.<br>부모 클래스에서 정한 @DiscriminatorColumn(name &#x3D; “deal_type”), 즉 deal_type 필드의 값이 뭐냐에 따라서 어떤 엔터티를 사용할지가 정해진다고 보면 된다.</p>
+<h3 id="DiscriminatorFormula"><a href="#DiscriminatorFormula" class="headerlink" title="@DiscriminatorFormula"></a>@DiscriminatorFormula</h3><p>@DiscriminatorColumn의 경우에는 해당 컬럼의 값으로 딱 자식 클래스가 명확하게 구분되어질 때 사용하면 된다.<br>DealType enum에 딱 AIR와 LODGE에 해당하는 타입이 각각 있으면 상관 없다.<br>하지만 숙박에 해당하는 타입은 MOTEL, HOTEL, PENSION 등등 다양한 타입이 존재한다.<br>해당 타입들도 전부 Lodge 엔터티를 사용해야할 때는 어떻게 해야할까?  </p>
+<p>컬럼 대신에 조건을 줄 수 있는 @DiscriminatorFormula 어노테이션을 써서 Deal 엔터티를 아래와 같이 수정해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Inheritance</span></span><br><span class="line"><span class="meta">@DiscriminatorFormula(&quot;case when deal_type = &#x27;AIR&#x27; then &#x27;AIR&#x27; else &#x27;LODGE&#x27; end&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Deal</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;deal&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;CategoryDealMap&gt; categoryDealMaps;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> price;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="keyword">private</span> DealType type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>deal_type의 값을 AIR면 AIR고 나머지는 LODGE로 값을 세팅하게 끔 한 것이다.<br>그럼 MOTEL이건 HOTEL이건 PENSION이건 동일한 엔터티인 Lodge 엔터티를 사용하게 된다.   </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ORM/" rel="tag"># ORM</a>
+              <a href="/tags/JPA/" rel="tag"># JPA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/05/30/network-hardware/" rel="prev" title="후니의 쉽게 쓴 시스코 네트워킹 정리 - OSI 7 Layer 네트워크 장비">
+                  <i class="fa fa-chevron-left"></i> 후니의 쉽게 쓴 시스코 네트워킹 정리 - OSI 7 Layer 네트워크 장비
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/07/22/spring-boot-2-env/" rel="next" title="(Spring) Spring Boot 2.0 with Gradle에서 환경 별로 profile 쪼개기">
+                  (Spring) Spring Boot 2.0 with Gradle에서 환경 별로 profile 쪼개기 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

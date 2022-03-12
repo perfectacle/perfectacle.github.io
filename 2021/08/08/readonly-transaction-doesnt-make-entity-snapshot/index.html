@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="3줄 요약 @Transaction(readOnly &#x3D; true)로 설정하면 select 할 당시 엔티티의 스냅샷을 만들지 않는다. (JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다에서 봤다 싶이 트랜잭션이 커밋될 때 flush를 하지 않는다. flush를 할 필요가 없기 때문에 Dirty Checking을 할 필요">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(JPA) Readonly 트랜잭션은 Dirty Checking을 하지 않는다">
+<meta property="og:url" content="https://perfectacle.github.io/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="3줄 요약 @Transaction(readOnly &#x3D; true)로 설정하면 select 할 당시 엔티티의 스냅샷을 만들지 않는다. (JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다에서 봤다 싶이 트랜잭션이 커밋될 때 flush를 하지 않는다. flush를 할 필요가 없기 때문에 Dirty Checking을 할 필요">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/convert-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/convert-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/readonly-01.png">
+<meta property="article:published_time" content="2021-08-08T23:29:33.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.111Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JPA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/convert-01.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/","path":"2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/","title":"(JPA) Readonly 트랜잭션은 Dirty Checking을 하지 않는다"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(JPA) Readonly 트랜잭션은 Dirty Checking을 하지 않는다 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#3%EC%A4%84-%EC%9A%94%EC%95%BD"><span class="nav-number">1.</span> <span class="nav-text">3줄 요약</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%94%ED%8B%B0%ED%8B%B0-%EA%B5%AC%EC%A1%B0"><span class="nav-number">2.</span> <span class="nav-text">엔티티 구조</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Readonly-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9D%B4-%EC%95%84%EB%8B%88%EB%A9%B4-%EC%8A%A4%EB%83%85%EC%83%B7%EC%9D%84-%EB%A7%8C%EB%93%A0%EB%8B%A4-%EC%97%94%ED%8B%B0%ED%8B%B0%EB%A5%BC-%EB%94%A5%EC%B9%B4%ED%94%BC%ED%95%9C%EB%8B%A4"><span class="nav-number">3.</span> <span class="nav-text">Readonly 트랜잭션이 아니면 스냅샷을 만든다 (엔티티를 딥카피한다)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Readonly-%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EC%9D%B4%EB%A9%B4-%EC%8A%A4%EB%83%85%EC%83%B7%EC%9D%84-%EB%A7%8C%EB%93%A4%EC%A7%80-%EC%95%8A%EB%8A%94%EB%8B%A4"><span class="nav-number">4.</span> <span class="nav-text">Readonly 트랜잭션이면 스냅샷을 만들지 않는다</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(JPA) Readonly 트랜잭션은 Dirty Checking을 하지 않는다 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (JPA) Readonly 트랜잭션은 Dirty Checking을 하지 않는다
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2021-08-08 23:29:33" itemprop="dateCreated datePublished" datetime="2021-08-08T23:29:33+00:00">2021-08-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/" itemprop="url" rel="index"><span itemprop="name">Back-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/" itemprop="url" rel="index"><span itemprop="name">DB</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/JPA/" itemprop="url" rel="index"><span itemprop="name">JPA</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="3줄-요약"><a href="#3줄-요약" class="headerlink" title="3줄 요약"></a>3줄 요약</h2><ol>
+<li>@Transaction(readOnly &#x3D; true)로 설정하면 select 할 당시 엔티티의 스냅샷을 만들지 않는다.</li>
+<li><a href="/2021/05/05/readonly-transaction-begin-transaction/">(JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다</a>에서 봤다 싶이 트랜잭션이 커밋될 때 flush를 하지 않는다.</li>
+<li>flush를 할 필요가 없기 때문에 Dirty Checking을 할 필요가 없고, 그에 따라서 엔티티의 스냅샷도 만들지 않는 것이다.</li>
+</ol>
+<h2 id="엔티티-구조"><a href="#엔티티-구조" class="headerlink" title="엔티티 구조"></a>엔티티 구조</h2><p>이해를 편하게 돕기 위해 엔티티는 아래와 같은 구조를 가진다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;parents&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Parent</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Long no;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;helloName&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> SomeType someType;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SomeType</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String helloName;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">SomeType</span><span class="params">(<span class="keyword">final</span> String helloName)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.helloName = helloName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>SomeType은 JPA에서 모르는 커스텀 타입이기 때문에 컨버터를 만들어주자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Converter(autoApply = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SomeAttributeConverter</span> <span class="keyword">implements</span> <span class="title class_">AttributeConverter</span>&lt;SomeType, String&gt; &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">convertToDatabaseColumn</span><span class="params">(<span class="keyword">final</span> SomeType attribute)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> attribute.getHelloName();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> SomeType <span class="title function_">convertToEntityAttribute</span><span class="params">(<span class="keyword">final</span> String dbData)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">SomeType</span>(dbData);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>테스트 편의성을 위해 convertToEntityAttribute 메서드에 브레이크 포인트를 걸고 확인해보면 편하다.</p>
+<h2 id="Readonly-트랜잭션이-아니면-스냅샷을-만든다-엔티티를-딥카피한다"><a href="#Readonly-트랜잭션이-아니면-스냅샷을-만든다-엔티티를-딥카피한다" class="headerlink" title="Readonly 트랜잭션이 아니면 스냅샷을 만든다 (엔티티를 딥카피한다)"></a>Readonly 트랜잭션이 아니면 스냅샷을 만든다 (엔티티를 딥카피한다)</h2><p>테스트를 위해 Repository에 Readonly 트랜잭션이 아닌 findBy 메서드를 만든다.<br>(SimpleJpaRepositroy의 findById 메서드는 readonly 트랜잭션이기 때문에 커스텀 메서드를 만들었다.)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ParentRepository</span> <span class="keyword">extends</span> <span class="title class_">JpaRepository</span>&lt;Parent, Long&gt; &#123;</span><br><span class="line">    <span class="meta">@Transactional</span></span><br><span class="line">    Parent <span class="title function_">findByNo</span><span class="params">(<span class="keyword">final</span> <span class="type">long</span> no)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 findByNo를 호출하면서 SomeAttributeConverter.convertToEntityAttribute 메서드는 몇 번 호출되는지 보자.</p>
+<img src="/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/convert-01.png" class title="LoadEvent가 발생하면서 AttributeConvert가 호출되고 있다.">  
+<img src="/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/convert-02.png" class title="그 이후에 딥카피가 발생하면서 한 번 더 AttributeConvert가 호출되고 있다.">  
+
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/engine/internal/TwoPhaseLoad.java#L339">TwoPhaseLoad.initializeEntityFromEntityEntryLoadedState 메서드</a>가 핵심이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( isReallyReadOnly ) &#123;</span><br><span class="line">    <span class="comment">//no need to take a snapshot - this is a</span></span><br><span class="line">    <span class="comment">//performance optimization, but not really</span></span><br><span class="line">    <span class="comment">//important, except for entities with huge</span></span><br><span class="line">    <span class="comment">//mutable property values</span></span><br><span class="line">    persistenceContext.setEntryStatus( entityEntry, Status.READ_ONLY );</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">//take a snapshot</span></span><br><span class="line">    TypeHelper.deepCopy(</span><br><span class="line">            hydratedState,</span><br><span class="line">            persister.getPropertyTypes(),</span><br><span class="line">            persister.getPropertyUpdateability(),</span><br><span class="line">            <span class="comment">//after setting values to object</span></span><br><span class="line">            hydratedState,</span><br><span class="line">            session</span><br><span class="line">    );</span><br><span class="line">    persistenceContext.setEntryStatus( entityEntry, Status.MANAGED );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>readonly 트랜잭션이면 성능최적화를 위해 스냅샷을 만들 필요가 없다고 하고 있고, 그게 아니면 스냅샷을 만들고 있고 그 안에서 딥카피가 수행되고 있다.</p>
+<p><strong>여기서 핵심은 트랜잭션을 생성하지 않더라도 스냅샷(딥카피)를 만든다는 것이다.</strong> </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ParentRepository</span> <span class="keyword">extends</span> <span class="title class_">JpaRepository</span>&lt;Parent, Long&gt; &#123;</span><br><span class="line">    Parent <span class="title function_">findByNo</span><span class="params">(<span class="keyword">final</span> <span class="type">long</span> no)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위와 같이 트랜잭션을 생성하지 않더라도 리드온리 트랜잭션은 아니기 때문에 else 구문을 탄다.</p>
+<h2 id="Readonly-트랜잭션이면-스냅샷을-만들지-않는다"><a href="#Readonly-트랜잭션이면-스냅샷을-만들지-않는다" class="headerlink" title="Readonly 트랜잭션이면 스냅샷을 만들지 않는다"></a>Readonly 트랜잭션이면 스냅샷을 만들지 않는다</h2><p>이번에는 readonly 트랜잭션을 사용하는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-data-jpa/blob/main/src/main/java/org/springframework/data/jpa/repository/support/SimpleJpaRepository.java#L295">SimpleJpaRepository.findById</a> 메서드를 사용하여 스냅샷(딥카피)을 만드는지 직접 확인해보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="meta">@Transactional(readOnly = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SimpleJpaRepository</span>&lt;T, ID&gt; <span class="keyword">implements</span> <span class="title class_">JpaRepositoryImplementation</span>&lt;T, ID&gt; &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Optional&lt;T&gt; <span class="title function_">findById</span><span class="params">(ID id)</span> &#123;</span><br><span class="line"></span><br><span class="line">        Assert.notNull(id, ID_MUST_NOT_BE_NULL);</span><br><span class="line"></span><br><span class="line">        Class&lt;T&gt; domainType = getDomainClass();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (metadata == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> Optional.ofNullable(em.find(domainType, id));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">LockModeType</span> <span class="variable">type</span> <span class="operator">=</span> metadata.getLockModeType();</span><br><span class="line"></span><br><span class="line">        Map&lt;String, Object&gt; hints = getQueryHints().withFetchGraphs(em).asMap();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Optional.ofNullable(type == <span class="literal">null</span> ? em.find(domainType, id, hints) : em.find(domainType, id, type, hints));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위에서 보다싶이 SimpleJpaRepository는 타입에 readonly 트랜잭션이 적용돼있어서 해당 어노테이션을 오버라이딩 하지 않은 모든 메서드는 readonly 트랜잭션을 사용한다는 것을 알 수 있다.</p>
+<img src="/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/readonly-01.png" class title="readonly 트랜잭션이기 때문에 스냅샷을 만들지 않는 걸 볼 수 있다.">
+
+<p>이렇듯 JPA(하이버네이트)에서는 readonly 트랜잭션이면 성능최적화를 위해 엔티티의 스냅샷(딥카피)을 만들지 않는 걸 볼 수 있다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JPA/" rel="tag"># JPA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/13/entity-manager-persist-vs-merge/" rel="prev" title="(JPA) persist vs merge">
+                  <i class="fa fa-chevron-left"></i> (JPA) persist vs merge
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/14/fail-fast-iterator/" rel="next" title="(Java) Fail Fast Iterator">
+                  (Java) Fail Fast Iterator <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

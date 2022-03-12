@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="스프링 부트부터 접한 스프링 알못이라 스프링에 대해 공부를 하다보니 너무나 모르고 있는 게 많아서 정리해봤다.되게 간단한 건데 스프링 부트부터 접하면 몰라도 코드 짜는데는 문제가 없지만 개인적으로는 알고 있으면 너무나 좋은 내용같다. 어노테이션 없이 빈 설정스프링이 관리하는 객체인 빈으로 생성하기 위해서 아래와 같은 어노테이션이 필수인 줄 알았다.@Co">
+<meta property="og:type" content="article">
+<meta property="og:title" content="어노테이션이 달린 빈의 자동 스캔 (Without Spring Boot)">
+<meta property="og:url" content="https://perfectacle.github.io/2019/06/23/auto-scanning-annotation-based-bean/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="스프링 부트부터 접한 스프링 알못이라 스프링에 대해 공부를 하다보니 너무나 모르고 있는 게 많아서 정리해봤다.되게 간단한 건데 스프링 부트부터 접하면 몰라도 코드 짜는데는 문제가 없지만 개인적으로는 알고 있으면 너무나 좋은 내용같다. 어노테이션 없이 빈 설정스프링이 관리하는 객체인 빈으로 생성하기 위해서 아래와 같은 어노테이션이 필수인 줄 알았다.@Co">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2019/06/23/auto-scanning-annotation-based-bean/thumb.png">
+<meta property="article:published_time" content="2019-06-23T12:08:10.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.323Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Bean">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2019/06/23/auto-scanning-annotation-based-bean/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2019/06/23/auto-scanning-annotation-based-bean/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2019/06/23/auto-scanning-annotation-based-bean/","path":"2019/06/23/auto-scanning-annotation-based-bean/","title":"어노테이션이 달린 빈의 자동 스캔 (Without Spring Boot)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>어노테이션이 달린 빈의 자동 스캔 (Without Spring Boot) | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%96%B4%EB%85%B8%ED%85%8C%EC%9D%B4%EC%85%98-%EC%97%86%EC%9D%B4-%EB%B9%88-%EC%84%A4%EC%A0%95"><span class="nav-number">1.</span> <span class="nav-text">어노테이션 없이 빈 설정</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%B9%88-%EC%9E%90%EB%8F%99-%EC%8A%A4%EC%BA%94"><span class="nav-number">2.</span> <span class="nav-text">빈 자동 스캔</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%96%B4%EB%85%B8%ED%85%8C%EC%9D%B4%EC%85%98%EC%9D%80-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4%EC%97%90-%EA%B5%AC%ED%98%84%EC%B2%B4%EC%97%90"><span class="nav-number">3.</span> <span class="nav-text">어노테이션은 인터페이스에? 구현체에?</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/06/23/auto-scanning-annotation-based-bean/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="어노테이션이 달린 빈의 자동 스캔 (Without Spring Boot) | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          어노테이션이 달린 빈의 자동 스캔 (Without Spring Boot)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2019-06-23 12:08:10" itemprop="dateCreated datePublished" datetime="2019-06-23T12:08:10+00:00">2019-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/" itemprop="url" rel="index"><span itemprop="name">Back-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/06/23/auto-scanning-annotation-based-bean/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/23/auto-scanning-annotation-based-bean/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2019/06/23/auto-scanning-annotation-based-bean/thumb.png" class>
+
+<p>스프링 부트부터 접한 스프링 알못이라 스프링에 대해 공부를 하다보니 너무나 모르고 있는 게 많아서 정리해봤다.<br>되게 간단한 건데 스프링 부트부터 접하면 몰라도 코드 짜는데는 문제가 없지만 개인적으로는 알고 있으면 너무나 좋은 내용같다.</p>
+<h2 id="어노테이션-없이-빈-설정"><a href="#어노테이션-없이-빈-설정" class="headerlink" title="어노테이션 없이 빈 설정"></a>어노테이션 없이 빈 설정</h2><p>스프링이 관리하는 객체인 빈으로 생성하기 위해서 아래와 같은 어노테이션이 필수<strong>인 줄 알았</strong>다.<br>@Component, @Configuration, @Bean, @Service, @Controller, @Repository</p>
+<p>하지만 직접 코딩을 해보니 이 생각은 거짓이었다.</p>
+<p>우선 느슨한 결합을 위해 인터페이스를 하나 선언한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">OrderService</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>인터페이스의 구현체도 하나 만들어준다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TimonOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>해당 구현체를 의존성으로 갖는 다른 구현체도 만들어보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CoupangOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> OrderService otherService;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 스프링 4.3부터 생성자가 하나이면 @Autowired 어노테이션이 생략 가능하다.</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">CoupangOrderService</span><span class="params">(OrderService orderSe)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.otherService = orderSe;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 의존성 주입이 제대로 됐는지 테스트하기 위한 용도의 getter</span></span><br><span class="line">    <span class="keyword">public</span> OrderService <span class="title function_">getOtherService</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> otherService;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이제 CoupangOrderService 빈이 제대로 생성되는지 테스트 코드를 작성해보자. (JUnit5를 사용하였다.)  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExtendWith(SpringExtension.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(classes = &#123;CoupangOrderService.class&#125;)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ApplicationContextTest</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> CoupangOrderService coupangOrderService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        assertNotNull(coupangOrderService);</span><br><span class="line">        assertNotNull(coupangOrderService.getOtherService());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위 테스트를 실행하면 circular reference(순환 참조) 때문에 빈을 생성할 수 없는 오류가 난다.<br><code>Caused by: org.springframework.beans.factory.BeanCurrentlyInCreationException: Error creating bean with name &#39;coupangOrderService&#39;: Requested bean is currently in creation: Is there an unresolvable circular reference?</code>  </p>
+<p>CoupangOrderService는 OrderService 인터페이스를 의존성으로 받는데 그 구현체가 CoupangOrderService 자신 밖에 없기 때문이다.<br>(@ContextConfiguration(classes &#x3D; {CoupangOrderService.class})에 의해 ApplicationContext에서는 CoupangOrderService 밖에 모르기 때문이다.)</p>
+<p>그럼 ApplicationContext가 OrderService의 다른 구현체인 TimonOrderService까지 알게 해주자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExtendWith(SpringExtension.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(classes = &#123;CoupangOrderService.class, TimonOrderService.class&#125;)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ApplicationContextTest</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> CoupangOrderService coupangOrderService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        assertNotNull(coupangOrderService);</span><br><span class="line">        assertNotNull(coupangOrderService.getOtherService());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>이제 테스트는 성공한다.<br>우리는 빈에 대한 어노테이션을 인터페이스나 구현체 어디에도 사용을 하지 않았는데 빈의 생성도 잘 이뤄졌고, 의존성 주입도 아주 잘 되었다.<br>CoupangOrderService에서 OrderService를 의존성 주입 받는데 OrderService의 구현체는 CoupangOrderService와 TimonOrderService 두 개이다.<br>하지만 스프링에서는 똑똑하게 순환참조 이슈를 피하려고 본인을 제외하고 빈을 찾기 때문에 순환참조 오류가 안 났다.  </p>
+<p>한 번 위 가설이 맞는지 검증해보자.<br>OrderService의 구현체를 하나 더 만들어보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WeMakePriceOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이제 테스트를 돌려보면 아래와 같이 CoupangOrderService에 OrderService를 주입하는데 TimonOrderService를 주입해야할지, WeMakePriceOrderService를 주입해야할지 모른다는 오류가 나온다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExtendWith(SpringExtension.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(classes = &#123;CoupangOrderService.class, TimonOrderService.class, WeMakePriceOrderService.class&#125;)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ApplicationContextTest</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> CoupangOrderService coupangOrderService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        assertNotNull(coupangOrderService);</span><br><span class="line">        assertNotNull(coupangOrderService.getOtherService());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type &#39;OrderService&#39; available: expected single matching bean but found 2: timonOrderService,weMakePriceOrderService</code></p>
+<p>OrderService의 구현체는 세 개인데 당연스레 본인(CoupangOrderService)는 빼고 의존성 주입을 시도한 것이다.<br>그럼 위 테스트는 왜 실패한 것인가?<br>기본적으로 스프링은 아래와 같은 순서로 DI를 하게 된다.  </p>
+<ol>
+<li>빈의 타입으로 빈을 검색해서 주입한다.  </li>
+<li>해당 빈의 타입이 두 개 이상이면 빈의 이름으로 검색해서 주입한다.</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">CoupangOrderService</span><span class="params">(OrderService orderSe)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.otherService = orderSe;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>OrderService의 빈은 2개(CoupangOrderService 본인을 제외하고)라서 빈의 이름으로 검색을해야하는데 <strong>orderSe</strong>라는 이름의 빈은 없기 때문이다.<br>빈의 이름은 기본적으로 클래스 이름을 기반으로 생성된다. <del>(규칙은 나중에 찾아보는 걸로…)</del>  </p>
+<p>이제 테스트가 성공하게 제대로 된 빈의 이름으로 바꿔주자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CoupangOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> OrderService otherService;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 스프링 4.3부터 생성자가 하나이면 @Autowired 어노테이션이 생략 가능하다.</span></span><br><span class="line">    <span class="comment">// 파라미터로 넘긴 변수 이름이 빈의 이름이 된다.</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">CoupangOrderService</span><span class="params">(OrderService timonOrderService)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.otherService = timonOrderService;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> OrderService <span class="title function_">getOtherService</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> otherService;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="빈-자동-스캔"><a href="#빈-자동-스캔" class="headerlink" title="빈 자동 스캔"></a>빈 자동 스캔</h2><p>우리가 생성한 빈이 많으면 많을 수록 @ContextConfiguration에 다 등록해주기도 부담이다.<br>이럴 때 쓰는 게 @Service, @Component, @Configuration, @Bean과 같은 어노테이션들이다.</p>
+<p>우선 인터페이스와 구현체 어디다 쓰는 게 좋은지 모르니 다 붙여놓자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">OrderService</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TimonOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WeMakePriceOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CoupangOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> OrderService otherService;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">CoupangOrderService</span><span class="params">(OrderService timonOrderService)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.otherService = timonOrderService;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> OrderService <span class="title function_">getOtherService</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> otherService;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 빈을 자동으로 스캔해주는 빈을 만들어주자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ComponentScan(&quot;some.package&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ComponentScanConfig</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>해당 패키지에 있는 @Service, @Component, @Configuration, @Bean 요런 어노테이션들이 붙은 빈들은 자동으로 스캔하고 생성해주는 어노테이션이다.<br><del>(자세한 건 나중에 또 알아보자 ㅠㅠ)</del></p>
+<p>이제 테스트에서 Bean 클래스들을 한땀 한땀 넣어주는 부분을 수정해보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExtendWith(SpringExtension.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(classes = &#123;ComponentScanConfig.class&#125;)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ApplicationContextTest</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> CoupangOrderService coupangOrderService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        assertNotNull(coupangOrderService);</span><br><span class="line">        assertNotNull(coupangOrderService.getOtherService());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Config 파일 하나로 코드가 너무나 쾌적해졌다.<br>이렇게 빈을 자동으로 스캔하고 생성할 때는 <strong>@ComponentScan</strong> 어노테이션이 엄청 큰 도움이 된다.  </p>
+<h2 id="어노테이션은-인터페이스에-구현체에"><a href="#어노테이션은-인터페이스에-구현체에" class="headerlink" title="어노테이션은 인터페이스에? 구현체에?"></a>어노테이션은 인터페이스에? 구현체에?</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">OrderService</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>어노테이션을 인터페이스에<strong>만</strong> 붙이면 구현체 타입으로 DI를 받을 수 없다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExtendWith(SpringExtension.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(classes = &#123;ComponentScanConfig.class&#125;)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ApplicationContextTest</span> &#123;</span><br><span class="line"><span class="comment">//    CoupangOrderService 타입의 빈은 @Service 어노테이션이 안 달려있어서 @ComponentScan에서 검색되지 못한다.    </span></span><br><span class="line"><span class="comment">//    @Autowired</span></span><br><span class="line"><span class="comment">//    private CoupangOrderService coupangOrderService;</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> OrderService coupangOrderService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        assertNotNull(coupangOrderService);</span><br><span class="line"><span class="comment">//        OrderService 인터페이스에는 getOtherService() 메서드가 없다.</span></span><br><span class="line"><span class="comment">//        assertNotNull(coupangOrderService.getOtherService());</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>하지만 이번엔 빈을 생성하지 못한다는 에러가 나온다.<br><code>Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type &#39;example.domain.OrderService&#39; available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: &#123;@org.springframework.beans.factory.annotation.Autowired(required=true)&#125;</code><br>왜냐면 인터페이스만 @Service 어노테이션을 붙여서 빈으로 생성이 되는데 인터페이스는 객체로 생성이 불가능하기 때문에 위와 같은 오류가 나는 것이다.  </p>
+<p>그럼 이번엔 구현체에만 @Service 어노테이션을 붙이면 어떻게 될까?  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CoupangOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> OrderService otherService;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">CoupangOrderService</span><span class="params">(OrderService timonOrderService)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.otherService = timonOrderService;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> OrderService <span class="title function_">getOtherService</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> otherService;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이제 테스트를 고쳐보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExtendWith(SpringExtension.class)</span></span><br><span class="line"><span class="meta">@ContextConfiguration(classes = &#123;ComponentScanConfig.class&#125;)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ApplicationContextTest</span> &#123;</span><br><span class="line"><span class="comment">//    CoupangOrderService는 OrderService를 구현한 것이므로 OrderService 타입으로도 DI 받을 수 있다.</span></span><br><span class="line"><span class="comment">//    @Autowired</span></span><br><span class="line"><span class="comment">//    private OrderService coupangOrderService;</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> CoupangOrderService coupangOrderService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span> &#123;</span><br><span class="line">        assertNotNull(coupangOrderService);</span><br><span class="line">        assertNotNull(coupangOrderService.getOtherService());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>테스트를 돌리면 또 순환참조 오류로 실패한다.<br><code>Caused by: org.springframework.beans.factory.BeanCurrentlyInCreationException: Error creating bean with name &#39;coupangOrderService&#39;: Requested bean is currently in creation: Is there an unresolvable circular reference?</code></p>
+<p>다른 OrderService 구현체에도 @Service 어노테이션을 붙여주자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TimonOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WeMakePriceOrderService</span> <span class="keyword">implements</span> <span class="title class_">OrderService</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이제 테스트를 돌리면 정상적으로 돌아간다.</p>
+<p>인터페이스에 어노테이션 안 붙여도 인터페이스 타입으로 느슨하게 결합해서 DI도 가능하고, 특정 구현체에 기능이 쓰고 싶다면 해당 구현체 타입으로 DI도 가능하고…<br>따라서 내가 봤을 때는 인터페이스에 어노테이션을 붙여놓는 건 딱히 의미가 없는 것 같다. </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spring/" rel="tag"># Spring</a>
+              <a href="/tags/Bean/" rel="tag"># Bean</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/06/11/aws-sg-trobuleshooting/" rel="prev" title="(Troubleshooting) 내 로컬에서는 잘 되는데...? (내로잘)">
+                  <i class="fa fa-chevron-left"></i> (Troubleshooting) 내 로컬에서는 잘 되는데...? (내로잘)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/06/30/java-8-lambda-capturing/" rel="next" title="(Java) 람다 캡처링과 final 제약조건">
+                  (Java) 람다 캡처링과 final 제약조건 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

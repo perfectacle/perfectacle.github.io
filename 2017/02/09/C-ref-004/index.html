@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="프로그램을 실행하게 되면 OS는 메모리(RAM)에 공간을 할당해준다.할당해주는 메모리 공간은 4가지(Code, Data, Stack, Heap)으로 나눌 수 있다.      이미지 출처: C언어의 메모리 구조 Code">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(C&#x2F;C++) 참고용 정리 - 메모리 영역(Code, Data, Stack, Heap)">
+<meta property="og:url" content="https://perfectacle.github.io/2017/02/09/C-ref-004/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="프로그램을 실행하게 되면 OS는 메모리(RAM)에 공간을 할당해준다.할당해주는 메모리 공간은 4가지(Code, Data, Stack, Heap)으로 나눌 수 있다.      이미지 출처: C언어의 메모리 구조 Code">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/02/09/C-ref-004/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/02/09/C-ref-004/memory.png">
+<meta property="article:published_time" content="2017-02-09T14:31:26.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.247Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Variable">
+<meta property="article:tag" content="Static">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/02/09/C-ref-004/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/02/09/C-ref-004/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/02/09/C-ref-004/","path":"2017/02/09/C-ref-004/","title":"(C/C++) 참고용 정리 - 메모리 영역(Code, Data, Stack, Heap)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(C/C++) 참고용 정리 - 메모리 영역(Code, Data, Stack, Heap) | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Code"><span class="nav-number">1.</span> <span class="nav-text">Code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Data"><span class="nav-number">2.</span> <span class="nav-text">Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stack"><span class="nav-number">3.</span> <span class="nav-text">Stack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Heap"><span class="nav-number">4.</span> <span class="nav-text">Heap</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EA%B7%B8%EB%9F%BC-Heap-%EC%98%81%EC%97%AD-%EB%8F%99%EC%A0%81-%ED%95%A0%EB%8B%B9%EC%9D%80-%EC%99%9C-%ED%95%84%EC%9A%94%ED%95%9C-%EA%B2%83%EC%9D%BC%EA%B9%8C"><span class="nav-number">4.1.</span> <span class="nav-text">그럼 Heap 영역, 동적 할당은 왜 필요한 것일까?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0-%EB%A7%81%ED%81%AC"><span class="nav-number">5.</span> <span class="nav-text">참고 링크</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/02/09/C-ref-004/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(C/C++) 참고용 정리 - 메모리 영역(Code, Data, Stack, Heap) | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (C/C++) 참고용 정리 - 메모리 영역(Code, Data, Stack, Heap)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-02-09 14:31:26" itemprop="dateCreated datePublished" datetime="2017-02-09T14:31:26+00:00">2017-02-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/02/09/C-ref-004/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/09/C-ref-004/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/02/09/C-ref-004/thumb.png" class>
+
+<p>프로그램을 실행하게 되면 OS는 메모리(RAM)에 공간을 할당해준다.<br>할당해주는 메모리 공간은 4가지(Code, Data, Stack, Heap)으로 나눌 수 있다.  </p>
+<img src="/2017/02/09/C-ref-004/memory.png" class title="메모리의 구조">  
+<p>이미지 출처: <a target="_blank" rel="external nofollow noopener noreferrer" href="http://dsnight.tistory.com/50">C언어의 메모리 구조</a></p>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><p>우리가 작성한 소스 코드가 들어간다.<br>또한 상수도 여기에 들어간다고 한다.<br>물론 컴파일 된 기계어가 들어갈 것이다.<br>프로그램이 끝날 때까지 메모리에 계속 적재돼있는 놈들이다.  </p>
+<h2 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h2><p>전역 변수, static 변수 등등이 저장된다.<br>프로그램이 끝날 때까지 메모리에 계속 적재돼있는 놈들이다.  </p>
+<h2 id="Stack"><a href="#Stack" class="headerlink" title="Stack"></a>Stack</h2><p>지역 변수, 매개 변수, 리턴 값 등등이 저장된다.<br>함수 호출 시 생성되고, 함수가 종료되면 시스템에 반환된다.<br>프로그램이 자동으로 사용하는 임시 메모리 영역이다.<br>또한 이름에서 보듯이 Stack 자료구조를 이용해 구현한 것 같다.<br>컴파일 시에 크기가 결정된다.</p>
+<h2 id="Heap"><a href="#Heap" class="headerlink" title="Heap"></a>Heap</h2><p>프로그래머가 할당&#x2F;해제하는 메모리 공간이다.<br>malloc() 또는 new 연산자를 통해 할당하고,<br>free() 또는 delete 연산자를 통해서만 해제가 가능하다.<br>Java에서는 가비지 컬렉터가 자동으로 해제하는 것 같기도 하다.<br>이 공간에 메모리 할당하는 것을 동적 할당(Dynamic Memory Allocation)이라고도 부른다.<br>런타임 시에 크기가 결정된다.</p>
+<p>Stack 영역이 크면 클 수록 Heap 영역이 작아지고, Heap 영역이 크면 클 수록 Stack 영역이 작아진다.  </p>
+<h3 id="그럼-Heap-영역-동적-할당은-왜-필요한-것일까"><a href="#그럼-Heap-영역-동적-할당은-왜-필요한-것일까" class="headerlink" title="그럼 Heap 영역, 동적 할당은 왜 필요한 것일까?"></a>그럼 Heap 영역, 동적 할당은 왜 필요한 것일까?</h3><ul>
+<li><p>메모리를 효율적으로 관리할 수 있기 때문이지 않을까?<br>임베디드 시스템을 개발하다보면 하드웨어 크기가 매우 작은 경우가 많다.<br>하드웨어 크기가 작다는 것은 메모리의 용량도 작음을 의미한다.<br>뭐 메모리 용량이 클 수도 있지만, 가격이 매우 비싸질 것이다.<br>여튼 그러한 작은 메모리 공간에 프로그래머가 메모리 관리의 달인이라면…<br>컴파일러가 자동으로 할당해주는 것보다 더 효율적인 관리가 가능하지 않을까?  </p>
+</li>
+<li><p>배열의 길이를 사용자가 직접 정하고 싶을 경우<br>이는 매우 단적인 예이고, 실용성이 있는지는 잘 모르겠지만…<br>Heap 영역의 존재 이유를 설명하는 좋은 예가 될 것 같아서 가져와봤다.<br>소스 코드 출처: <a target="_blank" rel="external nofollow noopener noreferrer" href="http://dsnight.tistory.com/50">C언어의 메모리 구조</a>  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 정상적인 배열 선언</span></span><br><span class="line">    <span class="type">int</span> arr[<span class="number">10</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 비정상적인 배열 선언</span></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;i);</span><br><span class="line">    <span class="type">int</span> arr2[i];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nsizeof(i): %d&quot;</span>, <span class="keyword">sizeof</span>(i)); <span class="comment">// 4</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;sizeof(arr): %d&quot;</span>, <span class="keyword">sizeof</span>(arr)); <span class="comment">// 40</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\nsizeof(arr2): %d&quot;</span>, <span class="keyword">sizeof</span>(arr2)); <span class="comment">// 뭐라 꼬집어 말할 수 있을까?</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>main <code>함수</code> 내부에 있는 변수 i와 arr, arr2는 스택 영역에 올라간다.<br>함수 내부에서 쓰인 <code>지역 변수</code>이기 때문이다.<br>이는 컴파일 시에 그 크기가 결정된다.<br>i의 크기는 int이기 때문에 4byte,<br>arr의 크기는 int형 변수 10개가 들어간 것이기 때문에<br>sizeof(int) * 10 &#x3D; 40byte.<br>arr2의 크기는…?<br>stack 영역에 올라가는 arr2의 크기가 사용자의 입력에 따라서 유동적으로 바뀌게 된다.<br>이는 정상적인 메모리 할당이라고 볼 수 없다.<br>컴파일 시에 메모리의 크기가 결정되는 stack 영역에 올라갔음에도 불구하고,<br>런타임 시에 메모리의 크기가 결정되기 때문에 이는 힙 영역에 올리는 게 맞다고 본다.<br>아직 동적 할당을 제대로 배우지 않았기 때문에 이 이상의 설명과 이해는 힘들 것 같다.</p>
+</li>
+</ul>
+<h2 id="참고-링크"><a href="#참고-링크" class="headerlink" title="참고 링크"></a>참고 링크</h2><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://dsnight.tistory.com/50">C언어의 메모리 구조</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://sfixer.tistory.com/entry/%EB%A9%94%EB%AA%A8%EB%A6%AC-%EC%98%81%EC%97%ADcode-data-stack-heap">메모리 영역(code, data, stack, heap)</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://ghgus0702.tistory.com/11">동적할당과 정적할당</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://pacs.tistory.com/entry/CC-Programming-%EC%8A%A4%ED%83%9DStack-%ED%9E%99Heap-%EC%98%81%EC%97%AD">[C&#x2F;C++] 데이터, 스택(Stack), 힙(Heap) 영역</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://donghwada.tistory.com/entry/%EB%A9%94%EB%AA%A8%EB%A6%AC-%EC%98%81%EC%97%AD-Code-Data-BSS-HEAP-Stack-Little-Endian-Stack%EC%9D%98-%EC%9D%B4%ED%95%B4">메모리 영역 (Code, Data, BSS, HEAP, Stack), Little Endian, Stack의 이해</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C</a>
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/Variable/" rel="tag"># Variable</a>
+              <a href="/tags/Static/" rel="tag"># Static</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/02/09/Java-study-007day/" rel="prev" title="(Java) 자바의 정석 3판 007일차 - OOP(객체, 클래스, 인스턴스), new 연산자, 참조 타입, 클래스 변수">
+                  <i class="fa fa-chevron-left"></i> (Java) 자바의 정석 3판 007일차 - OOP(객체, 클래스, 인스턴스), new 연산자, 참조 타입, 클래스 변수
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/02/09/Cpp-ref-002/" rel="next" title="(C++) 참고용 정리 - 클래스의 두 가지 생성 방법">
+                  (C++) 참고용 정리 - 클래스의 두 가지 생성 방법 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

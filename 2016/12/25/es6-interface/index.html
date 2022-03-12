@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이 포스트는 GDG 2016에서 발표하신 맹기완 님의 발표를 듣고 감명을 받아 정리해본 글이다.이터레이터 인터페이스와 이터러블 인터페이스는 다음 포스트에서 정리할 예정이다.이 글을 읽고난 후에 (ES6) Symbol에 대한 글부터 읽어보길 바란다.다소 짧아서 어디 공유하기 부끄럽지만 이렇게 짧은 내용들이 집중해서 읽기에 참 좋은 것 같다. Interfa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(ES6) Interface">
+<meta property="og:url" content="https://perfectacle.github.io/2016/12/25/es6-interface/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="이 포스트는 GDG 2016에서 발표하신 맹기완 님의 발표를 듣고 감명을 받아 정리해본 글이다.이터레이터 인터페이스와 이터러블 인터페이스는 다음 포스트에서 정리할 예정이다.이 글을 읽고난 후에 (ES6) Symbol에 대한 글부터 읽어보길 바란다.다소 짧아서 어디 공유하기 부끄럽지만 이렇게 짧은 내용들이 집중해서 읽기에 참 좋은 것 같다. Interfa">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2016/12/25/es6-interface/thumb.png">
+<meta property="article:published_time" content="2016-12-25T22:17:14.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.635Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JS">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="ES6">
+<meta property="article:tag" content="ES2015">
+<meta property="article:tag" content="Interface">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2016/12/25/es6-interface/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2016/12/25/es6-interface/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2016/12/25/es6-interface/","path":"2016/12/25/es6-interface/","title":"(ES6) Interface"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(ES6) Interface | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Interface"><span class="nav-number">1.</span> <span class="nav-text">Interface</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/12/25/es6-interface/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(ES6) Interface | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (ES6) Interface
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2016-12-25 22:17:14" itemprop="dateCreated datePublished" datetime="2016-12-25T22:17:14+00:00">2016-12-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/ES2015/" itemprop="url" rel="index"><span itemprop="name">ES2015+</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/12/25/es6-interface/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/25/es6-interface/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2016/12/25/es6-interface/thumb.png" class>
+
+<p>이 포스트는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://festi.kr/festi/gdg-korea-2016-devfest-seoul/">GDG 2016</a>에서 발표하신 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.facebook.com/hika00">맹기완</a> 님의 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.bsidesoft.com/?p=2913">발표</a>를 듣고 감명을 받아 정리해본 글이다.<br><a href="/2017/04/22/ES6-Iterator/">이터레이터 인터페이스와 이터러블 인터페이스</a>는 다음 포스트에서 정리할 예정이다.<br>이 글을 읽고난 후에 <a href="/2017/04/16/ES6-Symbol/">(ES6) Symbol</a>에 대한 글부터 읽어보길 바란다.<br>다소 짧아서 어디 공유하기 부끄럽지만 이렇게 짧은 내용들이 집중해서 읽기에 참 좋은 것 같다.</p>
+<h1 id="Interface"><a href="#Interface" class="headerlink" title="Interface"></a>Interface</h1><p>ECMAScript2015(이하 ES6) 들어서서 <code>인터페이스</code>는 <code>고유 명사</code>가 되었다.</p>
+<blockquote>
+<p>고유명사(固有名詞)<br>낱낱의 특정한 사물이나 사람을 다른 것들과 구별하여 부르기 위하여 고유의 기호를 붙인 이름.</p>
+</blockquote>
+<p>Java에서 Interface는 다음과 같은 명세를 준수해야 Interface라고 부른다.<br>자바 허접이라 다음 링크를 참조하였다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://blog.eairship.kr/122">JAVA 강좌 21편. 인터페이스(Interface)</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://slipp.net/questions/52">Interface는 객체인가?</a>  </p>
+<ul>
+<li>메소드는 public abstract로 선언된 추상 메소드만을 가진다.</li>
+<li>변수는 public static final로 선언된 상수만을 가진다.</li>
+</ul>
+<p>위 2가지 조건만 만족하면 자바에서는 인터페이스라고 불리운다.<br>나머지는 인터페이스의 특징인 것 같아 생략하였다. (다중 상속 등등)<br>자바에서 인터페이스는 고유 명사이며 위와 같은 의미를 가진다.</p>
+<p>이와 같이 ES6에서도 이제 인터페이스는 자바와 같이 고유 명사가 되었다.<br>그 말은 ES6에서의 인터페이스는 다른 곳에서 쓰이는 인터페이스와는 다른 것이라는 걸 뜻한다.<br>아래 사이트를 가도 볼 수 있다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.ecma-international.org/ecma-262/6.0/#sec-iteration">http://www.ecma-international.org/ecma-262/6.0/#sec-iteration</a><br>그럼 ES6에서 말하는 인터페이스는 무엇인지 살펴보자.  </p>
+<ul>
+<li>객체가 가져야하는 키를 명시.</li>
+<li>그 키가 가져야 하는 값을 명시.</li>
+</ul>
+<p>위 조건만 만족하면 ES6에서는 인터페이스라고 불리울 수 있다.<br>인터페이스는 객체나 클래스가 아닌 하나의 <code>명세</code>라고 보면 될 것 같다.<br>그럼 test 인터페이스를 정의해보자.<br><strong>안타깝게도 사용자 인터페이스를 정의할 방법은 없는 것 같지만,<br>설명을 위해 작성해보았다.</strong>  </p>
+<ul>
+<li>test와 testing이라는 키를 가짐.</li>
+<li>test는 매개변수로 숫자를 받고 매개변수의 제곱한 결과를 반환함.</li>
+<li>testing은 boolean 값을 가짐.</li>
+</ul>
+<p>하나만 하면 심심하니 test2라는 인터페이스도 정의해보자.</p>
+<ul>
+<li>name과 age라는 키를 가짐.</li>
+<li>name은 string 값을 가짐.</li>
+<li>age는 number 값을 가짐.</li>
+</ul>
+<p>그럼 위 인터페이스를 충족하는 객체를 만들어보자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  <span class="attr">test</span>: <span class="function"><span class="params">num</span> =&gt;</span> <span class="title class_">Math</span>.<span class="title function_">pow</span>(num, <span class="number">2</span>),</span><br><span class="line">  <span class="attr">testing</span>: <span class="literal">false</span>,</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;양간장&quot;</span>,</span><br><span class="line">  <span class="attr">age</span>: <span class="number">24</span>,</span><br><span class="line">  <span class="attr">etc</span>: <span class="string">&quot;위 키들을 제외하고는 어떠한 키가 오던 상관이 없다.&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>obj 객체는</p>
+<ul>
+<li>test와 test2 인터페이스 조건을 충족하므로 test, test2 인터페이스를 따르는 객체이다.<ul>
+<li>test 인터페이스의 조건을 충족하므로 test 인터페이스를 따르는 객체이다.<ul>
+<li>test라는 키를 가지고 있다.  <ul>
+<li>test라는 키의 값은 숫자를 매개변수로 받고 매겨변수로 받은 숫자를 제곱해서 반환한다.</li>
+</ul>
+</li>
+<li>testing이라는 키를 가지고 있다.  <ul>
+<li>testing이라는 키의 값은 boolean 값을 가진다.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>test2 인터페이스의 조건을 충족하므로 test2 인터페이스를 따르는 객체이다.<ul>
+<li>name이라는 키를 가지고 있다.<ul>
+<li>name이라는 키의 값은 string 값을 가진다.</li>
+</ul>
+</li>
+<li>age라는 키를 가지고 있다.<ul>
+<li>age라는 키의 값은 number 값을 가진다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>그 이외에 키에 관해서는 test와 test2 인터페이스에서 명세한 바가 없으므로 전혀 상관이 없다.<br>이는 마치 덕타이핑(duck typing)과 매우 유사한 것 같다.</p>
+<blockquote>
+<p>덕 타이핑(duck typing)<br>오리처럼 생겨서 오리처럼 걷고 오리처럼 꽥꽥 소리를 낸다면 그건 오리다<br>라는 속담에서 유래됐다고 한다.</p>
+</blockquote>
+<p>name, age 키가 있고 그 키에 맞는 값들을 가진다면 그건 test2 인터페이스를 따르는 것이다.<br>다른 어떠한 키가 오더라도 위 두개의 키만 조건을 준수한다면 test2 인터페이스를 따른다는 것이다.<br>좀 다른 건가…?</p>
+<p>역시 남이 떠다 먹여주는 정보들만 받아 먹다보니 혼자서 탐구하는 것은 정말 어려운 것 같다.</p>
+<p>뭐 여하튼 이렇듯 ES6에서는 사용자가 인터페이스를 정의할 수 없다보니<br>표준으로 정의해놓은 인터페이스가 있는데 그게 바로<br>이터러블 인터페이스와 이터레이터 인터페이스인데 길어서 인터페이스는 빼는 것 같다.<br>위 두 인터페이스 외에도 많은 것 같은데(사실 모른다.)<br>대표적인 두 인터페이스만 다음 포스트에서 다뤄야할 것 같다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"># JS</a>
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/ES6/" rel="tag"># ES6</a>
+              <a href="/tags/ES2015/" rel="tag"># ES2015</a>
+              <a href="/tags/Interface/" rel="tag"># Interface</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2016/12/24/ES6-Number-object-and-function/" rel="prev" title="(ES6) Number 객체와 함수">
+                  <i class="fa fa-chevron-left"></i> (ES6) Number 객체와 함수
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2016/12/30/Java-study-001day/" rel="next" title="(Java) 자바의 정석 3판 001일차 - 컴퓨터 이론, 리터럴 & 변수 & 변수">
+                  (Java) 자바의 정석 3판 001일차 - 컴퓨터 이론, 리터럴 & 변수 & 변수 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

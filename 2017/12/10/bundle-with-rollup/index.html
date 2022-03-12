@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이 글은 Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기에서 이어지는 내용이며,이 글을 본 이후에 travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기를 보는 걸 추천드립니다.여러 주제를 다루다보니 깊게 다루지는 않고 각각이 무엇을 하는 것인지만 간">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rollup.js를 통해 모듈 번들링하기">
+<meta property="og:url" content="https://perfectacle.github.io/2017/12/10/bundle-with-rollup/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="이 글은 Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기에서 이어지는 내용이며,이 글을 본 이후에 travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기를 보는 걸 추천드립니다.여러 주제를 다루다보니 깊게 다루지는 않고 각각이 무엇을 하는 것인지만 간">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/12/10/bundle-with-rollup/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/12/10/bundle-with-rollup/d-ts-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/12/10/bundle-with-rollup/d-ts-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/12/10/bundle-with-rollup/d-ts-03.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/12/10/bundle-with-rollup/d-ts-04.png">
+<meta property="article:published_time" content="2017-12-10T17:32:52.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.379Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Rollup">
+<meta property="article:tag" content="CommonJS">
+<meta property="article:tag" content="ESModule">
+<meta property="article:tag" content="UMD">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/12/10/bundle-with-rollup/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/12/10/bundle-with-rollup/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/12/10/bundle-with-rollup/","path":"2017/12/10/bundle-with-rollup/","title":"rollup.js를 통해 모듈 번들링하기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>rollup.js를 통해 모듈 번들링하기 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%AA%A8%EB%93%88-%EB%B2%88%EB%93%A4%EB%9F%AC"><span class="nav-number">1.</span> <span class="nav-text">모듈 번들러</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EC%99%84%EC%84%B1%ED%95%98%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text">라이브러리 완성하기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rollup"><span class="nav-number">2.1.</span> <span class="nav-text">Rollup</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#package-json-%EC%84%B8%ED%8C%85%ED%95%98%EA%B8%B0"><span class="nav-number">2.1.1.</span> <span class="nav-text">package.json 세팅하기</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#index-d-ts-%EB%A7%8C%EB%93%A4%EA%B8%B0"><span class="nav-number">2.1.2.</span> <span class="nav-text">index.d.ts 만들기</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rollup-config-js-%EC%84%B8%ED%8C%85%ED%95%98%EA%B8%B0"><span class="nav-number">2.1.3.</span> <span class="nav-text">rollup.config.js 세팅하기</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0%E2%80%A6"><span class="nav-number">3.</span> <span class="nav-text">마치며…</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/12/10/bundle-with-rollup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="rollup.js를 통해 모듈 번들링하기 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          rollup.js를 통해 모듈 번들링하기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-12-10 17:32:52" itemprop="dateCreated datePublished" datetime="2017-12-10T17:32:52+00:00">2017-12-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Front-end/" itemprop="url" rel="index"><span itemprop="name">Front-end</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/12/10/bundle-with-rollup/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/10/bundle-with-rollup/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/12/10/bundle-with-rollup/thumb.png" class>
+
+<p>이 글은 <a href="/2017/12/10/ts-node-mocha-chai">Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기</a>에서 이어지는 내용이며,<br>이 글을 본 이후에 <a href="/2017/12/10/travis-ci-coveralls">travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기</a>를 보는 걸 추천드립니다.<br>여러 주제를 다루다보니 깊게 다루지는 않고 각각이 무엇을 하는 것인지만 간단하게 설명과 예제를 곁들여 진행하고 있습니다.<br>또한 예제 진행은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.jetbrains.com/idea/">IntelliJ</a>를 통해 진행했습니다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.jetbrains.com/webstorm/">WebStorm</a>으로 진행해도 상관 없고, <a target="_blank" rel="external nofollow noopener noreferrer" href="https://code.visualstudio.com/">VS Code</a>와 진행하면 더 짱짱맨일지도 모르겠습니다.  </p>
+<p>각 단계 별 깃헙 저장소 브랜치를 제공하고 있고, 이 포스트의 최종 결과물은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/perfectacle/front-test-setting/tree/rollup-umd">rollup-umd 브랜치</a>에서 확인 가능합니다.  </p>
+<h2 id="모듈-번들러"><a href="#모듈-번들러" class="headerlink" title="모듈 번들러"></a>모듈 번들러</h2><p>typescript 컴파일러나, ES2015+ to ES5 트랜스파일러인 바벨의 경우에는 모듈 간의 의존관계를 알지 못한다.<br>따라서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://webpack.js.org/">Webpack</a>이나 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://rollupjs.org/">Rollup</a>, <a target="_blank" rel="external nofollow noopener noreferrer" href="https://parceljs.org/">parcel</a>과 같은 모듈 번들러로 번들링해야한다.  </p>
+<p>기존에 익숙했던 Webpack과 같은 모듈 번들러 대신에 Rollup을 사용한 이유는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://medium.com/webpack/webpack-and-rollup-the-same-but-different-a41ad427058c">Webpack and Rollup: the same but different</a><br>이 글에서 <code>Use webpack for apps, and Rollup for libraries</code>이란 구문과 페이스북의 리액트가 rollup을 쓰고 있기 때문에 호기심이 생겨서<br>예제로 만들어 볼 라이브러리를 말아보기 위해서 롤업을 선택해봤다.  </p>
+<h2 id="라이브러리-완성하기"><a href="#라이브러리-완성하기" class="headerlink" title="라이브러리 완성하기"></a>라이브러리 완성하기</h2><p>전에는 util.ts 파일 하나만 있으니 의존 관계를 누가 봐도 알기 쉬웠다.<br>따라서 이번에는 모듈 간의 의존 관계를 조금 복잡하게 해보자.  </p>
+<p>src 폴더 안에 util2.ts 파일을 만들고 아래와 같이 만들어주자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> src/util2.ts</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> removedDigits = (<span class="attr">numberContainsNotDigits</span>: <span class="built_in">string</span>): <span class="function"><span class="params">string</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> numberContainsNotDigits.<span class="title function_">replace</span>(<span class="regexp">/[\d]/g</span>, <span class="string">&#x27;&#x27;</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>해당 함수의 유닛테스트를 test&#x2F;util2.spec.ts에 만들어주자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> <span class="built_in">test</span>/util2.spec.ts</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;expect&#125; <span class="keyword">from</span> <span class="string">&#x27;chai&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;removedDigits&#125; <span class="keyword">from</span> <span class="string">&#x27;../src/util2&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">describe</span>(<span class="string">&#x27;util2&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="title function_">it</span>(<span class="string">&#x27;test removedDigits&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="title function_">expect</span>(<span class="title function_">removedDigits</span>(<span class="string">&#x27;010-123-3333&#x27;</span>)).<span class="property">to</span>.<span class="property">be</span>.<span class="title function_">equal</span>(<span class="string">&#x27;--&#x27;</span>);</span><br><span class="line">        <span class="title function_">expect</span>(<span class="title function_">removedDigits</span>(<span class="string">&#x27;93/05/30&#x27;</span>)).<span class="property">to</span>.<span class="property">be</span>.<span class="title function_">equal</span>(<span class="string">&#x27;//&#x27;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>그리고 해당 모듈들을 하나로 뭉친 진입점(entry point)로 src 폴더에 index.ts를 만들자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> src/index.ts</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;removedDigits&#125; <span class="keyword">from</span> <span class="string">&#x27;./util2&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;removedNotDigits&#125; <span class="keyword">from</span> <span class="string">&#x27;./util&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123;</span><br><span class="line">  removedDigits, removedNotDigits</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 index.ts는 테스트 커버리지에 포함시키지 않게 .nycrc 설정에 해당 내용을 추가해주자.  </p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;exclude&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;src/index.ts&quot;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>npm test</code>를 때려서 테스트가 정상적으로 수행되는지 확인하자.</p>
+<h3 id="Rollup"><a href="#Rollup" class="headerlink" title="Rollup"></a>Rollup</h3><p>우선 설치부터 해보자.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -S rollup rollup-plugin-typescript2 rollup-plugin-tslint rollup-plugin-uglify</span><br></pre></td></tr></table></figure>
+
+<p>우리 라이브러리는 타입스크립트로 만들 거고, tslint도 쓸 거고, 코드의 양을 줄이기 위해 minify 및 변수 난독화 진행을 위해서 uglify까지 설치했다.  </p>
+<h4 id="package-json-세팅하기"><a href="#package-json-세팅하기" class="headerlink" title="package.json 세팅하기"></a>package.json 세팅하기</h4><p>package.json의 main과 name을 아래와 같이 바꾸고 빌드 스크립트를 추가하자.<br>main은 require 혹은 import 했을 때 직접적으로 import 되는 파일이니 엔트리 포인트를 잘 정해놔야한다.<br>또한 name은 npm에 올릴 생각이라면 npm repository에 올라간 라이브러리와 중복되면 안 된다.<br>그냥 github repository에다가 올려놓고 설치하거나 로컬에 올려놓고 설치하려면 적당한 이름을 지으면 된다.  </p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;utils&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;main&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dist/index.js&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npm test &amp;&amp; rollup -c&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>테스트가 실패하면 빌드를 실행하지 않는다.<br>만약 테스트를 돌리긴 하지만 테스트가 실패해도 빌드를 수행하고 싶은 경우에는 아래와 같이 빌드 스크립트를 구성하면 된다.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;build&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npm test; rollup -c&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="index-d-ts-만들기"><a href="#index-d-ts-만들기" class="headerlink" title="index.d.ts 만들기"></a>index.d.ts 만들기</h4><p>우리의 라이브러리에 대한 타입 정의 파일을 만들어야한다.  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> index.d.ts</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">declare</span> <span class="variable language_">module</span> <span class="string">&#x27;utils&#x27;</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 숫자를 포함한 문자열에서 숫자를 제외한 문자를 제거하는 함수</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> numberContainsNotDigits 숫자 이외의 문자를 포함한 문자열</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 숫자만 포함한 문자열</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">removedNotDigits</span>(<span class="params">numberContainsNotDigits: <span class="built_in">string</span></span>): <span class="built_in">string</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 숫자를 포함한 문자열에서 숫자만 제거하는 함수</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> numberContainsDigits 숫자를 포함한 문자열</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 숫자만 제외한 문자열</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">export</span> <span class="keyword">function</span> <span class="title function_">removedDigits</span>(<span class="params">numberContainsDigits: <span class="built_in">string</span></span>): <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>만약 index.d.ts를 만들어두지 않는다면 아래와 같은 현상이 발생한다.  </p>
+<img src="/2017/12/10/bundle-with-rollup/d-ts-01.png" class title="모듈에 대한 타입 정의를 찾을 수 없다.">
+
+<img src="/2017/12/10/bundle-with-rollup/d-ts-02.png" class title="모듈을 로드하고 . 찍었을 때 제대로 자동완성이 되지 않는다.">  
+
+<p>index.d.ts를 만들어두면 위 현상이 발생하지 않는다.</p>
+<img src="/2017/12/10/bundle-with-rollup/d-ts-03.png" class title="모듈에 대한 타입 정의를 잘 찾을 수 있다.">  
+
+<img src="/2017/12/10/bundle-with-rollup/d-ts-04.png" class title=". 찍어도 자동완성이 잘 된다.">
+
+<p>하지만 index.d.ts를 추가하고 테스트해보면 <code>TypeError: Unable to require .d.ts file.</code> 오류가 발생하니 .nycrc를 아래와 같이 수정해줘야한다.  </p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;exclude&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;src/index.ts&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;**/*.d.ts&quot;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="rollup-config-js-세팅하기"><a href="#rollup-config-js-세팅하기" class="headerlink" title="rollup.config.js 세팅하기"></a>rollup.config.js 세팅하기</h4><ul>
+<li>CommonJS 스펙을 준수한 모듈로 번들링하는 경우<br>대부분 Node.js에서만 쓸 용도의 라이브러리를 만들 때 이 경우에 해당한다.<br>rollup.config.js 파일을 아래와 같이 적어주자.  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> typescript <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-typescript2&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> tslint <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-tslint&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> pkg <span class="keyword">from</span> <span class="string">&#x27;./package.json&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="attr">input</span>: <span class="string">&#x27;src/index.ts&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">file</span>: pkg.<span class="property">main</span>,</span><br><span class="line">    <span class="attr">format</span>: <span class="string">&#x27;cjs&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="title function_">typescript</span>(),</span><br><span class="line">    <span class="title function_">tslint</span>()</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<code>npm build</code> 때리면 빌드된 commonjs 모듈 파일이 dist&#x2F;index.js에 나오게 된다.</li>
+</ul>
+<p>설치는 아래와 같이 하면 된다. (자신의 상황에 맞게 설치하면 된다.)  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -S git://github.com/perfectacle/front-test-setting.git<span class="comment">#rollup-cjs</span></span><br></pre></td></tr></table></figure>
+
+<p>사용은 아래와 같이 하면 된다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123;removedDigits, removedNotDigits&#125; = <span class="built_in">require</span>(<span class="string">&#x27;utils&#x27;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">removedDigits</span>(<span class="string">&#x27;93-05&#x27;</span>)); <span class="comment">// -</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ES Module 스펙을 준수한 모듈로 번들링하는 경우<br>import&#x2F;export 모듈로 사용하기 위해서 사용하는데 대부분 웹팩과 같은 번들러를 사용할 때 많이 사용한다.<br>rollup.config.js 파일을 아래와 같이 적어주자.<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> typescript <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-typescript2&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> tslint <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-tslint&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> pkg <span class="keyword">from</span> <span class="string">&#x27;./package.json&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="attr">input</span>: <span class="string">&#x27;src/index.ts&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">file</span>: pkg.<span class="property">main</span>,</span><br><span class="line">    <span class="attr">format</span>: <span class="string">&#x27;es&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="title function_">typescript</span>(),</span><br><span class="line">    <span class="title function_">tslint</span>()</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<code>npm build</code> 때리면 빌드된 ES 모듈 파일이 dist&#x2F;index.js에 나오게 된다.</li>
+</ul>
+<p>설치는 아래와 같이 하면 된다. (자신의 상황에 맞게 설치하면 된다.)  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -S git://github.com/perfectacle/front-test-setting.git<span class="comment">#rollup-esm</span></span><br></pre></td></tr></table></figure>
+
+<p>사용은 아래와 같이 하면 된다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;removedDigits, removedNotDigits&#125; <span class="keyword">from</span> <span class="string">&#x27;utils&#x27;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">removedDigits</span>(<span class="string">&#x27;93-05&#x27;</span>)); <span class="comment">// -</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>브라우저 전용으로 모듈을 번들링하는 경우<br>브라우저는 모든 리소스가 받아져있는 상태가 아니라서 좀 특수성을 가지기 때문에 CommonJS 스펙 모듈의 사용이 불가능하고,<br>ES 모듈을 구현한 브라우저는 크롬 62+ 말고는 없는 것으로 알고 있다.<br>따라서 브라우저를 지원하기 위해서는 아래와 같이 설정해야한다.</li>
+</ul>
+<p>우선 package.json에 main 프로퍼티를 수정해주자.  </p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;main&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dist/util.min.js&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>롤업 설정은 아래와 같이 바꿔주자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> typescript <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-typescript2&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> tslint <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-tslint&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> uglify <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-uglify&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> pkg <span class="keyword">from</span> <span class="string">&#x27;./package.json&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="attr">input</span>: <span class="string">&#x27;src/index.ts&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">file</span>: pkg.<span class="property">main</span>,</span><br><span class="line">    <span class="attr">format</span>: <span class="string">&#x27;iife&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// name으로 만든 이름이 전역에 생길 객체의 이름이니 필수이다.</span></span><br><span class="line">  <span class="attr">name</span>: <span class="string">&#x27;utils&#x27;</span>,</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="title function_">typescript</span>(),</span><br><span class="line">    <span class="title function_">tslint</span>(),</span><br><span class="line">    <span class="title function_">uglify</span>()</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>설치는 아래와 같이 하면 된다. (자신의 상황에 맞게 설치하면 된다.)  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -S git://github.com/perfectacle/front-test-setting.git<span class="comment">#rollup-browser</span></span><br></pre></td></tr></table></figure>
+
+<p>그리고 html 파일에서 사용할 때는 아래와 같이 사용하면 된다.  </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;ko&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 요렇게 쓰면 번거로우니 대부분 CDN을 지원한다. --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;node_modules/utils/dist/util.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> &#123;removedDigits, removedNotDigits&#125; = utils;</span></span><br><span class="line"><span class="language-javascript">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">removedDigits</span>(<span class="string">&#x27;93-05&#x27;</span>)); <span class="comment">// -</span></span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>복합적인 상황<br>우리가 만드려는 라이브러리가 범용적으로 사용됐으면 하는 바람이라면 아래와 같이 설정을 하면 된다.<br>우선 package.json에 browser 프로퍼티를 추가해주자.  <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;main&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dist/index.js&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;browser&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dist/util.min.js&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>롤업 설정은 아래와 같이 해주자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> typescript <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-typescript2&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> tslint <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-tslint&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> uglify <span class="keyword">from</span> <span class="string">&#x27;rollup-plugin-uglify&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> pkg <span class="keyword">from</span> <span class="string">&#x27;./package.json&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> [</span><br><span class="line">    <span class="comment">// Node and other module bulder for UMD build</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">input</span>: <span class="string">&#x27;src/index.ts&#x27;</span>,</span><br><span class="line">        <span class="attr">output</span>: &#123;</span><br><span class="line">            <span class="attr">file</span>: pkg.<span class="property">main</span>,</span><br><span class="line">            <span class="attr">format</span>: <span class="string">&#x27;umd&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;utils&#x27;</span>,</span><br><span class="line">        <span class="attr">plugins</span>: [</span><br><span class="line">            <span class="title function_">typescript</span>(),</span><br><span class="line">            <span class="title function_">tslint</span>()</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// browser-friendly IIFE build</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">input</span>: <span class="string">&#x27;src/index.ts&#x27;</span>,</span><br><span class="line">        <span class="attr">output</span>: &#123;</span><br><span class="line">            <span class="attr">file</span>: pkg.<span class="property">browser</span>,</span><br><span class="line">            <span class="attr">format</span>: <span class="string">&#x27;iife&#x27;</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;utils&#x27;</span>,</span><br><span class="line">        <span class="attr">plugins</span>: [</span><br><span class="line">            <span class="title function_">typescript</span>(),</span><br><span class="line">            <span class="title function_">tslint</span>(),</span><br><span class="line">            <span class="title function_">uglify</span>()</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>umd는 es 모듈, commonjs, amd, iife 등등 모든 모듈 방식을 커버하는 모듈 방식이다.<br>하지만 umd는 기본적으로 iife 모듈보다 용량이 크기 때문에 iife를 uglify 한 것을 브라우저에서 쓰고,<br>나머지 환경에서는 umd 모듈 파일을 사용하는 게 좋다.</p>
+<p>설치는 아래와 같이 하면 된다. (자신의 상황에 맞게 설치하면 된다.)  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -S git://github.com/perfectacle/front-test-setting.git<span class="comment">#rollup-umd</span></span><br></pre></td></tr></table></figure>
+
+<p>우선 node에서 사용할 때는 아래와 같이 하면 된다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123;removedDigits, removedNotDigits&#125; = <span class="built_in">require</span>(<span class="string">&#x27;utils&#x27;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">removedDigits</span>(<span class="string">&#x27;93-05&#x27;</span>)); <span class="comment">// -</span></span><br></pre></td></tr></table></figure>
+
+<p>다른 모듈 번들러에서 사용할 때는 아래와 같이 사용하면 된다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;removedDigits, removedNotDigits&#125; <span class="keyword">from</span> <span class="string">&#x27;utils&#x27;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">removedDigits</span>(<span class="string">&#x27;93-05&#x27;</span>)); <span class="comment">// -</span></span><br></pre></td></tr></table></figure>
+
+<p>브라우저에서 사용할 때는 아래와 같이 사용하면 된다.  </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;ko&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 요렇게 쓰면 번거로우니 대부분 CDN을 지원한다. --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;node_modules/utils/dist/util.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">  <span class="keyword">const</span> &#123;removedDigits, removedNotDigits&#125; = utils;</span></span><br><span class="line"><span class="language-javascript">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">removedDigits</span>(<span class="string">&#x27;93-05&#x27;</span>)); <span class="comment">// -</span></span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="마치며…"><a href="#마치며…" class="headerlink" title="마치며…"></a>마치며…</h2><p>저는 리액트를 써볼 때 웹팩을 써서 웹팩이 익숙했었는데 rollup을 써보고 나니 앱이 아닌 라이브러리의 경우에는 롤업이 더 적합한 것 같다는 느낌도 많이 들었네요.<br>이 다음 번 시리즈에는 마지막 포스트인 <a href="/2017/12/10/travis-ci-coveralls">travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기</a>을 보시면 됩니다.<br>오픈소스, 남들과 협업할 때 어떻게 내 코드의 안전성을 쉽고 빠르게 보장할 수 있을지에 대해 정리해놓았습니다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Rollup/" rel="tag"># Rollup</a>
+              <a href="/tags/CommonJS/" rel="tag"># CommonJS</a>
+              <a href="/tags/ESModule/" rel="tag"># ESModule</a>
+              <a href="/tags/UMD/" rel="tag"># UMD</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/10/ts-node-mocha-chai/" rel="prev" title="Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기">
+                  <i class="fa fa-chevron-left"></i> Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/12/10/travis-ci-coveralls/" rel="next" title="travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기">
+                  travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

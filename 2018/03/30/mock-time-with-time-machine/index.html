@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="문제의 발단가끔 현재 시간을 기준으로 코드를 짜야할 때가 있다.이런 경우에 자바의 경우에는 LocalDate, LocalTime, LocalDateTime 등등의 클래스에 있는 static 메서드인 now 메서드로 현재 시간을 구한다.아래와 같이 말이다.   12345678910111213141516171819public class App &amp;#123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Java) 타임머신을 타고 시간 여행 떠나기">
+<meta property="og:url" content="https://perfectacle.github.io/2018/03/30/mock-time-with-time-machine/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="문제의 발단가끔 현재 시간을 기준으로 코드를 짜야할 때가 있다.이런 경우에 자바의 경우에는 LocalDate, LocalTime, LocalDateTime 등등의 클래스에 있는 static 메서드인 now 메서드로 현재 시간을 구한다.아래와 같이 말이다.   12345678910111213141516171819public class App &amp;#123">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2018/03/30/mock-time-with-time-machine/thumb.png">
+<meta property="article:published_time" content="2018-03-30T00:41:17.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.091Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Test">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2018/03/30/mock-time-with-time-machine/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2018/03/30/mock-time-with-time-machine/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2018/03/30/mock-time-with-time-machine/","path":"2018/03/30/mock-time-with-time-machine/","title":"(Java) 타임머신을 타고 시간 여행 떠나기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Java) 타임머신을 타고 시간 여행 떠나기 | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%AC%B8%EC%A0%9C%EC%9D%98-%EB%B0%9C%EB%8B%A8"><span class="nav-number">1.</span> <span class="nav-text">문제의 발단</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%83%80%EC%9E%84%EB%A8%B8%EC%8B%A0%EC%9D%84-%ED%86%B5%ED%95%B4%EC%84%9C-%EB%82%98%EC%9D%B4%EC%8A%A4%ED%95%98%EA%B2%8C-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0%ED%95%98%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text">타임머신을 통해서 나이스하게 문제 해결하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EC%A1%B0%EB%A7%81%ED%81%AC"><span class="nav-number">3.</span> <span class="nav-text">참조링크</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/03/30/mock-time-with-time-machine/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Java) 타임머신을 타고 시간 여행 떠나기 | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Java) 타임머신을 타고 시간 여행 떠나기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-03-30 00:41:17" itemprop="dateCreated datePublished" datetime="2018-03-30T00:41:17+00:00">2018-03-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/" itemprop="url" rel="index"><span itemprop="name">Middle-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/TDD/" itemprop="url" rel="index"><span itemprop="name">TDD</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/03/30/mock-time-with-time-machine/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/03/30/mock-time-with-time-machine/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2018/03/30/mock-time-with-time-machine/thumb.png" class title="타임머신을 타고 시간 여행을 떠나보자.">  
+
+<h2 id="문제의-발단"><a href="#문제의-발단" class="headerlink" title="문제의 발단"></a>문제의 발단</h2><p>가끔 현재 시간을 기준으로 코드를 짜야할 때가 있다.<br>이런 경우에 자바의 경우에는 <code>LocalDate, LocalTime, LocalDateTime</code> 등등의 클래스에 있는 static 메서드인 now 메서드로 현재 시간을 구한다.<br>아래와 같이 말이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line">    <span class="comment">// 테스트 하기 어렵게 하기 위해서 일부러 메소드가 메소드를 계속해서 호출하는 형태로 작성함.</span></span><br><span class="line">    <span class="comment">// 현재 시간이 오전인지 알아내는 메소드</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">isAM</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">method</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method2();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">method2</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method3();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">method3</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> LocalTime.now().isBefore(LocalTime.of(<span class="number">12</span>, <span class="number">0</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>하지만 이렇게 현재 시간에 <strong>의존</strong>하는 코드를 테스트하기란 매우 어렵다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppTest</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testAm</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 이 테스트는 오전에는 통과하고 오후에는 깨지는 테스트가 된다.</span></span><br><span class="line">        assertTrue(App.isAM());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>만약 배포 스크립트에 테스트가 통과하지 못하면 배포가 실패하게 끔 구성돼있다면 오전에만 배포해야하거나 테스트를 끄고 배포를 수행해야할 것이다.<br>가장 간단하게 떠오르는 해결 방안은 현재 시간을 파라미터로 받는 것이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">isAM</span><span class="params">(LocalTime now)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method(now);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">method</span><span class="params">(LocalTime now)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method2(now);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">method2</span><span class="params">(LocalTime now)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method3(now);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">method3</span><span class="params">(LocalTime now)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> now.isBefore(LocalTime.of(<span class="number">12</span>, <span class="number">0</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이렇게 하면 현재 시간을 내 마음대로 컨트롤 해서 아래와 같이 항상 통과시키는 테스트를 작성할 수 있다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppTest</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testAm</span><span class="params">()</span> &#123;</span><br><span class="line">        assertTrue(App.isAM(LocalTime.of(<span class="number">11</span>, <span class="number">59</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>하지만 위와 같이 하면 처음 메소드 도입부(isAM)부터 now를 쓸 때까지 계속해서 now를 던지는 의미없는 행위를 반복해야한다.  </p>
+<h2 id="타임머신을-통해서-나이스하게-문제-해결하기"><a href="#타임머신을-통해서-나이스하게-문제-해결하기" class="headerlink" title="타임머신을 통해서 나이스하게 문제 해결하기"></a>타임머신을 통해서 나이스하게 문제 해결하기</h2><p>우선 LocalTime, LocalDate, LocalDateTime의 now 메소드를 보면 아래와 같이 구현돼있다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> LocalDateTime <span class="title function_">now</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> now(Clock.systemDefaultZone());</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> LocalDateTime <span class="title function_">now</span><span class="params">(Clock clock)</span> &#123;</span><br><span class="line">    Objects.requireNonNull(clock, <span class="string">&quot;clock&quot;</span>);</span><br><span class="line">    <span class="keyword">final</span> <span class="type">Instant</span> <span class="variable">now</span> <span class="operator">=</span> clock.instant();  <span class="comment">// called once</span></span><br><span class="line">    <span class="type">ZoneOffset</span> <span class="variable">offset</span> <span class="operator">=</span> clock.getZone().getRules().getOffset(now);</span><br><span class="line">    <span class="keyword">return</span> ofEpochSecond(now.getEpochSecond(), now.getNano(), offset);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> LocalDateTime <span class="title function_">ofEpochSecond</span><span class="params">(<span class="type">long</span> epochSecond, <span class="type">int</span> nanoOfSecond, ZoneOffset offset)</span> &#123;</span><br><span class="line">    Objects.requireNonNull(offset, <span class="string">&quot;offset&quot;</span>);</span><br><span class="line">    NANO_OF_SECOND.checkValidValue(nanoOfSecond);</span><br><span class="line">    <span class="type">long</span> <span class="variable">localSecond</span> <span class="operator">=</span> epochSecond + offset.getTotalSeconds();  <span class="comment">// overflow caught later</span></span><br><span class="line">    <span class="type">long</span> <span class="variable">localEpochDay</span> <span class="operator">=</span> Math.floorDiv(localSecond, SECONDS_PER_DAY);</span><br><span class="line">    <span class="type">int</span> <span class="variable">secsOfDay</span> <span class="operator">=</span> (<span class="type">int</span>)Math.floorMod(localSecond, SECONDS_PER_DAY);</span><br><span class="line">    <span class="type">LocalDate</span> <span class="variable">date</span> <span class="operator">=</span> LocalDate.ofEpochDay(localEpochDay);</span><br><span class="line">    <span class="type">LocalTime</span> <span class="variable">time</span> <span class="operator">=</span> LocalTime.ofNanoOfDay(secsOfDay * NANOS_PER_SECOND + nanoOfSecond);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">LocalDateTime</span>(date, time);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>일단 간단하게만 보면 now를 호출할 때 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/javase/8/docs/api/java/time/Clock.html">Clock</a>만 모킹해서 넘겨주면 된다.<br>Clock은 timezone(아마도 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/%ED%98%91%EC%A0%95_%EC%84%B8%EA%B3%84%EC%8B%9C">UTC</a>일 것 같다.)을 기준으로 date와 time을 제공해준다.<br>기본적으로 Clock을 고정(fix) 시키지 않으면 디폴트로 OS에 설정된 타임존과 시간을 기준으로 현재 시간을 반환한다.  </p>
+<p>다행히 Clock은 fixed 메서드를 통해 모킹할 수 있고, 모킹한 Clock을 가지고 현재 시간을 구하게 하면 문제는 깔끔하게 해결할 수 있다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TimeMachine</span> &#123;</span><br><span class="line">    <span class="comment">// 디폴트로 운영체제에 설정된 타임존과 시간을 기준으로 Clock을 반환한다.</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">Clock</span> <span class="variable">clock</span> <span class="operator">=</span> Clock.systemDefaultZone();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Clock을 모킹할 때 쓸 timezone인데 이 포스트에서는 timezone을 뛰어넘은 모킹은 다루지 않으므로 운영체제에 설정된 UTC 타임존을 사용하겠다.</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">ZoneOffset</span> <span class="variable">zoneOffset</span> <span class="operator">=</span> ZoneOffset.UTC;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 내가 모킹한, 혹은 현재 시간을 가진 Clock 인스턴스를 가지고 현재 시간을 구하게 된다.</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> LocalDateTime <span class="title function_">dateTimeOfNow</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> LocalDateTime.now(clock);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> LocalTime <span class="title function_">timeOfNow</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> LocalTime.now(clock);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> LocalDate <span class="title function_">dateOfNow</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> LocalDate.now(clock);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 지정한 날짜/시간으로 현재 시간을 고정시킨다.</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">timeTravelAt</span><span class="params">(LocalDateTime dateTime)</span>&#123;</span><br><span class="line">        clock = Clock.fixed(dateTime.atOffset(zoneOffset).toInstant(), zoneOffset);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">timeTravelAt</span><span class="params">(LocalTime time)</span> &#123;</span><br><span class="line">        <span class="comment">// 여기서 중요한 건 시간이고 날짜는 중요치 않다.</span></span><br><span class="line">        clock = Clock.fixed(time.atDate(LocalDate.now()).atOffset(zoneOffset).toInstant(), zoneOffset);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">timeTravelAt</span><span class="params">(LocalDate date)</span> &#123;</span><br><span class="line">        <span class="comment">// 여기서 중요한 건 날짜고 시간은 중요치 않다.</span></span><br><span class="line">        clock = Clock.fixed(date.atStartOfDay().atOffset(zoneOffset).toInstant(), zoneOffset);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 모킹한 현재 시간을 다시 원래 현재 시간으로 되돌리는 메소드이다.</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">reset</span><span class="params">()</span> &#123;</span><br><span class="line">        clock = Clock.systemDefaultZone();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>타임머신이란 이름이 매우 몽환적인 분위기를 풍기는 것 같기도 하고, 참 매력적이다.  </p>
+<p>Clock.fixed 메소드의 예제는 아래를 참고하면 쉽게 이해할 수 있다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClockTest</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testFixedClock</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 2011년 1월 1일 1시 1분 0초</span></span><br><span class="line">        <span class="type">LocalDateTime</span> <span class="variable">dateTime</span> <span class="operator">=</span> LocalDateTime.of(<span class="number">2011</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// UTC +09:00 서울/도쿄 기준 2011년 1월 1일 1시 1분 0초</span></span><br><span class="line">        <span class="type">Instant</span> <span class="variable">instant</span> <span class="operator">=</span> dateTime.atOffset(ZoneOffset.ofHours(<span class="number">9</span>)).toInstant();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// UTC +09:00 2011년 1월 1일 1시 1분 0초를 UTC ±00:00 기준으로 변환한 Clock</span></span><br><span class="line">        <span class="type">Clock</span> <span class="variable">fixedClock</span> <span class="operator">=</span> Clock.fixed(instant, ZoneOffset.ofHours(<span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// UTC +09:00 기준의 시간을 UTC ±00:00 기준의 시간으로 변경했으므로 9시간만 빼면 된다.</span></span><br><span class="line">        assertThat(LocalDateTime.now(fixedClock), is(LocalDateTime.of(<span class="number">2010</span>, <span class="number">12</span>, <span class="number">31</span>, <span class="number">16</span>, <span class="number">1</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>그럼 우리가 만든 타임머신을 도대체 어떻게 써먹을지 아래 예제로 알아보자.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">isAM</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">method</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method2();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">method2</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method3();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">method3</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> TimeMachine.timeOfNow().isBefore(LocalTime.of(<span class="number">12</span>, <span class="number">0</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>쓸 데 없이 now를 매개변수로 넘기던 것에서 우리가 만든 타임머신에서 지정한 시간으로 현재 시간을 구해오고 있다.<br>시간 여행(timeTravelAt 메소드)을 하지 않았다면 기본적으로 현재 시간을 반환한다.  </p>
+<p>그럼 시간 여행을 떠날 시간이다.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppTest</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testAm</span><span class="params">()</span> &#123;</span><br><span class="line">        TimeMachine.timeTravelAt(LocalTime.of(<span class="number">11</span>, <span class="number">59</span>));</span><br><span class="line">        assertTrue(App.isAM());</span><br><span class="line">        assertThat(TimeMachine.timeOfNow(), not(LocalTime.now()));</span><br><span class="line"></span><br><span class="line">        TimeMachine.timeTravelAt(LocalTime.of(<span class="number">12</span>, <span class="number">59</span>));</span><br><span class="line">        assertFalse(App.isAM());</span><br><span class="line">        assertThat(TimeMachine.timeOfNow(), not(LocalTime.now()));</span><br><span class="line"></span><br><span class="line">        TimeMachine.reset();</span><br><span class="line">        assertThat(TimeMachine.timeOfNow(), is(LocalTime.now()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>시스템에 의존하지 않고 저렇게 나이스 하게 모킹한 코드를 보고 엄청난 센세이션을 느꼈다.<br>앞으로도 어떠한 요소에도 의존하지 않는 이런 우아한 코드를 지향하도록 노력해야겠다.</p>
+<h2 id="참조링크"><a href="#참조링크" class="headerlink" title="참조링크"></a>참조링크</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://stackoverflow.com/a/29360514/8778461">Mocking time in Java 8’s java.time API</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Test/" rel="tag"># Test</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/02/20/jpa-embedded-type/" rel="prev" title="(JPA) Embedded Type">
+                  <i class="fa fa-chevron-left"></i> (JPA) Embedded Type
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/03/30/tcp-ip-book-index/" rel="next" title="(네트워크) TCP/IP 쉽게, 더 쉽게 목차 리뷰 - 1장 컴퓨터 네트워크">
+                  (네트워크) TCP/IP 쉽게, 더 쉽게 목차 리뷰 - 1장 컴퓨터 네트워크 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

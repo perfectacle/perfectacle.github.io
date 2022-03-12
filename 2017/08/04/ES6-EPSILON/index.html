@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가기에 앞서 Number.EPSILON이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.   부동소수점이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.  자바스크립트에서 숫자의 자료형은?C나 Java를 접해본 사람이라면 숫자의 자료형은 크게 두 가지로 나눌 수 있을 것이다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(ES6) Number.EPSILON은 왜 2.220446049250313e-16인가?">
+<meta property="og:url" content="https://perfectacle.github.io/2017/08/04/ES6-EPSILON/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="들어가기에 앞서 Number.EPSILON이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.   부동소수점이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.  자바스크립트에서 숫자의 자료형은?C나 Java를 접해본 사람이라면 숫자의 자료형은 크게 두 가지로 나눌 수 있을 것이다.">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/08/04/ES6-EPSILON/thumb.png">
+<meta property="og:image" content="https://perfectacle.github.io/2017/08/04/ES6-EPSILON/IEEE-754-Double-Floating-Point-Format.png">
+<meta property="article:published_time" content="2017-08-04T09:25:57.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.263Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JS">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="ES6">
+<meta property="article:tag" content="ES2015">
+<meta property="article:tag" content="EPSILON">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/08/04/ES6-EPSILON/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/08/04/ES6-EPSILON/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/08/04/ES6-EPSILON/","path":"2017/08/04/ES6-EPSILON/","title":"(ES6) Number.EPSILON은 왜 2.220446049250313e-16인가?"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(ES6) Number.EPSILON은 왜 2.220446049250313e-16인가? | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C"><span class="nav-number">1.</span> <span class="nav-text">들어가기에 앞서</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%97%90%EC%84%9C-%EC%88%AB%EC%9E%90%EC%9D%98-%EC%9E%90%EB%A3%8C%ED%98%95%EC%9D%80"><span class="nav-number">2.</span> <span class="nav-text">자바스크립트에서 숫자의 자료형은?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#double-%ED%98%95%EC%9D%B4%EB%9E%80%E2%80%A6"><span class="nav-number">3.</span> <span class="nav-text">double 형이란…?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%99%9C-Number-EPSILON%EC%9D%80-2-220446049250313e-16%EC%9D%BC%EA%B9%8C"><span class="nav-number">4.</span> <span class="nav-text">왜 Number.EPSILON은 2.220446049250313e-16일까?</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/08/04/ES6-EPSILON/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(ES6) Number.EPSILON은 왜 2.220446049250313e-16인가? | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (ES6) Number.EPSILON은 왜 2.220446049250313e-16인가?
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-08-04 09:25:57" itemprop="dateCreated datePublished" datetime="2017-08-04T09:25:57+00:00">2017-08-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/ES2015/" itemprop="url" rel="index"><span itemprop="name">ES2015+</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/08/04/ES6-EPSILON/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/04/ES6-EPSILON/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/08/04/ES6-EPSILON/thumb.png" class>  
+
+<h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><ol>
+<li><a href="/2016/12/24/ES6-Number-object-and-function/#Number-EPSILON">Number.EPSILON</a>이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://thrillfighter.tistory.com/349">부동소수점</a>이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.</li>
+</ol>
+<h2 id="자바스크립트에서-숫자의-자료형은"><a href="#자바스크립트에서-숫자의-자료형은" class="headerlink" title="자바스크립트에서 숫자의 자료형은?"></a>자바스크립트에서 숫자의 자료형은?</h2><p>C나 Java를 접해본 사람이라면 숫자의 자료형은 크게 두 가지로 나눌 수 있을 것이다.  </p>
+<ol>
+<li>정수  </li>
+<li>실수</li>
+</ol>
+<p>하지만 자바스크립트에서는 실수 하나 밖에 존재하지 않는다.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> === <span class="number">0.0</span>); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">0</span> === <span class="number">.0</span>); <span class="comment">// true</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="number">.0</span> === <span class="number">0.0</span>); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>또 이 실수는 크게 두 가지로 나눌 수 있을 것이다.  </p>
+<ol>
+<li>float  </li>
+<li>double</li>
+</ol>
+<p>하지만 자바스크립트에서는 이 실수형 중에서도 double 형 하나 밖에 존재하지 않는다.  </p>
+<p>실수를 나타내는 데도 고정 소수점과 부동 소수점이 존재하는데 고정소수점은 직관적인데 반해 표현할 수 있는 범위가 좁아서<br>거의 부동 소수점이 실수를 표현하는데 표준으로 자리잡고 있다.<br>물론 이 부동 소수점도 오차가 존재한다는 단점을 떠안고 있지만…</p>
+<p>이 부동 소수점을 표현하는데도 여러가지 방법이 있는데(아마도…?) 현재 거의 표준으로 자리잡은 것은<br>전기 전자 기술자 협회(IEEE)에서 제정한 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://ko.wikipedia.org/wiki/IEEE_754">IEEE754</a>라는 것이다.  </p>
+<h2 id="double-형이란…"><a href="#double-형이란…" class="headerlink" title="double 형이란…?"></a>double 형이란…?</h2><p>자바스크립트도 이 IEE754를 따라서 숫자(실수, 부동소수점)을 표현하고 있고,<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">Double-precision floating-point format</a>을 따르고 있다.  </p>
+<img src="/2017/08/04/ES6-EPSILON/IEEE-754-Double-Floating-Point-Format.png" class>    
+
+<p>해당 부동소수점 표현 방식은 아래와 같이 세 가지 부분으로 나뉘어진다.  </p>
+<ol>
+<li>부호 비트(sign, 1bit)<br>MSB(most significant bit): 최상위 비트, 즉 제일 왼 쪽에 있는 비트를 뜻하며 0이면 양수, 1이면 음수를 나타낸다.  </li>
+<li>지수부(exponent, 11bit)<br>이진 소수를 정규화 했을 때 나타낼 지수부.<br>지수부는 정수형과 달리 바이어스 표기법을 사용한다.<br>범위는 -2<sup>11-1</sup>-1 ~ 2<sup>11-1</sup>, 즉 -2<sup>1024</sup>-1 ~ 2<sup>1024</sup>이다.<br>해당 범위를 넘어가는 지수부에 한해서는 아마도 오버플로우가 발생해서 예기치 않은 결과를 뿜어내지 않을까 싶다.(NaN, ±Infinity)<br>또한 지수 표기법과 같이 1e1 같은 숫자를 봤을 때 나오는 저 e가 지수부의 exponent를 줄인 것이다.  </li>
+<li>가수부(fraction, 52bit)<br>이진 소수를 정규화 했을 때 나타낼 가수부.<br>부호 없는 정수를 나타내는 방식과 동일하며 0<del>2<sup>52</sup>-1 &#x3D; 0 ~ 4503599627370495이다.<br>4503599627370495는 십진수 16자리인데 0</del>15자리 수를 모두 커버하고 있으므로 double의 정밀도는 소수점 15자리가 되는 것이다.</li>
+</ol>
+<p>부동 소수점은 먼저 아래와 같은 절차를 거친다.  </p>
+<ol>
+<li>십진 소수를 이진 소수로 바꾼다. (십진 소수 8.25를 이진 소수로 바꾸면 1000.01<sub>(2)</sub>)  </li>
+<li>이진 소수를 정규화한다. (이진 소수를 지수부와 가수부로 나누어서 표현한 방식을 뜻한다.)<br>예를 들어 이진 소수 1000.01<sub>(2)</sub>을 정규화를 거치면 1.000101<sub>(2)</sub> X 10<sup>3</sup><sub>(2)</sub>와 같이 나타나며 1.101e3<sub>(2)</sub>로도 표현이 가능하다.</li>
+</ol>
+<p>물론 지수부의 범위를 넘어서는 숫자라면 오버플로우가 발생할 것이고 가수부의 범위를 넘어서는 경우에는 <strong>오차</strong>가 발생한다.<br>이 오차는 왜 발생할까?  </p>
+<ol>
+<li>가수부의 범위를 넘어서는(정규화 이후에 소수점 이하가 15자리를 넘어서는 경우) 경우  </li>
+<li>십진수로는 유한 소수인데 이진수로는 무한 소수인 경우</li>
+</ol>
+<p>0.1만 해도 이진수로는 표현이 불가능하다. (구해보면 이진수로는 무한 소수)<br>따라서 끝자리가 5로 끝나는 소수가 아니면 유한소수라고 단정지을 수가 없고, 오차가 없다고 말할 수가 없다.  </p>
+<h2 id="왜-Number-EPSILON은-2-220446049250313e-16일까"><a href="#왜-Number-EPSILON은-2-220446049250313e-16일까" class="headerlink" title="왜 Number.EPSILON은 2.220446049250313e-16일까?"></a>왜 Number.EPSILON은 2.220446049250313e-16일까?</h2><p>double 형 부동 소수점 가수부에서 0을 제외하고 가장 작은 숫자는 무엇일까?<br>바로 2<sup>-52</sup>, 0.0000000000000002220446049250313(2.220446049250313e-16)이다.<br>(가수부는 소수점 이하를 표현하는 것이기 때문에 2<sup>52</sup>가 아니다.)<br>그 말은 0 &lt; x &lt; 0.0000000000000002220446049250313, 즉 x는 표현하지 못하는 숫자가 된다.<br>그래서 Number.EPSILON이 2<sup>-52</sup>, 즉 2.220446049250313e-16가 된 것이다.  </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"># JS</a>
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/ES6/" rel="tag"># ES6</a>
+              <a href="/tags/ES2015/" rel="tag"># ES2015</a>
+              <a href="/tags/EPSILON/" rel="tag"># EPSILON</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/08/03/Java-study-013day/" rel="prev" title="(Java) 자바의 정석 3판 013일차 - Constant Pool">
+                  <i class="fa fa-chevron-left"></i> (Java) 자바의 정석 3판 013일차 - Constant Pool
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/08/04/js-012-debug/" rel="next" title="(자알쓰) 디버깅">
+                  (자알쓰) 디버깅 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

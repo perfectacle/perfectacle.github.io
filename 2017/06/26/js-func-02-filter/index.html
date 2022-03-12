@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="이 포스트는 인프런에서 진행한 유인동 님의 함수형 자바스크립트를 듣고 감명 받아서 쓴 글이다.사실 underscore, lodash 등 함수형 패러타임으로 코드를 짤 수 있게 끔미리 이런 함수들을 제공하는 라이브러리들을 쓰고, 이 포스트는 그닥 볼 필요가 없다.하지만 이런 원리를 알고 접근을 하다보면 위 라이브러리를 쓴다고 하더라도 추가로 필요한 나의">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(함수형 JS) filter">
+<meta property="og:url" content="https://perfectacle.github.io/2017/06/26/js-func-02-filter/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="이 포스트는 인프런에서 진행한 유인동 님의 함수형 자바스크립트를 듣고 감명 받아서 쓴 글이다.사실 underscore, lodash 등 함수형 패러타임으로 코드를 짤 수 있게 끔미리 이런 함수들을 제공하는 라이브러리들을 쓰고, 이 포스트는 그닥 볼 필요가 없다.하지만 이런 원리를 알고 접근을 하다보면 위 라이브러리를 쓴다고 하더라도 추가로 필요한 나의">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2017/06/26/js-func-02-filter/thumb.png">
+<meta property="article:published_time" content="2017-06-26T09:26:04.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:36.699Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="JS">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="함수형">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2017/06/26/js-func-02-filter/thumb.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2017/06/26/js-func-02-filter/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2017/06/26/js-func-02-filter/","path":"2017/06/26/js-func-02-filter/","title":"(함수형 JS) filter"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(함수형 JS) filter | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#filter"><span class="nav-number">1.</span> <span class="nav-text">filter</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EA%B8%B0%EC%A1%B4-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D"><span class="nav-number">1.1.</span> <span class="nav-text">기존 프로그래밍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%95%A8%EC%88%98%ED%98%95-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D"><span class="nav-number">1.2.</span> <span class="nav-text">함수형 프로그래밍</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/06/26/js-func-02-filter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(함수형 JS) filter | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (함수형 JS) filter
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-06-26 09:26:04" itemprop="dateCreated datePublished" datetime="2017-06-26T09:26:04+00:00">2017-06-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:36" itemprop="dateModified" datetime="2022-03-12T09:48:36+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/%ED%95%A8%EC%88%98%ED%98%95-JS/" itemprop="url" rel="index"><span itemprop="name">함수형 JS</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/06/26/js-func-02-filter/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/26/js-func-02-filter/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2017/06/26/js-func-02-filter/thumb.png" class>
+
+<p>이 포스트는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.inflearn.com/">인프런</a>에서 진행한 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.facebook.com/profile.php?id=100011413063178">유인동</a> 님의 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.inflearn.com/course/%ED%95%A8%EC%88%98%ED%98%95-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D/">함수형 자바스크립트</a>를 듣고 감명 받아서 쓴 글이다.<br>사실 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://underscorejs.org/">underscore</a>, <a target="_blank" rel="external nofollow noopener noreferrer" href="https://lodash.com/">lodash</a> 등 함수형 패러타임으로 코드를 짤 수 있게 끔<br>미리 이런 함수들을 제공하는 라이브러리들을 쓰고, 이 포스트는 그닥 볼 필요가 없다.<br>하지만 이런 원리를 알고 접근을 하다보면 위 라이브러리를 쓴다고 하더라도 추가로 필요한 나의 코드를 함수형으로 더 짜기 유용하지 않을까?  </p>
+<h2 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h2><p>기본적으로 filter는 필터링, <strong>조건에 맞는 녀석들만 걸러내서 새로운 데이터를 얻는 역할</strong>을 한다.  </p>
+<h3 id="기존-프로그래밍"><a href="#기존-프로그래밍" class="headerlink" title="기존 프로그래밍"></a>기존 프로그래밍</h3><p>우선 서버와 ajax로 통신해서 db에서 다음과 같은 json 데이터를 얻어왔다고 가정해보자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> users = [</span><br><span class="line">  &#123;<span class="attr">id</span>: <span class="number">0</span>, <span class="attr">name</span>: <span class="string">&#x27;양간장&#x27;</span>, <span class="attr">age</span>: <span class="number">55</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">id</span>: <span class="number">1</span>, <span class="attr">name</span>: <span class="string">&#x27;간장냥&#x27;</span>, <span class="attr">age</span>: <span class="number">45</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">id</span>: <span class="number">2</span>, <span class="attr">name</span>: <span class="string">&#x27;장냥이&#x27;</span>, <span class="attr">age</span>: <span class="number">35</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">id</span>: <span class="number">3</span>, <span class="attr">name</span>: <span class="string">&#x27;양권성&#x27;</span>, <span class="attr">age</span>: <span class="number">25</span>&#125;  </span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>이 유저들 중에 40대 이상인 사람과 40대 미만인 사람을 구분하는 필터링을 구현해보자.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> over40 = [];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> user <span class="keyword">of</span> users) &#123;</span><br><span class="line">  <span class="keyword">if</span>(user.<span class="property">age</span> &gt;=<span class="number">40</span>) &#123;</span><br><span class="line">    over40.<span class="title function_">push</span>(user);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> under40 = [];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> user <span class="keyword">of</span> users) &#123;</span><br><span class="line">  <span class="keyword">if</span>(user.<span class="property">age</span> &lt; <span class="number">40</span>) &#123;</span><br><span class="line">    under40.<span class="title function_">push</span>(user);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(over40);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(under40);</span><br></pre></td></tr></table></figure>
+
+<p>위 코드를 보니 반복문 구문과 새로운 배열에 만족하는 녀석들을 삽입하는 부분이 반복된다.<br>요것들을 어떻게 추상화 시켜서 재사용이 가능하게 끔 한번 해보고 싶어졌다.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">__filter</span> = users =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> tmp = [];</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">const</span> user <span class="keyword">of</span> users) &#123;</span><br><span class="line">    <span class="keyword">if</span>(?????) &#123;</span><br><span class="line">      tmp.<span class="title function_">push</span>(user);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> tmp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>우리가 기존에 객체 지향으로 프로그래밍을 했을 때는 조건문 부분은 추상화하기가 힘들다.<br>이런 간지러운 부분을 함수형으로 바꾸면 바로 해결이 가능하다.  </p>
+<h3 id="함수형-프로그래밍"><a href="#함수형-프로그래밍" class="headerlink" title="함수형 프로그래밍"></a>함수형 프로그래밍</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// predicate는 참인지 거짓인지를 판별하는 함수?를 뜻하는 것 같다.</span></span><br><span class="line"><span class="comment">// 또한 사용자만 받는 users라는 인자 보다는 좀 더 범용적인 이름인 list를 쓰는 게 좋다.</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">_filter</span> = (<span class="params">list, predicate</span>) =&gt; &#123;</span><br><span class="line">  <span class="comment">// 나는 그냥 임시로 쓰고 말 녀석이기 때문에 별 생각 없이 tmp 등등으로 쉽게 네이밍을 했다.  </span></span><br><span class="line">  <span class="comment">// 하지만 순수 함수는 사이드 이펙트를 발생시키지 않고,</span></span><br><span class="line">  <span class="comment">// 입력값을 토대로 새로운 값을 출력하는 불변성을 가지니 new라는 키워드를 붙여주는 게 좋다. </span></span><br><span class="line">  <span class="keyword">const</span> newList = [];</span><br><span class="line">  <span class="comment">// 필터링의 조건을 predicate 함수로 추상화시켰다.  </span></span><br><span class="line">  <span class="comment">// 구현부에서는 조건문을 신경쓰지 않고 해당 함수에게 위임하면 된다.</span></span><br><span class="line">  <span class="comment">// 또한 함수형 프로그래밍에서는 뭔가 한 줄로 적는 게 간지 같아서 조건문을 논리 연산자로 함축시키고, 중괄호도 다 생략했다.</span></span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">const</span> item <span class="keyword">of</span> list) <span class="title function_">predicate</span>(item) &amp;&amp; newList.<span class="title function_">push</span>(item);</span><br><span class="line">  <span class="keyword">return</span> newList;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 이 유저들 중에 40대 이상인 사람과 40대 미만인 사람을 구분하는 필터링을 구현해보자.  </span></span><br><span class="line"><span class="keyword">const</span> over40 = <span class="title function_">_filter</span>(users, <span class="function"><span class="params">user</span> =&gt;</span> user.<span class="property">age</span> &gt;= <span class="number">40</span>);</span><br><span class="line"><span class="keyword">const</span> under40 = <span class="title function_">_filter</span>(users, <span class="function"><span class="params">user</span> =&gt;</span> user.<span class="property">age</span> &lt; <span class="number">40</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(over40);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(under40);</span><br></pre></td></tr></table></figure>
+
+<p>위에 _filter 함수를 보면 조건(predicate)를 함수의 인자로 받아서<br>그 내부가 어떻게 구현됐건 신경쓰지 않고 predicate 함수에게 배열의 요소만 넘겨서 조건이 참이면 새 배열에 넣게 끔 구현했다.<br>이렇게 _filter는 조건을 추상화, predicate 함수에게 위임했기 때문에 좀 더 사용성이 높아졌다.<br>위와 같이 짜게 되면 ArrayLike의 대표적인 케이스인 NodeList도 필터링이 가능하다.  </p>
+<p>그리고<br>predicate(item) &amp;&amp; newList.push(item);<br>위 구문이 이해 안 가는 사람은 <a href="/2017/02/13/es-logical-operator/">똑똑한 논리 연산자</a>와 <a href="/2017/06/02/js-007-value-expression-statement/">값 vs 식 vs 문</a>을 참고해보자.  </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> nodeList = <span class="variable language_">document</span>.<span class="title function_">querySelectorAll</span>(<span class="string">&#x27;*&#x27;</span>);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">_filter</span>(nodeList, <span class="function"><span class="params">node</span> =&gt;</span> node.<span class="property">nodeName</span> === <span class="string">&#x27;HTML&#x27;</span>));</span><br><span class="line"><span class="comment">// Uncaught TypeError: nodeList.filter is not a function</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(nodeList.<span class="title function_">filter</span>(<span class="function"><span class="params">node</span> =&gt;</span> node.<span class="property">nodeName</span> === <span class="string">&#x27;HTML&#x27;</span>));</span><br></pre></td></tr></table></figure>
+<p><del>key와 value의 쌍으로 이루어져있는 돌림직한 객체를 필터링하는 것은 세미나에서 다루지 않았기 때문에 정리하지 않겠다.</del><br>key와 value의 쌍으로 이루어져있는 돌림직한 객체를 필터링하는 것은 예제가 잘 떠오르지 않고,<br>필요성을 잘 느끼지 못했기 때문에 정리하지 않도록 하겠다.<br>혹시 관련된 예제나 필요성 등등을 아신다면 댓글을… ^^</p>
+<p>그럼 이제 바로 다음 포스트인 <a href="/2017/06/26/js-func-03-map/">map</a>을 공부해보자!  </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JS/" rel="tag"># JS</a>
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/%ED%95%A8%EC%88%98%ED%98%95/" rel="tag"># 함수형</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/06/26/js-func-01-why-make/" rel="prev" title="(함수형 JS) 왜 쓸까?">
+                  <i class="fa fa-chevron-left"></i> (함수형 JS) 왜 쓸까?
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/06/26/js-func-03-map/" rel="next" title="(함수형 JS) map">
+                  (함수형 JS) map <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="YAML YAML Ain’t Markup LanguageYAML is a human friendly data serialization standard for all programming languages.  YAML은 마크업 언어가 아니고, 사람에게 친숙한 데이터 Serializaition 표준이다.아마 XML, HTML과 같이 YAML도 ML이">
+<meta property="og:type" content="article">
+<meta property="og:title" content="YAML">
+<meta property="og:url" content="https://perfectacle.github.io/2018/08/19/yaml/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="YAML YAML Ain’t Markup LanguageYAML is a human friendly data serialization standard for all programming languages.  YAML은 마크업 언어가 아니고, 사람에게 친숙한 데이터 Serializaition 표준이다.아마 XML, HTML과 같이 YAML도 ML이">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2018/08/19/yaml/thumbs.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/08/19/yaml/snake-yaml.png">
+<meta property="og:image" content="https://perfectacle.github.io/2018/08/19/yaml/js-yaml.png">
+<meta property="article:published_time" content="2018-08-19T13:56:20.000Z">
+<meta property="article:modified_time" content="2022-03-12T09:48:38.235Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="YAML">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2018/08/19/yaml/thumbs.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2018/08/19/yaml/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2018/08/19/yaml/","path":"2018/08/19/yaml/","title":"YAML"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>YAML | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#YAML"><span class="nav-number">1.</span> <span class="nav-text">YAML</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#YAML-vs-JSON"><span class="nav-number">1.1.</span> <span class="nav-text">YAML vs. JSON</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%EA%B0%80%EB%8F%85%EC%84%B1"><span class="nav-number">1.1.1.</span> <span class="nav-text">가독성</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%ED%8D%BC%ED%8F%AC%EB%A8%BC%EC%8A%A4"><span class="nav-number">1.1.2.</span> <span class="nav-text">퍼포먼스</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EC%9A%A9%EB%8F%84"><span class="nav-number">1.1.3.</span> <span class="nav-text">용도</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EA%B7%B8-%EC%99%B8"><span class="nav-number">1.1.4.</span> <span class="nav-text">그 외.</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YAML-vs-XML"><span class="nav-number">1.2.</span> <span class="nav-text">YAML vs. XML</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Version-1-2-Specification"><span class="nav-number">1.3.</span> <span class="nav-text">Version 1.2 Specification</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%EB%AA%A9%EC%A0%81"><span class="nav-number">1.3.1.</span> <span class="nav-text">목적</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Prior-Art-%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C"><span class="nav-number">1.3.2.</span> <span class="nav-text">Prior Art(들어가기에 앞서?)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Node-Kinds"><span class="nav-number">1.3.3.</span> <span class="nav-text">Node Kinds</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Scalar"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">Scalar</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Collections"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">Collections</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Sequence"><span class="nav-number">1.3.3.2.1.</span> <span class="nav-text">Sequence</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Mapping"><span class="nav-number">1.3.3.2.2.</span> <span class="nav-text">Mapping</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Block-Styles"><span class="nav-number">1.3.4.</span> <span class="nav-text">Block Styles</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Flow-Styles"><span class="nav-number">1.3.5.</span> <span class="nav-text">Flow Styles</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Anchor-amp-Alias"><span class="nav-number">1.3.6.</span> <span class="nav-text">Anchor &amp; Alias</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Directives"><span class="nav-number">1.3.7.</span> <span class="nav-text">Directives</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Multiple-Documents"><span class="nav-number">1.3.8.</span> <span class="nav-text">Multiple Documents</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Indentation"><span class="nav-number">1.3.9.</span> <span class="nav-text">Indentation</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#White-Space-Characters"><span class="nav-number">1.3.9.1.</span> <span class="nav-text">White Space Characters</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Indicator"><span class="nav-number">1.3.10.</span> <span class="nav-text">Indicator</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Block-Style-Indicator"><span class="nav-number">1.3.10.1.</span> <span class="nav-text">Block Style Indicator</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Flow-Style-Indicator"><span class="nav-number">1.3.10.2.</span> <span class="nav-text">Flow Style Indicator</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Common-Indicator"><span class="nav-number">1.3.10.3.</span> <span class="nav-text">Common Indicator</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yaml-vs-yml"><span class="nav-number">1.4.</span> <span class="nav-text">*.yaml vs *.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yaml-vs-properties"><span class="nav-number">1.5.</span> <span class="nav-text">*.yaml vs. *.properties</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/08/19/yaml/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="YAML | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          YAML
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-08-19 13:56:20" itemprop="dateCreated datePublished" datetime="2018-08-19T13:56:20+00:00">2018-08-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 09:48:38" itemprop="dateModified" datetime="2022-03-12T09:48:38+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Dev/" itemprop="url" rel="index"><span itemprop="name">Dev</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/08/19/yaml/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/08/19/yaml/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <img src="/2018/08/19/yaml/thumbs.png" class title="YAML Ain" alt="t Markup Language">    
+
+<h2 id="YAML"><a href="#YAML" class="headerlink" title="YAML"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/">YAML</a></h2><blockquote>
+<p>YAML Ain’t Markup Language<br>YAML is a human friendly data serialization standard for all programming languages.</p>
+</blockquote>
+<p>YAML은 마크업 언어가 아니고, <code>사람에게 친숙한 데이터 Serializaition 표준</code>이다.<br>아마 X<strong>ML</strong>, HT<strong>ML</strong>과 같이 YA<strong>ML</strong>도 <strong>ML</strong>이 들어가서 사람들의 오해를 샀던 모양이다.<br>마크업 언어는 태그를 이용하여 문서나 데이터의 구조를 표현하는 언어이다. (HTML, XML)<br>Serialization(직렬화)은 데이터를 시스템 외부(파일로 쓰거나 네트워크로 전송하거나)에서 사용할 때 사용한다. (Byte Array, <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.json.org/">JSON</a>, YAML)  </p>
+<img src="/2018/08/19/yaml/snake-yaml.png" class title="Spring Boot 2의 기본 디펜던시에 포함된 SnakeYAML">
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://spring.io/">Spring</a>에서는 YAML Parser인 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://bitbucket.org/asomov/snakeyaml">SnakeYAML</a>이 내장돼있다.<br>따라서 YAML 파일을 POJO로 매핑할 수도 있고, Configuration 파일에서도 사용할 수 있다.<br>주의사항은 Spring에 내장된 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://mvnrepository.com/artifact/org.yaml/snakeyaml">SankeYAML은 YAML 1.1 스펙을 구현한 점</a>이다.  </p>
+<img src="/2018/08/19/yaml/js-yaml.png" class title="Hexo의 기본 디펜던시에 포함된 js-yaml">
+<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://nodejs.org/">Node.js</a> 기반의 블로그 프레임워크인 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://hexo.io/">Hexo</a>에서도<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/nodeca/js-yaml">JS-YAML</a>이라는 YAML Parser를 이용해 Configuration을 설정하고 있다.<br>JS-YAML은 Python의 YAML Parser인 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://pyyaml.org/">PyYAML</a>을 포팅하면서 처음에는 YAML 1.1 스펙을 지원했는데, 현재는 YAML 1.2 스펙까지 구현했다.  </p>
+<h3 id="YAML-vs-JSON"><a href="#YAML-vs-JSON" class="headerlink" title="YAML vs. JSON"></a>YAML vs. JSON</h3><blockquote>
+<p>JSON’s foremost design goal is simplicity and universality.<br>Thus, JSON is trivial to generate and parse, at the cost of reduced human readability.<br>In contrast, YAML’s foremost design goals are human readability and support for serializing arbitrary native data structures.<br>Thus, YAML allows for extremely readable files, but is more complex to generate and parse.  </p>
+</blockquote>
+<p>JSON의 최우선 설계 목표는 간편성과 보편성이다. 따라서 JSON은 가독성을 조금 떨어트리는 대신에 생성 및 파싱이 용이하다.<br>반면에 YAML의 최우선 설계 목표는 가독성과 데이터 구조 Serialization이다. 따라서 YAML은 사람이 읽기 쉬운 반면에 생성 및 파싱이 JSON 보다 복잡하다.</p>
+<blockquote>
+<p>YAML can therefore be viewed as a natural superset of JSON.<br>This is also the case in practice; every JSON file is also a valid YAML file.<br>This makes it easy to migrate from JSON to YAML if&#x2F;when the additional features are required.  </p>
+</blockquote>
+<p>YAML을 JSON의 Superset으로 볼 수도 있다.<br>모든 JSON 파일은 유효한 YAML 파일이다.<br>따라서 JSON에서 YAML로 마이그레이션 하기가 용이하다.  </p>
+<h4 id="가독성"><a href="#가독성" class="headerlink" title="가독성"></a>가독성</h4><p>YAML 홈페이지 조차도 아래와 같이 유효한 YAML 문법으로 이루어져있다.  </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%YAML</span> <span class="number">1.2</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">Projects:</span></span><br><span class="line">  <span class="string">C/C++</span> <span class="attr">Libraries:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">libyaml</span>            <span class="comment"># &quot;C&quot; Fast YAML 1.1</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">libcyaml</span>           <span class="comment"># YAML de/serialization of C data structures (using libyaml)</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Syck</span>               <span class="comment"># (dated) &quot;C&quot; YAML 1.0</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">yaml-cpp</span>           <span class="comment"># C++ YAML 1.2 implementation</span></span><br></pre></td></tr></table></figure>
+
+<p>과연 JSON 형태로 YAML 홈페이지를 가독성 좋게 표현할 수 있었을까…?</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;Projects&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;C/C++ Libraries&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;libyaml&quot;</span><span class="punctuation">,</span> <span class="string">&quot;libcyaml&quot;</span><span class="punctuation">,</span> <span class="string">&quot;Syck&quot;</span><span class="punctuation">,</span> <span class="string">&quot;yaml-cpp&quot;</span><span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="퍼포먼스"><a href="#퍼포먼스" class="headerlink" title="퍼포먼스"></a>퍼포먼스</h4><blockquote>
+<p>JSON It also uses a lowest common denominator information model, ensuring any JSON data can be easily processed by every modern programming environment.<br>YAML ventures beyond the lowest common denominator data types, requiring more complex processing when crossing between different programming environments.  </p>
+</blockquote>
+<p>JSON 보다 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2763452">YAML의 모델</a>이 좀 더 복잡하기 때문에 파싱하고 생성하는데 YAML이 더 느리다.<br>속도도 느린데 직접 파싱을 한다고 생각해도 JSON이 훨씬 간단하다.</p>
+<h4 id="용도"><a href="#용도" class="headerlink" title="용도"></a>용도</h4><ul>
+<li>대부분의 웹 기술(<a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX">AJAX</a> 등등)에서 데이터 통신을 위해서 성능을 위한 것인지는 잘 모르겠지만 대부분 JSON을 많이 사용하고,<br><a href="#Anchor-amp-Alias">reference</a>가 있는 YAML은 복잡한 object 구조를 표현하는데 적합해서, 오프라인에서 data serialization을 위해 더 적합하다.     </li>
+<li>파이썬 커뮤니티에서는 <code>&#123; &#125; [ ] : ,</code>과 같은 <a href="#Flow-Style-Indicator">Indicator</a> 보다는 파이썬 문법과 비슷한 <a href="#Indentation">indent</a>로 indicate level을 구분하는 YAML을 더 선호하고,<br>자바스크립트 진영에서는 별도의 파서가 필요없고, Javascript Object와 구조가 유사한 JSON을 선호하는 편이다.</li>
+</ul>
+<h4 id="그-외"><a href="#그-외" class="headerlink" title="그 외."></a>그 외.</h4><ul>
+<li>JSON은 주석이 없다.  </li>
+<li>YAML은 <a href="#Multiple-Documents">한 파일에 여러 Document</a>를 표현할 수 있다.</li>
+<li><blockquote>
+<p>JSON’s RFC4627 requires that mappings keys merely “SHOULD” be unique, while YAML insists they “MUST” be.<br>Technically, YAML therefore complies with the JSON spec, choosing to treat duplicates as an error.<br>In practice, since JSON is silent on the semantics of such duplicates, the only portable JSON files are those with unique keys, which are therefore valid YAML files.</p>
+</blockquote>
+</li>
+</ul>
+<p>JSON은 Key의 중복을 Warning으로 표시하지만, YAML은 허용하지 않는다.  </p>
+<h3 id="YAML-vs-XML"><a href="#YAML-vs-XML" class="headerlink" title="YAML vs. XML"></a>YAML vs. XML</h3><blockquote>
+<p>two languages may actually compete in several application domains, there is no direct correlation between them.<br>  YAML is primarily a data serialization language.<br>  XML was designed to be backwards compatible with the Standard Generalized Markup Language (SGML), which was designed to support structured documentation.</p>
+</blockquote>
+<p>XML과 YAML은 전혀 연관이 없다.<br>XML은 구조화된 문서를 위해 설계된 언어이고, YAML은 data serialization을 위해 설계된 언어이다.   </p>
+<h3 id="Version-1-2-Specification"><a href="#Version-1-2-Specification" class="headerlink" title="Version 1.2 Specification"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html">Version 1.2 Specification</a></h3><p>1.1에서 1.2로 바뀐 주요 사항은 JSON의 Superset처럼 동작하기 위해서 많은 사항들이 바뀌었다.  </p>
+<blockquote>
+<p>All other characters, including the form feed (#x0C), are considered to be non-break characters.<br>  Note that these include the non-ASCII line breaks: next line (#x85), line separator (#x2028) and paragraph separator (#x2029).<br>  YAML version 1.1 did support the above non-ASCII line break characters; however, JSON does not.<br>  Hence, to ensure JSON compatibility, YAML treats them as non-break characters as of version 1.2. In theory this would cause incompatibility with version 1.1;<br>  in practice these characters were rarely (if ever) used.<br>  YAML 1.2 processors parsing a version 1.1 document should therefore treat these line breaks as non-break characters, with an appropriate warning.</p>
+</blockquote>
+<p>따라서 JSON Syntax를 YAML 1.2에서는 거의 완벽하게 지원한다.  </p>
+<h4 id="목적"><a href="#목적" class="headerlink" title="목적"></a>목적</h4><blockquote>
+<p>YAML is easily readable by humans.  </p>
+</blockquote>
+<p>YAML은 사람이 읽기 쉽다.</p>
+<blockquote>
+<p>YAML data is portable between programming languages.  </p>
+</blockquote>
+<p>YAML 데이터는 프로그래밍 언어 간에 이동이 가능하다.</p>
+<blockquote>
+<p>YAML matches the native data structures of agile languages.  </p>
+</blockquote>
+<p>YAML은 agile 언어의 native data structure와 매치된다.  </p>
+<blockquote>
+<p>YAML’s core type system is based on the requirements of agile languages such as Perl, Python, and Ruby.<br>YAML directly supports both collections (mappings, sequences) and scalars.<br>Support for these common types enables programmers to use their language’s native data structures for YAML manipulation</p>
+</blockquote>
+<p>Perl, Python, Ruby와 같은 agile language에 존재하는 <a href="#Scalar">scalar</a>, <a href="#Collections">collection</a> 타입을 지원해서,<br>프로그래머가 native data structure를 조작하기가 용이하다.  </p>
+<blockquote>
+<p>YAML has a consistent model to support generic tools.</p>
+</blockquote>
+<p>YAML은 parser들을 위해서 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2763452">일관적인 모델</a>이 있다.  </p>
+<blockquote>
+<p>YAML supports one-pass processing.</p>
+</blockquote>
+<p>YAML은 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2762107">one-pass processing</a>을 지원한다.  </p>
+<blockquote>
+<p>YAML is expressive and extensible.</p>
+</blockquote>
+<p>YAML은 표현력과 확장성이 뛰어나다.  </p>
+<blockquote>
+<p>YAML is easy to implement and use.</p>
+</blockquote>
+<p>YAML은 구현 및 사용이 쉽다.  </p>
+<h4 id="Prior-Art-들어가기에-앞서"><a href="#Prior-Art-들어가기에-앞서" class="headerlink" title="Prior Art(들어가기에 앞서?)"></a>Prior Art(들어가기에 앞서?)</h4><p>HTML의 EOL(End of Line)에 영감을 받아서 sinlge line break는 single space로 해석되고,<br>empty line은 line break character를 뜻한다.  </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">asdf:</span> <span class="string">&quot;asdf</span></span><br><span class="line"><span class="string">aass&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">qwer:</span> <span class="string">&quot;qwer</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">zxcv&quot;</span></span><br></pre></td></tr></table></figure>
+<p>위와 아래의 결과는 같다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">asdf:</span> <span class="string">&quot;asdf aass&quot;</span></span><br><span class="line"><span class="attr">qwer:</span> <span class="string">&quot;qwer\nzxcv&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>YAML 스펙 문서는 <a href="/2018/08/15/bnf/">BNF 표기법</a>을 사용하고 있기 때문에 BNF 표기법에 대해 조금은 알고 있어야 읽기가 수월하다.</p>
+<h4 id="Node-Kinds"><a href="#Node-Kinds" class="headerlink" title="Node Kinds"></a>Node Kinds</h4><p>일반적인 자료형과 비슷하다는 생각으로 보면 된다.  </p>
+<h5 id="Scalar"><a href="#Scalar" class="headerlink" title="Scalar"></a>Scalar</h5><blockquote>
+<p>The content of a scalar node is an opaque datum that can be presented as a series of zero or more Unicode characters.</p>
+</blockquote>
+<p>스칼라 노드는 0개 이상의 유니코드 문자이다.<br>일반적인 primitive type을 생각하면 편하다.  </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">b</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>여기서 b와 0 모두 scalar 노드이다.</p>
+<p>Scalar의 종류는 아래와 같다.  </p>
+<ul>
+<li><a href="#Block-Styles">Block Styles</a><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2793652">Block Scalar Styles</a>  <ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2795688">Literal Style</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2796251">Floded Style</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#Flow-Styles">Flow Styles</a><ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2786942">Flow Scalar Styles</a>  <ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2787109">Double-Quoted Style</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2788097">Single-Quoted Style</a></li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#id2788859">Plain Style</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="Collections"><a href="#Collections" class="headerlink" title="Collections"></a>Collections</h5><blockquote>
+<p>When appropriate, it is convenient to consider sequences and mappings together, as collections.</p>
+</blockquote>
+<p><a href="#Sequence">Sequence</a>와 <a href="#Mapping">Mapping</a> 두 개를 합쳐 collections로 퉁친다는 소리 같다.</p>
+<h6 id="Sequence"><a href="#Sequence" class="headerlink" title="Sequence"></a>Sequence</h6><blockquote>
+<p>The content of a sequence node is an ordered series of zero or more nodes.<br>  In particular, a sequence may contain the same node more than once.<br>  It could even contain itself (directly or indirectly).</p>
+</blockquote>
+<p>시퀀스 노드는 0개 이상의 순서가 보장된 노드이다.<br>또한 똑같은 노드를 여러 번 포함할 수 있다.<br>심지어 자기 자신을 포함할 수도 있다.<br>일반적인 list를 생각하면 편하다.  </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">a</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">b</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">a</span></span><br></pre></td></tr></table></figure>
+<p>여기서 <code>-a -b -a</code>를 통틀어 시퀀스 노드라고 부른다.</p>
+<h6 id="Mapping"><a href="#Mapping" class="headerlink" title="Mapping"></a>Mapping</h6><blockquote>
+<p>The content of a mapping node is an unordered set of key: value node pairs, with the restriction that each of the keys is unique.<br>  YAML places no further restrictions on the nodes.<br>  In particular, keys may be arbitrary nodes, the same node may be used as the value of several key: value pairs, and a mapping could even contain itself as a key or a value (directly or indirectly).</p>
+</blockquote>
+<p>매핑 노드는 순서가 보장되지 않은 key:value 쌍의 집합이다.<br>key는 고유하다는 제한을 빼고는 다른 제한은 있지 않다.  </p>
+<ol>
+<li>키는 임의의 노드일 수도 있고 자기 자신을 포함할 수 있다.</li>
+</ol>
+<p>-&gt; 키에 문자열을 대부분 넣는데 문자열은 scalar 노드이니까 임의의 노드일 수도 있다고 표현한 게 아닐까?<br>2. 동일한 노드를 여러 key:value 쌍의 값으로 사용할 수 있고,<br>-&gt; key는 고유한데, value는 고유하지 않다는 걸 표현한 게 아닐까?<br>3. 자기 자신을 포함할 수 있다. </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">a:</span> <span class="string">b</span></span><br><span class="line"><span class="attr">c:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">e</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">f</span></span><br></pre></td></tr></table></figure>
+<p><code>a: b</code>, <code>c: -e -f</code> 이 두 개 모두 매핑 노드이다.</p>
+<h4 id="Block-Styles"><a href="#Block-Styles" class="headerlink" title="Block Styles"></a>Block Styles</h4><blockquote>
+<p>In YAML block styles, structure is determined by indentation.<br>  In general, indentation is defined as a zero or more space characters at the start of a line.<br>  To maintain portability, tab characters must not be used in indentation, since different systems treat tabs differently.</p>
+</blockquote>
+<p>구조를 표현할 때 <a href="#Indentation">indentation</a>를 사용한다.<br>라인의 시작점에 존재하는 0개 이상의 <a href="#White-Space-Characters">white space character</a>에 의해 정의된다.<br>하지만 이식성을 고려해서 Tab키는 사용하면 안 된다.<br>시스템들 사이에서 Tab키를 취급하는 방법이 서로 다르기 때문이다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">asdf:</span> <span class="string">qwer</span></span><br><span class="line"><span class="attr">zxcv:</span></span><br><span class="line">  <span class="attr">ssss:</span> <span class="string">dd</span></span><br><span class="line">  <span class="attr">qwer:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">z</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">x</span></span><br><span class="line"><span class="attr">ssdd:</span> <span class="string">cc</span></span><br><span class="line"><span class="comment"># asdf</span></span><br></pre></td></tr></table></figure>
+
+<p>mapping node에서 key:value 쌍을 구분짓기 위해 <code>:</code>라는 <a href="#Block-Style-Indicator">indicator</a>를 사용한다.<br>또한 sequence node의 value들을 구분짓기 위해 <code>-</code>라는 <a href="#Block-Style-Indicator">indicator</a>를 사용한다.<br>주석을 표시하기 위해서 <code>#</code>라는 <a href="#Block-Style-Indicator">indicator</a>를 사용한다.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;asdf&quot;</span><span class="punctuation">:</span> <span class="string">&quot;qwer&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;zxcv&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;ssss&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dd&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;qwer&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;z&quot;</span><span class="punctuation">,</span> <span class="string">&quot;x&quot;</span><span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ssdd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cc&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Flow-Styles"><a href="#Flow-Styles" class="headerlink" title="Flow Styles"></a>Flow Styles</h4><blockquote>
+<p>YAML’s flow styles can be thought of as the natural extension of JSON to cover folding long content lines for readability</p>
+</blockquote>
+<p>Flow style은 JSON의 확장 정도로 생각하면 된다.  </p>
+<blockquote>
+<p>flow styles, using explicit indicators rather than indentation to denote scope</p>
+</blockquote>
+<p>flow style은 socope를 나타내기 위해 <a href="#Indentation">indentation</a> 보다 <a href="#Flow-Style-Indicator">indicator</a> 문자를 사용한다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="attr">asdf:</span> <span class="string">qwer</span>,</span><br><span class="line"><span class="attr">zxcv:</span> &#123;</span><br><span class="line"><span class="attr">ssss:</span> <span class="string">dd</span>,</span><br><span class="line"><span class="attr">qwer:</span> [<span class="string">z</span>, <span class="string">x</span>]</span><br><span class="line">&#125;,</span><br><span class="line"><span class="attr">ssdd:</span> <span class="string">cc</span></span><br><span class="line"><span class="comment">#qqww</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;asdf&quot;</span><span class="punctuation">:</span> <span class="string">&quot;qwer&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;zxcv&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;ssss&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dd&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;qwer&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;z&quot;</span><span class="punctuation">,</span> <span class="string">&quot;x&quot;</span><span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ssdd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cc&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Anchor-amp-Alias"><a href="#Anchor-amp-Alias" class="headerlink" title="Anchor &amp; Alias"></a>Anchor &amp; Alias</h4><p>Object의 Reference를 표기하는 방법이다.  </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Block Styles</span></span><br><span class="line"><span class="attr">b-anchor:</span> <span class="string">&amp;name</span> <span class="string">value</span></span><br><span class="line"><span class="attr">b-alias:</span> <span class="meta">*name</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;b-anchor&quot;</span><span class="punctuation">:</span> <span class="string">&quot;value&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;b-alias&quot;</span><span class="punctuation">:</span> <span class="string">&quot;value&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Flow Styles</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">f-anchor:</span> <span class="string">&amp;name</span> <span class="string">value</span>,</span><br><span class="line">  <span class="attr">f-alias:</span> <span class="meta">*name</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;f-anchor&quot;</span><span class="punctuation">:</span> <span class="string">&quot;value&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;f-alias&quot;</span><span class="punctuation">:</span> <span class="string">&quot;value&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Directives"><a href="#Directives" class="headerlink" title="Directives"></a>Directives</h4><blockquote>
+<p>Directives are instructions to the YAML processor.<br>  This specification defines two directives, “YAML” and “TAG”, and reserves all other directives for future use.<br>  There is no way to define private directives. This is intentional.<br>  Directives are a presentation detail and must not be used to convey content information.</p>
+</blockquote>
+<p>Directives는 YAML Processor에게 <code>어떻게 해석해라</code>라고 지시하는 것이다.<br>YAML의 버전을 명시하는 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#directive/YAML/">YAML Directive</a>와<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#tag//">node tags</a>를 명시하는 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/spec/1.2/spec.html#directive/TAG/">TAG Directive</a>가 있다.<br>맨 첫 번째 줄의 % <a href="#Common-Indicator">Indicator</a>를 통해 표시한다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%YAML</span> <span class="number">1.2</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%TAG</span> <span class="type">!yaml</span><span class="string">!</span> <span class="string">tag:yaml.org,2002:</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Multiple-Documents"><a href="#Multiple-Documents" class="headerlink" title="Multiple Documents"></a>Multiple Documents</h4><blockquote>
+<p>YAML uses three dashes (“—”) to separate directives from document content.<br>  This also serves to signal the start of a document if no directives are present.<br>  Three dots ( “…”) indicate the end of a document without starting a new one, for use in communication channels.</p>
+</blockquote>
+<p><code>---</code> <a href="#Common-Indicator">Indicator</a>로 <a href="#Directives">Directive</a>와 Documnet content를 구분지을 수 있고, document content의 시작이라는 신호도 된다.<br><code>...</code> <a href="#Common-Indicator">Indicator</a>로 <a href="#Directives">Directive</a>와 Document content를 구분지을 수 있고, document content의 끝이라는 신호도 된다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%YAML</span> <span class="number">1.2</span> <span class="comment"># Directive</span></span><br><span class="line"><span class="string">---</span> <span class="comment"># Document content begin</span></span><br><span class="line"><span class="attr">a:</span> <span class="string">b</span> <span class="comment"># Document content</span></span><br><span class="line"><span class="attr">c:</span> <span class="string">d</span></span><br><span class="line"><span class="string">...</span> <span class="comment"># Document content end</span></span><br><span class="line"><span class="string">%YAML</span> <span class="number">1.1</span> <span class="comment"># Directive</span></span><br><span class="line"><span class="string">---</span> <span class="comment"># Document content begin</span></span><br><span class="line"><span class="attr">a:</span> <span class="string">d</span> <span class="comment"># Document content</span></span><br><span class="line"><span class="attr">c:</span> <span class="string">b</span></span><br><span class="line"><span class="string">...</span> <span class="comment"># Document content end</span></span><br></pre></td></tr></table></figure>
+
+<p>좀 더 다양한 예제를 살펴보자.  </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">local</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">      <span class="attr">url:</span> <span class="string">jdbc:mysql://local</span></span><br></pre></td></tr></table></figure>
+
+<p>위와 아래는 같다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">local</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">      <span class="attr">url:</span> <span class="string">jdbc:mysql://local</span></span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<p>이번엔 multiple documents를 표현해보자.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">local</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">      <span class="attr">url:</span> <span class="string">jdbc:mysql://local</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">      <span class="attr">url:</span> <span class="string">jdbc:mysql://dev</span></span><br></pre></td></tr></table></figure>
+
+<p>위와 아래는 같다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">local</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">      <span class="attr">url:</span> <span class="string">jdbc:mysql://local</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">      <span class="attr">url:</span> <span class="string">jdbc:mysql://dev</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="Indentation"><a href="#Indentation" class="headerlink" title="Indentation"></a>Indentation</h4><blockquote>
+<p>In YAML block styles, structure is determined by indentation.<br>  In general, indentation is defined as a zero or more space characters at the start of a line.<br>  To maintain portability, tab characters must not be used in indentation, since different systems treat tabs differently.</p>
+</blockquote>
+<p><a href="#Block-Styles">Block Style</a>의 구조는 들여쓰기에 의해 결정된다.<br>라인의 시작점에 존재하는 0개 이상의 <a href="#White-Space-Characters">white space character</a>에 의해 정의된다.<br>하지만 이식성을 고려해서 Tab키는 사용하면 안 된다.<br>시스템들 사이에서 Tab키를 취급하는 방법이 서로 다르기 때문이다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s-indent(n) ::= s-space × n</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>A block style construct is terminated when encountering a line which is less indented than the construct.<br>  Each node must be indented further than its parent node.<br>  All sibling nodes must use the exact same indentation level.<br>  However the content of each sibling node may be further indented independently.</p>
+</blockquote>
+<p><a href="#Block-Styles">Block Style</a>의 구조는 이전 라인보다 더 적은 들여쓰기가 있는 라인을 만나면 끝난다.<br>각각의 노드는 부모 노드보다 더 많은 들여쓰기를 써야만 한다.<br>모든 형제 노드는 같은 들여쓰기 레벨을 써야만 한다.<br>하지만 각 형제 노드의 내용들은 독립적이다.</p>
+<h5 id="White-Space-Characters"><a href="#White-Space-Characters" class="headerlink" title="White Space Characters"></a>White Space Characters</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s-space ::= #x20 /* SP */</span><br><span class="line">s-tab   ::= #x9  /* TAB */</span><br><span class="line">s-white ::= s-space | s-tab</span><br></pre></td></tr></table></figure>
+<p>스페이스와 탭 문자만 white space character로 인식한다.</p>
+<h4 id="Indicator"><a href="#Indicator" class="headerlink" title="Indicator"></a>Indicator</h4><h5 id="Block-Style-Indicator"><a href="#Block-Style-Indicator" class="headerlink" title="Block Style Indicator"></a>Block Style Indicator</h5><p><code>-</code>: <a href="#Block-Styles">Block Style</a>에서 <a href="#Sequence">sequence node</a>임을 나타내는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-sequence-entry    ::= “-”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">a</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">b</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span><span class="string">&quot;a&quot;</span><span class="punctuation">,</span> <span class="string">&quot;b&quot;</span><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p><code>:</code>: <a href="#Block-Styles">Block Style</a>에서 <a href="#Mapping">mapping node</a>의 value임을 나타내는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-mapping-value ::= “:”</span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">a:</span> <span class="string">b</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;a&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>?</code>: <a href="#Block-Styles">Block Style</a>에서 <a href="#Mapping">mapping node</a>의 key임을 알리는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-mapping-key   ::= “?”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">?</span> <span class="string">a</span></span><br><span class="line"><span class="string">:</span> <span class="string">b</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;a&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="Flow-Style-Indicator"><a href="#Flow-Style-Indicator" class="headerlink" title="Flow Style Indicator"></a>Flow Style Indicator</h5><p><code>&#123;</code>: <a href="#Flow-Styles">Flow Style</a>에서 <a href="#Mapping">mapping node</a>의 시작을 알리는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-mapping-start ::= “&#123;”</span><br></pre></td></tr></table></figure>
+
+<p><code>&#125;</code>: <a href="#Flow-Styles">Flow Style</a>에서 <a href="#Mapping">mapping node</a>의 끝을 알리는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-mapping-end ::= “&#125;”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="attr">a:</span> <span class="string">b</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;a&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>[</code>: <a href="#Flow-Styles">Flow Style</a>에서 <a href="#Sequence">sequence node</a>의 시작을 알리는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-sequence-start ::= “[”</span><br></pre></td></tr></table></figure>
+
+<p><code>]</code>: <a href="#Flow-Styles">Flow Style</a>에서 <a href="#Sequence">sequence node</a>의 끝을 알리는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-sequence-end ::= “]”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">a</span>, <span class="string">b</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span><span class="string">&quot;a&quot;</span><span class="punctuation">,</span> <span class="string">&quot;b&quot;</span><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p><code>,</code>: <a href="#Flow-Styles">Flow Style</a>에서 <a href="#Collections">collection node</a>의 끝을 알리는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-collect-entry ::= “,”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="attr">a:</span> <span class="string">b</span>,</span><br><span class="line"><span class="attr">b:</span> [<span class="string">c</span>, <span class="string">d</span>],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>마지막 <code>[c, d],</code>는 마지막 ,를 생략해서 <code>[c, d]</code>로 써도 똑같다.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;a&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;b&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;c&quot;</span><span class="punctuation">,</span> <span class="string">&quot;d&quot;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="Common-Indicator"><a href="#Common-Indicator" class="headerlink" title="Common Indicator"></a>Common Indicator</h5><p><code>#</code>: 주석을 나타내는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-comment   ::= “#”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">?</span> <span class="string">a</span></span><br><span class="line"><span class="string">:</span> <span class="string">b</span></span><br><span class="line"><span class="comment"># asdf</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;a&quot;</span><span class="punctuation">:</span> <span class="string">&quot;b&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>&amp;</code>: node의 <a href="#Anchor-amp-Alias">anchor property</a>를 나타내는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-anchor    ::= “&amp;”</span><br></pre></td></tr></table></figure>
+
+<p><code>*</code>: <a href="#Anchor-amp-Alias">alias node</a>를 나타내는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-anchor    ::= “&amp;”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">anchor:</span> <span class="string">&amp;name</span> <span class="string">value</span></span><br><span class="line"><span class="attr">alias:</span> <span class="meta">*name</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">anchor:</span> <span class="string">value</span></span><br><span class="line"><span class="attr">alias:</span> <span class="string">value</span></span><br></pre></td></tr></table></figure>
+
+<p><code>%</code>: <a href="#Directives">Directive</a> Line 임을 나타내는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-directive ::= “%”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%YAML</span> <span class="number">1.2</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%TAG</span> <span class="type">!yaml</span><span class="string">!</span> <span class="string">tag:yaml.org,2002:</span></span><br></pre></td></tr></table></figure>
+
+<p><code>---</code>: <a href="#Directives">Directive</a> Line이 끝나고 Document content의 시작을 알리는 문자  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-directives-end    ::= “-” “-” “-”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%YAML</span> <span class="number">1.2</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">asdf:</span> <span class="string">qwer</span></span><br></pre></td></tr></table></figure>
+
+<p><code>,,,</code>: Document content가 끝나고 <a href="#Directives">Directive</a> Line과 구분을 짓는 문자</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c-document-end  ::= “.” “.” “.”</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">asdf:</span> <span class="string">qwer</span></span><br><span class="line"><span class="string">...</span></span><br><span class="line"><span class="string">%YAML</span> <span class="number">1.2</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="yaml-vs-yml"><a href="#yaml-vs-yml" class="headerlink" title="*.yaml vs *.yml"></a>*.yaml vs *.yml</h3><p><a target="_blank" rel="external nofollow noopener noreferrer" href="http://yaml.org/faq.html">YAML FAQ</a>에서는 *.yaml을 공식 확장자라고 얘기하고 있다.<br>그럼에도 불구하고 *.yml이 있는 이유는 <code>*.html vs *.htm</code> 과도 비슷한 이유일 것 같다.<br>MS-Dos 시절에는 파일의 확장자 길이가 3자로 제한됐었다.<br>그 시절의 영향 때문인지, 3글자 확장자 스타일을 고수하는 사람들 때문에 *.yml이나 *.htm 같은 확장자가 보이는 것 같다. </p>
+<h3 id="yaml-vs-properties"><a href="#yaml-vs-properties" class="headerlink" title="*.yaml vs. *.properties"></a>*.yaml vs. *.properties</h3><p>스프링에서 개발 환경 별로 configuration을 구성할 때 *.properties를 사용하면 아래와 같이 할 수 있다.  </p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring.profiles</span>=<span class="string">dev</span></span><br><span class="line"><span class="attr">spring.datasource.url</span>=<span class="string">jdbc:mysql://</span></span><br><span class="line"><span class="attr">management.endpoints.web.base-path</span>=<span class="string">/</span></span><br><span class="line"><span class="attr">spring.datasource.hikari.minimum-idle</span>=<span class="string">1</span></span><br><span class="line"><span class="attr">spring.datasource.hikari.maximum-pool-size</span>=<span class="string">3</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring.profiles</span>=<span class="string">prod</span></span><br><span class="line"><span class="attr">spring.datasource.url</span>=<span class="string">jdbc:mysql://</span></span><br><span class="line"><span class="attr">management.endpoints.web.base-path</span>=<span class="string">/</span></span><br><span class="line"><span class="attr">spring.datasource.hikari.minimum-idle</span>=<span class="string">5</span></span><br><span class="line"><span class="attr">spring.datasource.hikari.maximum-pool-size</span>=<span class="string">10</span></span><br></pre></td></tr></table></figure>
+
+<p>하지만 *.yaml로 구성하게 되면 아래와 같이 구성할 수 있다.  </p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">dev</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://</span></span><br><span class="line">    <span class="attr">hikari:</span></span><br><span class="line">      <span class="attr">minimum-idle:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">maximum-pool-size:</span> <span class="number">3</span></span><br><span class="line"><span class="attr">management:</span></span><br><span class="line">  <span class="attr">endpoints:</span></span><br><span class="line">    <span class="attr">web:</span></span><br><span class="line">      <span class="attr">base-path:</span> <span class="string">/</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span> <span class="string">prod</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://</span></span><br><span class="line">    <span class="attr">hikari:</span></span><br><span class="line">      <span class="attr">minimum-idle:</span> <span class="number">5</span></span><br><span class="line">      <span class="attr">maximum-pool-size:</span> <span class="number">10</span></span><br><span class="line"><span class="attr">management:</span></span><br><span class="line">  <span class="attr">endpoints:</span></span><br><span class="line">    <span class="attr">web:</span></span><br><span class="line">      <span class="attr">base-path:</span> <span class="string">/</span></span><br></pre></td></tr></table></figure>
+
+<p>*.yaml로 했을 때 특징은 다음과 같다.  </p>
+<ol>
+<li>한 파일에서 모든 configuration을 관리할 수 있다.<br>이건 호불호가 갈릴 것 같다.<br>오히려 특정 환경의 설정만 바꾸고 싶은데 똑같은 key들이 환경별로 있어서 헷갈린다는 사람도 있을 것이고,<br>하나의 파일에서 설정을 다 바꿀 수 있어서 여기 저기 다른 파일을 탐색하지 않아서 좋다고 하는 사람도 있을 수 있을 것이다.<br>환경 별로 쪼개서 사용할 수도 있으니 자기 취향 혹은 팀의 가이드라인을 따라 사용하면 될 것 같다.</li>
+<li>비슷한 설정들끼리 뭉친다.<br>동일한 key를 허용하지 않기 때문에 동일한 부모를 가진 key들끼리 뭉치는데, 동일한 부모 아래의 자식이기 때문에 비슷한 설정들끼리 뭉친다.<br>비슷한 설정들끼리 뭉치기 때문에 yaml 파일을 읽을 때 흐름을 파악하기가 훨씬 용이하다.<br>물론 *.properties에서도 비슷한 설정들끼리 뭉쳐놓으면 되는데 설정의 순서를 강제할 순 없기 때문에 yaml이 난 더 좋은 것 같다.</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/YAML/" rel="tag"># YAML</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/08/15/bnf/" rel="prev" title="BNF 표기법">
+                  <i class="fa fa-chevron-left"></i> BNF 표기법
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/08/30/aws-security-group-reference-another-security-group/" rel="next" title="(AWS) Security Group에서 다른 Security Group을 참조하는 경우">
+                  (AWS) Security Group에서 다른 Security Group을 참조하는 경우 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>
