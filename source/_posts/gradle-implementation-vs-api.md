@@ -71,7 +71,7 @@ subprojects {
 }
 ```
 
-![](./implementation-structure.png)
+![](gradle-implementation-vs-api/implementation-structure.png)
 출처: [https://docs.gradle.org/current/userguide/java_plugin.html#tab:configurations](https://docs.gradle.org/current/userguide/java_plugin.html#tab:configurations)
 
 기본적으로 implementation으로 의존성을 추가한다는 사실은 아래 클래스패스에 추가한다는 사실이다.
@@ -80,7 +80,7 @@ subprojects {
 - testCompileClassPath: test 경로에서 해당 모듈을 컴파일할 때 사용함, 우리가 spring-boot-test 모듈의 @SpringBootTest 어노테이션을 사용하는데 컴파일 클래스패스에 존재하지 않는다면 컴파일에 실패함. (대표적으로 junit 같은 경우가 실제 어플리케이션을 구동하는데는 필요하지 않고, 테스트를 수행하는데 필요하기 때문에 testImplementation으로 추가하는 게 좋다.)
 - testRuntimeClassPath: test 경로에서 해당 모듈을 런타임에서 사용함, 우리가 컴파일한 소스코드를 실행할 때(런타임) spring-boot-test 모듈의 @SpringBootTest 어노테이션을 사용하는데 런타임 클래스패스에 존재하지 않는다면 @SpringBootTest을 사용하는 코드로 진입 시에 [NoClassDefFoundError](https://docs.oracle.com/javase/8/docs/api/java/lang/NoClassDefFoundError.html)나 [ClassNotFoundException](https://docs.oracle.com/javase/8/docs/api/java/lang/ClassNotFoundException.html)과 같은 에러/예외가 발생하며 테스트가 실패하게 됨. (대표적으로 h2 db 같이 테스트에서 사용할 목적으로 쓰이는 인메모리 db의 경우 우리가 소스코드에서 직접 사용하는 게 아니라 Spring Boot의 특정 Auto Configuration에서 사용하기 때문에 컴파일 할 때는 필요 없어서 testCompileClassPath에는 존재할 필요가 없고, 런타임에서만 사용하기 때문에 testRuntimeClassPath에는 존재해야하는 경우이다. 그래서 h2는 testRuntimeOnly로 추가하는 게 좋다.)
 
-![](./implementation-single-module.png)
+![](gradle-implementation-vs-api/implementation-single-module.png)
 실제로 implementation으로 jackson-core 모듈을 추가하고 보면 4가지 클래스패스에 모두 추가된 걸 볼 수 있다.
 
 ## api
@@ -120,12 +120,12 @@ subprojects {
 }
 ```
 
-![](./api-structure.png)
+![](gradle-implementation-vs-api/api-structure.png)
 출처: [https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_configurations_graph](https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_configurations_graph)
 
 이미지를 보면 implementation과 마찬가지로 api도 compileClassPath, runtimeClassPath, testCompileClassPath, testRuntimeClassPath에 추가된다고 나와있다.
 
-![](./api-single-module.png)
+![](gradle-implementation-vs-api/api-single-module.png)
 실제로 api로 jackson-core 모듈을 추가하고 보면 4가지 클래스패스에 모두 추가된 걸 볼 수 있다.
 
 ## implementation vs api
@@ -139,10 +139,10 @@ subprojects {
 
 먼저 producer 모듈에 의존성을 추가할 때 implementation과 api로 각각 추가해보자
 
-![](./implementation-api-multi-module-01.png)
+![](gradle-implementation-vs-api/implementation-api-multi-module-01.png)
 implementation으로 추가한 jackson-core와 api로 추가한 commons-lang3 모듈이 모두 클래스패스에 추가됐다.
 
-![](./implementation-api-multi-module-02.png)
+![](gradle-implementation-vs-api/implementation-api-multi-module-02.png)
 consumer 쪽에서 producer 모듈을 의존성으로 추가하는데 여기서 차이점이 나온다. (producer 모듈을 api로 추가해도 마찬가지다.)
 producer 모듈에서 implementation으로 추가했던 의존성인 jackson-core는 (test)runtimeClassPath에만 추가되고, (test)compileClassPath에는 추가되지 않았다.
 그리고 api로 추가했던 의존성인 commons-lang3는 모든 클래스패스에 추가됐다.
@@ -150,10 +150,10 @@ producer 모듈에서 implementation으로 추가했던 의존성인 jackson-cor
 (test)compileClassPath에 의존성을 전파하지 않음으로써 얻는 이점들은 다음과 같다.
 
 ### implementation의 장점 1: 불필요한 의존성 전파를 막아준다.
-![](./implementation-block-expose-unnecessary-transitive-denpendency-01.png)
+![](gradle-implementation-vs-api/implementation-block-expose-unnecessary-transitive-denpendency-01.png)
 consumer module의 compileClassPath에 있는 commons-lang3 모듈 같은 경우에는 실제 소스코드에서 사용이 가능하다.
 
-![](./implementation-block-expose-unnecessary-transitive-denpendency-02.png)
+![](gradle-implementation-vs-api/implementation-block-expose-unnecessary-transitive-denpendency-02.png)
 하지만 consumer moudle의 compileClassPath에 없는 jackson-core 같은 경우에는 실제 소스코드에서 사용이 불가능하다.
 compileClassPath에 없기 때문에 consumer 모듈에서 직접적인 사용이 불가능한 것이지, runtime에 jackson-core를 사용하는 producer 모듈을 사용하는 것에는 아무런 문제가 없다. (runtimeClassPath에 있기 때문에)
 producer 모듈에 jackson-core를 이용하는 클래스를 작성해보자.
@@ -203,7 +203,7 @@ implementation("com.google.guava:guava:10.0")
 implementation("org.apache.commons:commons-lang3:3.0")
 ```
 
-![](./implementation-avoid-compile-dependency-resolution.png)
+![](gradle-implementation-vs-api/implementation-avoid-compile-dependency-resolution.png)
 이제 consumer 모듈의 classPath를 보면
 - producer 모듈에서 api로 추가했던 commons-lang3 같은 경우에는 (test)compile/runtimeClassPath에서 의존성 충돌이 나서 producer 모듈에 추가한 가장 최신 버전인 3.12.0이 적용됨
 - producer 모듈에서 implement로 추가했던 guava 같은 경우에는 (test)compileClassPath에는 consumer 모듈에 추가한 10.0이 적용됨, (test)runtimeClassPath에서는 의존성 충돌이 나서 producer 모듈에 추가한 가장 최신 버전인 31.0.1-jre가 적용됨

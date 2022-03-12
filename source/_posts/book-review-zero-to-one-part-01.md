@@ -13,7 +13,7 @@ date: 2022-01-22 15:02:19
 +로 비판적 책읽기(책에 있는 내용을 무지성으로 수용하는 게 아니라 문장 하나, 단어 하나하나가 의미하는 게 무엇인지 곱씹어보기, 작가가 헛소리 하는 건 없는지 의심해보기)를 통해 작가와 소통하며 책을 읽는 듯한 느낌을 느껴보려고 하는 것도 있음.
 
 # [제로 투 원 (ZERO to ONE)](https://book.naver.com/bookdb/book_detail.nhn?bid=21074303)
-![](./book-cover.jpeg)
+![](book-review-zero-to-one-part-01/book-cover.jpeg)
 참고로 나는 [개정되기 이전 버전](https://book.naver.com/bookdb/book_detail.nhn?bid=8377652)을 읽었음.
 읽게 된 계기는 회사 동료가 이 책을 읽고 가슴이 설렜다고 함.  
 그래서 사내에 기증된 도서에도 있길래 읽었음.  

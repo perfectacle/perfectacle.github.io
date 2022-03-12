@@ -24,25 +24,25 @@ date: 2021-12-31 21:28:31
 그리고 차를 타고 가는 것도 매우 지루하기도 하고 주변 풍경도 막상 크게 볼 것이 없다고 한다.  
 그러다보니 비용이 비싸긴 하지만... (인당 56만원 정도 냈던 것 같다.)
 
-![](./helicopter-01.jpeg)
-![](./helicopter-02.jpeg)
+![](las-vegas-aws-reinvent-04/helicopter-01.jpeg)
+![](las-vegas-aws-reinvent-04/helicopter-02.jpeg)
 버스를 타고 헬기장까지 이동하고 나서야 뭔가 헬기를 탄다는 게 실감이 났다.  
 나는 헬리콥터하면 영화에서 밖에 보지 못했기 때문에 뭔가 양옆이 뚫려있고, 머신건 같은 게 달려있어서 굉장히 위험하다고 생각을 했다.  
 그러다보니 신체포기 각서 같은 걸 서명하고 탑승할 줄 알았는데 그런 건 없었고, 양 옆에 문도 있어서 나름 안전하였다.
 
-![헬기에 탑승해서 헤드셋까지 끼고 있으니 나름 파일럿 같아 보였다.](./self-camera.jpeg)
+![헬기에 탑승해서 헤드셋까지 끼고 있으니 나름 파일럿 같아 보였다.](las-vegas-aws-reinvent-04/self-camera.jpeg)
 
 {% youtube jkSM4MlWsKo %}
 헬기가 이륙하는 장면을 찍어보았는데 정말 이때부터 실감이 제대로 났다.
 
-![](./hoover-dam.jpeg)
+![](las-vegas-aws-reinvent-04/hoover-dam.jpeg)
 헬기로 후버댐을 보니 진짜 미국의 대자연의 경관을 한껏 만끽할 수 있었다.  
 
-![](./in-helicopter-01.jpeg)
-![](./in-helicopter-02.jpeg)
-![](./in-helicopter-03.jpeg)
-![](./in-helicopter-04.jpeg)
-![](./in-helicopter-05.jpeg)
+![](las-vegas-aws-reinvent-04/in-helicopter-01.jpeg)
+![](las-vegas-aws-reinvent-04/in-helicopter-02.jpeg)
+![](las-vegas-aws-reinvent-04/in-helicopter-03.jpeg)
+![](las-vegas-aws-reinvent-04/in-helicopter-04.jpeg)
+![](las-vegas-aws-reinvent-04/in-helicopter-05.jpeg)
 헬기로 이동하는 중에 절벽을 깎아 내린듯 한 비슷비슷한 풍경들이 눈에 들어왔다.  
 차로 이걸 몇시간 동안 지나갈 생각을 하면 너무 지루했을 것 같다.  
 역시 돈이 짱인 거 같다. (돈으로 시간을 살 수 있다는 말이 무엇인지 크게 체감하였다.)
@@ -50,13 +50,13 @@ date: 2021-12-31 21:28:31
 {% youtube QnClfLnj7jI %}
 헬기에서 착륙한 후 그랜드캐니언을 한바퀴 쭉 찍어보았다. (뒤에 더 있지만 사람 얼굴들이 좀 나와서 잘랐다.)
 
-![](./grand-canyon-01.jpeg)
-![](./grand-canyon-02.jpeg)
-![](./grand-canyon-03.jpeg)
-![](./grand-canyon-04.jpeg)
-![](./grand-canyon-05.jpeg)
-![](./grand-canyon-06.jpeg)
-![](./grand-canyon-07.jpeg)
+![](las-vegas-aws-reinvent-04/grand-canyon-01.jpeg)
+![](las-vegas-aws-reinvent-04/grand-canyon-02.jpeg)
+![](las-vegas-aws-reinvent-04/grand-canyon-03.jpeg)
+![](las-vegas-aws-reinvent-04/grand-canyon-04.jpeg)
+![](las-vegas-aws-reinvent-04/grand-canyon-05.jpeg)
+![](las-vegas-aws-reinvent-04/grand-canyon-06.jpeg)
+![](las-vegas-aws-reinvent-04/grand-canyon-07.jpeg)
 
 주위를 삥 둘러보았는데 뭐 비슷한 광경이었다.  
 미국의 대자연... 우와... 한 1~2분 정도 체감한 것 같다.  
@@ -64,13 +64,13 @@ date: 2021-12-31 21:28:31
 하지만 누가 또 오자고 하면 글쎄... 다시 올 정도는 아닌 것 같다.
 그리고 이런 척박한 환경에 선인장도 자라고, 까마귀도 날아다니는 걸 보고 진짜 어디에든 생물이 존재는 한다는 사실도 신기했다.
 
-![](./breakfast.jpeg)
+![](las-vegas-aws-reinvent-04/breakfast.jpeg)
 아점 겸 해서 다과를 준비해줬다.  
 이것도 헬기 예약할 때 들어가있는 거긴 한데 여기선 뭐든 무서워서 이거 돈 안 내는 거냐고 물어보고 먹었다.  
 그리고 좀 느긋하게 먹고 싶었는데 헬기 기사가 시간 됐다고 싸갈 거면 싸가라고 재촉하였다. (물론 바람도 많이 불어서 좀 춥기도 하였다.)
 
-![](./in-helicopter-06.jpeg)
-![](./in-helicopter-07.jpeg)
+![](las-vegas-aws-reinvent-04/in-helicopter-06.jpeg)
+![](las-vegas-aws-reinvent-04/in-helicopter-07.jpeg)
 
 돌아가는 길에도 몇컷 찍기는 했는데 이미 오면서 본 광경이기도 하고 비슷비슷해 보여서 흥미가 좀 떨어진 상태이긴 했다.
 
@@ -82,8 +82,8 @@ date: 2021-12-31 21:28:31
 발표자료는 이미 2020년 11월에 넷플릭스 테크 블로그에 올라온 [Keeping Netflix Reliable Using Prioritized Load Shedding](https://netflixtechblog.com/keeping-netflix-reliable-using-prioritized-load-shedding-6cc827b02f94)을 토대로 제작되었다.
 
 어떻게 하면 넷플릭스가 서비스의 품질을 더 지킬 수 있는 건지에 대한 세션 발표였다.  
-![](./netflix-01.jpeg)
-![](./netflix-02.jpeg)
+![](las-vegas-aws-reinvent-04/netflix-01.jpeg)
+![](las-vegas-aws-reinvent-04/netflix-02.jpeg)
 나는 뒷단 서비스들이 망가졌을 때 서킷브레이커를 도입하여 장애 전파를 막는 것까지만 생각하였다.  
 하지만 트래픽이 너무 과하거나 기타 등등의 사유로 API Gateway가 힘들어한다면...? 같은 상황은 생각해보지 못했다.  
 넷플릭스는 트래픽이 하도 많아져 이런 상황까지 겪어봤을테고, 무작정 서버를 증설하는 대신 다른 방법으로 문제를 해결했다. (물론 너무 심각하면 증설해야하지만)
@@ -97,7 +97,7 @@ date: 2021-12-31 21:28:31
 영어를 하지 못한다는 사실이 너무나 가슴이 아팠던 상황이었다...
 
 ## 또 다시 관광모드로...
-![](./crawfish.jpeg)
+![](las-vegas-aws-reinvent-04/crawfish.jpeg)
 저녁은 [Hot N Juicy crawfish](https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=tori-tours&logNo=221194196161)에서 먹었다.  
 해산물이 나온다는 거 말고 아무것도 모른 채로 먹었는데 살짝 매콤하지만 맛있었다.  
 비닐 장갑을 껴도 그 사이로 국물이 슬쩍 들어오는 것도 같았고... 손에 냄새도 좀 벤다는 점이 단점인 것 같았다.  
@@ -122,25 +122,25 @@ date: 2021-12-31 21:28:31
 한국에도 이런 공연들이 많아졌으면 하고 나의 심금을 울릴 수 있는 이런 연주라면 그에 대응하는 대가를 지불하고 볼 용의가 얼마든지 있다.
 
 ## 라스베가스 속 에펠탑
-![](./eiffel-tower-01.jpeg)
-![](./eiffel-tower-02.jpeg)
-![](./eiffel-tower-03.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-01.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-02.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-03.jpeg)
 조약하지만 에펠탑을 흉내낸 관광코스가 있길래 가보았다.
 안에 들어가는 건 공짜지만 타워 위로 올라가서 구경하는 것은 돈을 내야한다.
 
-![](./eiffel-tower-04.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-04.jpeg)
 진짜 라스베가스에서 카지노 빼면 섭할 정도로 어딜가나 카지노가 보였다.
 
-![](./eiffel-tower-05.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-05.jpeg)
 우리나라도 남산타워에 사랑의 자물쇠인가 뭐시기인가... 있는데 어디가 원조인지 궁금해졌다.
 
-![](./eiffel-tower-06.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-06.jpeg)
 에펠타워 꼭대기까지는 엘레베이터를 타고 이동하는데 이렇게 투명하게 뻥 뚫려있어서 밖이 보인다.
 
-![](./eiffel-tower-07.jpeg)
-![](./eiffel-tower-08.jpeg)
-![](./eiffel-tower-09.jpeg)
-![](./eiffel-tower-10.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-07.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-08.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-09.jpeg)
+![](las-vegas-aws-reinvent-04/eiffel-tower-10.jpeg)
 에펠타워 꼭대기에서 본 뷰도 정말 멋졌다.  
 그리고 뜻밖에 다른 외국인 커플이 프로포즈하는 장면도 보았다.  
 결혼하려면 이정도 되는 근사한 곳에 와서 반지 주면서 프로포즈를 해야 결혼할 수 있는 것 같았다.  
@@ -155,12 +155,12 @@ date: 2021-12-31 21:28:31
 땅에서 보는 분수쇼도 멋있었지만 위에서 본 분수쇼는 또 달랐다.
 땅에서 보면 1차원 적으로 밖에 보지 못해 분수가 일렬로 나열돼있는 줄 알았는데 위에서 보니 동그란 모양의 분수도 있다는 사실을 알 수 있게 되었다.
 
-![](./ty.jpeg)
+![](las-vegas-aws-reinvent-04/ty.jpeg)
 이런 타워 아래로 내려오면 국룰처럼 기념품 가게가 있다.  
 나는 여태까지 [ty](https://shop.ty.com/)가 `T`hank `Y`ou의 줄임말인 줄 알았는데 브랜드 로고라는 걸 처음 알게 되었다.
 
 ## re:Play
-![](./replay-01.jpeg)
+![](las-vegas-aws-reinvent-04/replay-01.jpeg)
 re:Play는 AWS re:Invent에서 행사 마지막 전날 밤에 진행되는 파티 같은 행사이다.  
 진짜 이건 미쳤다. 말로 설명이 안 된다. 테크 기업에서 스케일이 큰 행사를 하기도 힘든데 이렇게 넓은 대지를 빌려 파티 문화까지 만들었다고?
 정말 정말 이건 미쳤다고 생각이 들고 아마존이란 기업에 존경심이 생겼다. 
@@ -168,13 +168,13 @@ re:Play는 AWS re:Invent에서 행사 마지막 전날 밤에 진행되는 파�
 {% youtube jDjWCgoqGGs %}
 입구를 따라 쭉 들어오다보면 월드 디제이 페스티벌 마냥 디제이가 신나는 음악을 흔들어 제끼고 있었다.
 
-![](./replay-dj-01.jpeg)
-![](./replay-dj-02.jpeg)
-![](./replay-dj-03.jpeg)
+![](las-vegas-aws-reinvent-04/replay-dj-01.jpeg)
+![](las-vegas-aws-reinvent-04/replay-dj-02.jpeg)
+![](las-vegas-aws-reinvent-04/replay-dj-03.jpeg)
 그 와중에 오징어게임을 리믹스 한 음악을 틀고 있었다. 국뽕이 차오르는 순간이었다.
 
-![](./replay-02.jpeg)
-![](./replay-03.jpeg)
+![](las-vegas-aws-reinvent-04/replay-02.jpeg)
+![](las-vegas-aws-reinvent-04/replay-03.jpeg)
 re:Play에는 탁구 등등 여러 놀이거리도 있었지만 우리는 장애물 피하기 같은 것과 팀먹고 연타하여 누가 제일 빠르게 누르나 같은 걸 해보았다.
 
 {% youtube MXpNtFt5pcY %}
@@ -187,7 +187,7 @@ re:Play에는 탁구 등등 여러 놀이거리도 있었지만 우리는 장애
 처음에는 몸 한 3주간 안 씻은 노숙자 몸에서 나는 냄새인 줄 알았는데 대마초 냄새였다.  
 정말 그정도로 역하고 미국이란 나라에 한 번 더 충격을 받게 된 계기였다.
 
-![](./replay-t-shirt.jpeg)
+![](las-vegas-aws-reinvent-04/replay-t-shirt.jpeg)
 행사가 끝날 때 쯤 나오면 사람이 몰릴 것 같아 미리 나오면서 또 어디 줏어먹을 거 없나... 두리번 거리는 하이에나처럼 돌아다니다가 티셔츠를 득템하였다.  
 행사 막바지라 그런지 필요한 만큼 다 가져가라고 해서 진짜 한 10장은 들고 온 것 같았다.  
 2장은 집에서 잠옷으로 요긴하게 쓰고 있고, 나머지는 회사 동료들에게 뿌렸다.

@@ -33,8 +33,8 @@ Building next-gen applications with `event-driven` architectures라는 세션이
 우리나라에서 푸드 테크기업이라고 불리면서 직접적으로 음식을 만들어 파는 곳이 있는가? 라고 했을 때 떠오르는 곳이 없었다.  
 
 그래... 타코벨에서 AWS를 어찌저찌 썼다고 치자... 그래서 그들은 무슨 문제를 풀었던 걸까??
-![](./tacobell-01.jpeg)
-![](./tacobell-02.jpeg)
+![](las-vegas-aws-reinvent-03/tacobell-01.jpeg)
+![](las-vegas-aws-reinvent-03/tacobell-02.jpeg)
 미국의 슈퍼볼 같은 행사의 TV 광고를 한 번 때리면 주문량이 미친 듯이 폭주한다는 것이다.  
 그래서 그들은 배달기사 / 음식점 / 고객 사이에서 발생하는 상호작용 사이에서 이벤트 드리븐을 적용했다는 것이다.  
 그것도 서버리스로!! 그래서 미친듯이 폭발하는 트래픽을 견뎌낼 수 있었다고 한다...
@@ -62,10 +62,10 @@ Building next-gen applications with `event-driven` architectures라는 세션이
 라스베가스에 온지 4일 째가 되었다.  
 그러다보니 먹고자고 세션 듣는 것들이 일상이 되었다.  
 
-![](./lunch.jpeg)
+![](las-vegas-aws-reinvent-03/lunch.jpeg)
 그럼에도 불구하고 aws에서 제공하는 식단들은 너무나 물렸고, 이제는 맛도 없다고 느껴지고... 얼른 육개장 사발면 한사발 얼큰하게 때리고 싶은 마음 뿐이었다...
 
-![](./reflection-room-rest.jpeg)
+![](las-vegas-aws-reinvent-03/reflection-room-rest.jpeg)
 시차적응이 된 것도 같지만 아침부터 세션을 듣고 호텔들을 돌아다니다보면 지치는 건 마찬가지였다.  
 세션을 들어도 이해가 잘 되지 않으니 자포자기같은 심정을 먹다보니 자연스레 체력을 좀 보충하자는 생각에 또 리플렉션 룸에서 휴식을 청했다.  
 리플렉션 룸에서 쉬면서 노트북으로 Self-paced lab도 할 수 있어서 그나마 좀 내 템포대로 진행할 수 있어 편했다.
@@ -83,8 +83,8 @@ Building next-gen applications with `event-driven` architectures라는 세션이
 다른 외국인들은 한손으로 타고 소리도 지르고 즐기던데... 나는 즐기러 온 게 아닌가? 라는 생각이 들었다.
 여기까지 와서도 어떻게든 이겨보겠다는 그런 생각에 스트레스를 날려보내려면 마음을 다르게 고쳐먹어야겠다는 생각도 들었다.
 
-![](./venetian-01.jpeg)
-![](./venetian-02.jpeg)
+![](las-vegas-aws-reinvent-03/venetian-01.jpeg)
+![](las-vegas-aws-reinvent-03/venetian-02.jpeg)
 셋째 날도 그냥 지나가다가 또 안 찍은 것 같은 공간을 몇 개 찍어보았다.  
 셋째 날은 그냥저냥 지쳐서 크게 한 건 없던 것 같다.
 

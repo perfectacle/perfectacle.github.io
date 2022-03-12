@@ -79,7 +79,7 @@ date: 2021-12-31 23:27:31
 물론 뭐라고 하는지는 못 알아들었다. (아이스크림 같은 건 들렸다.)
 
 ## 세일즈포스 부스에 방문하다
-![](./sales-force.jpeg)
+![](las-vegas-aws-reinvent-05/sales-force.jpeg)
 밖에서 봤을 때 굉장히 이쁘게 꾸민 부스가 있었다.  
 바로 세일즈포스였는데 세일즈포스란 기업은 평상시 관심있던 기업이 아니다보니 얘네들이 무슨 문제를 풀었는지 궁금했다. (굿즈도 받을 겸...)
 근데 보다보니 세일즈포스가 슬랙도 인수했다는 사실을 이 때 알게 되었다.  
@@ -89,74 +89,74 @@ date: 2021-12-31 23:27:31
 ## 다시 관광모드로...
 마지막 날이라 그런지 들을만한 세션이 얼마 없기도 하고 점심 장소로 이동을 하면서 주변 관광지들을 둘러보았다.
 
-![](./las-vegas-01.jpeg)
-![](./las-vegas-02.jpeg)
-![](./las-vegas-03.jpeg)
+![](las-vegas-aws-reinvent-05/las-vegas-01.jpeg)
+![](las-vegas-aws-reinvent-05/las-vegas-02.jpeg)
+![](las-vegas-aws-reinvent-05/las-vegas-03.jpeg)
 한국으로 치면 먹자골목 같은 분위기가 나는데 또 라스베가스 만의 분위기가 나서 신기했다.  
 한편으로는 평일 낮에 이런데 오는 사람들은 뭐하는 사람일까... 이 사람들도 휴가내고 놀러온 사람일까... 싶었다.
 
-![](./in-n-out.jpeg)
+![](las-vegas-aws-reinvent-05/in-n-out.jpeg)
 계속 가다보니 인앤아웃 버거집도 보였다.  
 점심 예약을 하지 않았더라면 한 번 먹어봤을 법 한데... 좀 아쉬웠다.
 
 ## 플라밍고가 살고 있는 플라밍고 호텔
-![](./flamingo-01.jpeg)
+![](las-vegas-aws-reinvent-05/flamingo-01.jpeg)
 지나가다보니 [플라밍고 호텔](https://www.caesars.com/flamingo-las-vegas)도 보였다.  
 
 {% youtube kdFoQXx7Cd0 %}
 플라밍고 호텔은 이름에서 알 수 있듯이 실제로 플라밍고를 볼 수 있다.  
 새들이 지저귀는 소리가 마치 숲속에서 지저귀는 새들의 소리 같았다.
 
-![](./flamingo-02.jpeg)
-![](./flamingo-03.jpeg)
+![](las-vegas-aws-reinvent-05/flamingo-02.jpeg)
+![](las-vegas-aws-reinvent-05/flamingo-03.jpeg)
 플라밍고 호텔도 내부에 볼만한 것들이 많으니 라스베가스에 왔으면 한 번 가볼법한 것 같다.
 이렇게 라스베가스는 호텔마다 특색이 있어서 시간이 된다면 한번 쭉 둘러보는 것도 좋은 것 같다. (공짜로 볼만한 요소들이 많다.)
 
 ## 고든램지가 운영하는 Pub & Grill
-![](./pub-n-grill-01.jpeg)
+![](las-vegas-aws-reinvent-05/pub-n-grill-01.jpeg)
 회사 동료 분이 예약해주셔서 고든램지가 운영한다는 [Pub & Grill](https://www.caesars.com/caesars-palace/restaurants/gordon-ramsay-pub-and-grill)에서 점심을 먹게 되었다.
 
-![우리가 먹었던 점심 코스요리](./pub-n-grill-02.jpeg)
+![우리가 먹었던 점심 코스요리](las-vegas-aws-reinvent-05/pub-n-grill-02.jpeg)
 
-![Onion & Ale Soup로 추정되는 요리](./pub-n-grill-03.jpeg)
+![Onion & Ale Soup로 추정되는 요리](las-vegas-aws-reinvent-05/pub-n-grill-03.jpeg)
 엄청 짰다.  
 확실히 미국 음식들은 짜다.  
 같이 갔던 사람의 말로는 이거 만드려면 무슨 양파가 카라멜 색이 될 때까지 엄청 열심히 뭐 굽는대나 해야한다고 한다.  
 노력은 가상한데 그에 비해 맛은 훌륭하지 못했다. 그냥저냥... 짠 거 빼면 좀 먹을만 했던 것 같다.  
 
-![Classic Caesar로 추정되는 요리](./pub-n-grill-04.jpeg)
+![Classic Caesar로 추정되는 요리](las-vegas-aws-reinvent-05/pub-n-grill-04.jpeg)
 위에 어니언 스프가 좀 짰다면 얘랑 같이 먹으면 좀 간이 맞는 듯 했다.  
 빵이 들어가있는 샐러드인데 좀 더 힘을 준 샐러드 느낌이었다.  
 다른 동료 분께서 시켜서 먹어봤는데 맛있었다.
 
-![Petite Roasted Beef Wellington으로 추정되는 요리](./pub-n-grill-05.jpeg)
+![Petite Roasted Beef Wellington으로 추정되는 요리](las-vegas-aws-reinvent-05/pub-n-grill-05.jpeg)
 이게 메인 요리였을 것이다.  
 소스 담은 것부터가 힘을 잔뜩 실은 느낌이었다.  
 확실히 고기가 고급지다는 것이 느껴졌지만 역시나 짰다.  
 짠 거 빼고는 너무나 맛있었고, 덕분에 소스는 그닥 안 찍어먹었던 거 같다.  
 미국인들이 왜 이렇게 성인병에 많이 걸리는지 알게 된 것 같았다.
 
-![Sticky Toffee Pudding으로 추정되는 요리](./pub-n-grill-06.jpeg)
+![Sticky Toffee Pudding으로 추정되는 요리](las-vegas-aws-reinvent-05/pub-n-grill-06.jpeg)
 푸딩인 줄은 모르겠고 그냥 초코빵 같은 거 위에 아이스크림이 얹어져있었다.  
 단짠단짠 조합에 부합해보이긴 하지만 이것도 몹시나 달았던 것 같았다.  
 그래도 계속 짠 걸 먹는 것에 비해 오랜만에 달달한 걸 먹으니 먹을만 했다.  
 맛은 좋았다. (좀 많이 달았던 거 같긴 하지만...)
 
 ## 시저스 호텔과 미라지 호텔
-![](./caesars-01.jpeg)
-![](./caesars-02.jpeg)
+![](las-vegas-aws-reinvent-05/caesars-01.jpeg)
+![](las-vegas-aws-reinvent-05/caesars-02.jpeg)
 지나가다가 또 [시저스 호텔](https://www.caesars.com/caesars-palace)이 보여서 한 방 찍어보았다.
 로마 황제 시저를 테마로 만든 호텔인 건지 로마의 건축문화를 본따 만든 듯한 조형물들이 많이 보였다.  
 
-![](./mirage.jpeg)
+![](las-vegas-aws-reinvent-05/mirage.jpeg)
 [미라지 호텔](https://mirage.mgmresorts.com/en.html)도 보았는데 폭포처럼 잘 꾸며놓았다.
 미라지 호텔은 화산쇼가 유명하다는데 그거는 눈으로는 봤는데 사진으로 남겨놓은 거는 딱히 없다.  
 실제로 미라지 호텔 건너편에서 지나가다가 보았는데도 불길 때문에 좀 따뜻하다는 느낌이 들 정도였다.
 
 ## 이제는 우리가 헤어져야 할 시간...
-![막상 집에가려니 아쉬워서 택시에서 한 컷 찍어보았다.](./in-taxi.jpeg)
-![비행기 안에서 뷰가 아름다워서 한 컷 남겨보았다.](./in-airplane.jpeg)
-![](./bad-food.jpeg)
+![막상 집에가려니 아쉬워서 택시에서 한 컷 찍어보았다.](las-vegas-aws-reinvent-05/in-taxi.jpeg)
+![비행기 안에서 뷰가 아름다워서 한 컷 남겨보았다.](las-vegas-aws-reinvent-05/in-airplane.jpeg)
+![](las-vegas-aws-reinvent-05/bad-food.jpeg)
 샌프란시스코 공항에서 경유를 위해 기다리다가 무슨 유기농 음식점? 같은 곳에 들어가서 뭔지도 모르고 수프를 시켰는데... 웬 꿀꿀이 죽이 나왔다.  
 만원도 넘었는데 돈이 너무 아까웠고 억지로 먹다가 버렸다.  
 그리고 신기한 건 미국은 분리수거를 크게 안 하는 건지 그냥 음식물도 쓰레기통에 다 버리는 것 같았다.
