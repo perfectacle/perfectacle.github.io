@@ -94,9 +94,9 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,18 +164,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-count">212</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-count">250</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -225,6 +225,121 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/09/04/di-v2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/09/04/di-v2/" class="post-title-link" itemprop="url">Dependency Injection(의존성 주입)을 알아보자 - 생성자 함수</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-09-04 09:20:46" itemprop="dateCreated datePublished" datetime="2017-09-04T09:20:46+00:00">2017-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/" itemprop="url" rel="index"><span itemprop="name">Middle-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/Pattern/" itemprop="url" rel="index"><span itemprop="name">Pattern</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/09/04/di-v2/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/04/di-v2/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2017/09/04/di-v2/thumb.png" class>
+
+<p><a href="/2017/09/04/di-v1/">v1</a>에는 재사용 가능한 코드가 있음에도 불구하고 미묘(?)한 차이 때문에 계속 각국의 타이어를 장착한 자동차 클래스를 만들어야하는 단점이 있었다.<br>이는 자동차를 만들 때 이미 타이어를 만드는 방법이 결정되어 있기 때문에 발생하는 문제이다.<br>(**자동차(전체)**가 **타이어(부분)**에 <strong>의존</strong>하고 있는 코드)<br>즉, 자동차를 만들 때 타이어를 만드는 방법을 결정하면 되는 사항이다.<br>(**의존하는 부분(타이어)**을 **전체(자동차)**에 <strong>주입</strong>시키는 패턴)  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Tire.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Tire</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">wheel</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// KoreanTire.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KoreanTire</span> <span class="keyword">implements</span> <span class="title class_">Tire</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">wheel</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;구르다&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AmericanTrie.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AmericanTire</span> <span class="keyword">implements</span> <span class="title class_">Tire</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">wheel</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;wheel&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/09/04/di-v2/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/09/04/di-v3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +376,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -376,7 +491,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -492,7 +607,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -598,7 +713,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -717,7 +832,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -862,7 +977,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -979,7 +1094,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1096,7 +1211,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1211,7 +1326,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1258,125 +1373,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/08/07/computer-number-making-reason/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/08/07/why-1byte-is-8bit/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/08/07/why-1byte-is-8bit/" class="post-title-link" itemprop="url">(상식) 왜 1byte는 8bit일까?</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2017-08-07 09:02:39" itemprop="dateCreated datePublished" datetime="2017-08-07T09:02:39+00:00">2017-08-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%EA%B8%B0%ED%83%80/%EB%93%B1%EB%93%B1/" itemprop="url" rel="index"><span itemprop="name">등등</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2017/08/07/why-1byte-is-8bit/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/07/why-1byte-is-8bit/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2017/08/07/why-1byte-is-8bit/thumb.png" class title="이미지 출처: http:&#x2F;&#x2F;keybreak.tistory.com&#x2F;125">  
-
-<p>과거에는 1byte가 7bit, 9bit 등등이던 시절이 있다고 하지만 현재는 8비트로 거의 표준이 된 것 같다.<br>왜일까?<br>이 포스트는 아래 링크를 참조하여 제 머릿 속을 바탕으로 글을 썼기 때문에 틀린 점이 있다면 댓글로 적어주길 바랍니다~</p>
-<ul>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://air802.tistory.com/72">아스키(Ascii)</a>  </li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://kldp.org/node/153459">메모리 하나당 차지하는 바이트 수에 대해 궁금한 점이 있습니다.</a>  </li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://kldp.org/node/149091">메모리 주소당 데이터용량이 1바이트인 이유가 먼가요??</a>  </li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://zepeh.tistory.com/313">1바이트는 왜 8비트일까?</a></li>
-</ul>
-<h2 id="컴퓨터는-미국에서-개발했다"><a href="#컴퓨터는-미국에서-개발했다" class="headerlink" title="컴퓨터는 미국에서 개발했다."></a>컴퓨터는 미국에서 개발했다.</h2><p>따라서 미국 특화(+유럽권과의 통신 등등을 고려하여 유렵권까지 특화)해서 만들었다.<br>따라서 아시아나 아프리카 등등에는 별로 특화돼있지 않았다. (지금은 많이 완화된 것 같지만…)<br>1byte의 bit 수를 결정 짓는 결정적인 요인은 아마 ASCII라는 문자 인코딩 때문일 것이다.<br>ASCII는 미국권 문자를 표현하는 문자 인코딩(문자의 집합)인데 통신을 위한 기호와 특수기호 + 숫자 + 알파벳 대소문자를 표현할 수 있다.<br>당연히 미국에서 개발했으니 미국에서 쓰이는 문자만 표현하면 되는 것이었다.<br>이 ASCII를 표현하는데는 7bit(128자)로 충분했고, 이 ASCII를 베이스로 byte(하나의 문자를 담는 단위)가 결정된 게 아닐까 싶다.  </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/08/07/why-1byte-is-8bit/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

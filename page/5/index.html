@@ -94,9 +94,9 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,18 +164,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-count">212</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-count">250</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -225,6 +225,121 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/06/11/aws-sg-trobuleshooting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2019/06/11/aws-sg-trobuleshooting/" class="post-title-link" itemprop="url">(Troubleshooting) 내 로컬에서는 잘 되는데...? (내로잘)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2019-06-11 22:28:23" itemprop="dateCreated datePublished" datetime="2019-06-11T22:28:23+00:00">2019-06-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Troubleshooting/" itemprop="url" rel="index"><span itemprop="name">Troubleshooting</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2019/06/11/aws-sg-trobuleshooting/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/06/11/aws-sg-trobuleshooting/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2019/06/11/aws-sg-trobuleshooting/thumb.jpg" class title="미리보는 교훈: 남탓을 하지 말자">
+
+<img src="/2019/06/11/aws-sg-trobuleshooting/reporter.png" class title="오늘도 어김없이 외부를 통해 장애가 제보되었다.">  
+<img src="/2019/06/11/aws-sg-trobuleshooting/work-on-my-local.png" class title="하지만 내 로컬에서는 잘 됐다. (이럴 때 쓰는 말이 내로잘, 내 로컬에서는 잘 되는데...?)">  
+<p>내 PC에서는 잘 되는데 버그 제보자가 직접 모바일 웹에서 안 되는 걸 보여줬다.<br>그리고 내 모바일에서도 해봤고, 다른 사람들의 모바일에서도 전부 안 됐다. (안드로이드, iOS에서 크롬, 사파리, 삼성 인터넷 가릴 것 없이 다 안 됐다.)  </p>
+<p>PC에서는 잘 되고, 모바일에서는 안 된다… 나는 당연히 프론트 이슈로 여겼다.<br>혹시 서버 쪽 이슈일까봐 액세스 로그를 모니터링해보니 헬스 체크 이외에 로그가 안 찍히길래 자바스크립트 어딘가에서 오류가 나서 API 호출도 못 하는 거라고 확신했다.  </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/06/11/aws-sg-trobuleshooting/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/06/11/thread-dump-analyze/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +376,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -375,7 +490,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -488,7 +603,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -602,7 +717,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -715,7 +830,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -828,7 +943,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -943,7 +1058,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1059,7 +1174,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1174,7 +1289,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1227,126 +1342,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2019/04/28/nginx-proxy-aws-elb/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/04/21/non-stop-deployment/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2019/04/21/non-stop-deployment/" class="post-title-link" itemprop="url">무중단 배포란...?</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2019-04-21 23:03:23" itemprop="dateCreated datePublished" datetime="2019-04-21T23:03:23+00:00">2019-04-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Middle-end/" itemprop="url" rel="index"><span itemprop="name">Middle-end</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Middle-end/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2019/04/21/non-stop-deployment/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/04/21/non-stop-deployment/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2019/04/21/non-stop-deployment/thumbs.jpg" class>
-
-<p>실제로 우리가 간단하게 서버를 배포하는 시나리오를 생각해보자.</p>
-<ol>
-<li>80포트(혹은 다른 포트)에 우리의 서버를 띄운다.</li>
-<li>새롭게 배포할 내용이 있다고 하면 포트가 충돌나면 안 되기 때문에 서버를 다운시킨다.  </li>
-<li>(옵션) 유저의 이탈을 방지하고자 공사중 이미지를 띄운다.  </li>
-<li>80포트(혹은 다른 포트)에 새롭게 배포할 서버를 띄운다.</li>
-</ol>
-<p>만약 서버가 뜨는데 30초가 걸린다고 하면 최소 30+@초만큼 다운타임(유저에게 서비스가 불가능한 시간)이 발생한다.<br>현대의 어플리케이션이라면 유저에게 최상의 경험을 제공해주기위해 이런 다운타임이 없는 무중단 배포를 지원해야한다.  </p>
-<h3 id="필요-조건"><a href="#필요-조건" class="headerlink" title="필요 조건"></a>필요 조건</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/04/21/non-stop-deployment/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

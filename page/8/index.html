@@ -94,9 +94,9 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,18 +164,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-count">212</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-count">250</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -225,6 +225,119 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/04/25/aws-public-subnet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2018/04/25/aws-public-subnet/" class="post-title-link" itemprop="url">(AWS) Public Subnet</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-04-25 06:01:08" itemprop="dateCreated datePublished" datetime="2018-04-25T06:01:08+00:00">2018-04-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/" itemprop="url" rel="index"><span itemprop="name">Middle-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/04/25/aws-public-subnet/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/04/25/aws-public-subnet/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2018/04/25/aws-public-subnet/thumb.png" class>  
+
+<h2 id="Subnet"><a href="#Subnet" class="headerlink" title="Subnet"></a>Subnet</h2><p>서브넷이란 Sub Network, 네트워크의 서브, 메인 네트워크를 쪼갰다고 보면 된다.<br>AWS 관점에서 봤을 때 메인 네트워크는 <a href="/2018/04/25/aws-vpc">VPC</a>라고 보면 된다.    </p>
+<h3 id="Public-Subnet"><a href="#Public-Subnet" class="headerlink" title="Public Subnet"></a>Public Subnet</h3><p>Public Subnet이란 <strong>외부에서 접근이 가능한 네트워크</strong> 정도로 이해하면 될 것 같다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/04/25/aws-public-subnet/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/04/25/aws-vpc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +374,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:28" itemprop="dateModified" datetime="2022-03-12T10:14:28+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -374,7 +487,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -491,7 +604,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -604,7 +717,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -717,7 +830,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -830,7 +943,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -943,7 +1056,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1056,7 +1169,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1171,7 +1284,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1224,108 +1337,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2018/02/20/jpa-embedded-type/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/01/16/jackson-local-date-time-serialize/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2018/01/16/jackson-local-date-time-serialize/" class="post-title-link" itemprop="url">(Jackson) LocalDate, LocalTime, LocalDateTime 뽀개기 - Serialize</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2018-01-16 10:54:25" itemprop="dateCreated datePublished" datetime="2018-01-16T10:54:25+00:00">2018-01-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2018/01/16/jackson-local-date-time-serialize/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/16/jackson-local-date-time-serialize/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2018/01/16/jackson-local-date-time-serialize/thumb.png" class>
-
-<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/FasterXML/jackson">잭슨</a>은 JSON -&gt; Java 클래스로 Deserialize, Java 클래스 -&gt; JSON으로 Serialize 할 때 매우 유용한 라이브러리다.  </p>
-<p>하지만 잭슨이 나온 이후에 자바 8이 나왔는지 모르겠는데 LocalDate, LocalTime, LocalDateTime 등등의 클래스를 기본적으로 깔끔하게 처리해주지 못한다.<br>따라서 이번에는 어렵지는 않지만 새로 프로젝트 구성할 때마다 매번 까먹어서 찾아 헤매던 케이스들을 정리해봤다.<br>또한 예제의 설명은 스프링 부트를 기준으로 설명하겠다.  </p>
-<p>우선 <a href="/2018/01/15/jackson-local-date-time-deserialize/">Deserialize</a>를 안 본 사람은 해당 내용에서 이어지는 포스트이기 때문에 보고 오도록 하자.  </p>
-<h2 id="3줄-요약"><a href="#3줄-요약" class="headerlink" title="3줄 요약"></a>3줄 요약</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/01/16/jackson-local-date-time-serialize/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

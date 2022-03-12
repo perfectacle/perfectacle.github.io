@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="3줄 요약  implementation을 사용하자 implementation을 사용하더라도 라이브러리를 사용하는 consumer 측의 runtimeClassPath에 추가되기 때문에 런타임 의존성 충돌이 발생할 수 있으니 의존성은 최대한 적게 추가하자. api가 필요한 건지 100번 고민하고 설계가 잘못된 건 아닌지 의심해 본 후 api를 사용한다. (ap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(Gradle) implementation vs api">
+<meta property="og:url" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="3줄 요약  implementation을 사용하자 implementation을 사용하더라도 라이브러리를 사용하는 consumer 측의 runtimeClassPath에 추가되기 때문에 런타임 의존성 충돌이 발생할 수 있으니 의존성은 최대한 적게 추가하자. api가 필요한 건지 100번 고민하고 설계가 잘못된 건 아닌지 의심해 본 후 api를 사용한다. (ap">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/implementation-structure.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/implementation-single-module.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/api-structure.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/api-single-module.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/implementation-api-multi-module-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/implementation-api-multi-module-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/implementation-block-expose-unnecessary-transitive-denpendency-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/implementation-block-expose-unnecessary-transitive-denpendency-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/implementation-avoid-compile-dependency-resolution.png">
+<meta property="article:published_time" content="2022-03-12T19:43:25.000Z">
+<meta property="article:modified_time" content="2022-03-12T11:31:08.539Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="gradle">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/implementation-structure.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/","path":"2022/03/12/gradle-implementation-vs-api/","title":"(Gradle) implementation vs api"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>(Gradle) implementation vs api | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C"><span class="nav-number">1.</span> <span class="nav-text">들어가기에 앞서</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#implementation"><span class="nav-number">2.</span> <span class="nav-text">implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#api"><span class="nav-number">3.</span> <span class="nav-text">api</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#implementation-vs-api"><span class="nav-number">4.</span> <span class="nav-text">implementation vs api</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation%EC%9D%98-%EC%9E%A5%EC%A0%90-1-%EB%B6%88%ED%95%84%EC%9A%94%ED%95%9C-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A0%84%ED%8C%8C%EB%A5%BC-%EB%A7%89%EC%95%84%EC%A4%80%EB%8B%A4"><span class="nav-number">4.1.</span> <span class="nav-text">implementation의 장점 1: 불필요한 의존성 전파를 막아준다.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation%EC%9D%98-%EC%9E%A5%EC%A0%90-2-compileClassPath%EC%9D%98-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%B6%A9%EB%8F%8C%EC%9D%B4-%EC%9D%BC%EC%96%B4%EB%82%98%EC%A7%80-%EC%95%8A%EB%8A%94%EB%8B%A4"><span class="nav-number">4.2.</span> <span class="nav-text">implementation의 장점 2: compileClassPath의 의존성 충돌이 일어나지 않는다.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation%EC%9D%98-%EC%9E%A5%EC%A0%90-3-compileClassPath%EC%97%90-%ED%8F%AC%ED%95%A8%EB%90%98%EC%A7%80-%EC%95%8A%EA%B8%B0-%EB%95%8C%EB%AC%B8%EC%97%90-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EC%B8%A1%EC%97%90%EC%84%9C-%EC%9D%98%EC%A1%B4%EC%84%B1%EC%9D%84-%EB%B3%80%EA%B2%BD%ED%95%B4%EB%8F%84-%EC%BB%A8%EC%8A%88%EB%A8%B8%EB%8A%94-%EC%9E%AC%EC%BB%B4%ED%8C%8C%EC%9D%BC-%ED%95%98%EC%A7%80-%EC%95%8A%EC%95%84%EB%8F%84-%EB%90%9C%EB%8B%A4"><span class="nav-number">4.3.</span> <span class="nav-text">implementation의 장점 3: compileClassPath에 포함되지 않기 때문에 라이브러리 측에서 의존성을 변경해도 컨슈머는 재컴파일 하지 않아도 된다.</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation%EC%9D%98-%EC%9E%A5%EC%A0%90-4-compileClassPath-%EC%82%AC%EC%9D%B4%EC%A6%88%EA%B0%80-%EC%A4%84%EC%96%B4%EB%93%A4%EC%97%88%EA%B8%B0-%EB%95%8C%EB%AC%B8%EC%97%90-%EC%BB%B4%ED%8C%8C%EC%9D%BC-%EC%86%8D%EB%8F%84%EA%B0%80-%EB%B9%A8%EB%9D%BC%EC%A7%84%EB%8B%A4"><span class="nav-number">4.4.</span> <span class="nav-text">implementation의 장점 4: compileClassPath 사이즈가 줄어들었기 때문에 컴파일 속도가 빨라진다.</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%96%B8%EC%A0%9C-implementaion%EC%9D%84-%EC%93%B0%EA%B3%A0-%EC%96%B8%EC%A0%9C-api%EB%A5%BC-%EC%8D%A8%EC%95%BC%ED%95%A0%EA%B9%8C"><span class="nav-number">5.</span> <span class="nav-text">언제 implementaion을 쓰고 언제 api를 써야할까?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#implementation%EC%9D%84-%EC%8D%A8%EC%95%BC%ED%95%A0-%EB%95%8C"><span class="nav-number">5.1.</span> <span class="nav-text">implementation을 써야할 때</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#api%EB%A5%BC-%EC%8D%A8%EC%95%BC%ED%95%A0-%EB%95%8C"><span class="nav-number">5.2.</span> <span class="nav-text">api를 써야할 때</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B7%B8%EB%9F%BC-implementation%EB%A7%8C-%EC%93%B0%EB%A9%B4-%EB%A7%8C%EC%82%AC-OK%EC%9D%BC%EA%B9%8C"><span class="nav-number">6.</span> <span class="nav-text">그럼 implementation만 쓰면 만사 OK일까??</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">212</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">250</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="(Gradle) implementation vs api | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          (Gradle) implementation vs api
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+      
+
+      <time title="Post created: 2022-03-12 19:43:25 / Updated at: 11:31:08" itemprop="dateCreated datePublished" datetime="2022-03-12T19:43:25+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/gradle/" itemprop="url" rel="index"><span itemprop="name">gradle</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/03/12/gradle-implementation-vs-api/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/03/12/gradle-implementation-vs-api/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>3줄 요약</p>
+<ol>
+<li><a href="#implementation">implementation</a>을 사용하자</li>
+<li>implementation을 사용하더라도 라이브러리를 사용하는 <a href="#%EA%B7%B8%EB%9F%BC-implementation%EB%A7%8C-%EC%93%B0%EB%A9%B4-%EB%A7%8C%EC%82%AC-OK%EC%9D%BC%EA%B9%8C">consumer 측의 runtimeClassPath에 추가되기 때문에 런타임 의존성 충돌</a>이 발생할 수 있으니 의존성은 최대한 적게 추가하자.</li>
+<li><a href="#api">api</a>가 필요한 건지 100번 고민하고 설계가 잘못된 건 아닌지 의심해 본 후 api를 사용한다. (api는 consumer의 compile&#x2F;runtimeClassPath에 모두 추가된다.)</li>
+</ol>
+<h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>의존성(라이브러리&#x2F;프레임워크)을 추가하기 위해 build.gradle(or build.gradle.kts)에 아래와 같이 디펜던시들을 추가하게 됨.</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    api(<span class="string">&quot;org.springframework.boot:spring-boot-starter-web&quot;</span>)</span><br><span class="line">    implementation(<span class="string">&quot;com.fasterxml.jackson.module:jackson-module-kotlin&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>참고로 compile은 depreacate 됐기 때문에 사용하면 안 되고 implementation을 쓰라고 나옴. (compile은 api와 마찬가지로 consumer의 (test)compile&#x2F;runtimeClassPath에 모두 추가되니 사용하지 않는 게 좋다.)</p>
+<blockquote>
+<p>The compile configuration has been deprecated for dependency declaration.<br>This will fail with an error in Gradle 7.0. Please use the implementation configuration instead.<br>Consult the upgrading guide for further information: <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.gradle.org/6.9/userguide/upgrading_version_5.html#dependencies_should_no_longer_be_declared_using_the_compile_and_runtime_configurations">https://docs.gradle.org/6.9/userguide/upgrading_version_5.html#dependencies_should_no_longer_be_declared_using_the_compile_and_runtime_configurations</a></p>
+</blockquote>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Deprecated(message = <span class="string">&quot;The compile configuration has been deprecated for dependency declaration. Please use the &#x27;implementation&#x27; configuration instead.&quot;</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> DependencyHandler.`compile`<span class="params">(dependencyNotation: <span class="type">Any</span>)</span></span>: Dependency? =</span><br><span class="line">    add(<span class="string">&quot;compile&quot;</span>, dependencyNotation)</span><br></pre></td></tr></table></figure>
+
+<p>그럼 implementation은 뭐고 api는 뭘까??</p>
+<h2 id="implementation"><a href="#implementation" class="headerlink" title="implementation"></a>implementation</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.gradle.org/current/userguide/java_plugin.html#tab:configurations">implementation</a>으로 의존성을 관리하기 위해서는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.gradle.org/current/userguide/java_plugin.html">java 플러그인</a>을 활성화해야함.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">    id <span class="string">&#x27;java&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>멀티 모듈인 경우 아래와 같이 활성화 시켜줘야함. (java는 gradle core 플러그인이기 때문에 plugins 모듈에 별도로 정의 안 하고도 서브 모듈들에게 적용이 가능함.)</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">subprojects &#123;</span><br><span class="line">    apply <span class="attr">plugin:</span> <span class="string">&#x27;java&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>build.gradle.kts에서는 kotlin jvm 플러그인만 활성화 시켜주면 됨</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">    kotlin(<span class="string">&quot;jvm&quot;</span>) version <span class="string">&quot;<span class="variable">$kotlinVersion</span>&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>멀티 모듈인 경우 아래와 같이 활성화 시켜줘야함. (kotlin jvm 플러그인은 gradle core 플러그인이 아니기 때문에 plugins 모듈에 별도로 정의 해놔야 서브 모듈들에게 적용이 가능함.)</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">    kotlin(<span class="string">&quot;jvm&quot;</span>) version <span class="string">&quot;<span class="variable">$kotlinVersion</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">subprojects &#123;</span><br><span class="line">    apply(plugin = <span class="string">&quot;org.jetbrains.kotlin.jvm&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/03/12/gradle-implementation-vs-api/implementation-structure.png" class>
+<p>출처: <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.gradle.org/current/userguide/java_plugin.html#tab:configurations">https://docs.gradle.org/current/userguide/java_plugin.html#tab:configurations</a></p>
+<p>기본적으로 implementation으로 의존성을 추가한다는 사실은 아래 클래스패스에 추가한다는 사실이다.</p>
+<ul>
+<li>compileClassPath: main 경로에서 해당 모듈을 컴파일할 때 사용함, 우리가 spring-tx 모듈의 @Transactional 어노테이션을 사용하는데 컴파일 클래스패스에 존재하지 않는다면 컴파일에 실패함. (대표적으로 lombok이 어노테이션 프로세서에 의해 소스코드에 있는 어노테이션을 해석하여 실제로 소스코드로 컴파일 할 때는 전부 사라지기 때문에 compileClassPath에만 존재하면 되고, runtimeClassPath에는 필요없는 경우이다. 그래서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://mvnrepository.com/artifact/org.projectlombok/lombok/1.18.22">lombok을 compileOnly로 추가</a>하는 게 좋다.)</li>
+<li>runtimeClassPath: main 경로에서 해당 모듈을 런타임에서 사용함, 우리가 컴파일한 소스코드를 실행할 때(런타임) spring-tx 모듈의 @Transactional 어노테이션을 사용하는데 런타임 클래스패스에 존재하지 않는다면 @Transactional을 사용하는 코드로 진입 시에 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/javase/8/docs/api/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a>나 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassNotFoundException.html">ClassNotFoundException</a>과 같은 에러&#x2F;예외가 발생하며 서버가 제대로 뜨지 않거나 서버는 떴는데 특정 API만 호출하면 장애가 발생할 수도 있다. (대표적으로 mysql-connector-java 같은 경우가 우리가 소스코드에서 직접적으로 사용하지는 않기 때문에 compileClassPath에서는 필요 없는데 런타임에 jdbc 드라이버라던지 HikariCP 등등에서 사용할 것이기 때문에 runtimeClassPath에만 존재하면 되고, compileClassPath에는 필요없는 경우이다. 그래서 mysql-connector-java를 runtimeOnly로 추가하는 게 좋다.)</li>
+<li>testCompileClassPath: test 경로에서 해당 모듈을 컴파일할 때 사용함, 우리가 spring-boot-test 모듈의 @SpringBootTest 어노테이션을 사용하는데 컴파일 클래스패스에 존재하지 않는다면 컴파일에 실패함. (대표적으로 junit 같은 경우가 실제 어플리케이션을 구동하는데는 필요하지 않고, 테스트를 수행하는데 필요하기 때문에 testImplementation으로 추가하는 게 좋다.)</li>
+<li>testRuntimeClassPath: test 경로에서 해당 모듈을 런타임에서 사용함, 우리가 컴파일한 소스코드를 실행할 때(런타임) spring-boot-test 모듈의 @SpringBootTest 어노테이션을 사용하는데 런타임 클래스패스에 존재하지 않는다면 @SpringBootTest을 사용하는 코드로 진입 시에 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/javase/8/docs/api/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a>나 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/javase/8/docs/api/java/lang/ClassNotFoundException.html">ClassNotFoundException</a>과 같은 에러&#x2F;예외가 발생하며 테스트가 실패하게 됨. (대표적으로 h2 db 같이 테스트에서 사용할 목적으로 쓰이는 인메모리 db의 경우 우리가 소스코드에서 직접 사용하는 게 아니라 Spring Boot의 특정 Auto Configuration에서 사용하기 때문에 컴파일 할 때는 필요 없어서 testCompileClassPath에는 존재할 필요가 없고, 런타임에서만 사용하기 때문에 testRuntimeClassPath에는 존재해야하는 경우이다. 그래서 h2는 testRuntimeOnly로 추가하는 게 좋다.)</li>
+</ul>
+<img src="/2022/03/12/gradle-implementation-vs-api/implementation-single-module.png" class>
+<p>실제로 implementation으로 jackson-core 모듈을 추가하고 보면 4가지 클래스패스에 모두 추가된 걸 볼 수 있다.</p>
+<h2 id="api"><a href="#api" class="headerlink" title="api"></a>api</h2><p>api로 의존성을 관리하기 위해서는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.gradle.org/current/userguide/java_library_plugin.html">java-library</a> 플러그인을 사용해야함.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">    id <span class="string">&#x27;java-library&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>멀티 모듈인 경우 아래와 같이 활성화 시켜줘야함. (java-library는 gradle core 플러그인이기 때문에 plugins 모듈에 별도로 정의 안 하고도 서브 모듈들에게 적용이 가능함.)</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">subprojects &#123;</span><br><span class="line">    apply <span class="attr">plugin:</span> <span class="string">&#x27;java-library&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>build.gradle.kts에서는 똑같이 kotlin jvm 플러그인만 활성화 시켜주면 됨</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">    kotlin(<span class="string">&quot;jvm&quot;</span>) version <span class="string">&quot;$kotlinVersion&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>멀티 모듈인 경우 아래와 같이 활성화 시켜줘야함. (kotlin jvm 플러그인은 gradle core 플러그인이 아니기 때문에 plugins 모듈에 별도로 정의 해놔야 서브 모듈들에게 적용이 가능함.)</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">    kotlin(<span class="string">&quot;jvm&quot;</span>) version <span class="string">&quot;<span class="variable">$kotlinVersion</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">subprojects &#123;</span><br><span class="line">    apply(plugin = <span class="string">&quot;org.jetbrains.kotlin.jvm&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/03/12/gradle-implementation-vs-api/api-structure.png" class>
+<p>출처: <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_configurations_graph">https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_configurations_graph</a></p>
+<p>이미지를 보면 implementation과 마찬가지로 api도 compileClassPath, runtimeClassPath, testCompileClassPath, testRuntimeClassPath에 추가된다고 나와있다.</p>
+<img src="/2022/03/12/gradle-implementation-vs-api/api-single-module.png" class>
+<p>실제로 api로 jackson-core 모듈을 추가하고 보면 4가지 클래스패스에 모두 추가된 걸 볼 수 있다.</p>
+<h2 id="implementation-vs-api"><a href="#implementation-vs-api" class="headerlink" title="implementation vs api"></a>implementation vs api</h2><p>여태까지 봤을 때는 둘 다 compileClassPath, runtimeClassPath, testCompileClassPath, testRuntimeClassPath에 추가된다는 걸 봐서 큰 차이점은 없어보인다.</p>
+<p>하지만 이건 해당 모듈을 사용하는 컨슈머 입장이 돼봐야 그 차이점을 알게 된다.</p>
+<ul>
+<li>라이브러리: jakcson-core, spring-tx, 우리 프로젝트 내에서 만드는 모듈들 등등</li>
+<li>컨슈머: 프로젝트 내에서 라이브러리를 사용하는 모듈, 우리 프로젝트에서 위 라이브러리들을 사용하는 모듈 등등</li>
+</ul>
+<p>프로젝트에 두 가지 모듈(producer와 consumer)을 만들어서 차이점을 확인해보자.</p>
+<p>먼저 producer 모듈에 의존성을 추가할 때 implementation과 api로 각각 추가해보자</p>
+<img src="/2022/03/12/gradle-implementation-vs-api/implementation-api-multi-module-01.png" class>
+<p>implementation으로 추가한 jackson-core와 api로 추가한 commons-lang3 모듈이 모두 클래스패스에 추가됐다.</p>
+<img src="/2022/03/12/gradle-implementation-vs-api/implementation-api-multi-module-02.png" class>
+<p>consumer 쪽에서 producer 모듈을 의존성으로 추가하는데 여기서 차이점이 나온다. (producer 모듈을 api로 추가해도 마찬가지다.)<br>producer 모듈에서 implementation으로 추가했던 의존성인 jackson-core는 (test)runtimeClassPath에만 추가되고, (test)compileClassPath에는 추가되지 않았다.<br>그리고 api로 추가했던 의존성인 commons-lang3는 모든 클래스패스에 추가됐다.</p>
+<p>(test)compileClassPath에 의존성을 전파하지 않음으로써 얻는 이점들은 다음과 같다.</p>
+<h3 id="implementation의-장점-1-불필요한-의존성-전파를-막아준다"><a href="#implementation의-장점-1-불필요한-의존성-전파를-막아준다" class="headerlink" title="implementation의 장점 1: 불필요한 의존성 전파를 막아준다."></a>implementation의 장점 1: 불필요한 의존성 전파를 막아준다.</h3><img src="/2022/03/12/gradle-implementation-vs-api/implementation-block-expose-unnecessary-transitive-denpendency-01.png" class>
+<p>consumer module의 compileClassPath에 있는 commons-lang3 모듈 같은 경우에는 실제 소스코드에서 사용이 가능하다.</p>
+<img src="/2022/03/12/gradle-implementation-vs-api/implementation-block-expose-unnecessary-transitive-denpendency-02.png" class>
+<p>하지만 consumer moudle의 compileClassPath에 없는 jackson-core 같은 경우에는 실제 소스코드에서 사용이 불가능하다.<br>compileClassPath에 없기 때문에 consumer 모듈에서 직접적인 사용이 불가능한 것이지, runtime에 jackson-core를 사용하는 producer 모듈을 사용하는 것에는 아무런 문제가 없다. (runtimeClassPath에 있기 때문에)<br>producer 모듈에 jackson-core를 이용하는 클래스를 작성해보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.core.JsonParser;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Sample</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">a</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 아무 의미 없지만 jackson-core 모듈을 사용하는데 아무 이상이 없다는 걸 보여주기 위해 사용함.</span></span><br><span class="line">        <span class="keyword">final</span> JsonParser.<span class="type">Feature</span> <span class="variable">allowComments</span> <span class="operator">=</span> JsonParser.Feature.ALLOW_COMMENTS;</span><br><span class="line">        System.out.println(<span class="string">&quot;test~&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>그리고 consumer 모듈에서 jackson-core를 이용하는 Sample 클래스를 사용하는 클래스를 작성해보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Some</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">Sample</span> <span class="variable">sample</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Sample</span>();</span><br><span class="line">        sample.a(); <span class="comment">// test~</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Some 클래스의 메인 함수를 호출하면 Sample 클래스의 a 메서드가 호출되서 test~ 문자열이 정상적으로 호출되는 걸 볼 수 있다.<br>consumer 모듈 입장에서는 불필요한 의존성 전파(jackson-core 모듈이 consumer까지 전파)되는 걸 막아줘서 import 자체가 되지 않다보니 자동완성에서 import 할 수 있는 가짓수가 줄어들다보니 어떤 클래스를 사용해야하는지 고민할 시간이 줄어들고(생산성 향상),<br>producer 입장에서는 해당 모듈을 외부로 노출시키지 않다보니 마음대로 구현체를 갈아끼워도 컴파일 타임에 오류가 나지 않을 것이라는 신뢰가 어느정도 생긴다는 장점이 존재한다.</p>
+<h3 id="implementation의-장점-2-compileClassPath의-의존성-충돌이-일어나지-않는다"><a href="#implementation의-장점-2-compileClassPath의-의존성-충돌이-일어나지-않는다" class="headerlink" title="implementation의 장점 2: compileClassPath의 의존성 충돌이 일어나지 않는다."></a>implementation의 장점 2: compileClassPath의 의존성 충돌이 일어나지 않는다.</h3><p>producer 모듈에 guava를 implementation으로 추가해보자</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation(<span class="string">&quot;com.google.guava:guava:31.0.1-jre&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>그리고 consumer 모듈에도 똑같이 guava 모듈을 추가하는데 굉장히 하위 버전을 추가해보자</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation(<span class="string">&quot;com.google.guava:guava:10.0&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>그리고 이번에는 producer 모듈에서 api로 추가했었던 commons-lang3 모듈을 consumer 모듈에 추가하는데 버전을 좀 낮게 추가해보자.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation(<span class="string">&quot;org.apache.commons:commons-lang3:3.0&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/03/12/gradle-implementation-vs-api/implementation-avoid-compile-dependency-resolution.png" class>
+<p>이제 consumer 모듈의 classPath를 보면</p>
+<ul>
+<li>producer 모듈에서 api로 추가했던 commons-lang3 같은 경우에는 (test)compile&#x2F;runtimeClassPath에서 의존성 충돌이 나서 producer 모듈에 추가한 가장 최신 버전인 3.12.0이 적용됨</li>
+<li>producer 모듈에서 implement로 추가했던 guava 같은 경우에는 (test)compileClassPath에는 consumer 모듈에 추가한 10.0이 적용됨, (test)runtimeClassPath에서는 의존성 충돌이 나서 producer 모듈에 추가한 가장 최신 버전인 31.0.1-jre가 적용됨</li>
+</ul>
+<p>즉, implementation을 쓰면 consumer 입장에서 소스코드를 직접 작성하는 것과 연관이 있는 (test)compileClassPath는 의존성이 전파가 되지 않았기 때문에 consumer 모듈에 추가한 버전이 적용되었고,<br>소스코드를 실제 실행하는데 필요한 (test)runtimeClassPath는 의존성이 전파됐기 때문에 의존성 충돌에 의해 가장 최신버전이 적용된다. (안 그러면 런타임에 메서드나 클래스를 찾을 수 없다는 오류가 발생할 수 있다.)<br>반대로 최신버전에서는 사라진 코드를 사용했다면 컴파일은 성공하는데 런타임에 오류가 발생할 수도 있기 때문에 runtime 의존성도 체크하면서 사용해야 안전하다. (최대한 런타임 의존성과 호환성이 맞는 버전을 사용해야 안전하다.)</p>
+<p>반면 api를 쓰면 (test)compile&#x2F;runtimeClassPath에 모두 의존성을 전파하기 때문에 의존성 충돌로 인해 원하는 버전을 쓰려면 버전을 강제하는 방법을 쓰거나 해야해서 사용하기가 좀 구려진다.</p>
+<h3 id="implementation의-장점-3-compileClassPath에-포함되지-않기-때문에-라이브러리-측에서-의존성을-변경해도-컨슈머는-재컴파일-하지-않아도-된다"><a href="#implementation의-장점-3-compileClassPath에-포함되지-않기-때문에-라이브러리-측에서-의존성을-변경해도-컨슈머는-재컴파일-하지-않아도-된다" class="headerlink" title="implementation의 장점 3: compileClassPath에 포함되지 않기 때문에 라이브러리 측에서 의존성을 변경해도 컨슈머는 재컴파일 하지 않아도 된다."></a>implementation의 장점 3: compileClassPath에 포함되지 않기 때문에 라이브러리 측에서 의존성을 변경해도 컨슈머는 재컴파일 하지 않아도 된다.</h3><p>consumer 측에서 producer에서 api로 의존성을 추가한 commons-lang3를 사용한다고 해보자.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.lang3.StringUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Some</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        StringUtils.isBlank(<span class="string">&quot;asf&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;hello~&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>그리고 producer 측에서 commons-lang3 모듈의 의존성 버전을 바꿔보자.</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">api(<span class="string">&quot;org.apache.commons:commons-lang3:3.10&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>그리고 consumer 측의 Some 클래스의 main 함수를 실행하면 Some 클래스는 하나도 수정한 게 없는데 다시 컴파일 하는 걸 볼 수 있다.</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">6:04:36 AM: Executing &#x27;:consumer:Some.main()&#x27;...</span><br><span class="line"></span><br><span class="line">&gt; Task :producer:compileJava</span><br><span class="line">&gt; Task :consumer:compileJava</span><br><span class="line">&gt; Task :consumer:processResources UP-TO-DATE</span><br><span class="line">&gt; Task :consumer:classes</span><br><span class="line">&gt; Task :producer:processResources NO-SOURCE</span><br><span class="line">&gt; Task :producer:classes</span><br><span class="line">&gt; Task :producer:jar UP-TO-DATE</span><br><span class="line"></span><br><span class="line">&gt; Task :consumer:Some.main()</span><br><span class="line">hello~</span><br></pre></td></tr></table></figure>
+
+<p>하지만 producer에서 implementation으로 추가했던 jackson-core나 guava 같은 경우에는 consumer 측의 (test)compileClassPath에는 포함조차 돼있지 않기 때문에 해당 모듈은 의존성을 바꾼다 하더라도 consumer에서는 컴파일을 할 필요가 없다.</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">6:05:36 AM: Executing &#x27;:consumer:Some.main()&#x27;...</span><br><span class="line"></span><br><span class="line">&gt; Task :producer:compileJava</span><br><span class="line">&gt; Task :consumer:compileJava UP-TO-DATE</span><br><span class="line">&gt; Task :consumer:processResources UP-TO-DATE</span><br><span class="line">&gt; Task :consumer:classes UP-TO-DATE</span><br><span class="line">&gt; Task :producer:processResources NO-SOURCE</span><br><span class="line">&gt; Task :producer:classes</span><br><span class="line">&gt; Task :producer:jar UP-TO-DATE</span><br><span class="line"></span><br><span class="line">&gt; Task :consumer:Some.main()</span><br><span class="line">hello~</span><br></pre></td></tr></table></figure>
+
+<h3 id="implementation의-장점-4-compileClassPath-사이즈가-줄어들었기-때문에-컴파일-속도가-빨라진다"><a href="#implementation의-장점-4-compileClassPath-사이즈가-줄어들었기-때문에-컴파일-속도가-빨라진다" class="headerlink" title="implementation의 장점 4: compileClassPath 사이즈가 줄어들었기 때문에 컴파일 속도가 빨라진다."></a>implementation의 장점 4: compileClassPath 사이즈가 줄어들었기 때문에 컴파일 속도가 빨라진다.</h3><p>컴파일 클래스패스가 줄어들었다는 것은 컴파일 해야할지 말아야할지 판단할 근거도 줄었다는 뜻이다.<br>위에서 보듯이 producer에서 api로 추가한 모듈들은 consumer에서 사용하는지, 안 하는지에 따라서 해당 클래스를 재컴파일 해야하는지 말아야하는지 비교를 해야한다.<br>하지만 전부 implementation으로 막혀있다면 그 비교 대상 자체가 확연히 줄어들게 될 것이다.<br>그로 인해 컴파일 속도가 빨라진다. (엄청나게 빨라지는 것까지는 아니겠지만… 의존성이 많으면 많을 수록 더 큰 빛을 발할 것 같다.)</p>
+<h2 id="언제-implementaion을-쓰고-언제-api를-써야할까"><a href="#언제-implementaion을-쓰고-언제-api를-써야할까" class="headerlink" title="언제 implementaion을 쓰고 언제 api를 써야할까?"></a>언제 implementaion을 쓰고 언제 api를 써야할까?</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_recognizing_dependencies">https://docs.gradle.org/current/userguide/java_library_plugin.html#sec:java_library_recognizing_dependencies</a></p>
+<blockquote>
+<p>Prefer the <code>implementation</code> configuration over <code>api</code> when possible</p>
+</blockquote>
+<p>일단 무지성으로 implementation을 쓰고 어쩔 수 없을 때만 고민 한 100번 정도 한 다음에 api를 쓰면 된다.</p>
+<h3 id="implementation을-써야할-때"><a href="#implementation을-써야할-때" class="headerlink" title="implementation을 써야할 때"></a>implementation을 써야할 때</h3><blockquote>
+<p>any type that is used in the following list is irrelevant to the ABI, and therefore should be declared as an <code>implementation</code> dependency:<br>• types exclusively used in method bodies<br>• types exclusively used in private members<br>• types exclusively found in internal classes (future versions of Gradle will let you declare which packages belong to the public API)</p>
+</blockquote>
+<p>ABI(Application Binary Interface)와 무관한 케이스에는 implementation을 쓰면 된다.</p>
+<ul>
+<li>타입이 메서드 바디 안에서만 쓰이는 경우</li>
+<li>타입이 프라이빗 멤버(변수&#x2F;메서드 등등)에서만 쓰이는 경우</li>
+<li>타입이 인터널 클래스에서만 쓰이는 경우</li>
+</ul>
+<h3 id="api를-써야할-때"><a href="#api를-써야할-때" class="headerlink" title="api를 써야할 때"></a>api를 써야할 때</h3><blockquote>
+<p>An API dependency is one that contains at least one type that is exposed in the library binary interface, often referred to as its ABI (Application Binary Interface). This includes, but is not limited to:<br>• types used in super classes or interfaces<br>• types used in public method parameters, including generic parameter types (where <em>public</em> is something that is visible to compilers. I.e. , <em>public</em>, <em>protected</em> and <em>package private</em> members in the Java world)<br>• types used in public fields<br>• public annotation types</p>
+</blockquote>
+<p>ABI(Application Binary Interface)와 관련있는 케이스에는 api를 쓰면 된다.</p>
+<ul>
+<li>타입이 인터페이스나 슈퍼 클래스에서 쓰이는 경우</li>
+<li>타입이 public&#x2F;protected&#x2F;package private 메서드의 파라미터(메서드의 인자 혹은 리턴타입 및 제네릭 파라미터 타입)에서 쓰일 때</li>
+<li>타입이 퍼블릭 필드에서 쓰일 때</li>
+<li>퍼블릭 어노테이션 타입일 때</li>
+</ul>
+<h2 id="그럼-implementation만-쓰면-만사-OK일까"><a href="#그럼-implementation만-쓰면-만사-OK일까" class="headerlink" title="그럼 implementation만 쓰면 만사 OK일까??"></a>그럼 implementation만 쓰면 만사 OK일까??</h2><p>아니다, 최대한 의존성을 줄여야한다.<br>implementation이라 할지라도 (test)runtimeClassPath에 포함되기 때문에 의존성 충돌로 인해 문제가 발생할 수 있다.<br>런타임 의존성 충돌로 인해 실제 런타임에 내가 만든 소스코드가 제대로 동작하지 않을 수 있다.<br>내가 사용한 모듈(컴파일 클래스패스에 추가한) 버전에서는 존재하는 메서드였는데 런타임 의존성 충돌로 최신버전으로 주입됐을 때 최신버전에서는 삭제된 메서드일 때 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/javase/8/docs/api/java/lang/NoSuchMethodException.html">NoSuchMethodException</a> 같은 게 날 수 있다.<br>혹은 라이브러리의 버전이 바뀌면서 내부 동작이 바뀌는 등의 무서운 일이 발생한다면 더욱 큰 장애로 이어질 수도 있다.<br>그리고 컴파일 타임에 발견되지 않고 런타임에 발견되는 문제는 해당 코드 블럭이 실행돼야지만 발견되는 장애이기 때문에 더더욱 무섭다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/gradle/" rel="tag"># gradle</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/22/book-review-zero-to-one-part-01/" rel="prev" title="(독서노트) 제로 투 원 (ZERO to ONE) Part. 01">
+                  <i class="fa fa-chevron-left"></i> (독서노트) 제로 투 원 (ZERO to ONE) Part. 01
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">양권성</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

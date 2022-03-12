@@ -94,9 +94,9 @@
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">249</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">46</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">211</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">250</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">47</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">212</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,18 +164,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">211</span>
+          <span class="site-state-item-count">212</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">카테고리</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">249</span>
+        <span class="site-state-item-count">250</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -225,6 +225,113 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2022/03/12/gradle-implementation-vs-api/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/03/12/gradle-implementation-vs-api/" class="post-title-link" itemprop="url">(Gradle) implementation vs api</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+      
+
+      <time title="Post created: 2022-03-12 19:43:25 / Updated at: 11:31:08" itemprop="dateCreated datePublished" datetime="2022-03-12T19:43:25+00:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/gradle/" itemprop="url" rel="index"><span itemprop="name">gradle</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2022/03/12/gradle-implementation-vs-api/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2022/03/12/gradle-implementation-vs-api/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>3줄 요약</p>
+<ol>
+<li><a href="#implementation">implementation</a>을 사용하자</li>
+<li>implementation을 사용하더라도 라이브러리를 사용하는 <a href="#%EA%B7%B8%EB%9F%BC-implementation%EB%A7%8C-%EC%93%B0%EB%A9%B4-%EB%A7%8C%EC%82%AC-OK%EC%9D%BC%EA%B9%8C">consumer 측의 runtimeClassPath에 추가되기 때문에 런타임 의존성 충돌</a>이 발생할 수 있으니 의존성은 최대한 적게 추가하자.</li>
+<li><a href="#api">api</a>가 필요한 건지 100번 고민하고 설계가 잘못된 건 아닌지 의심해 본 후 api를 사용한다. (api는 consumer의 compile&#x2F;runtimeClassPath에 모두 추가된다.)</li>
+</ol>
+<h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>의존성(라이브러리&#x2F;프레임워크)을 추가하기 위해 build.gradle(or build.gradle.kts)에 아래와 같이 디펜던시들을 추가하게 됨.</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    api(<span class="string">&quot;org.springframework.boot:spring-boot-starter-web&quot;</span>)</span><br><span class="line">    implementation(<span class="string">&quot;com.fasterxml.jackson.module:jackson-module-kotlin&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/12/gradle-implementation-vs-api/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2022/01/22/book-review-zero-to-one-part-01/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +368,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -374,7 +481,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -493,7 +600,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -612,7 +719,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -731,7 +838,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -850,7 +957,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -969,7 +1076,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1080,7 +1187,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1190,7 +1297,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
+      <time title="Updated at: 2022-03-12 11:31:08" itemprop="dateModified" datetime="2022-03-12T11:31:08+00:00">2022-03-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1234,124 +1341,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/09/20/spring-web-request-deserialization-for-null/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/08/14/fail-fast-iterator/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/08/14/fail-fast-iterator/" class="post-title-link" itemprop="url">(Java) Fail Fast Iterator</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2021-08-14 19:20:03" itemprop="dateCreated datePublished" datetime="2021-08-14T19:20:03+00:00">2021-08-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-12 10:14:29" itemprop="dateModified" datetime="2022-03-12T10:14:29+00:00">2022-03-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2021/08/14/fail-fast-iterator/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/08/14/fail-fast-iterator/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="문제상황"><a href="#문제상황" class="headerlink" title="문제상황"></a>문제상황</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Map&lt;String, String&gt; mappings;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">clear</span><span class="params">(<span class="keyword">final</span> CardCompanyCode cardCompanyCode)</span> &#123;</span><br><span class="line">    mappings.entrySet().forEach(e -&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (e.getValue() != cardCompanyCode) <span class="keyword">return</span>;</span><br><span class="line">        mappings.remove(e.getKey());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>맵에서 entrySet(key&#x2F;value 쌍)을 가져와 forEach 돌면서 특정 조건에 맞으면 맵에서 요소를 삭제했더니 한 번만 요소가 삭제되고나서 ConcurrentModificationException을 던졌다.</p>
-<p>여기서 아래와 같은 의문점이 생겼다.</p>
-<ol>
-<li>맵의 요소를 삭제하는 건데 왜 예외를 던질까?</li>
-<li>왜 한 번만 요소 삭제에 성공하는 걸까?</li>
-<li>하나의 쓰레드에서 작업했는데 왜 <code>Concurrent</code>ModificationException을 던진 걸까?</li>
-</ol>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/08/14/fail-fast-iterator/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>
