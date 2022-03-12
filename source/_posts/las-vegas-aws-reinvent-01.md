@@ -134,12 +134,12 @@ Registration 부스에 가서 등록을 마치고 Swag 부스에서 AWS Reinvent
 {% youtube wqXkjH0BKR4 %}
 윈 호텔의 커튼은 자동으로 걷고, 칠 수 있다.
 
-![](./starbucks.jpg)
+![](./starbucks.jpeg)
 첫날은 아침을 제공해주지 않았고, 스타벅스에 가서 샌드위치랑 커피로 간단히 떼웠다.  
 본토 스타벅스라 그런지 아침부터 대기줄이 길었고, 한번 쯤 미국 스타벅스에 가본다는 자그마한 목표도 달성을 해보았다.
 
 그리고 시간이 좀 남아서 reflection room을 돌아보았다.
-![](./reflection-room-01.png)
+![](./reflection-room-01.jpeg)
 reflection room이라는 용어를 처음 들어봐서 구글에 검색해보았을 때는 '와... 거울이 가득한 고요한 방에서 명상을 하는 공간인가? 심신의 안정을 찾는 공간인가?'라는 생각이 들면서 이런 공간까지 있는 진짜 대단한 행사라는 생각이 들었다.
 
 ![](./reflection-room-02.jpeg)
