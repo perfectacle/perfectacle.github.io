@@ -41,19 +41,19 @@ class ControllerAdvice {
 1. 클라이언트가 응답 패킷을 받기 전에 연결을 끊으면
    1. ReadTimeout이 발생한 지 60초가 지나기 전에 응답 패킷을 보낸다면 (바로 소켓의 연결을 끊는 게 아니라 오동작을 막기 위해 60초(OS마다 다르지만 tcp_fin_timeout(대다수의 리눅스는 60로초 설정됨)) 동안 대기를 함.)
       ```shell
-        # mac
+        # mac (60_000ms)
         sysctl -a | grep net.inet.tcp.fin_timeout
         net.inet.tcp.fin_timeout: 60000
         
-        # linux alpine
+        # linux alpine (60s)
         sysctl -a | grep net.ipv4.tcp_fin_timeout
         net.ipv4.tcp_fin_timeout = 60
       ```
       1. 응답 패킷이 아주 작은 경우 (하나의 응답패킷에 담길 만큼)
-         1. 아직 소켓이 완전히 닫힌 게 아니기 때문에 응답 패킷을 정상적으로 보낼 수 있기 때문에 ClientAbortException이 발생하지 않는다.
+         1. 아직 소켓이 완전히 닫힌 게 아니기 때문에 응답 패킷을 보낼 수 있기 때문에 ClientAbortException이 발생하지 않는다.
          2. ClientAbortException만 발생하지 않을 뿐이지, 클라이언트 측에서 정상적으로 응답 패킷을 받을 수 있는 건 아니다.
       2. 응답 패킷이 큰 경우 (하나의 응답 패킷에 담기지 않을 만큼)
-         1. 아직 소켓이 완전히 닫힌 게 아니기 때문에 몇 개의 응답 패킷을 정상적으로 보낼 수 있다.
+         1. 아직 소켓이 완전히 닫힌 게 아니기 때문에 몇 개의 응답 패킷을 보낼 수 있다.
          2. 이 때는 ClientAbortException만 발생하지 않을 뿐이지, 클라이언트 측에서 정상적으로 응답 패킷을 받을 수 있는 건 아니다.
          3. 클라이언트 측에서는 FIN 패킷이 오길 원했는데 예상치 못한 패킷이 왔기 때문에 서버 측에 RST 패킷을 보낸 후 소켓을 닫는다.
          4. 나머지 응답 패킷을 보내려고 했는데 소켓이 닫혔기 때문에 `서버 측에서 응답 패킷을 보내려다가 ClientAbortException이 발생한다`.

@@ -50,10 +50,19 @@ class ControllerAdvice {
 3. 프로세스(메인 함수)가 종료되더라도 Passive Close로부터 FIN 패킷을 받지 않으면 클라이언트/서버의 소켓은 닫히지 않는다. (오동작을 막기 위해 대기하는 것으로 알고 있음.)
    하지만 Passive Close로부터 FIN 패킷이 아닌 다른 패킷이 오면 Active Close에서는 RST 패킷을 보낸 후 소켓을 닫는다. 
    60초(OS마다 다르지만 tcp_fin_timeout(대다수의 리눅스는 60로초 설정됨) 만큼) 동안 대기 후에도 Passive Close에게 아무런 패킷이 오지 않으면 Active Close는 RST 패킷을 보내고 소켓을 닫는다.
-4. 소켓이 정상 종료된 경우에 ACTIVE_CLOSE 측에서 소켓이 바로 사라지는 게 아니라 오동작을 막기 위해 TIME_WAIT 상태로 대기하다가 사라지게 되는데 그 전까지는 해당 소켓(로컬ip:로컬port, 서버ip:서버port 쌍)을 사용하지 못한다.
+   ```shell
+     # mac (60_000ms)
+     sysctl -a | grep net.inet.tcp.fin_timeout
+     net.inet.tcp.fin_timeout: 60000
+     
+     # linux alpine (60s)
+     sysctl -a | grep net.ipv4.tcp_fin_timeout
+     net.ipv4.tcp_fin_timeout = 60
+   ```
+5. 소켓이 정상 종료된 경우에 ACTIVE_CLOSE 측에서 소켓이 바로 사라지는 게 아니라 오동작을 막기 위해 TIME_WAIT 상태로 대기하다가 사라지게 되는데 그 전까지는 해당 소켓(로컬ip:로컬port, 서버ip:서버port 쌍)을 사용하지 못한다.
    대기 시간은 대부분 60초(OS마다 다르지만 2 * MSL(Maximum Segment Lifetime, OS 커널 레벨에 하드코딩 돼있는데 대다수의 리눅스는 60로초 설정됨) 동안 대기 후에 사라지게 된다.
    ```shell
-      # mac
+      # mac (2 * msl = 2 * 15_000ms = 30_000ms)
       sysctl -a | grep net.inet.tcp.msl
       net.inet.tcp.msl: 15000
       
@@ -61,7 +70,7 @@ class ControllerAdvice {
       sysctl -a | grep msl
       # 몇몇 linux os는 tcp_fin_timeout을 2*msl로 사용하는 os도 있다고 함. (alpine linux도 아무것도 안 나오는 거 보면 그런 거 같음)
    ```
-5. HTTP Client 구현체마다 다르겠지만 Apache HTTP Client의 경우 Keep-Alive를 사용한다고 했음에도 불구하고 요청이 정상적으로 처리되지 않는 경우(Read Timeout 발생, 500 Internal Sever Error 응답을 받는다던지... 모든 4xx, 5xx가 포함되는 건 아님)에는 커넥션을 커넥션 풀에 반납하지 않고(재사용하지 않고) 종료한다.
+6. HTTP Client 구현체마다 다르겠지만 Apache HTTP Client의 경우 Keep-Alive를 사용한다고 했음에도 불구하고 요청이 정상적으로 처리되지 않는 경우(Read Timeout 발생, 500 Internal Sever Error 응답을 받는다던지... 모든 4xx, 5xx가 포함되는 건 아님)에는 커넥션을 커넥션 풀에 반납하지 않고(재사용하지 않고) 종료한다.
 
 # 클라이언트가 응답 패킷을 받는 시간이 Read Timout을 초과한 경우
 
