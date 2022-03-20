@@ -74,7 +74,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2022/03/20/client-abort-exception-deep-dive-part-01/read-timout-over-60s-send-rst-packet.png">
 <meta property="og:image" content="https://perfectacle.github.io/2022/03/20/client-abort-exception-deep-dive-part-01/read-timout-over-60s-send-rst-packet-socket-status.png">
 <meta property="article:published_time" content="2022-03-20T03:30:19.000Z">
-<meta property="article:modified_time" content="2022-03-20T03:11:47.067Z">
+<meta property="article:modified_time" content="2022-03-20T03:38:03.938Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="Spring Boot">
 <meta property="article:tag" content="Tomcat">
@@ -305,7 +305,7 @@
       <span class="post-meta-item-text">작성일</span>
       
 
-      <time title="Post created: 2022-03-20 03:30:19 / Updated at: 03:11:47" itemprop="dateCreated datePublished" datetime="2022-03-20T03:30:19+00:00">2022-03-20</time>
+      <time title="Post created: 2022-03-20 03:30:19 / Updated at: 03:38:03" itemprop="dateCreated datePublished" datetime="2022-03-20T03:30:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -357,15 +357,15 @@
 
 <h1 id="N줄-요약"><a href="#N줄-요약" class="headerlink" title="N줄 요약"></a>N줄 요약</h1><ol>
 <li>클라이언트가 응답 패킷을 받기 전에 연결을 끊으면<ol>
-<li>ReadTimeout이 발생한 지 60초가 지나기 전에 응답 패킷을 보낸다면 (바로 소켓의 연결을 끊는 게 아니라 오동작을 막기 위해 60초(OS마다 다르지만 tcp_fin_timeout(대다수의 리눅스는 60로초 설정됨)) 동안 대기를 함.)<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">mac</span></span><br><span class="line">sysctl -a | grep net.inet.tcp.fin_timeout</span><br><span class="line">net.inet.tcp.fin_timeout: 60000</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">linux alpine</span></span><br><span class="line">sysctl -a | grep net.ipv4.tcp_fin_timeout</span><br><span class="line">net.ipv4.tcp_fin_timeout = 60</span><br></pre></td></tr></table></figure>
+<li>ReadTimeout이 발생한 지 60초가 지나기 전에 응답 패킷을 보낸다면 (바로 소켓의 연결을 끊는 게 아니라 오동작을 막기 위해 60초(OS마다 다르지만 tcp_fin_timeout(대다수의 리눅스는 60로초 설정됨)) 동안 대기를 함.)<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">mac (60_000ms)</span></span><br><span class="line">sysctl -a | grep net.inet.tcp.fin_timeout</span><br><span class="line">net.inet.tcp.fin_timeout: 60000</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">linux alpine (60s)</span></span><br><span class="line">sysctl -a | grep net.ipv4.tcp_fin_timeout</span><br><span class="line">net.ipv4.tcp_fin_timeout = 60</span><br></pre></td></tr></table></figure>
 <ol>
 <li>응답 패킷이 아주 작은 경우 (하나의 응답패킷에 담길 만큼)<ol>
-<li>아직 소켓이 완전히 닫힌 게 아니기 때문에 응답 패킷을 정상적으로 보낼 수 있기 때문에 ClientAbortException이 발생하지 않는다.</li>
+<li>아직 소켓이 완전히 닫힌 게 아니기 때문에 응답 패킷을 보낼 수 있기 때문에 ClientAbortException이 발생하지 않는다.</li>
 <li>ClientAbortException만 발생하지 않을 뿐이지, 클라이언트 측에서 정상적으로 응답 패킷을 받을 수 있는 건 아니다.</li>
 </ol>
 </li>
 <li>응답 패킷이 큰 경우 (하나의 응답 패킷에 담기지 않을 만큼)<ol>
-<li>아직 소켓이 완전히 닫힌 게 아니기 때문에 몇 개의 응답 패킷을 정상적으로 보낼 수 있다.</li>
+<li>아직 소켓이 완전히 닫힌 게 아니기 때문에 몇 개의 응답 패킷을 보낼 수 있다.</li>
 <li>이 때는 ClientAbortException만 발생하지 않을 뿐이지, 클라이언트 측에서 정상적으로 응답 패킷을 받을 수 있는 건 아니다.</li>
 <li>클라이언트 측에서는 FIN 패킷이 오길 원했는데 예상치 못한 패킷이 왔기 때문에 서버 측에 RST 패킷을 보낸 후 소켓을 닫는다.</li>
 <li>나머지 응답 패킷을 보내려고 했는데 소켓이 닫혔기 때문에 <code>서버 측에서 응답 패킷을 보내려다가 ClientAbortException이 발생한다</code>.</li>
