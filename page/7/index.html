@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">214</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">215</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,124 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/12/03/effective-java-ch03-item11-hashCode-method/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2018/12/03/effective-java-ch03-item11-hashCode-method/" class="post-title-link" itemprop="url">(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2018-12-03 20:42:39" itemprop="dateCreated datePublished" datetime="2018-12-03T20:42:39+00:00">2018-12-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2018/12/03/effective-java-ch03-item11-hashCode-method/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/03/effective-java-ch03-item11-hashCode-method/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2018/12/03/effective-java-ch03-item11-hashCode-method/thumb.png" class>
+
+<p>Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.<br>(그 이유는 모르겠지만… 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)<br>따라서 final이 아닌 메서드(<a href="/2018/11/26/effective-java-ch03-item10-equals-method">equals</a>, <a href="#hashCode">hashCode</a>, toString, <a href="/2018/12/16/effective-java-ch03-item13-clone-method">clone</a>, finalize는)는 모두 메서드 오버라이딩을 염두하고 설계된 메서드이다.<br>따라서 해당 메서드를 오버라이딩 할 때는 각 메서드마다 지켜야할 규칙들이 존재한다.<br>이 규칙을 지키지 않았을 때 뻑나는 경우가 있다.<br>일반적인 클래스들(Collection Framework 등등)은 이러한 규칙들은 지켰겠지~ 하고 작성된 코드들이 많다.<br>따라서 위와 같은 규칙을 지키지 않은 채 오버라이딩을 한 클래스를 사용하면 제대로 동작하지 않을 가능성이 존재한다.</p>
+<h2 id="들어가기에-앞서…"><a href="#들어가기에-앞서…" class="headerlink" title="들어가기에 앞서…"></a>들어가기에 앞서…</h2><p>equals 메서드와 마찬가지로 hashCode를 오버라이딩 할 경우는 거의 없다.<br>대부분 hashCode를 쓰는 쪽은 HashMap, HashSet 등등이다.<br>이 마저도 키에다가 equals를 오버라이딩 한 클래스를 사용할 때이다.<br>실무에서 대부분 키로 String, Integer를 쓰지, 해당 클래스를 써본 적은 한 번도 없다.<br>(물론 특수한 경우에는 존재할 수도 있지만, 아주 특수할 것이다.)<br>따라서 이런 아주 특수한 경우를 제외하고는 딱히 hashCode를 오버라이딩 할 이유가 없으니 이 글도 딱히 읽을 필요도 없다.<br>그래도 혹여나 실무에서 당장 hashCode를 오버라이딩 하려면 세 가지 방법이 존재한다.<br><del>내가 당신의 시간을 아껴주겠다.</del><br>그래도 공부 측면 등등에서 꼭 알아야하는 내용임에는 틀림이 없는 것 같다.</p>
+<ol>
+<li>구글에서 만든 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/google/auto/tree/master/value">AutoValue</a> 사용하기. (권장)<br>아주 사용하기가 간단하다.<br>바로 클래스 위에 <code>@AutoValue</code> 어노테이션만 달아주면 끝이다.<br>(물론 equals, hashCode, toString 메서드까지 다 오버라이딩 해준다.)<br>클래스가 변경돼도 hashCode 쪽 소스코드를 수정할 필요가 없다.<br>얘는 자바 6부터 지원한다.  </li>
+<li>IDEA가 생성해준 소스 코드 사용하기.<br>여러가지 규칙을 직접 찾아보며 구현하기 귀찮으니까 생성해주는 코드를 사용하면 된다.<br>인텔리제이 IDEA가 생성한 코드니 신뢰하고 써도 될 것이다.<br>단점으로 클래스가 변경될 때마다 hashCode 쪽 소스도 넣어줘야해서 귀찮다.    </li>
+<li>직접 구현하기<br>이 글을 보고 직접 구현해보면 될 것 같다.</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2018/12/03/effective-java-ch03-item11-hashCode-method/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +379,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -378,7 +496,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -492,7 +610,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -608,7 +726,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -738,7 +856,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -856,7 +974,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -972,7 +1090,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1085,7 +1203,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1199,7 +1317,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1250,124 +1368,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2018/07/22/spring-boot-2-env/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2018/07/10/jpa-entity-inheritance/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2018/07/10/jpa-entity-inheritance/" class="post-title-link" itemprop="url">(JPA) 엔터티 상속</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2018-07-10 01:13:20" itemprop="dateCreated datePublished" datetime="2018-07-10T01:13:20+00:00">2018-07-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Back-end/" itemprop="url" rel="index"><span itemprop="name">Back-end</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Back-end/DB/" itemprop="url" rel="index"><span itemprop="name">DB</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Back-end/DB/JPA/" itemprop="url" rel="index"><span itemprop="name">JPA</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2018/07/10/jpa-entity-inheritance/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/07/10/jpa-entity-inheritance/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2018/07/10/jpa-entity-inheritance/thumb.png" class title="출처: https:&#x2F;&#x2F;blog.naver.com&#x2F;PostView.nhn?blogId&#x3D;dyner&amp;logNo&#x3D;100177467201">
-
-<p>어이쿠야… 정말 백만년만에 포스팅하는 것 같다…<br>나태하게 살지 말기로 작심만 몇 번째 하는 건지 ㅠㅠ<br>여튼 이번에 JPA를 통해 엔터티를 용도에 맞게 잘게 쪼개보다 보니 겪었던 이슈를 간단히 정리해봤다.  </p>
-<h2 id="엔터티-상속"><a href="#엔터티-상속" class="headerlink" title="엔터티 상속"></a>엔터티 상속</h2><p>먼저 Deal(상품) 클래스이다.<br>이 녀석은 베이스(부모) 클래스이다.  </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Deal</span> &#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> id;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Enumerated(EnumType.STRING)</span></span><br><span class="line">    <span class="meta">@Column(name =&quot;deal_type&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> DealType type;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> price;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@OneToMany(mappedBy = &quot;deal&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;CategoryDealMap&gt; categoryDealMaps;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2018/07/10/jpa-entity-inheritance/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

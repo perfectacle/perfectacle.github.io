@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">214</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">215</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,119 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/02/28/netty-event-loop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/02/28/netty-event-loop/" class="post-title-link" itemprop="url">Netty 이벤트 루프</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2021-02-28 01:32:12" itemprop="dateCreated datePublished" datetime="2021-02-28T01:32:12+00:00">2021-02-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Netty/" itemprop="url" rel="index"><span itemprop="name">Netty</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/02/28/netty-event-loop/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/02/28/netty-event-loop/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>이벤트 루프의 개념이 명확하지 않아 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.hanbit.co.kr/media/books/book_view.html?p_code=B2683487348">자바 네트워크 소녀 네티</a>를 보고 정리해봄.</p>
+<p>통상적으로 이벤트 기반 어플리케이션이 이벤트를 처리하는 방식은 아래 두 가지가 존재한다고 함.</p>
+<h2 id="이벤트-리스너와-이벤트-처리-쓰레드-방식"><a href="#이벤트-리스너와-이벤트-처리-쓰레드-방식" class="headerlink" title="이벤트 리스너와 이벤트 처리 쓰레드 방식"></a>이벤트 리스너와 이벤트 처리 쓰레드 방식</h2><p>브라우저에서 DOM에 클릭 이벤트를 어떻게 핸들링하는지 생각해보면 된다.  </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;body&#x27;</span>).<span class="property">onclick</span> = <span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">dir</span>(e) </span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/02/28/netty-event-loop/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/02/28/netty-glossary/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +374,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -378,7 +491,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -490,7 +603,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -601,7 +714,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -711,7 +824,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -820,7 +933,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -934,7 +1047,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1051,7 +1164,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1168,7 +1281,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1224,115 +1337,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2020/05/31/how-to-set-read-more-in-next-theme/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/05/31/how-to-set-read-more-in-next-theme/" class="post-title-link" itemprop="url">(Hexo) NexT 테마에서 '더 읽어보기'를 설정하는 방법</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2020-05-31 12:15:21" itemprop="dateCreated datePublished" datetime="2020-05-31T12:15:21+00:00">2020-05-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%EA%B8%B0%ED%83%80/%EC%9E%A1%EB%8F%99%EC%82%AC%EB%8B%88/" itemprop="url" rel="index"><span itemprop="name">잡동사니</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2020/05/31/how-to-set-read-more-in-next-theme/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/31/how-to-set-read-more-in-next-theme/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><code>themes/next/_config.yml</code>을 보면 아래와 같이 기본적으로 ‘더 읽어보기’가 세팅돼있다.</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Automatically excerpt (Not recommend).</span></span><br><span class="line"><span class="comment"># Use &lt;!-- more --&gt; in the post to control excerpt accurately.</span></span><br><span class="line"><span class="attr">auto_excerpt:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">length:</span> <span class="number">150</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Read more button</span></span><br><span class="line"><span class="comment"># If true, the read more button would be displayed in excerpt section.</span></span><br><span class="line"><span class="attr">read_more_btn:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<p>하지만 NexT Theme 7.6.0 이상의 버전에서는 위와 같이 설정이 돼있어도 ‘더 읽어보기’가 나오지 않는다.<br>이럴 때는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/chekun/hexo-excerpt">hexo-excerpt</a> 플러그인을 설치해주면 해결된다. <span class="emoji" alias="tada" style fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f389.png?v8">&amp;#x1f389;</span><br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/theme-next/hexo-theme-next/issues/1245#issuecomment-558486354">https://github.com/theme-next/hexo-theme-next/issues/1245#issuecomment-558486354</a></p>
-<blockquote>
-<p>If you are using NexT 7.6.0 and later, please install the plugin: <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/chekun/hexo-excerpt">https://github.com/chekun/hexo-excerpt</a></p>
-</blockquote>
-
       
     </div>
 

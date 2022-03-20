@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">214</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">215</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,115 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2020/05/31/how-to-set-read-more-in-next-theme/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/05/31/how-to-set-read-more-in-next-theme/" class="post-title-link" itemprop="url">(Hexo) NexT 테마에서 '더 읽어보기'를 설정하는 방법</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2020-05-31 12:15:21" itemprop="dateCreated datePublished" datetime="2020-05-31T12:15:21+00:00">2020-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/%EC%9E%A1%EB%8F%99%EC%82%AC%EB%8B%88/" itemprop="url" rel="index"><span itemprop="name">잡동사니</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2020/05/31/how-to-set-read-more-in-next-theme/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/31/how-to-set-read-more-in-next-theme/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><code>themes/next/_config.yml</code>을 보면 아래와 같이 기본적으로 ‘더 읽어보기’가 세팅돼있다.</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Automatically excerpt (Not recommend).</span></span><br><span class="line"><span class="comment"># Use &lt;!-- more --&gt; in the post to control excerpt accurately.</span></span><br><span class="line"><span class="attr">auto_excerpt:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">length:</span> <span class="number">150</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Read more button</span></span><br><span class="line"><span class="comment"># If true, the read more button would be displayed in excerpt section.</span></span><br><span class="line"><span class="attr">read_more_btn:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>하지만 NexT Theme 7.6.0 이상의 버전에서는 위와 같이 설정이 돼있어도 ‘더 읽어보기’가 나오지 않는다.<br>이럴 때는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/chekun/hexo-excerpt">hexo-excerpt</a> 플러그인을 설치해주면 해결된다. <span class="emoji" alias="tada" style fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f389.png?v8">&amp;#x1f389;</span><br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/theme-next/hexo-theme-next/issues/1245#issuecomment-558486354">https://github.com/theme-next/hexo-theme-next/issues/1245#issuecomment-558486354</a></p>
+<blockquote>
+<p>If you are using NexT 7.6.0 and later, please install the plugin: <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/chekun/hexo-excerpt">https://github.com/chekun/hexo-excerpt</a></p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2020/01/24/korean-certification/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +370,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -375,7 +484,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -489,7 +598,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -602,7 +711,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -714,7 +823,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -829,7 +938,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -945,7 +1054,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1058,7 +1167,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1170,7 +1279,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1219,120 +1328,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2019/08/15/why-central-banks-creates-money/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2019/08/15/money-is-debt/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2019/08/15/money-is-debt/" class="post-title-link" itemprop="url">돈은 빚이다.</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2019-08-15 00:08:49" itemprop="dateCreated datePublished" datetime="2019-08-15T00:08:49+00:00">2019-08-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%EA%B8%B0%ED%83%80/%EA%B2%BD%EC%A0%9C/" itemprop="url" rel="index"><span itemprop="name">경제</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2019/08/15/money-is-debt/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/08/15/money-is-debt/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2019/08/15/money-is-debt/thumb.png" class title="돈은 빚이다.">
-
-<p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://youtu.be/0LYMTsj_eqc">EBS 다큐프라임 자본주의 제1부 돈은 빚이다</a>를 보고 나면 더 많은 인사이트를 얻을 수 있다.</p>
-<h2 id="돈은-어떻게-생성되는가"><a href="#돈은-어떻게-생성되는가" class="headerlink" title="돈은 어떻게 생성되는가?"></a>돈은 어떻게 생성되는가?</h2><p>개인이 돈을 만드는 가장 쉬운 방법은 돈을 버는 것이다.<br>좀 더 큰 관점에서 보면 돈 자체를 찍어내는 은행에서 돈을 만들어야 진정한 의미의 돈이 생성되는 것 같다.<br>하지만 이렇게 은행에서 찍어내는 돈은 실제 <code>통화량(시중에 유통되고 있는 화폐의 양)</code>의 극히 일부이다.<br>대부분의 돈은 <code>눈에 보이지 않는다.</code><br>즉 대부분의 돈은 <code>은행에 존재</code>한다.</p>
-<h3 id="최초의-은행"><a href="#최초의-은행" class="headerlink" title="최초의 은행"></a>최초의 은행</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/08/15/money-is-debt/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

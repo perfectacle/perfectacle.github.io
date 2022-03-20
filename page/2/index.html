@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">214</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">215</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,117 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/11/21/spring-boot-configuration-processor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/11/21/spring-boot-configuration-processor/" class="post-title-link" itemprop="url">(Spring Boot) spring-boot-configuration-processor 활용하기</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2021-11-21 14:43:06" itemprop="dateCreated datePublished" datetime="2021-11-21T14:43:06+00:00">2021-11-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Spring-Boot/" itemprop="url" rel="index"><span itemprop="name">Spring Boot</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/11/21/spring-boot-configuration-processor/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/11/21/spring-boot-configuration-processor/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="Configuration-Metadata"><a href="#Configuration-Metadata" class="headerlink" title="Configuration Metadata"></a>Configuration Metadata</h2><p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.spring.io/spring-boot/docs/current/reference/html/configuration-metadata.html">https://docs.spring.io/spring-boot/docs/current/reference/html/configuration-metadata.html</a></p>
+<blockquote>
+<p>Spring Boot jars include metadata files that provide details of all supported configuration properties.<br>The files are designed to let IDE developers offer contextual help and “code completion” as users are working with <code>application.properties</code> or <code>application.yml</code> files.</p>
+</blockquote>
+<p>Configuration Metadata는 IDE에서 yml 혹은 properties에서 사용하는 Configuration의 자동완성을 도와주는 메타데이터이다. (소스코드에는 영향을 1도 안 미친다.)</p>
+<img src="/2021/11/21/spring-boot-configuration-processor/configuration-metadata-auto-completion.png" class title="application.yml을 작성하다보면 spring 관련 configuration들은 자동완성이 잘 된다.">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/21/spring-boot-configuration-processor/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/09/20/spring-web-response-deserialization-for-null/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +372,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -371,7 +482,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -481,7 +592,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -599,7 +710,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -719,7 +830,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -840,7 +951,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -960,7 +1071,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1081,7 +1192,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1198,7 +1309,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1244,119 +1355,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/02/28/netty-byte-buf/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/02/28/netty-event-loop/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/02/28/netty-event-loop/" class="post-title-link" itemprop="url">Netty 이벤트 루프</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2021-02-28 01:32:12" itemprop="dateCreated datePublished" datetime="2021-02-28T01:32:12+00:00">2021-02-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Note/Netty/" itemprop="url" rel="index"><span itemprop="name">Netty</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2021/02/28/netty-event-loop/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/02/28/netty-event-loop/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>이벤트 루프의 개념이 명확하지 않아 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.hanbit.co.kr/media/books/book_view.html?p_code=B2683487348">자바 네트워크 소녀 네티</a>를 보고 정리해봄.</p>
-<p>통상적으로 이벤트 기반 어플리케이션이 이벤트를 처리하는 방식은 아래 두 가지가 존재한다고 함.</p>
-<h2 id="이벤트-리스너와-이벤트-처리-쓰레드-방식"><a href="#이벤트-리스너와-이벤트-처리-쓰레드-방식" class="headerlink" title="이벤트 리스너와 이벤트 처리 쓰레드 방식"></a>이벤트 리스너와 이벤트 처리 쓰레드 방식</h2><p>브라우저에서 DOM에 클릭 이벤트를 어떻게 핸들링하는지 생각해보면 된다.  </p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;body&#x27;</span>).<span class="property">onclick</span> = <span class="function"><span class="params">e</span> =&gt;</span> <span class="variable language_">console</span>.<span class="title function_">dir</span>(e) </span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/02/28/netty-event-loop/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

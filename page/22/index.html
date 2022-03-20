@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">214</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">215</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,128 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/11/18/Module-bundling-with-Webpck/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2016/11/18/Module-bundling-with-Webpck/" class="post-title-link" itemprop="url">(Webpack) 모듈? 번들링?</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2016-11-18 09:38:50" itemprop="dateCreated datePublished" datetime="2016-11-18T09:38:50+00:00">2016-11-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Front-end/" itemprop="url" rel="index"><span itemprop="name">Front-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Front-end/Webpack/" itemprop="url" rel="index"><span itemprop="name">Webpack</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2016/11/18/Module-bundling-with-Webpck/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/11/18/Module-bundling-with-Webpck/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2016/11/18/Module-bundling-with-Webpck/thumb.png" class>  
+
+<h2 id="목차"><a href="#목차" class="headerlink" title="목차"></a>목차</h2><ol>
+<li><a href="#%EB%93%A4%EC%96%B4%EA%B0%80%EA%B8%B0%EC%97%90-%EC%95%9E%EC%84%9C">들어가기에 앞서</a></li>
+<li><a href="#%EB%AA%A8%EB%93%88-%EB%84%88%EB%8A%94-%EB%88%84%EA%B5%AC%EB%8B%88">모듈, 너는 누구니?</a></li>
+<li><a href="#%EC%9B%B9%ED%8C%A9%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90">웹팩을 사용해보자</a></li>
+<li><a href="#%EC%9B%B9%ED%8C%A9%EC%97%90%EA%B2%8C-%EB%AA%A8%EB%93%88%EC%9D%B4%EB%9E%80%E2%80%A6">웹팩에게 모듈이란…?</a></li>
+<li><a href="#%EB%B0%94%EB%B2%A8%EC%9D%80-%EC%95%88%EC%A0%84%ED%95%9C%EA%B0%80">개발용? 배포용?</a></li>
+<li><a href="#%EB%B6%80%ED%8A%B8%EC%8A%A4%ED%8A%B8%EB%9E%A9-%ED%8F%B0%ED%8A%B8%EC%96%B4%EC%8D%B8-%EC%A0%9C%EC%9D%B4%EC%BF%BC%EB%A6%AC-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%AA%A8%EB%93%88%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90">부트스트랩, 폰트어썸, 제이쿼리, 이미지 모듈을 사용해보자.</a></li>
+<li><a href="#%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80-IE8%EC%97%90%EC%84%9C%EB%8F%84-%EC%9B%B9%ED%8C%A9%EC%9D%84-%EC%8D%A8%EB%B3%B4%EC%9E%90">홈페이지, IE8에서도 웹팩을 써보자.</a></li>
+<li><a href="#%EB%A7%88%EC%B9%98%EB%A9%B0%E2%80%A6">마치며…</a></li>
+</ol>
+<h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>아주 많이 참조한 링크<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/AriaFallah/WebpackTutorial/tree/master/ko-arahansa/part1">웹팩입문자를 위한 튜토리얼 파트1 - 웹팩 입문 !</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2016/11/18/Module-bundling-with-Webpck/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/11/14/Webpack-devtool-option-Performance/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +383,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -379,7 +501,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -498,7 +620,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -622,7 +744,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">

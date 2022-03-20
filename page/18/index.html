@@ -96,7 +96,7 @@
         <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">214</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -164,7 +164,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-count">215</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -225,6 +225,118 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/03/13/webpack2-code-splitting/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+    
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/03/13/webpack2-code-splitting/" class="post-title-link" itemprop="url">(Webpack 2) 코드를 분할해보자!</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-03-13 09:32:22" itemprop="dateCreated datePublished" datetime="2017-03-13T09:32:22+00:00">2017-03-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Front-end/" itemprop="url" rel="index"><span itemprop="name">Front-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Front-end/Webpack/" itemprop="url" rel="index"><span itemprop="name">Webpack</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/03/13/webpack2-code-splitting/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/03/13/webpack2-code-splitting/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>웹팩 2, 웹팩 1, 바벨, 리액트 등등에 대해서 기본적인 부분은 설명하지 않는다.<br>또한 <a href="/2017/03/12/webpack2-tree-shaking/">(Webpack 2) 트리 쉐이킹을 해보자!</a>를 보고 나서 이 포스팅을 읽는 걸 추천한다.</p>
+<h2 id="코드를-왜-분할하지"><a href="#코드를-왜-분할하지" class="headerlink" title="코드를 왜 분할하지?"></a>코드를 왜 분할하지?</h2><img src="/2017/03/13/webpack2-code-splitting/thumb.png" class>  
+<p>SPA(Single Page Application)은 한 번에 모든 리소스를 로딩해서<br>초기 로딩 이후에 페이지 이동이 매우 빠르다는 장점을 가지고 있다.<br>하지만 앱의 규모가 커지면 모든 리소스를 한 번에 로딩하므로<br><code>초기 로딩</code>이 느려져 사용자 이탈을 유발하는 양날의 검을 가지고 있다.  </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/03/13/webpack2-code-splitting/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
     <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/03/12/webpack2-tree-shaking/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -261,7 +373,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -373,7 +485,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:57" itemprop="dateModified" datetime="2022-03-19T20:04:57+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -486,7 +598,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -598,7 +710,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -711,7 +823,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -823,7 +935,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:20" itemprop="dateModified" datetime="2022-03-20T02:56:20+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -953,7 +1065,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1066,7 +1178,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1184,7 +1296,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
+      <time title="Updated at: 2022-03-20 02:56:19" itemprop="dateModified" datetime="2022-03-20T02:56:19+00:00">2022-03-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1237,116 +1349,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/02/10/Java-study-008day/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-    
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/02/10/Java-study-008day/" class="post-title-link" itemprop="url">(Java) 자바의 정석 3판 008일차 - JVM의 메모리 구조</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2017-02-10 10:20:35" itemprop="dateCreated datePublished" datetime="2017-02-10T10:20:35+00:00">2017-02-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-19 20:04:56" itemprop="dateModified" datetime="2022-03-19T20:04:56+00:00">2022-03-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2017/02/10/Java-study-008day/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/10/Java-study-008day/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2017/02/10/Java-study-008day/thumb.png" class>
-
-<h2 id="JVM의-메모리-구조"><a href="#JVM의-메모리-구조" class="headerlink" title="JVM의 메모리 구조"></a>JVM의 메모리 구조</h2><p>이 글을 보기 전에 아래 글을 참조하면 더 이해가 잘 간다.<br><a href="/2017/02/09/C-ref-004/">(C&#x2F;C++) 참고용 정리 - 메모리 영역(Code, Data, Stack, Heap)</a>  </p>
-<ul>
-<li>Method Area<br>클래스 데이터가 들어간다.<br>즉 클래스 변수(static 변수)가 들어간다.<br>프로그램 실행되자마자 적재되고 끝날 때까지 사라지지 않는 놈이다.<br>기본적인 메모리 영역의 <a href="/2017/02/09/C-ref-004/#Data">Data</a> 영역에 해당한다.  </li>
-<li>Call Stack<br>메소드가 호출되면 해당 메소드를 콜스택에 push한다.<br>제어권이 이전에 실행 중이던 메소드에서 Stack의 top에 위치한 메소드로 이동하게 된다.<br>이전에 실행 중이던 메소드는 대기 상태가 되고 호출한 메소드의 작업이 끝날 때까지 대기하게 된다.<br>그러면서 해당 메소드 만의 스코프를 생성한다.<br>별도의 스코프를 생성하므로 지역 변수가 이곳에 존재한다.<br>해당 메소드 아래 있는 메소드가 해당 메소드를 호출한 메소드가 된다.<br>JVM은 프로그램이 실행되면 일단 main 메소드를 찾아 콜 스택에 push하게 된다.<br>그리고 메소드의 작업에 필요한 메모리 공간을 콜스택이 제공해주고,<br>작업을 마치게 되면 할당 되었던 메모리 공간은 반한된다.<br>기본적인 메모리 영역의 <a href="/2017/02/09/C-ref-004/#Stack">Stack</a>에 해당한다.  </li>
-<li>Heap<br>클래스의 인스턴스가 생성되는 공간.<br>인스턴스 변수들이 들어간다.<br>new 연산자를 쓰므로 동적 할당이라고 할 수 있다.<br>메모리 상에서 해제는 가비지 컬렉터가 자동으로 수행한다.<br>기본적인 메모리 영역의 <a href="/2017/02/09/C-ref-004/#Heap">Heap</a>에 해당한다.</li>
-</ul>
-
       
     </div>
 
