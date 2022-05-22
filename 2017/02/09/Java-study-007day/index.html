@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
@@ -18,10 +18,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="드디어 오늘부터 객체지향 프로그래밍(OOP, Object Oriented Programming) 파트를 나가기 시작했다.이전까지는 다른 언어에도 대부분 있는 개념이었는데,이제부터는 자바의 특성을 배울 차례인 것 같다.객체 지향 언어는 C++&#x2F;Javascript 등등이 있으므로 다른 언어를 배울 때도 유익할 것 같다.   객체? 클래스? 인스턴">
 <meta property="og:type" content="article">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2017/02/09/Java-study-007day/memory01.png">
 <meta property="og:image" content="https://perfectacle.github.io/2017/02/09/Java-study-007day/memory02.png">
 <meta property="article:published_time" content="2017-02-09T13:53:40.000Z">
-<meta property="article:modified_time" content="2022-03-20T03:38:03.834Z">
+<meta property="article:modified_time" content="2022-05-22T09:11:16.223Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="자바의 정석">
@@ -100,12 +100,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
-        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -247,7 +242,7 @@
       <meta itemprop="name" content="오늘도 끄적끄적">
       <meta itemprop="description" content="Toss Server Developer">
     </span>
-    
+
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="(Java) 자바의 정석 3판 007일차 - OOP(객체, 클래스, 인스턴스), new 연산자, 참조 타입, 클래스 변수 | 오늘도 끄적끄적">
       <meta itemprop="description" content>
@@ -272,7 +267,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-20 03:38:03" itemprop="dateModified" datetime="2022-03-20T03:38:03+00:00">2022-03-20</time>
+      <time title="Updated at: 2022-05-22 09:11:16" itemprop="dateModified" datetime="2022-05-22T09:11:16+00:00">2022-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -345,10 +340,7 @@ C++의 클래스를 보고 나니 이 역시 메모리의 동적 할당(heap 영
 <ul>
 <li>t &#x3D; new <code>TV()</code>;<img src="/2017/02/09/Java-study-007day/memory02.png" class>  
 TV()라는 생성자(여기서는 기본 생성자)만 호출해도<br><del>클래스의 인스턴스는 생성되게 된다.</del><br>인스턴스 변수의 초기화(생성자 호출)만 이루어진다.  </li>
-<li>t &#x3D; <code>new</code> TV();<br>new라는 키워드는 C언어의 &amp;와 비슷하다고 보면 될 것 같다.<br>해당 변수가 할당된 메모리 상의 주소값을 얻어오는 연산자이다.<br>즉 저 키워드를 씀으로써 rvalue에는 0x1234가 들어가게 된다.</li>
-</ul>
-<p><strong>위와 더불어 인스턴스 생성까지 이루어진다.</strong>  </p>
-<ul>
+<li>t &#x3D; <code>new</code> TV();<br>new라는 키워드는 C언어의 &amp;와 비슷하다고 보면 될 것 같다.<br>해당 변수가 할당된 메모리 상의 주소값을 얻어오는 연산자이다.<br>즉 저 키워드를 씀으로써 rvalue에는 0x1234가 들어가게 된다.<br><strong>위와 더불어 인스턴스 생성까지 이루어진다.</strong>  </li>
 <li>t <code>=</code> new TV();<br>&#x3D; 이라는 대입, 할당 연산자를 사용하여<br>rvalue인 0x1234를 lvalue인 t에 할당, 대입하면서<br>클래스의 인스턴스의 주소를 할당하게 되는 것이다.</li>
 </ul>
 <p>즉, <code>new</code> 연산자를 통해 클래스의 인스턴스가 생성되는 게 <del>아니라</del> 맞다!!<br><del>주소값만을 얻어내는 연산자이지, 실제로는</del>생정자(TV())를 통해 만들어지게 되는 <del>것이었다</del>게 아니라 생성자로는 인스턴스 변수의 초기화만 이루어진다!!</p>

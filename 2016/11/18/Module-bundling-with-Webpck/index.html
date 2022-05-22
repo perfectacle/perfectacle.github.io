@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.1.0">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.2.0">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
@@ -18,10 +18,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css" integrity="sha256-jTIdiMuX/e3DGJUGwl3pKSxuc6YOuqtJYkM0bGQESA4=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.10.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="목차 들어가기에 앞서 모듈, 너는 누구니? 웹팩을 사용해보자 웹팩에게 모듈이란…? 개발용? 배포용? 부트스트랩, 폰트어썸, 제이쿼리, 이미지 모듈을 사용해보자. 홈페이지, IE8에서도 웹팩을 써보자. 마치며…  들어가기에 앞서아주 많이 참조한 링크웹팩입문자를 위한 튜토리얼 파트1 - 웹팩 입문 !">
 <meta property="og:type" content="article">
@@ -51,7 +51,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2016/11/18/Module-bundling-with-Webpck/18.png">
 <meta property="og:image" content="https://perfectacle.github.io/2016/11/18/Module-bundling-with-Webpck/19.png">
 <meta property="article:published_time" content="2016-11-18T09:38:50.000Z">
-<meta property="article:modified_time" content="2022-03-20T03:38:03.850Z">
+<meta property="article:modified_time" content="2022-05-22T09:11:16.235Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="Cross Browsing">
 <meta property="article:tag" content="npm">
@@ -118,12 +118,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li>
-        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">251</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">48</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">215</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -265,7 +260,7 @@
       <meta itemprop="name" content="오늘도 끄적끄적">
       <meta itemprop="description" content="Toss Server Developer">
     </span>
-    
+
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="(Webpack) 모듈? 번들링? | 오늘도 끄적끄적">
       <meta itemprop="description" content>
@@ -290,7 +285,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-03-20 03:38:03" itemprop="dateModified" datetime="2022-03-20T03:38:03+00:00">2022-03-20</time>
+      <time title="Updated at: 2022-05-22 09:11:16" itemprop="dateModified" datetime="2022-05-22T09:11:16+00:00">2022-05-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -422,11 +417,10 @@
 </li>
 <li><p>loaders<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://hjlog.me/post/118">Webpack 적용기 2 : 어떻게 사용하는가?</a>에서는 다음과 같이 설명하고 있다.</p>
 <blockquote>
-<p>이 때 require된 모듈들은 불러들어지는 과정에서 파이프라이닝 된<br>일련의 로더 들을 거치게 된다.</p>
+<p>이 때 require된 모듈들은 불러들어지는 과정에서 파이프라이닝 된<br>일련의 로더 들을 거치게 된다.<br><strong>로더</strong>를 하나의 정해진 <strong>역할을 수행</strong>하는, 일종의 <strong>함수</strong>라고 생각할 수 있다.<br>로더는 직전 단계의 모듈을 입력으로 받아,<br>다양한 변형을 가한 뒤 다음 로더의 입력으로 넘겨준다.<br>마지막 로더는 최종적으로 적절하게 변형된 모듈을<br>번들 자바스크립트 파일에 넣어주게 된다.</p>
 </blockquote>
 </li>
 </ol>
-<p><strong>로더</strong>를 하나의 정해진 <strong>역할을 수행</strong>하는, 일종의 <strong>함수</strong>라고 생각할 수 있다.<br>로더는 직전 단계의 모듈을 입력으로 받아,<br>다양한 변형을 가한 뒤 다음 로더의 입력으로 넘겨준다.<br>마지막 로더는 최종적으로 적절하게 변형된 모듈을<br>번들 자바스크립트 파일에 넣어주게 된다.</p>
 <p>그럼 실제로 번들링을 해보자.  </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ webpack -w</span><br></pre></td></tr></table></figure>
 
@@ -527,10 +521,8 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm i -g webpack-dev-server</span><br><span class="line">$ npm i -D webpack-dev-server raw-loader webpack-browser-plugin extract-text-webpack-plugin webpack-strip clean-webpack-plugin</span><br></pre></td></tr></table></figure>
 
 <ol>
-<li>webpack-dev-server</li>
-</ol>
-<p>-g로 설치하는 이유는 해당 명령어를 터미널에서 쓰기 위함이고<br>다시 한 번 -D로 설치하는 이유는 현재 프로젝트에서 해당 패키지를 쓰기 위함이다.<br>webpack-dev-server는 실제 눈에 보이지 않는 디렉토리를 만들고 그 디렉토리에<br>번들링을 진행하고 watch하며 테스트를 하는 웹팩 개발용 서버이다.</p>
-<ol start="2">
+<li><p>webpack-dev-server<br>-g로 설치하는 이유는 해당 명령어를 터미널에서 쓰기 위함이고<br>다시 한 번 -D로 설치하는 이유는 현재 프로젝트에서 해당 패키지를 쓰기 위함이다.<br>webpack-dev-server는 실제 눈에 보이지 않는 디렉토리를 만들고 그 디렉토리에<br>번들링을 진행하고 watch하며 테스트를 하는 웹팩 개발용 서버이다.</p>
+</li>
 <li><p>raw-loader는 html 파일을 핫리로드하게 만드는 로더이다.  </p>
 </li>
 <li><p>webpack-browser-plugin<br>webpack-dev-server에서 번들링을 끝낸 후 자동으로 브라우저를 열어주는 플러그인이다.<br>자세한 옵션은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.npmjs.com/package/webpack-browser-plugin">webpack-browser-plugin</a>을 확인하자.</p>
@@ -569,11 +561,8 @@
 <ol>
 <li><p>new CleanWebpackPlugin([‘dist’])<br>빌드를 시작하기 전에 먼저 배포용 디렉토리를 지워줘야한다.</p>
 </li>
-<li><p>new webpack.DefinePlugin()</p>
+<li><p>new webpack.DefinePlugin()<br><em>process.env.NODE_ENV</em>는 개발환경인지 배포환경인지 알고자 할 때 쓰인다.<br>production이면 배포 모드, development이면 개발환경이다.<br>이는 HTML을 핫리로드하게 만들지 안 만들지를 결정하기 위해 썼다.</p>
 </li>
-</ol>
-<p><em>process.env.NODE_ENV</em>는 개발환경인지 배포환경인지 알고자 할 때 쓰인다.<br>production이면 배포 모드, development이면 개발환경이다.<br>이는 HTML을 핫리로드하게 만들지 안 만들지를 결정하기 위해 썼다.</p>
-<ol start="3">
 <li><p>new webpack.optimize.OccurrenceOrderPlugin()</p>
 <blockquote>
 <p>모듈을 할당하고 발생 카운트 아이디들을 발생(?chunk)시킨다.<br>ID들은 종종 적은(짧은) id들을 얻는데 사용된다.<br>이것은 id가 예상가능하며 파일 전체 크기를 경감시켜 추천한다.</p>
