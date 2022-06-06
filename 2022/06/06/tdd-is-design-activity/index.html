@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2022/06/06/tdd-is-design-activity/ndd-02.png">
 <meta property="og:image" content="https://perfectacle.github.io/2022/06/06/tdd-is-design-activity/ndd-03.png">
 <meta property="article:published_time" content="2022-06-06T14:39:22.000Z">
-<meta property="article:modified_time" content="2022-06-06T08:19:20.350Z">
+<meta property="article:modified_time" content="2022-06-06T08:23:56.596Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="TDD">
 <meta property="article:tag" content="mock">
@@ -263,7 +263,7 @@
       <span class="post-meta-item-text">작성일</span>
       
 
-      <time title="Post created: 2022-06-06 14:39:22 / Updated at: 08:19:20" itemprop="dateCreated datePublished" datetime="2022-06-06T14:39:22+00:00">2022-06-06</time>
+      <time title="Post created: 2022-06-06 14:39:22 / Updated at: 08:23:56" itemprop="dateCreated datePublished" datetime="2022-06-06T14:39:22+00:00">2022-06-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -300,7 +300,7 @@
     
     <div class="post-body" itemprop="articleBody">
         <p>1~2년 전 쯤 존경하는 개발자 분과 함께 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.mockobjects.com/2009/09/brief-history-of-mock-objects.html">A Brief History of Mock Objects</a>라는 아티클을 함께 본 적이 있다.<br>개인적으로 이렇게 특정 개념의 근본이 된다던지, 해당 분야의 대가들이 쓴 아티클들을 함께 보는 것으로 인해 굉장히 많은 인사이트들이 생겼던 것 같다.<br>객체의 테스트 때문에 추가했던 getter로부터의 해방을 위해 고민하던 것으로 시작한 게 Mock의 탄생이라는 사실을 알게 되었을 때는 정말 위대한 탄생이라고 생각했다.  </p>
-<p>그리고 문득 시간이 지나 해당 아티클을 다시 보고 싶어졌다. (물론 해당 아티클은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.yes24.com/Product/Goods/9008455">테스트 주도 개발로 배우는 객체 지향 설계와 실천</a> 책의 후기에 한글로 적혀있다.)<br>아태클을 보던 중에 후반 부분에 Mock과 관련해서 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://jmock.org/oopsla2004.pdf">Mock Roles, not Objects</a>라는 논문까지 썼다는 걸 보고 해당 논문까지 봐야 Mock에 대해 정확한 이해를 할 수 있을 것 같아 해당 논문을 보게 되었다.<br>그리고 목의 역사와 마찬가지로 해당 논문도 너무나 감명이 깊어 한 번 느낀점이나 내용을 정리해보고 싶었다.</p>
+<p>그리고 문득 시간이 지나 해당 아티클을 다시 보고 싶어졌다. (물론 해당 아티클은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.yes24.com/Product/Goods/9008455">테스트 주도 개발로 배우는 객체 지향 설계와 실천</a> 책의 후기에 한글로 적혀있다.)<br>아티클을 보던 중에 후반 부분에 Mock과 관련해서 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://jmock.org/oopsla2004.pdf">Mock Roles, not Objects</a>라는 논문까지 썼다는 걸 보고 해당 논문까지 봐야 Mock에 대해 정확한 이해를 할 수 있을 것 같아 해당 논문을 보게 되었다.<br>그리고 목의 역사와 마찬가지로 해당 논문도 너무나 감명이 깊어 한 번 느낀점이나 내용을 정리해보고 싶었다.</p>
 <h2 id="Writing-tests-is-a-design-activity"><a href="#Writing-tests-is-a-design-activity" class="headerlink" title="Writing tests is a design activity"></a>Writing tests is a design activity</h2><p>먼저 TDD(Test Driven Development)에는 크게 두 가지 관점이 존재할 것 같다.  </p>
 <p>첫 번째로 “검증”이다.<br>코드들이 의도대로 동작하는지, 버그는 없는지 검증하는 것이다.<br>이를 통해 프로덕션에 코드를 내보내도 된다는 자신감이 올라가고, 리팩토링을 하거나 신규 기능을 추가하더라도 코드의 동작은 변하지 않았음에 확신을 가질 수 있다.  </p>
 <p>두 번째로 “설계”이다.<br>나의 코드를 검증하려고 테스트를 짜려고 하는데 테스트를 짜기가 힘들다면 “Code Smell”이 난다고 할 수 있다. (코드에 뭔가 구린 내가 나는 것이다.)<br>이를 통해 적절한 책임을 가진 객체로 쪼갬으로 인해 더 나은 설계로 유도해낼 수 있을 것이다.</p>

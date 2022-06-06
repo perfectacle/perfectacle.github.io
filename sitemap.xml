@@ -2,24 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://perfectacle.github.io/about/index.html</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/categories/index.html</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/tags/index.html</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -38,7 +20,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/08/07/why-1byte-is-8bit/</loc>
+    <loc>https://perfectacle.github.io/about/index.html</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -47,7 +29,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2019/08/15/why-central-banks-creates-money/</loc>
+    <loc>https://perfectacle.github.io/categories/index.html</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -74,7 +56,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/06/18/what-is-node-js/</loc>
+    <loc>https://perfectacle.github.io/2017/08/07/why-1byte-is-8bit/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -83,7 +65,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/04/18/webpack2-optimize/</loc>
+    <loc>https://perfectacle.github.io/2019/08/15/why-central-banks-creates-money/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -102,6 +84,24 @@
   
   <url>
     <loc>https://perfectacle.github.io/2017/03/12/webpack2-tree-shaking/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/06/18/what-is-node-js/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/04/18/webpack2-optimize/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -164,6 +164,24 @@
   </url>
   
   <url>
+    <loc>https://perfectacle.github.io/2018/03/30/tcp-ip-book-index/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2022/06/06/tdd-is-design-activity/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://perfectacle.github.io/2019/06/11/thread-dump-analyze/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -182,7 +200,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2018/03/30/tcp-ip-book-index/</loc>
+    <loc>https://perfectacle.github.io/2018/03/31/tcp-ip-book-index-2/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -191,7 +209,16 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2022/06/06/tdd-is-design-activity/</loc>
+    <loc>https://perfectacle.github.io/2018/03/31/tcp-ip-book-index-3/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2018/04/01/tcp-ip-book-index-4/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -272,33 +299,6 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2018/03/31/tcp-ip-book-index-2/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2018/03/31/tcp-ip-book-index-3/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2018/04/01/tcp-ip-book-index-4/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2018/07/22/spring-boot-2-log/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -344,6 +344,15 @@
   </url>
   
   <url>
+    <loc>https://perfectacle.github.io/2021/05/05/readonly-transaction-begin-transaction/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://perfectacle.github.io/2021/08/08/readonly-transaction-doesnt-make-entity-snapshot/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -353,7 +362,16 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2021/05/05/readonly-transaction-begin-transaction/</loc>
+    <loc>https://perfectacle.github.io/2017/03/25/react-router-v4/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/03/01/perf-chk/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -372,60 +390,6 @@
   
   <url>
     <loc>https://perfectacle.github.io/2017/03/25/react-hot-loader-3/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2017/03/25/react-router-v4/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2018/05/30/network-ethernet-mac-address-x-cast/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2018/05/30/network-hardware/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2019/04/28/nginx-proxy-aws-elb/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2019/04/21/non-stop-deployment/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2017/03/01/perf-chk/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -470,7 +434,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2019/08/15/money-is-debt/</loc>
+    <loc>https://perfectacle.github.io/2018/05/30/network-ethernet-mac-address-x-cast/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -479,7 +443,25 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/11/06/mysql-to-elasitcsearch/</loc>
+    <loc>https://perfectacle.github.io/2018/05/30/network-hardware/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2019/04/28/nginx-proxy-aws-elb/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2019/04/21/non-stop-deployment/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -506,7 +488,16 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/10/05/letsencrypt-with-certbot-feat-aws/</loc>
+    <loc>https://perfectacle.github.io/2019/08/15/money-is-debt/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/11/06/mysql-to-elasitcsearch/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -525,6 +516,15 @@
   
   <url>
     <loc>https://perfectacle.github.io/2017/09/28/map-api-performance-improvement/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/10/05/letsencrypt-with-certbot-feat-aws/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -596,15 +596,6 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/07/18/keyword-crawler-review/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2017/07/18/keyword-crawler/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -632,7 +623,25 @@
   </url>
   
   <url>
+    <loc>https://perfectacle.github.io/2017/07/18/keyword-crawler-review/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://perfectacle.github.io/2019/05/07/jvm-gc-basic/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/08/08/js-how-to-learn/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -669,6 +678,15 @@
   
   <url>
     <loc>https://perfectacle.github.io/2019/05/11/jvm-gc-advanced/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/06/30/js-func-00-what/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -749,15 +767,6 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/08/08/js-how-to-learn/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2017/08/07/js-013-closure/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -785,7 +794,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/07/18/js-count-char-word/</loc>
+    <loc>https://perfectacle.github.io/2017/05/03/js-async-number-animation/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -794,7 +803,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/05/03/js-async-number-animation/</loc>
+    <loc>https://perfectacle.github.io/2017/07/18/js-count-char-word/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -812,7 +821,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/06/30/js-func-00-what/</loc>
+    <loc>https://perfectacle.github.io/2017/05/20/js-006-module/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -929,15 +938,6 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/05/20/js-006-module/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2018/02/20/jpa-embedded-type/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -965,15 +965,6 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2018/09/26/java8-date-time/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2017/08/28/jazz-hop-sleepy-time-beats/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -984,33 +975,6 @@
   
   <url>
     <loc>https://perfectacle.github.io/2019/05/05/jmx-monitoring-inside-docker-container-over-ssh-tunneling/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2018/01/15/jackson-local-date-time-deserialize/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2018/01/16/jackson-local-date-time-serialize/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2019/06/30/java-8-lambda-capturing/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1037,7 +1001,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2019/03/10/how-can-webflux-process-huge-requests-with-fewer-threads/</loc>
+    <loc>https://perfectacle.github.io/2018/09/26/java8-date-time/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1100,6 +1064,33 @@
   </url>
   
   <url>
+    <loc>https://perfectacle.github.io/2018/01/15/jackson-local-date-time-deserialize/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2018/01/16/jackson-local-date-time-serialize/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2019/06/30/java-8-lambda-capturing/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://perfectacle.github.io/2019/05/01/hibernate-multiple-bag-fetch-exception/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -1110,6 +1101,15 @@
   
   <url>
     <loc>https://perfectacle.github.io/2017/08/07/how-can-computer-understand-our-source/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2019/03/10/how-can-webflux-process-huge-requests-with-fewer-threads/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1253,15 +1253,6 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2021/05/24/entity-manager-lifecycle/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2021/06/13/entity-manager-persist-vs-merge/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -1307,25 +1298,16 @@
   </url>
   
   <url>
+    <loc>https://perfectacle.github.io/2021/05/24/entity-manager-lifecycle/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://perfectacle.github.io/2017/01/31/dynamic-table-generator/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2017/09/04/di-v3/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2017/11/21/domain-register-godaddy/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1370,6 +1352,24 @@
   </url>
   
   <url>
+    <loc>https://perfectacle.github.io/2017/09/04/di-v3/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/11/21/domain-register-godaddy/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://perfectacle.github.io/2018/09/26/date-and-time/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -1397,24 +1397,6 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/12/10/bundle-with-rollup/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2020/06/09/change-inheritance-hierarchy-without-affecting-client/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2022/03/20/client-abort-exception-deep-dive-part-01/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -1434,6 +1416,24 @@
   
   <url>
     <loc>https://perfectacle.github.io/2022/01/22/book-review-zero-to-one-part-01/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/12/10/bundle-with-rollup/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2020/06/09/change-inheritance-hierarchy-without-affecting-client/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1487,24 +1487,6 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2019/06/23/auto-scanning-annotation-based-bean/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2018/04/25/aws-public-subnet/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2019/11/24/aes/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -1532,7 +1514,16 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2016/11/14/Webpack-devtool-option-Performance/</loc>
+    <loc>https://perfectacle.github.io/2019/06/23/auto-scanning-annotation-based-bean/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2018/04/25/aws-public-subnet/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1542,6 +1533,15 @@
   
   <url>
     <loc>https://perfectacle.github.io/2017/01/24/Wifi-password-fact/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2016/11/14/Webpack-devtool-option-Performance/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1595,15 +1595,6 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/09/19/Spring-boot-get-post-mapping/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2017/09/23/Spring-boot-gradle-profile/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -1613,7 +1604,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2016/11/18/Module-bundling-with-Webpck/</loc>
+    <loc>https://perfectacle.github.io/2017/09/19/Spring-boot-get-post-mapping/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1622,7 +1613,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2016/12/18/JetBrains-License/</loc>
+    <loc>https://perfectacle.github.io/2016/11/18/Module-bundling-with-Webpck/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1721,7 +1712,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/01/25/ES6-ajax-with-fetch/</loc>
+    <loc>https://perfectacle.github.io/2016/12/18/JetBrains-License/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1794,6 +1785,15 @@
   
   <url>
     <loc>https://perfectacle.github.io/2017/04/16/ES6-Symbol/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://perfectacle.github.io/2017/01/25/ES6-ajax-with-fetch/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
@@ -1910,6 +1910,15 @@
   </url>
   
   <url>
+    <loc>https://perfectacle.github.io/2017/01/23/C-ref-002/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://perfectacle.github.io/2017/01/25/C-ref-003/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -1937,6 +1946,15 @@
   </url>
   
   <url>
+    <loc>https://perfectacle.github.io/2017/01/24/ASM-ref-002/</loc>
+    
+    <lastmod>2022-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://perfectacle.github.io/2016/11/11/Babel-ES6-with-IE8/</loc>
     
     <lastmod>2022-06-06</lastmod>
@@ -1955,25 +1973,7 @@
   </url>
   
   <url>
-    <loc>https://perfectacle.github.io/2017/01/23/C-ref-002/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://perfectacle.github.io/2017/01/06/ASM-ref-001/</loc>
-    
-    <lastmod>2022-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://perfectacle.github.io/2017/01/24/ASM-ref-002/</loc>
     
     <lastmod>2022-06-06</lastmod>
     
