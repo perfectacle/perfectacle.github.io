@@ -2,14 +2,14 @@
   "name": "blog",
   "version": "1.0.0",
   "hexo": {
-    "version": "6.1.0"
+    "version": "6.3.0"
   },
   "scripts": {
     "start": "hexo serve --draft",
     "build": "hexo clean && hexo generate"
   },
   "dependencies": {
-    "hexo": "^6.1.0",
+    "hexo": "^6.3.0",
     "hexo-auto-canonical": "^0.1.1",
     "hexo-autonofollow": "^1.0.1",
     "hexo-excerpt": "^1.1.6",
@@ -30,6 +30,6 @@
     "hexo-renderer-marked": "^5.0.0",
     "hexo-renderer-stylus": "^2.0.0",
     "hexo-server": "^3.0.0",
-    "hexo-theme-next": "^8.11.1"
+    "hexo-theme-next": "^8.13.0"
   }
 }
