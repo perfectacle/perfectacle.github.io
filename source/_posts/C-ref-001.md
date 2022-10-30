@@ -268,3 +268,4 @@ int main() {
 * [32bit 자료형 / 64bit 자료형의 크기 정리](http://foxlime.tistory.com/115)  
 * [64bit 머신에서 int형이 64bit가 아닌가요?](https://kldp.org/node/61089)  
 * [long과 int는 크기가 같은데 왜 존재하나요?](http://dev.likejazz.com/post/69840022906/long%EA%B3%BC-int%EB%8A%94-%ED%81%AC%EA%B8%B0%EA%B0%80-%EA%B0%99%EC%9D%80%EB%8D%B0-%EC%99%9C-%EC%A1%B4%EC%9E%AC%ED%95%98%EB%82%98%EC%9A%94)  
+* [C에서 상수 포인터는 무엇입니까?](https://www.scaler.com/topics/c/constant-pointer-in-c/)
