@@ -24,7 +24,7 @@
 <script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="막연하게 양방향 암호화 하면 당연스레 AES를 떠올리고, 제대로 모른 채로 사용했다.이제부터라도 조금은 알고 써야겠다는 생각이 들어서 살짝 정리해봤다. 양방향&#x2F;단방향 암호화양방향 암호화는 암호화 및 복호화가 가능하다는 소리다.휴대폰 번호 등등 민감한 개인정보는 암호화 해서 저장해야하는데 고객 정보를 식별하기 위해선 복호화도 가능해야한다.혹시">
-<meta property="og:type" content="article">
+<meta property="og:type" content="blog">
 <meta property="og:title" content="AES 256 CBC + PBKDF2">
 <meta property="og:url" content="https://perfectacle.github.io/2019/11/24/aes/index.html">
 <meta property="og:site_name" content="오늘도 끄적끄적">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2019/11/24/aes/cbc-enc.png">
 <meta property="og:image" content="https://perfectacle.github.io/2019/11/24/aes/cbc-dec.png">
 <meta property="article:published_time" content="2019-11-24T09:59:51.000Z">
-<meta property="article:modified_time" content="2022-10-30T08:42:16.131Z">
+<meta property="article:modified_time" content="2022-10-30T08:59:47.508Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="암호화">
 <meta property="article:tag" content="AES">
@@ -263,13 +263,6 @@
       <span class="post-meta-item-text">작성일</span>
 
       <time title="Post created: 2019-11-24 09:59:51" itemprop="dateCreated datePublished" datetime="2019-11-24T09:59:51+00:00">2019-11-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-10-30 08:42:16" itemprop="dateModified" datetime="2022-10-30T08:42:16+00:00">2022-10-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">

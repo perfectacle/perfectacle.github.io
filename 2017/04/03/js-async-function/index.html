@@ -24,7 +24,7 @@
 <script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="전에 AJAX를 Promise와 Async&#x2F;Await로 처리하는 방법을 알아봤는데,setTimeout과 같은 비동기 함수를 처리하려니 또 버퍼링이 걸려서 정리해봤다.너무 사용법 위주로 공부하다보니 나중에 또 정리를 하게 될 것 같다.AJAX를 비동기로 처리하고 싶은 사람은 아래 글을 참조하자.(ES6) ajax 위주의 promise 실습(ES6">
-<meta property="og:type" content="article">
+<meta property="og:type" content="blog">
 <meta property="og:title" content="(ES6+) 비동기 함수를 깔끔하게 처리해보자.">
 <meta property="og:url" content="https://perfectacle.github.io/2017/04/03/js-async-function/index.html">
 <meta property="og:site_name" content="오늘도 끄적끄적">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2017/04/03/js-async-function/thumb.png">
 <meta property="og:image" content="https://perfectacle.github.io/2017/04/03/js-async-function/promises.png">
 <meta property="article:published_time" content="2017-04-03T21:18:09.000Z">
-<meta property="article:modified_time" content="2022-10-30T08:42:16.691Z">
+<meta property="article:modified_time" content="2022-10-30T08:59:48.016Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="JS">
 <meta property="article:tag" content="ES">
@@ -267,13 +267,6 @@
       <span class="post-meta-item-text">작성일</span>
 
       <time title="Post created: 2017-04-03 21:18:09" itemprop="dateCreated datePublished" datetime="2017-04-03T21:18:09+00:00">2017-04-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-10-30 08:42:16" itemprop="dateModified" datetime="2022-10-30T08:42:16+00:00">2022-10-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">

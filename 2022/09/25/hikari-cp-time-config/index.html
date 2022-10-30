@@ -24,14 +24,14 @@
 <script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.13.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="Spring Boot 2에서 제공하는 RDB 관련 의존성을 추가하면 DB의 커넥션 풀을 관리하기 위해 기본적으로 사용하는 HikariCP는 시간 관련해서 다양한 설정들이 있다.하지만 그냥 설명하는 것만 봐서는 무슨 내용인지 헷갈리는 설명들이 있어서 요번에 프로젝트에 도입된 설정들을 포함해 몇가지 정리를 해보았다. maxLifeTime ⏳maxLifetime">
-<meta property="og:type" content="article">
+<meta property="og:type" content="blog">
 <meta property="og:title" content="히카리 CP에서 다양한 시간 설정해보기">
 <meta property="og:url" content="https://perfectacle.github.io/2022/09/25/hikari-cp-time-config/index.html">
 <meta property="og:site_name" content="오늘도 끄적끄적">
 <meta property="og:description" content="Spring Boot 2에서 제공하는 RDB 관련 의존성을 추가하면 DB의 커넥션 풀을 관리하기 위해 기본적으로 사용하는 HikariCP는 시간 관련해서 다양한 설정들이 있다.하지만 그냥 설명하는 것만 봐서는 무슨 내용인지 헷갈리는 설명들이 있어서 요번에 프로젝트에 도입된 설정들을 포함해 몇가지 정리를 해보았다. maxLifeTime ⏳maxLifetime">
 <meta property="og:locale" content="ko_KR">
 <meta property="article:published_time" content="2022-09-25T17:06:17.000Z">
-<meta property="article:modified_time" content="2022-10-30T08:42:16.655Z">
+<meta property="article:modified_time" content="2022-10-30T08:59:47.980Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="MySQL">
 <meta property="article:tag" content="HikariCP">
@@ -258,13 +258,6 @@
       <span class="post-meta-item-text">작성일</span>
 
       <time title="Post created: 2022-09-25 17:06:17" itemprop="dateCreated datePublished" datetime="2022-09-25T17:06:17+00:00">2022-09-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Updated at: 2022-10-30 08:42:16" itemprop="dateModified" datetime="2022-10-30T08:42:16+00:00">2022-10-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
