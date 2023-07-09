@@ -17,10 +17,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.(그 이유는 모르겠지만… 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)따라서 final이 아닌 메서드(equals, hashCode, toString, clone, finalize는)는 모두 메서드 오버라이딩을 염두">
 <meta property="og:type" content="blog">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/01.png">
 <meta property="og:image" content="https://perfectacle.github.io/2018/11/26/effective-java-ch03-item10-equals-method/02.png">
 <meta property="article:published_time" content="2018-11-26T01:16:30.000Z">
-<meta property="article:modified_time" content="2022-12-28T22:11:34.340Z">
+<meta property="article:modified_time" content="2023-07-09T03:12:46.453Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary">
@@ -58,9 +58,7 @@
 
 
 
-  <script async defer data-website-id src></script>
 
-  <script defer data-domain src></script>
 <!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -282,8 +280,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <img src="/2018/11/26/effective-java-ch03-item10-equals-method/thumb.png" class>
+    <div class="post-body" itemprop="articleBody"><img src="/2018/11/26/effective-java-ch03-item10-equals-method/thumb.png" class>
 
 <p>Object 클래스는 인스턴스가 생성 가능한 Concrete class이지만 기본적으로 상속해서 사용하도록 설계됐다고 한다.<br>(그 이유는 모르겠지만… 그걸 찾으려면 또 이 장의 범위를 넘어서니 나중에 찾아보자.)<br>따라서 final이 아닌 메서드(<a href="#equals">equals</a>, <a href="/2018/12/03/effective-java-ch03-item11-hashCode-method">hashCode</a>, toString, <a href="/2018/12/16/effective-java-ch03-item13-clone-method">clone</a>, finalize는)는 모두 메서드 오버라이딩을 염두하고 설계된 메서드이다.<br>따라서 해당 메서드를 오버라이딩 할 때는 각 메서드마다 지켜야할 규칙들이 존재한다.<br>이 규칙을 지키지 않았을 때 뻑나는 경우가 있다.<br>일반적인 클래스들(Collection Framework 등등)은 이러한 규칙들은 지켰겠지~ 하고 작성된 코드들이 많다.<br>따라서 위와 같은 규칙을 지키지 않은 채 오버라이딩을 한 클래스를 사용하면 제대로 동작하지 않을 가능성이 존재한다.  </p>
 <h2 id="들어가기에-앞서…"><a href="#들어가기에-앞서…" class="headerlink" title="들어가기에 앞서…"></a>들어가기에 앞서…</h2><p>equals 메서드를 오버라이딩 할 경우는 거의 없다.<br>대부분 핵심 필드의 값이 일치하는지 파악하기 위해서 오버라이딩 할 것이다.<br>그런 경우를 제외하고는 대부분 기본적인 레퍼런스 값 비교만으로도 충분히 비교가 가능하기 때문이다.<br>equals 메서드를 오버라이딩 하는 건 그렇게 어렵지 않지만 몇가지 원칙이 있고, 글의 길이가 짧은 편도 아니고 얻는 수확이 크지 않다. (애초에 오버라이딩 할 일이 거의 없으니…)<br>그래서 <code>지금 당장 오버라이딩을 해야한다!</code> 싶을 때는 두 가지 방법이 있다.<br><del>내가 당신의 시간을 아껴주겠다.</del><br>그래도 공부 측면 등등에서 꼭 알아야하는 내용임에는 틀림이 없는 것 같다.</p>
@@ -474,15 +471,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">양권성</span>
-</div>
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
   </div>
 
@@ -503,7 +499,7 @@
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
 
@@ -511,10 +507,12 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js","integrity":"sha256-o5AUfgOkNFWuInA78GVCoVdGoN9eTaB3Hxu+ep7TTrY="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
+
   <script src="/js/third-party/fancybox.js"></script>
+
 
 
   

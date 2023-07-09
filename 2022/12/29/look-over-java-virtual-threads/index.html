@@ -17,10 +17,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="Java의 Virtual Threads는 JDK 19에 Preview Features로 추가되었다.프로젝트 룸(Loom)에서 개발한 기능으로 알고있는데 사실 큰 관심도 없던(뭐하는 지도 모르던) 프로젝트였고, JDK 19가 LTS도 아니기 때문에 회사에서 바로 써볼 수도 없기에 JDK 19는 큰 관심도 가지고 있지 않았다.하지만 최근 스프링 블로그에서 Em">
 <meta property="og:type" content="blog">
@@ -29,6 +29,9 @@
 <meta property="og:site_name" content="오늘도 끄적끄적">
 <meta property="og:description" content="Java의 Virtual Threads는 JDK 19에 Preview Features로 추가되었다.프로젝트 룸(Loom)에서 개발한 기능으로 알고있는데 사실 큰 관심도 없던(뭐하는 지도 모르던) 프로젝트였고, JDK 19가 LTS도 아니기 때문에 회사에서 바로 써볼 수도 없기에 JDK 19는 큰 관심도 가지고 있지 않았다.하지만 최근 스프링 블로그에서 Em">
 <meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-fork-join-pool-1.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-fork-join-pool-2.png">
+<meta property="og:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-fork-join-pool-3.png">
 <meta property="og:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-not-show-name.png">
 <meta property="og:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-states.png">
 <meta property="og:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-profiling.png">
@@ -38,7 +41,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-mdc-interceptor.png">
 <meta property="og:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-async-thread.png">
 <meta property="article:published_time" content="2022-12-29T00:22:21.000Z">
-<meta property="article:modified_time" content="2022-12-28T22:11:34.796Z">
+<meta property="article:modified_time" content="2023-07-09T03:12:46.909Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="Spring">
@@ -46,7 +49,7 @@
 <meta property="article:tag" content="Virtual Threads">
 <meta property="article:tag" content="Loom">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-not-show-name.png">
+<meta name="twitter:image" content="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/virtual-threads-fork-join-pool-1.png">
 
 
 <link rel="canonical" href="https://perfectacle.github.io/2022/12/29/look-over-java-virtual-threads/">
@@ -67,9 +70,7 @@
 
 
 
-  <script async defer data-website-id src></script>
 
-  <script defer data-domain src></script>
 <!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -291,8 +292,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <p>Java의 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/425">Virtual Threads</a>는 JDK 19에 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/12">Preview Features</a>로 추가되었다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://wiki.openjdk.org/display/loom/Main">프로젝트 룸(Loom)</a>에서 개발한 기능으로 알고있는데 사실 큰 관심도 없던(뭐하는 지도 모르던) 프로젝트였고, JDK 19가 LTS도 아니기 때문에 회사에서 바로 써볼 수도 없기에 JDK 19는 큰 관심도 가지고 있지 않았다.<br>하지만 최근 스프링 블로그에서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://spring.io/blog/2022/10/11/embracing-virtual-threads">Embracing Virtual Threads</a> 라는 포스트가 올라온 걸 보고 살짝 관심 가지게 되었다.</p>
+    <div class="post-body" itemprop="articleBody"><p>Java의 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/425">Virtual Threads</a>는 JDK 19에 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/12">Preview Features</a>로 추가되었다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://wiki.openjdk.org/display/loom/Main">프로젝트 룸(Loom)</a>에서 개발한 기능으로 알고있는데 사실 큰 관심도 없던(뭐하는 지도 모르던) 프로젝트였고, JDK 19가 LTS도 아니기 때문에 회사에서 바로 써볼 수도 없기에 JDK 19는 큰 관심도 가지고 있지 않았다.<br>하지만 최근 스프링 블로그에서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://spring.io/blog/2022/10/11/embracing-virtual-threads">Embracing Virtual Threads</a> 라는 포스트가 올라온 걸 보고 살짝 관심 가지게 되었다.</p>
 <p><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc">Spring Web MVC</a>와 같이 전형적인 1 Request per 1 Thread 모델의 한계(쓰레드 자체가 많은 메모리를 소비하고, 컨텍스트 스위칭에 따른 불필요한 시간 소요 등등)를 극복하기 위해<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html#spring-webflux">Spring Webflux</a>(가 의존하는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://netty.io/">Netty</a>)에서는 코어 갯수 * 2개만의 쓰레드를 만듦으로 인해 그 한계를 극복하였지만 하나의 요청을 하나의 쓰레드가 온전히 처리하는 것이 아니기 때문에 스택트레이스를 봐도 파편화된 정보가 남아 트러블 슈팅에 문제가 있었고,<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html">Mono</a>나 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html">Flux</a>와 같은 Publisher 타입으로 값을 감싸야 하기 때문에 코드가 매우 보기 힘들고, 어디서 쓰레드를 블락하는 코드를 호출하는 건 아닌지 항상 불안에 떨었어야했다.  </p>
 <p>그러다보니 Webflux가 더 고성능을 보장하더라도 유지보수하기가 힘들고 러닝커브 또한 존재하기 때문에 어지간한 경우가 아니면 Web MVC로 프로젝트를 만들었다.<br>사실 프로덕션에서 RDBMS를 안 쓰는 곳이 거의 없는데 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://r2dbc.io/">R2DBC</a>를 사용하기에는 너무 불안정해 보이기도 했고, 그리고 TPS가 안 나오면 대부분 스케일 아웃하는 형태로 해결을 많이 했다.<br>서버보다는 사람이 가장 비싼 자원이라고 생각되기에 유지보수 측면으로만 생각하다보니 Webflux는 거의 사용한 적이 없는 것 같다.<br>결정적으로 Web MVC(Spring Boot를 사용한다면 톰캣의 최대 쓰레드인 200개)만으로도 부족함이 없는 서비스도 많았고, 단일 서버가 아닌 이중화 등등으로 인해 서버가 다중으로 뜨기에 Webflux를 써야할 만큼의 처리를 단일서버에서 하지 않는 경우가 대다수였다.  </p>
 <p>그럼에도 불구하고 Virtual Threads는 어떠한 문제를 해결해주는 것인지, Spring과 함께 사용하면 어떤 시너지를 낼 수 있을지 궁금해서 살짝만 훑어보았다.</p>
@@ -312,19 +312,26 @@
     A[OS Scheduler] -- schedule --&gt; C[OS Thread 2];
     end
     subgraph JVM
-    B --&gt; D[Carrier Thread 1];
-    C --&gt; E[Carrier Thread 2];
-    D --&gt; F[Fork/Join Pool];
-    E --&gt; F;
-    F --&gt; G[Virtual Thread 1];
-    F --&gt; H[Virtual Thread 2];
-    F --&gt; I[Virtual Thread 3];
+    B --&gt; D[ForkJoinPool];
+    C --&gt; D[ForkJoinPool];
+    D -- schedule --&gt; E[&quot;Carrier Thread 1 (Worker Thread 1)&quot;];
+    D -- schedule --&gt; F[&quot;Carrier Thread 2 (Worker Thread 2)&quot;];
+    E --&gt; G[Queue 1];
+    F --&gt; H[Queue 2];
+    G --  schedule --&gt; I[&quot;Virtual Thread 1 (Task 1)&quot;];
+    G --  schedule --&gt; J[&quot;Virtual Thread 2 (Task 2)&quot;];
+    H --  schedule --&gt; K[&quot;Virtual Thread 3 (Task 3)&quot;];
     end</code></pre>
-<p>그에 반해 Virtual Threads는 OS의 Thread와 1:1로 대응되지 않는다.<br>OS와 1:1로 대응되던 Platform Threads는 Carrier Threads라고 부른다.<br>이 Carrier Threads는 여전히 OS에 의해 스케쥴링 된다.</p>
+<p>그에 반해 Virtual Threads는 OS의 Thread와 1:1로 대응되지 않는다.<br>OS와 1:1로 대응되던 Platform Threads는 Carrier Threads라고 부른다.  </p>
+<p>Carrier Thread는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a> 안에 Worker Thread로 생성이 되어 스케쥴링이 되고, 각 Worker Thread들은 Queue를 가지고 있어서 Task를 스케쥴링하는데 Virtual Thread 자체(좀 더 정확히는 Virtual Thread의 runContinuation 메서드를 실행하는 Runnable 타입)가 Task가 되어서 Queue에 들어가게 된다.</p>
+<img src="/2022/12/29/look-over-java-virtual-threads/virtual-threads-fork-join-pool-1.png" class>  
+<img src="/2022/12/29/look-over-java-virtual-threads/virtual-threads-fork-join-pool-2.png" class>  
+<img src="/2022/12/29/look-over-java-virtual-threads/virtual-threads-fork-join-pool-3.png" class>  
+
 <blockquote>
 <p>initially, carrier threads for virtual threads are threads in a ForkJoinPool that operates in FIFO mode. The size of this pool defaults to the number of available processors.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.infoq.com/articles/java-virtual-threads">https://www.infoq.com/articles/java-virtual-threads</a></p>
 </blockquote>
-<p>Virtual Threads를 JVM에서 스케쥴링 하기 위해 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a>을 사용하는데 기본적으로 CPU 코어 갯수(정확히는 available processor)만큼의 Carrier Threads를 생성한다. (아마 컨텍스트 스위칭 비용 때문이 아닐까 싶다.)  </p>
+<p>Queue 안에 있는 Virtual Thread 쓰레드들은 FIFO 방식으로 스케쥴링 되고, ForkJoinPool 안의 Worker Thread인 Carrier Thread는 기본적으로 CPU 코어 갯수(정확히는 available processor)만큼의 Carrier Threads를 생성한다. (아마 컨텍스트 스위칭 비용 때문이 아닐까 싶다.)  </p>
 <blockquote>
 <p>We dont have to guess how much stack space a thread might need, or make a one-size-fits-all estimate for all threads;<br>the memory footprint for a virtual thread starts out at only a few hundred bytes, and is expanded and shrunk automatically as the call stack expands and shrinks.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.infoq.com/articles/java-virtual-threads">https://www.infoq.com/articles/java-virtual-threads</a></p>
 </blockquote>
@@ -479,15 +486,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">양권성</span>
-</div>
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
   </div>
 
@@ -508,7 +514,7 @@
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
 
@@ -516,10 +522,12 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js","integrity":"sha256-o5AUfgOkNFWuInA78GVCoVdGoN9eTaB3Hxu+ep7TTrY="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
+
   <script src="/js/third-party/fancybox.js"></script>
+
 
 
   

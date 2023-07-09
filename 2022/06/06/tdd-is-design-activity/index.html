@@ -17,10 +17,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="1~2년 전 쯤 존경하는 개발자 분과 함께 A Brief History of Mock Objects라는 아티클을 함께 본 적이 있다.개인적으로 이렇게 특정 개념의 근본이 된다던지, 해당 분야의 대가들이 쓴 아티클들을 함께 보는 것으로 인해 굉장히 많은 인사이트들이 생겼던 것 같다.객체의 테스트 때문에 추가했던 getter로부터의 해방을 위해 고민하던 것으로">
 <meta property="og:type" content="blog">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2022/06/06/tdd-is-design-activity/ndd-02.png">
 <meta property="og:image" content="https://perfectacle.github.io/2022/06/06/tdd-is-design-activity/ndd-03.png">
 <meta property="article:published_time" content="2022-06-06T14:39:22.000Z">
-<meta property="article:modified_time" content="2022-12-28T22:11:34.904Z">
+<meta property="article:modified_time" content="2023-07-09T03:12:47.025Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="TDD">
 <meta property="article:tag" content="mock">
@@ -62,9 +62,7 @@
 
 
 
-  <script async defer data-website-id src></script>
 
-  <script defer data-domain src></script>
 <!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -282,8 +280,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <p>1~2년 전 쯤 존경하는 개발자 분과 함께 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.mockobjects.com/2009/09/brief-history-of-mock-objects.html">A Brief History of Mock Objects</a>라는 아티클을 함께 본 적이 있다.<br>개인적으로 이렇게 특정 개념의 근본이 된다던지, 해당 분야의 대가들이 쓴 아티클들을 함께 보는 것으로 인해 굉장히 많은 인사이트들이 생겼던 것 같다.<br>객체의 테스트 때문에 추가했던 getter로부터의 해방을 위해 고민하던 것으로 시작한 게 Mock의 탄생이라는 사실을 알게 되었을 때는 정말 위대한 탄생이라고 생각했다.  </p>
+    <div class="post-body" itemprop="articleBody"><p>1~2년 전 쯤 존경하는 개발자 분과 함께 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.mockobjects.com/2009/09/brief-history-of-mock-objects.html">A Brief History of Mock Objects</a>라는 아티클을 함께 본 적이 있다.<br>개인적으로 이렇게 특정 개념의 근본이 된다던지, 해당 분야의 대가들이 쓴 아티클들을 함께 보는 것으로 인해 굉장히 많은 인사이트들이 생겼던 것 같다.<br>객체의 테스트 때문에 추가했던 getter로부터의 해방을 위해 고민하던 것으로 시작한 게 Mock의 탄생이라는 사실을 알게 되었을 때는 정말 위대한 탄생이라고 생각했다.  </p>
 <p>그리고 문득 시간이 지나 해당 아티클을 다시 보고 싶어졌다. (물론 해당 아티클은 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.yes24.com/Product/Goods/9008455">테스트 주도 개발로 배우는 객체 지향 설계와 실천</a> 책의 후기에 한글로 적혀있다.)<br>아티클을 보던 중에 후반 부분에 Mock과 관련해서 <a target="_blank" rel="external nofollow noopener noreferrer" href="http://jmock.org/oopsla2004.pdf">Mock Roles, not Objects</a>라는 논문까지 썼다는 걸 보고 해당 논문까지 봐야 Mock에 대해 정확한 이해를 할 수 있을 것 같아 해당 논문을 보게 되었다.<br>그리고 목의 역사와 마찬가지로 해당 논문도 너무나 감명이 깊어 한 번 느낀점이나 내용을 정리해보고 싶었다.</p>
 <h2 id="Writing-tests-is-a-design-activity"><a href="#Writing-tests-is-a-design-activity" class="headerlink" title="Writing tests is a design activity"></a>Writing tests is a design activity</h2><p>먼저 TDD(Test Driven Development)에는 크게 두 가지 관점이 존재할 것 같다.  </p>
 <p>첫 번째로 “검증”이다.<br>코드들이 의도대로 동작하는지, 버그는 없는지 검증하는 것이다.<br>이를 통해 프로덕션에 코드를 내보내도 된다는 자신감이 올라가고, 리팩토링을 하거나 신규 기능을 추가하더라도 코드의 동작은 변하지 않았음에 확신을 가질 수 있다.  </p>
@@ -384,15 +381,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">양권성</span>
-</div>
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
   </div>
 
@@ -413,7 +409,7 @@
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
 
@@ -421,10 +417,12 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js","integrity":"sha256-o5AUfgOkNFWuInA78GVCoVdGoN9eTaB3Hxu+ep7TTrY="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
+
   <script src="/js/third-party/fancybox.js"></script>
+
 
 
   

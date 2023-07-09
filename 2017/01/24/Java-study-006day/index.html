@@ -17,10 +17,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="배열Java에서는 길이가 0인 배열의 선언도 가능하다.또한 길이는 int 범위의 양의 정수이다.   1234567891011121314151617181920212223242526272829303132333435363738394041import java.util.Arrays;public class test2 &amp;#123;    public static vo">
 <meta property="og:type" content="blog">
@@ -31,7 +31,7 @@
 <meta property="og:locale" content="ko_KR">
 <meta property="og:image" content="https://perfectacle.github.io/2017/01/24/Java-study-006day/thumb.png">
 <meta property="article:published_time" content="2017-01-24T10:17:58.000Z">
-<meta property="article:modified_time" content="2022-12-28T22:11:34.024Z">
+<meta property="article:modified_time" content="2023-07-09T03:12:46.141Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="자바의 정석">
@@ -58,9 +58,7 @@
 
 
 
-  <script async defer data-website-id src></script>
 
-  <script defer data-domain src></script>
 <!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -282,8 +280,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <img src="/2017/01/24/Java-study-006day/thumb.png" class>
+    <div class="post-body" itemprop="articleBody"><img src="/2017/01/24/Java-study-006day/thumb.png" class>
 
 <h2 id="배열"><a href="#배열" class="headerlink" title="배열"></a>배열</h2><p>Java에서는 길이가 0인 배열의 선언도 가능하다.<br>또한 길이는 int 범위의 양의 정수이다.  </p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 둘 다 가능하지만 후자가 C/C++에서 먹히는 스타일이라 이식성이 높다고 생각한다.</span></span><br><span class="line">        <span class="type">int</span>[] num = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">5</span>];</span><br><span class="line">        <span class="type">boolean</span> flag[] = <span class="keyword">new</span> <span class="title class_">boolean</span>[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 배열을 초기화하지 않으면 기본값으로 초기화 돼서 나온다.</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;num.length; i++) System.out.println(num[i]); <span class="comment">// 0</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;flag.length; i++) System.out.println(flag[i]); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">        <span class="type">double</span> num2[] = <span class="keyword">new</span> <span class="title class_">double</span>[]&#123;<span class="number">1.1</span>, <span class="number">4.5</span>&#125;; <span class="comment">// 선언과 동시에 초기화.</span></span><br><span class="line">        <span class="type">double</span> num3[] = <span class="keyword">new</span> <span class="title class_">double</span>[<span class="number">5</span>]&#123;<span class="number">1.1</span>, <span class="number">4.5</span>&#125;; <span class="comment">// 길이를 지정해주면 오류가 난다.</span></span><br><span class="line">        <span class="type">double</span> num4[] = &#123;<span class="number">1.5</span>, <span class="number">3.14</span>, <span class="number">15</span>&#125;; <span class="comment">// 선언과 동시에 초기화 할 때는 new 연산자를 뺄 수 있다.</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 선언과 초기화를 따로 할 때는 new 연산자를 써서 할당까지 해주어야 한다.</span></span><br><span class="line">        <span class="type">double</span> num5[];</span><br><span class="line">        num5 = <span class="keyword">new</span> <span class="title class_">double</span>[]&#123;<span class="number">33.123</span>, <span class="number">51.792</span>&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 아래와 같은 경우를 불허한다.</span></span><br><span class="line">        <span class="type">double</span> num6[] = <span class="keyword">new</span> <span class="title class_">double</span>[<span class="number">123</span>];</span><br><span class="line">        num6 = &#123;<span class="number">123.22</span>, <span class="number">33</span>&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 수정할 때는 new 연산자를 써서 새로 만들어줘야한다.</span></span><br><span class="line">        num2 = <span class="keyword">new</span> <span class="title class_">double</span>[]&#123;<span class="number">123</span>, <span class="number">456</span>, <span class="number">111.33</span>&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 아래 세 문장은 배열의 길이가 0이다.</span></span><br><span class="line">        <span class="type">int</span> num7[] = <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;&#125;;</span><br><span class="line">        <span class="type">int</span> num8[] = <span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">0</span>];</span><br><span class="line">        <span class="type">int</span> num9[] = &#123;&#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// import java.util.Arrays;</span></span><br><span class="line">        <span class="comment">// java 패키지의 utill 패키지의 Arrays 클래스에 있는 toString이라는 메소드를 쓴다.</span></span><br><span class="line">        System.out.println(Arrays.toString(num4)); <span class="comment">// [1.5, 3.14, 15.0]</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">// char 배열은 for 문이나 다른 메소드를 안 써도 된다.</span></span><br><span class="line">        <span class="type">char</span> ch[] = &#123;<span class="string">&#x27;h&#x27;</span>, <span class="string">&#x27;e&#x27;</span>, <span class="string">&#x27;l&#x27;</span>, <span class="string">&#x27;l&#x27;</span>, <span class="string">&#x27;o&#x27;</span>&#125;;</span><br><span class="line">        System.out.println(ch); <span class="comment">// hello</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -361,15 +358,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">양권성</span>
-</div>
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
   </div>
 
@@ -390,7 +386,7 @@
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
 
@@ -398,10 +394,12 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js","integrity":"sha256-o5AUfgOkNFWuInA78GVCoVdGoN9eTaB3Hxu+ep7TTrY="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
+
   <script src="/js/third-party/fancybox.js"></script>
+
 
 
   

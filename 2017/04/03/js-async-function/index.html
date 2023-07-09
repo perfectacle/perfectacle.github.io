@@ -17,10 +17,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="전에 AJAX를 Promise와 Async&#x2F;Await로 처리하는 방법을 알아봤는데,setTimeout과 같은 비동기 함수를 처리하려니 또 버퍼링이 걸려서 정리해봤다.너무 사용법 위주로 공부하다보니 나중에 또 정리를 하게 될 것 같다.AJAX를 비동기로 처리하고 싶은 사람은 아래 글을 참조하자.(ES6) ajax 위주의 promise 실습(ES6">
 <meta property="og:type" content="blog">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2017/04/03/js-async-function/thumb.png">
 <meta property="og:image" content="https://perfectacle.github.io/2017/04/03/js-async-function/promises.png">
 <meta property="article:published_time" content="2017-04-03T21:18:09.000Z">
-<meta property="article:modified_time" content="2022-12-28T22:11:34.656Z">
+<meta property="article:modified_time" content="2023-07-09T03:12:46.769Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="JS">
 <meta property="article:tag" content="ES">
@@ -65,9 +65,7 @@
 
 
 
-  <script async defer data-website-id src></script>
 
-  <script defer data-domain src></script>
 <!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -289,8 +287,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <img src="/2017/04/03/js-async-function/thumb.png" class>
+    <div class="post-body" itemprop="articleBody"><img src="/2017/04/03/js-async-function/thumb.png" class>
 
 <p>전에 AJAX를 Promise와 Async&#x2F;Await로 처리하는 방법을 알아봤는데,<br>setTimeout과 같은 비동기 함수를 처리하려니 또 버퍼링이 걸려서 정리해봤다.<br>너무 사용법 위주로 공부하다보니 나중에 또 정리를 하게 될 것 같다.<br>AJAX를 비동기로 처리하고 싶은 사람은 아래 글을 참조하자.<br><a href="/2017/01/21/ES6-Promise-with-ajax/">(ES6) ajax 위주의 promise 실습</a><br><a href="/2017/01/25/ES6-ajax-with-fetch/">(ES6+) ajax를 위한 fetch와 async&#x2F;await</a>  </p>
 <h2 id="ES5-콜백-함수"><a href="#ES5-콜백-함수" class="headerlink" title="~ES5(콜백 함수)"></a>~ES5(콜백 함수)</h2><p>순서가 보장되지만 피라미드 같이 생겼다.<br>뎁스가 깊어질 수록 컨트롤하기가 어렵다.<br>혹시 cb &amp;&amp; cb()의 동작 방식과 원리가 궁금한 사람은 아래 글을 참조하자.<br><a href="/2017/02/13/es-logical-operator/#%EC%9B%90%EB%A6%AC-%ED%8C%8C%EC%95%85">(ES) 똑똑한 논리 연산자</a>  </p>
@@ -363,15 +360,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">양권성</span>
-</div>
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
   </div>
 
@@ -392,7 +388,7 @@
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
 
@@ -400,10 +396,12 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js","integrity":"sha256-o5AUfgOkNFWuInA78GVCoVdGoN9eTaB3Hxu+ep7TTrY="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
+
   <script src="/js/third-party/fancybox.js"></script>
+
 
 
   

@@ -17,10 +17,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="들어가기에 앞서여기선 기본적으로 웹팩 1, 바벨, ES2015(ES6)을 알고 있다는 전제로 진행한다.리액트 대신에 다른 서드 파티(라이브러리&#x2F;프레임워크) 가지고 테스트하면서 이 글을 봐도 된다.또한 이 글을 보고 나서 (Webpack 2) 코드를 분할해보자!도 보는 걸 추천한다. 트리 쉐이킹(Tree Shaking)??   트리 쉐이킹이란 나무를">
 <meta property="og:type" content="blog">
@@ -31,7 +31,7 @@
 <meta property="og:locale" content="ko_KR">
 <meta property="og:image" content="https://perfectacle.github.io/2017/03/12/webpack2-tree-shaking/thumb.png">
 <meta property="article:published_time" content="2017-03-12T19:32:22.000Z">
-<meta property="article:modified_time" content="2022-12-28T22:11:34.968Z">
+<meta property="article:modified_time" content="2023-07-09T03:12:47.085Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="ES6">
 <meta property="article:tag" content="ES2015">
@@ -61,9 +61,7 @@
 
 
 
-  <script async defer data-website-id src></script>
 
-  <script defer data-domain src></script>
 <!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -285,8 +283,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>여기선 기본적으로 웹팩 1, 바벨, ES2015(ES6)을 알고 있다는 전제로 진행한다.<br>리액트 대신에 다른 서드 파티(라이브러리&#x2F;프레임워크) 가지고 테스트하면서 이 글을 봐도 된다.<br>또한 이 글을 보고 나서 <a href="/2017/03/13/webpack2-code-splitting/">(Webpack 2) 코드를 분할해보자!</a>도 보는 걸 추천한다.</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>여기선 기본적으로 웹팩 1, 바벨, ES2015(ES6)을 알고 있다는 전제로 진행한다.<br>리액트 대신에 다른 서드 파티(라이브러리&#x2F;프레임워크) 가지고 테스트하면서 이 글을 봐도 된다.<br>또한 이 글을 보고 나서 <a href="/2017/03/13/webpack2-code-splitting/">(Webpack 2) 코드를 분할해보자!</a>도 보는 걸 추천한다.</p>
 <h2 id="트리-쉐이킹-Tree-Shaking"><a href="#트리-쉐이킹-Tree-Shaking" class="headerlink" title="트리 쉐이킹(Tree Shaking)??"></a>트리 쉐이킹(Tree Shaking)??</h2><img src="/2017/03/12/webpack2-tree-shaking/thumb.png" class title="나무를 흔들어 썩은 과일(필요없는 놈)을 떨어트리자!">  
 <p>트리 쉐이킹이란 나무를 흔들어서 필요없는 걸 떨어트리는 행위를 말한다.<br>여기서 우리에게 필요없는 것이란 쓰지 않는 코드를 뜻한다.  </p>
 <h2 id="우리의-코드를-트리-쉐이킹-해보자"><a href="#우리의-코드를-트리-쉐이킹-해보자" class="headerlink" title="우리의 코드를 트리 쉐이킹 해보자"></a>우리의 코드를 트리 쉐이킹 해보자</h2><p>기존 웹팩 1에서 번들링이 어떻게 이루어졌는지 보자.  </p>
@@ -403,15 +400,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">양권성</span>
-</div>
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
   </div>
 
@@ -432,7 +428,7 @@
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
 
@@ -440,10 +436,12 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js","integrity":"sha256-o5AUfgOkNFWuInA78GVCoVdGoN9eTaB3Hxu+ep7TTrY="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
+
   <script src="/js/third-party/fancybox.js"></script>
+
 
 
   

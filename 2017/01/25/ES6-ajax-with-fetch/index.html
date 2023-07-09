@@ -17,10 +17,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="이 글을 읽기 전에 (ES6) ajax 위주의 promise 실습를 먼저 읽을 것을 권한다.ajax(XMLHttpRequest)와 promise에 대한 기본적인 이해가 있다면 상관없긴 하다.조현영 님의 제보에 의하면 ie에서 fetch가 안 되고,async&#x2F;await 크롬과 오페라에서만 된다고 한다.아래 사이트에서 확인 가능하다.https:&#x2F;">
 <meta property="og:type" content="blog">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2017/01/25/ES6-ajax-with-fetch/01.png">
 <meta property="og:image" content="https://perfectacle.github.io/2017/01/25/ES6-ajax-with-fetch/03.png">
 <meta property="article:published_time" content="2017-01-25T18:37:49.000Z">
-<meta property="article:modified_time" content="2022-12-28T22:11:34.024Z">
+<meta property="article:modified_time" content="2023-07-09T03:12:46.137Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="JS">
 <meta property="article:tag" content="ES">
@@ -62,9 +62,7 @@
 
 
 
-  <script async defer data-website-id src></script>
 
-  <script defer data-domain src></script>
 <!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -290,8 +288,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <img src="/2017/01/25/ES6-ajax-with-fetch/thumb.png" class>  
+    <div class="post-body" itemprop="articleBody"><img src="/2017/01/25/ES6-ajax-with-fetch/thumb.png" class>  
 <p>이 글을 읽기 전에 <a href="/2017/01/21/ES6-Promise-with-ajax/">(ES6) ajax 위주의 promise 실습</a>를 먼저 읽을 것을 권한다.<br>ajax(XMLHttpRequest)와 promise에 대한 기본적인 이해가 있다면 상관없긴 하다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.facebook.com/zerohch0?fref=ufi">조현영</a> 님의 제보에 의하면 ie에서 fetch가 안 되고,<br>async&#x2F;await 크롬과 오페라에서만 된다고 한다.<br>아래 사이트에서 확인 가능하다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API#Browser_compatibility">https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API#Browser_compatibility</a><br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://kangax.github.io/compat-table/es2016plus/#test-async_functions">ECMAScript Next compatibility table</a></p>
 <h2 id="fetch"><a href="#fetch" class="headerlink" title="fetch"></a>fetch</h2><p>다시 공부하다보니 XMLHttpRequest와 Fetch는 ECMAScript가 아니라고 한다.<br>브라우저에서만 쓰이는 API이기 때문에 babel에서도 지원해주지 않기 때문에<br>크로스 브라우징을 위해선 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/github/fetch">window.fetch polyfill</a>을 쓰자.<br>우선 기존에 우리가 ajax를 하기 위해서 어떻게 했는지 보자.  </p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> jsonURL = <span class="string">&quot;https://perfectacle.github.io/mock/test.json&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getDataAjax</span> = url =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> <span class="title class_">XMLHttpRequest</span>();</span><br><span class="line">  xhr.<span class="title function_">open</span>(<span class="string">&quot;get&quot;</span>, url, <span class="literal">true</span>);</span><br><span class="line">  xhr.<span class="property">responseType</span> = <span class="string">&quot;json&quot;</span>;</span><br><span class="line">  xhr.<span class="property">onreadystatechange</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(xhr.<span class="property">readyState</span> === <span class="number">4</span>) &#123; <span class="comment">// 4 means request is done.</span></span><br><span class="line">      <span class="keyword">if</span>(xhr.<span class="property">status</span> === <span class="number">200</span>) &#123; <span class="comment">// 200 means status is successful</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> xhr.<span class="property">response</span>) &#123; <span class="comment">// 받아온 json 데이터의 키와 값의 쌍을 모두 출력.</span></span><br><span class="line">          <span class="keyword">if</span>(xhr.<span class="property">response</span>.<span class="title function_">hasOwnProperty</span>(key))</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`<span class="subst">$&#123;key&#125;</span>: <span class="subst">$&#123;xhr.response[key]&#125;</span>`</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// 통신 상에 오류가 있었다면 오류 코드를 출력.</span></span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">error</span>(<span class="string">`http status code: <span class="subst">$&#123;xhr.status&#125;</span>`</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  xhr.<span class="title function_">send</span>();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="title function_">getDataAjax</span>(jsonURL);</span><br></pre></td></tr></table></figure>
@@ -375,15 +372,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">양권성</span>
-</div>
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
   </div>
 
@@ -404,7 +400,7 @@
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
 
@@ -412,10 +408,12 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js","integrity":"sha256-o5AUfgOkNFWuInA78GVCoVdGoN9eTaB3Hxu+ep7TTrY="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
+
   <script src="/js/third-party/fancybox.js"></script>
+
 
 
   

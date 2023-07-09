@@ -17,10 +17,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="소스코드 외부 세계에서 내부 세계로 데이터를 전달하기 위해서는 미리 정해진 프로토콜 및 API를 통해 데이터를 주고받게 된다.일반적으로 우리가 많이 사용하는 Restful API(혹은 HTTP API)는 대부분 json의 형태로 데이터를 주고 받게 된다.그럼 json 문자열이 우리가 정의한 Request 객체로 매핑을 할 때 null을 어떻게 핸들링 해야할">
 <meta property="og:type" content="blog">
@@ -30,7 +30,7 @@
 <meta property="og:description" content="소스코드 외부 세계에서 내부 세계로 데이터를 전달하기 위해서는 미리 정해진 프로토콜 및 API를 통해 데이터를 주고받게 된다.일반적으로 우리가 많이 사용하는 Restful API(혹은 HTTP API)는 대부분 json의 형태로 데이터를 주고 받게 된다.그럼 json 문자열이 우리가 정의한 Request 객체로 매핑을 할 때 null을 어떻게 핸들링 해야할">
 <meta property="og:locale" content="ko_KR">
 <meta property="article:published_time" content="2021-09-20T02:04:28.000Z">
-<meta property="article:modified_time" content="2022-12-28T22:11:34.884Z">
+<meta property="article:modified_time" content="2023-07-09T03:12:47.005Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="Spring">
 <meta property="article:tag" content="Jackson">
@@ -56,9 +56,7 @@
 
 
 
-  <script async defer data-website-id src></script>
 
-  <script defer data-domain src></script>
 <!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -276,8 +274,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <p>소스코드 외부 세계에서 내부 세계로 데이터를 전달하기 위해서는 미리 정해진 프로토콜 및 API를 통해 데이터를 주고받게 된다.<br>일반적으로 우리가 많이 사용하는 Restful API(혹은 HTTP API)는 대부분 json의 형태로 데이터를 주고 받게 된다.<br>그럼 json 문자열이 우리가 정의한 Request 객체로 매핑을 할 때 null을 어떻게 핸들링 해야할까에 집중해서 간단히 정리해보았다.<br>해당 포스트와 연관성이 높은 <a href="/2021/09/20/spring-web-response-deserialization-for-null">(Spring) 외부 API의 Response 객체를 만들 때 null을 주의하자</a>도 읽는 것을 추천한다.</p>
+    <div class="post-body" itemprop="articleBody"><p>소스코드 외부 세계에서 내부 세계로 데이터를 전달하기 위해서는 미리 정해진 프로토콜 및 API를 통해 데이터를 주고받게 된다.<br>일반적으로 우리가 많이 사용하는 Restful API(혹은 HTTP API)는 대부분 json의 형태로 데이터를 주고 받게 된다.<br>그럼 json 문자열이 우리가 정의한 Request 객체로 매핑을 할 때 null을 어떻게 핸들링 해야할까에 집중해서 간단히 정리해보았다.<br>해당 포스트와 연관성이 높은 <a href="/2021/09/20/spring-web-response-deserialization-for-null">(Spring) 외부 API의 Response 객체를 만들 때 null을 주의하자</a>도 읽는 것을 추천한다.</p>
 <h2 id="코틀린"><a href="#코틀린" class="headerlink" title="코틀린"></a>코틀린</h2><p>코틀린은 nullable을 지원하다보니 소스코드에서 null에 대한 체크를 매번하지 않아도 돼서 매우 편하다.<br>하지만 이건 우리 소스코드 내부의 사정이고 소스코드 외부에서 들어오는 데이터의 경우에는 단정지을 수 없다.<br>그 단적인 예가 네트워크를 통해 들어오는 HTTP API의 요청이다.  </p>
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RequestV1</span>(</span><br><span class="line">    <span class="keyword">val</span> number: <span class="built_in">Int</span>,</span><br><span class="line">    <span class="keyword">val</span> text: String</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Controller</span> &#123;</span><br><span class="line">    <span class="meta">@PostMapping</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">api</span><span class="params">(<span class="meta">@RequestBody</span> request: <span class="type">RequestV1</span>)</span></span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -345,15 +342,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">양권성</span>
-</div>
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
   </div>
 
@@ -374,7 +370,7 @@
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
 
@@ -382,10 +378,12 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js","integrity":"sha256-o5AUfgOkNFWuInA78GVCoVdGoN9eTaB3Hxu+ep7TTrY="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
+
   <script src="/js/third-party/fancybox.js"></script>
+
 
 
   

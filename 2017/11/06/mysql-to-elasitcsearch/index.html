@@ -17,10 +17,10 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.14.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="MySQL의 데이터를 Elasticsearch로 마이그레이션 할 때 다음과 같은 방법이 존재한다.    일일이 노가다로 집어넣기 Logstash의 logstash-input-jdbc 플러그인 사용하기.   go-mysql-elasticsearch 사용하기.  logstash-input-jdbc 같은 경우에는 다음과 같은 단점이 존재한다.    테이블 명">
 <meta property="og:type" content="blog">
@@ -31,7 +31,7 @@
 <meta property="og:locale" content="ko_KR">
 <meta property="og:image" content="https://perfectacle.github.io/2017/11/06/mysql-to-elasitcsearch/thumb.png">
 <meta property="article:published_time" content="2017-11-06T14:40:55.000Z">
-<meta property="article:modified_time" content="2022-12-28T22:11:34.836Z">
+<meta property="article:modified_time" content="2023-07-09T03:12:46.953Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="MySQL">
 <meta property="article:tag" content="DB">
@@ -58,9 +58,7 @@
 
 
 
-  <script async defer data-website-id src></script>
 
-  <script defer data-domain src></script>
 <!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
@@ -286,8 +284,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-        <img src="/2017/11/06/mysql-to-elasitcsearch/thumb.png" class>
+    <div class="post-body" itemprop="articleBody"><img src="/2017/11/06/mysql-to-elasitcsearch/thumb.png" class>
 
 <p>MySQL의 데이터를 Elasticsearch로 마이그레이션 할 때 다음과 같은 방법이 존재한다.  </p>
 <ol>
@@ -337,7 +334,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 반드시 go-mysql-elasticsearch가 저장된 곳으로 이동 후에 아래 커맨드를 입력해야한다.</span></span><br><span class="line"><span class="comment"># toml 파일의 디렉토리도 꼭 설정해주자.</span></span><br><span class="line">./bin/go-mysql-elasticsearch -config=*.toml</span><br></pre></td></tr></table></figure>
 
 <h2 id="server-id를-모르는-경우"><a href="#server-id를-모르는-경우" class="headerlink" title="server_id를 모르는 경우"></a>server_id를 모르는 경우</h2><p>AWS RDS의 경우 my.cnf를 수정하는 대신 Parameter Group를 정하게 되는데 거기서 server_id를 직접 지정하는 게 아니라 generate 되는 값이다.<br>따라서 우리가 직접 지정하는 것이 아니기 때문에 어떤 값으로 generation 됐는지 확인하기 위해서는 아래 쿼리문을 실행해보고 *.toml 파일에 적용시켜주면 된다.  </p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> @<span class="variable">@server</span>_id</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> @<span class="variable">@server_id</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="리셋하기"><a href="#리셋하기" class="headerlink" title="리셋하기"></a>리셋하기</h2><p>go-mysql-elasticsearch를 맨 처음에 켰을 때는 싱크가 아주 잘 맞는다.<br>하지만 실수(?)로 해당 프로그램을 종료했다가 재시작하면 빈로그가 종료된 시점 이후의 데이터에 대해서만 싱크를 맞추기 시작한다.<br>이럴 땐 *.toml 파일의 data_dir로 설정한 디렉토리로 가서 master.info 파일을 삭제한 후 프로그램을 재시작하면 된다.  </p>
 <h2 id="실험적-기능"><a href="#실험적-기능" class="headerlink" title="실험적 기능"></a>실험적 기능</h2><p>go-mysql-elasticsearch 저장소로 풀리퀘를 날렸지만 나의 실력 미숙으로 인해 컨벤션이나 테스트 코드 등등의 부분이 부족하여 아직 머지되지 않은 기능들이다.<br>그렇기 때문에 글을 작성하는 17&#x2F;11&#x2F;06에는 최신버전임을 장담하지만 그 이후에는 디프리케잇 된 버전이 될 가능성도 높다.  </p>
@@ -394,15 +391,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 2016 – 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">양권성</span>
-</div>
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
   </div>
 
@@ -423,7 +419,7 @@
 
   
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
 
@@ -431,10 +427,12 @@
 <script src="/js/third-party/search/local-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@9.2.2/dist/mermaid.min.js","integrity":"sha256-o5AUfgOkNFWuInA78GVCoVdGoN9eTaB3Hxu+ep7TTrY="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
+
   <script src="/js/third-party/fancybox.js"></script>
+
 
 
   
