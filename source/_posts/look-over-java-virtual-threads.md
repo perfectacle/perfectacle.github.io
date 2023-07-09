@@ -44,23 +44,29 @@ graph TD;
     A[OS Scheduler] -- schedule --> C[OS Thread 2];
     end
     subgraph JVM
-    B --> D[Carrier Thread 1];
-    C --> E[Carrier Thread 2];
-    D --> F[Fork/Join Pool];
-    E --> F;
-    F --> G[Virtual Thread 1];
-    F --> H[Virtual Thread 2];
-    F --> I[Virtual Thread 3];
+    B --> D[ForkJoinPool];
+    C --> D[ForkJoinPool];
+    D -- schedule --> E["Carrier Thread 1 (Worker Thread 1)"];
+    D -- schedule --> F["Carrier Thread 2 (Worker Thread 2)"];
+    E --> G[Queue 1];
+    F --> H[Queue 2];
+    G --  schedule --> I["Virtual Thread 1 (Task 1)"];
+    G --  schedule --> J["Virtual Thread 2 (Task 2)"];
+    H --  schedule --> K["Virtual Thread 3 (Task 3)"];
     end
 ```
 그에 반해 Virtual Threads는 OS의 Thread와 1:1로 대응되지 않는다.  
 OS와 1:1로 대응되던 Platform Threads는 Carrier Threads라고 부른다.  
-이 Carrier Threads는 여전히 OS에 의해 스케쥴링 된다.
+
+Carrier Thread는 [ForkJoinPool](https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/util/concurrent/ForkJoinPool.html) 안에 Worker Thread로 생성이 되어 스케쥴링이 되고, 각 Worker Thread들은 Queue를 가지고 있어서 Task를 스케쥴링하는데 Virtual Thread 자체(좀 더 정확히는 Virtual Thread의 runContinuation 메서드를 실행하는 Runnable 타입)가 Task가 되어서 Queue에 들어가게 된다.
+![](look-over-java-virtual-threads/virtual-threads-fork-join-pool-1.png)  
+![](look-over-java-virtual-threads/virtual-threads-fork-join-pool-2.png)  
+![](look-over-java-virtual-threads/virtual-threads-fork-join-pool-3.png)  
 
 > initially, carrier threads for virtual threads are threads in a ForkJoinPool that operates in FIFO mode. The size of this pool defaults to the number of available processors.
 > https://www.infoq.com/articles/java-virtual-threads
 
-Virtual Threads를 JVM에서 스케쥴링 하기 위해 [ForkJoinPool](https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/util/concurrent/ForkJoinPool.html)을 사용하는데 기본적으로 CPU 코어 갯수(정확히는 available processor)만큼의 Carrier Threads를 생성한다. (아마 컨텍스트 스위칭 비용 때문이 아닐까 싶다.)  
+Queue 안에 있는 Virtual Thread 쓰레드들은 FIFO 방식으로 스케쥴링 되고, ForkJoinPool 안의 Worker Thread인 Carrier Thread는 기본적으로 CPU 코어 갯수(정확히는 available processor)만큼의 Carrier Threads를 생성한다. (아마 컨텍스트 스위칭 비용 때문이 아닐까 싶다.)  
 
 > We dont have to guess how much stack space a thread might need, or make a one-size-fits-all estimate for all threads; 
 > the memory footprint for a virtual thread starts out at only a few hundred bytes, and is expanded and shrunk automatically as the call stack expands and shrinks.
