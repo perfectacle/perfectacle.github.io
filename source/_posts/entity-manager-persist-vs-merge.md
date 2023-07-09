@@ -4,7 +4,7 @@ tags:
   - JPA
   - Spring Data JPA
   - Hibernate
-category:
+categories:
   - Back-end
   - Spring
 date: 2021-06-13 04:02:52

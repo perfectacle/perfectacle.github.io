@@ -1,7 +1,7 @@
 ---
 title: 양 보다는 꾸준히
 date: 2017-02-11 15:19:18
-category: [기타, 잡동사니]
+categories: [기타, 잡동사니]
 tag: [잡동사니]
 ---
 ![](blahblah01/thumb.png)  

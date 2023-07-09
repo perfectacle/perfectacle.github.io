@@ -4,7 +4,7 @@ tag:
   - JS
   - ES
   - 함수형
-category:
+categories:
   - Programming
   - ECMAScript
   - 함수형 JS

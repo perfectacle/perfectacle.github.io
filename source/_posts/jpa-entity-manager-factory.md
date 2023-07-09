@@ -2,7 +2,7 @@
 title: (JPA) Entity와 EntityManager와 EntityManagerFactory
 date: 2018-01-14 15:24:15
 tags: [DB, ORM, JPA, Hibernate]
-category: [Back-end, DB, JPA]
+categories: [Back-end, DB, JPA]
 ---
 ![엔티티는 과자, 엔티티 매니저는 아줌마, 엔티티 매니저 팩토리는 과자 공장](jpa-entity-manager-factory/thumb.png)  
 이미지 출처: [<박상문의 Photo & Essay>평양 육아원의 모습](http://m.blog.daum.net/umji0112/11794517?categoryId=646664)

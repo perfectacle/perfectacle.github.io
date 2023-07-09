@@ -1,7 +1,7 @@
 ---
 title: (TDD) 클라이언트에 영향 없이 상속 구조를 마음껏 고칠 수 있는 방법
 tags: [TDD]
-category: [Note, Study]
+categories: [Note, Study]
 date: 2020-06-09 18:21:29
 ---
 [TDD By Example](https://book.naver.com/bookdb/book_detail.nhn?bid=7443642) 책을 보다가 감명 받은 부분을 정리해봤다.

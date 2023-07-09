@@ -6,7 +6,7 @@ tag:
   - 자알쓰
   - 자료형
   - 원시값
-category:
+categories:
   - Programming
   - ECMAScript
   - 자알쓰

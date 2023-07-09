@@ -1,7 +1,7 @@
 ---
 title: (AWS) Private Subnet
 tags: [AWS, VPC, Network, Subnet]
-category: [Middle-end, DevOps]
+categories: [Middle-end, DevOps]
 ---
 ![](aws-private-subnet/thumb.png)  
 

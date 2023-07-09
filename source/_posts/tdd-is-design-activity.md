@@ -1,7 +1,7 @@
 ---
 title: TDD는 Design Acitivity이다.
 tags: [TDD, mock, test, design]
-category: [Test]
+categories: [Test]
 date: 2022-06-06 14:39:22
 ---
 

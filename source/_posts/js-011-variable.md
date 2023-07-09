@@ -5,7 +5,7 @@ tag:
   - ES
   - 자알쓰
   - 변수
-category:
+categories:
   - Programming
   - ECMAScript
   - 자알쓰

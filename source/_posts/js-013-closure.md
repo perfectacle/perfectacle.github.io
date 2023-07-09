@@ -1,7 +1,7 @@
 ---
 title: (자알쓰) 클로저
 date: 2017-08-07 11:53:42
-category: [Programming, ECMAScript, 자알쓰]
+categories: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰, Closure]
 ---
 ![](js-013-closure/thumb.png)

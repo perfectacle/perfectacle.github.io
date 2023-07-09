@@ -1,6 +1,6 @@
 ---
 title: (자알쓰) 모듈화 Part. 2
-category:
+categories:
   - Programming
   - ECMAScript
   - 자알쓰

@@ -1,7 +1,7 @@
 ---
 title: (자알쓰) call by value vs call by reference
 date: 2017-10-30 21:43:03
-category: [Programming, ECMAScript, 자알쓰]
+categories: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰]
 ---
 ![](js-014-call-by-value-vs-call-by-reference/thumb.png)

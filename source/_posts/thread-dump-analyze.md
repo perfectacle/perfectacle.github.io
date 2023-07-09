@@ -4,7 +4,7 @@ tags:
   - Troubleshooting
   - JVM
   - Thread
-category:
+categories:
   - Note
   - Troubleshooting
 date: 2019-06-11 01:19:36

@@ -1,6 +1,6 @@
 ---
 title: 성공(?)한 겜덕이 되다
-category:
+categories:
   - 기타
   - 잡동사니
 tag:

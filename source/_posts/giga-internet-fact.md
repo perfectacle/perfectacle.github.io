@@ -1,7 +1,7 @@
 ---
 title: (상식) 인터넷 속도에 대한 진실
 date: 2017-01-23 18:55:53
-category: [기타, 등등]
+categories: [기타, 등등]
 tag: [IT, Computer, 인터넷, 속도, 용량, 상식]
 ---
 ![](giga-internet-fact/thumb.png)

@@ -1,7 +1,7 @@
 ---
 title: (ES6+) ajax를 위한 fetch와 async/await
 date: 2017-01-25 18:37:49
-category: [Programming, ECMAScript, ES2015+]
+categories: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6+, ES2015+, ajax]
 ---
 ![](ES6-ajax-with-fetch/thumb.png)  

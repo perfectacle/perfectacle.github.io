@@ -1,7 +1,7 @@
 ---
 title: (Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자
 date: 2017-01-01 20:00:22
-category: [Note, Java]
+categories: [Note, Java]
 tag: [Java, 자바의 정석, 형변환, 정규화, 연산자]
 ---
 ![](Java-study-003day/thumb.png)
@@ -138,4 +138,3 @@ public class test {
     byte, short는 컴파일 할 때 자동으로 int 타입으로 바꿈.  
     long에 접미어 L을 붙이는 이유는 int와 다른 메모리 공간을 차지하게 하기 위함.  
     float도 double과 차별을 두기 위해 접미어를 붙이게 끔 설계됨. 
-    

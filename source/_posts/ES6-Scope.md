@@ -1,7 +1,7 @@
 ---
 title: (ES6) Scope
 date: 2016-11-10 21:18:24
-category: [Programming, ECMAScript, ES2015+]
+categories: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Scope]
 ---
 ![](ES6-Scope/thumb.png)

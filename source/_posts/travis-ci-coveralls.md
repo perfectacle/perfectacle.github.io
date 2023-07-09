@@ -1,7 +1,7 @@
 ---
 title: travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기
 date: 2017-12-10 21:21:07
-category: [Middle-end, DevOps]
+categories: [Middle-end, DevOps]
 tags: [Travis CI, Coveralls]
 ---
 ![](travis-ci-coveralls/thumb.png)  

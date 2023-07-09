@@ -1,7 +1,7 @@
 ---
 title: (C/C++) 참고용 정리 - 전역 변수 vs 지역 변수 vs static 변수
 date: 2017-01-25 09:31:26
-category: [Programming, C/C++]
+categories: [Programming, C/C++]
 tag: [C, C++, Variable, Static]
 ---
 ![](C-ref-003/thumb.png) 

@@ -7,7 +7,7 @@ tag:
   - Value
   - Expression
   - Statement
-category:
+categories:
   - Programming
   - ECMAScript
   - 자알쓰

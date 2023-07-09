@@ -1,7 +1,7 @@
 ---
 title: (TDD) 클래스의 명시적인 타입 검사를 제거하는 방법
 tags: [TDD]
-category: [Note, Study]
+categories: [Note, Study]
 date: 2020-06-11 17:30:48
 ---
 [TDD By Example](https://book.naver.com/bookdb/book_detail.nhn?bid=7443642) 책을 보다가 감명 받은 부분을 정리해봤다.

@@ -1,7 +1,7 @@
 ---
 title: (ES) this
 date: 2017-02-15 09:00:37
-category: [Programming, ECMAScript]
+categories: [Programming, ECMAScript]
 tags: [JS, ES, this]
 ---
 ![](es-this/thumb.png)  

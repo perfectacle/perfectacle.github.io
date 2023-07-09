@@ -1,7 +1,7 @@
 ---
 title: (자작) 동적 테이블 생성기
 date: 2017-01-31 09:59:04
-category: [기타, 자작]
+categories: [기타, 자작]
 tag: [IT, Computer, HTML, Table]
 ---
 ![](dynamic-table-generator/thumb.png)  

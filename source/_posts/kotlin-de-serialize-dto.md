@@ -1,7 +1,7 @@
 ---
 title: (Kotlin) De/Serialize DTO 뽀개서 뿌셔버리기
 tags: [Kotlin, Spring]
-category: [Note, Kotlin]
+categories: [Note, Kotlin]
 date: 2019-09-16 00:30:06
 ---
 연차 대비 너무너무 느린 개발 속도를 향상시키기 위해 나만의 Cheetsheet를 하나씩 만들어야겠다.  

@@ -1,7 +1,7 @@
 ---
 title: (Spring Boot) RestTemplate과 Keep-Alive
 tags: [Spring, Spring Boot, RestTemplate]
-category: [Spring Boot]
+categories: [Spring Boot]
 ---
 
 포스트에 사용된 IP 주소는 모두 개발자의 로컬 private IP이며 와이어샤크의 패킷 캡쳐를 위해서 해당 IP를 사용한 것이지, 혼자서 실습해볼 때는 localhost나 127.0.0.1로 치환하면 된다 

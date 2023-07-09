@@ -1,7 +1,7 @@
 ---
 title: (ES) 정규표현식 응용하기
 date: 2016-11-27 23:14:30
-category: [Programming, ECMAScript]
+categories: [Programming, ECMAScript]
 tags: [JS, ES, RegExp]
 ---
 ![](ES-RegExp-ex/thumb.png)  

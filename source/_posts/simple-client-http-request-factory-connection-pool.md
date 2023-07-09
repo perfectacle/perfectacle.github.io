@@ -4,7 +4,7 @@ tags:
   - Spring
   - Spring Boot
   - RestTemplate
-category:
+categories:
   - Spring Boot
 date: 2021-02-14 13:04:05
 ---

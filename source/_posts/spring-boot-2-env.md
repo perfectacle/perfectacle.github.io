@@ -1,7 +1,7 @@
 ---
 title: (Spring) Spring Boot 2.0 with Gradle에서 환경 별로 profile 쪼개기
 tags: [Spring, Gradle]
-category: [Back-end, Spring]
+categories: [Back-end, Spring]
 date: 2018-07-22 15:31:41
 ---
 ![](spring-boot-2-env/thumb.png)  

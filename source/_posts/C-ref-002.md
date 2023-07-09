@@ -1,7 +1,7 @@
 ---
 title: (C/C++) 참고용 정리 - 변수와 리터럴, 그리고 메모리
 date: 2017-01-23 14:17:09
-category: [Programming, C/C++]
+categories: [Programming, C/C++]
 tag: [C, C++, Variable, Literal, Memory]
 ---
 ![](C-ref-002/thumb.png)  

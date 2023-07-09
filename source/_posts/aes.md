@@ -3,7 +3,7 @@ title: AES 256 CBC + PBKDF2
 tags:
   - 암호화
   - AES
-category:
+categories:
   - Note
   - Dev
 date: 2019-11-24 09:59:51

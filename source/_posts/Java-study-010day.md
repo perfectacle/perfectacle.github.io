@@ -1,7 +1,7 @@
 ---
 title: (Java) 자바의 정석 3판 010일차 - 생성자, this, 멤버 변수 초기화
 date: 2017-02-13 13:53:36
-category: [Note, Java]
+categories: [Note, Java]
 tag: [Java, 자바의 정석, OOP]
 ---
 ![](Java-study-010day/thumb.png)  

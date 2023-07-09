@@ -1,7 +1,7 @@
 ---
 title: Spring Boot + JUnit에서 의존성 주입하기
 tags: [Spring, Spring Boot, JUnit]
-category: [Spring Boot]
+categories: [Spring Boot]
 date: 2020-12-25 02:55:29
 ---
 ## JUnt 4

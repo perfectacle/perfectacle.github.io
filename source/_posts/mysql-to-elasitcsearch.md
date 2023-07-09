@@ -2,7 +2,7 @@
 title: (DB) MySQL의 데이터를 Elasticsearch로 마이그레이션하기
 date: 2017-11-06 14:40:55
 tags: [DB, MySQL, Elasticsearch]
-category: [Back-end, DB, Elasticsearch]
+categories: [Back-end, DB, Elasticsearch]
 ---
 ![](mysql-to-elasitcsearch/thumb.png)
 

@@ -2,7 +2,7 @@
 title: (JPA) Embedded Type
 date: 2018-02-20 00:52:00
 tags: [DB, ORM, JPA, Hibernate]
-category: [Back-end, DB, JPA]
+categories: [Back-end, DB, JPA]
 ---
 ![출처: http://www.datamodel.com/index.php/2014/06/24/big-data-nosql-and-data-modeling-big-challenges-in-data-modeling/](jpa-embedded-type/thumb.png)
 

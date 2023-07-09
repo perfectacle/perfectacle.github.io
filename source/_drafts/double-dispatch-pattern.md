@@ -1,7 +1,7 @@
 ---
 title: Double Dispatch Pattern
 tags: []
-category: [Note, Study]
+categories: [Note, Study]
 ---
 
 ## 패턴이란?

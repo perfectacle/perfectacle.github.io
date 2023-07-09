@@ -1,7 +1,7 @@
 ---
 title: (Webpack 2) 트리 쉐이킹을 해보자!
 date: 2017-03-12 19:32:22
-category: [Front-end, Webpack]
+categories: [Front-end, Webpack]
 tags: [npm, Node.js, Webpack2, babel, ES2015, ES6]
 ---
 ## 들어가기에 앞서

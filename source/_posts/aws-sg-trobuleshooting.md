@@ -4,7 +4,7 @@ tags:
   - Troubleshooting
   - AWS
   - Network
-category:
+categories:
   - Note
   - Troubleshooting
 date: 2019-06-11 22:28:23

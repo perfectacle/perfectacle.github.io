@@ -1,6 +1,6 @@
 ---
 title: (Java) Fail Fast Iterator
-category:
+categories:
   - Programming
   - Java
 tags:

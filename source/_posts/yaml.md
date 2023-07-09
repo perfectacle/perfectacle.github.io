@@ -2,7 +2,7 @@
 title: YAML
 tags:
   - YAML
-category:
+categories:
   - Note
   - Dev
 date: 2018-08-19 13:56:20

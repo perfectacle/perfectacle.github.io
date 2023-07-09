@@ -1,7 +1,7 @@
 ---
 title: rollup.js를 통해 모듈 번들링하기
 date: 2017-12-10 17:32:52
-category: [Front-end]
+categories: [Front-end]
 tags: [Rollup, CommonJS, ESModule, UMD]
 ---
 ![](bundle-with-rollup/thumb.png)

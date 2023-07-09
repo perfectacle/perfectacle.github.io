@@ -5,7 +5,7 @@ tags:
   - JPA
   - Hibernate
   - ORM
-category:
+categories:
   - Note
   - Troubleshooting
 date: 2019-05-01 20:04:41

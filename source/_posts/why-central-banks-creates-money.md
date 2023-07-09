@@ -1,7 +1,7 @@
 ---
 title: 왜 중앙은행은 화폐를 발행하는가? (feat. 인플레이션, 디플레이션)
 tags: [자본주의, 경제, 재테크, 인플레이션, 디플레이션, 중앙은행]
-category: [기타, 경제]
+categories: [기타, 경제]
 date: 2019-08-15 01:56:31
 ---
 ![돈 많이 벌고싶다...](why-central-banks-creates-money/thumb.jpg)

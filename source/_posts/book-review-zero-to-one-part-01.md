@@ -1,7 +1,7 @@
 ---
 title: (독서노트) 제로 투 원 (ZERO to ONE) Part. 01
 tags: [독서노트, 제로 투 원, ZERO to ONE]
-category: [Notes, 독서]
+categories: [Notes, 독서]
 date: 2022-01-22 15:02:19
 ---
 평상 시 독서를 거의 안 하고, 짧은 글, 짧은 영상 위주의 인스턴트 식으로 살다보니 독해능력이 엄청나게 떨어졌다.  

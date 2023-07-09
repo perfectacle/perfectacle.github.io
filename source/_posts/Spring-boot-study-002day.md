@@ -1,6 +1,6 @@
 ---
 title: (Spring) 스타트 스프링 부트 002일차 - Hibernate와 MySQL 연결하기
-category: [Note, Spring Boot]
+categories: [Note, Spring Boot]
 tag: [Java, Spring, Spring Boot, Hibernate, MySQL, Entity Lifecycle]
 date: 2017-08-03 09:17:54
 ---

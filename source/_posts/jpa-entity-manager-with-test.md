@@ -2,7 +2,7 @@
 title: (삽질기) Spring Data JPA에서 Entity Manager 관련 삽질기
 tags:
   - JPA
-category:
+categories:
   - Note
   - 삽질
 date: 2019-05-01 17:26:48

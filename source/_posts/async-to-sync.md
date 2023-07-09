@@ -1,5 +1,5 @@
 ---
-category: [기타, 자작]
+categories: [기타, 자작]
 title: (자작) async-to-sync (자바스크립트 비동기 함수 헬퍼)
 date: 2017-05-01 12:47:00
 tags: [npm, Node.js, JS, ES, ES6, ES2015, Promise, async, await]

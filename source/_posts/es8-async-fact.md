@@ -5,7 +5,7 @@ tag:
   - promise
   - async
   - await
-category:
+categories:
   - Programming
   - ECMAScript
 date: 2017-07-17 20:00:04

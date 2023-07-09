@@ -1,6 +1,6 @@
 ---
 title: (Java) 제네릭
-category: [Programming, Java]
+categories: [Programming, Java]
 tag: [Java, Java5, Generic]
 ---
 ![](java-generic/thumb.png)  

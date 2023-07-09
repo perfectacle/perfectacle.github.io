@@ -1,6 +1,6 @@
 ---
 title: (Java) 자바의 정석 3판 013일차 - Constant Pool
-category: [Note, Java]
+categories: [Note, Java]
 tag: [Java, 자바의 정석]
 date: 2017-08-03 15:05:34
 ---
@@ -399,4 +399,3 @@ Swing에서 1회성(하나의 버튼에서만 쓰인다거나) 이벤트 핸들�
 
 ## Constant Pool
 DB의 Connection Pool 마냥 상수를 모아놓은 곳인 것 같다.  
- 

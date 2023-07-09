@@ -5,7 +5,7 @@ tag:
   - ES
   - 자알쓰
   - 디버깅
-category:
+categories:
   - Programming
   - ECMAScript
   - 자알쓰

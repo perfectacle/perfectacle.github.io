@@ -5,7 +5,7 @@ tag:
   - ES
   - 자알쓰
   - Loop
-category:
+categories:
   - Programming
   - ECMAScript
   - 자알쓰

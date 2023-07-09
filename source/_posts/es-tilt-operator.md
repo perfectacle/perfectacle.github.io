@@ -1,7 +1,7 @@
 ---
 title: (ES) ~(Tilde) 연산자
 date: 2017-02-13 22:01:37
-category: [Programming, ECMAScript]
+categories: [Programming, ECMAScript]
 tags: [JS, ES, Operator]
 ---
 ![](es-tilt-operator/thumb.png)  

@@ -4,7 +4,7 @@ tags:
   - Redis
   - Troubleshooting
   - Monitoring
-category:
+categories:
   - Note
   - Troubleshooting
 date: 2019-05-29 03:00:50

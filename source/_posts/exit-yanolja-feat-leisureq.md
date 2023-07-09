@@ -4,7 +4,7 @@ tags:
   - 퇴사
   - 이직
   - 면접
-category:
+categories:
   - 기타
   - 잡동사니
 date: 2019-08-23 08:16:36

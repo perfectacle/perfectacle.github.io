@@ -2,7 +2,7 @@
 title: (네트워크) TCP/IP 쉽게, 더 쉽게 목차 리뷰 - 3장 트랜스포트 계층
 date: 2018-03-31 14:56:08
 tags: [Network]
-category: [Middle-end, Network]
+categories: [Middle-end, Network]
 ---
 
 ![](tcp-ip-book-index-3/thumb.png)  
@@ -259,4 +259,3 @@ netstat 명령어로 서버와 커넥션이 제대로 맺어졌는지 어떤 상
 
 책 마지막 부분에 패킷 캡처 도구로 Wireshark가 나오는데 크롬 개발자 도구를 쓸 수 없는 상황이나 크롬 개발자 도구에서 보이는 것보다  
 더 아랫단의 패킷이나 실제 데이터 통신이 어떻게 되고 있는지 디버깅 하고 싶다면 이 툴을 쓰면 된다.
-   

@@ -4,7 +4,7 @@ tags:
   - Troubleshooting
   - JVM
   - Heap
-category:
+categories:
   - Note
   - Troubleshooting
 date: 2019-04-28 23:25:38

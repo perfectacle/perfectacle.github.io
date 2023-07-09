@@ -2,7 +2,7 @@
 title: Dependency Injection(의존성 주입)을 알아보자 - setter
 date: 2017-09-04 09:20:46
 tags: [Java, DI]
-category: [Middle-end, Pattern]
+categories: [Middle-end, Pattern]
 ---
 ![](di-v3/thumb.png)
 

@@ -1,7 +1,7 @@
 ---
 title: (ES6) Promise에 파라미터를 넘겨서 사용해보자
 date: 2017-04-04 21:09:43
-category: [Programming, ECMAScript]
+categories: [Programming, ECMAScript]
 tag: [JS, ES, ES6, ES2015, callback, promise]
 ---
 ![](js-promise-param/thumb.png)

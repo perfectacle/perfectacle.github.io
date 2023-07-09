@@ -1,7 +1,7 @@
 ---
 title: 모르는 항목들
 tag: [develop]
-category: [기타, 등등]
+categories: [기타, 등등]
 ---
 ## 배포
 

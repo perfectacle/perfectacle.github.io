@@ -1,7 +1,7 @@
 ---
 title: (ES6) Interface
 date: 2016-12-25 22:17:14
-category: [Programming, ECMAScript, ES2015+]
+categories: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Interface]
 ---
 ![](es6-interface/thumb.png)

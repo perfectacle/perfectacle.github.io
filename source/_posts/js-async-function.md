@@ -1,7 +1,7 @@
 ---
 title: (ES6+) 비동기 함수를 깔끔하게 처리해보자. 
 date: 2017-04-03 21:18:09
-category: [Programming, ECMAScript]
+categories: [Programming, ECMAScript]
 tag: [JS, ES, ES6, ES2015, ES6+, callback, promise, async, await]
 ---
 ![](js-async-function/thumb.png)

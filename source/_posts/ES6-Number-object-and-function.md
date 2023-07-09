@@ -1,7 +1,7 @@
 ---
 title: (ES6) Number 객체와 함수
 date: 2016-12-24 15:11:28
-category: [Programming, ECMAScript, ES2015+]
+categories: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Number]
 ---
 ![](ES6-Number-object-and-function/thumb.png)  

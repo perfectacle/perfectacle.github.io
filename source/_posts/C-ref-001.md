@@ -1,7 +1,7 @@
 ---
 title: (C/C++) 참고용 정리 - 포인터와 배열
 date: 2017-01-23 11:00:21
-category: [Programming, C/C++]
+categories: [Programming, C/C++]
 tag: [C, C++, Pointer, Address, Array]
 ---
 ![](C-ref-001/thumb.png)  

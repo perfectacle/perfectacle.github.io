@@ -1,7 +1,7 @@
 ---
 title: (Markdown) 개발자스러운 뱃지
 date: 2016-11-26 23:14:30
-category: [기타, 등등]
+categories: [기타, 등등]
 tags: [Markdown, md]
 ---
 ![](Markdown-Badge/thumb.png)  

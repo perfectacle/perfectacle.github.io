@@ -2,7 +2,7 @@
 title: (JPA) Readonly 트랜잭션은 Dirty Checking을 하지 않는다
 tags:
   - JPA
-category:
+categories:
   - Back-end
   - DB
   - JPA

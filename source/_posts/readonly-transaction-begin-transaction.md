@@ -2,7 +2,7 @@
 title: (JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다.
 tags:
   - JPA
-category:
+categories:
   - Back-end
   - DB
   - JPA

@@ -1,6 +1,6 @@
 ---
 title: (자료구조) Vector vs ArrayList vs LinkedList
-category: [Middle-end, 자료구조]
+categories: [Middle-end, 자료구조]
 tag: [자료구조, Vector, ArrayList, LinkedList]
 date: 2017-08-02 14:58:36
 ---

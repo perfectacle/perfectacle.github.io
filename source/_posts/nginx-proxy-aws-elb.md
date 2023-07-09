@@ -6,7 +6,7 @@ tags:
   - Proxy
   - AWS
   - ELB
-category:
+categories:
   - Note
   - Troubleshooting
 date: 2019-04-28 21:53:56

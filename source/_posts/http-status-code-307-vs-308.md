@@ -1,7 +1,7 @@
 ---
 title: (HTTP) 상태 코드 - 307 vs 308
 date: 2017-10-16 20:29:58
-category: [Middle-end, Web Server]
+categories: [Middle-end, Web Server]
 tag: [HTTP, HTTPS, GET, POST, Web Server]
 ---
 ![](http-status-code-307-vs-308/thumb.png)  

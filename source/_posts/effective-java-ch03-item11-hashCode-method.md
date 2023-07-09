@@ -2,7 +2,7 @@
 title: '(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals를 재정의하려거든 hashCode도 재정의하라'
 tags:
   - Java
-category:
+categories:
   - Note
   - Java
 date: 2018-12-03 20:42:39

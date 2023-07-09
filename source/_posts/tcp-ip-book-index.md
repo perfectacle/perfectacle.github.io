@@ -2,7 +2,7 @@
 title: (네트워크) TCP/IP 쉽게, 더 쉽게 목차 리뷰 - 1장 컴퓨터 네트워크
 date: 2018-03-30 23:11:15
 tags: [Network]
-category: [Middle-end, Network]
+categories: [Middle-end, Network]
 ---
 
 ![](tcp-ip-book-index/thumb.png)  

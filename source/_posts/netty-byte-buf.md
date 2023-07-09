@@ -3,7 +3,7 @@ title: Netty ByteBuf
 tags:
   - TCP
   - Netty
-category:
+categories:
   - Note
   - Netty
 date: 2021-02-28 14:34:23

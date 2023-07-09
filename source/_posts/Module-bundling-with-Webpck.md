@@ -1,7 +1,7 @@
 ---
 title: (Webpack) 모듈? 번들링?
 date: 2016-11-18 09:38:50
-category: [Front-end, Webpack]
+categories: [Front-end, Webpack]
 tags: [Cross Browsing, npm, Node.js, Webpack]
 ---
 ![](Module-bundling-with-Webpck/thumb.png)  

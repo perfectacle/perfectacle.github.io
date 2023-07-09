@@ -2,7 +2,7 @@
 title: (ELB) HTTPS 서버를 열어보자
 date: 2017-10-05 17:50:29
 tags: [ELB, CertificateManager, HTTPS, AWS, EC2, Route53, Nginx]
-category: [Middle-end, DevOps]
+categories: [Middle-end, DevOps]
 ---
 ![요청을 분산해주는 Load Balancer](https-with-elb/thumb.png)  
 

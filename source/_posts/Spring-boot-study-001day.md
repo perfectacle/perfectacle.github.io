@@ -1,6 +1,6 @@
 ---
 title: (Spring Boot) 스타트 스프링 부트 001일차 - 스프링(부트), 빌드툴, VO, Lombok, 어노테이션, Jackson, ORM, JPA, Hibernate 
-category: [Note, Spring Boot]
+categories: [Note, Spring Boot]
 tag: [Java, Spring, Spring Boot, VO, Bean, Lombok, Jackson, ORM, JPA, Hibernate, Ant, Maven, Gradle]
 date: 2017-08-02 10:02:06
 ---

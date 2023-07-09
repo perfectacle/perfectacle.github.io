@@ -1,6 +1,6 @@
 ---
 title: TIL(Today I Learned)
-category: [기타, 등등]
+categories: [기타, 등등]
 tags: [TIL]
 ---
 ![](til/thumb.png)  

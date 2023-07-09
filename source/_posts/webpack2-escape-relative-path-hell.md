@@ -1,6 +1,6 @@
 ---
 title: (Webpack 2) 상대경로 헬파티에서 탈출하기
-category: [Front-end, Webpack]
+categories: [Front-end, Webpack]
 tags: [npm, Node.js, Webpack2]
 date: 2017-04-20 09:37:49
 ---
@@ -191,4 +191,3 @@ Source Root로 지정하면 sass에서 모듈을 인덱싱하지 못한다.
 ![](webpack2-escape-relative-path-hell/04.png)  
 경로, 변수 자동 완성 및 인덱싱까지 너무 잘 돼서 개발자에게 뽀뽀 해주고 싶은 심정이다.  
 다른 IDE는 어떤지 모르겠지만 역시 갓텔리제이라 할만하다.
- 

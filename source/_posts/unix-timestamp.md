@@ -1,7 +1,7 @@
 ---
 title: Unix Timestamp
 tags: [Time, Unix]
-category: [기타, 등등]
+categories: [기타, 등등]
 date: 2018-09-25 23:05:08
 ---
 ![https://en.wikipedia.org/wiki/Unix_time](unix-timestamp/thumb.jpg)

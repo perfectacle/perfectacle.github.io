@@ -1,6 +1,6 @@
 ---
 title: (자료구조) List - LinkedList를 만들어보자!
-category: [Middle-end, 자료구조]
+categories: [Middle-end, 자료구조]
 tag: [자료구조, LinkedList, List]
 date: 2017-08-06 11:03:03
 ---

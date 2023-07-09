@@ -1,7 +1,7 @@
 ---
 title: Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기
 date: 2017-12-10 13:59:52
-category: [Front-end]
+categories: [Front-end]
 tags: [Typescript, TSLint, Mocha, Chai, ts-node, NYC]
 ---
 

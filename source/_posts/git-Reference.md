@@ -1,7 +1,7 @@
 ---
 title: (git) 정리 노트
 date: 2016-11-19 16:55:28
-category: [Middle-end, git]
+categories: [Middle-end, git]
 tag: [형상 관리, 버전 관리, 배포, git]
 ---
 ![](git-Reference/thumb.png)

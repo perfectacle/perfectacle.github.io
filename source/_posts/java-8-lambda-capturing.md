@@ -1,7 +1,7 @@
 ---
 title: (Java) 람다 캡처링과 final 제약조건
 tags: [Java, Lambda, Java8]
-category: [Programming, Java]
+categories: [Programming, Java]
 date: 2019-06-30 14:18:57
 ---
 ![](java-8-lambda-capturing/thumb.png)

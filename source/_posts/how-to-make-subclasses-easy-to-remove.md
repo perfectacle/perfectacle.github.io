@@ -2,7 +2,7 @@
 title: (TDD) 하위 클래스를 제거하기 쉽게 만드는 방법
 tags:
   - TDD
-category:
+categories:
   - Note
   - Study
 date: 2020-06-11 16:03:32

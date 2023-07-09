@@ -1,7 +1,7 @@
 ---
 title: (자알쓰) Scope Part. 2
 date: 2017-05-19 09:14:47
-category: [Programming, ECMAScript, 자알쓰]
+categories: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰, Scope]
 ---
 ![](js-004-scope/thumb.png)

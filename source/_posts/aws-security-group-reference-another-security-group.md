@@ -1,7 +1,7 @@
 ---
 title: (AWS) Security Group에서 다른 Security Group을 참조하는 경우
 tags: [AWS, Security Group]
-category: [Middle-end, DevOps]
+categories: [Middle-end, DevOps]
 date: 2018-08-30 03:41:08
 ---
 ![](aws-security-group-reference-another-security-group/thumb.png)

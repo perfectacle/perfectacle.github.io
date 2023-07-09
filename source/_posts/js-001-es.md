@@ -1,7 +1,7 @@
 ---
 title: (자알쓰) ECMASCript? ES?
 date: 2017-04-26 09:44:42
-category: [Programming, ECMAScript, 자알쓰]
+categories: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰]
 ---
 ![](js-001-es/thumb.png)

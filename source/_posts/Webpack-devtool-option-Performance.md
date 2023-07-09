@@ -1,7 +1,7 @@
 ---
 title:  (Webpack) devtool 옵션 퍼포먼스
 date: 2016-11-14 22:48:48
-category: [Front-end, Webpack]
+categories: [Front-end, Webpack]
 tags: [npm, Node.js, Webpack, Debugging, Performance, Source Map]
 ---
 ![](Webpack-devtool-option-Performance/thumb.png)

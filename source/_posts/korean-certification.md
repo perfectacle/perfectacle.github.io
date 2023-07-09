@@ -3,7 +3,7 @@ title: 공인인증서
 tags:
   - 공인인증서
   - 보안
-category:
+categories:
   - Note
   - 삽질
 date: 2020-01-24 15:52:03

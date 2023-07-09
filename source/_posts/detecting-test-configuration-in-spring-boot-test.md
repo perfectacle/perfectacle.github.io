@@ -1,7 +1,7 @@
 ---
 title: Spring Boot Test에서 Test Configuration 감지하기
 tags: [Spring Boot, Test, JUnit]
-category: [Spring Boot]
+categories: [Spring Boot]
 date: 2020-12-27 03:00:37
 ---
 [Spring Boot Reference의 Testing - Detecting Test Configuration 파트](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-testing-spring-boot-applications-detecting-config)를 보면 다음과 같은 내용이 나온다.  

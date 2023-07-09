@@ -2,7 +2,7 @@
 title: BNF 표기법
 tags:
   - BNF
-category:
+categories:
   - Note
   - Dev
 date: 2018-08-15 16:08:01

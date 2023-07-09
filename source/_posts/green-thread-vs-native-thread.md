@@ -2,7 +2,7 @@
 title: Green Thread vs Native Thread
 tags:
   - Thread
-category:
+categories:
   - 기타
   - 등등
 date: 2019-03-10 18:24:06

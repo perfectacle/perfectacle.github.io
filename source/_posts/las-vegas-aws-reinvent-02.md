@@ -1,7 +1,7 @@
 ---
 title: 라스베가스를 다녀오고... 2편 (feat. AWS re:Invent 2021) - 세미나 둘째 날
 tags: [reinvent, 여행]
-category: [기타, 잡동사니]
+categories: [기타, 잡동사니]
 date: 2021-12-31 18:06:31
 ---
 

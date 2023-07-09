@@ -4,7 +4,7 @@ tags:
   - AWS
   - VPC
   - Network
-category:
+categories:
   - Middle-end
   - DevOps
 date: 2018-04-25 06:00:53

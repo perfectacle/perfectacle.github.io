@@ -1,7 +1,7 @@
 ---
 title: (ES6) Symbol
 date: 2017-04-16 15:15:31
-category: [Programming, ECMAScript, ES2015+]
+categories: [Programming, ECMAScript, ES2015+]
 tag: [JS, ES, ES6, ES2015, Symbol]
 ---
 ![](ES6-Symbol/thumb.png)  

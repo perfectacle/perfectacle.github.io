@@ -1,7 +1,7 @@
 ---
 title: (Gradle) implementation vs api
 tags: [gradle]
-category: [gradle]
+categories: [gradle]
 date: 2022-03-12 19:43:25
 ---
 

@@ -6,7 +6,7 @@ tag:
   - 자알쓰
   - 자료형
   - 객체
-category:
+categories:
   - Programming
   - ECMAScript
   - 자알쓰

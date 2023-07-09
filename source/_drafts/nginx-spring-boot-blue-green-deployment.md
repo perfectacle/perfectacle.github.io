@@ -1,7 +1,7 @@
 ---
 title: Nginx를 이용하여 Spring Boot Application을 Blue/Green 배포하기
 tags: []
-category: []
+categories: []
 ---
 ![](nginx-spring-boot-blue-green-deployment/thumbs.jpg)
 

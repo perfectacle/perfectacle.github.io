@@ -1,7 +1,7 @@
 ---
 title: (자알쓰) 전역 변수
 date: 2017-08-08 18:51:57
-category: [Programming, ECMAScript, 자알쓰]
+categories: [Programming, ECMAScript, 자알쓰]
 tag: [JS, ES, 자알쓰, JIT]
 ---
 ![](js-global-variable-truth/thumb.png)

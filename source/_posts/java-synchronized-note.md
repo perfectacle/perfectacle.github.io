@@ -2,7 +2,7 @@
 title: (Java) synchronized 키워드가 가지는 의미
 tags:
   - Java
-category:
+categories:
   - Programming
   - Java
 date: 2019-03-10 17:45:29

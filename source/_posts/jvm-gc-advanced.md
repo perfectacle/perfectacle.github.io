@@ -4,7 +4,7 @@ tags:
   - JVM
   - Java
   - GC
-category:
+categories:
   - Programming
   - Java
 date: 2019-05-11 16:05:47

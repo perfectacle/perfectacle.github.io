@@ -1,7 +1,7 @@
 ---
 title: 자바스크립트 학습 방법
 date: 2017-08-08 21:30:06
-category: [Programming, ECMAScript]
+categories: [Programming, ECMAScript]
 tag: [JS, ES, 독학]
 ---
 ![](js-how-to-learn/thumb.png)

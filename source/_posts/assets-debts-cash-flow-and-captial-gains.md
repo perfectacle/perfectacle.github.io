@@ -7,7 +7,7 @@ tags:
   - 자산
   - 부채
   - 현금흐름
-category:
+categories:
   - 기타
   - 경제
 date: 2019-08-24 15:03:12

@@ -6,7 +6,7 @@ tags:
   - UTC
   - GMT
   - Zulu
-category:
+categories:
   - 기타
   - 등등
 date: 2018-09-26 00:27:20

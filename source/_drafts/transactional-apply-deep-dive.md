@@ -2,7 +2,7 @@
 title: (Spring) Transactional은 어떻게 적용되는 걸까??
 tags:
   - Transactional
-category:
+categories:
   - Back-end
   - Spring
 ---

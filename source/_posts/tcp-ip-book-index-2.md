@@ -2,7 +2,7 @@
 title: (네트워크) TCP/IP 쉽게, 더 쉽게 목차 리뷰 - 2장 네트워크 서비스와 애플리케이션 계층
 date: 2018-03-31 14:49:12
 tags: [Network]
-category: [Middle-end, Network]
+categories: [Middle-end, Network]
 ---
 
 ![](tcp-ip-book-index-2/thumb.png)  

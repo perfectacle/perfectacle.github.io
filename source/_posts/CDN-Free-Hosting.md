@@ -1,7 +1,7 @@
 ---
 title: CDN 무료 호스팅하기
 date: 2016-11-28 19:54:03
-category: [기타, 등등]
+categories: [기타, 등등]
 tags: [CDN, Hosting]
 ---
 ![](CDN-Free-Hosting/thumb.png)  

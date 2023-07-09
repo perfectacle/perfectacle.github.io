@@ -1,7 +1,7 @@
 ---
 title: 돈은 빚이다.
 tags: [자본주의, 경제, 재테크]
-category: [기타, 경제]
+categories: [기타, 경제]
 date: 2019-08-15 00:08:49
 ---
 ![돈은 빚이다.](money-is-debt/thumb.png)

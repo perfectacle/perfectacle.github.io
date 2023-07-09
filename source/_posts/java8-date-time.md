@@ -4,7 +4,7 @@ tags:
   - Java8
   - Date
   - Time
-category:
+categories:
   - Programming
   - Java
 date: 2018-09-26 13:36:45

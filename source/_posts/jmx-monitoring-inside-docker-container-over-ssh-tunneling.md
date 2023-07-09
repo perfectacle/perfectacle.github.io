@@ -1,7 +1,7 @@
 ---
 title: (삽질기) SSH 터널링을 통해 원격지에 존재하는 도커 컨테이너 안의 JMX 모니터링하기
 tags: [JVM, JMX]
-category: [Note, 삽질]
+categories: [Note, 삽질]
 date: 2019-05-05 08:36:13
 ---
 ![네가 알던 로컬호스트가 아냐! (로컬호스트처럼 보이지만 실제론 원격지에 있는 서버에 붙었음을 의미)](jmx-monitoring-inside-docker-container-over-ssh-tunneling/thumb.png)

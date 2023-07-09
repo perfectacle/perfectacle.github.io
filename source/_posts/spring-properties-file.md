@@ -1,7 +1,7 @@
 ---
 title: spring.properties 파일을 읽어들이는 원리
 tags: [Spring, Java]
-category: [Spring]
+categories: [Spring]
 date: 2020-12-25 00:51:17
 ---
 ## [SpringProperties 클래스](https://github.com/spring-projects/spring-framework/blob/master/spring-core/src/main/java/org/springframework/core/SpringProperties.java#L46)

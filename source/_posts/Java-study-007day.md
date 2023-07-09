@@ -1,7 +1,7 @@
 ---
 title: (Java) 자바의 정석 3판 007일차 - OOP(객체, 클래스, 인스턴스), new 연산자, 참조 타입, 클래스 변수
 date: 2017-02-09 13:53:40
-category: [Note, Java]
+categories: [Note, Java]
 tag: [Java, 자바의 정석, OOP]
 ---
 ![](Java-study-007day/thumb.png)  

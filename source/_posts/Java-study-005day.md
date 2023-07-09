@@ -1,7 +1,7 @@
 ---
 title: (Java) 자바의 정석 3판 005일차 - 반복문(for, while, do-while), continue와 break
 date: 2017-01-20 15:31:25
-category: [Note, Java]
+categories: [Note, Java]
 tag: [Java, 자바의 정석, 반복문]
 ---
 ![](Java-study-005day/thumb.png)

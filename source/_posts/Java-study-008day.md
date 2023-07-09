@@ -1,7 +1,7 @@
 ---
 title: (Java) 자바의 정석 3판 008일차 - JVM의 메모리 구조
 date: 2017-02-10 10:20:35
-category: [Note, Java]
+categories: [Note, Java]
 tag: [Java, 자바의 정석, JVM]
 ---
 ![](Java-study-008day/thumb.png)

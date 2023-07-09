@@ -4,7 +4,7 @@ tags:
   - Spring
   - Web
   - Jackson
-category:
+categories:
   - Spring
 date: 2021-09-20 02:57:30
 ---

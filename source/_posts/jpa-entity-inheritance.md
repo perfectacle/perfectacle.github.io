@@ -1,7 +1,7 @@
 ---
 title: (JPA) 엔터티 상속
 tags: [JPA, ORM]
-category: [Back-end, DB, JPA]
+categories: [Back-end, DB, JPA]
 date: 2018-07-10 01:13:20
 ---
 ![출처: https://blog.naver.com/PostView.nhn?blogId=dyner&logNo=100177467201](jpa-entity-inheritance/thumb.png)

@@ -1,7 +1,7 @@
 ---
 title: IntelliJ (Spring Boot) vs Gradle (bootRun)에서 클래스패스의 차이점
 tags: [Spring Boot, Java, Gradle, IntelliJ]
-category: [Spring Boot]
+categories: [Spring Boot]
 date: 2020-12-26 16:56:41
 ---
 ```kotlin

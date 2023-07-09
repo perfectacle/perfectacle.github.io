@@ -1,7 +1,7 @@
 ---
 title: (상식) 컴퓨터 용량 단위에 대한 진실
 date: 2017-01-23 17:57:03
-category: [기타, 등등]
+categories: [기타, 등등]
 tag: [IT, Computer, 용량, 상식]
 ---
 ![](Computer-capacity-fact/thumb.png)

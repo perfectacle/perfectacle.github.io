@@ -1,6 +1,6 @@
 ---
 title: (Spring) 스타트 스프링 부트 003일차 - Spring Data JPA
-category: [Note, Spring Boot]
+categories: [Note, Spring Boot]
 tag: [Java, Spring, Spring Boot, Spring Data JPA]
 date: 2017-08-04 13:11:13
 ---

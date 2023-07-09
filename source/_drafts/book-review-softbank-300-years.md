@@ -1,7 +1,7 @@
 ---
 title: (독서노트) 손정의 300년 왕국의 야망
 tags: [독서노트, 손정의, 소프트뱅크, 300년 왕국의 야망]
-category: [Notes, 독서]
+categories: [Notes, 독서]
 ---
 
 # [손정의 300년 왕국의 야망](http://www.yes24.com/Product/Goods/58196842)

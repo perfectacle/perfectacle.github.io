@@ -1,7 +1,7 @@
 ---
 title: (상식) 왜 1byte는 8bit일까?
 date: 2017-08-07 09:02:39
-category: [기타, 등등]
+categories: [기타, 등등]
 tag: [IT, Computer]
 ---
 ![이미지 출처: http://keybreak.tistory.com/125](why-1byte-is-8bit/thumb.png)  
