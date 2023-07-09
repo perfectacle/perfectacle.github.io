@@ -93,7 +93,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">257</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">218</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">258</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">219</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">218</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -166,7 +166,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">257</span>
+        <span class="site-state-item-count">258</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -194,6 +194,115 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/05/01/async-to-sync/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/05/01/async-to-sync/" class="post-title-link" itemprop="url">(자작) async-to-sync (자바스크립트 비동기 함수 헬퍼)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-05-01 12:47:00" itemprop="dateCreated datePublished" datetime="2017-05-01T12:47:00+00:00">2017-05-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EA%B8%B0%ED%83%80/%EC%9E%90%EC%9E%91/" itemprop="url" rel="index"><span itemprop="name">자작</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/05/01/async-to-sync/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/01/async-to-sync/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2017/05/01/async-to-sync/thumb.png" class>
+<h1 id="async-to-sync"><a href="#async-to-sync" class="headerlink" title="async-to-sync"></a>async-to-sync</h1><p>async-to-sync는 자바스크립트 비동기 함수를 동기 함수로 바꿔주는 헬퍼 함수이다.<br>async&#x2F;await는 물론 Promise를 몰라도 된다!!  </p>
+<ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.npmjs.com/package/async-to-sync">npm</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/perfectacle/async-to-sync">github</a></li>
+</ul>
+<h2 id="왜-async-to-sync를-만들었는가"><a href="#왜-async-to-sync를-만들었는가" class="headerlink" title="왜 async-to-sync를 만들었는가?"></a>왜 async-to-sync를 만들었는가?</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/05/01/async-to-sync/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1164,117 +1273,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/04/12/webpack2-smart-tree-shaking/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/04/04/js-promise-param/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/04/04/js-promise-param/" class="post-title-link" itemprop="url">(ES6) Promise에 파라미터를 넘겨서 사용해보자</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2017-04-04 21:09:43" itemprop="dateCreated datePublished" datetime="2017-04-04T21:09:43+00:00">2017-04-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2017/04/04/js-promise-param/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/04/js-promise-param/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2017/04/04/js-promise-param/thumb.png" class>
-
-<h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>어제 프라미스를 쓰면서 정리 해봤는데,<br>또 파라미터를 넘겨서쓰거나 하려니 제대로 쓸 수가 없어서 정리해봤다.<br>일단 reject 되는 경우는 생각하지 않고, <code>그냥 내가 짠 비동기 함수를 동기식으로 실행시키길 원했을 뿐</code>이었다.<br>지극히 사용 방법 위주로 적었으니 아래 링크들을 참조해서 이해하자.<br>일단 구현이 먼저인 사람은 코드를 적극 참조하면 될 것 같다.  </p>
-<ul>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise - JavaScript | MDN - Mozilla Developer Network</a>  </li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://programmingsummaries.tistory.com/325">바보들을 위한 Promise 강의 - 도대체 Promise는 어떻게 쓰는거야? | 감성 프로그래밍</a>  </li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://han41858.tistory.com/11">Promise 를 사용하는 두 가지 방법, new Promise, Promise.resolve()</a></li>
-</ul>
-<h2 id="파라미터-없는-일반-비동기-함수"><a href="#파라미터-없는-일반-비동기-함수" class="headerlink" title="파라미터 없는 일반 비동기 함수"></a>파라미터 없는 일반 비동기 함수</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/04/04/js-promise-param/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

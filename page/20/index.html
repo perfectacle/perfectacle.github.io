@@ -93,7 +93,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">257</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">218</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">258</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">219</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">218</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -166,7 +166,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">257</span>
+        <span class="site-state-item-count">258</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -194,6 +194,130 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/01/25/C-ref-003/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/01/25/C-ref-003/" class="post-title-link" itemprop="url">(C/C++) 참고용 정리 - 전역 변수 vs 지역 변수 vs static 변수</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-01-25 09:31:26" itemprop="dateCreated datePublished" datetime="2017-01-25T09:31:26+00:00">2017-01-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/C-C/" itemprop="url" rel="index"><span itemprop="name">C/C++</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/01/25/C-ref-003/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/25/C-ref-003/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2017/01/25/C-ref-003/thumb.png" class> 
+
+<ul>
+<li>전역 변수(Global Variable)  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> var = <span class="number">3</span>; <span class="comment">// 전역변수</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">add</span><span class="params">()</span> &#123;</span><br><span class="line">    var++; <span class="comment">// 어디서나 접근 가능</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, var); <span class="comment">// 4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    add();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, var); <span class="comment">// 4, 값의 유지</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol>
+<li>값의 유지  </li>
+<li>어디에서든 접근 가능  </li>
+<li>main 함수 실행 전에, 프로그램이 실행되자 마자 메모리에 할당됨.  </li>
+<li>프로그램이 끝나는 순간 메모리에서 해제됨.  </li>
+<li>메모리의 Data 영역에 적재됨.<br>&amp;nbsp;<br>2번의 이유로 인해서 변수의 스코프가 더럽혀진다.<br>더럽혀진다는 의미는 변수 이름의 충돌 가능성이 존재하고,<br>그로 인해 변수 이름 짓기에 큰 시간을 할애해야 하며,<br>변수의 이름이 길어지거나 이상해지는 경우도 존재한다.<br>어디서나 접근 가능하기 때문에 실수로 변수의 값이 바뀔 가능성이 존재한다.<br>뭐 그렇다고 해서 꼭 안 좋은 것만은 아니기 때문에 적절히 활용하면 된다.</li>
+</ol>
+<ul>
+<li>지역 변수(Local Variable)  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> var = <span class="number">3</span>; <span class="comment">// 전역변수</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">add</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> var = <span class="number">4</span>;</span><br><span class="line">    var++;</span><br><span class="line">    <span class="comment">// 지역 변수의 우선순위가 전역 변수보다 높음.</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, var); <span class="comment">// 5</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    &#123; <span class="comment">// block scope</span></span><br><span class="line">        <span class="type">int</span> asdf = <span class="number">33</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, asdf);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// printf(&quot;%d&quot;, asdf); // 스코프를 벗어나서 컴파일 오류가 남.</span></span><br><span class="line">    add();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, var); <span class="comment">// 3, 값의 유지가 안 됨.</span></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 지역 변수 i의 scope 시작</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;<span class="number">3</span>; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, i); <span class="comment">// 0 1 2</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 지역 변수 i의 scope 끝</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n%d&quot;</span>, i); <span class="comment">// 0, 여기서 나온 건 전역 변수 i</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol>
+<li>매번 새로운 값 생성, 값의 유지가 안 됨.  </li>
+<li>지정된 블록 스코프(제어문, 함수 등등)에서만 접근 가능  </li>
+<li>함수가 실행되는 순간마다 메모리에 할당됨.  </li>
+<li>함수가 종료되는 순간마다 메모리에서 해제됨.  </li>
+<li>메모리의 Stack 영역에 적재됨.<br>&amp;nbsp;<br>값이 유지되지 않기 때문에 함수를 실행할 때마다 매번 똑같은 값을 써야할 때 쓴다.<br>스코프 내에서만 접근 가능하기 때문에 유지보수에 용이하다.<br>가능하면 스코프의 범위는 좁은 게 유지보수하기 편하다고 들었다.</li>
+</ol>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/01/25/C-ref-003/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1291,136 +1415,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/01/20/Java-study-005day/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/01/06/ASM-ref-001/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/01/06/ASM-ref-001/" class="post-title-link" itemprop="url">(ASM) 참고용 정리 - 기계어와 ASM, 고급 언어의 관계</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2017-01-06 09:06:13" itemprop="dateCreated datePublished" datetime="2017-01-06T09:06:13+00:00">2017-01-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/ASM/" itemprop="url" rel="index"><span itemprop="name">ASM</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2017/01/06/ASM-ref-001/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/06/ASM-ref-001/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2017/01/06/ASM-ref-001/thumb.png" class>
-
-<h2 id="가상-기계-Virtual-Machine"><a href="#가상-기계-Virtual-Machine" class="headerlink" title="가상 기계(Virtual Machine)"></a>가상 기계(Virtual Machine)</h2><p>기계를 추상화한 것.<br>소프트웨어일 수도, 하드웨어일 수도 있다.<br>각각의 가상 기계는 대응되는 언어들이 존재한다.<br>아래의 표에서 레벨에 해당하는 것들이 가상 기계이다.</p>
-<table>
-<thead>
-<tr>
-<th>Level</th>
-<th>Language</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>High-Level Language</td>
-<td>Java, C, etc.</td>
-</tr>
-<tr>
-<td>Assembly Language</td>
-<td>x86 ASM, 65c816 ASM, etc.</td>
-</tr>
-<tr>
-<td>Instruction Set Architecture(ISA)</td>
-<td>Machine Code</td>
-</tr>
-<tr>
-<td>Digital Logic</td>
-<td>???</td>
-</tr>
-</tbody></table>
-<h2 id="어셈블리어-Low-Level-Language"><a href="#어셈블리어-Low-Level-Language" class="headerlink" title="어셈블리어(Low-Level Language)"></a>어셈블리어(Low-Level Language)</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/01/06/ASM-ref-001/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

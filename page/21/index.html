@@ -93,7 +93,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">257</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">218</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">258</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">219</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">218</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -166,7 +166,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">257</span>
+        <span class="site-state-item-count">258</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -194,6 +194,136 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/01/06/ASM-ref-001/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/01/06/ASM-ref-001/" class="post-title-link" itemprop="url">(ASM) 참고용 정리 - 기계어와 ASM, 고급 언어의 관계</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-01-06 09:06:13" itemprop="dateCreated datePublished" datetime="2017-01-06T09:06:13+00:00">2017-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ASM/" itemprop="url" rel="index"><span itemprop="name">ASM</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/01/06/ASM-ref-001/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/06/ASM-ref-001/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2017/01/06/ASM-ref-001/thumb.png" class>
+
+<h2 id="가상-기계-Virtual-Machine"><a href="#가상-기계-Virtual-Machine" class="headerlink" title="가상 기계(Virtual Machine)"></a>가상 기계(Virtual Machine)</h2><p>기계를 추상화한 것.<br>소프트웨어일 수도, 하드웨어일 수도 있다.<br>각각의 가상 기계는 대응되는 언어들이 존재한다.<br>아래의 표에서 레벨에 해당하는 것들이 가상 기계이다.</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Language</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>High-Level Language</td>
+<td>Java, C, etc.</td>
+</tr>
+<tr>
+<td>Assembly Language</td>
+<td>x86 ASM, 65c816 ASM, etc.</td>
+</tr>
+<tr>
+<td>Instruction Set Architecture(ISA)</td>
+<td>Machine Code</td>
+</tr>
+<tr>
+<td>Digital Logic</td>
+<td>???</td>
+</tr>
+</tbody></table>
+<h2 id="어셈블리어-Low-Level-Language"><a href="#어셈블리어-Low-Level-Language" class="headerlink" title="어셈블리어(Low-Level Language)"></a>어셈블리어(Low-Level Language)</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/01/06/ASM-ref-001/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1161,134 +1291,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2016/11/28/CDN-Free-Hosting/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2016/11/28/CDN-Free-Hosting/" class="post-title-link" itemprop="url">CDN 무료 호스팅하기</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2016-11-28 19:54:03" itemprop="dateCreated datePublished" datetime="2016-11-28T19:54:03+00:00">2016-11-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%EA%B8%B0%ED%83%80/" itemprop="url" rel="index"><span itemprop="name">기타</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%EA%B8%B0%ED%83%80/%EB%93%B1%EB%93%B1/" itemprop="url" rel="index"><span itemprop="name">등등</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2016/11/28/CDN-Free-Hosting/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/11/28/CDN-Free-Hosting/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2016/11/28/CDN-Free-Hosting/thumb.png" class>  
-<p>남들의 사랑과 관심이 고파서 라이브러리를 CDN 호스팅 업체에 등록하고자 며 칠 간 고생했던 내용을 적어봤다.<br>CDN에 대해서는 구글링하면 많이 나오는데 CDN은 각 지역 별로 서버를 두는 서비스 형식으로 대충 알고있다.<br>국내 무료 호스팅 업체에 그냥 나의 라이브러리를 업로드해도 되지만 일정 기간마다 서비스를 연장하거나 트래픽 등등의 문제가 존재하였다.<br>그리고 제이쿼리나 부트스트랩 등등의 프레임워크&amp;라이브러리들이 외국 CDN 호스팅 업체에 등록된 걸 보면 뭔가 동경의 대상이었다.<br>나의 라이브러리도 한 번 그렇게 만들어 보고 싶었다.<br>뭔가 좋아보인다 싶으면 따라하는 게 나의 단점이지만 그래도 해보고 싶었다.</p>
-<ol>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.maxcdn.com/">maxCDN</a>  <img src="/2016/11/28/CDN-Free-Hosting/maxcdn.jpg" class title="maxCDN">  
-<img src="/2016/11/28/CDN-Free-Hosting/01.png" class title="유료인 것 같다... 스킵...">  </li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://cdnjs.com/">cdnjs</a>  <img src="/2016/11/28/CDN-Free-Hosting/cdnjs.png" class title="내 라이브러리는 신생 라이브러리라 스킵...">  </li>
-<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.jsdelivr.com/">jsdelivr</a>  <img src="/2016/11/28/CDN-Free-Hosting/jsdelivr.png" class title="하지만 구세주는 있었으니 그 이름하여 jsdelivr...!">  
-&amp;nbsp;<br>혼자서 깃헙 문서를 보고 따라할 사람은 아래 링크로 들어가면 된다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/jsdelivr/jsdelivr/blob/master/CONTRIBUTING.md">https://github.com/jsdelivr/jsdelivr/blob/master/CONTRIBUTING.md</a><br>&amp;nbsp;<br>준비사항: 라이브러리가 올라가 있는 본인의 깃헙 저장소.<br>그리고 그 깃헙 저장소에 태그가 있어야한다.<br>태그가 뭔지 모르는 사람은 아래 링크를 참조하자.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="http://www.whatwant.com/377">http://www.whatwant.com/377</a>  <img src="/2016/11/28/CDN-Free-Hosting/02.png" class title="태그는 저장소에서 releases 탭으로 오면 볼 수 있다.">  
-&amp;nbsp;<br>그 이후에 아래 링크로 접속한다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/jsdelivr/jsdelivr/tree/master/files">https://github.com/jsdelivr/jsdelivr/tree/master/files</a>  <img src="/2016/11/28/CDN-Free-Hosting/03.png" class title="Create new file을 클릭하자.">  
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">author = &quot;name of lib author&quot;</span><br><span class="line">github = &quot;https://github.com/user_id/repository&quot;</span><br><span class="line">homepage = &quot;없으면 그냥 깃헙 저장소 주소 입력해도 되고, npm 주소 입력해도 됨.&quot;</span><br><span class="line">description = &quot;설명&quot;</span><br><span class="line">mainfile = &quot;lib.min.js&quot;</span><br></pre></td></tr></table></figure>
-<img src="/2016/11/28/CDN-Free-Hosting/04.png" class title="Propose new file을 클릭하자.">  
-<img src="/2016/11/28/CDN-Free-Hosting/05.png" class title="나는 patch-3이라는 브랜치로 포크를 떴다.">  
-<img src="/2016/11/28/CDN-Free-Hosting/06.png" class title="이제 깃헙 메인페이지로 보면 jsdelivr가 포크 떠진 게 보인다.">  
-<img src="/2016/11/28/CDN-Free-Hosting/07.png" class title="포크 뜬 브랜치로 들어간다.">  
-<img src="/2016/11/28/CDN-Free-Hosting/08.png" class title="Find file을 누른다.">  
-<img src="/2016/11/28/CDN-Free-Hosting/09.png" class title="포크 뜨기 전에 입력했던 라이브러리 이름을 검색하고 클릭한다.">  
-<img src="/2016/11/28/CDN-Free-Hosting/10.png" class title="해당 라이브러리의 디렉토리로 와서 Create new file을 클릭하자.">  
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 패키지 매니저에는 npm이라고 입력해도 되는 것 같다.</span><br><span class="line">// files에는 호스팅 될 파일을 입력하면 된다.</span><br><span class="line">&#123;</span><br><span class="line">  &quot;packageManager&quot;: &quot;github&quot;,</span><br><span class="line">  &quot;name&quot;: &quot;lib-name&quot;,</span><br><span class="line">  &quot;repo&quot;: &quot;user_id/lib-name&quot;,</span><br><span class="line">  &quot;files&quot;: &#123;</span><br><span class="line">    &quot;include&quot;: [&quot;lib-name.js&quot;, &quot;lib-name.min.js&quot;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<img src="/2016/11/28/CDN-Free-Hosting/11.png" class title="봇이 자동으로 업데이트하기 위한 파일, Commit new file을 클릭하자.">  
-<img src="/2016/11/28/CDN-Free-Hosting/12.png" class title="다시 한 번 Create new file을 클릭하자.">  
-<img src="/2016/11/28/CDN-Free-Hosting/13.png" class title="호스팅 하길 원하는 버전의 디렉토리를 만들고 dummy 파일을 만들자. 어차피 삭제할 거다.">  
-<img src="/2016/11/28/CDN-Free-Hosting/14.png" class title="해당 버전의 디렉토리로 가서 Upload files를 누르자.">  
-<img src="/2016/11/28/CDN-Free-Hosting/15.png" class title="호스팅 하려는 파일을 업로드 하고 Commit changes를 누르자.">  
-<img src="/2016/11/28/CDN-Free-Hosting/16.png" class title="dummy 파일을 누르자.">  
-<img src="/2016/11/28/CDN-Free-Hosting/17.png" class title="삭제하자.">  
-<img src="/2016/11/28/CDN-Free-Hosting/18.png" class title="머지 및 호스팅 요청을 위해 풀리퀘를 날리자.">  
-<img src="/2016/11/28/CDN-Free-Hosting/19.png" class title="부연 설명을 블라블라 적어보자.">  
-<img src="/2016/11/28/CDN-Free-Hosting/20.png" class title="봇이 풀리퀘(PR)에서 오류를 검출했단다.">  
-예제 작성을 위해 한글을 썼더니 ascii 케릭터로만 적으라는 오류를 뿜는다.<br>하단의 Close pull request를 눌러서 취소 시키고, 오류를 수정한 후 다시 풀리퀘를 날리면 된다.  <img src="/2016/11/28/CDN-Free-Hosting/21.png" class title="인내와 고통의 시간이 지나면 관리자가 머지를 한다.">  
-<img src="/2016/11/28/CDN-Free-Hosting/22.png" class title="마스터 브랜치에서도 내 라이브러리가 추가되었다.">  
-<img src="/2016/11/28/CDN-Free-Hosting/23.png" class title="나의 라이브러리가 jsdelivr CDN에 등록되었다.">  
-감격의 순간이다 흑흑흑…<br>버전 별로 호스팅이 되어있고, unminify, minify한 js 파일 모두 다 호스팅 되었다.<br>세상 어딘가에 나의 발자취를 남긴 것 같아 굉장히 뿌듯하다.</li>
-</ol>
-
       
     </div>
 

@@ -93,7 +93,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">257</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">218</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">258</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">219</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">218</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -166,7 +166,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">257</span>
+        <span class="site-state-item-count">258</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -194,6 +194,114 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/08/02/Java-study-012day/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/08/02/Java-study-012day/" class="post-title-link" itemprop="url">(Java) 자바의 정석 3판 012일차 - 다형성(클래스, 매개변수, 인터페이스), 참조타입의 형변환, 추상 클래스, 인터페이스, 단일 상속과 다중 상속</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-08-02 11:35:34" itemprop="dateCreated datePublished" datetime="2017-08-02T11:35:34+00:00">2017-08-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/08/02/Java-study-012day/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/02/Java-study-012day/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2017/08/02/Java-study-012day/thumb.png" class>
+
+<h2 id="다형성-Polymorphism"><a href="#다형성-Polymorphism" class="headerlink" title="다형성(Polymorphism)"></a>다형성(Polymorphism)</h2><p>객체지향 개념에서 다형성이란 <strong>여러 가지 형태를 가질수 있는 능력</strong>을 의미함.<br>자바에서는 한 타입의 참조 변수로 여러 타입의 객체를 참조할 수 있도록 함으로써 다형성을 프로그램적으로 구현함.  </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TV2</span> &#123;</span><br><span class="line">    <span class="type">boolean</span> power;</span><br><span class="line">    <span class="type">int</span> channel;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">power</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">channelUp</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">channelDown</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CaptionTV</span> <span class="keyword">extends</span> <span class="title class_">TV2</span> &#123;</span><br><span class="line">    String text;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">caption</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test4</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">TV2</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TV2</span>();</span><br><span class="line">        <span class="type">CaptionTV</span> <span class="variable">c</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CaptionTV</span>();</span><br><span class="line">        <span class="type">TV2</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CaptionTV</span>();</span><br><span class="line">        </span><br><span class="line">        System.out.println(c.text);</span><br><span class="line">        <span class="comment">// System.out.println(t2.text); TV2에 생성된 것만 참조 가능.</span></span><br><span class="line">        <span class="comment">// CaptionTV c2 = new TV2(); CaptionTV보다 TV2가 가진 멤버가 더 적어서 생성 불가능.</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>다음과 같은 특성을 지닌다.<br><code>참조변수 a = new 인스턴스타입()</code> 을 기준으로 설명한다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/08/02/Java-study-012day/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1145,116 +1253,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/07/01/js-010-data-type-object/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/07/01/js-009-data-type-primitive-value/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/07/01/js-009-data-type-primitive-value/" class="post-title-link" itemprop="url">(자알쓰) 자료형(원시값)</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2017-07-01 09:53:29" itemprop="dateCreated datePublished" datetime="2017-07-01T09:53:29+00:00">2017-07-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/ECMAScript/%EC%9E%90%EC%95%8C%EC%93%B0/" itemprop="url" rel="index"><span itemprop="name">자알쓰</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2017/07/01/js-009-data-type-primitive-value/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/07/01/js-009-data-type-primitive-value/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2017/07/01/js-009-data-type-primitive-value/thumb.png" class>  
-
-<h2 id="자알쓰란"><a href="#자알쓰란" class="headerlink" title="자알쓰란?"></a>자알쓰란?</h2><p><code>자</code>바스크립트 <code>알</code>고 <code>쓰</code>자. (잘 쓰자는 의미도 담겨있다.)<br>자바스크립트라는 언어 자체는 내 기준에서는 설계 상 미스가 참 많다.<br>함수 단위의 스코프, 호이스팅, 동적 타입 등등<br>자바와 같은 깐깐(?)한 언어를 배우고 바라본 자스는 허점 투성이처럼 보였다.<br>애초에 자바스크립트는 어떠한 프로그램을 만들기 위해서 탄생했다기 보다는<br>웹 페이지에 입력값에 대한 유효성 검사(데이터가 공란인지 아닌지 등등)와 같은<br>페이지의 동적 제어가 주된 목적 + 짧은 개발 기간(넷 스케이프 사의 새로운 브라우저에 탑재 예정) 때문에<br>설계 상에 미스가 있을 수 밖에 없다고 나는 생각된다.<br>일종의 안전 장치가 없어서 개발자가 일일이 구현해주고, 신경써야 하는 느낌이었다.<br>그렇다고 해서 자바스크립트를 극혐하거나 그런 것은 아니고 매우 사랑한다.<br>또한 그 허점을 아는 사람은 허점을 보완해서 요리조리 피해서 잘 쓰겠지만…<br>잘 모르는 부분들은 잘못 써도 동작이 잘 되기 마련이다.<br>이는 지금 당장에는 큰 문제가 안 될지 모르겠지만, 추후에 대규모 웹 어플리케이션을 만들거나<br>직면할 문제로부터 미리 해방시키기 위해 처음부터 좋은 습관을 들여가는 것이 좋다고 생각한다.<br>그 아홉 번째 시리즈는 자료형 중에 원시값을 주제로 진행하겠다.  </p>
-<h2 id="자료형"><a href="#자료형" class="headerlink" title="자료형"></a>자료형</h2><p>0과 1로 이루어진 데이터를 메모리에서 꺼내서 써야하는데 어떻게 해석할지를 결정하는 유형.<br>나는 위와 같이 이해하고 있는데 잘 이해가 가지 않는다면 그냥 넘어가도 무방하다.<br>더 딥하게 알고 싶은 사람은 정적 타입의 언어(C, Java 등등)을 공부해보자.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/07/01/js-009-data-type-primitive-value/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

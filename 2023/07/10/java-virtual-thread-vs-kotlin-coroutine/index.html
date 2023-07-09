@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.0.0-rc1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon/safari-pinned-tab.svg" color="#222">
+  <link rel="manifest" href="/images/favicon/manifest.json">
+  <meta name="google-site-verification" content="yL1R2eDsKDqjPNaOBKp1usSDw8SQNzaO35svs1LKYWw">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java Virtual Threads 훑어보기에서 Virtual Thread에 대해 대충 훑어봤었고, 2023&#x2F;09&#x2F;19에 나오는 JDK21(심지어 LTS)에서 Virtual Threads (JEP 444)가 정식으로 출시된다는 소식을 들었다.그러다보니 코틀린의 코루틴의 소식이 궁금했다.  출처: https:&#x2F;&#x2F;www.youtube.com">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="자바의 Virtual Thread가 나와도 코틀린의 코루틴은 여전히 살아남을까?">
+<meta property="og:url" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/index.html">
+<meta property="og:site_name" content="오늘도 끄적끄적">
+<meta property="og:description" content="Java Virtual Threads 훑어보기에서 Virtual Thread에 대해 대충 훑어봤었고, 2023&#x2F;09&#x2F;19에 나오는 JDK21(심지어 LTS)에서 Virtual Threads (JEP 444)가 정식으로 출시된다는 소식을 들었다.그러다보니 코틀린의 코루틴의 소식이 궁금했다.  출처: https:&#x2F;&#x2F;www.youtube.com">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/is-loom-a-java-equivalent-of-coroutines-in-kotlin.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/recap.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/goal-of-virtual-thread.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/physical-thread-code.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/physical-thread-pool.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-code.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-pool-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-pool-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-pool-03.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-pool-04.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/limitation-of-virtual-thread.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/goal-of-coroutine.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/best-case-of-coroutine-vs-virtual-thread-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/best-case-of-coroutine-vs-virtual-thread-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/programming-style-of-virtual-thread.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/programming-style-of-coroutine-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/programming-style-of-coroutine-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/structured-concurrency-of-coroutine.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/structured-concurrency-of-virtual-thread-vs-coroutine.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/implementation-of-virtual-thread-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/implementation-of-virtual-thread-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/implementation-of-virtual-thread-vs-coroutine.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/memory-of-virtual-thread-vs-coroutine.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/why-virtual-threads-are-heavier.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/cpu-of-virtual-thread-vs-coroutine.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/limited-to-virtual-thread-api.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/io-of-virtual-thread-vs-coroutine.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/last-goal-of-virtual-thread.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/tools-of-virtual-thread-vs-coroutine-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/tools-of-virtual-thread-vs-coroutine-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-01.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-02.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-03.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-04.png">
+<meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-05.png">
+<meta property="article:published_time" content="2023-07-10T01:04:44.000Z">
+<meta property="article:modified_time" content="2023-07-09T16:05:24.923Z">
+<meta property="article:author" content="양권성">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Virtual Threads">
+<meta property="article:tag" content="Loom">
+<meta property="article:tag" content="Kotlin">
+<meta property="article:tag" content="Coroutine">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/is-loom-a-java-equivalent-of-coroutines-in-kotlin.png">
+
+
+<link rel="canonical" href="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"ko","comments":true,"permalink":"https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/","path":"2023/07/10/java-virtual-thread-vs-kotlin-coroutine/","title":"자바의 Virtual Thread가 나와도 코틀린의 코루틴은 여전히 살아남을까?"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>자바의 Virtual Thread가 나와도 코틀린의 코루틴은 여전히 살아남을까? | 오늘도 끄적끄적</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87795455-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-87795455-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+<!--<script data-ad-client="ca-pub-3881550906962162" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="오늘도 끄적끄적" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">오늘도 끄적끄적</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">느리더라도 꾸준하게</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="검색" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">258</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">219</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80" placeholder="Searching..." spellcheck="false" type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          목차
+        </li>
+        <li class="sidebar-nav-overview">
+          흝어보기
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B0%84%EB%8B%A8-%EC%9A%94%EC%95%BD"><span class="nav-number">1.</span> <span class="nav-text">간단 요약</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Virtual-Thread-%EA%B0%84%EB%8B%A8%ED%9E%88-%ED%9B%91%EC%96%B4%EB%B3%B4%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text">Virtual Thread 간단히 훑어보기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%BD%94%EB%A3%A8%ED%8B%B4-%EA%B0%84%EB%8B%A8%ED%9E%88-%ED%9B%91%EC%96%B4%EB%B3%B4%EA%B8%B0"><span class="nav-number">3.</span> <span class="nav-text">코루틴 간단히 훑어보기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Virtual-Thread-vs-%EC%BD%94%EB%A3%A8%ED%8B%B4"><span class="nav-number">4.</span> <span class="nav-text">Virtual Thread vs 코루틴</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Use-case"><span class="nav-number">4.1.</span> <span class="nav-text">Use case</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D-%EC%8A%A4%ED%83%80%EC%9D%BC"><span class="nav-number">4.2.</span> <span class="nav-text">프로그래밍 스타일</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%82%B4%EB%B6%80-%EA%B5%AC%ED%98%84"><span class="nav-number">4.3.</span> <span class="nav-text">내부 구현</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%84%B1%EB%8A%A5"><span class="nav-number">4.4.</span> <span class="nav-text">성능</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%EB%A9%94%EB%AA%A8%EB%A6%AC"><span class="nav-number">4.4.1.</span> <span class="nav-text">메모리</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CPU"><span class="nav-number">4.4.2.</span> <span class="nav-text">CPU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#I-x2F-O"><span class="nav-number">4.4.3.</span> <span class="nav-text">I&#x2F;O</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tools"><span class="nav-number">4.4.4.</span> <span class="nav-text">Tools</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B0%80%EC%83%81-%EC%93%B0%EB%A0%88%EB%93%9C%EC%99%80-%EC%BD%94%EB%A3%A8%ED%8B%B4-%ED%95%A8%EA%BB%98-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0"><span class="nav-number">5.</span> <span class="nav-text">가상 쓰레드와 코루틴 함께 사용하기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B2%B0%EB%A1%A0"><span class="nav-number">6.</span> <span class="nav-text">결론</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="양권성" src="/images/avatar/avatar.png">
+  <p class="site-author-name" itemprop="name">양권성</p>
+  <div class="site-description" itemprop="description">Toss Server Developer</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">219</span>
+          <span class="site-state-item-name">포스트</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">카테고리</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">258</span>
+        <span class="site-state-item-name">태그</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/perfectacle" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perfectacle@gmail.com" title="E-Mail → mailto:perfectacle@gmail.com" rel="external nofollow noopener noreferrer" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/perfectacle" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;perfectacle" rel="external nofollow noopener noreferrer" target="_blank"><i class="fab fa-facebook fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="ko">
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="자바의 Virtual Thread가 나와도 코틀린의 코루틴은 여전히 살아남을까? | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          자바의 Virtual Thread가 나와도 코틀린의 코루틴은 여전히 살아남을까?
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2023-07-10 01:04:44" itemprop="dateCreated datePublished" datetime="2023-07-10T01:04:44+00:00">2023-07-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2023/07/10/java-virtual-thread-vs-kotlin-coroutine/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><a href="/2022/12/29/look-over-java-virtual-threads/">Java Virtual Threads 훑어보기</a>에서 Virtual Thread에 대해 대충 훑어봤었고, 2023&#x2F;09&#x2F;19에 나오는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/projects/jdk/21/">JDK21(심지어 LTS)</a>에서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/444">Virtual Threads (JEP 444)</a>가 정식으로 출시된다는 소식을 들었다.<br>그러다보니 코틀린의 코루틴의 소식이 궁금했다.</p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/is-loom-a-java-equivalent-of-coroutines-in-kotlin.png" class>
+<p>출처: <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.youtube.com/live/QxxG66eQoTc?feature=share&t=3652">https://www.youtube.com/live/QxxG66eQoTc?feature=share&amp;t=3652</a><br>많은 사람들이 Virtual Thread가 코루틴과 같은 역할을 할 수 있을지 궁금해하는 것 같았고, 나 또한 코루틴을 잘 모르는 입장에서 ‘결국 코루틴은 사장되는 게 아닐까?’란 생각이 들었다.</p>
+<p>그러던 중 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.youtube.com/live/QxxG66eQoTc?feature=share&t=3652">Coroutines and Loom behind the scenes by Roman Elizarov</a>라는 영상을 보게 되어서 이해한 내용을 겸사겸사 정리해보았다. (나중에 회사에서 Virtual Thread 적용 할 때 고민해야할 부분도 함께 적어두기 위해서도 있지만…)<br>우선 해당 포스트에서는 Virtual Thread에 대한 기본적인 내용들은 알고 있다는 전제 하에 작성했다.</p>
+<div class="video-container"><iframe src="https://www.youtube.com/embed/QxxG66eQoTc" frameborder="0" loading="lazy" allowfullscreen></iframe></div>
+
+<h2 id="간단-요약"><a href="#간단-요약" class="headerlink" title="간단 요약"></a>간단 요약</h2><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/recap.png" class>
+<p>가상 쓰레드는 요청 당 쓰레드 하나를 만드는 모델(Spring WebMVC 같은)에 적합하고, 이미 존재하는 코드를 재사용할 수 있다는 장점이 있다.<br>코루틴은 높은 동시성(동시에 여러 요청을 보내서 응답을 받은 후 머지를 한다던지)을 요구하거나 Event 기반 시스템(유저의 이벤트를 받아서 UI를 제어해야한다던지)이나 Hierarchy가 있는 작업(Strucured Concurrency)을 처리하거나 취소해야하는 경우에 적합하다.</p>
+<h2 id="Virtual-Thread-간단히-훑어보기"><a href="#Virtual-Thread-간단히-훑어보기" class="headerlink" title="Virtual Thread 간단히 훑어보기"></a>Virtual Thread 간단히 훑어보기</h2><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/goal-of-virtual-thread.png" class>
+<p>우선 Virtual Thread는 기존에 존재하던 java.lang.Thread API의 최소한의 변경만을 목표로 하고, 서버 사이드에서 1 Request에 1 Thread를 사용하는 모델(Spring WebMVC 같은)에서 최적화가 잘 되는 걸 목표로 삼고 있다.  </p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/physical-thread-code.png" class>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/physical-thread-pool.png" class>
+<p>그래서 이렇게 전통적인 방식으로 코드를 짜게 되면 요청이 여러번 들어왔을 때 OS의 Thread와 매칭되는 실제 쓰레드가 생성되고, Blocking I&#x2F;O를 만나는 순간 쓰레드가 블락되고, 다른 쓰레드로 CPU의 제어권이 넘어가면서 컨텍스트 스위칭이 발생한다.  </p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-code.png" class>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-pool-01.png" class>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-pool-02.png" class>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-pool-03.png" class>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/virtual-thread-pool-04.png" class>
+<p>Virtual Thread 방식은 OS의 Thread와 매칭되는 실제 쓰레드는 조금만(컨텍스트 스위칭 비용을 줄이기 위해 기본적으로 CPU 코어 갯수 정도)만 만들고, 필요할 때마다 가상 쓰레드를 만든다.<br>그리고 가상 쓰레드 내에서도 Blocking I&#x2F;O를 만나는 순간 쓰레드가 블락되지만, 가상 쓰레드만 블락이 되고 실제 쓰레드는 블락되지 않는다.<br>그리고 다른 가상 쓰레드로 컨텍스트 스위칭을 하는데 이 때 실제 쓰레드 전환이 일어나는 게 아니기 때문에 컨텍스트 스위칭 비용이 매우 적다.  </p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/limitation-of-virtual-thread.png" class>  
+<p>하지만 가상 쓰레드에도 다음과 같은 두 가지 상황에서 Carrier Thread가 블락당할 수 있다. </p>
+<ol>
+<li>native method(JNI 같은)를 호출하는 경우에 Blocking I&#x2F;O를 만나도 다른 가상 쓰레드로 yield를 하지 않는다. 가상 쓰레드에서 yield 하는 역할은 JVM에서 할 역할인데 native method는 JVM에서 실행되는 것이 아니기 때문에 JVM이 알 수가 없다.  </li>
+<li>synchroized block을 만나는 경우에도 Blocking I&#x2F;O를 만나도 다른 가상 쓰레드로 yield를 하지 않는다. synchronized block은 실제 쓰레드인 Carrier Thread 전체를 synchronized block에 진입시키기 때문에 다른 가상 쓰레드로 yield를 시킬 수가 없다.  <blockquote>
+<p>Instead, avoid frequent and long-lived pinning by revising synchronized blocks or methods that run frequently and guard potentially long I&#x2F;O operations to use java.util.concurrent.locks.ReentrantLock instead.<br>There is no need to replace synchronized blocks and methods that are used infrequently (e.g., only performed at startup) or that guard in-memory operations.<br>…<br>In a future release we may be able to remove the first limitation above, namely pinning inside synchronized. The second limitation is required for proper interaction with native code.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/444#Executing-virtual-threads">https://openjdk.org/jeps/444#Executing-virtual-threads</a></p>
+</blockquote>
+</li>
+</ol>
+<p>이렇게 쓰레드가 핀(가상 쓰레드가 고정돼서 다른 가상 쓰레드로 전환되지 않는 현상) 되지 않으려면 synchronized 대신 ReentrantLock의 사용을 권장하고 있고,<br>아주 가끔 호출되는(초기 설정 같은) 경우나 아주 짧은 시간동안만 점유하는 경우(메모리 내의 변수만 조작한다던지)에는 굳이 synchronized를 바꿀 필요가 없다고 한다.<br>만약 본인이 사용하는 라이브러리&#x2F;프레임워크에서도 synchronized를 어디서 어떻게 사용하는지 보고 문제가 없는지 확인도 해야한다.<br>PostgreSQL JDBC Driver 같은 경우에도 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/pgjdbc/pgjdbc/issues/1951">synchronized를 ReentrantLock으로 바꾸는 작업</a>을 하고 있다.<br>그리고 이런 제약들이 추후 수정된다는데 언제 수정될 지도 모르고, LTS가 아닌 이상 회사에서 해당 버전을 쓰다가 안정성에 문제가 생겨도 서포트 기간이 끝나면 업데이트가 올라오지 않을 수도 있다보니 우선은 조심해서 써야한다.  </p>
+<h2 id="코루틴-간단히-훑어보기"><a href="#코루틴-간단히-훑어보기" class="headerlink" title="코루틴 간단히 훑어보기"></a>코루틴 간단히 훑어보기</h2><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/goal-of-coroutine.png" class>
+<p>코루틴은 기존에 존재하는 다양한 비동기 API들(Java NIO, 다양한 Future 구현체 등등)을 래핑해서 사용하기 쉽게 만들고, 다른 라이브러리들에 의존성을 가지지 않으며, async&#x2F;await를 사용하는 케이스나 generator 블럭(아마 둘 다 ECMAScript에 있는 내용을 얘기하는 것 같음)를 커버하는 것을 목표로 하고 있다. </p>
+<h2 id="Virtual-Thread-vs-코루틴"><a href="#Virtual-Thread-vs-코루틴" class="headerlink" title="Virtual Thread vs 코루틴"></a>Virtual Thread vs 코루틴</h2><h3 id="Use-case"><a href="#Use-case" class="headerlink" title="Use case"></a>Use case</h3><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/best-case-of-coroutine-vs-virtual-thread-01.png" class>  
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/best-case-of-coroutine-vs-virtual-thread-02.png" class>  
+<p>그러다보니 가상 쓰레드는 Thread에, Coroutine은 비동기에 더욱 집중하고 있으며 가상 쓰레드는 서버 사이드에서 외부 네트워크를 콜 하는 경우 등등에 적합한 반면, 코루틴은 다양한 동시성 이슈(UI에 다양한 애니메이션 이벤트가 돌아가야하는 경우, 서버 사이드에서 다른 서비스에 동시에 요청을 보내서 응답을 머지해야하는 경우 등등)를 다뤄야하는 복잡한 케이스에 적합하다고 한다.</p>
+<h3 id="프로그래밍-스타일"><a href="#프로그래밍-스타일" class="headerlink" title="프로그래밍 스타일"></a>프로그래밍 스타일</h3><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/programming-style-of-virtual-thread.png" class>  
+<p>virtual thread 같은 경우에는 중간에 Blocking I&#x2F;O를 만나더라도 다른 가상 쓰레드로 스위칭 될 거기 때문에 그냥 동기 방식으로 코드 짜듯이 순차적으로 짜면 된다.  </p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/programming-style-of-coroutine-01.png" class>
+<p>반면 코루틴은 이벤트를 핸들링하는 방식으로 코드를 많이 짜기 때문에 상태를 업데이트 하는 부분에 Blocking I&#x2F;O를 넣어선 안 된다.<br>그러면 다음 이벤트를 핸들링 할 수 없기 때문에 UI가 멈추는 현상이 발생하거나 서버 사이드에서 다른 서비스에 요청을 보내서 응답을 머지하는 경우에도 블락이 발생한다면 다른 요청을 보내지 못하게 되거나 할 수도 있다.</p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/programming-style-of-coroutine-02.png" class>  
+<p>그리고 코틀린은 suspend function과 일반 function을 구분하는 게 매우 중요하다고 하는데 아마 suspend function으로 진입하는 순간 다른 코루틴 스코프에게 제어권을 양보하기 때문에 로컬에서 아주 짧은 시간 동안 처리하고 끝낼 수 있음에도 불구하고, 다시 제어권을 획득할 때까지 기다려야하기 때문에 처리 속도가 느려질 수 있는 이유 때문이 아닐까 싶다.</p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/structured-concurrency-of-coroutine.png" class>  
+<p>그리고 코루틴은 자식&#x2F;부모 코루틴 스코프와 같이 구조화된 코루틴을 사용할 수도 있고, 특정 코루틴 스코프의 실행을 취소 시켜버리거나 에러를 핸들링하기 쉽다는 점도 존재한다.</p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/structured-concurrency-of-virtual-thread-vs-coroutine.png" class>  
+<p>물론 가상 쓰레드도 incubating 단계이긴 하지만 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/428">JEP 428: Structured Concurrency</a>에서 위에서 언급한 코루틴의 에러 핸들링이나 취소 기능을 지원하려고 하고 있다.</p>
+<h3 id="내부-구현"><a href="#내부-구현" class="headerlink" title="내부 구현"></a>내부 구현</h3><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/implementation-of-virtual-thread-01.png" class>  
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/implementation-of-virtual-thread-02.png" class>  
+<p>가상 쓰레드는 Blocking I&#x2F;O가 발생하여 yield 메서드가 실행되는 순간 가상 쓰레드가 들고있던 정보들(로컬 변수, 쓰레드 로컬 변수, 콜스택 정보 등등)을 힙메모리에 올리는 과정이 진행된다.<br>그리고 나서 다른 가상 쓰레드가 Carrier Thread를 점유하게 되는데 실제 쓰레드는 스위칭 된 게 아니기 때문에 우리가 알고 있는 컨텍스트 스위칭에 비해서는 쓰레드 스위칭 비용이 훨씬 싸다.  </p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/implementation-of-virtual-thread-vs-coroutine.png" class>  
+<p>그렇기 때문에 가상 쓰레드에서는 yield 하는 비용이 가장 크다.<br>그런 반면 코루틴에서는 yield 할 때 비용이 발생하는 게 아니라 다음 suspend function을 만났을 때 현재 메서드의 상태를 힙에 저장하기 때문에 이 때 비용이 가장 크다.<br>그러한 이유 때문에 suspend function과 일반 function을 잘 구분해서 작성해야한다.</p>
+<h3 id="성능"><a href="#성능" class="headerlink" title="성능"></a>성능</h3><h4 id="메모리"><a href="#메모리" class="headerlink" title="메모리"></a>메모리</h4><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/memory-of-virtual-thread-vs-coroutine.png" class>
+<p>메모리는 코루틴이 더 적게 먹긴 하는데 가상 쓰레드가 100만개라고 가정했을 때 2.6GB 정도 차지하는데 요즘 어지간해서 JVM에 힙메모리는 4GB 이상은 주지 않나(케바케긴 하겠지만) 싶고, 사실 단일 서버가 100만개의 요청을 동시에 받을 일도 없고 하다보니 메모리는 크게 신경쓰지 않아도 될 것 같다.  </p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/why-virtual-threads-are-heavier.png" class>  
+<p>그리고 가상 쓰레드가 느린 이유를 아래 3가지로 설명하고 있다.</p>
+<ol>
+<li>아직 가상 쓰레드가 정식 버전으로 출시된 게 아니기 때문에 아직 더 최적화의 여지가 존재함.</li>
+<li>가상 쓰레드는 가상이라 할지라도 쓰레드라는 컨셉을 유지하고 있기 때문에 정말 가벼운 동시성 관련된 컨셉들만 가지고 있는 코루틴에 비해서는 무겁다.  </li>
+<li>코루틴은 suspend&#x2F;non suspend function을 구분하고, suspend function을 위해서 컴파일러가 최적화 작업을 하는데 비해 가상 쓰레드는 그런 구분이나 최적화가 없기 때문에 더 무겁다.<br>코루틴은 어디서 suspend 되는지 안 되는지를 알아서 suspend 되는 쪽에 최적화를 할 수 있는 반면, 가상 쓰레드는 어떤 메서드가 yield 될지 안 될지 몰라서 최적화가 불가능하기 때문이 아닐까 싶다.</li>
+</ol>
+<h4 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h4><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/cpu-of-virtual-thread-vs-coroutine.png" class>  
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/limited-to-virtual-thread-api.png" class>  
+<p>코루틴과 가상 쓰레드의 CPU 리소스 사용률을 비교하려고 하는데 가상 쓰레드에 마땅히 비교할 때 사용할만한 API가 없다고 한다.<br>아마 가상 쓰레드는 쓰레드에 포커스를 맞췄기 때문에 저렇게 명시적으로 특정 가상 쓰레드를 yield만 하는 API는 딱히 없는 것 같다.<br>그럴 필요도 없이 쭉 실행하면 돼서 그런 게 아닐까 싶다.  </p>
+<p>이쯤에서 궁금해지는 게 코루틴은 저렇게 명시적으로 다른 코루틴 스코프에게 제어권을 양보하는 yield 메서드가 있고, 일반적인 멀티쓰레드 모델에서는 OS의 쓰레드가 사용되니까 OS에 의해 쓰레드가 스케쥴링이 될텐데 그럼 가상 쓰레드는 어떻게 스케쥴링이 될까? 궁금하기도 했다.<br>Blocking I&#x2F;O를 만나면 yield 메서드가 실행되어 다른 쓰레드에게 제어권을 양보할텐데 만약 CPU 집약적인 작업을 많이 해서 오랫동안 yield 메서드가 실행되지 않고 있는 가상 쓰레드가 있다면 어떻게 될까??</p>
+<blockquote>
+<p>The scheduler does not currently implement time sharing for virtual threads. Time sharing is the forceful preemption of a thread that has consumed an allotted quantity of CPU time.<br>While time sharing can be effective at reducing the latency of some tasks when there are a relatively small number of platform threads and CPU utilization is at 100%,<br>it is not clear that time sharing would be as effective with a million virtual threads.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/444#Scheduling-virtual-threads">https://openjdk.org/jeps/444#Scheduling-virtual-threads</a></p>
+</blockquote>
+<p>아직 Time Sharing 방식으로 가상 쓰레드를 스케쥴링을 하지 않고 있다고 한다.<br>따라서 CPU 집약적인 작업을 오래하는 가상 쓰레드가 있다면 그 가상 쓰레드는 계속 CPU를 점유하게 될 것이다.  </p>
+<blockquote>
+<p>How that capability will be exposed to the schedulers is TBD, and will likely not make it to the first Preview.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://cr.openjdk.org/~rpressler/loom/loom/sol1_part2.html#forced-preemption">https://cr.openjdk.org/~rpressler/loom/loom/sol1_part2.html#forced-preemption</a></p>
+</blockquote>
+<p>하지만 추후 개선될 예정이라고 하니 그 전까지는 조심조심 하면서 사용해야하고, 혹시 CPU 집약적인 작업이 많은 어플리케이션이라면 가상 쓰레드를 꼭 써야하는지 고민 후 적용해봐야할 것 같다. (아니면 부분적으로만 적용한다던지) </p>
+<h4 id="I-x2F-O"><a href="#I-x2F-O" class="headerlink" title="I&#x2F;O"></a>I&#x2F;O</h4><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/io-of-virtual-thread-vs-coroutine.png" class>
+<p>가상 쓰레드는 built-in으로 Async I&#x2F;O(NIO 같은)을 지원하는데 반해 코루틴은 특정 I&#x2F;O 라이브러리(프레임워크)에 종속적이지 않고, 여러 I&#x2F;O 기술을 범용적으로 다룰 수 있다.<br>그러다보니 가상 쓰레드는 Blocking I&#x2F;O를 쓰는 코드에서 적합하고, 코루틴은 I&#x2F;O를 많이 쓰면서 높은 처리량을 내야하는 비동기 코드에 적합하다고 한다.<br>그리고 코루틴이 특정 I&#x2F;O 기술에 종속적인 게 아니다보니 어떤 Async I&#x2F;O 프레임워크를 쓰는지에 따라서 성능도 달라질 수 있다고 한다.</p>
+<h4 id="Tools"><a href="#Tools" class="headerlink" title="Tools"></a>Tools</h4><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/last-goal-of-virtual-thread.png" class>  
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/tools-of-virtual-thread-vs-coroutine-01.png" class>
+<p>가상 쓰레드의 마지막 목표는 기존에 있던 도구들(힙메모리 분석 도구, IDE의 디버깅 툴 등등)을 그대로 이용하는 것이다.<br>따라서 IntelliJ IDEA에서도 가상 쓰레드를 디버깅 할 수 있는데 아직은 가상 쓰레드가 Preview 버전이라 좀 더 작업할 것들이 남아있다고 한다.  </p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/tools-of-virtual-thread-vs-coroutine-02.png" class>
+<p>그리고 코루틴은 기존에 없던 것이다 보니 도구가 새롭게 나왔는데, JetBrains에서 코틀린도 만들고, IntelliJ IDEA도 만들었으니 IntelliJ를 사용하면 코루틴도 디버깅이 가능하다.  </p>
+<h2 id="가상-쓰레드와-코루틴-함께-사용하기"><a href="#가상-쓰레드와-코루틴-함께-사용하기" class="headerlink" title="가상 쓰레드와 코루틴 함께 사용하기"></a>가상 쓰레드와 코루틴 함께 사용하기</h2><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-01.png" class>  
+<p>그럼 가상 쓰레드와 코루틴은 언제 함께 사용하는 게 좋을까??<br>코루틴의 단점은 보완하면서 가상 쓰레드의 장점을 사용할 수 있을 때 함께 사용하면 좋다고 한다. (그 반대 케이스인 가상 쓰레드의 단점을 코루틴이 보완하는 케이스도 궁금했는데 영상에는 나오지 않는다.)  </p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-02.png" class>  
+<p>코루틴 안에서 복잡한 레거시 로직을 호출해야하는데 이 안에 Blocking I&#x2F;O가 있다고 하면 suspend function이 적절한 타이밍에 yield를 하지 않기 때문에 Dispatchers.IO를 사용해서 코루틴을 별도 쓰레드에서 실행시키면 된다.<br><a target="_blank" rel="external nofollow noopener noreferrer" href="https://sandn.tistory.com/110">Coroutine의 IO Dispatcher와 Default Dispatcher 의 사용 시 차이</a>에 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-dispatchers/-i-o.html">Dispatchers.IO</a>에 대해 간단히 설명하고 있다.<br>하지만 Dispatchers.IO 같은 경우에는 실제 쓰레드를 생성하기 때문에 메모리를 더 많이 쓴다는 단점이 존재한다.  </p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-03.png" class>  
+<p>이럴 때 Blocking 로직을 가상 쓰레드에서 실행시키면 메모리를 절약할 수 있다는 장점이 존재한다.</p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-04.png" class>  
+<p>그럼에도 불구하고 무조건 가상 쓰레드가 좋은 건 아니고 트레이드 오프가 존재한다.<br>Dispatchers.IO 같은 경우에는 Blocking 전&#x2F;후에 실행되는 쓰레드가 같기 때문에 불필요하게 컨텍스트 스위칭이 일어나지 않는다는 장점이 존재하고, 반면 메모리를 더 사용한다는 단점이 있다.<br>가상 쓰레드의 경우에는 메모리를 덜 사용한다는 장점이 있지만, 쓰레드가 다르기 때문에 물리적인 쓰레드의 스위칭까지는 아니지만 가상 쓰레드끼리는 스위칭이 발생한다는 단점이 존재한다.<br>물론 둘의 단점이 각각 미비할 수 있기 때문에 상황에 따라서 적절히 사용하면 된다.</p>
+<img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-05.png" class>  
+<p>물론 나중에 가상 쓰레드가 정식으로 나오면 Dispatchers.IO가 가상 쓰레드를 사용하도록 바뀌고, 가상 쓰레드끼리도 스위칭이 발생하지 않을 수 있게 서로의 장점만 취하는 방향으로 개발한다고 한다.<br>근데 가상 쓰레드 사용하는데 Blocking I&#x2F;O를 만나서 yield가 되면서 힙메모리에 기존 가상 쓰레드의 컨텍스트 정보들을 올려뒀다가 다시 실행될 때는 그 정보들을 다시 가져오느라 비용이 발생할텐데 어떻게 이런 비용을 줄일 수 있을지 궁금하다.</p>
+<h2 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h2><p>가상 쓰레드와 코루틴은 서로 컨셉부터 다르고 장단점도 명확한 것 같다.<br>다만 나는 아직까지는 높은 동시성 처리&#x2F;처리량을 요구하는 시스템이라기 보다는 돈이 오고가는 도메인을 다루다보니 안정성을 더 중점적으로 다루다보니 코루틴의 장점이 크게 와닿지 않았다.<br>그리고 코루틴은 어쨋든 코루틴 스코프 안에서 실행이 돼야하고, 이게 일반 function에서 실행시킬 것인지, suspend function에서 실행시킬 것인지, suspend function 안에 Blocking I&#x2F;O가 있는 건 아닌지 등등 고민을 많이 해서 코드를 짜야한다는 단점이 존재하는 것 같다.<br>가상 쓰레드로도 몸빵이 안 쳐지는 높은 처리량을 요구하는 서버라면 차라리 서버를 더 늘리는 게 값 싼 것 같다.<br>아직까지는 사람이 제일 비싼 자원인 것 같고, 사람이 이해하기 쉽고 관리하기 편한 코드를 짜는 게 더 중요한 것 같다.<br>다만 가상 쓰레드도 위에 얘기한 것처럼 synchronized 블럭에 진입하면 해당 가상 쓰레드가 핀 된다던지, Structured Concurreny가 Preview 단계라던지 하는 등의 문제 때문에 필요에 따라서는 코루틴과 함께 사용할 수도 있을 것 같다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Virtual-Threads/" rel="tag"># Virtual Threads</a>
+              <a href="/tags/Loom/" rel="tag"># Loom</a>
+              <a href="/tags/Kotlin/" rel="tag"># Kotlin</a>
+              <a href="/tags/Coroutine/" rel="tag"># Coroutine</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/12/29/look-over-java-virtual-threads/" rel="prev" title="Java Virtual Threads 훑어보기">
+                  <i class="fa fa-chevron-left"></i> Java Virtual Threads 훑어보기
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  <div class="comments" id="disqus_thread">
+    <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+  </div>
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2016 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">양권성</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="external nofollow noopener noreferrer" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="external nofollow noopener noreferrer" target="_blank">NexT.Pisces</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/hexo-generator-searchdb@1.4.1/dist/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="disqus" type="application/json">{"enable":true,"shortname":"exobud","count":true,"i18n":{"disqus":"disqus"}}</script>
+<script src="/js/third-party/comments/disqus.js"></script>
+
+</body>
+</html>

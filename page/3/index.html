@@ -93,7 +93,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">257</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">218</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">258</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">219</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">218</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -166,7 +166,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">257</span>
+        <span class="site-state-item-count">258</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -194,6 +194,119 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2021/05/24/entity-manager-lifecycle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/05/24/entity-manager-lifecycle/" class="post-title-link" itemprop="url">(JPA) 엔티티 매니저는 리퀘스트 당 하나만 생성되지 않을 수 있다.</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2021-05-24 04:44:56" itemprop="dateCreated datePublished" datetime="2021-05-24T04:44:56+00:00">2021-05-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/" itemprop="url" rel="index"><span itemprop="name">Back-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/" itemprop="url" rel="index"><span itemprop="name">DB</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Back-end/DB/JPA/" itemprop="url" rel="index"><span itemprop="name">JPA</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2021/05/24/entity-manager-lifecycle/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/05/24/entity-manager-lifecycle/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="3줄-요약"><a href="#3줄-요약" class="headerlink" title="3줄 요약"></a>3줄 요약</h2><ol>
+<li>OSIV가 꺼져있으면 트랜잭션이 시작될 때 엔티티 매니저가 생성되고, 트랜잭션이 끝날 때 엔티티 매니저를 종료한다.</li>
+<li>OSIV가 꺼져있고, 다른 트랜잭션이라면 엔티티 매니저가 공유되지 않기 때문에 엔티티 매니저의 1차 캐시도 서로 공유되지 않는다.</li>
+<li>OSIV가 켜져있으면 요청 당 엔티티 매니저는 한 번 생성되고, 뷰 렌더링이 끝날 때까지 엔티티 매니저는 종료되지 않고 트랜잭션이 다르더라도 1차 캐시가 공유된다.</li>
+</ol>
+<h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>엔티티 매니저 팩토리는 생성 비용이 비싸서 대부분 어플리케이션 당 하나를 생성하는 편이고, 엔티티 매니저는 생성 비용이 비싸지 않아서 어플리케이션에서 여러 번 생성된다.<br>하지만 엔티티 매니저는 쓰레드 세이프 하지 않기 때문에, 쓰레드 당 하나를 생성해야할 것 같고 Spring MVC는 리퀘스트 당 하나의 쓰레드가 할당되기 때문에 리퀘스트 당 하나의 엔티티 매니저가 생성될 것만 같은 기분이 든다.<br>나 또한 그렇게 알고 있었는데 아래 코드를 통해 뭔가 의문이 생겼다.</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">SomeRepository</span> : <span class="type">JpaRepository</span>&lt;<span class="type">SomeEntity, Long</span>&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SomeService</span>(</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> repository: SomeRepository</span><br><span class="line">) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">some</span><span class="params">()</span></span> &#123;</span><br><span class="line">        <span class="keyword">val</span> someEntity = repository.findById(<span class="number">1L</span>)</span><br><span class="line">        <span class="keyword">val</span> someEntity2 = repository.findById(<span class="number">1L</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/05/24/entity-manager-lifecycle/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1132,113 +1245,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/12/25/dependency-injection-in-junit/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2020/12/25/spring-properties-file/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/12/25/spring-properties-file/" class="post-title-link" itemprop="url">spring.properties 파일을 읽어들이는 원리</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2020-12-25 00:51:17" itemprop="dateCreated datePublished" datetime="2020-12-25T00:51:17+00:00">2020-12-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2020/12/25/spring-properties-file/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/12/25/spring-properties-file/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="SpringProperties-클래스"><a href="#SpringProperties-클래스" class="headerlink" title="SpringProperties 클래스"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="https://github.com/spring-projects/spring-framework/blob/master/spring-core/src/main/java/org/springframework/core/SpringProperties.java#L46">SpringProperties 클래스</a></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">SpringProperties</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">PROPERTIES_RESOURCE_LOCATION</span> <span class="operator">=</span> <span class="string">&quot;spring.properties&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Properties</span> <span class="variable">localProperties</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">ClassLoader</span> <span class="variable">cl</span> <span class="operator">=</span> SpringProperties.class.getClassLoader();</span><br><span class="line">            <span class="type">URL</span> <span class="variable">url</span> <span class="operator">=</span> (cl != <span class="literal">null</span> ? cl.getResource(PROPERTIES_RESOURCE_LOCATION) :</span><br><span class="line">                    ClassLoader.getSystemResource(PROPERTIES_RESOURCE_LOCATION));</span><br><span class="line">            <span class="keyword">if</span> (url != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> (<span class="type">InputStream</span> <span class="variable">is</span> <span class="operator">=</span> url.openStream()) &#123;</span><br><span class="line">                    localProperties.load(is);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">            System.err.println(<span class="string">&quot;Could not load &#x27;spring.properties&#x27; file from local classpath: &quot;</span> + ex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">getProperty</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">value</span> <span class="operator">=</span> localProperties.getProperty(key);</span><br><span class="line">        <span class="keyword">if</span> (value == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                value = System.getProperty(key);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">                System.err.println(<span class="string">&quot;Could not retrieve system property &#x27;&quot;</span> + key + <span class="string">&quot;&#x27;: &quot;</span> + ex);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>PROPERTIES_RESOURCE_LOCATION(<code>spring.properties</code>) 파일을 읽어서 InputStream에 넣고</li>
-<li>localProperties.load(is)를 통해 Properties에 위에서 읽어들인 InputStream을 load 하고</li>
-<li>나중에 필요할 때 키 값을 통해 프로퍼티를 불러오고 있다.</li>
-</ol>
-<p>localProperties는 Properties라는 자바 표준 API를 사용하고 있기 때문에 저 spring.properties에는 어떻게 키와 프로퍼티를 구성하는지 알아보자.</p>
-<h3 id="Properties"><a href="#Properties" class="headerlink" title="Properties"></a><a target="_blank" rel="external nofollow noopener noreferrer" href="https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html">Properties</a></h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/25/spring-properties-file/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

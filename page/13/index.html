@@ -93,7 +93,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">257</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">218</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">258</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">219</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">218</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -166,7 +166,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">257</span>
+        <span class="site-state-item-count">258</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -194,6 +194,112 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/08/05/stack-making/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/08/05/stack-making/" class="post-title-link" itemprop="url">(자료구조) List - Stack(Pushdown List)을 만들어보자!</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-08-05 18:44:56" itemprop="dateCreated datePublished" datetime="2017-08-05T18:44:56+00:00">2017-08-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/" itemprop="url" rel="index"><span itemprop="name">Middle-end</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Middle-end/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0/" itemprop="url" rel="index"><span itemprop="name">자료구조</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/08/05/stack-making/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/05/stack-making/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2017/08/05/stack-making/thumb.png" class>
+<p>List는 데이터를 순차적으로 저장하므로 선형 구조(한 줄로 계속 되며, 데이터가 끊어지지 않음)이다.  </p>
+<h2 id="스택이란…"><a href="#스택이란…" class="headerlink" title="스택이란…?"></a>스택이란…?</h2><p>스택은 후입선출(LIFO, Last In First Out)의 구조를 가지는 자료구조이다.<br>기본적으로 배열이 스택의 구조로 이루어져있고, CPU가 연산을 할 때 연산자에 우선순위 메겨놓고 연산할 때도 스택을 이용하는 것으로 알고 있다.<br>그리고 프로그래밍을 배우다 보면 콜스택이라고 해서 함수의 실행 컨텍스트(EC, Execution Context)가 계속해서 쌓이는데 그 콜스택도 스택이라는 자료구조를 이용하고 있다.<br>몇 번째에다가 데이터를 넣어야하고, 몇 번째에서 데이터를 빼야할지에 대한 인덱스(포인터)를 가지고 있어야한다.<br>데이터 처리를 먼저하고 인덱스를 바꾸는 경우와 인덱스를 바꾸고 데이터를 처리하는 방식이 있다.<br>기본적으로 push()라는 메소드로 데이터를 넣고 pop()라는 메소드로 데이터를 뺀다.  </p>
+<h2 id="만들어보자"><a href="#만들어보자" class="headerlink" title="만들어보자!"></a>만들어보자!</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/08/05/stack-making/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1156,114 +1262,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/08/02/vector-array-list-linked-list/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/08/02/Java-study-012day/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/08/02/Java-study-012day/" class="post-title-link" itemprop="url">(Java) 자바의 정석 3판 012일차 - 다형성(클래스, 매개변수, 인터페이스), 참조타입의 형변환, 추상 클래스, 인터페이스, 단일 상속과 다중 상속</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2017-08-02 11:35:34" itemprop="dateCreated datePublished" datetime="2017-08-02T11:35:34+00:00">2017-08-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Note/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2017/08/02/Java-study-012day/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/02/Java-study-012day/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2017/08/02/Java-study-012day/thumb.png" class>
-
-<h2 id="다형성-Polymorphism"><a href="#다형성-Polymorphism" class="headerlink" title="다형성(Polymorphism)"></a>다형성(Polymorphism)</h2><p>객체지향 개념에서 다형성이란 <strong>여러 가지 형태를 가질수 있는 능력</strong>을 의미함.<br>자바에서는 한 타입의 참조 변수로 여러 타입의 객체를 참조할 수 있도록 함으로써 다형성을 프로그램적으로 구현함.  </p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TV2</span> &#123;</span><br><span class="line">    <span class="type">boolean</span> power;</span><br><span class="line">    <span class="type">int</span> channel;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">power</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">channelUp</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">channelDown</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CaptionTV</span> <span class="keyword">extends</span> <span class="title class_">TV2</span> &#123;</span><br><span class="line">    String text;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">caption</span><span class="params">()</span>&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Test4</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">TV2</span> <span class="variable">t</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TV2</span>();</span><br><span class="line">        <span class="type">CaptionTV</span> <span class="variable">c</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CaptionTV</span>();</span><br><span class="line">        <span class="type">TV2</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CaptionTV</span>();</span><br><span class="line">        </span><br><span class="line">        System.out.println(c.text);</span><br><span class="line">        <span class="comment">// System.out.println(t2.text); TV2에 생성된 것만 참조 가능.</span></span><br><span class="line">        <span class="comment">// CaptionTV c2 = new TV2(); CaptionTV보다 TV2가 가진 멤버가 더 적어서 생성 불가능.</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>다음과 같은 특성을 지닌다.<br><code>참조변수 a = new 인스턴스타입()</code> 을 기준으로 설명한다.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/08/02/Java-study-012day/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>

@@ -93,7 +93,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">257</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">218</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>홈</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>정보</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>태그<span class="badge">258</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>카테고리<span class="badge">50</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>아카이브<span class="badge">219</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>검색
         </a>
@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">218</span>
+          <span class="site-state-item-count">219</span>
           <span class="site-state-item-name">포스트</span>
         </a>
       </div>
@@ -166,7 +166,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">257</span>
+        <span class="site-state-item-count">258</span>
         <span class="site-state-item-name">태그</span></a>
       </div>
   </nav>
@@ -194,6 +194,117 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
+    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/04/04/js-promise-param/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar/avatar.png">
+      <meta itemprop="name" content="양권성">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="오늘도 끄적끄적">
+      <meta itemprop="description" content="Toss Server Developer">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
+      <meta itemprop="description" content>
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/04/04/js-promise-param/" class="post-title-link" itemprop="url">(ES6) Promise에 파라미터를 넘겨서 사용해보자</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">작성일</span>
+
+      <time title="Post created: 2017-04-04 21:09:43" itemprop="dateCreated datePublished" datetime="2017-04-04T21:09:43+00:00">2017-04-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
+        </span>
+          , 
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2017/04/04/js-promise-param/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/04/04/js-promise-param/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <img src="/2017/04/04/js-promise-param/thumb.png" class>
+
+<h2 id="들어가기에-앞서"><a href="#들어가기에-앞서" class="headerlink" title="들어가기에 앞서"></a>들어가기에 앞서</h2><p>어제 프라미스를 쓰면서 정리 해봤는데,<br>또 파라미터를 넘겨서쓰거나 하려니 제대로 쓸 수가 없어서 정리해봤다.<br>일단 reject 되는 경우는 생각하지 않고, <code>그냥 내가 짠 비동기 함수를 동기식으로 실행시키길 원했을 뿐</code>이었다.<br>지극히 사용 방법 위주로 적었으니 아래 링크들을 참조해서 이해하자.<br>일단 구현이 먼저인 사람은 코드를 적극 참조하면 될 것 같다.  </p>
+<ul>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise - JavaScript | MDN - Mozilla Developer Network</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://programmingsummaries.tistory.com/325">바보들을 위한 Promise 강의 - 도대체 Promise는 어떻게 쓰는거야? | 감성 프로그래밍</a>  </li>
+<li><a target="_blank" rel="external nofollow noopener noreferrer" href="http://han41858.tistory.com/11">Promise 를 사용하는 두 가지 방법, new Promise, Promise.resolve()</a></li>
+</ul>
+<h2 id="파라미터-없는-일반-비동기-함수"><a href="#파라미터-없는-일반-비동기-함수" class="headerlink" title="파라미터 없는 일반 비동기 함수"></a>파라미터 없는 일반 비동기 함수</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/04/04/js-promise-param/#more" rel="contents">
+                더 읽어보기 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1132,129 +1243,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/02/13/Java-study-010day/#more" rel="contents">
-                더 읽어보기 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang>
-    <link itemprop="mainEntityOfPage" href="https://perfectacle.github.io/2017/02/13/es-logical-operator/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar/avatar.png">
-      <meta itemprop="name" content="양권성">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="오늘도 끄적끄적">
-      <meta itemprop="description" content="Toss Server Developer">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | 오늘도 끄적끄적">
-      <meta itemprop="description" content>
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2017/02/13/es-logical-operator/" class="post-title-link" itemprop="url">(ES) 똑똑한 논리 연산자</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">작성일</span>
-
-      <time title="Post created: 2017-02-13 09:01:37" itemprop="dateCreated datePublished" datetime="2017-02-13T09:01:37+00:00">2017-02-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/" itemprop="url" rel="index"><span itemprop="name">Programming</span></a>
-        </span>
-          , 
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Programming/ECMAScript/" itemprop="url" rel="index"><span itemprop="name">ECMAScript</span></a>
-        </span>
-    </span>
-
-  
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus: </span>
-    
-    <a title="disqus" href="/2017/02/13/es-logical-operator/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/13/es-logical-operator/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <img src="/2017/02/13/es-logical-operator/thumb.png" class>  
-<p>오늘은 기본값을 위해 많이 쓰던 논리 연산자인<br>||와 &amp;&amp;을 집중 탐구해보았다.<br>우선 위에 있는 녀석들은 어떨 때 쓰는지 알아보자.  </p>
-<h2 id="사용-사례"><a href="#사용-사례" class="headerlink" title="사용 사례"></a>사용 사례</h2><ul>
-<li><p>네임 스페이스 패턴(~ES5)<br>웹팩을 사용하면 js 파일을 모듈 단위로 사용할 수 있지만,<br>그럴 환경이 안 되면 아래와 같은 우회 방법을 통해서 전역 스코프를 최대한 덜 더럽힐 수 있다.<br>ES6에는 모듈 import, export 기능이 있어서 ~ES5라고 써놓긴 했지만…<br>아직 지원하는 브라우저가 없는 걸로 안다. (17년 2월 기준)  </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 전역 스코프에는 namespace와 namespace2 모듈만이 존재한다.</span></span><br><span class="line"><span class="comment">// func라는 충돌나기 쉬운 네이밍이 전역에 존재하지 않으므로 충돌이 일어나지 않는다.</span></span><br><span class="line"><span class="comment">// 즉 네이밍을 고민할 염려가 조금은 줄어들게 된다. 뭐 그 외에 장점도 많지만...</span></span><br><span class="line"><span class="comment">// script src 태그를 통해 미리 namespace 모듈을 불러온 경우에는 전역에는 변수 namespace가 존재한다.</span></span><br><span class="line"><span class="comment">// || 연산자를 써서 전역에 namespace라는 변수(모듈)가 존재하면 그 모듈을 변수에 할당하고,</span></span><br><span class="line"><span class="comment">// 존재하지 않는다면 빈 객체를 변수에 할당하는 패턴이다.</span></span><br><span class="line"><span class="keyword">const</span> namespace = namespace || &#123;&#125;;</span><br><span class="line">namespace.<span class="property">func</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> namespace2 = namespace2 || &#123;&#125;;</span><br><span class="line">namespace2.<span class="property">func</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>함수의 매개변수 기본값 설정(~ES5)<br>ES6를 통해서는 아래와 같은 게 가능하지만,  </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">func</span> = (<span class="params">param1 = <span class="number">0</span>, param2 = <span class="string">&#x27;&#x27;</span></span>) =&gt; &#123;&#125;;</span><br></pre></td></tr></table></figure>
-<p>바벨을 사용할 수 없고, IE 하위 브라우저까지 크로스 브라우징을 하는 환경에서는<br>아래와 같이 처리해줘야한다.  </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> func = <span class="keyword">function</span>(<span class="params">param1, param2</span>) &#123;</span><br><span class="line">  <span class="comment">// || 뒤에 오는 애가 기본 값이다.</span></span><br><span class="line">  param1 = param1 || <span class="number">0</span>;</span><br><span class="line">  param2 = param2 || <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>함수의 인자로 기본값 설정<br>위에서는 함수를 선언할 때 매개변수의 기본값을 설정한 경우지만<br>이 경우는 함수를 호출할 때 인자의 기본값을 설정한 경우이다.<br>둘의 차이는 뭐 없다고 봐도 무방하지 않을까…싶다.  </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;<span class="attr">name</span>: <span class="string">&#x27;&#x27;</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">func</span> = age =&gt; <span class="variable language_">console</span>.<span class="title function_">log</span>(age);</span><br><span class="line"><span class="comment">// obj 객체에 age라는 키가 없으므로 undefined를 반환한다.</span></span><br><span class="line"><span class="comment">// undefined는 형변환 했을 때 false로 간주되므로 기본값인 1이 넘어간다.</span></span><br><span class="line"><span class="title function_">func</span>(obj.<span class="property">age</span> || <span class="number">1</span>); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>함수의 기본 반환값 설정<br>함수의 반환값이 매개 변수에 따라서 오류를 뿜는 경우가 존재한다.<br>그런 오류를 방지하고자 기본값을 설정하곤 하는데 어떤 경우인지 보자.  </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">cntOccurrences</span> = (<span class="params">regExp, str</span>) =&gt; (</span><br><span class="line">    <span class="comment">// 정규표현식과 매치되는 결과가 없어서 null을 반환할 경우</span></span><br><span class="line">    <span class="comment">// null.length는 오류를 반환하므로 기본값으로 빈 배열을 넣어줘서 오류를 방지함.</span></span><br><span class="line">    (str.<span class="title function_">match</span>(regExp) || []).<span class="property">length</span></span><br><span class="line">);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">cntOccurrences</span>(<span class="regexp">/\d/g</span>, <span class="string">&#x27;asdf&#x27;</span>)); <span class="comment">// 0, 기본값이 없었다면 오류가 난다.</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>거짓 기본값 설정하기<br>말이 이상한데…<br>만약 해당 변수가 거짓이라면 더 이상의 판별을 하지 않고자 할 때 쓰면 된다.  </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="string">&#x27;q&#x27;</span>, <span class="number">4</span>];</span><br><span class="line"><span class="comment">// 배열이 숫자로만 이루어진 건지 아닌지 판별하는 함수</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isNumArr</span> = arr =&gt; &#123;</span><br><span class="line">  <span class="keyword">let</span> isNum = <span class="literal">true</span>; <span class="comment">// 모든 값이 숫자인지 아닌지 판별하는 flag 변수</span></span><br><span class="line">  arr.<span class="title function_">forEach</span>(<span class="function"><span class="params">v</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 만약에 한 번이라도 숫자가 아닌 값이 있었다면</span></span><br><span class="line">    <span class="comment">// 그 아래에 있는 구문들을 실행할 필요가 없으므로</span></span><br><span class="line">    <span class="comment">// return으로 함수를 조기 종료.</span></span><br><span class="line">    <span class="keyword">if</span>(!isNum) <span class="keyword">return</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 현재 값이 숫자인지 판단하여 변수에 저장.</span></span><br><span class="line">    isNum = <span class="built_in">isNaN</span>(v);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> isNum;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">isNumArr</span>(arr)); <span class="comment">// false</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>위와 같은 코드가 있을 때 &amp;&amp; 논리 연산자를 쓰면 코드를 줄일 수 있다.<br>퍼포먼스 측면에서는 맞는지 잘 모르겠다…  </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2017/02/13/es-logical-operator/#more" rel="contents">
                 더 읽어보기 &raquo;
               </a>
             </div>
