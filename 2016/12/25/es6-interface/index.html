@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.0.0-rc1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"perfectacle.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":true,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"manual"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":null,"activeClass":"disqus"},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="이 포스트는 GDG 2016에서 발표하신 맹기완 님의 발표를 듣고 감명을 받아 정리해본 글이다.이터레이터 인터페이스와 이터러블 인터페이스는 다음 포스트에서 정리할 예정이다.이 글을 읽고난 후에 (ES6) Symbol에 대한 글부터 읽어보길 바란다.다소 짧아서 어디 공유하기 부끄럽지만 이렇게 짧은 내용들이 집중해서 읽기에 참 좋은 것 같다. Interfa">
 <meta property="og:type" content="blog">
@@ -31,12 +31,12 @@
 <meta property="og:locale" content="ko_KR">
 <meta property="og:image" content="https://perfectacle.github.io/2016/12/25/es6-interface/thumb.png">
 <meta property="article:published_time" content="2016-12-25T22:17:14.000Z">
-<meta property="article:modified_time" content="2023-07-09T03:12:46.681Z">
+<meta property="article:modified_time" content="2023-07-09T04:16:51.379Z">
 <meta property="article:author" content="양권성">
-<meta property="article:tag" content="JS">
-<meta property="article:tag" content="ES">
 <meta property="article:tag" content="ES6">
 <meta property="article:tag" content="ES2015">
+<meta property="article:tag" content="ES">
+<meta property="article:tag" content="JS">
 <meta property="article:tag" content="Interface">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://perfectacle.github.io/2016/12/25/es6-interface/thumb.png">
@@ -362,10 +362,10 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/JS/" rel="tag"># JS</a>
-              <a href="/tags/ES/" rel="tag"># ES</a>
               <a href="/tags/ES6/" rel="tag"># ES6</a>
               <a href="/tags/ES2015/" rel="tag"># ES2015</a>
+              <a href="/tags/ES/" rel="tag"># ES</a>
+              <a href="/tags/JS/" rel="tag"># JS</a>
               <a href="/tags/Interface/" rel="tag"># Interface</a>
           </div>
 
