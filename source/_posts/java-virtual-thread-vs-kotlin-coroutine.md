@@ -12,9 +12,9 @@ date: 2023-07-10 01:04:44
 출처: https://www.youtube.com/live/QxxG66eQoTc?feature=share&t=3652  
 많은 사람들이 Virtual Thread가 코루틴과 같은 역할을 할 수 있을지 궁금해하는 것 같았고, 나 또한 코루틴을 잘 모르는 입장에서 '결국 코루틴은 사장되는 게 아닐까?'란 생각이 들었다.
 
-그러던 중 [Coroutines and Loom behind the scenes by Roman Elizarov](https://www.youtube.com/live/QxxG66eQoTc?feature=share&t=3652)라는 영상을 보게 되어서 이해한 내용을 겸사겸사 정리해보았다. (나중에 회사에서 Virtual Thread 적용 할 때 고민해야할 부분도 함께 적어두기 위해서도 있지만...)  
+그러던 중 [Coroutines and Loom behind the scenes by Roman Elizarov](https://youtu.be/zluKcazgkV4)라는 영상을 보게 되어서 이해한 내용을 겸사겸사 정리해보았다. (나중에 회사에서 Virtual Thread 적용 할 때 고민해야할 부분도 함께 적어두기 위해서도 있지만...)  
 우선 해당 포스트에서는 Virtual Thread에 대한 기본적인 내용들은 알고 있다는 전제 하에 작성했다.
-{% youtube QxxG66eQoTc %}
+{% youtube zluKcazgkV4 %}
 
 ## 간단 요약
 ![](java-virtual-thread-vs-kotlin-coroutine/recap.png)
