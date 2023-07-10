@@ -275,8 +275,8 @@
           <p><a href="/2022/12/29/look-over-java-virtual-threads/">Java Virtual Threads 훑어보기</a>에서 Virtual Thread에 대해 대충 훑어봤었고, 2023&#x2F;09&#x2F;19에 나오는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/projects/jdk/21/">JDK21(심지어 LTS)</a>에서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/444">Virtual Threads (JEP 444)</a>가 정식으로 출시된다는 소식을 들었다.<br>그러다보니 코틀린의 코루틴의 소식이 궁금했다.</p>
 <img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/is-loom-a-java-equivalent-of-coroutines-in-kotlin.png" class>
 <p>출처: <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.youtube.com/live/QxxG66eQoTc?feature=share&t=3652">https://www.youtube.com/live/QxxG66eQoTc?feature=share&amp;t=3652</a><br>많은 사람들이 Virtual Thread가 코루틴과 같은 역할을 할 수 있을지 궁금해하는 것 같았고, 나 또한 코루틴을 잘 모르는 입장에서 ‘결국 코루틴은 사장되는 게 아닐까?’란 생각이 들었다.</p>
-<p>그러던 중 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.youtube.com/live/QxxG66eQoTc?feature=share&t=3652">Coroutines and Loom behind the scenes by Roman Elizarov</a>라는 영상을 보게 되어서 이해한 내용을 겸사겸사 정리해보았다. (나중에 회사에서 Virtual Thread 적용 할 때 고민해야할 부분도 함께 적어두기 위해서도 있지만…)<br>우선 해당 포스트에서는 Virtual Thread에 대한 기본적인 내용들은 알고 있다는 전제 하에 작성했다.</p>
-<div class="video-container"><iframe src="https://www.youtube.com/embed/QxxG66eQoTc" frameborder="0" loading="lazy" allowfullscreen></iframe></div>
+<p>그러던 중 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://youtu.be/zluKcazgkV4">Coroutines and Loom behind the scenes by Roman Elizarov</a>라는 영상을 보게 되어서 이해한 내용을 겸사겸사 정리해보았다. (나중에 회사에서 Virtual Thread 적용 할 때 고민해야할 부분도 함께 적어두기 위해서도 있지만…)<br>우선 해당 포스트에서는 Virtual Thread에 대한 기본적인 내용들은 알고 있다는 전제 하에 작성했다.</p>
+<div class="video-container"><iframe src="https://www.youtube.com/embed/zluKcazgkV4" frameborder="0" loading="lazy" allowfullscreen></iframe></div>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/#more" rel="contents">

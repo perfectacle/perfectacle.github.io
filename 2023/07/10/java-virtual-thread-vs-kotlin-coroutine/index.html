@@ -65,7 +65,7 @@
 <meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-04.png">
 <meta property="og:image" content="https://perfectacle.github.io/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/use-together-virtual-thread-and-coroutine-05.png">
 <meta property="article:published_time" content="2023-07-10T01:04:44.000Z">
-<meta property="article:modified_time" content="2023-07-09T16:05:24.923Z">
+<meta property="article:modified_time" content="2023-07-10T00:56:07.712Z">
 <meta property="article:author" content="양권성">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="Virtual Threads">
@@ -319,8 +319,8 @@
     <div class="post-body" itemprop="articleBody"><p><a href="/2022/12/29/look-over-java-virtual-threads/">Java Virtual Threads 훑어보기</a>에서 Virtual Thread에 대해 대충 훑어봤었고, 2023&#x2F;09&#x2F;19에 나오는 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/projects/jdk/21/">JDK21(심지어 LTS)</a>에서 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://openjdk.org/jeps/444">Virtual Threads (JEP 444)</a>가 정식으로 출시된다는 소식을 들었다.<br>그러다보니 코틀린의 코루틴의 소식이 궁금했다.</p>
 <img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/is-loom-a-java-equivalent-of-coroutines-in-kotlin.png" class>
 <p>출처: <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.youtube.com/live/QxxG66eQoTc?feature=share&t=3652">https://www.youtube.com/live/QxxG66eQoTc?feature=share&amp;t=3652</a><br>많은 사람들이 Virtual Thread가 코루틴과 같은 역할을 할 수 있을지 궁금해하는 것 같았고, 나 또한 코루틴을 잘 모르는 입장에서 ‘결국 코루틴은 사장되는 게 아닐까?’란 생각이 들었다.</p>
-<p>그러던 중 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://www.youtube.com/live/QxxG66eQoTc?feature=share&t=3652">Coroutines and Loom behind the scenes by Roman Elizarov</a>라는 영상을 보게 되어서 이해한 내용을 겸사겸사 정리해보았다. (나중에 회사에서 Virtual Thread 적용 할 때 고민해야할 부분도 함께 적어두기 위해서도 있지만…)<br>우선 해당 포스트에서는 Virtual Thread에 대한 기본적인 내용들은 알고 있다는 전제 하에 작성했다.</p>
-<div class="video-container"><iframe src="https://www.youtube.com/embed/QxxG66eQoTc" frameborder="0" loading="lazy" allowfullscreen></iframe></div>
+<p>그러던 중 <a target="_blank" rel="external nofollow noopener noreferrer" href="https://youtu.be/zluKcazgkV4">Coroutines and Loom behind the scenes by Roman Elizarov</a>라는 영상을 보게 되어서 이해한 내용을 겸사겸사 정리해보았다. (나중에 회사에서 Virtual Thread 적용 할 때 고민해야할 부분도 함께 적어두기 위해서도 있지만…)<br>우선 해당 포스트에서는 Virtual Thread에 대한 기본적인 내용들은 알고 있다는 전제 하에 작성했다.</p>
+<div class="video-container"><iframe src="https://www.youtube.com/embed/zluKcazgkV4" frameborder="0" loading="lazy" allowfullscreen></iframe></div>
 
 <h2 id="간단-요약"><a href="#간단-요약" class="headerlink" title="간단 요약"></a>간단 요약</h2><img src="/2023/07/10/java-virtual-thread-vs-kotlin-coroutine/recap.png" class>
 <p>가상 쓰레드는 요청 당 쓰레드 하나를 만드는 모델(Spring WebMVC 같은)에 적합하고, 이미 존재하는 코드를 재사용할 수 있다는 장점이 있다.<br>코루틴은 높은 동시성(동시에 여러 요청을 보내서 응답을 받은 후 머지를 한다던지)을 요구하거나 Event 기반 시스템(유저의 이벤트를 받아서 UI를 제어해야한다던지)이나 Hierarchy가 있는 작업(Strucured Concurrency)을 처리하거나 취소해야하는 경우에 적합하다.</p>
