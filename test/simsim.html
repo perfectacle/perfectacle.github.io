@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" type="text/css">
-    <title>Document</title>
-    <style>
-        .animateResult {
+<!doctypehtml><html lang=en><meta charset=UTF-8><meta content=width=device-width,initial-scale=1.0 name=viewport><meta content=ie=edge http-equiv=X-UA-Compatible><link href=https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css rel=stylesheet><title>Document</title><style>.animateResult {
             display: none;
             position : absolute;
             top: 50%;
@@ -21,20 +12,7 @@
         }
         .animateResult.active {
             display: block;
-        }
-    </style>
-</head>
-<body>
-<h1>음식종류</h1>
-<div class="dataText"></div>
-<label for="foodData">음식추가<input id="foodData" type="text" value='' placeholder="추가하고 싶은 음식" /></label>
-<button id="foodAdd" type="button" onclick="nameSpace.foodAdd();">음식 추가</button>
-<button id="randomChoice" type="button" onclick="nameSpace.randomChoice();">랜덤 선택</button>
-<button id="reset" type="button" onclick="nameSpace.reset();">리셋</button>
-<div class="randomChoiceText"></div>
-<div class="animateResult"></div>
-<script>
-    var nameSpace = ((function(){
+        }</style><body><h1>음식종류</h1><div class=dataText></div><label for=foodData>음식추가<input placeholder="추가하고 싶은 음식" id=foodData></label><button id=foodAdd onclick=nameSpace.foodAdd(); type=button>음식 추가</button><button id=randomChoice onclick=nameSpace.randomChoice(); type=button>랜덤 선택</button><button id=reset onclick=nameSpace.reset(); type=button>리셋</button><div class=randomChoiceText></div><div class=animateResult></div><script>var nameSpace = ((function(){
         var foodData = ['중식', '한식', '양식', '멕시코식', '동남아식', '영국식', '이탈리아'];
         var foodChoice = [];
         var animateData = [
@@ -126,7 +104,4 @@
     })());
 
     var el = document.getElementById('foodData');
-    el.addEventListener('keypress', nameSpace.foodEnterAdd);
-</script>
-</body>
-</html>
+    el.addEventListener('keypress', nameSpace.foodEnterAdd);</script>
