@@ -1,3 +1,56 @@
 /* remove disqus ad */
 #disqus_thread > iframe { display: none; }
+#disqus_recommendations { display: none; }
 iframe[src*="https://disqus.com/embed/comments/?"] { display: block !important; }
+
+/* 기본 설정: PC 환경에서 적용될 스타일 */
+img {
+    max-width: 50vh; /* 이미지의 최대 너비를 뷰포트 높이의 30%로 제한 */
+    height: auto; /* 비율을 유지하면서 크기 조절 */
+    max-height: 30vh; /* 이미지의 최대 높이를 뷰포트 높이의 30%로 제한 */
+    display: block; /* 이미지를 블록 요소로 표시 */
+    margin: 0 auto 20px auto; /* 가운데 정렬과 하단 여백 설정 */
+    object-fit: contain; /* 이미지가 비율을 유지하며 박스 안에 들어가도록 설정 */
+}
+.video-container {
+    max-width: 50vh; /* 이미지의 최대 너비를 뷰포트 높이의 30%로 제한 */
+    height: auto; /* 비율을 유지하면서 크기 조절 */
+    max-height: 30vh; /* 이미지의 최대 높이를 뷰포트 높이의 30%로 제한 */
+    display: block; /* 이미지를 블록 요소로 표시 */
+    margin: 0 auto 20px auto; /* 가운데 정렬과 하단 여백 설정 */
+    object-fit: contain; /* 이미지가 비율을 유지하며 박스 안에 들어가도록 설정 */
+    padding-top: 30vh !important; /* 16:9 비율을 유지하기 위해 설정 */
+}
+
+/* 모바일 환경에서 적용될 스타일 */
+@media (max-width: 768px) {
+    img {
+        max-width: 100%;
+        max-height: none;
+    }
+    .video-container {
+        max-width: 100%;
+        max-height: none;
+    }
+}
+
+/* fancybox 내 이미지 원본 크기로 표시 */
+.fancybox__content img {
+    max-width: 100%;
+    max-height: none;
+    width: auto;
+    height: auto;
+}
+
+/*!* 비디오 컨테이너 스타일 설정 *!*/
+/*.video-container {*/
+/*    position: relative;*/
+/*    padding-bottom: 56.25%; !* 16:9 비율을 유지하기 위해 설정 *!*/
+/*    height: 0;*/
+/*    overflow: hidden;*/
+/*    max-width: 100%;*/
+/*    background: #000;*/
+/*    margin: 0 auto 20px auto; !* 가운데 정렬 및 하단 여백 설정 *!*/
+/*}*/
+
+
