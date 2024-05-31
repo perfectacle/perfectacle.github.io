@@ -109,8 +109,6 @@ excerpt:
   more_excludes: []
   hideWholePostExcerpts: true
 
-all_minifier: true
-
 filter_optimize:
   enable: true
   # static resource versioning
