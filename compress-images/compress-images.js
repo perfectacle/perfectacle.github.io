@@ -1,44 +1,68 @@
-import imagemin from 'imagemin';
-import imageminMozjpeg from 'imagemin-mozjpeg';
-import imageminPngquant from 'imagemin-pngquant';
-import imageminGifsicle from 'imagemin-gifsicle';
-import imageminSvgo from 'imagemin-svgo';
+import fg from 'fast-glob';
+import sharp from 'sharp';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// 현재 스크립트 파일의 디렉토리를 파일 시스템 경로로 변환합니다.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 현재 작업 디렉토리에서 상위 디렉토리를 가져옵니다.
 const directoryPath = path.resolve(process.cwd(), '..');
 
 const run = async () => {
   try {
-    // 이미지 파일들을 찾고 압축합니다.
-    const files = await imagemin([`${directoryPath}/**/*.{jpg,jpeg,png,gif,svg}`], {
-      destination: directoryPath,
-      plugins: [
-        imageminMozjpeg({ quality: 75 }),
-        imageminPngquant({ quality: [0.6, 0.8] }),
-        imageminGifsicle(),
-        imageminSvgo()
-      ]
+    // 모든 이미지 수집
+    const files = await fg(`${directoryPath}/**/*.{jpg,jpeg,png,gif,svg}`, {
+      onlyFiles: true,
+      ignore: [
+        '**/node_modules/**',
+        '**/.git/**',
+        '**/dist/**',
+        '**/build/**',
+        '**/fonts/**',
+      ],
     });
 
-    // 압축된 파일들을 원본 파일에 덮어씁니다.
-    files.forEach(file => {
-      const destPath = path.join(directoryPath, path.relative(directoryPath, file.sourcePath));
-      fs.copyFileSync(file.destinationPath, destPath);
-    });
+    for (const filePath of files) {
+      try {
+        const ext = path.extname(filePath).toLowerCase();
+
+        // 공통 sharp 파이프라인
+        let pipeline = sharp(filePath);
+
+        // SVG → raster 변환(픽셀 이미지로)
+        if (ext === '.svg') {
+          pipeline = pipeline.png(); // 원하는 출력 포맷 지정
+        }
+
+        // GIF는 sharp가 첫 프레임만 처리함 (애니 GIF는 지원 안됨)
+        if (ext === '.gif') {
+          pipeline = pipeline.png(); // GIF → PNG 변환 추천
+        }
+
+        // JPEG/PNG는 품질 적용
+        if (ext === '.jpg' || ext === '.jpeg') {
+          pipeline = pipeline.jpeg({ quality: 75 });
+        } else if (ext === '.png') {
+          pipeline = pipeline.png({ quality: 80 });
+        }
+
+        const optimized = await pipeline.toBuffer();
+
+        fs.writeFileSync(filePath, optimized);
+
+//        console.log(`optimized: ${filePath}`);
+
+      } catch (e) {
+        console.error(`처리 실패: ${filePath}`, e.message);
+      }
+    }
 
     console.log('Images optimized and original files overwritten');
+
   } catch (err) {
-    console.error(err);
+    console.error('Error:', err);
   }
 };
 
-run().catch(err => {
-    console.error(err);
-});
+run().catch(console.error);
