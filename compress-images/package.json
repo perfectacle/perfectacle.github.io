@@ -11,6 +11,12 @@
   "description": "",
   "dependencies": {
     "fast-glob": "^3.3.3",
+    "fs": "^0.0.1-security",
+    "imagemin": "^9.0.1",
+    "imagemin-gifsicle": "^7.0.0",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-pngquant": "^10.0.0",
+    "imagemin-svgo": "^11.0.1",
     "sharp": "^0.34.5"
   }
 }
