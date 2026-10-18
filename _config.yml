@@ -117,6 +117,7 @@ filter_optimize:
     # minify all css files
     minify: true
     excludes:
+      - gokuden2/**
     # use preload to load css elements dynamically
     delivery:
       - '@fortawesome/fontawesome-free'
@@ -129,12 +130,15 @@ filter_optimize:
     # minify all js files
     minify: true
     excludes:
+      - gokuden2/**
     # remove the comments in each of the js files
     remove_comments: false
   html:
     # minify all html files
     minify: true
     excludes:
+      # the 초오공전 page uses relative paths that minification rewrites to the site root
+      - gokuden2/**
   # set the priority of this plugin,
   # lower means it will be executed first, default of Hexo is 10
   priority: 12

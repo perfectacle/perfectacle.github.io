@@ -222,3 +222,17 @@ kbd.y { background: #3fb84a; color: #fff; }
 #why[hidden] { display: none; }
 #why b { margin-right: 8px; padding: 0 6px; }
 #why b.B { background: #5294de; } #why b.R { background: #d67394; } #why b.G { background: #5ab542; }
+
+/* Wide screens: game screen fills the height on the left, everything else in a right column. */
+@media (min-width: 900px) {
+  :root { --side: 380px; --sw: min(calc((100vh - 16px) * 256 / 239), calc(100vw - var(--side) - 48px)); }
+  #stage { flex-direction: row; align-items: center; justify-content: center; gap: 16px; }
+  #bar { width: var(--side); justify-content: center; }
+  #controller { flex-direction: column; gap: 10px; }
+  #pad { width: 100%; }
+  #moves { width: 100%; }
+  #why { width: 100%; text-align: left; }
+}
+
+#pad .dhit { fill: transparent; cursor: pointer; }
+#fancy { margin: 0; font-size: 12px; color: var(--dim); line-height: 1.6; }

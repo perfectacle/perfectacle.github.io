@@ -25,6 +25,14 @@ const MOVE = {
   ax: { name: '에네르기파' }, by: { name: '태양권' }, none: { name: '무방비' },
 };
 const MOVES = ['a', 'b', 'x', 'y', 'ax', 'by'];
+// Late-game techniques bound to direction + button (recorded with the $7E0C96 move table).
+const FANCY = {
+  a: { up: '초기공포', right: '초연속기공탄', left: '초확산기공탄', down: '초유도기공탄' },
+  x: { up: '거북선인류최종오의', right: '메테오 스매쉬', left: '파워 러쉬', down: '엘보우 스매쉬' },
+  y: { up: '초잔상 카운터', right: '파이널 카운터', left: '리버설 슛', down: '카운터 어택' },
+  b: { up: '파이널 어택', right: '초슬래쉬 블로우', left: '페인트 슬래쉬', down: '마하 어택' },
+};
+let heldDir = null;
 // Every exchange take starts 4 frames before Freeza's banner and the response was pressed
 // 8 frames after it, so up to this frame all takes of one attack are identical.
 const HOLD = 12;
@@ -218,7 +226,7 @@ function drawHud(i) {
   if (decided) {
     const [f, d] = ex.goku ? BANNER[ex.goku] : [C.fill, C.dark];
     hudBox(104, 203, 152, 28, f, d);
-    glyphs(MOVE[game.resp].name, 112, 207);
+    glyphs(game.respName || MOVE[game.resp].name, 112, 207);
   } else {
     hudBox(104, 203, 152, 28); glyphs('전투력', 112, 207); num(shown.ki, 244, 207);
   }
@@ -328,11 +336,24 @@ document.addEventListener('keydown', e => {
     else fireConfirm();
   } else if (k === 'escape' && skipOpening) skipOpening();
   else if ((k === 'arrowup' || k === 'arrowdown') && menuMove) { e.preventDefault(); menuMove(); }
+  else if (k.startsWith('arrow')) { e.preventDefault(); heldDir = k.slice(5); }
   else if (KEYMAP[k]) { padDown(KEYMAP[k]); if ('abxy'.includes(KEYMAP[k])) pressButton(KEYMAP[k]); }
 });
-document.addEventListener('keyup', e => { const k = KEYMAP[e.key.toLowerCase()]; if (k) padUp(k); });
+document.addEventListener('keyup', e => {
+  const key = e.key.toLowerCase();
+  if (key.startsWith('arrow') && heldDir === key.slice(5)) heldDir = null;
+  const k = KEYMAP[key]; if (k) padUp(k);
+});
 
 $('pad').addEventListener('pointerdown', e => {
+  const dirEl = e.target.closest('[data-dir]');
+  if (dirEl) {
+    e.preventDefault();
+    heldDir = dirEl.dataset.dir;
+    const up = () => { heldDir = null; window.removeEventListener('pointerup', up); };
+    window.addEventListener('pointerup', up);
+    return;
+  }
   const g = e.target.closest('[data-btn]');
   if (!g) return;
   e.preventDefault();
@@ -358,6 +379,12 @@ function say(page, ms) {
   if (ms) bubbleTimer = setTimeout(() => { if (view.box && view.box.lines === lines) view.box = null; }, ms);
 }
 
+// Freeza powers up (pink aura) before he picks an attack, as in the game.
+async function windup() {
+  view.turn = 'F';
+  await playClip('windup');
+}
+
 // One exchange: Freeza's banner appears, the take holds just before the response until the
 // player answers (or `window` ms pass), then continues in the take for that answer.
 async function exchange(atk, { window = null, onHold, accept } = {}) {
@@ -381,15 +408,22 @@ async function exchange(atk, { window = null, onHold, accept } = {}) {
     say(script.lowKi, 1800);
     resp = 'none';
   }
+  // Direction held with the button: use the late-game technique take if one was recorded.
+  let takeName = `${atk}_${resp}`;
+  game.respName = MOVE[resp].name;
+  if (heldDir && FANCY[resp] && data.clips[`${atk}_${resp}_${heldDir}`]) {
+    takeName = `${atk}_${resp}_${heldDir}`;
+    game.respName = FANCY[resp][heldDir];
+  }
   game.resp = resp;
   view.box = null;
   cur = null;
   // With no answer the take still waits for input until just before its banner; skip that.
   const from = resp === 'none' ? Math.max(HOLD, data.clips[`${atk}_none`].banner - 6) : HOLD;
-  const playing = playClip(`${atk}_${resp}`, { from });
+  const playing = playClip(takeName, { from });
   cur.scoring = true;
   await playing;
-  const t = data.clips[`${atk}_${resp}`];
+  const t = data.clips[takeName];
   why(atk, resp, t);
   document.querySelectorAll('#moves li').forEach(li => li.classList.remove('hit'));
   game.atk = null;
@@ -399,7 +433,7 @@ async function exchange(atk, { window = null, onHold, accept } = {}) {
 // Why an exchange went the way it did (the game's rock-paper-scissors).
 const BEATS = { 기공: '파워', 스피드: '기공', 반격: '스피드', 파워: '반격' };
 function why(atk, resp, t) {
-  const A = ATK[atk], M = MOVE[resp];
+  const A = ATK[atk], M = { ...MOVE[resp], name: game.respName || MOVE[resp].name };
   const vs = `프리더 ${A.name}(${A.kind}) vs 오공 ${M.name}${M.kind ? `(${M.kind})` : ''}`;
   let reason;
   if (resp === 'none') reason = '아무 기술도 못 써서 그대로 맞았다';
@@ -452,6 +486,7 @@ async function tutorial() {
     await talk([step.before]);
     hint.textContent = '프리더의 기술을 보고 받아칠 기술을 고르세요';
     const want = step.move || ATK[step.atk].counter;
+    await windup();
     if (step.demo) {
       // Losing example: the player presses the wrong counter on purpose to see what happens.
       only(step.demo);
@@ -504,15 +539,19 @@ async function realtime() {
   const atks = Object.keys(ATK);
   while (game.hp > 0 && game.fhp > 0) {
     // The game leaves a few seconds between exchanges (time to charge with L+R).
-    const wait = 3000 + Math.random() * 3000, t0 = performance.now();
+    const wait = 1000 + Math.random() * 2000, t0 = performance.now();
     while (performance.now() - t0 < wait) {
       if (charge.t0 && game.ki < 200) game.ki = Math.min(200, game.ki + 2);
       await sleep(33);
     }
+    if (game.hp <= 0) break;
+    stopCharge();
+    await windup();
     const atk = pick(atks);
     const kind = ATK[atk].kind;
     hint.textContent = `${ATK[atk].name} (${kind}) · 파워 < 기공 < 스피드 < 반격 < 파워`;
-    const r = await exchange(atk, { window: 1300 });
+    // Like the game, Freeza's banner stays up a couple of seconds before he strikes.
+    const r = await exchange(atk, { window: 2600 });
     react(r.t);
     updateBar();
   }
@@ -800,7 +839,7 @@ document.querySelectorAll('#moves li[data-move]').forEach(li => {
 });
 
 // Size the game screen from the space the bottom bar leaves (its height changes with the panels).
-const fit = () => document.documentElement.style.setProperty('--bar', ($('bar').offsetHeight + 40) + 'px');
+const fit = () => { if (innerWidth < 900) document.documentElement.style.setProperty('--bar', ($('bar').offsetHeight + 40) + 'px'); };
 new ResizeObserver(fit).observe($('bar'));
 addEventListener('resize', fit);
 
