@@ -4,7 +4,36 @@ const titlecard = $('titlecard'), subtitle = $('subtitle'), hint = $('hint'), co
 ctx.imageSmoothingEnabled = false;
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const loadImg = src => new Promise((ok, ng) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ng; i.src = src; });
+// Download progress over everything the page needs before START (about 30MB).
+const progress = { total: 0, done: 0 };
+const audioBytes = {};
+async function fetchBytes(url) {
+  const res = await fetch(url);
+  const size = +res.headers.get('content-length') || 0;
+  progress.total += size;
+  const reader = res.body.getReader(), parts = [];
+  let got = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    parts.push(value); got += value.length; progress.done += value.length;
+    if (!size) progress.total += value.length;
+    showProgress();
+  }
+  const out = new Uint8Array(got);
+  let o = 0;
+  for (const p of parts) { out.set(p, o); o += p.length; }
+  return out.buffer;
+}
+function showProgress() {
+  const pct = progress.total ? Math.min(99, Math.floor(progress.done / progress.total * 100)) : 0;
+  $('loadbar').style.width = pct + '%';
+  $('loadpct').textContent = `로딩 중 ${pct}%`;
+}
+const loadImg = async src => {
+  const url = URL.createObjectURL(new Blob([await fetchBytes(src)]));
+  return new Promise((ok, ng) => { const i = new Image(); i.onload = () => ok(i); i.onerror = ng; i.src = url; });
+};
 
 // Colours sampled from the battle screen.
 const C = {
@@ -75,17 +104,21 @@ async function load() {
   [field, font.img, img.shenron, bubble.F, bubble.G, ...sheets] = await Promise.all([
     loadImg('assets/battle/field.png'), loadImg('assets/ui/font.png'), loadImg('assets/ui/shenron.png'),
     loadImg('assets/ui/bubble_F.png'), loadImg('assets/ui/bubble_G.png'),
-    ...Array.from({ length: data.sheets }, (_, i) => loadImg(`assets/battle/sheet${i}.png`)),
+    ...Array.from({ length: data.sheets }, (_, i) => loadImg(`assets/battle/sheet${i}.webp`)),
   ]);
+  // Audio bytes are fetched now too (decoding needs the AudioContext, created on START).
+  const names = ['bgm', 'patchbgm', 'sfx/charge', ...Object.keys(data.clips).map(n => `sfx/${n}`)];
+  await Promise.all(names.map(async n => {
+    const ext = n.startsWith('sfx/') ? 'm4a' : 'flac';
+    audioBytes[n] = await fetchBytes(`assets/battle/${n}.${ext}`);
+  }));
 }
 
 async function loadAudio() {
   actx = new AudioContext();
   master = actx.createGain();
   master.connect(actx.destination);
-  const names = ['bgm', 'patchbgm', 'sfx/charge', ...Object.keys(data.clips).map(n => `sfx/${n}`)];
-  await Promise.all(names.map(async n => {
-    const buf = await fetch(`assets/battle/${n}.flac`).then(r => r.arrayBuffer());
+  await Promise.all(Object.entries(audioBytes).map(async ([n, buf]) => {
     buffers[n] = await actx.decodeAudioData(buf);
   }));
 }
@@ -348,7 +381,7 @@ document.addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
   if (k === 'enter' || k === ' ') {
     e.preventDefault();
-    if (stage.dataset.scene === 'start') run();
+    if (stage.dataset.scene === 'start') { if (!$('start').disabled) run(); }
     else if (menuPick) menuPick();
     else if (pskip && !waiter) pskip();
     else fireConfirm();
@@ -923,4 +956,9 @@ const fit = () => { if (innerWidth < 900) document.documentElement.style.setProp
 new ResizeObserver(fit).observe($('bar'));
 addEventListener('resize', fit);
 
-load().then(() => requestAnimationFrame(draw));
+$('start').disabled = true;
+load().then(() => {
+  $('start').disabled = false;
+  $('loading').hidden = true;
+  requestAnimationFrame(draw);
+});

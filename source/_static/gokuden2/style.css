@@ -246,3 +246,10 @@ kbd.y { background: #3fb84a; color: #fff; }
   box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #42424a; font-size: calc(var(--sw) * .038); text-align: left; }
 #komenu button::before { content: "\25B6"; visibility: hidden; margin-right: .5em; color: #ffe14d; }
 #komenu button.sel::before { visibility: visible; }
+
+#loading { display: flex; flex-direction: column; align-items: center; gap: .5em; font-size: .6em; color: var(--dim); }
+#loading[hidden] { display: none; }
+.lbar { width: calc(var(--sw) * .5); height: calc(var(--sw) * .02); border: 2px solid var(--edge); }
+#loadbar { display: block; height: 100%; width: 0; background: #ffe14d; }
+#start:disabled { cursor: wait; }
+#start:disabled .blink { display: none; }
