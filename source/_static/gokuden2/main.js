@@ -15,7 +15,8 @@ const C = {
 const ATK = {
   dash: { name: '대쉬 어택', kind: '파워', counter: 'a' },
   zanzo: { name: '잔상 카운터', kind: '반격', counter: 'x' },
-  bakuha: { name: '폭발파', kind: '특수', counter: 'b' },
+  // The game labels this 폭발파, but the animation is a leap and dive; named after what you see.
+  bakuha: { name: '점프 어택', kind: '특수', counter: 'b' },
   feint: { name: '페인트 어택', kind: '스피드', counter: 'y' },
   buster: { name: '에너지 버스터', kind: '에네르기파', counter: 'by' },
   deathburst: { name: '데스 버스트', kind: '에네르기파', counter: 'by' },  // finale only
@@ -219,6 +220,13 @@ function num(n, right, y) { const t = String(Math.max(0, Math.round(n))); glyphs
 function drawHud(i) {
   hudBox(0, 11, 104, 28); glyphs('프리더', 20, 15);
   hudBox(0, 203, 104, 28); glyphs('체력', 20, 207); num(shown.hp, 94, 207);
+  if (view.finisher) {
+    // The finishing move always takes the top banner, in red.
+    hudBox(104, 11, 152, 28, C.red, C.redDark);
+    glyphs(view.finisher.name, 112, 15);
+    hudBox(104, 203, 152, 28); glyphs('전투력', 112, 207); num(shown.ki, 244, 207);
+    return;
+  }
   const ex = game.atk && cur && cur.clip.banner !== undefined ? cur.clip : null;
   const decided = ex && game.resp && i >= ex.banner;
   if (game.atk && cur) {
@@ -565,15 +573,11 @@ async function finale(won) {
   await confirm();
   view.box = null;
   hint.textContent = '';
-  if (won) {
-    const [clip, name] = ['finale_win', '초에네르기파'];
-    game.atk = 'dash'; game.resp = 'ax'; game.respName = name;
-    await playClip(clip, { from: 0 });
-  } else {
-    game.atk = 'deathburst'; game.resp = 'none'; game.respName = '무방비';
-    await playClip('finale_lose', { from: 0 });
-  }
-  game.atk = null;
+  // Only the finisher's own banner: the recordings were answering a dash attack, which would
+  // otherwise show up in Freeza's banner.
+  view.finisher = won ? { who: 'G', name: '초에네르기파' } : { who: 'F', name: '데스 버스트' };
+  await playClip(won ? 'finale_win' : 'finale_lose', { from: 0 });
+  view.finisher = null;
   view.flash = 1; view.flashColor = '#fff';
   sfxOf('sfx/clash', { offset: data.clips.clash.sfxOffset + BOOM_AT, duration: BOOM_LEN });
   shake();
@@ -617,13 +621,13 @@ async function realtime(again = false) {
   view.box = null;
   await finale(won);
   await talk(won ? script.win : script.lose);
-  view.out = null;
   $('fhp').hidden = true;
   $('why').hidden = true;
   $('kotitle').textContent = won ? 'YOU WIN!!' : 'K.O.';
   hint.textContent = '↑↓ 고르기 · Enter 결정';
   const go = await chooseFrom($('komenu'));
   hint.textContent = '';
+  view.out = null;
   return go;
 }
 
