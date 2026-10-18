@@ -236,3 +236,13 @@ kbd.y { background: #3fb84a; color: #fff; }
 
 #pad .dhit { fill: transparent; cursor: pointer; }
 #fancy { margin: 0; font-size: 12px; color: var(--dim); line-height: 1.6; }
+
+#komenu { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: calc(var(--sw) * .015); background: rgba(0, 0, 0, .55); }
+#komenu[hidden] { display: none; }
+#kotitle { margin: 0 0 calc(var(--sw) * .03); font-weight: bold; font-size: calc(var(--sw) * .07); color: #ffe14d;
+  text-shadow: 0 3px 0 #b2380e, 0 5px 0 #000; }
+#komenu button { min-width: calc(var(--sw) * .45); padding: calc(var(--sw) * .012) calc(var(--sw) * .04); background: #7b849c; border: 0;
+  box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #42424a; font-size: calc(var(--sw) * .038); text-align: left; }
+#komenu button::before { content: "\25B6"; visibility: hidden; margin-right: .5em; color: #ffe14d; }
+#komenu button.sel::before { visibility: visible; }

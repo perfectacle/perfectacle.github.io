@@ -18,6 +18,7 @@ const ATK = {
   bakuha: { name: '폭발파', kind: '특수', counter: 'b' },
   feint: { name: '페인트 어택', kind: '스피드', counter: 'y' },
   buster: { name: '에너지 버스터', kind: '에네르기파', counter: 'by' },
+  deathburst: { name: '데스 버스트', kind: '에네르기파', counter: 'by' },  // finale only
 };
 const MOVE = {
   a: { name: '유도기공탄', kind: '기공' }, b: { name: '잔상권', kind: '스피드' },
@@ -34,7 +35,9 @@ const FANCY = {
 };
 let heldDir = null;
 // Every exchange take starts 4 frames before Freeza's banner and the response was pressed
-// 8 frames after it, so up to this frame all takes of one attack are identical.
+// 8 frames after it, so all takes of one attack are identical up to that point.
+// While waiting the neutral stance is shown; after the answer every take resumes from this frame,
+// the last one all takes of an attack share, so Freeza's motion never depends on the answer.
 const HOLD = 12;
 const BANNER = { R: [C.red, C.redDark], B: [C.blue, C.blueDark], G: [C.green, C.greenDark] };
 // Opening: the clash take is cut while the two beams still meet; the explosion sound sits
@@ -185,7 +188,7 @@ function drawOverlay(f) {
 }
 
 // ---------- HUD, dialogue boxes, ROM font ----------
-const view = { hud: false, box: null, flash: 0, flashColor: '#fff', turn: 'F' };
+const view = { hud: false, box: null, flash: 0, flashColor: '#fff', turn: 'F', out: null };
 // The game draws a shadow only under the character whose turn it is (speaker or attacker).
 let idleFrame = {};
 const charge = { frames: [], sfxAt: 0, t0: 0, src: null };
@@ -248,7 +251,9 @@ function draw() {
     ctx.drawImage(field, 0, 0);
     const i = frameIndex();
     if (cur && i !== null) applyEvents(i);
-    if (cur && i !== null) {
+    const holding = cur && i !== null && cur.hold !== null && i >= cur.hold;
+    if (holding) { drawOverlay(idleFrame.F); drawOverlay(idleFrame.G); }
+    else if (cur && i !== null) {
       // Restore the shadow the game drops from the non-active fighter.
       const sh = shadows && shadows.clips[cur.name] && shadows.clips[cur.name][i];
       if (sh) for (const [k, who] of [[0, 'G'], [1, 'F']]) {
@@ -267,7 +272,12 @@ function draw() {
     } else {
       if (charge.t0) stopCharge();
       // The game shadows only the active fighter; drawing both idle images keeps both shadows.
+      // A knocked-out fighter flickers and then disappears (Goku stands left of x=150, Freeza right).
+      const out = who => view.out === who + ':gone' || (view.out === who + ':blink' && Math.floor(performance.now() / 80) % 2);
+      const keep = out('F') ? [0, 150] : out('G') ? [150, 256] : null;
+      if (keep) { ctx.save(); ctx.beginPath(); ctx.rect(keep[0], 0, keep[1] - keep[0], 239); ctx.clip(); }
       drawOverlay(idleFrame.F); drawOverlay(idleFrame.G);
+      if (keep) ctx.restore();
     }
     easeHud();
     if (view.hud) drawHud(i);
@@ -419,7 +429,9 @@ async function exchange(atk, { window = null, onHold, accept } = {}) {
   view.box = null;
   cur = null;
   // With no answer the take still waits for input until just before its banner; skip that.
-  const from = resp === 'none' ? Math.max(HOLD, data.clips[`${atk}_none`].banner - 6) : HOLD;
+  // 폭발파 takes open with Freeza still flashing his power-up aura; resume after it.
+  const resume = atk === 'bakuha' ? 30 : HOLD;
+  const from = resp === 'none' ? Math.max(resume, data.clips[`${atk}_none`].banner - 6) : resume;
   const playing = playClip(takeName, { from });
   cur.scoring = true;
   await playing;
@@ -467,6 +479,14 @@ function react(t, ms = 1600) {
 function updateBar() {
   const n = Math.ceil(game.fhp / 300);
   $('fhp').textContent = '프리더 ' + '■'.repeat(n) + '□'.repeat(Math.max(0, 10 - n));
+}
+
+// Real battle: point at the right answer without locking the other buttons.
+function hintOnly(m) {
+  only(null);
+  const parts = m.length === 2 ? [...m] : [m];
+  document.querySelectorAll('#moves li').forEach(li => li.classList.toggle('want', li.dataset.move === m));
+  document.querySelectorAll('#pad [data-btn]').forEach(g => g.classList.toggle('want', parts.includes(g.dataset.btn)));
 }
 
 // Tutorial: only the wanted button is live (others dimmed), Goku is refilled after every exchange.
@@ -526,13 +546,48 @@ async function tutorial() {
   }
   chargeAllowed = false;
   only(null);
-  hint.textContent = '▶ 클릭 · Enter';
-  await talk(script.afterTutorial);
+  // Full gauge: move on by itself (players holding L+R should not have to click as well).
+  say(script.afterTutorial[0]);
+  hint.textContent = '';
+  await sleep(2200);
+  view.box = null;
 }
 
-async function realtime() {
+// Win: the game never knocks Freeza out in this story battle, so the finish is staged here:
+// 메테오 스매쉬 (recorded) -> white flash + explosion -> Freeza flickers out.
+// Finishing blows are staged: the story battle never knocks anyone out on its own.
+//   win : 초에네르기파 (forced move id, recorded) -> flash -> Freeza flickers out
+//   lose: Freeza's 데스 버스트 (forced move id, recorded) -> flash -> Goku flickers out
+async function finale(won) {
+  // Finishing line first (waits for a press), then the blow.
+  hint.textContent = '▶ 클릭 · Enter';
+  say(won ? script.finishWin : script.finishLose);
+  await confirm();
+  view.box = null;
+  hint.textContent = '';
+  if (won) {
+    const [clip, name] = ['finale_win', '초에네르기파'];
+    game.atk = 'dash'; game.resp = 'ax'; game.respName = name;
+    await playClip(clip, { from: 0 });
+  } else {
+    game.atk = 'deathburst'; game.resp = 'none'; game.respName = '무방비';
+    await playClip('finale_lose', { from: 0 });
+  }
+  game.atk = null;
+  view.flash = 1; view.flashColor = '#fff';
+  sfxOf('sfx/clash', { offset: data.clips.clash.sfxOffset + BOOM_AT, duration: BOOM_LEN });
+  shake();
+  view.out = (won ? 'F' : 'G') + ':blink';
+  tweenFlash(0, 900);
+  await sleep(1500);
+  view.out = (won ? 'F' : 'G') + ':gone';
+  await sleep(500);
+}
+
+async function realtime(again = false) {
   game.hp = 1000; game.ki = 200; game.fhp = 3000; game.atk = null; game.resp = null;
   cur = null; view.box = null; view.turn = 'G'; only(null);
+  if (again) say(script.retry, 1500);
   $('fhp').hidden = false; updateBar();
   hint.textContent = `배너가 뜨면 바로 받아치세요 · 기 모으기: L+R 꾹 (${KEYNAME.l}+${KEYNAME.r})`;
   chargeAllowed = true;
@@ -551,20 +606,25 @@ async function realtime() {
     const kind = ATK[atk].kind;
     hint.textContent = `${ATK[atk].name} (${kind}) · 파워 < 기공 < 스피드 < 반격 < 파워`;
     // Like the game, Freeza's banner stays up a couple of seconds before he strikes.
+    hintOnly(ATK[atk].counter);
     const r = await exchange(atk, { window: 2600 });
-    react(r.t);
     updateBar();
   }
   chargeAllowed = false; stopCharge();
   const won = game.fhp <= 0;
   hint.textContent = '';
-  await sleep(1200);
+  await sleep(800);
   view.box = null;
-  await playClip(won ? 'ko_win' : 'ko_lose', { from: 0 });
+  await finale(won);
   await talk(won ? script.win : script.lose);
+  view.out = null;
   $('fhp').hidden = true;
   $('why').hidden = true;
-  return won;
+  $('kotitle').textContent = won ? 'YOU WIN!!' : 'K.O.';
+  hint.textContent = '↑↓ 고르기 · Enter 결정';
+  const go = await chooseFrom($('komenu'));
+  hint.textContent = '';
+  return go;
 }
 
 // ---------- scenes ----------
@@ -616,6 +676,21 @@ async function title() {
   return choice;
 }
 
+// Two-item menu on the game screen (↑↓ + Enter, or click). Returns the chosen data-go.
+function chooseFrom(menu) {
+  const items = [...menu.querySelectorAll('button')];
+  let sel = 0;
+  const show = () => items.forEach((b, k) => b.classList.toggle('sel', k === sel));
+  show();
+  menu.hidden = false;
+  return new Promise(res => {
+    const done = v => { menuMove = menuPick = null; menu.hidden = true; res(v); };
+    menuMove = () => { sel = (sel + 1) % items.length; show(); };
+    menuPick = () => done(items[sel].dataset.go);
+    items.forEach((b, k) => { b.onclick = e => { e.stopPropagation(); done(b.dataset.go); }; b.onmouseenter = () => { sel = k; show(); }; });
+  });
+}
+
 async function talk(pages) {
   hint.textContent = '▶ 클릭 · Enter · A';
   for (const page of pages) { say(page); await confirm(); }
@@ -630,7 +705,8 @@ async function play() {
   await talk(script.intro);
   controller.hidden = false;
   await tutorial();
-  await realtime();  // win or lose, back to the title menu afterwards
+  let again = false;
+  while ((await realtime(again)) === 'retry') again = true;  // realtime() resets HP, ki and Freeza
   controller.hidden = true;
   $('why').hidden = true;
   view.hud = false;
