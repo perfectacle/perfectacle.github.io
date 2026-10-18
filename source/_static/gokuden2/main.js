@@ -30,7 +30,7 @@ const MOVES = ['a', 'b', 'x', 'y', 'ax', 'by'];
 const HOLD = 12;
 const BANNER = { R: [C.red, C.redDark], B: [C.blue, C.blueDark], G: [C.green, C.greenDark] };
 // Opening: the clash take is cut while the two beams still meet; the explosion sound sits
-// further into the same recording.
+// further into the same recording (seconds after the clip's first frame).
 const BOOM_AT = 17.17, BOOM_LEN = 2.6;
 
 let data, sheets, field, font, script, bgmLoop, bubble = {}, img = {}, aura, shadows;
@@ -503,7 +503,8 @@ async function realtime() {
   chargeAllowed = true;
   const atks = Object.keys(ATK);
   while (game.hp > 0 && game.fhp > 0) {
-    const wait = 1200 + Math.random() * 2200, t0 = performance.now();
+    // The game leaves a few seconds between exchanges (time to charge with L+R).
+    const wait = 3000 + Math.random() * 3000, t0 = performance.now();
     while (performance.now() - t0 < wait) {
       if (charge.t0 && game.ki < 200) game.ki = Math.min(200, game.ki + 2);
       await sleep(33);
@@ -523,6 +524,7 @@ async function realtime() {
   await playClip(won ? 'ko_win' : 'ko_lose', { from: 0 });
   await talk(won ? script.win : script.lose);
   $('fhp').hidden = true;
+  $('why').hidden = true;
   return won;
 }
 
@@ -538,7 +540,7 @@ async function opening() {
   stopSfx();
   view.flash = 1; view.flashColor = '#fff';
   // Same explosion whether the opening ran to the end or was skipped.
-  sfxOf('sfx/clash', { offset: BOOM_AT, duration: BOOM_LEN });
+  sfxOf('sfx/clash', { offset: data.clips.clash.sfxOffset + BOOM_AT, duration: BOOM_LEN });
   shake();
   await sleep(900);
 }
@@ -589,7 +591,7 @@ async function play() {
   await talk(script.intro);
   controller.hidden = false;
   await tutorial();
-  while (!(await realtime())) { game.hp = 1000; }
+  await realtime();  // win or lose, back to the title menu afterwards
   controller.hidden = true;
   $('why').hidden = true;
   view.hud = false;
@@ -796,5 +798,10 @@ document.querySelectorAll('#moves li[data-move]').forEach(li => {
   const keys = [...li.dataset.move].map(b => KEYNAME[b]).join('+');
   li.insertAdjacentHTML('beforeend', `<i class="key">${keys}</i>`);
 });
+
+// Size the game screen from the space the bottom bar leaves (its height changes with the panels).
+const fit = () => document.documentElement.style.setProperty('--bar', ($('bar').offsetHeight + 40) + 'px');
+new ResizeObserver(fit).observe($('bar'));
+addEventListener('resize', fit);
 
 load().then(() => requestAnimationFrame(draw));
