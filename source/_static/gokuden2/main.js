@@ -591,7 +591,7 @@ async function realtime(again = false) {
   $('fhp').hidden = false; updateBar();
   hint.textContent = `배너가 뜨면 바로 받아치세요 · 기 모으기: L+R 꾹 (${KEYNAME.l}+${KEYNAME.r})`;
   chargeAllowed = true;
-  const atks = Object.keys(ATK);
+  const atks = Object.keys(ATK).filter(k => data.clips[`${k}_none`]);  // 데스 버스트 is finale-only
   while (game.hp > 0 && game.fhp > 0) {
     // The game leaves a few seconds between exchanges (time to charge with L+R).
     const wait = 1000 + Math.random() * 2000, t0 = performance.now();
