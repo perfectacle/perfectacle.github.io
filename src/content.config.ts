@@ -16,7 +16,7 @@ const posts = defineCollection({
       date: z.date(),
       tags: stringList,
       categories: stringList,
-      // Original file is served next to the post by scripts/copy-post-assets.mjs.
+      // Original file is served next to the post by scripts/copy-post-assets.ts.
       image: z.string().optional(),
     }),
 });
