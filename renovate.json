@@ -28,5 +28,15 @@
       "matchManagers": ["github-actions"],
       "groupName": "github actions"
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "zizmor runs via pipx in the workflow",
+      "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"],
+      "matchStrings": ["pipx run 'zizmor==(?<currentValue>[^']+)'"],
+      "depNameTemplate": "zizmor",
+      "datasourceTemplate": "pypi"
+    }
   ]
 }

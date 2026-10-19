@@ -40,6 +40,7 @@ jobs:
       - if: matrix.scope == 'code'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           filter: blob:none
           sparse-checkout-cone-mode: false
           sparse-checkout: |
@@ -50,6 +51,8 @@ jobs:
 
       - if: matrix.scope == 'all'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - id: fingerprint
         run: echo "key=verified-${{ matrix.task }}-${{ runner.arch }}-${{ matrix.scope == 'code' && hashFiles('**', '!src/content/**', '!public/**', '!drafts/**', '!.git/**') || hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
@@ -82,10 +85,25 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - uses: docker://rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 # 1.7.12
         with:
           args: -color
+
+  zizmor:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Workflow security audit (token leaks, injection, unpinned actions). Online audits use the read-only token.
+      - run: pipx run 'zizmor==1.30.1' --format github .github
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   build:
     runs-on: ubuntu-24.04-arm
@@ -95,6 +113,8 @@ jobs:
       REUSE: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - id: fingerprint
         run: echo "key=verified-build-${{ runner.arch }}-${{ hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
@@ -155,6 +175,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       # Pages depend on posts too, so every tracked file is an input.
       - id: fingerprint
@@ -214,6 +236,78 @@ jobs:
           path: .verified
           key: ${{ steps.fingerprint.outputs.key }}
 
+  lighthouse:
+    name: lighthouse (${{ matrix.shard }}/5)
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        # One page per job: each page is measured 3 times and Lighthouse runs take ~6s each.
+        shard: [1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Performance budget: auto-merged updates must not make pages slower or heavier.
+      - id: fingerprint
+        run: echo "key=verified-lighthouse-${{ matrix.shard }}-${{ runner.arch }}-${{ hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
+
+      - id: verified
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
+          lookup-only: true
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: ./.github/actions/setup
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: ./.github/actions/astro-assets-cache
+
+      # Rebuilding here (images cached) is faster than shipping the ~450MB dist between jobs.
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm build
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        id: browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
+
+      # Browsers come from the cache when it hits; only the OS libraries still need installing.
+      - if: steps.verified.outputs.cache-hit != 'true' && steps.browsers.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+
+      - if: steps.verified.outputs.cache-hit != 'true' && steps.browsers.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm test:lighthouse --shard ${{ matrix.shard }}/5
+
+      - if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse-traces-${{ matrix.shard }}
+          path: test-results/
+          retention-days: 7
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: touch .verified
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
+
   output-baseline:
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'renovate[bot]'
     runs-on: ubuntu-24.04-arm
@@ -221,9 +315,12 @@ jobs:
     steps:
       # The PR's own scripts snapshot the base build, so both sides are normalized the same way.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           ref: ${{ github.event.pull_request.base.sha }}
           path: base
 
@@ -253,6 +350,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           sparse-checkout: |
             scripts
             .node-version
@@ -271,7 +369,7 @@ jobs:
   # The one required status check on main: passes only when every job above passed or was skipped by design.
   ci-ok:
     if: always()
-    needs: [verify, actionlint, build, e2e, output-baseline, output-diff]
+    needs: [verify, actionlint, zizmor, build, e2e, lighthouse, output-baseline, output-diff]
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 2
     steps:

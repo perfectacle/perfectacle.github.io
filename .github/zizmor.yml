@@ -1,0 +1,4 @@
+rules:
+  # Suggests GitHub's `$/` self-repository syntax for local actions; actionlint does not accept it yet.
+  self-repository:
+    disable: true
