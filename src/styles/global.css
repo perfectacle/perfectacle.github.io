@@ -79,6 +79,19 @@ iframe {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+.visually-hidden:focus {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  clip: auto;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--accent);
+}
 
 /* Post body */
 .prose {

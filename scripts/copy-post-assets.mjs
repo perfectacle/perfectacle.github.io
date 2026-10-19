@@ -14,7 +14,8 @@ for (const year of await visible(root)) {
     const slug = post.name;
     const dir = join(root, year.name, slug);
     const md = await readFile(join(dir, 'index.md'), 'utf8');
-    const m = md.match(/^date:\s*(\d{4})-(\d{2})-(\d{2})/m);
+    const frontmatter = md.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? '';
+    const m = frontmatter.match(/^date:\s*(\d{4})-(\d{2})-(\d{2})/m);
     if (!m) throw new Error(`no date in ${dir}`);
     const target = join(out, m[1], m[2], m[3], slug);
     for (const file of await readdir(dir)) {

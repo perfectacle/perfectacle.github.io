@@ -13,7 +13,7 @@ export async function GET() {
     ...flattenCategories(await getCategoryTree()).map(c => [categoryPath(c.path)] as [string]),
   ];
   const body = urls
-    .map(([path, lastmod]) => `  <url><loc>${encodeURI(new URL(path, SITE.url).href)}</loc>${lastmod ? `<lastmod>${lastmod.slice(0, 10)}</lastmod>` : ''}</url>`)
+    .map(([path, lastmod]) => `  <url><loc>${new URL(path, SITE.url).href.replace(/&/g, '&amp;')}</loc>${lastmod ? `<lastmod>${lastmod.slice(0, 10)}</lastmod>` : ''}</url>`)
     .join('\n');
   return new Response(`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

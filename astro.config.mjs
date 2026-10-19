@@ -16,6 +16,8 @@ export default defineConfig({
         rehypeHexoHeadingIds,
         [rehypeExternalLinks, { target: '_blank', rel: ['external', 'nofollow', 'noopener', 'noreferrer'] }],
       ],
+      // marked (Hexo) made `--` an en dash; heading anchors include it.
+      smartypants: { dashes: 'oldschool' },
     }),
     syntaxHighlight: { type: 'shiki', excludeLangs: ['mermaid'] },
     shikiConfig: {

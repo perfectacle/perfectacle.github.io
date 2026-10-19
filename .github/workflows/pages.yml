@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -35,6 +36,7 @@ jobs:
           path: ./dist
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     permissions:

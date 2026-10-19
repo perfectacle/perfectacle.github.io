@@ -38,7 +38,8 @@ const { post, newer, older } = Astro.props;
 const { Content, headings } = await render(post);
 const path = postPath(post);
 const firstImage = firstImageSrc(post);
-const ogImage = post.data.image?.src ?? (firstImage ? `${path}${firstImage}` : undefined);
+const ogFile = post.data.image?.replace(/^\.\//, '') ?? firstImage;
+const ogImage = ogFile ? `${path}${ogFile}` : undefined;
 const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 const cats = post.data.categories;
 const hasMermaid = /```mermaid/.test(post.body ?? '');
@@ -110,12 +111,11 @@ const hasMermaid = /```mermaid/.test(post.body ?? '');
   {hasMermaid && (
     <script type="module" is:inline>
       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.10.1/dist/mermaid.esm.min.mjs';
-      const blocks = [...document.querySelectorAll('pre[data-language="mermaid"]')];
-      blocks.forEach(pre => {
+      document.querySelectorAll('pre > code.language-mermaid').forEach(code => {
         const div = document.createElement('div');
         div.className = 'mermaid';
-        div.textContent = pre.textContent;
-        pre.replaceWith(div);
+        div.textContent = code.textContent;
+        code.parentElement.replaceWith(div);
       });
       mermaid.initialize({ startOnLoad: false, theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default' });
       mermaid.run();
