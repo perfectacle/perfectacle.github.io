@@ -1,6 +1,7 @@
 ---
 import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import '../styles/global.css';
+import SearchUi from '../components/SearchUi.astro';
 import { SITE } from '../lib/posts.ts';
 
 interface Props {
@@ -47,6 +48,7 @@ const current = Astro.url.pathname;
     <link rel="apple-touch-icon" href="/images/favicon/apple-touch-icon.png" />
     <link rel="alternate" type="application/atom+xml" title={SITE.title} href="/atom.xml" />
     <link rel="sitemap" href="/sitemap.xml" />
+    <SearchUi />
     <slot name="head" />
     <script is:inline>
       (() => {
@@ -58,6 +60,7 @@ const current = Astro.url.pathname;
         }
         if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         document.documentElement.dataset.theme = t;
+        document.documentElement.dataset.pfTheme = t;
       })();
     </script>
   </head>
@@ -82,18 +85,11 @@ const current = Astro.url.pathname;
           </ul>
         </nav>
         <div class="actions">
-          <a class="icon-btn" href="/search/" aria-label="검색">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-              <path
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm10 2-4.35-4.35"
-              />
-            </svg>
-          </a>
-          <button class="icon-btn" id="theme-toggle" type="button" aria-label="다크 모드 전환">
+          <template data-pagefind>
+            <pagefind-modal-trigger compact placeholder="검색"></pagefind-modal-trigger>
+            <pagefind-modal></pagefind-modal>
+          </template>
+          <button class="icon-btn" id="theme-toggle" type="button" aria-label="테마 전환">
             <svg class="sun" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
               <path
                 fill="none"
@@ -137,6 +133,7 @@ const current = Astro.url.pathname;
       toggle?.addEventListener('click', () => {
         const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
         document.documentElement.dataset.theme = next;
+        document.documentElement.dataset.pfTheme = next;
         try {
           localStorage.setItem('theme', next);
         } catch {

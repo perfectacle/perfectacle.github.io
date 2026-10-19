@@ -64,9 +64,25 @@ test('table of contents links point at headings', async ({ page }) => {
   for (const hash of hrefs) await expect(page.locator(`[id="${decodeURIComponent(hash.slice(1))}"]`)).toHaveCount(1);
 });
 
-test('search returns results', async ({ page }) => {
+test('search page returns results for ?q=', async ({ page }) => {
   await page.goto('/search/?q=트랜잭션');
-  await expect(page.locator('.pagefind-ui__result').first()).toBeVisible();
+  await expect(page.locator('pagefind-results[instance="page"] .pf-result-link').first()).toBeVisible();
+  await expect(page.locator('pagefind-summary[instance="page"]')).toContainText('결과');
+});
+
+test('search modal opens with the shortcut and finds posts', async ({ page, isMobile }) => {
+  await page.goto('/');
+  // The search UI mounts asynchronously; the shortcut is only bound once the trigger exists.
+  await expect(page.locator('pagefind-modal-trigger button')).toBeVisible();
+  if (isMobile) await page.locator('pagefind-modal-trigger button').click();
+  // The emulated desktop device reports Windows, so Pagefind's `mod` key is Ctrl even on a Mac host.
+  else await page.keyboard.press('Control+k');
+  const input = page.locator('pagefind-modal input');
+  await expect(input).toBeFocused();
+  await input.fill('코루틴');
+  await expect(page.locator('pagefind-modal .pf-result-link').first()).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(input).toBeHidden();
 });
 
 test('mermaid diagrams render to SVG', async ({ page }) => {
@@ -79,7 +95,7 @@ test('theme toggle switches and persists', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await page.getByRole('button', { name: '다크 모드 전환' }).click();
+  await page.getByRole('button', { name: '테마 전환' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
@@ -90,3 +106,16 @@ test('unknown URL serves the 404 page', async ({ page }) => {
   expect(res?.status()).toBe(404);
   await expect(page.getByRole('heading', { name: '페이지를 찾을 수 없습니다' })).toBeVisible();
 });
+
+for (const colorScheme of ['light', 'dark'] as const) {
+  test(`open search modal has no serious accessibility violations (${colorScheme})`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.goto('/');
+    await page.locator('pagefind-modal-trigger button').click();
+    await page.locator('pagefind-modal input').fill('코루틴');
+    await expect(page.locator('pagefind-modal .pf-result-link').first()).toBeVisible();
+    const { violations } = await new AxeBuilder({ page }).include('pagefind-modal').analyze();
+    const serious = violations.filter(v => v.impact === 'serious' || v.impact === 'critical');
+    expect(serious.map(v => `${v.id}: ${v.nodes.map(n => n.target.join(' ')).join(', ')}`)).toEqual([]);
+  });
+}
