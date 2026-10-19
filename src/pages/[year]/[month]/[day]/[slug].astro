@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import Base from '../../../../layouts/Base.astro';
 import Toc from '../../../../components/Toc.astro';
 import Comments from '../../../../components/Comments.astro';
+import YoutubeFacade from '../../../../components/YoutubeFacade.astro';
 import {
   categoryPath,
   excerpt,
@@ -115,6 +116,7 @@ const cats = post.data.categories;
       </nav>
 
       <Comments path={path} title={post.data.title} />
+      <YoutubeFacade />
     </article>
 
     {toc.length > 2 && (

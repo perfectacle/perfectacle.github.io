@@ -42,6 +42,7 @@ pnpm typecheck     # .ts 타입 검사(네이티브 TypeScript `tsc`)
 pnpm test          # Vitest
 pnpm verify:dist   # 빌드 결과물의 내부 링크·앵커·sitemap·atom 검사
 pnpm test:e2e      # Playwright E2E + axe 접근성(라이트/다크), 빌드 후
+pnpm test:lighthouse # 성능 예산(Lighthouse 점수·LCP·CLS·TBT·스크립트 용량), 빌드 후
 pnpm audit         # 프로덕션 의존성의 high 이상 취약점 검사
 ```
 
@@ -52,8 +53,9 @@ TypeScript 컴파일러(`tsc`)는 네이티브 버전(`@typescript/native`)을 �
 ## 의존성 자동 업데이트와 자동 머지
 
 - **Renovate**(`renovate.json`)가 npm·GitHub Actions·Node·pnpm 을 업데이트한다. 릴리스된 지 7일이 지난 버전만 PR 을 만들고, 메이저 업데이트까지 모두 CI 를 통과하면 자동 머지한다.
+- **외부 링크**는 매주 월요일 lychee 로 점검해 깨진 링크를 `broken-links` 이슈로 올린다(머지 게이트 아님).
 - **보안 업데이트**는 7일을 기다리지 않는다. Renovate 가 `pnpm-workspace.yaml` 의 `minimumReleaseAgeExclude` 에 해당 버전을 넣어 바로 PR 을 만들고, `minimumReleaseAgeExcludePrune` 이 쓸모없어진 예외를 정리한다.
-- main 은 `ci-ok` 체크 통과가 필수(관리자 직접 push 는 예외). CI 잡: lint·format·check·typecheck·test·audit·actionlint·build(+URL/dist 검사)·e2e, 그리고 **Renovate PR 에서만** base 와 빌드 결과물 비교(`output-diff`) — 렌더 결과가 한 글자라도 달라지면 실패하므로 사람이 직접 확인한다.
+- main 은 `ci-ok` 체크 통과가 필수(관리자 직접 push 는 예외). CI 잡: lint·format·check·typecheck·test·audit·actionlint·zizmor(워크플로 보안)·build(+URL/dist 검사)·e2e·lighthouse, 그리고 **Renovate PR 에서만** base 와 빌드 결과물 비교(`output-diff`) — 렌더 결과가 한 글자라도 달라지면 실패하므로 사람이 직접 확인한다.
 
 ## 구조
 
@@ -62,5 +64,7 @@ TypeScript 컴파일러(`tsc`)는 네이티브 버전(`@typescript/native`)을 �
 - `src/lib/remark-post-links.ts` — md 의 글 간 파일 경로 링크를 대상 글 `date` 기준 URL 로 변환. `scripts/check-post-links.ts` 가 변환 못 한 링크를 잡는다.
 - `src/lib/post-files.ts` — 글 폴더 → URL 규칙(빌드 스크립트·remark 플러그인 공용). `posts.ts` 의 `postPath` 와 같아야 한다.
 - `scripts/*.ts` — Node 가 타입만 지우고 바로 실행한다(빌드 단계 없음).
+- `src/lib/rehype-youtube-facade.ts` — 글의 YouTube iframe 을 썸네일 버튼으로 바꾼다. 누르면 그때 플레이어를 불러온다(`YoutubeFacade.astro`).
+- `src/lib/rehype-post-images.ts` — 본문 이미지를 본문 폭(720px) 기준 srcset 으로, 첫 이미지는 바로 로드. rehype 플러그인만 고치면 Astro 콘텐츠 캐시가 안 바뀌므로 로컬에선 `rm node_modules/.astro/data-store.json` 후 빌드한다.
 - `scripts/copy-post-assets.ts` — 페이지는 최적화 이미지(`/_astro/`)를 쓰지만, 외부 링크·og:image 용으로 원본을 옛 경로에도 둔다.
 - `public/` — 그대로 서빙되는 정적 파일(데모 페이지, Search Console 등 사이트 소유 확인 파일).

@@ -1,0 +1,61 @@
+name: External links
+
+# Posts link to thousands of outside pages that move or die over time. Not a merge gate (other sites'
+# uptime is not ours); a weekly report issue instead.
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Monday 09:00 KST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: external-links
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - id: lychee
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          # 403/429: sites that block bots or rate-limit, not dead links.
+          args: >-
+            --no-progress --max-concurrency 8 --timeout 30 --max-retries 2
+            --accept '200..=299,403,429'
+            'src/content/posts/**/*.md'
+          output: lychee-report.md
+          format: markdown
+          fail: false
+
+      - name: Open or update the report issue
+        if: steps.lychee.outputs.exit_code != 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: 깨진 외부 링크 리포트
+        run: |
+          number=$(gh issue list --state open --label broken-links --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file lychee-report.md
+          else
+            gh label create broken-links --color B60205 --force
+            gh issue create --title "$TITLE" --label broken-links --body-file lychee-report.md
+          fi
+
+      - name: Close the report issue when everything resolves
+        if: steps.lychee.outputs.exit_code == 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          number=$(gh issue list --state open --label broken-links --json number --jq '.[0].number')
+          if [ -n "$number" ]; then gh issue close "$number" --comment "이번 점검에서 깨진 링크가 없습니다."; fi

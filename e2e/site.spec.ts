@@ -119,3 +119,20 @@ for (const colorScheme of ['light', 'dark'] as const) {
     expect(serious.map(v => `${v.id}: ${v.nodes.map(n => n.target.join(' ')).join(', ')}`)).toEqual([]);
   });
 }
+
+test('YouTube embeds load only after clicking the thumbnail', async ({ page }) => {
+  await page.goto('/2025/12/02/travel-001-kenya-01/');
+  await expect(page.locator('.prose iframe[src*="youtube"]')).toHaveCount(0);
+  const facade = page.locator('.yt-facade').first();
+  await facade.scrollIntoViewIfNeeded();
+  await facade.click();
+  await expect(page.locator('.prose iframe[src*="youtube-nocookie.com/embed/"]')).toHaveCount(1);
+});
+
+test('YouTube embeds keep their start time', async ({ page }) => {
+  await page.goto('/2025/12/02/travel-001-kenya-01/');
+  const facade = page.locator('.yt-facade[data-start="512"]');
+  await facade.scrollIntoViewIfNeeded();
+  await facade.click();
+  await expect(page.locator('iframe[src*="G3sbCAv0gBE"][src*="start=512"]')).toHaveCount(1);
+});

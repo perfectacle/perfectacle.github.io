@@ -1,0 +1,77 @@
+<script>
+  document.addEventListener('click', event => {
+    const button = (event.target as Element).closest<HTMLButtonElement>('.yt-facade');
+    const id = button?.dataset['yt'];
+    if (!button || !id) return;
+    const iframe = document.createElement('iframe');
+    const start = button.dataset['start'];
+    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1${start ? `&start=${start}` : ''}`;
+    iframe.title = 'YouTube 동영상';
+    iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    iframe.allowFullscreen = true;
+    button.replaceWith(iframe);
+  });
+</script>
+
+<style is:global>
+  /* Own 16:9 box, so embeds without a .video-container wrapper don't overlay the page. */
+  .yt-frame {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    margin: 1.5em 0;
+  }
+  .video-container > .yt-frame {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+  }
+  .yt-frame > iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: var(--radius);
+  }
+  .yt-facade {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #000;
+    cursor: pointer;
+  }
+  .yt-facade img {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    object-fit: cover;
+    border-radius: 0;
+  }
+  .yt-facade::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 68px;
+    height: 48px;
+    transform: translate(-50%, -50%);
+    border-radius: 12px;
+    background: rgb(255 0 0 / 0.9)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M8 5v14l11-7z'/%3E%3C/svg%3E")
+      center / 28px no-repeat;
+  }
+  .yt-facade:hover::after,
+  .yt-facade:focus-visible::after {
+    background-color: rgb(255 0 0);
+  }
+  .yt-facade:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>

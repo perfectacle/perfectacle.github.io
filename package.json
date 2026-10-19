@@ -14,8 +14,9 @@
     "test": "vitest run",
     "verify:urls": "node scripts/check-legacy-urls.ts",
     "verify:dist": "node scripts/check-dist.ts",
-    "test:e2e": "playwright test",
-    "audit": "pnpm audit --prod --audit-level high"
+    "test:e2e": "playwright test --project desktop --project mobile",
+    "audit": "pnpm audit --prod --audit-level high",
+    "test:lighthouse": "playwright test --project lighthouse --workers 1"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.2",
@@ -42,6 +43,7 @@
     "fast-xml-parser": "5.11.2",
     "globals": "17.13.0",
     "jiti": "2.7.0",
+    "lighthouse": "13.5.0",
     "prettier": "3.9.10",
     "prettier-plugin-astro": "1.1.1",
     "rehype-stringify": "10.0.1",
