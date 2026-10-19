@@ -6,6 +6,7 @@ categories:
   - JPA
 date: 2021-05-05 17:46:16
 series: 'JPA Readonly 트랜잭션'
+seriesOrder: 1
 ---
 
 

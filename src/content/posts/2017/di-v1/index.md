@@ -4,6 +4,7 @@ date: 2017-09-04 09:05:54
 tags: [DI]
 categories: [설계, 패턴]
 series: 'Dependency Injection(의존성 주입)을 알아보자'
+seriesOrder: 1
 ---
 ![](./thumb.webp)
 

@@ -9,6 +9,7 @@ categories:
   - 자알쓰
 date: 2017-06-02 09:35:27
 series: '자알쓰'
+seriesOrder: 9
 ---
 
 ![](./thumb.webp)  

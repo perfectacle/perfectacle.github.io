@@ -4,6 +4,7 @@ date: 2017-05-30 09:39:29
 categories: [JavaScript, 자알쓰]
 tags: [Unary, Operator]
 series: '자알쓰'
+seriesOrder: 7
 ---
 
 ![함정카드 발동](./thumb.webp)  

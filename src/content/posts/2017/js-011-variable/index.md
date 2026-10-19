@@ -7,6 +7,7 @@ categories:
   - 자알쓰
 date: 2017-07-01 14:39:27
 series: '자알쓰'
+seriesOrder: 13
 ---
 
 ![](./thumb.webp)  

@@ -4,6 +4,7 @@ categories: [Spring, Spring Boot]
 tags: [VO, Bean, Lombok, Jackson, ORM, Hibernate, Ant, Maven]
 date: 2017-08-02 10:02:06
 series: '스타트 스프링 부트 스터디'
+seriesOrder: 1
 ---
 ![](./thumb.webp)  
 자바에 대한 근본도 없고, MVC, Servelet/JSP에 대한 이해도 제대로 없는데 이런 걸 해도 될런지 모르겠지만... 일단은 시작!  

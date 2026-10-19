@@ -168,14 +168,26 @@ test('images inside links keep the link instead of zooming', async ({ page }) =>
   await expect(page.locator('.prose a img.zoomable')).toHaveCount(0);
 });
 
-test('home shows post thumbnails at list size', async ({ page }) => {
+test('home shows post thumbnails at list size', async ({ page, isMobile }) => {
   await page.goto('/');
   const thumbs = page.locator('.post-list img.thumb');
   expect(await thumbs.count()).toBeGreaterThan(0);
   const first = thumbs.first();
   await expect.poll(() => first.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
-  // List thumbnails are small copies, never the post's full-width images.
-  expect(await first.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeLessThanOrEqual(336);
+  // List thumbnails are card-sized copies, never the post's full-width images.
+  expect(await first.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeLessThanOrEqual(960);
+  // A phone shows an 88px thumbnail; anything past the 480w copy means `sizes` stopped matching the layout.
+  if (isMobile) {
+    const picked = await first.evaluate((el: HTMLImageElement) => {
+      const current = new URL(el.currentSrc).pathname;
+      const hit = el.srcset
+        .split(',')
+        .map(c => c.trim().split(/\s+/))
+        .find(([url]) => url === current);
+      return Number.parseInt(hit?.[1] ?? '', 10);
+    });
+    expect(picked).toBeLessThanOrEqual(480);
+  }
 });
 
 test('post header links straight to the comments', async ({ page }) => {
@@ -259,5 +271,39 @@ for (const colorScheme of ['light', 'dark'] as const) {
     const { violations } = await new AxeBuilder({ page }).exclude('#disqus_thread').analyze();
     const serious = violations.filter(v => v.impact === 'serious' || v.impact === 'critical');
     expect(serious.map(v => `${v.id}: ${v.nodes.map(n => n.target.join(' ')).join(', ')}`)).toEqual([]);
+  });
+}
+
+test('tags index lists the most used tags first', async ({ page }) => {
+  await page.goto('/tags/');
+  const counts = await page.locator('.cloud sup').evaluateAll(els => els.map(el => Number(el.textContent?.trim())));
+  expect(counts.length).toBeGreaterThan(10);
+  expect(counts).toEqual([...counts].sort((a, b) => b - a));
+});
+
+test('series follow seriesOrder, not publish dates', async ({ page }) => {
+  // 함수형 JS: the introduction was written after parts 01–06 but is read first.
+  await page.goto('/2017/06/26/js-func-01-why-make/');
+  const fp = page.getByRole('navigation', { name: '시리즈: 함수형 JS', exact: true });
+  // Nine parts: the list starts collapsed.
+  await fp.getByText('전체 목록 (9편)').click();
+  await expect(fp.getByRole('listitem').first()).toContainText('함수형 프로그래밍(JS)이란');
+  await expect(fp.locator('a[aria-current="page"]')).toContainText('왜 쓸까');
+
+  // 자바의 정석: folder 016day (also titled 015일차) comes right after 015day.
+  await page.goto('/2017/08/04/Java-study-016day/');
+  const java = page.getByRole('navigation', { name: '시리즈: 자바의 정석 3판 스터디', exact: true });
+  await expect(java).toContainText('16/16');
+});
+
+for (const reducedMotion of ['no-preference', 'reduce'] as const) {
+  test(`header cursor blinks only without reduced motion (${reducedMotion})`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion });
+    await page.goto('/');
+    const caret = page.locator('.brand .caret');
+    await expect(caret).toBeVisible();
+    await expect(caret).toHaveAttribute('aria-hidden', 'true');
+    const blinking = await caret.evaluate(el => el.getAnimations().length > 0);
+    expect(blinking).toBe(reducedMotion === 'no-preference');
   });
 }

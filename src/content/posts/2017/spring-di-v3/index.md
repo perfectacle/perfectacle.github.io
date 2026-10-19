@@ -4,6 +4,7 @@ date: 2017-09-05 09:02:25
 tags: [DI]
 categories: [Spring, Core]
 series: '자바 빈즈 객체를 XML 파일로 관리하면서 DI하기'
+seriesOrder: 3
 ---
 ![](./thumb.webp)
 

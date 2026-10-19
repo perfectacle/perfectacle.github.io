@@ -4,6 +4,7 @@ date: 2017-01-02 09:05:49
 categories: [Java, 언어]
 tags: [자바의 정석, 연산자, 조건문]
 series: '자바의 정석 3판 스터디'
+seriesOrder: 4
 ---
 ![](./thumb.webp)
 

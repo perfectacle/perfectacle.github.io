@@ -4,6 +4,7 @@ date: 2017-02-11 13:07:43
 categories: [Java, 언어]
 tags: [자바의 정석, OOP]
 series: '자바의 정석 3판 스터디'
+seriesOrder: 9
 ---
 ![](./thumb.webp)
 

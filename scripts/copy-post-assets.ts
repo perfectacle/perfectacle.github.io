@@ -4,6 +4,7 @@
 import { copyFile, cp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { listPostDirs, postUrlOf } from '../src/lib/post-files.ts';
+import { ASTRO_SIZES, postImageSizes } from '../src/lib/rehype-post-images.ts';
 
 const ASTRO_DIR = join('dist', '_astro');
 const OPTIMIZED = /\/_astro\/([^"'\s,()/]+\.(?:webp|avif|png|jpe?g|gif|svg))/g;
@@ -22,12 +23,16 @@ for (const dir of listPostDirs()) {
   const page = join(target, 'index.html');
   const html = await readFile(page, 'utf8');
   const names = new Set([...html.matchAll(OPTIMIZED)].map(m => m[1] ?? ''));
-  if (!names.size) continue;
   for (const name of names) {
     await copyFile(join(ASTRO_DIR, name), join(target, name));
     moved.add(name);
   }
-  await writeFile(page, html.replace(OPTIMIZED, `${url}$1`));
+  // Astro can't know the post column's real width (it depends on the page having a contents sidebar).
+  const sidebar = html.includes('class="toc-side"');
+  const out = html
+    .replace(OPTIMIZED, `${url}$1`)
+    .replace(ASTRO_SIZES, (_, w: string) => `sizes="${postImageSizes(sidebar, Number(w))}"`);
+  if (out !== html) await writeFile(page, out);
 }
 for (const name of moved) await rm(join(ASTRO_DIR, name));
 console.log(`copy-post-assets: ${copied} files, ${moved.size} optimized images moved into post folders`);

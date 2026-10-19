@@ -1,8 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getTags } from '../../lib/posts.ts';
+import { byPostCount, getTags } from '../../lib/posts.ts';
 
-const tags = await getTags();
+const tags = byPostCount(await getTags());
 const max = Math.max(...tags.map(t => t.posts.length));
 ---
 

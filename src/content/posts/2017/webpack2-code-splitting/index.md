@@ -4,6 +4,7 @@ date: 2017-03-13 09:32:22
 categories: [Frontend, Webpack]
 tags: [npm, Webpack2, Babel]
 series: 'Webpack 2'
+seriesOrder: 2
 ---
 
 ## 들어가기에 앞서

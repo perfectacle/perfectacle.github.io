@@ -4,6 +4,7 @@ date: 2018-03-31 14:49:12
 tags: []
 categories: [Infra, Network]
 series: 'TCP/IP 쉽게, 더 쉽게 목차 리뷰'
+seriesOrder: 2
 ---
 
 ![](./thumb.webp)  

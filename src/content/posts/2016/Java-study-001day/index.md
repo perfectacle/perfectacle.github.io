@@ -4,6 +4,7 @@ date: 2016-12-30 17:18:24
 categories: [Java, 언어]
 tags: [자바의 정석]
 series: '자바의 정석 3판 스터디'
+seriesOrder: 1
 ---
 ![](./thumb.webp)
 

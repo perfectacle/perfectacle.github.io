@@ -1,12 +1,11 @@
 ---
 import ListPage from '../components/ListPage.astro';
-import { categoryPath, getCategoryTree, getPosts, paginate, SITE, ymd } from '../lib/posts.ts';
+import { getPosts, paginate, SITE, ymd } from '../lib/posts.ts';
 
 const posts = await getPosts();
 const pages = paginate(posts);
 const oldest = posts.at(-1);
 const since = oldest && ymd(oldest.data.date).y;
-const categories = (await getCategoryTree()).toSorted((a, b) => b.posts.length - a.posts.length);
 ---
 
 <ListPage posts={pages[0]} base="/" current={1} total={pages.length}>
@@ -16,17 +15,6 @@ const categories = (await getCategoryTree()).toSorted((a, b) => b.posts.length -
     <p class="stats">
       글 {posts.length}개{since && ` · ${since}년부터`}
     </p>
-    <nav aria-label="카테고리 바로가기">
-      <ul class="chips">
-        {categories.map(c => (
-          <li>
-            <a class="chip" href={categoryPath(c.path)}>
-              {c.name} <span class="count">{c.posts.length}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
   </header>
   <p class="section-label recent">최근 글</p>
 </ListPage>
@@ -50,15 +38,8 @@ const categories = (await getCategoryTree()).toSorted((a, b) => b.posts.length -
     font-size: 1.02rem;
   }
   .stats {
-    margin: 0 0 16px;
+    margin: 0;
     color: var(--fg-muted);
-  }
-  .count {
-    margin-left: 4px;
-    font-family: var(--font-mono);
-    font-size: 0.92em;
-  }
-  .stats {
     font-size: 0.9rem;
   }
   .recent {
@@ -73,18 +54,6 @@ const categories = (await getCategoryTree()).toSorted((a, b) => b.posts.length -
     }
     .recent {
       margin-top: 18px;
-    }
-    /* One swipeable row instead of four wrapped rows pushing the posts below the fold. */
-    .intro .chips {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scrollbar-width: none;
-      margin-inline: -16px;
-      /* Room for the focus ring, which the scroll container would otherwise clip. */
-      padding: 3px 16px;
-    }
-    .intro .chips li {
-      flex: none;
     }
   }
 </style>

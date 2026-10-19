@@ -4,6 +4,7 @@ date: 2017-01-23 11:00:21
 categories: [CS, ASM·C/C++]
 tags: [C, C++, Pointer, Address, Array]
 series: 'C/C++ 참고용 정리'
+seriesOrder: 1
 ---
 ![](./thumb.webp)  
 윤성우 님의 열혈 C 프로그래밍 동영상 강좌를 열심히 보고 있다.  

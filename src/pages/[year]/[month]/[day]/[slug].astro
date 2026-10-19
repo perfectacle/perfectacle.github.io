@@ -360,14 +360,24 @@ const cats = post.data.categories;
 </Base>
 
 <style>
+  /* The post takes whatever the page frame leaves after the contents sidebar; running text inside it is held
+     to --measure by the prose styles, so only code, tables and media reach the full width. */
   .layout {
-    max-width: var(--wide);
+    max-width: var(--page);
     margin: 0 auto;
-    padding: 0 16px;
+    padding: 0 var(--gutter);
     display: grid;
-    grid-template-columns: minmax(0, var(--content)) 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
     gap: 56px;
-    justify-content: center;
+  }
+  /* Without a contents sidebar the post takes the whole frame; text still stops at --measure. */
+  @media (min-width: 1101px) {
+    .layout:not(:has(.toc-side)) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  .post-head h1 {
+    max-width: var(--measure);
   }
   .post {
     min-width: 0;
@@ -669,6 +679,7 @@ const cats = post.data.categories;
   @media (max-width: 1100px) {
     .layout {
       grid-template-columns: minmax(0, var(--content));
+      justify-content: center;
     }
     .toc-side {
       display: none;

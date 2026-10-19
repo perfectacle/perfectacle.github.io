@@ -155,9 +155,9 @@ const current = Astro.url.pathname;
     border-bottom: 1px solid var(--border);
   }
   .bar {
-    max-width: var(--wide);
+    max-width: var(--page);
     margin: 0 auto;
-    padding: 0 16px;
+    padding: 0 var(--gutter);
     height: 60px;
     display: flex;
     align-items: center;
@@ -173,15 +173,35 @@ const current = Astro.url.pathname;
   .brand:hover {
     text-decoration: none;
   }
-  /* Terminal block cursor: the site's mark. Static on purpose — a blinking one would pull the eye on every page. */
+  /* Old-school terminal cursor, the site's one playful touch: a narrow phosphor-green block at cap height with a
+     glow, blinking on/off like a real terminal (step timing, no fade). Reduced motion keeps it lit and still. */
   .caret {
+    --phosphor: #39ff14;
     display: inline-block;
-    width: 0.5em;
-    height: 1.05em;
-    margin-left: 3px;
-    vertical-align: -0.14em;
-    border-radius: 1px;
-    background: var(--accent);
+    width: 0.36em;
+    height: 0.92em;
+    margin-left: 4px;
+    vertical-align: -0.08em;
+    background: var(--phosphor);
+    box-shadow:
+      0 0 3px var(--phosphor),
+      0 0 9px color-mix(in srgb, var(--phosphor) 60%, transparent);
+  }
+  /* Neon on white washes out; a dark-green rim keeps the shape while the glow keeps the neon feel. */
+  :global([data-theme='light']) .caret {
+    box-shadow:
+      0 0 0 1px #0b6b21,
+      0 0 5px color-mix(in srgb, var(--phosphor) 85%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .caret {
+      animation: caret-blink 1.06s steps(1, end) infinite;
+    }
+    @keyframes caret-blink {
+      50% {
+        opacity: 0;
+      }
+    }
   }
   nav {
     flex: 1;
@@ -283,7 +303,7 @@ const current = Astro.url.pathname;
       flex-wrap: wrap;
       height: auto;
       gap: 0;
-      padding: 0 4px 0 16px;
+      padding: 0 4px 0 var(--gutter);
     }
     .brand {
       flex: 1;
@@ -298,8 +318,8 @@ const current = Astro.url.pathname;
     nav {
       order: 3;
       /* Full header width: 100% plus the .bar side padding it sits inside. */
-      flex: 0 0 calc(100% + 20px);
-      margin: 0 -4px 0 -16px;
+      flex: 0 0 calc(100% + 4px + var(--gutter));
+      margin: 0 -4px 0 calc(-1 * var(--gutter));
       padding: 0 8px;
       border-top: 1px solid var(--border);
     }

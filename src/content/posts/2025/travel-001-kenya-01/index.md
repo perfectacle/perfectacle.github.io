@@ -4,6 +4,7 @@ tags: []
 categories: [일상, 여행]
 date: 2025-12-02 21:56:25
 series: '해외여행'
+seriesOrder: 1
 ---
 
 ![](./end-kenya.webp)  

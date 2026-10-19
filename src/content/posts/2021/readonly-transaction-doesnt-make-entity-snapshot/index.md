@@ -6,6 +6,7 @@ categories:
   - JPA
 date: 2021-08-08 23:29:33
 series: 'JPA Readonly 트랜잭션'
+seriesOrder: 2
 ---
 
 ## 3줄 요약

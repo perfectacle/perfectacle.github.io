@@ -4,6 +4,7 @@ date: 2017-01-06 09:06:13
 categories: [CS, ASM·C/C++]
 tags: [ASM, Assembly]
 series: 'ASM 참고용 정리'
+seriesOrder: 1
 ---
 ![](./thumb.webp)
 

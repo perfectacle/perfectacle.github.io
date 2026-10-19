@@ -91,6 +91,11 @@ export interface TagInfo {
   posts: Post[];
 }
 
+/** Most-used tags first; equal counts fall back to name order. */
+export function byPostCount(tags: TagInfo[]): TagInfo[] {
+  return tags.toSorted((a, b) => b.posts.length - a.posts.length || a.name.localeCompare(b.name, 'ko'));
+}
+
 export async function getTags(): Promise<TagInfo[]> {
   const map = new Map<string, TagInfo>();
   for (const post of await getPosts()) {
@@ -180,14 +185,19 @@ export interface SeriesInfo {
 }
 
 /**
- * The series `post` belongs to, in date order. Posts published at the same moment fall back to their id
- * (folder), compared numerically so `java-study-014day` comes before `java-study-016day`.
+ * The series `post` belongs to, in reading order: `seriesOrder` first (parts without one go last), then date,
+ * then id (folder) compared numerically so `java-study-014day` comes before `java-study-016day`.
  */
 export function seriesOf(post: Post, all: Post[]): SeriesInfo | undefined {
   const name = post.data.series;
   if (!name) return undefined;
   const posts = all
     .filter(p => p.data.series === name)
-    .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf() || a.id.localeCompare(b.id, 'en', { numeric: true }));
+    .sort(
+      (a, b) =>
+        (a.data.seriesOrder ?? Infinity) - (b.data.seriesOrder ?? Infinity) ||
+        a.data.date.valueOf() - b.data.date.valueOf() ||
+        a.id.localeCompare(b.id, 'en', { numeric: true }),
+    );
   return { name, posts, index: posts.indexOf(post) };
 }

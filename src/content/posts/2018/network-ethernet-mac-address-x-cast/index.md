@@ -6,6 +6,7 @@ categories:
   - Network
 date: 2018-05-30 02:11:22
 series: '후니의 쉽게 쓴 시스코 네트워킹 정리'
+seriesOrder: 1
 ---
 
 ![](./thumb.webp)

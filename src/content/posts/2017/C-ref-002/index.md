@@ -4,6 +4,7 @@ date: 2017-01-23 14:17:09
 categories: [CS, ASM·C/C++]
 tags: [C, C++, Variable, Literal, Memory]
 series: 'C/C++ 참고용 정리'
+seriesOrder: 2
 ---
 ![](./thumb.webp)  
 ## 변수  
