@@ -1,7 +1,7 @@
 ---
 title: 히카리 CP에서 다양한 시간 설정해보기
-tags: [HikariCP, DB, MySQL]
-categories: [Note, DB]
+tags: [HikariCP, MySQL]
+categories: [DB, 활용]
 date: 2022-09-25 17:06:17
 ---
 

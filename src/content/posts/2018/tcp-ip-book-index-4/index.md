@@ -1,8 +1,8 @@
 ---
 title: (네트워크) TCP/IP 쉽게, 더 쉽게 목차 리뷰 - 4장 라우팅과 인터넷 계층
 date: 2018-04-01 13:00:38
-tags: [Network]
-categories: [Middle-end, Network]
+tags: []
+categories: [Infra, Network]
 ---
 
 ![](./thumb.webp)  

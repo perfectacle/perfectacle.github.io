@@ -1,7 +1,7 @@
 ---
 title: (Java) 자바의 정석 3판 015일차 - 유용한 클래스, 날짜와 시간 & 형식화, 컬렉션
-categories: [Note, Java]
-tags: [Java, 자바의 정석, 내장 클래스, 날짜와 시간, 형식화]
+categories: [Java, 언어]
+tags: [자바의 정석, 내장 클래스, 날짜와 시간, 형식화]
 date: 2017-08-05 15:17:49
 ---
 ![](./thumb.webp)  

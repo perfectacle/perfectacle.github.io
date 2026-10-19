@@ -3,8 +3,8 @@ title: BNF 표기법
 tags:
   - BNF
 categories:
-  - Note
-  - Dev
+  - CS
+  - 상식
 date: 2018-08-15 16:08:01
 ---
 

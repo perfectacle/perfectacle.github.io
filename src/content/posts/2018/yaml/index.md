@@ -3,8 +3,8 @@ title: YAML
 tags:
   - YAML
 categories:
-  - Note
-  - Dev
+  - CS
+  - 상식
 date: 2018-08-19 13:56:20
 ---
 

@@ -1,9 +1,8 @@
 ---
 title: 후니의 쉽게 쓴 시스코 네트워킹 정리 - OSI 7 Layer 네트워크 장비
-tags:
-  - Network
+tags: []
 categories:
-  - Middle-end
+  - Infra
   - Network
 date: 2018-05-30 03:34:00
 ---

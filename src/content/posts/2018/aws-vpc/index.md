@@ -1,12 +1,10 @@
 ---
 title: (AWS) VPC
 tags:
-  - AWS
   - VPC
-  - Network
 categories:
-  - Middle-end
-  - DevOps
+  - Infra
+  - AWS
 date: 2018-04-25 06:00:53
 ---
 

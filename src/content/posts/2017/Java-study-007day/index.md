@@ -1,8 +1,8 @@
 ---
 title: (Java) 자바의 정석 3판 007일차 - OOP(객체, 클래스, 인스턴스), new 연산자, 참조 타입, 클래스 변수
 date: 2017-02-09 13:53:40
-categories: [Note, Java]
-tags: [Java, 자바의 정석, OOP]
+categories: [Java, 언어]
+tags: [자바의 정석, OOP]
 ---
 ![](./thumb.webp)  
 드디어 오늘부터 객체지향 프로그래밍(OOP, Object Oriented Programming) 파트를 나가기 시작했다.  

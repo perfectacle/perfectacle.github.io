@@ -1,8 +1,8 @@
 ---
 title: (ES) 똑똑한 논리 연산자
 date: 2017-02-13 09:01:37
-categories: [Programming, ECMAScript]
-tags: [JS, ES, Operator]
+categories: [JavaScript, 활용]
+tags: [Operator]
 ---
 ![](./thumb.webp)  
 오늘은 기본값을 위해 많이 쓰던 논리 연산자인  

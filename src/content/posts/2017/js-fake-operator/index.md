@@ -1,8 +1,8 @@
 ---
 title: (자알쓰) 훼이크 연산자 (번외편)
 date: 2017-05-30 09:39:29
-categories: [Programming, ECMAScript, 자알쓰]
-tags: [JS, ES, 자알쓰, Unary, Operator]
+categories: [JavaScript, 자알쓰]
+tags: [Unary, Operator]
 ---
 
 ![함정카드 발동](./thumb.webp)  

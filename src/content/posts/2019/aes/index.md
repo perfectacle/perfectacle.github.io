@@ -4,8 +4,8 @@ tags:
   - 암호화
   - AES
 categories:
-  - Note
-  - Dev
+  - CS
+  - 보안
 date: 2019-11-24 09:59:51
 ---
 

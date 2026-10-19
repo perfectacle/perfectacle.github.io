@@ -1,13 +1,9 @@
 ---
 title: (자알쓰) 모듈화 Part. 2
 categories:
-  - Programming
-  - ECMAScript
+  - JavaScript
   - 자알쓰
 tags:
-  - JS
-  - ES
-  - 자알쓰
   - Module
   - import
   - export

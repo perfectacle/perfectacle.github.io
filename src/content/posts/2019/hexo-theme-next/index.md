@@ -1,7 +1,7 @@
 ---
 title: (Hexo) NexT 테마
-tags: [Hexo, Theme, NexT]
-categories: [기타, 잡동사니]
+tags: [Theme, NexT]
+categories: [도구, Hexo]
 date: 2019-08-22 15:38:15
 ---
 ## Static Page Blog 테마 선정

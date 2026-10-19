@@ -1,7 +1,7 @@
 ---
 title: (Spring) Spring Boot 2.0에서 로깅 환경 구축하기
-tags: [Spring, log]
-categories: [Back-end, Spring]
+tags: [log]
+categories: [Spring, Spring Boot]
 date: 2018-07-22 20:31:55
 ---
 ![](./thumb.webp)

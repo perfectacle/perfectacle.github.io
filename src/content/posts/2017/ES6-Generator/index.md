@@ -1,8 +1,8 @@
 ---
 title: ES6 Generator
 date: 2017-04-22 17:17:14
-categories: [Programming, ECMAScript, ES2015+]
-tags: [JS, ES, ES6, ES2015, Interface, Symbol, Iterator, Generator]
+categories: [JavaScript, ES2015+]
+tags: [Interface, Symbol, Iterator, Generator]
 ---
 ![](./thumb.webp)  
 

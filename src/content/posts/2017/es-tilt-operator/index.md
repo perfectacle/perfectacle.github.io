@@ -1,8 +1,8 @@
 ---
 title: (ES) ~(Tilde) 연산자
 date: 2017-02-13 22:01:37
-categories: [Programming, ECMAScript]
-tags: [JS, ES, Operator]
+categories: [JavaScript, 활용]
+tags: [Operator]
 ---
 ![](./thumb.webp)  
 우리는 주로 `~`라는 문자를 물결이라고 읽었다.  

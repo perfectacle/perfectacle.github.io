@@ -1,8 +1,8 @@
 ---
 title: (Certbot) 공짜로 HTTPS 서버를 열어보자. (feat. AWS)
 date: 2017-10-05 15:47:46
-tags: [LetsEncrypt, Certbot, HTTPS, AWS, EC2, Route53, Nginx]
-categories: [Middle-end, DevOps]
+tags: [LetsEncrypt, Certbot, HTTPS, EC2, Route53, Nginx]
+categories: [Infra, AWS]
 ---
 ![귀염둥이 Certbot](./thumb.webp)
 

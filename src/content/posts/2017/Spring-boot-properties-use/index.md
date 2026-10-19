@@ -1,7 +1,7 @@
 ---
 title: (Spring Boot) properties 값을 불러와보자
-categories: [Back-end, Spring]
-tags: [Java, Spring, Spring Boot]
+categories: [Spring, Spring Boot]
+tags: []
 date: 2017-09-18 09:15:10
 ---
 ![](./thumb.webp)  

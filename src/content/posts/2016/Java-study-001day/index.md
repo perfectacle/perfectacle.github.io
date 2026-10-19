@@ -1,8 +1,8 @@
 ---
 title: (Java) 자바의 정석 3판 001일차 - 컴퓨터 이론, 리터럴 & 변수 & 변수
 date: 2016-12-30 17:18:24
-categories: [Note, Java]
-tags: [Java, 자바의 정석]
+categories: [Java, 언어]
+tags: [자바의 정석]
 ---
 ![](./thumb.webp)
 

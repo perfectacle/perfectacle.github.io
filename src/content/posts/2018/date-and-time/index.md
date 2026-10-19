@@ -7,8 +7,8 @@ tags:
   - GMT
   - Zulu
 categories:
-  - 기타
-  - 등등
+  - CS
+  - 상식
 date: 2018-09-26 00:27:20
 ---
 

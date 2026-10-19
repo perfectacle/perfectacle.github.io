@@ -27,12 +27,12 @@ description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, s
 
 ### URL-02 — slug 와 heading id
 
-태그·카테고리 URL slug 와 본문 heading id 는 hexo-util 의 slugize 규칙을 따른다(`src/lib/slugize.ts`, `src/lib/rehype-hexo-heading-ids.ts`). 대소문자를 유지하고(`Babel` 과 `babel` 은 다른 태그), 특수문자는 `-` 로 바꾸고, 같은 heading 이 반복되면 `-1`, `-2` 를 붙인다. `Hexo` 태그만 `TAG_MAP` 으로 `hexo` 에 합친다(`src/lib/posts.ts`).
+태그·카테고리 URL slug 와 본문 heading id 는 hexo-util 의 slugize 규칙을 따른다(`src/lib/slugize.ts`, `src/lib/rehype-hexo-heading-ids.ts`). 대소문자를 유지하고(`Babel` 과 `babel` 은 다른 태그), 특수문자는 `-` 로 바꾸고, 같은 heading 이 반복되면 `-1`, `-2` 를 붙인다.
 
 - 이유: 외부 링크와 다른 글이 이 slug·앵커로 걸려 있다.
 - smartypants 는 `dashes: 'oldschool'`(Hexo 와 같이 `--` → en dash) 이다. heading id 에 들어가므로 바꾸지 않는다.
 - 확인: `pnpm test`(slugize·heading id 테스트), `pnpm verify:dist`(내부 앵커가 실제 id 를 가리키는지).
-- 저장소 주인이 명시적으로 바꾸라고 할 때만 바꾼다. 그때도 옛 주소는 지우지 않고 리다이렉트 페이지로 남기고(`legacy-paths.txt` 항목 유지), PR 본문에 영향받는 주소를 적는다. slugize 를 쓰는 곳은 `grep -rln slugize src scripts` 로 찾는다.
+- 저장소 주인이 명시적으로 바꾸라고 할 때만 바꾼다. 그때도 옛 주소는 지우지 않고 리다이렉트 페이지로 남기고(`src/lib/taxonomy-redirects.ts` 에 옛 → 새 경로를 더한다. `legacy-paths.txt` 항목은 유지), PR 본문에 영향받는 주소를 적는다. slugize 를 쓰는 곳은 `grep -rln slugize src scripts` 로 찾는다.
 
 ### URL-03 — 옛 주소 계약
 

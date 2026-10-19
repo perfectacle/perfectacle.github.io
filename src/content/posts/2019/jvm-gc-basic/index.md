@@ -1,12 +1,10 @@
 ---
 title: (JVM) Garbage Collection Basic
 tags:
-  - Java
-  - JVM
   - GC
 categories:
-  - Programming
   - Java
+  - JVM
 date: 2019-05-07 01:43:52
 ---
 

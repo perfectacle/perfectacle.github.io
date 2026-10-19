@@ -1,7 +1,7 @@
 ---
 title: (Spring Boot) get/post 리퀘스트를 다뤄보자.
-categories: [Back-end, Spring]
-tags: [Java, Spring, Spring Boot]
+categories: [Spring, Spring Boot]
+tags: []
 date: 2017-09-19 09:50:51
 ---
 ![](./thumb.webp)  

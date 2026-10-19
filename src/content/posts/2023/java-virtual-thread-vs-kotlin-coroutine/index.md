@@ -1,7 +1,7 @@
 ---
 title: 자바의 Virtual Thread가 나와도 코틀린의 코루틴은 여전히 살아남을까?
-tags: [Java, Virtual Threads, Loom, Kotlin, Coroutine]
-categories: [Note, Java]
+tags: [Virtual Threads, Loom, Coroutine]
+categories: [Java, JVM]
 date: 2023-07-10 01:04:44
 ---
 

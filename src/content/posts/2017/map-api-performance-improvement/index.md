@@ -2,8 +2,8 @@
 title: 지도 API 성능 개선기
 tags: [API, Performance]
 categories:
-  - Note
-  - Dev
+  - 프로젝트
+  - 개선기
 date: 2017-09-28 23:29:16
 ---
 

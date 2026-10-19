@@ -1,7 +1,7 @@
 ---
 title: (HTTP) 상태 코드 - 307 vs 308
 date: 2017-10-16 20:29:58
-categories: [Middle-end, Web Server]
+categories: [Infra, Network]
 tags: [HTTP, HTTPS, GET, POST, Web Server]
 ---
 ![](./thumb.webp)  

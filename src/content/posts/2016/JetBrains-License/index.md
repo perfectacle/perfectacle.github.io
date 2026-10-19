@@ -1,7 +1,7 @@
 ---
 title: JetBrains 회사 제품의 라이센스
 date: 2016-12-18 22:01:28
-categories: [기타, 등등]
+categories: [도구, 기타]
 tags: [IDE, Editor, JetBrains, WebStorm, PhpStorm, IntelliJ]
 ---
 ![](./thumb.webp)

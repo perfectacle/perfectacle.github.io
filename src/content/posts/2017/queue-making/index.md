@@ -1,7 +1,7 @@
 ---
 title: (자료구조) Queue를 만들어보자!
-categories: [Middle-end, 자료구조]
-tags: [자료구조, Queue]
+categories: [CS, 자료구조]
+tags: [Queue]
 date: 2017-08-06 12:03:03
 ---
 ![](./thumb.webp)  

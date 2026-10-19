@@ -1,8 +1,8 @@
 ---
 title: (네트워크) TCP/IP 쉽게, 더 쉽게 목차 리뷰 - 3장 트랜스포트 계층
 date: 2018-03-31 14:56:08
-tags: [Network]
-categories: [Middle-end, Network]
+tags: []
+categories: [Infra, Network]
 ---
 
 ![](./thumb.webp)  

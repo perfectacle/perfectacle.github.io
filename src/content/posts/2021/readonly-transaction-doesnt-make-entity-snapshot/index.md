@@ -1,10 +1,8 @@
 ---
 title: (JPA) Readonly 트랜잭션은 Dirty Checking을 하지 않는다
-tags:
-  - JPA
+tags: []
 categories:
-  - Back-end
-  - DB
+  - Spring
   - JPA
 date: 2021-08-08 23:29:33
 ---

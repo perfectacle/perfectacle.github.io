@@ -1,11 +1,11 @@
 ---
 title: (Spring) 외부에서 호출하는 Request 객체를 만들 때 null을 주의하자
 tags:
-  - Spring
   - Web
   - Jackson
 categories:
   - Spring
+  - Core
 date: 2021-09-20 02:04:28
 ---
 

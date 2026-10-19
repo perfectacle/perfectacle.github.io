@@ -1,13 +1,12 @@
 ---
 title: (ES2015+) Async/Await는 배열 표준 메소드에서 작동하지 않는다.
 tags:
-  - ES2015+
-  - promise
+  - Promise
   - async
   - await
 categories:
-  - Programming
-  - ECMAScript
+  - JavaScript
+  - ES2015+
 date: 2017-07-17 20:00:04
 ---
 ![](./thumb.webp)  

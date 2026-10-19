@@ -1,7 +1,7 @@
 ---
 title: 해외여행 3편 - 스페인
-tags: [여행]
-categories: [기타, 잡동사니]
+tags: []
+categories: [일상, 여행]
 date: 2025-12-10 19:02:38
 ---
 

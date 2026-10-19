@@ -1,7 +1,7 @@
 ---
 title: (Docker) Spring Boot Application Image 최적화하기
-tags: [Docker, Spring Boot]
-categories: [Middle-end, DevOps]
+tags: [Docker]
+categories: [Infra, DevOps]
 date: 2019-04-16 03:19:58
 ---
 ![](./thumb.webp)

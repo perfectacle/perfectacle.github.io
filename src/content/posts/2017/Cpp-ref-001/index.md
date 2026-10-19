@@ -1,7 +1,7 @@
 ---
 title: (C++) 참고용 정리 - 변수의 주소
 date: 2017-01-02 09:59:21
-categories: [Programming, C/C++]
+categories: [CS, ASM·C/C++]
 tags: [C, C++, Pointer, Address]
 ---
 ![](./thumb.webp)  

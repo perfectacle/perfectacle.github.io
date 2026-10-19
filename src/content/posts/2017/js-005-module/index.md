@@ -1,8 +1,8 @@
 ---
 title: (자알쓰) 모듈화 Part. 1
 date: 2017-05-20 09:14:47
-categories: [Programming, ECMAScript, 자알쓰]
-tags: [JS, ES, 자알쓰, Module, Namespace]
+categories: [JavaScript, 자알쓰]
+tags: [Module, Namespace]
 ---
 ![](./thumb.webp)
 

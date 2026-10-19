@@ -1,8 +1,8 @@
 ---
-categories: [기타, 자작]
+categories: [프로젝트, 자작]
 title: (자작) perf-chk (Node.js 애플리케이션)
 date: 2017-03-01 16:24:02
-tags: [npm, Node.js, CLI, Performance]
+tags: [npm, CLI, Performance]
 ---
 ![](./thumb.webp)  
 

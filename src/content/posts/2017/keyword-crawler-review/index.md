@@ -1,8 +1,8 @@
 ---
 title: (후기) 키워드 크롤러를 만들고 나서...
 date: 2017-07-18 15:34:38
-tags: [review]
-categories: [기타, 잡동사니]
+tags: []
+categories: [일상, 회고]
 ---
 ![](./thumb.webp)
 [프로젝트로 바로가기](../../2017/keyword-crawler/index.md)  

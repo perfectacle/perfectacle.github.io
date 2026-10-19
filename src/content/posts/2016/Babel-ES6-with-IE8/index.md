@@ -1,8 +1,8 @@
 ---
 title: (Babel) ES6를 IE8에서도 써보자
 date: 2016-11-11 23:09:39
-categories: [Front-end, Babel]
-tags: [Babel, ES6, ES2015, ES, JS, Cross Browsing, npm, Node.js]
+categories: [Frontend, 빌드·테스트]
+tags: [Babel, Cross Browsing, npm]
 ---
 ![](./thumb.webp)  
 

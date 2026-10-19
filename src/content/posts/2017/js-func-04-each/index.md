@@ -1,13 +1,9 @@
 ---
 title: (함수형 JS) each
-tags:
-  - JS
-  - ES
-  - 함수형
+tags: []
 categories:
-  - Programming
-  - ECMAScript
-  - 함수형 JS
+  - JavaScript
+  - 함수형
 date: 2017-06-26 09:26:15
 ---
 

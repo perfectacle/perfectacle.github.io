@@ -30,10 +30,10 @@ describe('collection helpers', () => {
     expect(newer && postPath(newer)).toBe('/2018/12/31/newer/');
   });
 
-  it('keeps case-only-different tags apart but merges mapped ones', async () => {
+  it('keeps case-only-different tags apart', async () => {
     const tags = await getTags();
-    expect(tags.map(t => `${t.slug}:${t.posts.length}`).sort()).toEqual(['Babel:1', 'babel:1', 'hexo:2']);
-    expect(tagPath('Hexo')).toBe('/tags/hexo/');
+    expect(tags.map(t => `${t.slug}:${t.posts.length}`).sort()).toEqual(['Babel:1', 'Hexo:1', 'babel:1', 'hexo:1']);
+    expect(tagPath('Hexo')).toBe('/tags/Hexo/');
   });
 
   it('nests categories and counts posts at every level', async () => {

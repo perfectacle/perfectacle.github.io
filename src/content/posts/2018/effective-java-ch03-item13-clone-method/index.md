@@ -1,10 +1,9 @@
 ---
 title: '(이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, clone 재정의는 주의해서 진행해라'
-tags:
-  - Java
+tags: []
 categories:
-  - Note
   - Java
+  - 언어
 date: 2018-12-16 21:50:10
 ---
 

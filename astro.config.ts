@@ -6,6 +6,7 @@ import { rehypeHexoHeadingIds } from './src/lib/rehype-hexo-heading-ids.ts';
 import { remarkPostLinks } from './src/lib/remark-post-links.ts';
 import { rehypeYoutubeFacade } from './src/lib/rehype-youtube-facade.ts';
 import { rehypePostImages } from './src/lib/rehype-post-images.ts';
+import { TAXONOMY_REDIRECTS } from './src/lib/taxonomy-redirects.ts';
 
 export default defineConfig({
   vite: {
@@ -18,6 +19,7 @@ export default defineConfig({
   site: 'https://perfectacle.github.io',
   trailingSlash: 'ignore',
   build: { format: 'directory' },
+  redirects: TAXONOMY_REDIRECTS,
   // srcset/sizes for post images so phones don't download the 1600px originals.
   // Widths for the 720px post column at 1x / 1.5x / 2x. Astro's default breakpoint list made ~6 variants per image,
   // pushing the Pages artifact past 700MB (limit 1GB).

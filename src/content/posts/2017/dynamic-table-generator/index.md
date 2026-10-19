@@ -1,8 +1,8 @@
 ---
 title: (자작) 동적 테이블 생성기
 date: 2017-01-31 09:59:04
-categories: [기타, 자작]
-tags: [IT, Computer, HTML, Table]
+categories: [프로젝트, 자작]
+tags: [HTML, Table]
 ---
 ![](./thumb.webp)  
 

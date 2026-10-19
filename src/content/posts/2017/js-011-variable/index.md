@@ -1,13 +1,9 @@
 ---
 title: (자알쓰) 변수
 tags:
-  - JS
-  - ES
-  - 자알쓰
   - 변수
 categories:
-  - Programming
-  - ECMAScript
+  - JavaScript
   - 자알쓰
 date: 2017-07-01 14:39:27
 ---

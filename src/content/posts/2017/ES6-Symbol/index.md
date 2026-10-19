@@ -1,8 +1,8 @@
 ---
 title: (ES6) Symbol
 date: 2017-04-16 15:15:31
-categories: [Programming, ECMAScript, ES2015+]
-tags: [JS, ES, ES6, ES2015, Symbol]
+categories: [JavaScript, ES2015+]
+tags: [Symbol]
 ---
 ![](./thumb.webp)  
 

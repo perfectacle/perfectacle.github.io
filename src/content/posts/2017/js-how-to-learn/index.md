@@ -1,8 +1,8 @@
 ---
 title: 자바스크립트 학습 방법
 date: 2017-08-08 21:30:06
-categories: [Programming, ECMAScript]
-tags: [JS, ES, 독학]
+categories: [JavaScript, 활용]
+tags: [독학]
 ---
 ![](./thumb.webp)
 

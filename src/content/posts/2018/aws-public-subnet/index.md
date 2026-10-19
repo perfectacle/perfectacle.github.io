@@ -1,13 +1,11 @@
 ---
 title: (AWS) Public Subnet
 tags:
-  - AWS
   - VPC
-  - Network
   - Subnet
 categories:
-  - Middle-end
-  - DevOps
+  - Infra
+  - AWS
 date: 2018-04-25 06:01:08
 ---
 

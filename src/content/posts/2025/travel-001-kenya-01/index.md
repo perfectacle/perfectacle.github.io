@@ -1,7 +1,7 @@
 ---
 title: 해외여행 1편 - 케냐
-tags: [여행]
-categories: [기타, 잡동사니]
+tags: []
+categories: [일상, 여행]
 date: 2025-12-02 21:56:25
 ---
 

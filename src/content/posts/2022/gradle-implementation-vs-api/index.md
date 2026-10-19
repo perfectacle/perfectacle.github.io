@@ -1,7 +1,7 @@
 ---
 title: (Gradle) implementation vs api
-tags: [gradle]
-categories: [gradle]
+tags: []
+categories: [도구, Gradle]
 date: 2022-03-12 19:43:25
 ---
 

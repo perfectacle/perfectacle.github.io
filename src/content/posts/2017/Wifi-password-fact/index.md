@@ -1,8 +1,8 @@
 ---
 title: (상식) 무선 공유기 암호와 속도에 관한 진실
 date: 2017-01-24 09:02:39
-categories: [기타, 등등]
-tags: [IT, Computer, 인터넷, 속도, 암호, 보안]
+categories: [CS, 상식]
+tags: [인터넷, 속도, 암호]
 ---
 ![](./thumb.webp)  
 

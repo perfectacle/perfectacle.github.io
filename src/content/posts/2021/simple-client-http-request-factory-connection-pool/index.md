@@ -1,10 +1,9 @@
 ---
 title: (Spring Boot) SimpleClientHttpRequestFactory와 Connection Pool
 tags:
-  - Spring
-  - Spring Boot
   - RestTemplate
 categories:
+  - Spring
   - Spring Boot
 date: 2021-02-14 13:04:05
 ---

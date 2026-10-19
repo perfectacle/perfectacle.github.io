@@ -86,7 +86,12 @@ for (const xml of ['sitemap.xml', 'atom.xml']) {
   }
   for (const [, loc = ''] of text.matchAll(/<loc>([^<]+)<\/loc>|<link href="([^"]+)"\/>/g)) {
     const url = new URL(decodeEntities(loc || ''), SITE);
-    if (!existsSync(fileFor(url.pathname))) problems.push(`${xml}: ${url.pathname} (missing)`);
+    const file = fileFor(url.pathname);
+    if (!existsSync(file)) problems.push(`${xml}: ${url.pathname} (missing)`);
+    // A redirect in astro.config.ts silently replaces a real page that has the same path.
+    else if (file.endsWith('.html') && readFileSync(file, 'utf8').includes('http-equiv="refresh"')) {
+      problems.push(`${xml}: ${url.pathname} (replaced by a redirect)`);
+    }
   }
 }
 const entries = (readFileSync(join(DIST, 'atom.xml'), 'utf8').match(/<entry>/g) ?? []).length;

@@ -1,8 +1,8 @@
 ---
 title: (Webpack) 모듈? 번들링?
 date: 2016-11-18 09:38:50
-categories: [Front-end, Webpack]
-tags: [Cross Browsing, npm, Node.js, Webpack]
+categories: [Frontend, Webpack]
+tags: [Cross Browsing, npm]
 ---
 ![](./thumb.webp)  
 

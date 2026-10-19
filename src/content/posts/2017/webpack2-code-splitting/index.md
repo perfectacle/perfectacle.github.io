@@ -1,8 +1,8 @@
 ---
 title: (Webpack 2) 코드를 분할해보자!
 date: 2017-03-13 09:32:22
-categories: [Front-end, Webpack]
-tags: [npm, Node.js, Webpack2, babel, ES2015, ES6]
+categories: [Frontend, Webpack]
+tags: [npm, Webpack2, Babel]
 ---
 
 ## 들어가기에 앞서
