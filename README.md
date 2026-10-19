@@ -28,7 +28,7 @@ tags: [Java, JVM]
 
 ## 로컬 실행
 
-Node 24, pnpm 11(`packageManager` 에 고정, `corepack enable` 로 활성화).
+Node 는 `.node-version`, pnpm 은 `package.json` 의 `packageManager` 에 고정된 버전을 쓴다(`corepack enable` 로 활성화). 버전은 Renovate 가 올린다.
 
 ```sh
 pnpm install
@@ -37,15 +37,15 @@ pnpm build         # dist/ 생성 + 글 링크 검사 + 원본 이미지 복사 
 pnpm verify:urls   # Hexo 시절 URL(tests/fixtures/legacy-paths.txt) 이 전부 있는지
 pnpm lint          # ESLint
 pnpm format        # Prettier
-pnpm check         # .astro 포함 타입 검사(astro check, TS 6 API)
-pnpm typecheck     # .ts 타입 검사(TypeScript 7 tsc)
+pnpm check         # .astro 포함 타입 검사(astro check)
+pnpm typecheck     # .ts 타입 검사(네이티브 TypeScript `tsc`)
 pnpm test          # Vitest
 pnpm verify:dist   # 빌드 결과의 내부 링크·앵커·sitemap·atom 검사
 pnpm test:e2e      # Playwright E2E + axe 접근성(라이트/다크), 빌드 후
 pnpm audit         # 운영 의존성 high 이상 취약점
 ```
 
-TypeScript 는 7 을 쓰되(`@typescript/native` → `tsc`), typescript-eslint·astro check 가 아직 TS 7 API 를 지원하지 않아 `typescript` 이름은 TS 6 API 호환 패키지(`@typescript/typescript6`)에 연결해 둔다(TS 공식 병행 방식).
+TypeScript 컴파일러(`tsc`)는 네이티브 버전(`@typescript/native`)을 쓰고, `typescript` 이름은 typescript-eslint·astro check 가 쓰는 JS API 호환 패키지(`@typescript/typescript6`)에 연결해 둔다(TS 공식 병행 방식). 두 도구가 네이티브 API 를 지원하면 하나로 합친다.
 
 `pnpm-workspace.yaml` 의 `minimumReleaseAge` 로 공개 7일 안 된 버전은 설치되지 않는다. ## 의존성 자동 업데이트와 자동 머지
 
@@ -59,6 +59,6 @@ TypeScript 는 7 을 쓰되(`@typescript/native` → `tsc`), typescript-eslint·
 - `src/lib/slugize.ts` — hexo-util slugize 와 같은 규칙. 바꾸면 태그/카테고리/본문 앵커 URL 이 바뀐다.
 - `src/lib/remark-post-links.ts` — md 의 글 간 파일 경로 링크를 대상 글 `date` 기준 URL 로 변환. `scripts/check-post-links.ts` 가 변환 못 한 링크를 잡는다.
 - `src/lib/post-files.ts` — 글 폴더 → URL 규칙(빌드 스크립트·remark 플러그인 공용). `posts.ts` 의 `postPath` 와 같아야 한다.
-- `scripts/*.ts` — Node 24 가 타입만 지우고 바로 실행한다(빌드 단계 없음).
+- `scripts/*.ts` — Node 가 타입만 지우고 바로 실행한다(빌드 단계 없음).
 - `scripts/copy-post-assets.ts` — 페이지는 최적화 이미지(`/_astro/`)를 쓰지만, 외부 링크·og:image 용으로 원본을 옛 경로에도 둔다.
 - `public/` — 그대로 서빙되는 정적 파일(데모 페이지, 사이트 인증 파일 등).
