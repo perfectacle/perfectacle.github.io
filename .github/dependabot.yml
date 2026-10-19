@@ -13,6 +13,11 @@ updates:
       tooling:
         dependency-type: development
     open-pull-requests-limit: 5
+    ignore:
+      # `typescript` is the TS 6 API package (@typescript/typescript6) that typescript-eslint and astro check need;
+      # TS 7 itself is `@typescript/native`. Lift once both tools support the TS 7.1 API.
+      - dependency-name: typescript
+        versions: ['>=7']
 
   - package-ecosystem: github-actions
     directory: /

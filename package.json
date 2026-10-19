@@ -7,6 +7,7 @@
     "build": "astro build && node scripts/check-post-links.ts && node scripts/copy-post-assets.ts && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check",
+    "typecheck": "astro sync && tsc",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -29,15 +30,17 @@
     "@types/hast": "3.0.5",
     "@types/mdast": "4.0.4",
     "@types/node": "26.6.5",
+    "@typescript/native": "npm:typescript@7.0.2",
     "eslint": "10.12.0",
     "eslint-plugin-astro": "3.2.1",
     "globals": "17.13.0",
+    "jiti": "2.7.0",
     "prettier": "3.9.10",
     "prettier-plugin-astro": "1.1.1",
     "rehype-stringify": "10.0.1",
     "remark-parse": "11.0.0",
     "remark-rehype": "11.1.2",
-    "typescript": "~6.0.3",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
     "typescript-eslint": "8.71.1",
     "unified": "11.0.5",
     "vfile": "6.0.3",
@@ -46,5 +49,5 @@
   "engines": {
     "node": "24.x"
   },
-  "packageManager": "pnpm@11.28.5+sha512.484563d30b4c2ad27cb48aa94ff2b302dbcebc8ff6bf28816c2589886e146ce7f76f354f3bc1a438e6f5e9768c302aa0a6f7add8232903cd4cf81426cbc14d9e"
+  "packageManager": "pnpm@12.12.1+sha512.b7f98934c0b1f29a65f5da52f2d7f994e7faad573ffdddea1497fb4dcb5aec051590ee7c7d95a38172b4bfae103a5b83edf2ee866e11731c2cafa96063610ac5"
 }
