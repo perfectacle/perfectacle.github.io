@@ -5,14 +5,13 @@ import { fileURLToPath } from 'url';
 
 // Imagemin 플러그인 (기존 사용하던 것 그대로)
 import imagemin from 'imagemin';
-import imageminMozjpeg from 'imagemin-mozjpeg';
 import imageminPngquant from 'imagemin-pngquant';
 
 // 리사이징을 위한 Sharp
 import sharp from 'sharp';
 
 const __filename = fileURLToPath(import.meta.url);
-const directoryPath = path.resolve(process.cwd(), '..');
+const directoryPath = path.resolve(path.dirname(__filename), '../../source');
 
 // ⭐ 블로그용 최대 가로 폭 설정
 const MAX_WIDTH = 1600;
