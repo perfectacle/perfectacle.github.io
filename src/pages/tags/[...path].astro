@@ -1,0 +1,28 @@
+---
+import ListPage from '../../components/ListPage.astro';
+import { getTags, paginate } from '../../lib/posts.ts';
+
+export async function getStaticPaths() {
+  return (await getTags()).flatMap(tag => {
+    const pages = paginate(tag.posts);
+    return pages.map((posts, i) => ({
+      params: { path: i === 0 ? tag.slug : `${tag.slug}/page/${i + 1}` },
+      props: { tag, posts, current: i + 1, total: pages.length },
+    }));
+  });
+}
+const { tag, posts, current, total } = Astro.props;
+---
+
+<ListPage
+  title={`#${tag.name}`}
+  eyebrow="태그"
+  heading={`#${tag.name}`}
+  description={`'${tag.name}' 태그가 달린 글 ${tag.posts.length}개`}
+  posts={posts}
+  base={`/tags/${tag.slug}/`}
+  current={current}
+  total={total}
+>
+  <p slot="intro" class="muted">글 {tag.posts.length}개</p>
+</ListPage>

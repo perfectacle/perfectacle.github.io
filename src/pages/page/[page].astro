@@ -1,0 +1,15 @@
+---
+import ListPage from '../../components/ListPage.astro';
+import { getPosts, paginate } from '../../lib/posts.ts';
+
+export async function getStaticPaths() {
+  const pages = paginate(await getPosts());
+  return pages.slice(1).map((posts, i) => ({
+    params: { page: String(i + 2) },
+    props: { posts, current: i + 2, total: pages.length },
+  }));
+}
+const { posts, current, total } = Astro.props;
+---
+
+<ListPage title="전체 글" posts={posts} base="/" current={current} total={total} />

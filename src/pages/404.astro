@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="페이지를 찾을 수 없음" noindex>
+  <div class="container center">
+    <img src="/images/404/404.jpg" alt="" width="480" />
+    <h1>페이지를 찾을 수 없습니다</h1>
+    <p class="muted">글이 삭제되었거나 주소가 바뀌었을 수 있어요.</p>
+    <p><a href="/">홈으로</a> · <a href="/search/">검색하기</a> · <a href="/archives/">전체 글 보기</a></p>
+  </div>
+</Base>
+
+<style>
+  .center {
+    text-align: center;
+  }
+  img {
+    height: auto;
+    border-radius: 10px;
+  }
+  h1 {
+    font-size: 1.6rem;
+    margin: 24px 0 4px;
+  }
+</style>

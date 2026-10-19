@@ -1,0 +1,230 @@
+:root {
+  --bg: #ffffff;
+  --bg-soft: #f6f7f9;
+  --fg: #1f2328;
+  --fg-muted: #656d76;
+  --border: #e4e7eb;
+  --accent: #2f6fde;
+  --accent-soft: #e8f0fd;
+  --code-bg: #f6f8fa;
+  --content: 720px;
+  --wide: 1080px;
+  --radius: 10px;
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #0f1115;
+  --bg-soft: #171a21;
+  --fg: #e6e8eb;
+  --fg-muted: #9aa3ae;
+  --border: #272c35;
+  --accent: #7aa7ff;
+  --accent-soft: #1a2640;
+  --code-bg: #161b22;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 80px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  font-size: 17px;
+  line-height: 1.75;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+
+.container {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.muted {
+  color: var(--fg-muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.visually-hidden:focus {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  clip: auto;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--accent);
+}
+
+/* Post body */
+.prose {
+  font-size: 1.0625rem;
+}
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  line-height: 1.35;
+  margin: 2.2em 0 0.8em;
+  letter-spacing: -0.01em;
+}
+.prose h1 { font-size: 1.75rem; }
+.prose h2 {
+  font-size: 1.5rem;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border);
+}
+.prose h3 { font-size: 1.25rem; }
+.prose h4 { font-size: 1.1rem; }
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose table,
+.prose pre {
+  margin: 0 0 1.25em;
+}
+.prose li + li {
+  margin-top: 0.25em;
+}
+.prose img {
+  display: block;
+  height: auto;
+  margin: 1.5em auto;
+  border-radius: 6px;
+}
+.prose blockquote {
+  margin-left: 0;
+  padding: 0.75em 1.1em;
+  border-left: 4px solid var(--accent);
+  background: var(--bg-soft);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--fg-muted);
+}
+.prose blockquote > :last-child {
+  margin-bottom: 0;
+}
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2.5em 0;
+}
+.prose table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+.prose th,
+.prose td {
+  border: 1px solid var(--border);
+  padding: 0.45em 0.8em;
+}
+.prose th {
+  background: var(--bg-soft);
+}
+.prose :not(pre) > code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  padding: 0.15em 0.4em;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+.prose pre {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+  background: var(--code-bg) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.prose pre code {
+  font-family: inherit;
+}
+
+/* Shiki dual themes: colors come from CSS variables so the theme toggle needs no re-render. */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-light);
+}
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark);
+}
+
+.video-container {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  margin: 1.5em 0;
+}
+.video-container iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: var(--radius);
+}
+
+/* Shared chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.chip {
+  display: inline-block;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  padding: 0.1em 0.65em;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.chip:hover {
+  text-decoration: none;
+  filter: brightness(0.96);
+}

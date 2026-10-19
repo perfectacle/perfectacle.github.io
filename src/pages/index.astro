@@ -1,0 +1,8 @@
+---
+import ListPage from '../components/ListPage.astro';
+import { getPosts, paginate } from '../lib/posts.ts';
+
+const pages = paginate(await getPosts());
+---
+
+<ListPage posts={pages[0]} base="/" current={1} total={pages.length} />

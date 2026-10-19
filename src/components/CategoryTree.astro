@@ -1,0 +1,43 @@
+---
+import { categoryPath, type CategoryNode } from '../lib/posts.ts';
+
+interface Props {
+  nodes: CategoryNode[];
+}
+const { nodes } = Astro.props;
+---
+
+<ul>
+  {nodes.map(node => (
+    <li>
+      <a href={categoryPath(node.path)}>{node.name}</a> <span class="count">{node.posts.length}</span>
+      {node.children.length > 0 && <Astro.self nodes={node.children} />}
+    </li>
+  ))}
+</ul>
+
+<style>
+  ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+  }
+  ul ul {
+    padding-left: 18px;
+    border-left: 1px solid var(--border);
+    margin: 4px 0 4px 6px;
+  }
+  li {
+    padding: 3px 0;
+  }
+  a {
+    color: var(--fg);
+  }
+  a:hover {
+    color: var(--accent);
+  }
+  .count {
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+</style>

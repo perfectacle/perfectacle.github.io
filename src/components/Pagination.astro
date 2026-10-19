@@ -1,0 +1,76 @@
+---
+import { pagePath } from '../lib/posts.ts';
+
+interface Props {
+  base: string;
+  current: number;
+  total: number;
+}
+const { base, current, total } = Astro.props;
+
+const window = 2;
+const pages: (number | '…')[] = [];
+for (let n = 1; n <= total; n++) {
+  if (n === 1 || n === total || Math.abs(n - current) <= window) pages.push(n);
+  else if (pages.at(-1) !== '…') pages.push('…');
+}
+---
+
+{total > 1 && (
+  <nav class="pagination" aria-label="페이지">
+    {current > 1 ? <a href={pagePath(base, current - 1)} rel="prev">← 이전</a> : <span class="disabled">← 이전</span>}
+    <ol>
+      {pages.map(p =>
+        p === '…' ? (
+          <li class="gap">…</li>
+        ) : (
+          <li>
+            <a href={pagePath(base, p)} aria-current={p === current ? 'page' : undefined}>{p}</a>
+          </li>
+        ),
+      )}
+    </ol>
+    {current < total ? <a href={pagePath(base, current + 1)} rel="next">다음 →</a> : <span class="disabled">다음 →</span>}
+  </nav>
+)}
+
+<style>
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 32px;
+    font-size: 0.92rem;
+  }
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  a,
+  .disabled,
+  .gap {
+    display: inline-block;
+    min-width: 34px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    text-align: center;
+    color: var(--fg-muted);
+  }
+  a:hover {
+    background: var(--bg-soft);
+    text-decoration: none;
+  }
+  a[aria-current='page'] {
+    background: var(--accent);
+    color: #fff;
+  }
+  .disabled {
+    opacity: 0.4;
+  }
+</style>
