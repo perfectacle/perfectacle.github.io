@@ -29,7 +29,7 @@ const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.len
 
 for (const [path, budget] of Object.entries(PAGES)) {
   test(`lighthouse ${path}`, async ({ baseURL }) => {
-    const runs = [];
+    const runs: Record<string, number>[] = [];
     for (let i = 0; i < RUNS; i++) {
       const result = await lighthouse(new URL(path, baseURL).href, {
         port: PORT,
@@ -51,7 +51,7 @@ for (const [path, budget] of Object.entries(PAGES)) {
         scriptKb: kb('script'),
         imageKb: kb('image'),
         fontKb: kb('font'),
-      } as Record<string, number>);
+      });
     }
     const m = Object.fromEntries(Object.keys(runs[0] ?? {}).map(k => [k, median(runs.map(r => r[k] ?? NaN))]));
     console.log(path, JSON.stringify(m));

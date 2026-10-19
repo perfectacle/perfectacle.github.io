@@ -237,8 +237,14 @@ jobs:
           key: ${{ steps.fingerprint.outputs.key }}
 
   lighthouse:
+    name: lighthouse (${{ matrix.shard }}/5)
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        # One page per job: each page is measured 3 times and Lighthouse runs take ~6s each.
+        shard: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -246,7 +252,7 @@ jobs:
 
       # Performance budget: auto-merged updates must not make pages slower or heavier.
       - id: fingerprint
-        run: echo "key=verified-lighthouse-${{ runner.arch }}-${{ hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
+        run: echo "key=verified-lighthouse-${{ matrix.shard }}-${{ runner.arch }}-${{ hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
 
       - id: verified
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -284,12 +290,12 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - if: steps.verified.outputs.cache-hit != 'true'
-        run: pnpm test:lighthouse
+        run: pnpm test:lighthouse --shard ${{ matrix.shard }}/5
 
       - if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: lighthouse-traces
+          name: lighthouse-traces-${{ matrix.shard }}
           path: test-results/
           retention-days: 7
 
