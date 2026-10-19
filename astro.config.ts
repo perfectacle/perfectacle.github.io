@@ -6,6 +6,7 @@ import { rehypeHexoHeadingIds } from './src/lib/rehype-hexo-heading-ids.ts';
 import { remarkPostLinks } from './src/lib/remark-post-links.ts';
 import { rehypeYoutubeFacade } from './src/lib/rehype-youtube-facade.ts';
 import { rehypePostImages } from './src/lib/rehype-post-images.ts';
+import { rehypeCodeBlocks } from './src/lib/rehype-code-blocks.ts';
 import { TAXONOMY_REDIRECTS } from './src/lib/taxonomy-redirects.ts';
 
 export default defineConfig({
@@ -32,6 +33,7 @@ export default defineConfig({
         rehypeHexoHeadingIds,
         rehypeYoutubeFacade,
         rehypePostImages,
+        rehypeCodeBlocks,
         [rehypeExternalLinks, { target: '_blank', rel: ['external', 'nofollow', 'noopener', 'noreferrer'] }],
       ],
       // marked (Hexo) made `--` an en dash; heading anchors include it.

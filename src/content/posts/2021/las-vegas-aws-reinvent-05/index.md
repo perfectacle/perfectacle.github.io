@@ -3,6 +3,7 @@ title: 라스베가스를 다녀오고... 5편 (feat. AWS re:Invent 2021) - 세�
 tags: [reinvent]
 categories: [일상, 여행]
 date: 2021-12-31 23:27:31
+series: '라스베가스를 다녀오고... (AWS re:Invent 2021)'
 ---
 
 회사에서 좋은 기회가 생겨 [AWS re:invent](https://reinvent.awsevents.com/)(2021/11/29 ~ 2021/12/03)에 참석할 기회가 생겼다.  

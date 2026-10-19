@@ -138,3 +138,56 @@ export function firstImageSrc(post: Post): string | undefined {
   const m = (post.body ?? '').match(/!\[[^\]]*\]\(<?\.\/([^)>\s]+)/);
   return m?.[1];
 }
+
+/** Image file (relative to the post folder) that represents the post: frontmatter `image`, else the first image. */
+export function coverImage(post: Post): string | undefined {
+  return post.data.image?.replace(/^\.\//, '') ?? firstImageSrc(post);
+}
+
+/**
+ * Other posts most like `post`: a shared category path counts more the deeper it goes, and each shared tag counts 2.
+ * Only a shared top-level category (score 1) is too loose to be "related", so at least 2 is required.
+ * Ties go to the post closest in date.
+ */
+export function relatedPosts(
+  post: Post,
+  all: Post[],
+  { limit = 4, exclude = [] as (Post | undefined)[] } = {},
+): Post[] {
+  const cats = post.data.categories;
+  const tags = new Set(post.data.tags);
+  const time = post.data.date.valueOf();
+  const score = (other: Post) => {
+    let s = 0;
+    const c = other.data.categories;
+    for (let i = 0; i < Math.min(c.length, cats.length) && c[i] === cats[i]; i++) s += i + 1;
+    return s + other.data.tags.filter(t => tags.has(t)).length * 2;
+  };
+  return all
+    .filter(p => p !== post && !exclude.includes(p))
+    .map(p => ({ p, s: score(p), d: Math.abs(p.data.date.valueOf() - time) }))
+    .filter(x => x.s >= 2)
+    .sort((a, b) => b.s - a.s || a.d - b.d)
+    .slice(0, limit)
+    .map(x => x.p);
+}
+
+export interface SeriesInfo {
+  name: string;
+  posts: Post[];
+  /** Position of the post in `posts`, 0-based. */
+  index: number;
+}
+
+/**
+ * The series `post` belongs to, in date order. Posts published at the same moment fall back to their id
+ * (folder), compared numerically so `java-study-014day` comes before `java-study-016day`.
+ */
+export function seriesOf(post: Post, all: Post[]): SeriesInfo | undefined {
+  const name = post.data.series;
+  if (!name) return undefined;
+  const posts = all
+    .filter(p => p.data.series === name)
+    .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf() || a.id.localeCompare(b.id, 'en', { numeric: true }));
+  return { name, posts, index: posts.indexOf(post) };
+}

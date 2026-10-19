@@ -3,6 +3,7 @@ title: (Jackson) LocalDate, LocalTime, LocalDateTime 뽀개기 - Serialize
 date: 2018-01-16 10:54:25
 tags: [Jackson, JSON]
 categories: [Java, 라이브러리]
+series: 'Jackson으로 LocalDate, LocalTime, LocalDateTime 뽀개기'
 ---
 
 ![](./thumb.webp)

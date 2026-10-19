@@ -31,10 +31,17 @@ const { headings } = Astro.props;
   a {
     color: var(--fg-muted);
   }
-  a:hover,
   a.active {
     color: var(--accent);
+  }
+  a:hover {
     text-decoration: none;
+  }
+  /* Touch screens keep :hover on the last tapped spot, which would look like a second current heading. */
+  @media (hover: hover) {
+    a:hover {
+      color: var(--accent);
+    }
   }
 </style>
 

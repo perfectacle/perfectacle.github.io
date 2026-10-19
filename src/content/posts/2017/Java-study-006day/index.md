@@ -3,6 +3,7 @@ title: (Java) 자바의 정석 3판 006일차 - 배열
 date: 2017-01-24 10:17:58
 categories: [Java, 언어]
 tags: [자바의 정석, 배열]
+series: '자바의 정석 3판 스터디'
 ---
 ![](./thumb.webp)
 

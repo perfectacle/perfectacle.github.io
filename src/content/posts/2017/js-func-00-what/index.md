@@ -5,6 +5,7 @@ categories:
   - JavaScript
   - 함수형
 date: 2017-06-30 21:33:47
+series: '함수형 JS'
 ---
 ![](./thumb.webp)
 

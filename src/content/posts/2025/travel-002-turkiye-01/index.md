@@ -3,6 +3,7 @@ title: 해외여행 2편 - 튀르키예 (터키)
 tags: []
 categories: [일상, 여행]
 date: 2025-12-10 11:26:56
+series: '해외여행'
 ---
 
 ![](./cat-on-the-roof.webp)

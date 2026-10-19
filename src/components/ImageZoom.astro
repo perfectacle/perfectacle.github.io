@@ -44,6 +44,8 @@
     img.tabIndex = 0;
     img.setAttribute('role', 'button');
     img.setAttribute('aria-label', `${img.alt ? `${img.alt} — ` : ''}이미지 크게 보기`);
+    // alt="" marks an image as decorative, which contradicts role=button; the aria-label names it instead.
+    if (!img.alt) img.removeAttribute('alt');
     img.addEventListener('click', () => open(i));
     img.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {

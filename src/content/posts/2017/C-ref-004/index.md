@@ -3,6 +3,7 @@ title: (C/C++) 참고용 정리 - 메모리 영역(Code, Data, Stack, Heap)
 date: 2017-02-09 14:31:26
 categories: [CS, ASM·C/C++]
 tags: [C, C++, Variable, Static]
+series: 'C/C++ 참고용 정리'
 ---
 ![](./thumb.webp)
 

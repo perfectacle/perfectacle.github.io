@@ -5,6 +5,7 @@ categories:
   - Infra
   - Network
 date: 2018-05-30 03:34:00
+series: '후니의 쉽게 쓴 시스코 네트워킹 정리'
 ---
 
 ![](./thumb.webp)

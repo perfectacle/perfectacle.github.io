@@ -3,6 +3,7 @@ title: (네트워크) TCP/IP 쉽게, 더 쉽게 목차 리뷰 - 3장 트랜스�
 date: 2018-03-31 14:56:08
 tags: []
 categories: [Infra, Network]
+series: 'TCP/IP 쉽게, 더 쉽게 목차 리뷰'
 ---
 
 ![](./thumb.webp)  

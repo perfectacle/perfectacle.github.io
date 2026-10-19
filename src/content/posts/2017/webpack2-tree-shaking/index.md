@@ -3,6 +3,7 @@ title: (Webpack 2) 트리 쉐이킹을 해보자!
 date: 2017-03-12 19:32:22
 categories: [Frontend, Webpack]
 tags: [npm, Webpack2, Babel]
+series: 'Webpack 2'
 ---
 ## 들어가기에 앞서
 여기선 기본적으로 웹팩 1, 바벨, ES2015(ES6)을 알고 있다는 전제로 진행한다.  

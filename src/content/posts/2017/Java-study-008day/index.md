@@ -3,6 +3,7 @@ title: (Java) 자바의 정석 3판 008일차 - JVM의 메모리 구조
 date: 2017-02-10 10:20:35
 categories: [Java, 언어]
 tags: [자바의 정석]
+series: '자바의 정석 3판 스터디'
 ---
 ![](./thumb.webp)
 

@@ -3,6 +3,7 @@ title: 해외여행 3편 - 스페인
 tags: []
 categories: [일상, 여행]
 date: 2025-12-10 19:02:38
+series: '해외여행'
 ---
 
 ![](./barcelona-09.webp)  

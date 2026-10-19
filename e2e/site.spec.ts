@@ -167,3 +167,97 @@ test('images inside links keep the link instead of zooming', async ({ page }) =>
   await page.goto('/2016/11/26/Markdown-Badge/');
   await expect(page.locator('.prose a img.zoomable')).toHaveCount(0);
 });
+
+test('home shows post thumbnails at list size', async ({ page }) => {
+  await page.goto('/');
+  const thumbs = page.locator('.post-list img.thumb');
+  expect(await thumbs.count()).toBeGreaterThan(0);
+  const first = thumbs.first();
+  await expect.poll(() => first.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  // List thumbnails are small copies, never the post's full-width images.
+  expect(await first.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeLessThanOrEqual(336);
+});
+
+test('post header links straight to the comments', async ({ page }) => {
+  await page.goto(POST);
+  await page.locator('.post-head').getByRole('link', { name: '댓글' }).click();
+  await expect(page).toHaveURL(/#comments$/);
+  await expect(page.locator('#comments')).toBeInViewport();
+});
+
+test('post lists related posts', async ({ page }) => {
+  await page.goto(POST);
+  await expect(page.getByRole('region', { name: '관련 글' }).getByRole('link').first()).toBeVisible();
+});
+
+test('code blocks show the language and copy their code', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto(MERMAID_POST);
+  const block = page
+    .locator('.code-block')
+    .filter({ has: page.locator('.code-lang', { hasText: 'sql' }) })
+    .first();
+  await block.scrollIntoViewIfNeeded();
+  await block.getByRole('button', { name: '복사' }).click();
+  await expect(block.getByRole('button', { name: '복사됨' })).toBeVisible();
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied).toBe((await block.locator('pre').innerText()).replace(/\n$/, ''));
+});
+
+test('series posts list every part and link the neighbours', async ({ page }) => {
+  await page.goto('/2018/03/31/tcp-ip-book-index-3/');
+  const series = page.getByRole('navigation', { name: '시리즈: TCP/IP 쉽게, 더 쉽게 목차 리뷰', exact: true });
+  await expect(series).toContainText('3/5');
+  await expect(series.locator('a[aria-current="page"]')).toContainText('3장 트랜스포트 계층');
+  await expect(series.getByRole('listitem')).toHaveCount(5);
+  await series.getByRole('link', { name: '다음 편 →' }).click();
+  await expect(page).toHaveURL(/\/2018\/04\/01\/tcp-ip-book-index-4\/$/);
+});
+
+test('posts outside a series show no series box', async ({ page }) => {
+  await page.goto(POST);
+  await expect(page.getByRole('navigation', { name: /^시리즈/ })).toHaveCount(0);
+});
+
+test('table of contents opens as a sheet on narrow screens', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(POST);
+  await page.evaluate(() => window.scrollTo(0, 1500));
+  const open = page.getByRole('button', { name: '목차 열기' });
+  await expect(open).toBeVisible();
+  await open.click();
+  const sheet = page.getByRole('dialog', { name: '목차' });
+  await expect(sheet).toBeVisible();
+  await expect(open).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Escape');
+  await expect(sheet).toBeHidden();
+  await expect(open).toBeFocused();
+
+  await open.click();
+  const link = sheet.getByRole('link').last();
+  const hash = await link.evaluate((a: HTMLAnchorElement) => a.hash);
+  await link.click();
+  await expect(sheet).toBeHidden();
+  await expect(page).toHaveURL(new RegExp(`${hash}$`));
+  // Keyboard and screen reader users continue from the chosen heading, not from the button.
+  await expect(page.locator(`[id="${decodeURIComponent(hash.slice(1))}"]`)).toBeFocused();
+});
+
+for (const colorScheme of ['light', 'dark'] as const) {
+  test(`series box and open contents sheet have no serious accessibility violations (${colorScheme})`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.emulateMedia({ colorScheme });
+    await page.goto('/2025/12/10/travel-002-turkiye-01/');
+    await page.evaluate(() => window.scrollTo(0, 2000));
+    await page.getByRole('button', { name: '목차 열기' }).click();
+    const sheet = page.getByRole('dialog', { name: '목차' });
+    await expect(sheet).toBeVisible();
+    // Contrast is sampled from the rendered pixels, so wait out the slide-in fade.
+    await sheet.evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
+    const { violations } = await new AxeBuilder({ page }).exclude('#disqus_thread').analyze();
+    const serious = violations.filter(v => v.impact === 'serious' || v.impact === 'critical');
+    expect(serious.map(v => `${v.id}: ${v.nodes.map(n => n.target.join(' ')).join(', ')}`)).toEqual([]);
+  });
+}

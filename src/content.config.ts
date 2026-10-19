@@ -18,6 +18,8 @@ const posts = defineCollection({
       categories: stringList,
       // Original file is served next to the post by scripts/copy-post-assets.ts.
       image: z.string().optional(),
+      // Posts with exactly the same value form a series, ordered by date.
+      series: z.string().optional(),
     }),
 });
 

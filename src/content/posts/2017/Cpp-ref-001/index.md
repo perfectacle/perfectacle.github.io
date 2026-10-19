@@ -3,6 +3,7 @@ title: (C++) 참고용 정리 - 변수의 주소
 date: 2017-01-02 09:59:21
 categories: [CS, ASM·C/C++]
 tags: [C, C++, Pointer, Address]
+series: 'C++ 참고용 정리'
 ---
 ![](./thumb.webp)  
 

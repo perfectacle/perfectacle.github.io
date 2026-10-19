@@ -5,6 +5,7 @@ categories:
   - Java
   - 언어
 date: 2018-12-03 20:42:39
+series: '이펙티브 자바 3판 3장 - 모든 객체의 공통 메서드'
 ---
 
 ![](./thumb.webp)

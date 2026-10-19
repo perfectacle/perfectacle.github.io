@@ -3,6 +3,7 @@ title: (Java) 자바의 정석 3판 009일차 - 재귀함수, 클래스 설계, 
 date: 2017-02-11 13:07:43
 categories: [Java, 언어]
 tags: [자바의 정석, OOP]
+series: '자바의 정석 3판 스터디'
 ---
 ![](./thumb.webp)
 

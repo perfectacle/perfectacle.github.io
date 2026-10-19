@@ -1,12 +1,17 @@
 :root {
   --bg: #ffffff;
-  --bg-soft: #f6f7f9;
-  --fg: #1f2328;
-  --fg-muted: #656d76;
-  --border: #e4e7eb;
-  --accent: #2a63c7;
-  --accent-soft: #e8f0fd;
-  --code-bg: #f6f8fa;
+  --bg-soft: #f3f5f4;
+  --fg: #16191d;
+  --fg-muted: #5a626c;
+  --border: #e1e5e3;
+  /* Signal green: the one brand color, used sparingly (brand caret, links, current state, code chrome). */
+  --accent: #0b7a57;
+  --accent-soft: #e2f3ea;
+  /* Text on a solid accent fill. */
+  --accent-fg: #ffffff;
+  --code-bg: #f6f8f7;
+  /* github-light's keyword red (#d73a49) only reaches 4.5:1 on pure white. */
+  --code-block-bg: #ffffff;
   --content: 720px;
   --wide: 1080px;
   --radius: 10px;
@@ -16,6 +21,7 @@
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', 'Noto Sans KR', system-ui,
     sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
   /* Pagefind search UI */
   --pf-font: var(--font-sans);
   --pf-border-radius: var(--radius);
@@ -23,14 +29,16 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #0f1115;
-  --bg-soft: #171a21;
-  --fg: #e6e8eb;
-  --fg-muted: #9aa3ae;
-  --border: #272c35;
-  --accent: #7aa7ff;
-  --accent-soft: #1a2640;
-  --code-bg: #161b22;
+  --bg: #0e1114;
+  --bg-soft: #161a1e;
+  --fg: #e4e7ea;
+  --fg-muted: #99a2ac;
+  --border: #252b31;
+  --accent: #4cc995;
+  --accent-soft: #14281f;
+  --accent-fg: #04140d;
+  --code-bg: #13171b;
+  --code-block-bg: #13171b;
   color-scheme: dark;
 }
 
@@ -76,6 +84,16 @@ a:hover {
   text-decoration: underline;
 }
 
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
 img,
 video,
 iframe {
@@ -96,6 +114,9 @@ iframe {
   position: absolute;
   width: 1px;
   height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
@@ -108,10 +129,35 @@ iframe {
   width: auto;
   height: auto;
   clip: auto;
+  margin: 0;
   padding: 8px 14px;
   border-radius: 8px;
   background: var(--bg);
   border: 1px solid var(--accent);
+}
+
+/* Small section label; the `//` comment marker is the only monospaced part, since Hangul set in a
+   monospaced font gets wide, uneven spacing. */
+.section-label {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--fg-muted);
+}
+.section-label::before {
+  content: '// ' / '';
+  font-family: var(--font-mono);
+  font-weight: 400;
+  color: var(--accent);
+}
+
+/* Small monospaced labels (dates, counts, code language) carry the "terminal" side of the identity. */
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Post body */
@@ -121,8 +167,12 @@ iframe {
 /* Underlined so links in running text don't rely on color alone. */
 .prose a {
   text-decoration: underline;
-  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-decoration-thickness: 1.5px;
   text-underline-offset: 3px;
+}
+.prose a:hover {
+  text-decoration-color: currentColor;
 }
 .prose h1,
 .prose h2,
@@ -139,6 +189,14 @@ iframe {
   font-size: 1.5rem;
   padding-bottom: 0.3em;
   border-bottom: 1px solid var(--border);
+}
+/* Markdown-style marker; the empty alt text keeps screen readers from announcing it. */
+.prose h2::before {
+  content: '#' / '';
+  margin-right: 0.45em;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--accent);
 }
 .prose h3 {
   font-size: 1.25rem;
@@ -180,6 +238,10 @@ iframe {
   margin: 1.5em auto;
   border-radius: 6px;
 }
+/* Screenshots are mostly white; full brightness glares on a dark page. */
+:root[data-theme='dark'] .prose img {
+  filter: brightness(0.9);
+}
 .prose blockquote {
   margin-left: 0;
   padding: 0.75em 1.1em;
@@ -209,29 +271,94 @@ iframe {
 }
 .prose th {
   background: var(--bg-soft);
+  text-align: left;
 }
 .prose :not(pre) > code {
   /* keep-all would push a long identifier past the edge instead of wrapping it */
   word-break: break-all;
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.88em;
-  padding: 0.15em 0.4em;
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  padding: 0.12em 0.4em;
   background: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: 5px;
 }
 .prose pre {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
   line-height: 1.6;
   padding: 1em 1.2em;
   overflow-x: auto;
-  background: var(--code-bg) !important;
+  background: var(--code-block-bg) !important;
   border: 1px solid var(--border);
   border-radius: var(--radius);
 }
 .prose pre code {
   font-family: inherit;
+}
+
+/* Code blocks get a header row (language + copy button) at build time. */
+.prose .code-block {
+  margin: 0 0 1.25em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--code-block-bg);
+  overflow: hidden;
+}
+.prose .code-block > pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+/* The frame clips overflow for its rounded corners, which would cut an outside focus ring on the scrollable <pre>. */
+.prose .code-block > pre:focus-visible {
+  outline-offset: -2px;
+}
+/* Plain-text blocks without a working copy button (no script, no clipboard) would show an empty bar. */
+.code-head:not(:has(.code-lang)):has(.code-copy[hidden]) {
+  display: none;
+}
+.code-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 6px 0 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-soft);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--fg-muted);
+}
+.code-lang::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  vertical-align: 0.1em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.code-copy {
+  min-height: 32px;
+  margin-left: auto;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fg-muted);
+  font: inherit;
+  cursor: pointer;
+}
+.code-copy:hover {
+  background: var(--bg);
+  color: var(--fg);
+}
+.code-copy[data-copied] {
+  color: var(--accent);
 }
 
 /* Shiki dual themes: colors come from CSS variables so the theme toggle needs no re-render. */
@@ -268,24 +395,26 @@ iframe {
   list-style: none;
 }
 .chip {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
   font-size: 0.8rem;
-  line-height: 1.6;
+  line-height: 1.4;
   padding: 0.1em 0.65em;
-  border-radius: 999px;
+  border-radius: 6px;
   background: var(--accent-soft);
   color: var(--accent);
 }
 .chip:hover {
   text-decoration: none;
-  filter: brightness(0.96);
+  background: color-mix(in srgb, var(--accent) 18%, var(--bg));
 }
 
 /* Phones */
 @media (max-width: 640px) {
   html {
-    /* Two-row sticky header */
-    scroll-padding-top: 112px;
+    /* The header is not sticky on phones. */
+    scroll-padding-top: 16px;
   }
   body {
     line-height: 1.7;
@@ -319,10 +448,20 @@ iframe {
   }
   /* Code and video use the full screen width; the 16px gutters cost ~8% on a phone. */
   .prose pre,
+  .prose .code-block,
   .prose .video-container,
   .prose .yt-frame:not(.video-container > .yt-frame) {
     margin-inline: -16px;
     border-radius: 0;
+  }
+  .prose .code-block {
+    border-inline: 0;
+  }
+  .code-head {
+    padding-left: 16px;
+  }
+  .prose .code-block > pre {
+    margin-inline: 0;
   }
   .prose pre {
     border-inline: 0;

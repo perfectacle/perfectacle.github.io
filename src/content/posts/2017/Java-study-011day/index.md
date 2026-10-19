@@ -3,6 +3,7 @@ title: (Java) 자바의 정석 3판 011일차 - 상속과 포함, 오버라이�
 categories: [Java, 언어]
 tags: [자바의 정석, OOP]
 date: 2017-08-01 18:30:01
+series: '자바의 정석 3판 스터디'
 ---
 
 ![](./thumb.webp)
