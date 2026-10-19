@@ -85,9 +85,17 @@ test('search modal opens with the shortcut and finds posts', async ({ page, isMo
   await expect(input).toBeHidden();
 });
 
-test('mermaid diagrams render to SVG', async ({ page }) => {
+test('mermaid diagrams render to SVG as they scroll into view', async ({ page }) => {
   await page.goto(MERMAID_POST);
-  await expect(page.locator('div.mermaid svg').first()).toBeVisible();
+  // Counted in one pass: diagrams near the top may already have been swapped in.
+  const total = await page.evaluate(() => document.querySelectorAll('code.language-mermaid, div.mermaid').length);
+  expect(total).toBeGreaterThan(0);
+  // Diagrams are swapped in as they near the viewport, so walk down the page.
+  for (let y = 0; y < (await page.evaluate(() => document.body.scrollHeight)); y += 600) {
+    await page.evaluate(top => window.scrollTo(0, top), y);
+    await page.waitForTimeout(50);
+  }
+  await expect(page.locator('div.mermaid svg')).toHaveCount(total);
   await expect(page.locator('code.language-mermaid')).toHaveCount(0);
 });
 
