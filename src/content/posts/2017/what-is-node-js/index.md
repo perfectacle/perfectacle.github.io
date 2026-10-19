@@ -65,7 +65,7 @@ http.createServer((req, res) => {
 ![node.js를 통해 구현한 서버](./05.png)  
 
 ## 그럼 프론트 엔드 개발자는 언제 Node.js를 쓰는가?  
-매우 빈번하게 쓰이는데 그 중에서 대표적으로 ES2015+ 문법을 ES5 문법으로 트랜스파일 해주는 [Babel](/2016/11/11/Babel-ES6-with-IE8/)을 예로 들어보겠다.  
+매우 빈번하게 쓰이는데 그 중에서 대표적으로 ES2015+ 문법을 ES5 문법으로 트랜스파일 해주는 [Babel](../../2016/Babel-ES6-with-IE8/index.md)을 예로 들어보겠다.  
 먼저 babel의 기본적인 요소들을 설치하겠다.  
 ```bash
 npm i -S babel-cli babel-preset-env

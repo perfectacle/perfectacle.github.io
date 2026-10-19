@@ -3,6 +3,7 @@ import { unified } from '@astrojs/markdown-remark';
 import remarkBreaks from 'remark-breaks';
 import rehypeExternalLinks from 'rehype-external-links';
 import { rehypeHexoHeadingIds } from './src/lib/rehype-hexo-heading-ids.ts';
+import { remarkPostLinks } from './src/lib/remark-post-links.ts';
 
 export default defineConfig({
   site: 'https://perfectacle.github.io',
@@ -11,7 +12,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       // Posts were written against Hexo's marked renderer, where a single newline is a line break.
-      remarkPlugins: [remarkBreaks],
+      remarkPlugins: [remarkBreaks, remarkPostLinks],
       rehypePlugins: [
         rehypeHexoHeadingIds,
         [rehypeExternalLinks, { target: '_blank', rel: ['external', 'nofollow', 'noopener', 'noreferrer'] }],

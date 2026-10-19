@@ -8,7 +8,7 @@ tags: [JS, ES, ES6, ES2015, Interface, Symbol, Iterator, Generator]
 
 ## 들어가기에 앞서
 이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
-[(ES6) Interface](/2016/12/25/es6-interface/)와 [(ES6) Symbol](/2017/04/16/ES6-Symbol/), [(ES6) Iterator](/2017/04/22/ES6-Iterator/)에 대한 내용은 링크를 참조하도록 하자.  
+[(ES6) Interface](../../2016/es6-interface/index.md)와 [(ES6) Symbol](../../2017/ES6-Symbol/index.md), [(ES6) Iterator](../../2017/ES6-Iterator/index.md)에 대한 내용은 링크를 참조하도록 하자.  
 
 ## 사용 사례  
 이 사용 사례가 전부는 아니겠지만, 제너레이터는 이터레이터를 구현할 때 좀 더 쉽게 만들어준다.  
@@ -176,8 +176,8 @@ const gen = function*() {
 ```
 
 제너레이터를 통해 비동기 함수를 제어하는 방법이 있지만 ES2017의 async와 await를 적극 활용하기 바란다. 
-* [(ES6+) ajax를 위한 fetch와 async/await](/2017/01/25/ES6-ajax-with-fetch/)  
-* [(ES6+) 비동기 함수를 깔끔하게 처리해보자.](/2017/04/03/js-async-function/)
+* [(ES6+) ajax를 위한 fetch와 async/await](../../2017/ES6-ajax-with-fetch/index.md)  
+* [(ES6+) 비동기 함수를 깔끔하게 처리해보자.](../../2017/js-async-function/index.md)
 
 ## 참조 링크
 * [[es6] GDG 2016 발표자료](http://www.bsidesoft.com/?p=2913)  

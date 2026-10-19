@@ -50,7 +50,7 @@ public class LocalDateTimeTest {
 
 ## ZoneOffset
 UTC 기준으로 시간(Time Offset)을 나타낸 것이라고 보면 된다.  
-우리나라는 KST를 사용하는데 KST는 [UTC](/2018/09/26/date-and-time/#UTC-Coordinated-Universal-Time)보다 9시간이 빠르므로 UTC +09:00으로 표기한다.  
+우리나라는 KST를 사용하는데 KST는 [UTC](../../2018/date-and-time/index.md#UTC-Coordinated-Universal-Time)보다 9시간이 빠르므로 UTC +09:00으로 표기한다.  
 ZoneOffset은 ZoneId의 자식 클래스이다.
 
 ```java
@@ -271,7 +271,7 @@ public class ZonedDateTimeTest {
 
 ## Instant
 어느 순간을 나타내는 클래스이다.  
-[Unix Timestamp](/2018/09/26/date-and-time/)를 구할 때 사용한다.  
+[Unix Timestamp](../../2018/date-and-time/index.md)를 구할 때 사용한다.  
 0 ~ 999,999,999의 integer 범위(Integer는 10억 단위를 전부 제대로 표시하지 못하기 때문에)의 Unix Timestamp Nanosecond와
 long의 자료형을 가지는 Unix Timestamp Second(2038년 문제를 해결하기 위해 long을 택한 듯)를 가진다.  
 

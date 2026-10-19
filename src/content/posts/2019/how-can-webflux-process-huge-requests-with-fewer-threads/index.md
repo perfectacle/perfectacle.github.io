@@ -16,7 +16,7 @@ date: 2019-03-10 19:24:38
 기본적으로 SpringMVC에서 많이 사용하는 WAS인 Tomcat의 경우에는 기본적으로 쓰레드 풀의 갯수가 200개이고,
 Jetty의 경우에는 기본적으로 minimum 8개에서 maximum 200개로 설정돼있다.  
 쓰레드 생성 비용은 비싸므로(오래 걸리므로) 미리 생성해서 ThreadPool에 쌓아놓는 것이다.  
-여기서 말하는 Thread는 [Green Thread vs Native Thread](/2019/03/10/green-thread-vs-native-thread/)에서 얘기하다 싶이 Native Thread(OS에서 관리하는 Thread)이다.  
+여기서 말하는 Thread는 [Green Thread vs Native Thread](../../2019/green-thread-vs-native-thread/index.md)에서 얘기하다 싶이 Native Thread(OS에서 관리하는 Thread)이다.  
 이 말은 동시에 요청을 최대 200개까지 처리 가능하단 얘기이다.
 
 그에 반해 Webflux는 core * 2의 Thread만을 생성한다.  
@@ -51,7 +51,7 @@ Webflux는 기본적으로 아래의 쓰레드로 이루어진다.
 조금만 더 인심 쓰지... 왜 2개만으로도 충분하다고 생각하는 걸까? 하나 더 생성하면 조금 더 좋아지는 것 아닐까?? 
 
 쓰레드가 많다는 건 뭔가?  
-결국 쓰레드 사이에서 공유 자원의 [동기화](/2019/03/10/java-synchronized-note/) 이슈가 걸려있다.  
+결국 쓰레드 사이에서 공유 자원의 [동기화](../../2019/java-synchronized-note/index.md) 이슈가 걸려있다.  
 쓰레드가 많으면 많을 수록 동기화 이슈로 인해 시간이 오래 걸리게 된다.    
 따라서 Thread가 적으면 적을 수록 동기화 이슈로 인한 문제에 덜 시달리게 된다.
 

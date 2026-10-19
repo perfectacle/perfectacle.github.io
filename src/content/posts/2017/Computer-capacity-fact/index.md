@@ -70,7 +70,7 @@ RAM이나 CD(거의 쓰지 않게 됐지만...)는 SI 단위를 쓰면서 IEC �
 
 또한 이러한 상술은 인터넷 업체에서도 쓰고 있다.  
 아래 링크를 참조하자.  
-[(상식) 인터넷 속도에 대한 진실](/2017/01/23/giga-internet-fact/)
+[(상식) 인터넷 속도에 대한 진실](../../2017/giga-internet-fact/index.md)
 
 ## 참조 링크
 * [SI 단위](https://namu.wiki/w/SI%20%EB%8B%A8%EC%9C%84)  

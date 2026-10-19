@@ -6,14 +6,14 @@ date: 2022-03-13 00:02:03
 ---
 
 ## 들어가기에 앞서
-[(Gradle) implementation vs api](/2022/03/12/gradle-implementation-vs-api/)에서는 compile/runtime 의존성을 관리하는 방법에 대해 정리했다.  
+[(Gradle) implementation vs api](../../2022/gradle-implementation-vs-api/index.md)에서는 compile/runtime 의존성을 관리하는 방법에 대해 정리했다.  
 하지만 이는 실제 src/main 경로에 대해서만 의존성을 관리하는 것이지 src/test 경로에서 사용하는 테스트 의존성(testCompileClasspath, testRuntimeClasspath)에 대해서는 딥하게 다루지 않았다.
 테스트도 관리해야할 대상이고 하나의 소프트웨어라는 관점에서 테스트의 의존성 조차도 신경을 써줘야한다.
 
 ## testImplementation
 ![](./api-structure.png)
 ![](./implementation-structure.png)
-기본적으로 [implementation](/2022/03/12/gradle-implementation-vs-api/#implementation)과 [api](/2022/03/12/gradle-implementation-vs-api/#api)로 의존성을 추가한 경우에도 testCompileClasspath, testRuntimeClasspath에 추가돼서 테스트에서도 사용이 가능하다.
+기본적으로 [implementation](../../2022/gradle-implementation-vs-api/index.md#implementation)과 [api](../../2022/gradle-implementation-vs-api/index.md#api)로 의존성을 추가한 경우에도 testCompileClasspath, testRuntimeClasspath에 추가돼서 테스트에서도 사용이 가능하다.
 하지만 compileClasspath, runtimeClasspath에도 추가되다보니 실제 프로덕션에서는 사용할 필요가 없고, 테스트에서만 사용할 목적으로 testImplementation을 많이 사용한다.
 
 [testImplementation](https://docs.gradle.org/current/userguide/java_plugin.html#tab:configurations)으로 의존성을 관리하기 위해서는 [java 플러그인](https://docs.gradle.org/current/userguide/java_plugin.html)을 활성화해야한다.

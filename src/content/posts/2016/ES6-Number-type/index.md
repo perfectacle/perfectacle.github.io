@@ -5,7 +5,7 @@ categories: [Programming, ECMAScript, ES2015+]
 tags: [JS, ES, ES6, ES2015, Number]
 ---
 ![](./thumb.png)  
-이 글을 읽고 [(ES6) Number 객체와 함수](/2016/12/24/ES6-Number-object-and-function/)를 이어서 보는 걸 추천한다.
+이 글을 읽고 [(ES6) Number 객체와 함수](../../2016/ES6-Number-object-and-function/index.md)를 이어서 보는 걸 추천한다.
 
 # 자료형
 ES에서 숫자형은 단 하나의 자료형 뿐이다.  

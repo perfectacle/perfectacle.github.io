@@ -20,7 +20,7 @@ tags: [Cross Browsing, npm, Node.js, Webpack]
 아주 많이 참조한 링크  
 [웹팩입문자를 위한 튜토리얼 파트1 - 웹팩 입문 !](https://github.com/AriaFallah/WebpackTutorial/tree/master/ko-arahansa/part1)
 
-이 포스트에서는 **Node.js**, **npm**, **ES(ECMAScript)**, **[Babel](/2016/11/11/Babel-ES6-with-IE8/)** 등등에 대해서는 설명하지 않는다.  
+이 포스트에서는 **Node.js**, **npm**, **ES(ECMAScript)**, **[Babel](../../2016/Babel-ES6-with-IE8/index.md)** 등등에 대해서는 설명하지 않는다.  
 해당 내용들은 구글링을 통해 직접 찾아보길 바란다.
 
 이번 포스트에서는 모듈이 왜 필요한지, 무엇인지, 번들링이란 무엇인지 등등에 대해 다룬다.  
@@ -221,7 +221,7 @@ module.exports = {
 
 1. devtool
 소스맵과 디버깅을 요긴하게 하기 위한 옵션이다.  
-자세한 건 [devtool 옵션 퍼포먼스](/2016/11/14/Webpack-devtool-option-Performance/)를 참고하자.
+자세한 건 [devtool 옵션 퍼포먼스](../../2016/Webpack-devtool-option-Performance/index.md)를 참고하자.
 2. entry  
 [JavaScript 모듈화 도구, webpack](http://d2.naver.com/helloworld/0239818)에서는 아래와 같이 말하고 있다.
 <blockquote>
@@ -1204,7 +1204,7 @@ $ npm run build 를 치고 배포용 파일을 확인해보자.
 babel로 트랜스파일한 ES5 전용 폴리필인 babel-polyfill이 있고,  
 이벤트 리스너 관련해서는 수동으로 추가해줘야한다.  
 자세한 내용은 아래 링크를 참고하자.  
-[(Babel) ES6를 IE8에서도 써보자](/2016/11/11/Babel-ES6-with-IE8/#ES5를-IE8에서도-지원하기)
+[(Babel) ES6를 IE8에서도 써보자](../../2016/Babel-ES6-with-IE8/index.md#ES5를-IE8에서도-지원하기)
 
 2. HTML5 Sectioning Elements Polyfill 붙이기
 HTML5는 다양한 API가 있어서 하나의 폴리필로는 커버가 힘들다.  

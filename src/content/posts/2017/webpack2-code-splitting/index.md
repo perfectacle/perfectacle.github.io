@@ -7,7 +7,7 @@ tags: [npm, Node.js, Webpack2, babel, ES2015, ES6]
 
 ## 들어가기에 앞서
 웹팩 2, 웹팩 1, 바벨, 리액트 등등에 대해서 기본적인 부분은 설명하지 않는다.  
-또한 [(Webpack 2) 트리 쉐이킹을 해보자!](/2017/03/12/webpack2-tree-shaking/)를 보고 나서 이 포스팅을 읽는 걸 추천한다.
+또한 [(Webpack 2) 트리 쉐이킹을 해보자!](../../2017/webpack2-tree-shaking/index.md)를 보고 나서 이 포스팅을 읽는 걸 추천한다.
 
 ## 코드를 왜 분할하지?
 ![](./thumb.png)  
