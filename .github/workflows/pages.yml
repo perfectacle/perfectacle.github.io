@@ -90,18 +90,38 @@ jobs:
   build:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20
+    env:
+      # master needs a fresh dist to deploy; a PR only needs the checks, which can be reused.
+      REUSE: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ./.github/actions/setup
+      - id: fingerprint
+        run: echo "key=verified-build-${{ runner.arch }}-${{ hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
 
-      - uses: ./.github/actions/astro-assets-cache
+      # Bot PRs always rebuild: output-diff needs the snapshot.
+      - if: env.REUSE == 'true' && env.IS_BOT_PR != 'true'
+        id: verified
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
+          lookup-only: true
 
-      - run: pnpm build
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: ./.github/actions/setup
 
-      - run: pnpm verify:urls
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: ./.github/actions/astro-assets-cache
 
-      - run: pnpm verify:dist
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm build
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm verify:urls
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm verify:dist
 
       - if: env.IS_BOT_PR == 'true'
         run: node scripts/snapshot-output.ts dist head-snapshot.json
@@ -112,6 +132,15 @@ jobs:
           name: head-snapshot
           path: head-snapshot.json
           retention-days: 3
+
+      - if: env.REUSE == 'true' && steps.verified.outputs.cache-hit != 'true'
+        run: touch .verified
+
+      - if: env.REUSE == 'true' && steps.verified.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
 
       - if: github.event_name != 'pull_request'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
