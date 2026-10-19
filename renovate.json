@@ -1,17 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "helpers:pinGitHubActionDigestsToSemver"
-  ],
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigestsToSemver"],
   "timezone": "Asia/Seoul",
-  "labels": [
-    "dependencies"
-  ],
-  "ignorePaths": [
-    "public/**",
-    "drafts/**"
-  ],
+  "labels": ["dependencies"],
+  "ignorePaths": ["public/**", "drafts/**"],
   "rangeStrategy": "pin",
   "minimumReleaseAge": "7 days",
   "internalChecksFilter": "strict",
@@ -20,30 +12,20 @@
   "platformAutomerge": true,
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": [
-      "before 6am on monday"
-    ]
+    "schedule": ["before 6am on monday"]
   },
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "minimumReleaseAge": null,
-    "labels": [
-      "dependencies",
-      "security"
-    ]
+    "labels": ["dependencies", "security"]
   },
   "packageRules": [
     {
-      "matchPackageNames": [
-        "astro",
-        "@astrojs/**"
-      ],
+      "matchPackageNames": ["astro", "@astrojs/**"],
       "groupName": "astro"
     },
     {
-      "matchManagers": [
-        "github-actions"
-      ],
+      "matchManagers": ["github-actions"],
       "groupName": "github actions"
     }
   ]
