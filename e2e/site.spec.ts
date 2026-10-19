@@ -136,3 +136,26 @@ test('YouTube embeds keep their start time', async ({ page }) => {
   await facade.click();
   await expect(page.locator('iframe[src*="G3sbCAv0gBE"][src*="start=512"]')).toHaveCount(1);
 });
+
+test('post images open full screen and close with Escape', async ({ page }) => {
+  await page.goto('/2025/12/02/travel-001-kenya-01/');
+  const img = page.locator('.prose img.zoomable').nth(1);
+  await img.scrollIntoViewIfNeeded();
+  await img.click();
+  const viewer = page.locator('.pswp');
+  await expect(viewer).toBeVisible();
+  await expect(page.locator('.pswp__counter')).toContainText('2 / ');
+  // Keys are ignored while the opening transition runs; it ends once the full-size image is shown.
+  await expect(page.locator('.pswp__img').first()).toBeVisible();
+  await page.waitForFunction(() => {
+    const viewerEl = document.querySelector('.pswp');
+    return !!viewerEl && getComputedStyle(viewerEl).opacity === '1';
+  });
+  await page.keyboard.press('Escape');
+  await expect(viewer).toHaveCount(0);
+});
+
+test('images inside links keep the link instead of zooming', async ({ page }) => {
+  await page.goto('/2016/11/26/Markdown-Badge/');
+  await expect(page.locator('.prose a img.zoomable')).toHaveCount(0);
+});

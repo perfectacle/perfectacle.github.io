@@ -52,7 +52,7 @@ const { posts, summary = true } = Astro.props;
     margin: 0;
     padding: 0;
   }
-  li + li {
+  .post-list > li + li {
     border-top: 1px solid var(--border);
   }
   article {
@@ -88,5 +88,40 @@ const { posts, summary = true } = Astro.props;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  /* The title link covers the card so the whole item is a tap target; category and tags stay clickable above it. */
+  article {
+    position: relative;
+  }
+  h2 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .cat,
+  .chips {
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 640px) {
+    article {
+      padding: 20px 0;
+    }
+    .post-list > li:first-child article {
+      padding-top: 4px;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 4px 0 6px;
+    }
+    .excerpt {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      -webkit-line-clamp: 2;
+      margin-bottom: 10px;
+    }
+    .chips li:nth-child(n + 4) {
+      display: none;
+    }
   }
 </style>

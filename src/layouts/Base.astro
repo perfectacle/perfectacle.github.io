@@ -222,7 +222,8 @@ const current = Astro.url.pathname;
     display: none;
   }
   main {
-    min-height: calc(100vh - 160px);
+    /* svh: 100vh on mobile includes the collapsing URL bar and forces needless scrolling. */
+    min-height: calc(100svh - 160px);
     padding: 40px 0 64px;
   }
   .site-footer {
@@ -232,18 +233,86 @@ const current = Astro.url.pathname;
     color: var(--fg-muted);
   }
   .site-footer a {
+    display: inline-block;
+    padding: 8px 2px;
     color: inherit;
   }
-  @media (max-width: 560px) {
+  /* Pagefind's trigger ships its own bordered button with very high-specificity selectors;
+     match it to the neighbouring icon buttons. */
+  .actions :global(.pf-trigger-btn) {
+    height: 36px !important;
+    min-width: 36px !important;
+    border: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: var(--fg-muted) !important;
+  }
+  .actions :global(.pf-trigger-btn:hover) {
+    background: var(--bg-soft) !important;
+    color: var(--fg) !important;
+  }
+
+  /* Phones: brand + icons on the first row, the nav as its own scrollable row so every item is reachable. */
+  @media (max-width: 640px) {
+    .site-header {
+      background: var(--bg);
+      backdrop-filter: none;
+    }
     .bar {
-      gap: 8px;
+      flex-wrap: wrap;
+      height: auto;
+      gap: 0;
+      padding: 0 4px 0 16px;
     }
     .brand {
-      font-size: 0.98rem;
+      flex: 1;
+      font-size: 1rem;
+      line-height: 52px;
+    }
+    .icon-btn,
+    .actions :global(.pf-trigger-btn) {
+      width: 44px !important;
+      height: 44px !important;
+    }
+    nav {
+      order: 3;
+      /* Full header width: 100% plus the .bar side padding it sits inside. */
+      flex: 0 0 calc(100% + 20px);
+      margin: 0 -4px 0 -16px;
+      padding: 0 8px;
+      border-top: 1px solid var(--border);
+    }
+    nav ul {
+      gap: 0;
     }
     nav a {
-      padding: 6px 7px;
-      font-size: 0.88rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: 0;
+      font-size: 0.95rem;
+    }
+    nav a:hover,
+    nav a[aria-current='page'] {
+      background: none;
+    }
+    nav a[aria-current='page'] {
+      font-weight: 700;
+    }
+    nav a[aria-current='page']::after {
+      content: '';
+      position: absolute;
+      inset: auto 12px 0;
+      height: 2px;
+      background: var(--accent);
+    }
+    main {
+      padding: 20px 0 48px;
+    }
+    .site-footer {
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
     }
   }
 </style>
