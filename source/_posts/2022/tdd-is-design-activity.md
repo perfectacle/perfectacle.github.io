@@ -75,7 +75,7 @@ Design Activity는 design(코드의 설계)을 발명(invention)의 과정(어�
 예측에 의해 뭔가를 만들어내기 보다는 "고객이 정말로 원하는 것"이 실제로 나타낼 때까지 commitment(뭔가를 확정짓는...?)를 계속 뒤로 미루라는 것 같다.  
 고객도 자신이 무엇을 원하는지 정확히 모르기 때문에 요구사항이 명확해질 때까지 계속 요구사항을 명쾌하게 만들어나가는 과정이 필요한 것 같다.
 
-![아무도 쓰지 않는데 개발자만 좋아하는 소프트웨어](tdd-is-design-activity/Richard's_guide_to_software_development.png)
+![아무도 쓰지 않는데 개발자만 좋아하는 소프트웨어](tdd-is-design-activity/richards-guide-to-software-development.png)
 "혹시 이런 기능도 필요하지 않을까?"라고 생각하다 보면 위와 같은 형태의 소프트웨어가 나오게 될 가능성이 높을 것이다.
 
 결국 "정말 필요한 기능"만 개발하라는 것인데 어떻게 해야하는 것일까...??

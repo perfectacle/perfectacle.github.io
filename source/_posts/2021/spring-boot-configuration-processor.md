@@ -13,7 +13,7 @@ Configuration Metadata는 IDE에서 yml 혹은 properties에서 사용하는 Con
 
 ![application.yml을 작성하다보면 spring 관련 configuration들은 자동완성이 잘 된다.](spring-boot-configuration-processor/configuration-metadata-auto-completion.png)
 ![해당 configuration에서 Command + B를 누르면 실제 Properties 클래스로 이동까지 된다.](spring-boot-configuration-processor/configuration-metadata-navigate.png)
-![이걸 가능하게 하는 것은 META-INF/spring-configuration-metadata.json 파일의 존재 때문이다.](spring-boot-configuration-processor/spring-boot-configuration-metadata-json.png![img.png](img.png))
+![이걸 가능하게 하는 것은 META-INF/spring-configuration-metadata.json 파일의 존재 때문이다.](spring-boot-configuration-processor/spring-boot-configuration-metadata-json.png)
 
 ## 커스텀 Configuration Metadata 정의
 

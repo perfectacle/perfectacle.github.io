@@ -8,7 +8,7 @@ date: 2023-07-10 01:04:44
 [Java Virtual Threads 훑어보기](/2022/12/29/look-over-java-virtual-threads/)에서 Virtual Thread에 대해 대충 훑어봤었고, 2023/09/19에 나오는 [JDK21(심지어 LTS)](https://openjdk.org/projects/jdk/21/)에서 [Virtual Threads (JEP 444)](https://openjdk.org/jeps/444)가 정식으로 출시된다는 소식을 들었다.  
 그러다보니 코틀린의 코루틴의 소식이 궁금했다.
 
-![](java-virtual-thread-vs-kotlin-coroutine.md/is-loom-a-java-equivalent-of-coroutines-in-kotlin.png)
+![](java-virtual-thread-vs-kotlin-coroutine/is-loom-a-java-equivalent-of-coroutines-in-kotlin.png)
 출처: https://www.youtube.com/live/QxxG66eQoTc?feature=share&t=3652  
 많은 사람들이 Virtual Thread가 코루틴과 같은 역할을 할 수 있을지 궁금해하는 것 같았고, 나 또한 코루틴을 잘 모르는 입장에서 '결국 코루틴은 사장되는 게 아닐까?'란 생각이 들었다.
 
@@ -22,7 +22,7 @@ date: 2023-07-10 01:04:44
 코루틴은 높은 동시성(동시에 여러 요청을 보내서 응답을 받은 후 머지를 한다던지)을 요구하거나 Event 기반 시스템(유저의 이벤트를 받아서 UI를 제어해야한다던지)이나 Hierarchy가 있는 작업(Strucured Concurrency)을 처리하거나 취소해야하는 경우에 적합하다.
 
 ## Virtual Thread 간단히 훑어보기
-![](java-virtual-thread-vs-kotlin-coroutine.md/goal-of-virtual-thread.png)
+![](java-virtual-thread-vs-kotlin-coroutine/goal-of-virtual-thread.png)
 우선 Virtual Thread는 기존에 존재하던 java.lang.Thread API의 최소한의 변경만을 목표로 하고, 서버 사이드에서 1 Request에 1 Thread를 사용하는 모델(Spring WebMVC 같은)에서 최적화가 잘 되는 걸 목표로 삼고 있다.  
 
 
