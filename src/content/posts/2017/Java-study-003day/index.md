@@ -4,6 +4,7 @@ date: 2017-01-01 20:00:22
 categories: [Java, 언어]
 tags: [자바의 정석, 형변환, 정규화, 연산자]
 series: '자바의 정석 3판 스터디'
+seriesOrder: 3
 ---
 ![](./thumb.webp)
 

@@ -18,8 +18,10 @@ const posts = defineCollection({
       categories: stringList,
       // Original file is served next to the post by scripts/copy-post-assets.ts.
       image: z.string().optional(),
-      // Posts with exactly the same value form a series, ordered by date.
+      // Posts with exactly the same value form a series.
       series: z.string().optional(),
+      // Reading position within the series (1, 2, …). Dates alone misorder parts written out of sequence.
+      seriesOrder: z.number().int().positive().optional(),
     }),
 });
 

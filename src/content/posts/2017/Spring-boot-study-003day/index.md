@@ -4,6 +4,7 @@ categories: [Spring, JPA]
 tags: [Spring Data JPA]
 date: 2017-08-04 13:11:13
 series: '스타트 스프링 부트 스터디'
+seriesOrder: 3
 ---
 ![](./thumb.webp)  
 

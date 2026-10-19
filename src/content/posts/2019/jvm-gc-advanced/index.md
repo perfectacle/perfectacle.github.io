@@ -7,6 +7,7 @@ categories:
   - JVM
 date: 2019-05-11 16:05:47
 series: 'JVM Garbage Collection'
+seriesOrder: 2
 ---
 
 ![출처: https://medium.com/@iacomini.riccardo/hadoop-namenode-garbage-collector-tuning-7f6a029e9012](./thumb.webp)

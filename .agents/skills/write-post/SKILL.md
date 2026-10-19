@@ -11,7 +11,7 @@ description: 블로그 글을 새로 쓰거나 고칠 때(src/content/posts/**).
 
 1. **폴더를 만든다** — `src/content/posts/<연도>/<slug>/index.md`. `<slug>` 가 URL 이 되므로 영어 소문자·숫자·하이픈으로 짓는다. 대소문자가 섞이면 macOS 와 Linux 에서 다른 폴더가 되고 링크를 손으로 칠 때 틀리기 쉽다(옛 글의 대문자 slug 는 그대로 둔다, URL-01).
    완료: 폴더와 `index.md` 가 있다.
-2. **frontmatter 를 쓴다** — `title`, `date`(`YYYY-MM-DD HH:mm:ss`, 한국 시각 그대로), `categories`(상위→하위 배열), `tags`. 필요하면 `image`(og:image 와 목록 썸네일로 쓸 이미지 경로)도 넣는다. `image` 가 없으면 본문 첫 이미지가 그 역할을 한다. 연재 글이면 `series` 에 시리즈 이름을 넣는다. 값이 글자 하나까지 같은 글끼리 한 시리즈가 되고 `date` 순으로 놓인다(같은 시각이면 폴더 이름순). 스키마는 `src/content.config.ts`.
+2. **frontmatter 를 쓴다** — `title`, `date`(`YYYY-MM-DD HH:mm:ss`, 한국 시각 그대로), `categories`(상위→하위 배열), `tags`. 필요하면 `image`(og:image 와 목록 썸네일로 쓸 이미지 경로)도 넣는다. `image` 가 없으면 본문 첫 이미지가 그 역할을 한다. 연재 글이면 `series` 에 시리즈 이름을, `seriesOrder` 에 읽는 순서(1부터 정수)를 넣는다. `series` 값이 글자 하나까지 같은 글끼리 한 시리즈가 되고 `seriesOrder` 순으로 놓인다(없으면 맨 뒤, 같으면 `date`, 그다음 폴더 이름순). 새 편을 쓰면 기존 글의 `seriesOrder` 다음 숫자를 쓴다. 스키마는 `src/content.config.ts`.
    완료: `pnpm check` 가 스키마 오류 없이 끝난다.
 3. **이미지를 같은 폴더에 넣고 상대 경로로 건다** — 원본 확장자 그대로 `![설명](./파일.png)` 로 건 뒤 `pnpm images` 를 돌린다. 파일이 WebP 로 바뀌고 본문의 참조도 같이 고쳐진다(IMG-01).
    완료: `pnpm lint:images` 통과.

@@ -26,9 +26,9 @@ const { nodes, depth = 0 } = Astro.props;
     margin: 0;
     padding: 0;
   }
-  /* Top level: one card per root category, packed into two columns where there is room. */
+  /* Top level: one card per root category, packed into as many columns as fit (up to four). */
   .roots {
-    columns: 2 300px;
+    columns: 4 280px;
     column-gap: 12px;
   }
   .roots > li {

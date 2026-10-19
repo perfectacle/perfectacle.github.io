@@ -4,6 +4,7 @@ categories: [Java, 언어]
 tags: [자바의 정석, 내장 클래스, 날짜와 시간, 형식화]
 date: 2017-08-04 15:17:49
 series: '자바의 정석 3판 스터디'
+seriesOrder: 16
 ---
 ![](./thumb.webp)  
 

@@ -6,6 +6,7 @@ categories:
   - 함수형
 date: 2017-06-26 09:26:15
 series: '함수형 JS'
+seriesOrder: 5
 ---
 
 ![](./thumb.webp)

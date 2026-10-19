@@ -4,6 +4,7 @@ date: 2017-05-20 09:14:47
 categories: [JavaScript, 자알쓰]
 tags: [Module, Namespace]
 series: '자알쓰'
+seriesOrder: 5
 ---
 ![](./thumb.webp)
 

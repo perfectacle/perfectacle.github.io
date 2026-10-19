@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { coverImage, excerpt, pagePath, paginate, relatedPosts, seriesOf, ymd, type Post } from '../src/lib/posts.ts';
+import {
+  byPostCount,
+  coverImage,
+  excerpt,
+  pagePath,
+  paginate,
+  relatedPosts,
+  seriesOf,
+  ymd,
+  type Post,
+} from '../src/lib/posts.ts';
 
 const post = (body: string) => ({ body }) as Post;
 
@@ -83,8 +93,8 @@ describe('relatedPosts', () => {
 });
 
 describe('seriesOf', () => {
-  const p = (title: string, date: string, series?: string, id = title) =>
-    ({ id, data: { title, date: new Date(date), series, categories: [], tags: [] } }) as unknown as Post;
+  const p = (title: string, date: string, series?: string, id = title, seriesOrder?: number) =>
+    ({ id, data: { title, date: new Date(date), series, seriesOrder, categories: [], tags: [] } }) as unknown as Post;
   const part2 = p('2편', '2021-12-31T14:00:00Z', '여행', '2021/trip-2');
   const part1 = p('1편', '2021-12-31T14:00:00Z', '여행', '2021/trip-1');
   const part3 = p('3편', '2022-01-02T00:00:00Z', '여행');
@@ -110,7 +120,31 @@ describe('seriesOf', () => {
     ]);
   });
 
+  it('follows seriesOrder over dates, and puts parts without one last', () => {
+    // 함수형 JS: the introduction (00편) was written after parts 01–06.
+    const intro = p('00편', '2017-06-30T00:00:00Z', 'FP', 'fp-00', 1);
+    const filter = p('02편', '2017-06-26T00:00:00Z', 'FP', 'fp-02', 3);
+    const why = p('01편', '2017-06-26T00:00:00Z', 'FP', 'fp-01', 2);
+    const extra = p('번외', '2017-01-01T00:00:00Z', 'FP', 'fp-extra');
+    expect(seriesOf(why, [extra, filter, intro, why])?.posts.map(x => x.data.title)).toEqual([
+      '00편',
+      '01편',
+      '02편',
+      '번외',
+    ]);
+  });
+
   it('is undefined for a post outside any series', () => {
     expect(seriesOf(single, all)).toBeUndefined();
+  });
+});
+
+describe('byPostCount', () => {
+  const tag = (name: string, n: number) => ({ name, slug: name, posts: Array.from({ length: n }) as Post[] });
+
+  it('puts the most used tags first and orders ties by name', () => {
+    const sorted = byPostCount([tag('mock', 1), tag('자바의 정석', 16), tag('TDD', 3), tag('가비지', 3)]);
+    // Korean collation puts Hangul before Latin, so 가비지 precedes TDD at the same count.
+    expect(sorted.map(t => t.name)).toEqual(['자바의 정석', '가비지', 'TDD', 'mock']);
   });
 });

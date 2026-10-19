@@ -4,6 +4,7 @@ date: 2018-01-15 23:24:07
 tags: [Jackson, JSON]
 categories: [Java, 라이브러리]
 series: 'Jackson으로 LocalDate, LocalTime, LocalDateTime 뽀개기'
+seriesOrder: 1
 ---
 
 ![](./thumb.webp)

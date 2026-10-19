@@ -12,8 +12,13 @@
   --code-bg: #f6f8f7;
   /* github-light's keyword red (#d73a49) only reaches 4.5:1 on pure white. */
   --code-block-bg: #ffffff;
-  --content: 720px;
-  --wide: 1080px;
+  /* Page frame: wide screens get the room, with gutters that grow from 16px on phones to 48px. */
+  --page: 1440px;
+  --gutter: clamp(16px, calc(4vw - 10px), 48px);
+  /* Post column for code, tables and images. Running text is held to --measure inside it. */
+  --content: 960px;
+  /* Long enough to use the width, short enough to track lines: roughly 45 Hangul characters. */
+  --measure: 86ch;
   --radius: 10px;
   /* System fonts only (no web font download): Apple SD Gothic Neo on Apple devices, Malgun Gothic on Windows,
      Noto Sans KR on Android. Korean glyphs are listed before system-ui so Windows doesn't fall back to a CJK
@@ -101,9 +106,13 @@ iframe {
 }
 
 .container {
-  max-width: var(--content);
+  max-width: var(--page);
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 var(--gutter);
+}
+/* Single-column reading pages (search results and the like). */
+.container.narrow {
+  max-width: calc(var(--content) + 2 * var(--gutter));
 }
 
 .muted {
@@ -163,6 +172,12 @@ iframe {
 /* Post body */
 .prose {
   font-size: 1.0625rem;
+}
+/* Text blocks stop at a readable line length; code, tables, images and embeds keep the full column.
+   Markdown wraps a standalone image in <p>, so paragraphs holding media are left at full width. */
+.prose > :where(ul, ol, dl, blockquote, h1, h2, h3, h4, h5, h6),
+.prose > p:not(:has(img, picture, iframe, video, .yt-facade)) {
+  max-width: var(--measure);
 }
 /* Underlined so links in running text don't rely on color alone. */
 .prose a {
@@ -235,7 +250,8 @@ iframe {
 .prose img {
   display: block;
   height: auto;
-  margin: 1.5em auto;
+  /* Left-aligned with the text column; centred in a wide column they would drift away from the text. */
+  margin: 1.5em 0;
   border-radius: 6px;
 }
 /* Screenshots are mostly white; full brightness glares on a dark page. */
@@ -451,21 +467,21 @@ iframe {
   .prose .code-block,
   .prose .video-container,
   .prose .yt-frame:not(.video-container > .yt-frame) {
-    margin-inline: -16px;
+    margin-inline: calc(-1 * var(--gutter));
     border-radius: 0;
   }
   .prose .code-block {
     border-inline: 0;
   }
   .code-head {
-    padding-left: 16px;
+    padding-left: var(--gutter);
   }
   .prose .code-block > pre {
     margin-inline: 0;
   }
   .prose pre {
     border-inline: 0;
-    padding: 0.9em 16px;
+    padding: 0.9em var(--gutter);
     font-size: 0.8125rem;
     overscroll-behavior-x: contain;
   }

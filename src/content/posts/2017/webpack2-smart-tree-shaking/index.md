@@ -4,6 +4,7 @@ date: 2017-04-12 09:10:25
 categories: [Frontend, Webpack]
 tags: [npm, Webpack2, Babel]
 series: 'Webpack 2'
+seriesOrder: 3
 ---
 ![](./thumb.webp)
 

@@ -4,6 +4,7 @@ tags: []
 categories: [일상, 여행]
 date: 2025-12-10 11:26:56
 series: '해외여행'
+seriesOrder: 2
 ---
 
 ![](./cat-on-the-roof.webp)

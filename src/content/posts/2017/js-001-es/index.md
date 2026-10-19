@@ -4,6 +4,7 @@ date: 2017-04-26 09:44:42
 categories: [JavaScript, 자알쓰]
 tags: []
 series: '자알쓰'
+seriesOrder: 1
 ---
 ![](./thumb.webp)
 

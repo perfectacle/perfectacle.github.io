@@ -4,6 +4,7 @@ date: 2017-02-09 13:53:40
 categories: [Java, 언어]
 tags: [자바의 정석, OOP]
 series: '자바의 정석 3판 스터디'
+seriesOrder: 7
 ---
 ![](./thumb.webp)  
 드디어 오늘부터 객체지향 프로그래밍(OOP, Object Oriented Programming) 파트를 나가기 시작했다.  

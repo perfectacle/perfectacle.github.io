@@ -37,12 +37,21 @@ async function thumbnail(post: Post): Promise<ImageMetadata | undefined> {
   const load = postImages[`${dir}${file}`] ?? postImages[`${dir}${safeDecode(file)}`];
   return (await load?.())?.default;
 }
+// Rendered thumbnail width, mirroring the card grid below and --gutter (clamp(16px, 4vw - 10px, 48px), so the
+// frame minus gutters is 92vw + 20px): 3 cards of >= 340px with 28px gaps from 1148px, 2 from 900px, then rows.
+const THUMB_SIZES = [
+  '(min-width: 1450px) 430px',
+  '(min-width: 1148px) calc((92vw - 36px) / 3)',
+  '(min-width: 900px) calc((92vw - 8px) / 2)',
+  '(min-width: 641px) 168px',
+  '88px',
+].join(', ');
 const items = await Promise.all(
   posts.map(async post => ({ post, thumb: summary ? await thumbnail(post) : undefined })),
 );
 ---
 
-<ol class="post-list">
+<ol class:list={['post-list', { cards: summary }]}>
   {items.map(({ post, thumb }, i) => {
     const cats = post.data.categories;
     return (
@@ -84,17 +93,25 @@ const items = await Promise.all(
               </ul>
             )}
           </div>
-          {thumb && (
+          {thumb ? (
             <Image
               class="thumb"
               src={thumb}
               alt=""
-              width={168}
-              height={112}
+              width={960}
+              height={540}
+              widths={[176, 352, 480, 720, 960]}
+              sizes={THUMB_SIZES}
               fit="cover"
-              layout="fixed"
-              loading={i < 2 ? 'eager' : 'lazy'}
+              loading={i < 3 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : undefined}
             />
+          ) : (
+            summary && (
+              <div class="thumb thumb-empty" aria-hidden="true">
+                <span class="mono">{`{ ${cats.at(-1) ?? '글'} }`}</span>
+              </div>
+            )
           )}
         </article>
       </li>
@@ -174,6 +191,10 @@ const items = await Promise.all(
   :global([data-theme='dark']) .thumb {
     filter: brightness(0.9);
   }
+  /* Only cards need a stand-in: rows without an image simply give the text the room. */
+  .thumb-empty {
+    display: none;
+  }
   /* The title link covers the card so the whole item is a tap target; category and tags stay clickable above it. */
   h2 a::after {
     content: '';
@@ -184,6 +205,46 @@ const items = await Promise.all(
   .chips {
     position: relative;
     z-index: 1;
+  }
+  /* Wide screens: a grid of cards (image on top) instead of long single rows. */
+  @media (min-width: 900px) {
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 40px 28px;
+      padding-top: 16px;
+    }
+    .cards > li + li {
+      border-top: 0;
+    }
+    .cards article {
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+      padding: 0;
+    }
+    .cards .thumb {
+      order: -1;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      margin: 0;
+    }
+    .cards .thumb-empty {
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background:
+        radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--accent) 22%, transparent) 1px, transparent 0) 0 0 /
+          14px 14px,
+        var(--bg-soft);
+      color: var(--fg-muted);
+      font-size: 0.95rem;
+      text-align: center;
+    }
+    .cards .excerpt {
+      -webkit-line-clamp: 3;
+    }
   }
   @media (max-width: 640px) {
     article {

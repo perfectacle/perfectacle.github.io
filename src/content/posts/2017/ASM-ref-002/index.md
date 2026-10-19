@@ -4,6 +4,7 @@ date: 2017-01-24 09:52:21
 categories: [CS, ASM·C/C++]
 tags: [ASM, Assembly, Endian]
 series: 'ASM 참고용 정리'
+seriesOrder: 2
 ---
 ![](./thumb.webp)  
 엔디안은 시스템 프로그래밍에서 많이 쓰이는 용어이다.  

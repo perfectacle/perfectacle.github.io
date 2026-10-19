@@ -4,6 +4,7 @@ categories: [Spring, JPA]
 tags: [Hibernate, MySQL, Entity Lifecycle]
 date: 2017-08-03 09:17:54
 series: '스타트 스프링 부트 스터디'
+seriesOrder: 2
 ---
 ![](./thumb.webp)  
 

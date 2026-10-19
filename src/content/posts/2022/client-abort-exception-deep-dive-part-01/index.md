@@ -4,6 +4,7 @@ tags: []
 categories: [Server, Tomcat]
 date: 2022-03-20 03:30:19
 series: 'ClientAbortException은 왜 발생할까?'
+seriesOrder: 1
 ---
 서버에서 아주 가끔가다가 ClientAbortException(java.io.IOExceiption: Broken pipe)이 발생해서 어떨 때 발생하는지 딥다이브 해봄.
 ![](./stacktrace.webp)
