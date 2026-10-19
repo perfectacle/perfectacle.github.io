@@ -3,15 +3,19 @@ import { categoryPath, type CategoryNode } from '../lib/posts.ts';
 
 interface Props {
   nodes: CategoryNode[];
+  depth?: number;
 }
-const { nodes } = Astro.props;
+const { nodes, depth = 0 } = Astro.props;
 ---
 
-<ul>
+<ul class:list={[depth === 0 ? 'roots' : 'children']}>
   {nodes.map(node => (
     <li>
-      <a href={categoryPath(node.path)}>{node.name}</a> <span class="count">{node.posts.length}</span>
-      {node.children.length > 0 && <Astro.self nodes={node.children} />}
+      <a href={categoryPath(node.path)}>
+        <span>{node.name}</span>
+        <span class="count mono">{node.posts.length}</span>
+      </a>
+      {node.children.length > 0 && <Astro.self nodes={node.children} depth={depth + 1} />}
     </li>
   ))}
 </ul>
@@ -20,24 +24,49 @@ const { nodes } = Astro.props;
   ul {
     list-style: none;
     margin: 0;
-    padding-left: 0;
+    padding: 0;
   }
-  ul ul {
-    padding-left: 18px;
+  /* Top level: one card per root category, packed into two columns where there is room. */
+  .roots {
+    columns: 2 300px;
+    column-gap: 12px;
+  }
+  .roots > li {
+    break-inside: avoid;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px 4px 8px;
+  }
+  .roots > li > a {
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .roots > li:not(:has(.children)) {
+    padding-bottom: 4px;
+  }
+  .children {
+    margin: 0 0 0 12px;
+    padding-left: 8px;
     border-left: 1px solid var(--border);
-    margin: 4px 0 4px 6px;
-  }
-  li {
-    padding: 3px 0;
   }
   a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 40px;
+    padding: 0 10px;
+    border-radius: 6px;
     color: var(--fg);
   }
   a:hover {
+    background: var(--bg-soft);
     color: var(--accent);
+    text-decoration: none;
   }
   .count {
     color: var(--fg-muted);
-    font-size: 0.85rem;
+    font-weight: 400;
   }
 </style>

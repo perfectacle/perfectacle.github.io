@@ -1,0 +1,237 @@
+---
+import { postPath, type SeriesInfo } from '../lib/posts.ts';
+
+interface Props {
+  series: SeriesInfo;
+  /** `box`: the full list near the post header. `pager`: only the previous/next part, for the end of the post. */
+  variant?: 'box' | 'pager';
+}
+const { series, variant = 'box' } = Astro.props;
+const { name, posts, index } = series;
+const prev = posts[index - 1];
+const next = posts[index + 1];
+// Long series start collapsed so the post itself stays near the top of the screen.
+const COLLAPSE_AFTER = 5;
+---
+
+{variant === 'box' ? (
+  <nav class="series" aria-label={`시리즈: ${name}`} data-pagefind-ignore="all">
+    <div class="head">
+      <p class="name">
+        <span class="kicker">시리즈</span>
+        {name}
+      </p>
+      <p class="pos mono">
+        <span class="visually-hidden">
+          전체 {posts.length}편 중 {index + 1}번째
+        </span>
+        <span aria-hidden="true">
+          {index + 1}/{posts.length}
+        </span>
+      </p>
+    </div>
+    <details open={posts.length <= COLLAPSE_AFTER}>
+      <summary>전체 목록 ({posts.length}편)</summary>
+      <ol>
+        {posts.map((p, i) => (
+          <li>
+            <a href={postPath(p)} aria-current={i === index ? 'page' : undefined}>
+              <span class="num mono" aria-hidden="true">
+                {i + 1}
+              </span>
+              <span>{p.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </details>
+    <div class="pager">
+      {prev && (
+        <a href={postPath(prev)} class="prev">
+          ← 이전 편
+        </a>
+      )}
+      {next && (
+        <a href={postPath(next)} class="next">
+          다음 편 →
+        </a>
+      )}
+    </div>
+  </nav>
+) : (
+  (prev || next) && (
+    <nav class="series-pager" aria-label={`시리즈: ${name} 이전·다음 편`} data-pagefind-ignore="all">
+      <p class="name">
+        <span class="kicker">시리즈</span>
+        {name}{' '}
+        <span class="mono">
+          ({index + 1}/{posts.length})
+        </span>
+      </p>
+      <div class="pager-links">
+        {prev ? (
+          <a href={postPath(prev)}>
+            <span class="muted">← 이전 편</span>
+            {prev.data.title}
+          </a>
+        ) : (
+          <span />
+        )}
+        {next ? (
+          <a href={postPath(next)} class="next">
+            <span class="muted">다음 편 →</span>
+            {next.data.title}
+          </a>
+        ) : (
+          <span />
+        )}
+      </div>
+    </nav>
+  )
+)}
+
+<style>
+  .series,
+  .series-pager {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+    font-size: 0.92rem;
+  }
+  .series {
+    margin-bottom: 24px;
+    padding: 12px 16px 8px;
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .name {
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+  .kicker {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--fg-muted);
+  }
+  .kicker::before {
+    content: '// ' / '';
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .pos {
+    flex: none;
+    margin: 0;
+    color: var(--fg-muted);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--fg-muted);
+    cursor: pointer;
+  }
+  /* display:flex drops the native disclosure triangle, so the open/closed cue is drawn here. */
+  summary::after {
+    content: '' / '';
+    width: 6px;
+    height: 6px;
+    margin-left: 8px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+  }
+  details[open] > summary::after {
+    transform: translateY(1px) rotate(-135deg);
+  }
+  ol {
+    list-style: none;
+    margin: 0 0 4px;
+    padding: 0;
+  }
+  ol a {
+    display: flex;
+    gap: 10px;
+    padding: 6px 8px;
+    margin: 0 -8px;
+    border-radius: 6px;
+    color: var(--fg);
+    line-height: 1.5;
+  }
+  ol a:hover {
+    background: var(--bg);
+    text-decoration: none;
+  }
+  ol a[aria-current='page'] {
+    background: var(--bg);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .num {
+    flex: none;
+    min-width: 1.6em;
+    color: var(--fg-muted);
+    text-align: right;
+  }
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .pager a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .pager .next {
+    margin-left: auto;
+  }
+  .series-pager {
+    margin-top: 40px;
+    padding: 12px 16px;
+  }
+  .pager-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .pager-links a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 44px;
+    color: var(--fg);
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .pager-links a:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .pager-links .muted {
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+  .pager-links .next {
+    text-align: right;
+  }
+  @media (max-width: 560px) {
+    .pager-links {
+      grid-template-columns: 1fr;
+    }
+    .pager-links .next {
+      text-align: left;
+    }
+    .pager-links > span {
+      display: none;
+    }
+  }
+</style>

@@ -3,6 +3,7 @@ title: (자알쓰) Scope Part. 1
 date: 2017-04-27 09:14:47
 categories: [JavaScript, 자알쓰]
 tags: [Scope]
+series: '자알쓰'
 ---
 ![](./thumb.webp)
 

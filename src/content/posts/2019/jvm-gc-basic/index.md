@@ -6,6 +6,7 @@ categories:
   - Java
   - JVM
 date: 2019-05-07 01:43:52
+series: 'JVM Garbage Collection'
 ---
 
 ![PermGen은 자바 8에서 Metaspcae로 대체됐다. 이미지 출처: https://help.sap.com/](./thumb.webp)  

@@ -42,7 +42,7 @@ const current = Astro.url.pathname;
     <meta property="og:locale" content="ko_KR" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#0e1114" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="/images/favicon/favicon-32x32.png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/images/favicon/apple-touch-icon.png" />
     <link rel="alternate" type="application/atom+xml" title={SITE.title} href="/atom.xml" />
@@ -69,8 +69,9 @@ const current = Astro.url.pathname;
     </a>
     <header class="site-header">
       <div class="bar">
-        <a class="brand" href="/">
+        <a class="brand" href="/" aria-current={current === '/' ? 'page' : undefined}>
           {SITE.title}
+          <span class="caret" aria-hidden="true"></span>
         </a>
         <nav aria-label="주요 메뉴">
           <ul>
@@ -112,14 +113,15 @@ const current = Astro.url.pathname;
       </div>
     </header>
 
-    <main id="main">
+    <main id="main" tabindex="-1">
       <slot />
     </main>
 
     <footer class="site-footer">
-      <div class="container">
+      <div class="container footer-inner">
+        <p class="section-label">{SITE.subtitle}</p>
         <p>
-          © 2016–{new Date().getFullYear()} {SITE.author} · <a href="/atom.xml">RSS</a> ·{' '}
+          © 2016–{new Date().getFullYear()} {SITE.author} · <a href="/atom.xml">RSS</a> · <a href="/search/">검색</a> ·{' '}
           <a href="https://github.com/perfectacle" target="_blank" rel="noopener">
             GitHub
           </a>
@@ -171,6 +173,16 @@ const current = Astro.url.pathname;
   .brand:hover {
     text-decoration: none;
   }
+  /* Terminal block cursor: the site's mark. Static on purpose — a blinking one would pull the eye on every page. */
+  .caret {
+    display: inline-block;
+    width: 0.5em;
+    height: 1.05em;
+    margin-left: 3px;
+    vertical-align: -0.14em;
+    border-radius: 1px;
+    background: var(--accent);
+  }
   nav {
     flex: 1;
     min-width: 0;
@@ -221,6 +233,9 @@ const current = Astro.url.pathname;
   :global([data-theme='light']) .moon {
     display: none;
   }
+  main:focus {
+    outline: none;
+  }
   main {
     /* svh: 100vh on mobile includes the collapsing URL bar and forces needless scrolling. */
     min-height: calc(100svh - 160px);
@@ -231,6 +246,9 @@ const current = Astro.url.pathname;
     padding: 24px 0;
     font-size: 0.875rem;
     color: var(--fg-muted);
+  }
+  .site-footer p {
+    margin: 0;
   }
   .site-footer a {
     display: inline-block;
@@ -252,9 +270,12 @@ const current = Astro.url.pathname;
     color: var(--fg) !important;
   }
 
-  /* Phones: brand + icons on the first row, the nav as its own scrollable row so every item is reachable. */
+  /* Phones: brand + icons on the first row, the nav as its own scrollable row so every item is reachable.
+     The two rows (~97px) would cover over a tenth of the screen while reading, so the header scrolls away;
+     long posts get a back-to-top button instead. */
   @media (max-width: 640px) {
     .site-header {
+      position: static;
       background: var(--bg);
       backdrop-filter: none;
     }

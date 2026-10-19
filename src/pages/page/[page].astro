@@ -12,4 +12,12 @@ export async function getStaticPaths() {
 const { posts, current, total } = Astro.props;
 ---
 
-<ListPage title="전체 글" posts={posts} base="/" current={current} total={total} />
+<ListPage
+  title="전체 글"
+  heading="전체 글"
+  eyebrow={`${current} / ${total}페이지`}
+  posts={posts}
+  base="/"
+  current={current}
+  total={total}
+/>

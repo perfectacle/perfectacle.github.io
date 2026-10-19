@@ -5,27 +5,39 @@ import Toc from '../../../../components/Toc.astro';
 import Comments from '../../../../components/Comments.astro';
 import YoutubeFacade from '../../../../components/YoutubeFacade.astro';
 import ImageZoom from '../../../../components/ImageZoom.astro';
+import SeriesNav from '../../../../components/SeriesNav.astro';
 import {
   categoryPath,
+  coverImage,
   excerpt,
-  firstImageSrc,
   formatDate,
   getPosts,
   postPath,
   postSlug,
   readingMinutes,
+  relatedPosts,
+  seriesOf,
   tagPath,
   ymd,
   type Post,
+  type SeriesInfo,
 } from '../../../../lib/posts.ts';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
   return posts.map((post, i) => {
     const { y, m, d } = ymd(post.data.date);
+    const series = seriesOf(post, posts);
     return {
       params: { year: y, month: m, day: d, slug: postSlug(post) },
-      props: { post, newer: posts[i - 1], older: posts[i + 1] },
+      props: {
+        post,
+        newer: posts[i - 1],
+        older: posts[i + 1],
+        series,
+        // The series box already lists its parts, so related posts look beyond them.
+        related: relatedPosts(post, posts, { exclude: [posts[i - 1], posts[i + 1], ...(series?.posts ?? [])] }),
+      },
     };
   });
 }
@@ -34,12 +46,13 @@ interface Props {
   post: Post;
   newer?: Post;
   older?: Post;
+  related: Post[];
+  series?: SeriesInfo | undefined;
 }
-const { post, newer, older } = Astro.props;
+const { post, newer, older, related, series } = Astro.props;
 const { Content, headings } = await render(post);
 const path = postPath(post);
-const firstImage = firstImageSrc(post);
-const ogFile = post.data.image?.replace(/^\.\//, '') ?? firstImage;
+const ogFile = coverImage(post);
 const ogImage = ogFile ? `${path}${ogFile}` : undefined;
 const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 const cats = post.data.categories;
@@ -67,11 +80,28 @@ const cats = post.data.categories;
         )}
         <h1 data-pagefind-meta="title">{post.data.title}</h1>
         <p class="meta" data-pagefind-ignore="all">
-          <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+          <time class="mono" datetime={post.data.date.toISOString()}>
+            {formatDate(post.data.date)}
+          </time>
           <span aria-hidden="true">·</span>
           <span>읽는 데 {readingMinutes(post)}분</span>
+          <span aria-hidden="true">·</span>
+          <a class="to-comments" href="#comments">
+            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linejoin="round"
+                d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12Z"
+              />
+            </svg>
+            댓글
+          </a>
         </p>
       </header>
+
+      {series && <SeriesNav series={series} />}
 
       {toc.length > 2 && (
         <details class="toc-inline" data-pagefind-ignore="all">
@@ -94,6 +124,31 @@ const cats = post.data.categories;
             </li>
           ))}
         </ul>
+      )}
+
+      {/* Skipped when the series neighbours are the same posts as the plain previous/next links below. */}
+      {series && (series.posts[series.index - 1] !== older || series.posts[series.index + 1] !== newer) && (
+        <SeriesNav series={series} variant="pager" />
+      )}
+
+      {related.length > 0 && (
+        <section class="related" aria-labelledby="related-title" data-pagefind-ignore>
+          <h2 id="related-title" class="section-label">
+            관련 글
+          </h2>
+          <ul>
+            {related.map(r => (
+              <li>
+                <a href={postPath(r)}>
+                  <span class="title">{r.data.title}</span>
+                  <time class="mono" datetime={r.data.date.toISOString()}>
+                    {formatDate(r.data.date)}
+                  </time>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <nav class="siblings" aria-label="이전·다음 글" data-pagefind-ignore>
@@ -124,10 +179,154 @@ const cats = post.data.categories;
       <aside class="toc-side" aria-label="목차">
         <p class="toc-title">목차</p>
         <Toc headings={toc} />
+        <p class="toc-foot">
+          <a href="#main">↑ 맨 위로</a>
+          <a href="#comments">댓글로 이동</a>
+        </p>
       </aside>
     )}
   </div>
 
+  <div class="progress" aria-hidden="true"></div>
+  <div class="fab">
+    {toc.length > 2 && (
+      <button
+        type="button"
+        class="fab-btn toc-open"
+        aria-haspopup="dialog"
+        aria-controls="toc-sheet"
+        aria-label="목차 열기"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"
+          />
+        </svg>
+      </button>
+    )}
+    <a class="fab-btn to-top" href="#main" aria-label="맨 위로 이동">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 19V5m-6 6 6-6 6 6"
+        />
+      </svg>
+    </a>
+  </div>
+  {toc.length > 2 && (
+    <dialog id="toc-sheet" class="toc-sheet" aria-labelledby="toc-sheet-title" data-pagefind-ignore="all">
+      <div class="sheet">
+        <div class="sheet-head">
+          <p id="toc-sheet-title" class="toc-title">
+            목차
+          </p>
+          <button type="button" class="sheet-close" aria-label="목차 닫기">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                d="M6 6l12 12M18 6 6 18"
+              />
+            </svg>
+          </button>
+        </div>
+        <Toc headings={toc} />
+      </div>
+    </dialog>
+  )}
+
+  <script>
+    // Copy buttons are rendered hidden at build time and only shown once they can work.
+    for (const button of document.querySelectorAll<HTMLButtonElement>('.code-copy')) {
+      const code = button.closest('.code-block')?.querySelector('pre');
+      if (!code || !navigator.clipboard) continue;
+      button.hidden = false;
+      button.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(code.innerText.replace(/\n$/, ''));
+          button.textContent = '복사됨';
+          button.dataset['copied'] = '';
+        } catch {
+          button.textContent = '복사 실패';
+        }
+        setTimeout(() => {
+          button.textContent = '복사';
+          delete button.dataset['copied'];
+        }, 2000);
+      });
+    }
+
+    // The floating buttons appear once the post header has scrolled away, and step aside when the footer arrives
+    // so they never cover the footer links.
+    const fab = document.querySelector<HTMLElement>('.fab');
+    const toTop = document.querySelector<HTMLAnchorElement>('.to-top');
+    const head = document.querySelector('.post-head');
+    const footer = document.querySelector('.site-footer');
+    if (fab && toTop && head && footer) {
+      let pastHead = false;
+      let atFooter = false;
+      const update = () => fab.classList.toggle('show', pastHead && !atFooter);
+      new IntersectionObserver(([e]) => {
+        pastHead = !!e && !e.isIntersecting && e.boundingClientRect.top < 0;
+        update();
+      }).observe(head);
+      new IntersectionObserver(([e]) => {
+        atFooter = !!e?.isIntersecting;
+        update();
+      }).observe(footer);
+      toTop.addEventListener('click', e => {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        });
+        document.getElementById('main')?.focus({ preventScroll: true });
+      });
+    }
+
+    // Table of contents as a bottom sheet for screens without the sidebar. <dialog>.showModal() keeps focus
+    // inside and closes on Escape; focus goes back to the button, or to the heading that was picked.
+    const sheet = document.querySelector<HTMLDialogElement>('#toc-sheet');
+    const opener = document.querySelector<HTMLButtonElement>('.toc-open');
+    if (sheet && opener) {
+      opener.setAttribute('aria-expanded', 'false');
+      opener.addEventListener('click', () => {
+        sheet.showModal();
+        opener.setAttribute('aria-expanded', 'true');
+        sheet.querySelector<HTMLAnchorElement>('.toc a.active')?.scrollIntoView({ block: 'center' });
+      });
+      sheet.addEventListener('close', () => {
+        opener.setAttribute('aria-expanded', 'false');
+      });
+      sheet.querySelector('.sheet-close')?.addEventListener('click', () => sheet.close());
+      // A click on the backdrop lands on the <dialog> itself; clicks on the sheet land on its children.
+      sheet.addEventListener('click', e => {
+        if (e.target === sheet) sheet.close();
+      });
+      sheet.querySelectorAll<HTMLAnchorElement>('.toc a').forEach(a =>
+        a.addEventListener('click', e => {
+          const target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+          if (!target) return;
+          e.preventDefault();
+          // Closing hands focus back to the button, so the jump and the focus move come after it.
+          sheet.close();
+          location.hash = a.hash;
+          target.tabIndex = -1;
+          target.focus({ preventScroll: true });
+        }),
+      );
+    }
+  </script>
   <script>
     // Mermaid is large and rendering blocks the main thread, so each diagram is drawn only when it
     // approaches the viewport (posts can have many). The library itself loads with the first one.
@@ -193,10 +392,27 @@ const cats = post.data.categories;
   }
   .meta {
     display: flex;
-    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 6px;
     margin: 0;
     color: var(--fg-muted);
     font-size: 0.9rem;
+  }
+  .meta .mono {
+    font-size: 0.82rem;
+  }
+  .to-comments {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    /* 44px tap height without making the meta row taller. */
+    margin-block: -10px;
+    padding-block: 10px;
+    color: inherit;
+  }
+  .to-comments:hover {
+    color: var(--accent);
   }
   .toc-inline {
     display: none;
@@ -237,6 +453,190 @@ const cats = post.data.categories;
   }
   .tags {
     margin-top: 40px;
+  }
+  .related {
+    margin-top: 40px;
+  }
+  .related ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+  .related a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 44px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--fg);
+    line-height: 1.45;
+  }
+  .related a:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .related time {
+    flex: none;
+    color: var(--fg-muted);
+    font-size: 0.78rem;
+  }
+  .toc-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 16px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .toc-foot a {
+    color: var(--fg-muted);
+  }
+  .toc-foot a:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  /* Reading progress, driven by the scroll position alone (no script); browsers without scroll timelines skip it. */
+  .progress {
+    display: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    .progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 20;
+      height: 2px;
+      background: var(--accent);
+      transform-origin: 0 50%;
+      animation: progress linear both;
+    }
+    /* A separate rule on purpose: the CSS minifier folds a timeline sitting next to the shorthand into
+       `animation`, where browsers reject it and the bar never moves. */
+    .layout ~ .progress {
+      animation-timeline: scroll(root);
+    }
+    @keyframes progress {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+  .fab {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 15;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+  }
+  .fab.show {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .fab-btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--fg-muted);
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.08);
+    cursor: pointer;
+  }
+  .fab-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .toc-sheet {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: 640px;
+    max-height: 75vh;
+    margin: 0 auto;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-bottom: 0;
+    border-radius: 16px 16px 0 0;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .toc-sheet::backdrop {
+    background: rgb(0 0 0 / 0.45);
+  }
+  .sheet {
+    padding: 4px 20px max(16px, env(safe-area-inset-bottom));
+  }
+  .sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .sheet-head .toc-title {
+    margin: 0;
+  }
+  .sheet-close {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--fg-muted);
+    cursor: pointer;
+  }
+  .toc-sheet :global(.toc a) {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .toc-sheet :global(.toc li) {
+    padding: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .fab {
+      transition:
+        opacity 0.2s,
+        transform 0.2s,
+        visibility 0.2s;
+    }
+    .toc-sheet[open] {
+      animation: sheet-in 0.2s ease-out;
+    }
+    @keyframes sheet-in {
+      from {
+        transform: translateY(24px);
+        opacity: 0;
+      }
+    }
+  }
+  /* The sidebar already has the contents and a way back up. */
+  @media (min-width: 1101px) {
+    .toc-open {
+      display: none;
+    }
+    .layout:has(.toc-side) ~ .fab {
+      display: none;
+    }
   }
   .siblings {
     display: grid;

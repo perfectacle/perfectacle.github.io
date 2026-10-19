@@ -3,6 +3,7 @@ title: 해외여행 1편 - 케냐
 tags: []
 categories: [일상, 여행]
 date: 2025-12-02 21:56:25
+series: '해외여행'
 ---
 
 ![](./end-kenya.webp)  

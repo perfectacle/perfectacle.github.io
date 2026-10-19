@@ -3,6 +3,7 @@ title: (Webpack 2) 코드를 분할해보자!
 date: 2017-03-13 09:32:22
 categories: [Frontend, Webpack]
 tags: [npm, Webpack2, Babel]
+series: 'Webpack 2'
 ---
 
 ## 들어가기에 앞서

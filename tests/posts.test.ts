@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { excerpt, pagePath, paginate, ymd, type Post } from '../src/lib/posts.ts';
+import { coverImage, excerpt, pagePath, paginate, relatedPosts, seriesOf, ymd, type Post } from '../src/lib/posts.ts';
 
 const post = (body: string) => ({ body }) as Post;
 
@@ -45,5 +45,72 @@ describe('excerpt', () => {
     const text = excerpt(post('가'.repeat(300)), 100);
     expect(text).toHaveLength(101);
     expect(text.endsWith('…')).toBe(true);
+  });
+});
+
+describe('coverImage', () => {
+  const withData = (body: string, image?: string) => ({ body, data: { image } }) as unknown as Post;
+
+  it('prefers the frontmatter image', () => {
+    expect(coverImage(withData('![](./first.webp)', './thumb.webp'))).toBe('thumb.webp');
+  });
+
+  it('falls back to the first image in the body, or nothing', () => {
+    expect(coverImage(withData('글\n\n![설명](./a/first.webp)\n\n![](./second.webp)'))).toBe('a/first.webp');
+    expect(coverImage(withData('이미지 없는 글'))).toBeUndefined();
+  });
+});
+
+describe('relatedPosts', () => {
+  const p = (id: string, date: string, categories: string[], tags: string[] = []) =>
+    ({ id, data: { date: new Date(date), categories, tags } }) as unknown as Post;
+  const me = p('me', '2022-06-06', ['설계', '테스트'], ['TDD', 'mock']);
+  const sameSub = p('sameSub', '2020-01-01', ['설계', '테스트']);
+  const sharedTag = p('sharedTag', '2022-06-01', ['Java'], ['TDD']);
+  const topOnly = p('topOnly', '2022-06-05', ['설계', '패턴']);
+  const unrelated = p('unrelated', '2022-06-06', ['일상']);
+  const all = [me, sameSub, sharedTag, topOnly, unrelated];
+
+  it('ranks deeper category matches and shared tags, and drops loose matches', () => {
+    expect(relatedPosts(me, all).map(x => x.id)).toEqual(['sameSub', 'sharedTag']);
+  });
+
+  it('breaks ties by closeness in date and honours exclude and limit', () => {
+    const near = p('near', '2022-05-01', ['설계', '테스트']);
+    expect(relatedPosts(me, [...all, near]).map(x => x.id)).toEqual(['near', 'sameSub', 'sharedTag']);
+    expect(relatedPosts(me, [...all, near], { exclude: [near], limit: 1 }).map(x => x.id)).toEqual(['sameSub']);
+  });
+});
+
+describe('seriesOf', () => {
+  const p = (title: string, date: string, series?: string, id = title) =>
+    ({ id, data: { title, date: new Date(date), series, categories: [], tags: [] } }) as unknown as Post;
+  const part2 = p('2편', '2021-12-31T14:00:00Z', '여행', '2021/trip-2');
+  const part1 = p('1편', '2021-12-31T14:00:00Z', '여행', '2021/trip-1');
+  const part3 = p('3편', '2022-01-02T00:00:00Z', '여행');
+  const other = p('다른 시리즈', '2021-12-30T00:00:00Z', '자바');
+  const single = p('단독 글', '2021-12-30T00:00:00Z');
+  const all = [part3, other, part2, single, part1];
+
+  it('orders the series by date, then id, and locates the post', () => {
+    const s = seriesOf(part2, all);
+    expect(s?.name).toBe('여행');
+    expect(s?.posts.map(x => x.data.title)).toEqual(['1편', '2편', '3편']);
+    expect(s?.index).toBe(1);
+  });
+
+  it('compares same-date ids numerically, not by title', () => {
+    const day16 = p('015일차 (다시)', '2017-08-04T00:00:00Z', '정석', '2017/java-study-016day');
+    const day14 = p('014일차', '2017-08-04T00:00:00Z', '정석', '2017/java-study-014day');
+    const day9 = p('009일차', '2017-08-04T00:00:00Z', '정석', '2017/java-study-9day');
+    expect(seriesOf(day14, [day16, day14, day9])?.posts.map(x => x.id)).toEqual([
+      '2017/java-study-9day',
+      '2017/java-study-014day',
+      '2017/java-study-016day',
+    ]);
+  });
+
+  it('is undefined for a post outside any series', () => {
+    expect(seriesOf(single, all)).toBeUndefined();
   });
 });

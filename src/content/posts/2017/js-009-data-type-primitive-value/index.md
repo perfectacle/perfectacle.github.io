@@ -7,6 +7,7 @@ categories:
   - JavaScript
   - 자알쓰
 date: 2017-07-01 09:53:29
+series: '자알쓰'
 ---
 
 ![](./thumb.webp)  

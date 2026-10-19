@@ -6,6 +6,7 @@ categories:
   - Server
   - Netty
 date: 2021-02-28 01:32:12
+series: 'Netty'
 ---
 
 이벤트 루프의 개념이 명확하지 않아 [자바 네트워크 소녀 네티](https://www.hanbit.co.kr/media/books/book_view.html?p_code=B2683487348)를 보고 정리해봄.

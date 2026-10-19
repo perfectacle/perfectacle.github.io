@@ -3,6 +3,7 @@ title: (Java) 자바의 정석 3판 002일차 - char의 형변환과 실수형(�
 date: 2016-12-31 18:12:20
 categories: [Java, 언어]
 tags: [자바의 정석, 부동소수점]
+series: '자바의 정석 3판 스터디'
 ---
 ![](./thumb.webp)
 

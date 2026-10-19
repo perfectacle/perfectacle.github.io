@@ -3,6 +3,7 @@ title: (Java) 자바의 정석 3판 010일차 - 생성자, this, 멤버 변수 �
 date: 2017-02-13 13:53:36
 categories: [Java, 언어]
 tags: [자바의 정석, OOP]
+series: '자바의 정석 3판 스터디'
 ---
 ![](./thumb.webp)  
 ## 생성자(Constructor)

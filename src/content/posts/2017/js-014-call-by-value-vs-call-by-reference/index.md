@@ -3,6 +3,7 @@ title: (자알쓰) call by value vs call by reference
 date: 2017-10-30 21:43:03
 categories: [JavaScript, 자알쓰]
 tags: []
+series: '자알쓰'
 ---
 ![](./thumb.webp)
 

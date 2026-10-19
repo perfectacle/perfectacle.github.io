@@ -6,6 +6,7 @@ categories:
   - JavaScript
   - 자알쓰
 date: 2017-06-02 09:35:00
+series: '자알쓰'
 ---
 
 

@@ -5,6 +5,7 @@ categories:
   - JavaScript
   - 함수형
 date: 2017-06-28 09:54:16
+series: '함수형 JS'
 ---
 
 

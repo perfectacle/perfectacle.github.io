@@ -12,7 +12,10 @@ const { path, title } = Astro.props;
 const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), title };
 ---
 
-<section class="comments" data-pagefind-ignore>
+<section id="comments" class="comments" aria-labelledby="comments-title" data-pagefind-ignore>
+  <h2 id="comments-title" class="section-label">
+    댓글
+  </h2>
   <div id="disqus_thread" data-config={JSON.stringify(config)}>
     <button type="button" class="load">
       댓글 보기
@@ -72,5 +75,9 @@ const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), t
     background: var(--bg-soft);
     color: var(--fg);
     cursor: pointer;
+    min-height: 44px;
+  }
+  .load:hover {
+    border-color: var(--accent);
   }
 </style>

@@ -3,6 +3,7 @@ title: (자알쓰) Hoisting
 date: 2017-04-26 23:25:29
 categories: [JavaScript, 자알쓰]
 tags: [Hoisting]
+series: '자알쓰'
 ---
 ![](./thumb.webp)
 
