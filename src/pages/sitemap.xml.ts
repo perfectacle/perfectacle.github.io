@@ -1,9 +1,18 @@
-import { flattenCategories, getCategoryTree, getPosts, getTags, categoryPath, postPath, SITE } from '../lib/posts.ts';
+import {
+  flattenCategories,
+  getCategoryTree,
+  getLatestPost,
+  getPosts,
+  getTags,
+  categoryPath,
+  postPath,
+  SITE,
+} from '../lib/posts.ts';
 
 export async function GET() {
   const posts = await getPosts();
   const urls: [string, string?][] = [
-    ['/', posts[0].data.date.toISOString()],
+    ['/', (await getLatestPost()).data.date.toISOString()],
     ...posts.map(p => [postPath(p), p.data.date.toISOString()] as [string, string]),
     ['/about/'],
     ['/archives/'],
@@ -13,11 +22,17 @@ export async function GET() {
     ...flattenCategories(await getCategoryTree()).map(c => [categoryPath(c.path)] as [string]),
   ];
   const body = urls
-    .map(([path, lastmod]) => `  <url><loc>${new URL(path, SITE.url).href.replace(/&/g, '&amp;')}</loc>${lastmod ? `<lastmod>${lastmod.slice(0, 10)}</lastmod>` : ''}</url>`)
+    .map(
+      ([path, lastmod]) =>
+        `  <url><loc>${new URL(path, SITE.url).href.replace(/&/g, '&amp;')}</loc>${lastmod ? `<lastmod>${lastmod.slice(0, 10)}</lastmod>` : ''}</url>`,
+    )
     .join('\n');
-  return new Response(`<?xml version="1.0" encoding="UTF-8"?>
+  return new Response(
+    `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${body}
 </urlset>
-`, { headers: { 'Content-Type': 'application/xml; charset=utf-8' } });
+`,
+    { headers: { 'Content-Type': 'application/xml; charset=utf-8' } },
+  );
 }

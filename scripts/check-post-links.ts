@@ -3,11 +3,11 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const broken = [];
+const broken: string[] = [];
 for (const entry of await readdir('dist', { recursive: true })) {
   if (!entry.endsWith('.html')) continue;
   const html = await readFile(join('dist', entry), 'utf8');
-  for (const [, href] of html.matchAll(/href="([^"]+)"/g)) {
+  for (const [, href = ''] of html.matchAll(/href="([^"]+)"/g)) {
     if (!/^[a-z]+:|^\/\//i.test(href) && /\.md(#|$)/.test(href)) broken.push(`${entry}: ${href}`);
   }
 }

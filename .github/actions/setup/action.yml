@@ -1,0 +1,17 @@
+name: Setup
+description: Node from .node-version, pnpm from packageManager, frozen install
+
+runs:
+  using: composite
+  steps:
+    # setup-node's pnpm cache needs pnpm on PATH; corepack provides the version pinned in packageManager.
+    - shell: bash
+      run: corepack enable
+
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version-file: .node-version
+        cache: pnpm
+
+    - shell: bash
+      run: pnpm install --frozen-lockfile

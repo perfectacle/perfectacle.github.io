@@ -30,7 +30,13 @@ const { node, base, posts, current, total } = Astro.props;
     <p class="muted">글 {node.posts.length}개</p>
     {node.children.length > 0 && (
       <ul class="chips">
-        {node.children.map(c => <li><a class="chip" href={categoryPath(c.path)}>{c.name} {c.posts.length}</a></li>)}
+        {node.children.map(c => (
+          <li>
+            <a class="chip" href={categoryPath(c.path)}>
+              {c.name} {c.posts.length}
+            </a>
+          </li>
+        ))}
       </ul>
     )}
   </div>

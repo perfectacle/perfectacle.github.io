@@ -11,34 +11,58 @@ permissions:
   contents: read
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  # PR runs are superseded by newer pushes; master deploys always run to completion.
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  verify:
+    name: ${{ matrix.task }}
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [lint, format:check, check, test]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - uses: ./.github/actions/setup
+
+      - run: pnpm run ${{ matrix.task }}
+
+  build:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ./.github/actions/setup
+
+      # Optimized images are the bulk of build time; Astro reuses them from this cache when sources are unchanged.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          node-version: '24'
-          cache: 'npm'
+          path: node_modules/.astro/assets
+          key: astro-assets-${{ runner.arch }}-${{ hashFiles('src/content/posts/**/*.png', 'src/content/posts/**/*.jp*g', 'src/content/posts/**/*.gif', 'src/content/posts/**/*.webp') }}
+          restore-keys: astro-assets-${{ runner.arch }}-
 
-      - run: npm ci
+      - run: pnpm build
 
-      - run: npm run build
+      - run: pnpm verify:urls
 
-      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
-      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: ./dist
 
   deploy:
     if: github.event_name != 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
+    needs: [verify, build]
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 10
     permissions:
       pages: write
       id-token: write

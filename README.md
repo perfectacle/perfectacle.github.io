@@ -28,18 +28,27 @@ tags: [Java, JVM]
 
 ## 로컬 실행
 
+Node 24, pnpm 11(`packageManager` 에 고정, `corepack enable` 로 활성화).
+
 ```sh
-npm ci
-npm run dev       # http://localhost:4321
-npm run build     # dist/ 생성 + 글 링크 검사 + 원본 이미지 복사 + 검색 색인(Pagefind)
+pnpm install
+pnpm dev           # http://localhost:4321
+pnpm build         # dist/ 생성 + 글 링크 검사 + 원본 이미지 복사 + 검색 색인(Pagefind)
+pnpm verify:urls   # Hexo 시절 URL(tests/fixtures/legacy-paths.txt) 이 전부 있는지
+pnpm lint          # ESLint
+pnpm format        # Prettier
+pnpm check         # 타입 검사(astro check)
+pnpm test          # Vitest
 ```
 
-의존성을 바꾼 뒤엔 `rm -rf node_modules package-lock.json && npm install` 로 lock 을 새로 만든다. macOS 에서 `npm install <pkg>` 로 부분 갱신하면 wasm 용 optional 의존성이 lock 에서 빠져 CI(Linux)의 `npm ci` 가 실패한다.
+`pnpm-workspace.yaml` 의 `minimumReleaseAge` 로 공개 7일 안 된 버전은 설치되지 않는다. PR 마다 CI 가 lint·format·타입·테스트·빌드·URL 검사를 돌리고, master 머지 시 배포한다. 의존성 갱신은 Dependabot(같은 7일 쿨다운) PR 로 온다.
 
 ## 구조
 
 - `src/pages/` — 라우트. 태그·카테고리·아카이브·페이지네이션 경로는 Hexo 시절 URL 을 그대로 재현한다(`/tags/<tag>/page/2/` 등).
 - `src/lib/slugize.ts` — hexo-util slugize 와 같은 규칙. 바꾸면 태그/카테고리/본문 앵커 URL 이 바뀐다.
-- `src/lib/remark-post-links.ts` — md 의 글 간 파일 경로 링크를 대상 글 `date` 기준 URL 로 변환. `scripts/check-post-links.mjs` 가 변환 못 한 링크를 잡는다.
-- `scripts/copy-post-assets.mjs` — 페이지는 최적화 이미지(`/_astro/`)를 쓰지만, 외부 링크·og:image 용으로 원본을 옛 경로에도 둔다.
+- `src/lib/remark-post-links.ts` — md 의 글 간 파일 경로 링크를 대상 글 `date` 기준 URL 로 변환. `scripts/check-post-links.ts` 가 변환 못 한 링크를 잡는다.
+- `src/lib/post-files.ts` — 글 폴더 → URL 규칙(빌드 스크립트·remark 플러그인 공용). `posts.ts` 의 `postPath` 와 같아야 한다.
+- `scripts/*.ts` — Node 24 가 타입만 지우고 바로 실행한다(빌드 단계 없음).
+- `scripts/copy-post-assets.ts` — 페이지는 최적화 이미지(`/_astro/`)를 쓰지만, 외부 링크·og:image 용으로 원본을 옛 경로에도 둔다.
 - `public/` — 그대로 서빙되는 정적 파일(데모 페이지, 사이트 인증 파일 등).

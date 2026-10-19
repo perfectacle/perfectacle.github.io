@@ -1,0 +1,8 @@
+dist/
+.astro/
+public/
+drafts/
+src/content/
+pnpm-lock.yaml
+.omc/
+src/pages/about.md

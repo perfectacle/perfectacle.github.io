@@ -1,0 +1,4 @@
+# Only install versions published at least 7 days ago (supply-chain cooldown).
+minimumReleaseAge: 10080
+
+allowBuilds: {}

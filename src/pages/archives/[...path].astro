@@ -19,7 +19,15 @@ const label = m ? `${y}년 ${Number(m)}월` : `${y}년`;
 
 <Base title={`${label} 아카이브`}>
   <div class="container">
-    <p class="muted crumbs"><a href="/archives/">아카이브</a>{m && <> / <a href={`/archives/${y}/`}>{y}</a></>}</p>
+    <p class="muted crumbs">
+      <a href="/archives/">아카이브</a>
+      {m && (
+        <>
+          {' '}
+          / <a href={`/archives/${y}/`}>{y}</a>
+        </>
+      )}
+    </p>
     <h1>{label}</h1>
     <p class="muted">글 {posts.length}개</p>
     <PostList posts={posts} summary={false} />

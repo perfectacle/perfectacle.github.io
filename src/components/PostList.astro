@@ -19,15 +19,25 @@ const { posts, summary = true } = Astro.props;
             {cats.length > 0 && (
               <>
                 <span aria-hidden="true">·</span>
-                <a class="cat" href={categoryPath(cats)}>{cats.at(-1)}</a>
+                <a class="cat" href={categoryPath(cats)}>
+                  {cats.at(-1)}
+                </a>
               </>
             )}
           </div>
-          <h2><a href={postPath(post)}>{post.data.title}</a></h2>
+          <h2>
+            <a href={postPath(post)}>{post.data.title}</a>
+          </h2>
           {summary && <p class="excerpt">{excerpt(post)}</p>}
           {summary && post.data.tags.length > 0 && (
             <ul class="chips">
-              {post.data.tags.slice(0, 5).map(t => <li><a class="chip" href={tagPath(t)}>#{tagName(t)}</a></li>)}
+              {post.data.tags.slice(0, 5).map(t => (
+                <li>
+                  <a class="chip" href={tagPath(t)}>
+                    #{tagName(t)}
+                  </a>
+                </li>
+              ))}
             </ul>
           )}
         </article>

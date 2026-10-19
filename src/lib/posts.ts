@@ -17,14 +17,23 @@ const TAG_MAP: Record<string, string> = { Hexo: 'hexo' };
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-export const ymd = (d: Date) => ({ y: String(d.getUTCFullYear()), m: pad(d.getUTCMonth() + 1), d: pad(d.getUTCDate()) });
+export const ymd = (d: Date) => ({
+  y: String(d.getUTCFullYear()),
+  m: pad(d.getUTCMonth() + 1),
+  d: pad(d.getUTCDate()),
+});
 
 export const formatDate = (d: Date) => {
   const { y, m, d: day } = ymd(d);
   return `${y}-${m}-${day}`;
 };
 
-export const postSlug = (post: Post) => post.filePath!.split('/').at(-2)!;
+/** Folder name of `<year>/<slug>/index.md`; it is the URL slug. */
+export const postSlug = (post: Post): string => {
+  const slug = post.filePath?.split('/').at(-2);
+  if (!slug) throw new Error(`cannot derive slug for ${post.id}`);
+  return slug;
+};
 
 export const postPath = (post: Post) => {
   const { y, m, d } = ymd(post.data.date);
@@ -41,10 +50,17 @@ export async function getPosts(): Promise<Post[]> {
   return cache;
 }
 
-export function paginate<T>(items: T[], perPage = SITE.perPage): T[][] {
-  const pages: T[][] = [];
-  for (let i = 0; i < items.length; i += perPage) pages.push(items.slice(i, i + perPage));
-  return pages.length ? pages : [[]];
+/** Always at least one (possibly empty) page, so the first page can be rendered unconditionally. */
+export function paginate<T>(items: T[], perPage = SITE.perPage): [T[], ...T[][]] {
+  const pages: [T[], ...T[][]] = [items.slice(0, perPage)];
+  for (let i = perPage; i < items.length; i += perPage) pages.push(items.slice(i, i + perPage));
+  return pages;
+}
+
+export async function getLatestPost(): Promise<Post> {
+  const [latest] = await getPosts();
+  if (!latest) throw new Error('no posts');
+  return latest;
 }
 
 /** Page-number path under a base, using Hexo's `page/N/` scheme. */

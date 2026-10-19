@@ -9,7 +9,9 @@ const { headings } = Astro.props;
 
 <ol class="toc">
   {headings.map(h => (
-    <li class={`d${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>
+    <li class={`d${h.depth}`}>
+      <a href={`#${h.slug}`}>{h.text}</a>
+    </li>
   ))}
 </ol>
 
