@@ -4,7 +4,7 @@ date: 2017-12-10 21:21:07
 categories: [Middle-end, DevOps]
 tags: [Travis CI, Coveralls]
 ---
-![](./thumb.png)  
+![](./thumb.webp)  
 
 이 글은 [Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기](../../2017/ts-node-mocha-chai/index.md),
 [rollup.js를 통해 모듈 번들링하기](../../2017/bundle-with-rollup/index.md)에서 이어지는 내용이며,  
@@ -29,21 +29,21 @@ Travis CI를 사용하면 별도의 서버를 구축하지 않고 바로 사용�
 2. 풀리퀘스트 받을 때 남이 내 코드를 어떤 식으로 깔아뭉갰을지 모르므로 테스트가 통과됐으면 내 코드에 대한 안전성도 보장됨.  
 
 여러가지 이유가 있겠지만 나는 주로 위 이유 때문에 Travis CI를 사용했다.  
-![홈페이지로 가서 sign in with github을 누르고 로그인 해주자.](./travis-ci01.png)
+![홈페이지로 가서 sign in with github을 누르고 로그인 해주자.](./travis-ci01.webp)
 
-![Travis CI가 요청하는 권한들을 승인해주자.](./travis-ci02.png)
+![Travis CI가 요청하는 권한들을 승인해주자.](./travis-ci02.webp)
 
-![이런 화면이 나오면...](./travis-ci03.png)
+![이런 화면이 나오면...](./travis-ci03.webp)
 
-![우측 상단의 프로필 - Accounts를 눌러주자.](./travis-ci04.png)
+![우측 상단의 프로필 - Accounts를 눌러주자.](./travis-ci04.webp)
 
-![그리고 Sync Account를 한 번 해주자.](./travis-ci05.png)
+![그리고 Sync Account를 한 번 해주자.](./travis-ci05.webp)
 
-![그럼 우리의 저장소가 보이게 된다.](./travis-ci06.png)  
+![그럼 우리의 저장소가 보이게 된다.](./travis-ci06.webp)  
 
-![원하는 저장소를 on 해주고, 톱니바퀴를 눌러보자.](./travis-ci07.png)
+![원하는 저장소를 on 해주고, 톱니바퀴를 눌러보자.](./travis-ci07.webp)
 
-![어떨 때 빌드할 것인지 cronjob 등등의 설정이 가능하다.](./travis-ci08.png)
+![어떨 때 빌드할 것인지 cronjob 등등의 설정이 가능하다.](./travis-ci08.webp)
 
 그리고 travis ci에 대한 설정 파일도 만들어줘야한다.  
 우선 우리의 코드는 자바스크립트이기 때문에 Node.js 위에서 돌리면 된다.  
@@ -57,15 +57,15 @@ node_js:
 
 각 버전에 대한 자세한 설명은 [Specifying-Node.js-versions](https://docs.travis-ci.com/user/languages/javascript-with-nodejs/#Specifying-Node.js-versions)을 참고하면 된다.  
 
-![깃헙 저장소에 push를 하게 되면 travis ci가 자동으로 돌게 된다.](./travis-ci09.png)
+![깃헙 저장소에 push를 하게 되면 travis ci가 자동으로 돌게 된다.](./travis-ci09.webp)
 
-![노란 아이콘을 누르고 들어오면 빌드에 대한 상세한 상황을 볼 수 있다.](./travis-ci10.png)  
+![노란 아이콘을 누르고 들어오면 빌드에 대한 상세한 상황을 볼 수 있다.](./travis-ci10.webp)  
   
-![모든 빌드를 성공하면 Build Passing이란 간지나는 뱃지가 생성된다.](./travis-ci11.png)  
+![모든 빌드를 성공하면 Build Passing이란 간지나는 뱃지가 생성된다.](./travis-ci11.webp)  
 
-![배지를 클릭하면 배지를 달 수 있는 각종 양식을 제공한다.](./travis-ci12.png)
+![배지를 클릭하면 배지를 달 수 있는 각종 양식을 제공한다.](./travis-ci12.webp)
 
-![풀리퀘를 날려도 알아서 Travis CI가 돈다.](./travis-ci13.png)  
+![풀리퀘를 날려도 알아서 Travis CI가 돈다.](./travis-ci13.webp)  
 
 따라서 빌드가 성공하지 않은 풀리퀘는 적어도 확인해 볼 것도 없이 반려하면 되는 풀리퀘가 되는 것이다.  
 (가끔 노드 버전에 따라 xx 맞게 설치도 실패하는 경우도 많아서 100% 신뢰할 만한 건 아니다.)
@@ -74,21 +74,21 @@ node_js:
 NYC(Istanbul)은 로컬에서 테스트 커버리지를 측정하는 도구였다.  
 Coveralls는 깃헙 저장소와 연계해서 NYC로 측정한 테스트 커버리지를 알려준다.  
 
-![우리는 돈이 없으니 Get Started For Free를 눌러주자.](./coveralls01.png)
+![우리는 돈이 없으니 Get Started For Free를 눌러주자.](./coveralls01.webp)
 
-![깃헙을 쓰니까 깃헙 저장소로 가입하자.](./coveralls02.png)
+![깃헙을 쓰니까 깃헙 저장소로 가입하자.](./coveralls02.webp)
 
-![coveralls의 권한을 승인해주자.](./coveralls03.png)  
+![coveralls의 권한을 승인해주자.](./coveralls03.webp)  
 
-![그리고 나서 Add some repos를 눌러서 저장소를 추가해주자.](./coveralls04.png)  
+![그리고 나서 Add some repos를 눌러서 저장소를 추가해주자.](./coveralls04.webp)  
 
-![Sync repo를 눌러서 한 번 싱크를 맞춰주자.](./coveralls05.png)  
+![Sync repo를 눌러서 한 번 싱크를 맞춰주자.](./coveralls05.webp)  
 
-![원하는 저장소를 ON 해주자.](./coveralls06.png)  
+![원하는 저장소를 ON 해주자.](./coveralls06.webp)  
 
-![그럼 이제 Deatils 버튼이 생기는데 클릭해보자.](./coveralls07.png)  
+![그럼 이제 Deatils 버튼이 생기는데 클릭해보자.](./coveralls07.webp)  
 
-![private 저장소를 위한 coveralls 설정](./coveralls08.png)  
+![private 저장소를 위한 coveralls 설정](./coveralls08.webp)  
 우리 저장소는 public이라 해당 설정을 할 필요가 없지만 로컬에서 테스트 커버리지에 대한 결과도 coveralls로 전송하려면 위 과정을 진행해야한다.  
 그리고 repo_token의 경우에는 저장소에 접근 가능한 토큰이므로 절대 외부로 공개해서는 안 된다.  
 
@@ -121,9 +121,9 @@ repo_token: {token}
 
 `npm test`를 때리고 `npm run coveralls`를 때리고 나면 coveralls로 해당 테스트 커버리지 정보가 전송된다.  
 
-![coveralls로 로컬에서 측정한 테스트 커버리지가 잘 전송됐다.](./coveralls09.png)  
+![coveralls로 로컬에서 측정한 테스트 커버리지가 잘 전송됐다.](./coveralls09.webp)  
 
-![해당 빌드를 눌러보면 자세한 정보를 볼 수 있다.](./coveralls10.png)  
+![해당 빌드를 눌러보면 자세한 정보를 볼 수 있다.](./coveralls10.webp)  
 
 이제 Travis CI와 Coveralls를 연계해 볼 차례이다.  
 설정은 간단하게 .travis.yml에 아래 코드만 추가해주면 된다.  
@@ -136,7 +136,7 @@ after_success:
 
 이제 푸시/풀리퀘를 날려도 coveralls가 자동으로 테스트 커버리지를 측정한다.  
 
-![이제 풀리퀘를 날리면 간지나게 coveralls가 붙게 된다.](./coveralls11.png)
+![이제 풀리퀘를 날리면 간지나게 coveralls가 붙게 된다.](./coveralls11.webp)
 
 ## 마치며
 Typescript, TSLint, Mocha, Chai, ts-node, nyc, rollup, Travis CI, Coveralls 등 다양한 주제를 다루려다보니  

@@ -11,8 +11,8 @@ date: 2022-03-13 00:02:03
 테스트도 관리해야할 대상이고 하나의 소프트웨어라는 관점에서 테스트의 의존성 조차도 신경을 써줘야한다.
 
 ## testImplementation
-![](./api-structure.png)
-![](./implementation-structure.png)
+![](./api-structure.webp)
+![](./implementation-structure.webp)
 기본적으로 [implementation](../../2022/gradle-implementation-vs-api/index.md#implementation)과 [api](../../2022/gradle-implementation-vs-api/index.md#api)로 의존성을 추가한 경우에도 testCompileClasspath, testRuntimeClasspath에 추가돼서 테스트에서도 사용이 가능하다.
 하지만 compileClasspath, runtimeClasspath에도 추가되다보니 실제 프로덕션에서는 사용할 필요가 없고, 테스트에서만 사용할 목적으로 testImplementation을 많이 사용한다.
 
@@ -59,13 +59,13 @@ dependencies {
 }
 ```
 
-![](./test-implementation-single-module.png)
+![](./test-implementation-single-module.webp)
 실제로 gradle dependency를 보게되면 compileClasspath와 runtimeClasspath에는 추가되지 않고, testCompileClasspath와 testRuntimeClasspath에만 추가된 걸 볼 수 있다.
 
-![](./test-implementaion-can-use-in-test.png)
+![](./test-implementaion-can-use-in-test.webp)
 testCompileClasspath에 추가됐기 때문에 src/test에서 junit 5를 사용할 수 있다.
 
-![](./test-implementaion-can-not-use-in-test.png)
+![](./test-implementaion-can-not-use-in-test.webp)
 compileClasspath에 추가되지 않았기 때문에 src/main에서는 junit 5를 사용할 수 없다.
 
 ## 테스트 경로에 있는 클래스들을 외부로 노출시키기
@@ -77,7 +77,7 @@ compileClasspath에 추가되지 않았기 때문에 src/main에서는 junit 5�
 
 프로젝트에 두 가지 모듈(producer와 consumer)을 만들어서 차이점을 확인해보자.
 
-![](./producer-consumer-structur.png)
+![](./producer-consumer-structur.webp)
 producer는 모듈을 제공하는 측이고, consumer는 모듈을 소비하는 측이다.
 따라서 consumer 모듈의 build.gradle(또는 build.gradle.kts)를 보면 producer 모듈에 의존하는 모습을 볼 수 있다.
 ```groovy
@@ -164,7 +164,7 @@ public class SomeTest {
 ```
 
 producer 모듈에서 테스트 작성 시에 이렇게 SomeBuilder를 통해 원하는 객체를 원하는 모양으로 쉽게 찍어낼 수 있었는데 consumer 모듈에서는 어떨까??
-![](./test-class-file-does-not-expose.png)
+![](./test-class-file-does-not-expose.webp)
 consumer 모듈에서는 producer 모듈의 src/main에 있는 Some 클래스에는 접근이 가능한데 src/test에 있는 SomeBuilder 클래스에는 접근이 안 된다.  
 
 왜 그런 걸까??
@@ -198,7 +198,7 @@ consumer 모듈에서는 producer 모듈의 src/main에 있는 Some 클래스에
 > Task :producer:build
 ```
 
-![](./jar-contains-only-src-main-class.png)
+![](./jar-contains-only-src-main-class.webp)
 그리고 나서 producer 모듈의 빌드된 jar를 까보면 src/main에 있는 Some 클래스만 존재하는 걸 볼 수 있다.
 애초에 jar 파일에 SomeBuilder가 존재하지 않기 때문에 consumer 모듈에서는 접근조차 불가능한 것이다.
 
@@ -223,31 +223,31 @@ plugins {
 }
 ```
 
-![](./java-test-fixtures-directory.png)
+![](./java-test-fixtures-directory.webp)
 플러그인을 추가한 후 producer 모듈에 새로운 경로를 추가하려고 하면 인텔리제이와 같은 IDE에서 testFixtures 경로를 자동으로 추천해주게 된다.
 
 그리고 testFixtures 하위에 있는 파일들은 아래와 같은 특징을 가진다.
 * they can see the main source set classes (src/testFixtures에 존재하는 클래스에서 src/main에 존재하는 클래스에 접근 가능)
 * test sources can see the test fixtures classes (src/test에 존재하는 테스트 클래스에서 src/testFixtures 클래스에 접근 가능)
 
-![](./before-test-fixtures-classpath.png)
+![](./before-test-fixtures-classpath.webp)
 java-test-fixtures 플러그인을 추가하기 전에는 testCompileClasspath와 testRuntimeClasspath만 존재하고, junit 5만 의존성으로 가지고 있는 모습이다.
 
-![](./after-test-fixtures-classpath.png)
+![](./after-test-fixtures-classpath.webp)
 java-test-fixtures 플러그인을 추가하고 보면 testFixturesCompileClasspath와 testFixturesRuntimeClasspath가 추가된 모습을 볼 수 있다.
 testCompileClasspath와 testRuntimeClasspath에 포함된 producer 모듈들은 아마 producer/src/main, producer/src/testFixtures 모듈이 아닐까 싶다.
 그리고 testFixturesCompileClasspath와 testFixturesRuntimeClasspath에 포함된 producer 모듈은 producer/src/main 모듈이 아닐까 싶다.
 
-![](./builder-move-to-test-fixtures.png)
+![](./builder-move-to-test-fixtures.webp)
 그렇기에 SomeBuilder를 src/test에서 src/testFixutres로 옮겨도 아무런 문제가 없다.
 
-![](./test-fixtures-can-not-see-test.png)
+![](./test-fixtures-can-not-see-test.webp)
 testFixtures에서는 main에 있는 Some에는 접근이 가능하지만 test에 있는 SomeTest2에는 접근이 불가능하다.
 
-![](./test-can-see-both-main-and-test-fixtures.png)
+![](./test-can-see-both-main-and-test-fixtures.webp)
 test에서는 main에 있는 Some과 testFixtures에 있는 SomeBuilder에 모두 접근이 가능하다.
 
-![](./main-can-not-see-both-test-and-test-fixtures.png)
+![](./main-can-not-see-both-test-and-test-fixtures.webp)
 main에서는 당연하게도 test에 있는 SomeTest와 testFixtures에 있는 SomeBuilder에 모두 접근이 불가능하다.
 
 이 상태에서 다시 빌드를 때려보자
@@ -290,13 +290,13 @@ main에서는 당연하게도 test에 있는 SomeTest와 testFixtures에 있는 
 * :producer:testFixturesClasses
 * :producer:testFixturesJar
 
-![](./test-fixtures-jar.png)
+![](./test-fixtures-jar.webp)
 그리고 빌드된 jar를 보면 *-test-fixtures.jar 파일이 추가됐고, 해당 jar를 까보면 testFixtures 하위에 존재하던 SomeBuilder가 존재한다.
 이렇듯 java-test-fixtures 플러그인은 src/test 하위에 존재하는 불필요한 테스트 클래스는 jar에 포함시키지 않고 내가 원하는 클래스들만 jar에 추가시켜준다.
 
 하지만 이렇게 test-fixtures.jar로 빌드했다고 해서 바로 consumer 모듈에서 사용할 수 있는 건 아니다.
 
-![](./before-test-implementation-test-fixtures.png)
+![](./before-test-implementation-test-fixtures.webp)
 consumer 모듈의 의존성을 보면 testCompileClasspath와 testRuntimeClasspath에 producer 모듈이 존재하긴 하는데 이건 일반 jar(src/main을 빌드한)만 의존성으로 가지고 있다는 뜻이다.
 
 아래와 같이 test-fixtures.jar(src/testFixtures를 빌드한)도 의존성으로 추가해줘야한다.
@@ -304,14 +304,14 @@ consumer 모듈의 의존성을 보면 testCompileClasspath와 testRuntimeClassp
 testImplementation(testFixtures(project(":producer")))
 ```
 
-![](./after-test-implementation-test-fixtures.png)
+![](./after-test-implementation-test-fixtures.webp)
 testImplementation으로 추가했기 때문에 compileClasspath와 runtimeClasspath에는 전혀 차이가 존재하지 않고, testCompileClasspath와 testRuntimeClasspath에만 producer 모듈(test-fixtures.jar)이 의존성에 추가된 걸 볼 수 있다.
 
-![](./consumer-test-can-see-both-producer-main-and-test-fixtures.png)
+![](./consumer-test-can-see-both-producer-main-and-test-fixtures.webp)
 이렇게 consumer 모듈의 테스트 클래스에서도 producer 모듈의 src/testFixtures에 존재하는 SomeBuilder와 producer 모듈의 src/main에 존재하는 Some 클래스에 모두 접근이 가능한 것을 볼 수 있다.
 그리고 jar에 포함되지 않는 producer 모듈의 src/test에 존재하는 SomeTest 클래스에는 접근이 불가능하다.
 
-![](./consumer-main-can-not-see-producer-test-fixtures.png)
+![](./consumer-main-can-not-see-producer-test-fixtures.webp)
 당연히 consumer 모둘의 src/main에 존재하는 클래스에서는 producer 모듈의 src/testFixtures에 존재하는 SomeBuilder에는 접근이 불가능하다.
 대신 producer 모듈의 src/main에 존재하는 Some 클래스에는 접근이 가능하다.
 
@@ -322,14 +322,14 @@ testImplementation으로 추가했기 때문에 compileClasspath와 runtimeClass
 testRuntimeOnly("com.h2database:h2:2.1.210")
 ```
 
-![](./test-runtime-only-h2.png)
+![](./test-runtime-only-h2.webp)
 testRuntimeOnly로 추가했기 때문에 testRuntimeClasspath를 제외한 다른 클래스패스에는 h2가 추가되지 않았다.
 
-![](./test-runtime-only-can-not-see-in-test.png)
+![](./test-runtime-only-can-not-see-in-test.webp)
 testCompileClasspath에 존재하지 않기 때문에 테스트 클래스에서 H2 관련 클래스를 사용해서 컴파일 하면 컴파일 타임에 오류가 난다. (왜 IDE에서는 빨간 줄이 생기지 않는지 의문이다. 일시적 버그인가...)
 
 그리고 consumer 모듈에서도 h2를 사용하여 테스트를 진행한다고 가정해보자.
-![](./test-runtime-only-can-not-see-in-consumer.png)
+![](./test-runtime-only-can-not-see-in-consumer.webp)
 하지만 단순히 producer 모듈에 testRuntimeOnly로 h2를 추가했다 하더라도 consumer 모듈의 testRuntimeClasspath에는 노출되지 않는다.
 producer 모듈은 (testFixtures)compile/runtimeClasspath를 기준으로 jar 파일을 생성하고 consumer 모듈에서 해당 jar 파일에 의존하게 되는데 h2는 해당 클래스패스에는 존재하지 않고, testRuntimeClasspath에만 존재하기 때문이다.
 
@@ -343,5 +343,5 @@ consumer 모듈에서도 test-fixtures.jar를 의존성으로 추가해줘야
 testImplementation(testFixtures(project(":producer")))
 ```
 
-![](./test-fixtures-runtime-only-can-see-in-consumer-test.png)
+![](./test-fixtures-runtime-only-can-see-in-consumer-test.webp)
 consumer 모듈의 testRuntimeClasspath에도 h2가 의존성으로 추가된 모습을 볼 수 있다.

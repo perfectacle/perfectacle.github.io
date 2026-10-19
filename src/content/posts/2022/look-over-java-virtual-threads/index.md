@@ -59,9 +59,9 @@ graph TD;
 OS와 1:1로 대응되던 Platform Threads는 Carrier Threads라고 부른다.  
 
 Carrier Thread는 [ForkJoinPool](https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/util/concurrent/ForkJoinPool.html) 안에 Worker Thread로 생성이 되어 스케쥴링이 되고, 각 Worker Thread들은 Queue를 가지고 있어서 Task를 스케쥴링하는데 Virtual Thread 자체(좀 더 정확히는 Virtual Thread의 runContinuation 메서드를 실행하는 Runnable 타입)가 Task가 되어서 Queue에 들어가게 된다.
-![](./virtual-threads-fork-join-pool-1.png)  
-![](./virtual-threads-fork-join-pool-2.png)  
-![](./virtual-threads-fork-join-pool-3.png)  
+![](./virtual-threads-fork-join-pool-1.webp)  
+![](./virtual-threads-fork-join-pool-2.webp)  
+![](./virtual-threads-fork-join-pool-3.webp)  
 
 > initially, carrier threads for virtual threads are threads in a ForkJoinPool that operates in FIFO mode. The size of this pool defaults to the number of available processors.
 > https://www.infoq.com/articles/java-virtual-threads
@@ -152,10 +152,10 @@ public class VirtualThreadExample {
 }
 ```
 
-![Virtual Threads는 이름을 표시하지 않는다.](./virtual-threads-not-show-name.png)  
+![Virtual Threads는 이름을 표시하지 않는다.](./virtual-threads-not-show-name.webp)  
 Virtual Thread로 실행하는 블럭 내에 브레이크 포인트를 걸고 디버그 모드로 실행해서 확인해보면 Carrier Thread가 뭔지 볼 수 있다.
 
-![Virtual Thread의 상태도 확인해볼 수 있다.](./virtual-threads-states.png)  
+![Virtual Thread의 상태도 확인해볼 수 있다.](./virtual-threads-states.webp)  
 Virtual Threads는 Platform Threads와 달리 더 많은 상태들을 가지고 있다.
 ```java
  /*
@@ -196,7 +196,7 @@ private static final int RUNNABLE_SUSPENDED = (RUNNABLE | SUSPENDED);
 private static final int PARKED_SUSPENDED   = (PARKED | SUSPENDED);
 ```
 
-![cpu 코어 갯수인 10개의 ForkJoinPool Worker 쓰레드가 생성되었다.](./virtual-threads-profiling.png)  
+![cpu 코어 갯수인 10개의 ForkJoinPool Worker 쓰레드가 생성되었다.](./virtual-threads-profiling.webp)  
 무조건 cpu 코어 갯수만큼 생기는 건 아니고, Virtual Threads 갯수가 적다면 더 적은 Carrier Threads(ForkJoinPool Worker 쓰레드)가 생성된다.
 
 그리고 실행 결과를 보면 100번의 Thread.sleep(1초)가 발생했고, 실제로 OS Thread와 매칭되는 Carrier Thread는 10개 밖에 사용하지 않았는데 1초 만에 모든 연산이 종료된 걸 볼 수 있다.  
@@ -412,7 +412,7 @@ private void mount() {
     carrier.setCurrentThread(this);
 }
 ```
-![Virtual Thread의 Carrier Thread와 Carrier Thread의 currentThread](./virtual-threads-mount-unmount.png)
+![Virtual Thread의 Carrier Thread와 Carrier Thread의 currentThread](./virtual-threads-mount-unmount.webp)
 unmount 메서드에서는 Virtual Thread의 Carrier Thread(ForkJoinPool Worker 쓰레드)의 currentThread(VirtualThread)를 Carrier Thread 그 자체로 할당해버림으로써 VirtualThread는 할당된 Carrier Thread가 없기 때문에 남은 연산을 수행하지 못하게 만들어버리고(blocking),
 mount 메서드에서는 Virtual Thread의 Carrier Thread(ForkJoinPool Worker 쓰레드)의 currentThread(ForkJoinPool Worker 쓰레드)를 다시 자기 자신인 Virtual Thread 그 자체로 할당해버림으로써 VirtualThread의 남은 연산을 다시 Carrier Thread에서 수행하게 끔 만든다.
 
@@ -690,10 +690,10 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 }
 ```
 
-![Interceptor에 진입했을 때부터 Virtual Thread를 사용하는 걸 볼 수 있다.](./virtual-threads-mdc-interceptor.png)  
+![Interceptor에 진입했을 때부터 Virtual Thread를 사용하는 걸 볼 수 있다.](./virtual-threads-mdc-interceptor.webp)  
 우리가 위에서 `protocolHandler.setExecutor(Executors.newVirtualThreadPerTaskExecutor())`로 세팅을 해놨기 때문에 요청을 받아들이는 부분부터 Virtual Threads를 사용하기 때문에 당연히 Interceptor에서도 Virtual Threads를 사용하게 된다.  
 
-![Controller에서도 Interceptor와 동일한 Virtual Thread를 사용하는 걸 볼 수 있다.](./virtual-threads-mdc-logging.png)  
+![Controller에서도 Interceptor와 동일한 Virtual Thread를 사용하는 걸 볼 수 있다.](./virtual-threads-mdc-logging.webp)  
 동일한 Virtual Thread이기 때문에 ThreadLocal 값인 MDC의 값이 그대로 유지되는 걸 볼 수 있다.  
 
 ```text
@@ -715,8 +715,8 @@ public class AsyncConfig {
 
 @Async 어노테이션을 사용했을 때는 MDC가 어떻게 동작하는지 한 번 살펴보자.
 
-![Interceptor에 진입했을 때부터 Virtual Thread를 사용하는 걸 볼 수 있다.](./virtual-threads-mdc-interceptor.png)
-![Async Thread에서는 Interceptor에서 사용한 Virtual Thread와 다른 Virtual Thread를 사용하는 걸 볼 수 있다.](./virtual-threads-async-thread.png)
+![Interceptor에 진입했을 때부터 Virtual Thread를 사용하는 걸 볼 수 있다.](./virtual-threads-mdc-interceptor.webp)
+![Async Thread에서는 Interceptor에서 사용한 Virtual Thread와 다른 Virtual Thread를 사용하는 걸 볼 수 있다.](./virtual-threads-async-thread.webp)
 Virtual Thread가 달라졌기 때문에 ThreadLocal 값인 MDC의 값은 유지되지 않는 걸 볼 수 있다.
 
 ```text

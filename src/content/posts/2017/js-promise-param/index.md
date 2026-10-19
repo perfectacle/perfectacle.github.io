@@ -4,7 +4,7 @@ date: 2017-04-04 21:09:43
 categories: [Programming, ECMAScript]
 tags: [JS, ES, ES6, ES2015, callback, promise]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 ## 들어가기에 앞서
 어제 프라미스를 쓰면서 정리 해봤는데,  

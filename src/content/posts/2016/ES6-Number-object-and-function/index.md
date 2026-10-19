@@ -4,7 +4,7 @@ date: 2016-12-24 15:11:28
 categories: [Programming, ECMAScript, ES2015+]
 tags: [JS, ES, ES6, ES2015, Number]
 ---
-![](./thumb.png)  
+![](./thumb.webp)  
 [(ES6) 숫자형](../../2016/ES6-Number-type/index.md)을 보고 이 글을 보는 걸 추천한다.
 
 ## 목차
@@ -27,7 +27,7 @@ ES5까지 Number 객체는 거의 [래퍼 객체](http://noritersand.tistory.com
 ```javascript
 console.dir(Number);
 ```
-![](./number-object.png)  
+![](./number-object.webp)  
 
 ### Properties
 `*` 표시는 ES6에서 새로 추가됨.
@@ -541,7 +541,7 @@ const objNum = new Number(11);
 console.log(typeof objNum); // "object"
 console.dir(objNum);
 ```
-![Number Constructor Structure](./number-constructor.png)
+![Number Constructor Structure](./number-constructor.webp)
 
 #### \_\_proto\_\_
 ```javascript

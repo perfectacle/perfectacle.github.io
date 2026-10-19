@@ -11,17 +11,17 @@ date: 2021-11-21 14:43:06
 
 Configuration Metadata는 IDE에서 yml 혹은 properties에서 사용하는 Configuration의 자동완성을 도와주는 메타데이터이다. (소스코드에는 영향을 1도 안 미친다.)
 
-![application.yml을 작성하다보면 spring 관련 configuration들은 자동완성이 잘 된다.](./configuration-metadata-auto-completion.png)
-![해당 configuration에서 Command + B를 누르면 실제 Properties 클래스로 이동까지 된다.](./configuration-metadata-navigate.png)
-![이걸 가능하게 하는 것은 META-INF/spring-configuration-metadata.json 파일의 존재 때문이다.](./spring-boot-configuration-metadata-json.png)
+![application.yml을 작성하다보면 spring 관련 configuration들은 자동완성이 잘 된다.](./configuration-metadata-auto-completion.webp)
+![해당 configuration에서 Command + B를 누르면 실제 Properties 클래스로 이동까지 된다.](./configuration-metadata-navigate.webp)
+![이걸 가능하게 하는 것은 META-INF/spring-configuration-metadata.json 파일의 존재 때문이다.](./spring-boot-configuration-metadata-json.webp)
 
 ## 커스텀 Configuration Metadata 정의
 
-![커스텀한 프로퍼티는 인식을 하지 못하는 것 같다.](./custom-property.png)
-![Configuration Property 클래스에서도 Spring Boot Configuration Annotation Processor가 설정돼지 않았다고 한다.](./turn-off-spring-boot-configuration-processor.png)
-![자동완성을 위해서는 resources/META-INF/spring-configuration-metadata.json을 작성하면 된다.](./custom-spring-boot-configuration-metadata-json.png)
-![이제 자동완성 및 어떤 클래스에서 사용하고 있는지 추적까지 잘 된다.](./custom-property-auto-completion.png)
-![네비게이션은 잘 되지만 아직까지도 Spring Boot Configuration Annotation Processor가 설정돼지 않았다고 보여준다.](./turn-off-spring-boot-configuration-processor.png)
+![커스텀한 프로퍼티는 인식을 하지 못하는 것 같다.](./custom-property.webp)
+![Configuration Property 클래스에서도 Spring Boot Configuration Annotation Processor가 설정돼지 않았다고 한다.](./turn-off-spring-boot-configuration-processor.webp)
+![자동완성을 위해서는 resources/META-INF/spring-configuration-metadata.json을 작성하면 된다.](./custom-spring-boot-configuration-metadata-json.webp)
+![이제 자동완성 및 어떤 클래스에서 사용하고 있는지 추적까지 잘 된다.](./custom-property-auto-completion.webp)
+![네비게이션은 잘 되지만 아직까지도 Spring Boot Configuration Annotation Processor가 설정돼지 않았다고 보여준다.](./turn-off-spring-boot-configuration-processor.webp)
 
 ## 자동으로 Configuration Metadata 생성하기 (spring-boot-configuration-processor)
 [https://docs.spring.io/spring-boot/docs/current/reference/html/configuration-metadata.html#configuration-metadata.annotation-processor](https://docs.spring.io/spring-boot/docs/current/reference/html/configuration-metadata.html#configuration-metadata.annotation-processor)
@@ -42,11 +42,11 @@ annotationProcessor("org.springframework.boot:spring-boot-configuration-processo
 kapt("org.springframework.boot:spring-boot-configuration-processor")
 ```
 
-![생성된 metadata를 업데이트하려면 Spring Boot Configuration Annotation Processor를 다시 돌리라고 나온다. (하지만 몇 번이고 어노테이션 프로세서를 돌려도 해당 알림을 사라지지 않기 때문에 그냥 숨기는 걸 추천한다.)](./re-run-spring-boot-configuration-processor.png)
-![Annotation Processor를 돌리려면 kaptKotlin 태스크를 실행시키면 된다. (자바 프로젝트에서는 compileJava 태스크를 실행시키면 된다.)](./run-gradle-kapt-task.png)
-![annotation processor에 의해 메타데이터가 생성되었다.](./generated-configuration-metadata-json-location.png)
-![description 같은 건 없지만 나름 쓸만하게 뽑혔다.](./generated-configuration-metadata-json.png)
-![자동완성이나 네비게이션도 잘 된다.](./custom-property-navigate.png)
+![생성된 metadata를 업데이트하려면 Spring Boot Configuration Annotation Processor를 다시 돌리라고 나온다. (하지만 몇 번이고 어노테이션 프로세서를 돌려도 해당 알림을 사라지지 않기 때문에 그냥 숨기는 걸 추천한다.)](./re-run-spring-boot-configuration-processor.webp)
+![Annotation Processor를 돌리려면 kaptKotlin 태스크를 실행시키면 된다. (자바 프로젝트에서는 compileJava 태스크를 실행시키면 된다.)](./run-gradle-kapt-task.webp)
+![annotation processor에 의해 메타데이터가 생성되었다.](./generated-configuration-metadata-json-location.webp)
+![description 같은 건 없지만 나름 쓸만하게 뽑혔다.](./generated-configuration-metadata-json.webp)
+![자동완성이나 네비게이션도 잘 된다.](./custom-property-navigate.webp)
 
 다만 몇 가지 한계점이 있는데 아래와 같다.
 

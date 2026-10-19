@@ -75,7 +75,7 @@ Design Activity는 design(코드의 설계)을 발명(invention)의 과정(어�
 예측에 의해 뭔가를 만들어내기 보다는 "고객이 정말로 원하는 것"이 실제로 나타낼 때까지 commitment(뭔가를 확정짓는...?)를 계속 뒤로 미루라는 것 같다.  
 고객도 자신이 무엇을 원하는지 정확히 모르기 때문에 요구사항이 명확해질 때까지 계속 요구사항을 명쾌하게 만들어나가는 과정이 필요한 것 같다.
 
-![아무도 쓰지 않는데 개발자만 좋아하는 소프트웨어](./richards-guide-to-software-development.png)
+![아무도 쓰지 않는데 개발자만 좋아하는 소프트웨어](./richards-guide-to-software-development.webp)
 "혹시 이런 기능도 필요하지 않을까?"라고 생각하다 보면 위와 같은 형태의 소프트웨어가 나오게 될 가능성이 높을 것이다.
 
 결국 "정말 필요한 기능"만 개발하라는 것인데 어떻게 해야하는 것일까...??
@@ -98,14 +98,14 @@ Mock Object로 TDD를 하는 건 단순히 객체가 제공하는 것 뿐만이 
 반면에 wide한 인터페이스는 여기저기서 사용할 수 있는 걸 뜻하며 하는 일이 굉장히 많은 객체를 뜻하는 것 같다.  
 이런 접근법을 Need-Driven Devlopment라고 부른다는데 좀 더 자세한 예시는 아래 나오게 된다.
 
-![인터페이스의 발견](./ndd-01.png)
+![인터페이스의 발견](./ndd-01.webp)
 > To fulfil the needs of A, we discover that it needs a service S. 
 > While testing A, we mock the responsibilities of S without defining a concrete implementation.
 
 A의 요구사항을 만족시키기 위해 S라는 서비스가 필요하다는 걸 발견(discovery)하게 된다.  
 이 때 S의 구체적인 구현을 정의하는 것이 아니라 해당 책임을 모킹한다.
 
-![반복적인 인터페이스 발견 절차](./ndd-02.png)
+![반복적인 인터페이스 발견 절차](./ndd-02.webp)
 > Once we have implemented A to satisfy its requirements we can switch focus and implement an object that performs the role of S
 > ...
 > This process will then discover services required by B, 
@@ -115,7 +115,7 @@ A의 요구사항 구현이 모두 끝났으면 이제 S의 "역할"을 수행�
 이제 B(S의 역할을 수행하는)가 필요로하는 서비스를 발견하는 절차들이 진행된다.  
 그리고 B의 구현이 끝날 때까지 그런 서비스들은 모킹하게 된다.
 
-![객체 간의 협력 그래프](./ndd-03.png)
+![객체 간의 협력 그래프](./ndd-03.webp)
 > Our experience is that systems we produce this way tend towards very flat class hierarchies. 
 > This avoids well-known problems, such as the Fragile Base Class, 
 > which make systems harder to understand and modify.

@@ -4,7 +4,7 @@ date: 2017-09-05 09:35:53
 tags: [Java, DI, Spring]
 categories: [Back-end, Spring]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 beans.xml 파일을 수정해보자.  
 ```xml

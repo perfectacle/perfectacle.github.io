@@ -13,7 +13,7 @@ tags:
 date: 2017-08-04 09:25:57
 ---
 
-![](./thumb.png)  
+![](./thumb.webp)  
 
 ## 들어가기에 앞서
 1. [Number.EPSILON](../../2016/ES6-Number-object-and-function/index.md#Number-EPSILON)이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.  
@@ -46,7 +46,7 @@ console.log(.0 === 0.0); // true
 ## double 형이란...?
 자바스크립트도 이 IEE754를 따라서 숫자(실수, 부동소수점)을 표현하고 있고,  
 [Double-precision floating-point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format)을 따르고 있다.  
-![](./IEEE-754-Double-Floating-Point-Format.png)    
+![](./IEEE-754-Double-Floating-Point-Format.webp)    
 
 해당 부동소수점 표현 방식은 아래와 같이 세 가지 부분으로 나뉘어진다.  
 1. 부호 비트(sign, 1bit)  

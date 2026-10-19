@@ -12,7 +12,9 @@ export default defineConfig({
   trailingSlash: 'ignore',
   build: { format: 'directory' },
   // srcset/sizes for post images so phones don't download the 1600px originals.
-  image: { layout: 'constrained', responsiveStyles: true },
+  // Widths for the 720px post column at 1x / 1.5x / 2x. Astro's default breakpoint list made ~6 variants per image,
+  // pushing the Pages artifact past 700MB (limit 1GB).
+  image: { layout: 'constrained', responsiveStyles: true, breakpoints: [720, 1080, 1440] },
   markdown: {
     processor: unified({
       // Posts were written against Hexo's marked renderer, where a single newline is a line break.

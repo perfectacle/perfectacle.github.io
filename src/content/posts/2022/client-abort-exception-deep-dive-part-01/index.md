@@ -5,7 +5,7 @@ categories: [tomcat]
 date: 2022-03-20 03:30:19
 ---
 서버에서 아주 가끔가다가 ClientAbortException(java.io.IOExceiption: Broken pipe)이 발생해서 어떨 때 발생하는지 딥다이브 해봄.
-![](./stacktrace.png)
+![](./stacktrace.webp)
 
 적다보니 글이 길어져 글을 나누었는데 해당 글을 읽고 난 후에 [(Tomcat) ClientAbortException은 왜 발생할까? (Part 2)](../../2022/client-abort-exception-deep-dive-part-02/index.md)를 마저 보는 것을 추천함.
 
@@ -228,38 +228,38 @@ Process finished with exit code 0
 ```
 
 1. 239 ~ 241번 패킷은 TCP 3 Way Handshake (syn, syn/ack, ack)
-   ![](./read-timout-in-60s-small-response-3-way-handshake.png)
-   ![](./tcp-3-way-handshake.png)
-   ![](./read-timout-in-60s-small-response-3-way-handshake-socket-status.png)
+   ![](./read-timout-in-60s-small-response-3-way-handshake.webp)
+   ![](./tcp-3-way-handshake.webp)
+   ![](./read-timout-in-60s-small-response-3-way-handshake-socket-status.webp)
 2. 243번 패킷에서 클라이언트 → 서버로 HTTP 요청 패킷 전송 (21:15:26.291192)
-   ![](./read-timout-in-60s-small-response-send-http-request-packet.png)
+   ![](./read-timout-in-60s-small-response-send-http-request-packet.webp)
 3. 244번 패킷에서 서버가 요청 잘 받았다고 클라이언트한테 ACK 패킷 전송 (21:15:26.291233)
-   ![](./read-timout-in-60s-small-response-send-http-request-ack-packet.png)
+   ![](./read-timout-in-60s-small-response-send-http-request-ack-packet.webp)
 4. 245번 패킷에서 클라이언트는 커넥션을 종료한다고 FIN/ACK 패킷을 서버에게 전송 (21:15:29.297321, 정확히 HTTP 패킷 보내고 3초 후(read timeout)임.)
-   ![](./read-timout-in-60s-small-response-send-fin-packet.png)
+   ![](./read-timout-in-60s-small-response-send-fin-packet.webp)
 5. 246번 패킷에서 서버가 클라이언트로부터 FIN/ACK 패킷을 잘 받았다고 반대로 ACK 패킷을 클라이언트에게 보냄 (21:15:29.297383)
-   ![](./read-timout-in-60s-small-response-send-ack-packet.png)
+   ![](./read-timout-in-60s-small-response-send-ack-packet.webp)
 6. 클라이언트가 먼저 연결을 종료하겠다는 FIN 패킷을 보냈기 때문에 클라이언트가 Active Close
    서버는 클라이언트로부터 FIN 패킷을 받았기 때문에 서버는 Passive Close가 됨
    (무조건 클라이언트가 Active Close는 아니고 경우에 따라서 다름)
    그리고 아직까지는 서버(Passive Close)로부터 FIN 패킷을 받은 게 아니기 때문에 소켓이 정상적으로 종료된 게 아님.
-   ![](./tcp-termination.png)
+   ![](./tcp-termination.webp)
 7. 서버 측 소켓의 상태는 CLOSE_WAIT(클라이언트가 보낸 FIN 패킷을 받았으므로)이고, 클라이언트 측 소켓의 상태는 FIN_WAIT_2(서버가 보낸 ACK 패킷을 받았으므로)이다. (21:15:29)
-   ![](./read-timout-in-60s-small-response-fin-ack-socket-status-01.png)
+   ![](./read-timout-in-60s-small-response-fin-ack-socket-status-01.webp)
 8. 서버는 클라이언트로부터 FIN 패킷을 받았지만 아직 보낼 패킷이 남아있기 때문인지 클라이언트에게 FIN 패킷을 보내지 않음.
    그리고 Active Close(클라이언트) 측에서는 오동작을 막기 위해 바로 소켓의 연결을 끊는 게 아니라 60초(OS마다 다르지만 tcp_fin_timeout(대다수의 리눅스는 60로초 설정됨) 만큼) 동안 대기하게 됨. (21:15:35)
-   ![](./read-timout-in-60s-small-response-fin-ack-socket-status-02.png)
+   ![](./read-timout-in-60s-small-response-fin-ack-socket-status-02.webp)
 9. 247번 패킷에서 서버 → 클라이언트로 HTTP 응답 패킷 전송 (21:15:36.298103, 클라이언트가 요청 보낸 21:15:26.291192로부터 10초가 지난 시간임)
-   ![](./read-timout-in-60s-small-response-send-http-response-packet.png)
+   ![](./read-timout-in-60s-small-response-send-http-response-packet.webp)
 10. 248번 패킷에서 클라이언트 → 서버로 RST 패킷 전송 (21:15:36.298215)
     > When an unexpected TCP packet arrives at a host, that host usually responds by sending a reset packet back on the same connection. A reset packet is simply one with no payload and with the `RST` bit set in the TCP header flags.
     > 출처: https://www.pico.net/kb/what-is-a-tcp-reset-rst/
      
     클라이언트 측에서는 소켓 연결 종료를 준비하고 있었는데 서버 측으로부터 의도치 않은 HTTP 패킷이 왔기 때문에 더 이상 패킷을 받을 수 없다는 RST 패킷을 전송한 것으로 보임. (원래는 서버에서 FIN 패킷을 한 번 보내주고 클라이언트가 다시 ACK 패킷을 보내서 소켓을 종료해야한다.)
-    ![](./read-timout-in-60s-small-response-send-rst-packet.png)
+    ![](./read-timout-in-60s-small-response-send-rst-packet.webp)
 
 11. RST 패킷을 전송한 이후에 클라이언트/서버 측 소켓이 정상적으로 종료됨 (21:15:36)
-    ![](./read-timout-in-60s-small-response-send-rst-packet-socket-status.png)
+    ![](./read-timout-in-60s-small-response-send-rst-packet-socket-status.webp)
 
 ### 1-2. 클라이언트 측에서 Read Timeout 발생 후 60초 이내(소켓이 닫히기 전)에 응답 패킷을 여러 개 전송하는 경우 (응답이 큰 경우)
 서버 쪽 API에서 처리하는데 10초 소요되고, 매우 큰 문자열을 응답한다고 가정
@@ -505,43 +505,43 @@ Caused by: java.io.IOException: Broken pipe
 170	2022-03-20 05:19:32.935741	127.0.0.1	127.0.0.1	TCP	44	50422 → 8080 [RST] Seq=225 Win=0 Len=0
 ```
 1. 143 ~ 145번 패킷은 TCP 3 Way Handshake (syn, syn/ack, ack)
-   ![](./read-timout-in-60s-large-response-3-way-handshake.png)
-   ![](./tcp-3-way-handshake.png)
-   ![](./read-timout-in-60s-large-response-3-way-handshake-socket-status.png)
+   ![](./read-timout-in-60s-large-response-3-way-handshake.webp)
+   ![](./tcp-3-way-handshake.webp)
+   ![](./read-timout-in-60s-large-response-3-way-handshake-socket-status.webp)
 2. 147번 패킷에서 클라이언트 → 서버로 HTTP 요청 패킷 전송 (05:19:22.908202)
-   ![](./read-timout-in-60s-large-response-send-http-request-packet.png)
+   ![](./read-timout-in-60s-large-response-send-http-request-packet.webp)
 3. 148번 패킷에서 서버가 요청 잘 받았다고 클라이언트한테 ACK 패킷 전송 (05:19:22.908223)
-   ![](./read-timout-in-60s-large-response-send-http-request-ack-packet.png)
+   ![](./read-timout-in-60s-large-response-send-http-request-ack-packet.webp)
 4. 149번 패킷에서 클라이언트는 커넥션을 종료한다고 FIN/ACK 패킷을 서버에게 전송 (05:19:25.915247, 정확히 HTTP 패킷 보내고 3초 이후(read timeout)임.)
-   ![](./read-timout-in-60s-large-response-send-fin-packet.png)
+   ![](./read-timout-in-60s-large-response-send-fin-packet.webp)
 5. 150번 패킷에서 서버가 클라이언트로부터 FIN/ACK 패킷을 잘 받았다고 반대로 ACK 패킷을 클라이언트에게 보냄 (05:19:25.915291)
-   ![](./read-timout-in-60s-large-response-send-ack-packet.png)
+   ![](./read-timout-in-60s-large-response-send-ack-packet.webp)
 6. 클라이언트가 먼저 연결을 종료하겠다는 FIN 패킷을 보냈기 때문에 클라이언트가 Active Close
    서버는 클라이언트로부터 FIN 패킷을 받았기 때문에 서버는 Passive Close가 됨
    (무조건 클라이언트가 Active Close는 아니고 경우에 따라서 다름)
    그리고 아직까지는 서버(Passive Close)로부터 FIN 패킷을 받은 게 아니기 때문에 소켓이 정상적으로 종료된 게 아님.
-   ![](./tcp-termination.png)
+   ![](./tcp-termination.webp)
 7. 서버 측 소켓의 상태는 CLOSE_WAIT(클라이언트가 보낸 FIN 패킷을 받았으므로)이고, 클라이언트 측 소켓의 상태는 FIN_WAIT_2(서버가 보낸 ACK 패킷을 받았으므로)이다. (05:19:26)
-   ![](./read-timout-in-60s-large-response-fin-ack-socket-status-01.png)
+   ![](./read-timout-in-60s-large-response-fin-ack-socket-status-01.webp)
 8. 서버는 클라이언트로부터 FIN 패킷을 받았지만 아직 보낼 패킷이 남아있기 때문인지 클라이언트에게 FIN 패킷을 보내지 않음.
    그리고 Active Close(클라이언트) 측에서는 오동작을 막기 위해 바로 소켓의 연결을 끊는 게 아니라 60초(OS마다 다르지만 tcp_fin_timeout(대다수의 리눅스는 60로초 설정됨)) 동안 대기하게 됨. (05:19:32)
-   ![](./read-timout-in-60s-large-response-fin-ack-socket-status-02.png)
+   ![](./read-timout-in-60s-large-response-fin-ack-socket-status-02.webp)
 9. 163번 패킷에서 서버로부터 HTTP 응답이 오는데 너무 커서 한 번에 오지 않고 여러 패킷에 걸쳐서 전송됨. (05:19:32.935627)
    TCP 패킷은 순서를 보장하지 않기 때문에 클라이언트 측에서 재조립하여야하는데 그걸 위해 `현재 시퀀스 넘버(1)`와 `다음 패킷의 시퀀스 넘버(8193)`를 알려주고 있음.
-   ![](./read-timout-in-60s-large-response-send-http-response-packet-01.png)
+   ![](./read-timout-in-60s-large-response-send-http-response-packet-01.webp)
 10. 164번 패킷을 보니 또 응답 패킷인데 `현재 패킷의 시퀀스 넘버는 8193`이니 163번 패킷의 다음 패킷이고, 그 `다음 패킷의 시퀀스 넘버는 16385`임. (05:19:32.935668)
-    ![](./read-timout-in-60s-large-response-send-http-response-packet-02.png)
+    ![](./read-timout-in-60s-large-response-send-http-response-packet-02.webp)
 11. 165번 패킷을 보니 또 응답 패킷인데 `현재 패킷의 시퀀스 넘버는 16385`이니 164번 패킷의 다음 패킷이고, 그 `다음 패킷의 시퀀스 넘버는 24577`임. (05:19:32.935695)
-    ![](./read-timout-in-60s-large-response-send-http-response-packet-03.png)
+    ![](./read-timout-in-60s-large-response-send-http-response-packet-03.webp)
 12. 166 ~ 168번 패킷을 보면 클라이언트는 FIN_WAIT_2 상태이기 때문에 서버로부터 FIN 패킷이 올 것을 예상했는데 3번이나 다른 패킷이 왔기 때문에 RST 패킷을 3번 보냄 (05:19:32.935704~ 05:19:32.935719)
-    ![](./read-timout-in-60s-large-response-send-rst-packet-01.png)
+    ![](./read-timout-in-60s-large-response-send-rst-packet-01.webp)
 13. 169번 패킷을 보면 서버 측에 RST 패킷을 보내긴 했지만 아직 소켓이 닫히기 이전이기 때문에 그사이에 또 서버 → 클라이언트로 응답패킷이 왔다. (05:19:32.935721)
     여전히 응답이 더 남았기 때문에 다음 패킷의 시퀀스 넘버도 함께 보내줬다.
-    ![](./read-timout-in-60s-large-response-send-http-response-packet-04.png)
+    ![](./read-timout-in-60s-large-response-send-http-response-packet-04.webp)
 14. 170번 패킷을 보면 또 서버에서 FIN 패킷이 온 게 아니기 때문에 클라이언트는 다시 서버에게 RST 패킷을 보내서 소켓을 닫을 준비를 한다. (05:19:32.935741)
-    ![](./read-timout-in-60s-large-response-send-rst-packet-02.png)
+    ![](./read-timout-in-60s-large-response-send-rst-packet-02.webp)
 15. 그리고나서 진짜로 클라이언트/서버의 소켓이 닫혔다. (05:19:33)
-    ![](./read-timout-in-60s-large-response-send-rst-packet-socket-status.png)
+    ![](./read-timout-in-60s-large-response-send-rst-packet-socket-status.webp)
 
 ## 2. 클라이언트 측에서 Read Timeout 발생 후 60초 이후(소켓이 닫힌 후)에 응답 패킷을 전송하는 경우
 서버 쪽 API에서 처리하는데 70초 소요된다고 가정
@@ -778,32 +778,32 @@ Caused by: java.io.IOException: Broken pipe
 119	2022-03-19 23:44:18.060374	127.0.0.1	127.0.0.1	TCP	44	62960 → 8080 [RST, ACK] Seq=224 Ack=1 Win=408256 Len=0
 ```
 1. 97 ~ 99번 패킷은 TCP 3 Way Handshake (syn, syn/ack, ack)
-   ![](./read-timout-over-60s-3-way-handshake.png)
-   ![](./tcp-3-way-handshake.png)
-   ![](./read-timout-over-60s-3-way-handshake-socket-status.png)
+   ![](./read-timout-over-60s-3-way-handshake.webp)
+   ![](./tcp-3-way-handshake.webp)
+   ![](./read-timout-over-60s-3-way-handshake-socket-status.webp)
 2. 101번 패킷에서 클라이언트 → 서버로 HTTP 요청 패킷 전송 (23:43:15.055087)
-   ![](./read-timout-over-60s-send-http-request-packet.png)
+   ![](./read-timout-over-60s-send-http-request-packet.webp)
 3. 102번 패킷에서 서버가 요청 잘 받았다고 클라이언트한테 ACK 패킷 전송 (23:43:15.055106)
-   ![](./read-timout-over-60s-send-http-request-ack-packet.png)
+   ![](./read-timout-over-60s-send-http-request-ack-packet.webp)
 4. 103번 패킷에서 클라이언트는 커넥션을 종료한다고 FIN/ACK 패킷을 서버에게 전송 (23:43:18.060226, 정확히 HTTP 패킷 보내고 3초 후(read timeout)임.)
-   ![](./read-timout-over-60s-send-fin-packet.png)
+   ![](./read-timout-over-60s-send-fin-packet.webp)
 5. 104번 패킷에서 서버가 클라이언트로부터 FIN/ACK 패킷을 잘 받았다고 반대로 ACK 패킷을 클라이언트에게 보냄 (23:43:18.060286)
-   ![](./read-timout-over-60s-send-ack-packet.png)
+   ![](./read-timout-over-60s-send-ack-packet.webp)
 6. 클라이언트가 먼저 연결을 종료하겠다는 FIN 패킷을 보냈기 때문에 클라이언트가 Active Close
    서버는 클라이언트로부터 FIN 패킷을 받았기 때문에 서버는 Passive Close가 됨
    (무조건 클라이언트가 Active Close는 아니고 경우에 따라서 다름)
    그리고 아직까지는 서버(Passive Close)로부터 FIN 패킷을 받은 게 아니기 때문에 소켓이 정상적으로 종료된 게 아님.
-   ![](./tcp-termination.png)
+   ![](./tcp-termination.webp)
 7. 서버 측 소켓의 상태는 CLOSE_WAIT(클라이언트가 보낸 FIN 패킷을 받았으므로)이고, 클라이언트 측 소켓의 상태는 FIN_WAIT_2(서버가 보낸 ACK 패킷을 받았으므로)이다. (23:43:18)
-   ![](./read-timout-over-60s-fin-ack-socket-status-01.png)
+   ![](./read-timout-over-60s-fin-ack-socket-status-01.webp)
 8. 서버는 클라이언트로부터 FIN 패킷을 받았지만 아직 보낼 패킷이 남아있기 때문인지 클라이언트에게 FIN 패킷을 보내지 않음.
    그리고 Active Close(클라이언트) 측에서는 오동작을 막기 위해 바로 소켓의 연결을 끊는 게 아니라 60초(OS마다 다르지만 tcp_fin_timeout(대다수의 리눅스는 60로초 설정됨)) 동안 대기하게 됨. (23:44:17)
-   ![](./read-timout-over-60s-fin-ack-socket-status-02.png)
+   ![](./read-timout-over-60s-fin-ack-socket-status-02.webp)
 10. 119번 패킷에서 이제 기다릴만큼 다 기다렸는데도 서버 측에서 FIN 패킷이 오지 않기 때문에 클라이언트 → 서버로 RST, ACK 패킷을 날림. (23:44:18.060374, 정확하게 서버로 ACK 패킷 받은 이후부터 60초간 대기한 후 전송)
-    ![](./read-timout-over-60s-send-rst-packet.png)
+    ![](./read-timout-over-60s-send-rst-packet.webp)
 
 11. RST 패킷을 전송한 이후에 클라이언트/서버 측 소켓이 정상적으로 종료됨 (23:44:18)
-    ![](./read-timout-over-60s-send-rst-packet-socket-status.png)
+    ![](./read-timout-over-60s-send-rst-packet-socket-status.webp)
 
 # ClientAbortException을 해결하려면?
 1. 서버 측에서 처리 속도를 더 빠르게 한다.

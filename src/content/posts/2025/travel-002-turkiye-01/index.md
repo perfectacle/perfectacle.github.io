@@ -5,7 +5,7 @@ categories: [기타, 잡동사니]
 date: 2025-12-10 11:26:56
 ---
 
-![](./cat-on-the-roof.jpeg)
+![](./cat-on-the-roof.webp)
 튀르키예는 동물 친화적인 곳이어서 자연을 사랑하는 내 입장에서는 매우 만족스러웠다.  
 
 ## 시리즈
@@ -19,27 +19,27 @@ date: 2025-12-10 11:26:56
 하지만 큰 일을 뭔가 빨리 해치우고 싶어서 먼저 사파리를 해치우고 그 다음에 느긋하게 내 일정대로 여행할 수 있는 튀르키예로 가기로 마음 먹었다.  
 튀르키예에서 뭔일이 나면 케냐에 일정대로 못 들어갈 수도 있어서 사파리를 못 즐길 수도 있다는 걱정이 들어 먼저 케냐에 가서 사파리를 해치우고 튀르키예로 향하게 되었다.
 
-![](./turkiye-direct-flight.png)  
+![](./turkiye-direct-flight.webp)  
 근데 케냐에서 튀르키예까지 직항이 하루에 한 번, 새벽에 밖에 없는 것이었다.
 케냐에서 새벽에 나와서 택시타고 돌아다니는 건 너무 위험하다고 생각이 됐다.  
 
-![](./turkiye-boarding-pass.jpeg)
+![](./turkiye-boarding-pass.webp)
 어쩔 수 없이 에티오피아의 아디스 아바바 공항을 경유하는 항공권으로 끊었다.  
 케냐까지 오는 만큼 길지는 않았지만, 아디스 아바바 공항까지 2시간, 그리고 아디스 아바바 공항에서 5시간 10분 가량 대기, 이스탄불 공항까지 5시간 55분 가량 소요되는 총 13시간 5분의 긴 여정이었다.  
 항공권은 172만원이 들었다.
 
-![](./meal-in-flight-01.jpeg)  
+![](./meal-in-flight-01.webp)  
 아디스 아바바 공항까지는 2시간 밖에 걸리지 않았지만 기내식이 나왔다. 에티오피아의 대표 항공사다보니 이런 서비스 측면에서는 좋았던 것 같다.  
 그리고 아프리카(?)답게 기내식에도 콩이 나왔다.  
 
-![](./adis-ababa-airport-01.jpeg)  
-![](./adis-ababa-airport-02.jpeg)  
+![](./adis-ababa-airport-01.webp)  
+![](./adis-ababa-airport-02.webp)  
 그리고 아디스 아바바 공항에서 이제 5시간 10분을 대기해야하다보니 커피를 사서 노트북으로 여행 계획이나 짜려고 했다.  
 그래서 커피를 주문하고 자리에 앉으려고 하니 테이블은 식사고객 전용이라고 내쫓는 것이었다.  
 새삼 한국 스타벅스에서 노트북만 들고 죽치고 있는 게 얼마나 감사한 일인지 깨달았고, 공항 내를 방황하다가 겨우 자리를 발견해서 노트북으로 스페인 여행 계획을 짰다.  
 근데 공항의 무료 와이파이를 이용하다보니 인터넷이 너무 자주 끊겼지만, 챗GPT는 그래도 쓸만한 수준이었다. (이번 여행은 챗GPT가 없었더라면 불가능했을 것이다.)  
 
-![](./meal-in-flight-02.jpeg)  
+![](./meal-in-flight-02.webp)  
 오랜 대기 끝에 이스탄불 행 비행기를 탔고 여기서도 기내식이 나왔다.  
 
 <div class="video-container"><iframe src="https://www.youtube-nocookie.com/embed/zUkbgTbr8ww" title="YouTube video" loading="lazy" allowfullscreen></iframe></div>  
@@ -48,117 +48,117 @@ date: 2025-12-10 11:26:56
 그리고 시꺼먼 바다만 보다가 불빛을 보면 '아~ 곧 도착하겠구나!' 하는 희망도 생겨서 더 좋았다.  
 
 ## 1일차 (이스탄불 구시가지 + 신시가지)
-![](./istanbul-airport-01.jpeg)  
+![](./istanbul-airport-01.webp)  
 긴 여정 끝에 이스탄불 공항에 도착할 수 있었다.  
 튀르키예(+03:00)와 한국(+09:00)의 시차는 6시간이었기 때문에 한국 시간으로는 12:35 쯤으로 점심 먹을 시간이었다.  
 그리고 케냐와 튀르키예는 시차가 없기 때문에 별도로 시차 때문에 고생할 일은 없었다.
 
-![](./istanbul-map.png)  
+![](./istanbul-map.webp)  
 이스탄불은 크게 3가지 구역으로 나뉘어져있는데 나는 세 구역을 다 둘러볼 생각이었기 때문에 그 중간 지점인 구시가지에 숙소([Sirkeci Mansion Hotel](https://www.sirkecimansion.com/))를 잡았다. (2박 3일 기준 조식포함 263,316원)  
 
-![](./istanbul-airport-havaist-departure.jpeg)  
-![](./istanbul-airport-havaist-arrival.jpeg)  
+![](./istanbul-airport-havaist-departure.webp)  
+![](./istanbul-airport-havaist-arrival.webp)  
 먼저 공항에서 Havaist라는 공항 버스를 타고 이동(버스 내에서 카드로 결제)해서 숙소 근처 정류장에 내렸는데 페리(배로 이동하는 대중교통) 선착장 근처에 내리게 되었다.  
 탁 트인 바다와 배를 보니 뭔가 시원시원 했다.  
 
-![](./istanbul-street-01.jpeg)  
-![](./istanbul-street-02.jpeg)  
+![](./istanbul-street-01.webp)  
+![](./istanbul-street-02.webp)  
 그리고 한국에서는 고층빌딩만 보다가 뭔가 유럽풍의 건물들을 보다보니 새삼 '내가 튀르키예에 온 게 맞구나~'하는 생각이 들었다.  
 
 <div class="video-container"><iframe src="https://www.youtube-nocookie.com/embed/r_A8IqbhccE" title="YouTube video" loading="lazy" allowfullscreen></iframe></div>  
 
 그리고 이스탄불에는 또 신기한 교통수단인 '트램'이라는 게 존재한다. 지상에 사람들도 다니는 도로에 저렇게 전철이 움직인다는 게 신기했다. 사람들이 무단횡단도 많이하고, 부정탑승도 많이 할 거 같은데 괜찮으려나...? 하는 생각이 들었다.  
 
-![](./istanbul-cat-01.jpeg)  
+![](./istanbul-cat-01.webp)  
 그리고 이스탄불은 길냥이들의 천국이라고 들었는데 가자마자 나한테 앵기는 길냥이를 볼 수 있었다. 아마 사람들이 먹을 걸 주다보니 사람을 겁내지 않는 것 같았다.  
 동물을 싫어하는 사람이라면 이스탄불에 와서는 못 살 거 같았다.  
 
-![](./istanbul-breakfast-01.jpeg)  
-![](./istanbul-breakfast-02.jpeg)  
-![](./istanbul-breakfast-03.jpeg)  
+![](./istanbul-breakfast-01.webp)  
+![](./istanbul-breakfast-02.webp)  
+![](./istanbul-breakfast-03.webp)  
 아직 체크인 시작이 되지 않아 숙소에 짐만 맡기고 가려고 했는데 아침도 먹어도 된다고 해서 맛있게 먹었다.  
 지중해 근처에 있는 나라라 그런지 올리브와 치즈가 종류별로 있어서 이들만의 건강 비결도 무엇인지 살짝 알 것 같았다.  
 
-![](./topkapi-01.jpeg)  
-![](./topkapi-02.jpeg)  
+![](./topkapi-01.webp)  
+![](./topkapi-02.webp)  
 그리고 바로 톱카프 궁전을 구경하러 갔는데 아주 돈독이 올라서 풀패키지로만 판매를 하는 것이었다.  
 나는 톱카프 궁전이랑 정원만 좀 구경하고 싶었는데 '하렘구역 + 톱카프 궁전 + 아야 이리니 교회'까지 포함된 패키지만 팔았고 가격은 $57 정도 하였다.  
 
-![](./topkapi-03.jpeg)  
-![](./topkapi-04.jpeg)  
-![](./topkapi-05.jpeg)  
-![](./topkapi-06.jpeg)  
+![](./topkapi-03.webp)  
+![](./topkapi-04.webp)  
+![](./topkapi-05.webp)  
+![](./topkapi-06.webp)  
 주로 가이드를 끼고 오는 사람들이 대부분이었고, 나는 그냥 있는 느낌 그대로 느끼러 오디오 가이드만 들으면서 이동했는데 비슷한 전시품에 질리기만 하였다.  
 
 <div class="video-container"><iframe src="https://www.youtube-nocookie.com/embed/o6iW1lZjlmc" title="YouTube video" loading="lazy" allowfullscreen></iframe></div>
 
 그리고 어디서 기도 소리 같은 게 들려오길래 녹음된 걸 트는 줄 알았는데 실제 사람이 앉아서 소리를 내고 있어서 신기했다.  
 
-![](./topkapi-cat-01.jpeg)  
+![](./topkapi-cat-01.webp)  
 나는 8만원 넘게 내고 들어왔는데 고양이는 공짜로 들어왔을 생각을 하니 '여기는 고양이 팔자가 상팔자구나'하는 생각이 들었다.  
 
-![](./topkapi-07.jpeg)  
-![](./topkapi-08.jpeg)  
-![](./topkapi-09.jpeg)  
+![](./topkapi-07.webp)  
+![](./topkapi-08.webp)  
+![](./topkapi-09.webp)  
 하렘 구역을 지나 정원 구역으로 들어서니 힐링이 되는 느낌이었다. 뭔가 탁 트인 광경에 새들도 보이고 '역시 나는 자연파구나'싶었다.
 
-![](./topkapi-10.jpeg)  
-![](./topkapi-11.jpeg)  
+![](./topkapi-10.webp)  
+![](./topkapi-11.webp)  
 그리고 시계 박물관 같은 것도 있어서 대충 둘러보고 나왔다.  
 오후에 신시가지 구경을 가려고 계획했는데 톱카프 궁전에서 너무 많은 시간을 써버렸다. 돈이 아까우니 조금이라도 더 보자는 생각으로 둘러봤는데 솔직히 하렘구역은 별 감흥이 없어서 돈과 시간 모두 아까웠다.  
 
-![](./hagia-sophia-01.jpeg)  
+![](./hagia-sophia-01.webp)  
 톱카프 궁전을 나와 아야 소피아로 향했는데 내부를 구경하려면 티켓을 사야하는 것 같았다.  
 티켓 사는 줄도 있고, 시간도 없고, 내부는 뭐 비슷비슷 할 거 같아서 그냥 바깥만 구경했다.  
 
-![](./blue-mosque-01.jpeg)  
+![](./blue-mosque-01.webp)  
 그리고 바로 맞은편에는 블루 모스크(술탄 아흐메트 모스크)가 있는데 기도 시간이라 내부에 출입이 불가능해서 여기도 그냥 바깥만 구경했다.  
 
-![](./istanbul-lunch-01.jpeg)  
+![](./istanbul-lunch-01.webp)  
 그리고 점심은 챗GPT가 추천해준 [Sultanahmet Köftecisi](https://www.google.com/maps/place/Sultanahmet+K%C3%B6ftecisi/@41.0224538,28.9431976,14.53z/data=!4m10!1m2!2m1!1ssultanahmet+k%C3%B6ftecisi!3m6!1s0x14caba17a2e60741:0x6ce9f45dc518298f!8m2!3d41.0253582!4d28.9396257!15sChZzdWx0YW5haG1ldCBrw7ZmdGVjaXNpIgOIAQFaGCIWc3VsdGFuYWhtZXQga8O2ZnRlY2lzaZIBEGtvZnRhX3Jlc3RhdXJhbnTgAQA!16s%2Fg%2F11g6s5f6g9?entry=ttu&g_ep=EgoyMDI1MTIwNy4wIKXMDSoKLDEwMDc5MjA2OUgBUAM%3D)라는 식당에서 소고기 쾨프테를 먹었다.  
 소고기 완자라고 하길래 소고기이기도 하고 양고기도 아니니까 고기 잡내 같은 건 없겠지? 싶었는데 기름향인지 뭔지 너무 느끼한 냄새랑 맛이 확 올라왔다.  
 결국 2/3만 먹고 나올 수 밖에 없었다. 혼자서 먹는데 $16.9(24,632원)이 들었다.  
 그리고 식전에 저런 빵을 거의 대부분 주는데 저런 빵을 에크맥이라고 불렀다.  
 
-![](./tram-01.jpeg)  
+![](./tram-01.webp)  
 점심을 먹고 신시가지로 이동하기 위해 트램을 탔는데 생각보다 사람이 많아서 뭔가 소매치기를 당하지는 않을까 무서워서 정신을 바짝차렸다.  
 
-![](./istanbul-street-03.jpeg)  
-![](./istanbul-street-04.jpeg)  
+![](./istanbul-street-03.webp)  
+![](./istanbul-street-04.webp)  
 신시가지로 이동하니 여기서도 팔자좋게 꾸벅꾸벅 졸고있는 길냥이를 볼 수 있었다. 이스탄불은 그냥 길냥이 천국이다.  
 
-![](./istanbul-street-05.jpeg)  
+![](./istanbul-street-05.webp)  
 그리고 여기는 관광객 뿐만 아니라 현지인들의 모습도 조금 볼 수 있었는데 놀이터에서 노는 가족들이 보였다.
 
-![](./istanbul-street-06.jpeg)  
-![](./istanbul-street-07.jpeg)  
+![](./istanbul-street-06.webp)  
+![](./istanbul-street-07.webp)  
 그리고 신시가지 거리를 걸었는데 역시나 사람들이 굉장히 많았고 유럽풍 건물을 굉장히 많이 볼 수 있어서 좋았다.  
 그리고 저렇게 큰 창문을 닦는 모습을 보니 옛날 영화의 시녀? 같은 그런 느낌의 사람처럼 보여서 뭔가 신기했다.  
 
-![](./anthony-church-01.jpeg)  
-![](./anthony-church-02.jpeg)  
-![](./anthony-church-03.jpeg)  
-![](./anthony-church-04.jpeg)  
-![](./anthony-church-05.jpeg)  
+![](./anthony-church-01.webp)  
+![](./anthony-church-02.webp)  
+![](./anthony-church-03.webp)  
+![](./anthony-church-04.webp)  
+![](./anthony-church-05.webp)  
 성 안토니오 성당을 왔는데 천주교도가 아니지만 그래도 성당이 주는 분위기와 웅장함에 관광할만 한 것 같았다.  
 
-![](./istanbul-dog-01.jpeg)  
-![](./istanbul-dog-02.jpeg)  
+![](./istanbul-dog-01.webp)  
+![](./istanbul-dog-02.webp)  
 그리고 고양이 뿐만 아니라 강아지들도 굉장히 평화롭게 살고 있었지만 살이 너무 뒤룩뒤룩 찐 강아지는 좀 걱정이 될 정도였다.
 
-![](./kaimak-01.jpeg)  
-![](./kaimak-02.jpeg)  
+![](./kaimak-01.webp)  
+![](./kaimak-02.webp)  
 그리고 여기에 카이막 맛집이 있다고 해서 Karaköy Özsüt라는 카이막 집에 방문했는데 여기는 짠내투어에서도 방문한 곳이라고 한다.  
 들어가니까 거의 한국인 정모하듯이 한국인 손님들로 가득하였고, 호불호 없이 달달하고 맛있을만한 아주 대중적인 디저트라는 느낌이 들었다.  
 백종원 카이막은 Börekçi'nin Yeri라는 가게인데 내가 있는 곳과는 거리가 멀어서 그냥 신시가지에 있는 카이막 가게만 가서 먹어보았다.
 
-![](./galata-tower-01.jpeg)  
-![](./galata-tower-02.jpeg)  
+![](./galata-tower-01.webp)  
+![](./galata-tower-02.webp)  
 그리고 갈라타 타워 구경을 갔는데 여기는 석양을 보는 게 참 이쁘다고 했는데 4시 경인데도 불구하고 일요일 주말이라 그런지 사람이 너무 많아서 밖에서만 구경을 했다.  
 
-![](./dolmabahce-01.jpeg)  
-![](./dolmabahce-02.jpeg)  
-![](./dolmabahce-03.jpeg)  
+![](./dolmabahce-01.webp)  
+![](./dolmabahce-02.webp)  
+![](./dolmabahce-03.webp)  
 갈라타 타워를 구경하지 못하는 게 아쉬워서 돌마바흐체 궁전 & 시계탑까지 30분 가량을 걸어갔다.  
 근데 궁전은 또 돈내고 구경해야하는데 비슷비슷한 풍경일 거 같아서 그냥 주변에 있는 모스크나 들어가서 구경했다.  
 
@@ -179,167 +179,167 @@ date: 2025-12-10 11:26:56
 
 그리고 신시가지에서 구시가지로 넘어가는 다리를 걸어가는데 주변에 바다가 있다보니 낚시꾼들이 참 많았고 하나의 관광상품처럼 보이기도 했다. (아마 낚시대도 빌려주지 않을까 싶다.)  
 
-![](./mosque-01.jpeg)  
+![](./mosque-01.webp)  
 그리고 신기한 게 저렇게 거대한 모스크가 여기 저기 널려있다는 것이다.
 국민 대부분이 이슬람교(90% 이상으로 알고 있다.)를 믿다보니 모스크에 진심인 것 같았다.  
 
-![](./osman-kasap-01.jpeg)  
+![](./osman-kasap-01.webp)  
 저녁을 먹으러 Osman Kasap이라는 식당에 왔다. 챗GPT가 추천해준 식당은 'Kasap Osman'이었는데 근처에 가니 호객행위도 하고 이름도 비슷해서 내가 가려는 곳인 줄 알았다. (Kasap Osman은 일요일에 영업을 안 해서 어차피 갈 수도 없었지만...)  
 
-![](./osman-kasap-02.jpeg)  
+![](./osman-kasap-02.webp)  
 챗GPT가 추천해준 아이란을 먹어봤는데 요거트 맛이 좀 나기도 하고 좀 심하면 위액맛 같이 느껴지기도 했지만 그정도까지 느껴지지는 않았다.  
-![](./osman-kasap-03.jpeg)  
+![](./osman-kasap-03.webp)  
 또 챗GPT가 추천해준 렌틸수프로 속 달래기 용으로 먹어봤는데 레몬을 넣기 전에는 괜찮았지만 레몬을 너무 많이 넣어서 시큼해서 많이 못 먹어서 아쉬웠다.  
-![](./osman-kasap-04.jpeg)  
+![](./osman-kasap-04.webp)  
 그리고 거의 모든 식당에서는 이렇게 식전에 에크맥 빵을 주었다.  
-![](./osman-kasap-05.jpeg)  
+![](./osman-kasap-05.webp)  
 또 챗GPT가 추천해준 요거트 케밥을 먹었는데 점심에 먹은 소고기 쾨프테마냥 너무 느끼했다. 요거트 때문에 더 니글니글 대는 거 같았고 내 스타일이 전혀 아니었다.  
 소고기인지 양고기인지 고기 잡내도 조금 나는 거 같았고 이건 절반 가까이 남긴 것 같다.  
 $16.75로 24,350원을 냈는데 이렇게 비싼 돈을 들이고도 만족스럽지 못한 식사를 못해서 화가 났다.  
 하지만 현지에서만 할 수 있는 경험을 해야된다고 생각해서 비축해둔 육개장 사발면은 아껴두었다.
 
-![](./hotel-01-01.jpeg)  
-![](./hotel-01-02.jpeg)  
+![](./hotel-01-01.webp)  
+![](./hotel-01-02.webp)  
 관광을 모두 마치고 숙소로 왔는데 욕조도 있고 피로를 풀기 좋아 매우 만족스러웠다.  
 
 ## 2일차 (이스탄불 아시아지구(카디쿄이 + 위스키다르))
-![](./istanbul-breakfast-04.jpeg)  
-![](./istanbul-breakfast-05.jpeg)  
+![](./istanbul-breakfast-04.webp)  
+![](./istanbul-breakfast-05.webp)  
 호텔에서 조식을 먹었는데 벌꿀이 진짜 자연 그대로 모습으로 돼있는 게 신기했고, 흰색 달걀도 되게 신기했다.
 
 <div class="video-container"><iframe src="https://www.youtube-nocookie.com/embed/r3rRT2y72Hc" title="YouTube video" loading="lazy" allowfullscreen></iframe></div>  
 
 그리고 숙소 근처에 있는 에미네뉘 선착장(Eminönü iskele)에서 카디쿄이 선착장(Kadıköy iskele)으로 이동했다.  
 
-![](./mosque-02.jpeg)  
+![](./mosque-02.webp)  
 이동하는 중에 공사중인 모스크를 봤는데 마치 한국에 교회처럼 모스크가 정말 많은 것 같았다.  
 
-![](./kadikoy-cat-01.jpeg)  
+![](./kadikoy-cat-01.webp)  
 길냥이 천국답게 사람이 앉아있어야할 곳에 고양이가 앉아있는 모습도 볼 수 있다.  
 
-![](./kadikoy-market-01.jpeg)  
-![](./kadikoy-market-02.jpeg)  
-![](./kadikoy-market-03.jpeg)  
-![](./kadikoy-market-04.jpeg)  
+![](./kadikoy-market-01.webp)  
+![](./kadikoy-market-02.webp)  
+![](./kadikoy-market-03.webp)  
+![](./kadikoy-market-04.webp)  
 그리고 진짜 시장다운 시장을 보아서 튀르키예의 전통시장은 이렇구나~ 하고 느낄 수 있었다.
 
-![](./kadikoy-lunch-01.jpeg)  
-![](./kadikoy-lunch-02.jpeg)  
+![](./kadikoy-lunch-01.webp)  
+![](./kadikoy-lunch-02.webp)  
 점심은 챗GPT가 추천해준 Çiya Sofrası라는 식당에서 Tavuk Şiş라는 치킨 케밥을 먹었다.  
 하나도 느끼하지 않았고 채소들도 다 내 스타일이었고(고수가 없어서 다행이다), 너무 맛있게 먹었다.  
 닭고기가 그나마 제일 무난하고 나한테 맞는 거 같아서 앞으로 닭고기 요리만 먹어야겠다고 생각했다.  
 점심은 $21.77(31,789원)이 들었지만 정말 아깝지 않고 맛있는 한끼를 먹은 것 같아 만족스러웠다.
 
-![](./moda-park-01.jpeg)  
-![](./moda-park-02.jpeg)  
+![](./moda-park-01.webp)  
+![](./moda-park-02.webp)  
 모다 해변 공원을 산책하다보니 다양한 생활체육 시설이 보여서 여기도 정말 살기 좋은 것 같았다.  
 
-![](./moda-park-bird-01.jpeg)  
-![](./moda-park-cat-01.jpeg)  
-![](./moda-park-cat-02.jpeg)  
+![](./moda-park-bird-01.webp)  
+![](./moda-park-cat-01.webp)  
+![](./moda-park-cat-02.webp)  
 이스탄불은 정말 동물의 왕국인 거 같았다. 나는 자연/동물파이다보니 어딜가나 보이는 동물을 환영했지만 동물을 싫어하는 사람은 다시 한 번 살기 힘들 거 같다는 생각이 들었다.
 그정도로 동물이 정말 많았다.
 
-![](./moda-park-03.jpeg)  
-![](./moda-park-04.jpeg)  
+![](./moda-park-03.webp)  
+![](./moda-park-04.webp)  
 해변 공원이라 역시 경치는 끝내주었고 여기서도 한번 살아보고 싶었다.  
 
-![](./moda-park-05.jpeg)  
+![](./moda-park-05.webp)  
 그리고 우리 동네에는 오랫동안 있던 공중전화를 최근에 철거했는데 이스탄불에 와서 공중전화를 보니 왠지 반가웠다.  
 근데 튀르키예에서도 공중전화 사용율이 얼마나 되는지 궁금했다.
 
-![](./moda-park-06.jpeg)  
+![](./moda-park-06.webp)  
 그리고 유럽에서는 화장실도 돈내고 가야한다고 들어서 항상 현금이 필수라고 들었는데 이제 세상이 변했는지 카드를 찍고 화장실을 갈 수 있는 세상이 되었다.  
 
-![](./kadikoy-dog-01.jpeg)  
+![](./kadikoy-dog-01.webp)  
 카디쿄이 관광을 마치고 위스키다르로 가는 도중에 길가에 퍼질러 자는 강아지를 보았다.  
 보통은 좀 모퉁이나 울타리에 붙어서 자는데 얘는 길 너무 한복판에 누워서 자길래 정말 팔자가 좋구나~ 싶었다.
 
-![](./uskudar-iskele-01.jpeg)  
-![](./uskudar-iskele-02.jpeg)  
+![](./uskudar-iskele-01.webp)  
+![](./uskudar-iskele-02.webp)  
 그리고 이제 위스키다르로 가기위해 위스키다르 선착장으로 왔다.
 
-![](./uskudar-iskele-03.jpeg)  
+![](./uskudar-iskele-03.webp)  
 페리를 타고 이동하는데 물살을 가르고 가는 풍경이 시원시원했다.
 
-![](./uskudar-mosque-01.jpeg)  
-![](./uskudar-mosque-02.jpeg)  
+![](./uskudar-mosque-01.webp)  
+![](./uskudar-mosque-02.webp)  
 그리고 위스키다르 선착장에서 내리자마자 보이는 모스크를 구경왔는데 신발을 벗고 들어가다보니 밖에서 발을 닦는 사람들이 보여서 신기했다.
 
 <div class="video-container"><iframe src="https://www.youtube-nocookie.com/embed/RjlPlawxq08" title="YouTube video" loading="lazy" allowfullscreen></iframe></div>  
 
 그리고 실내 뿐만 아니라 밖에서도 예배가 이루어지고 다른 곳에서 진행하는 예배 소리가 들리는 것도 신기했다.  
 
-![](./juice-01.jpeg)  
-![](./juice-02.jpeg)  
+![](./juice-01.webp)  
+![](./juice-02.webp)  
 아마 Glow Juice라는 가게인 거 같은데 천연 착즙쥬스가 먹고 싶어서 간 곳인데 가성비도 좋고 맛도 너무 좋았다.  
 사장님이 예전에 농구선수를 해서 한국에 왔었다고 하다보니 내적 친밀감도 생기는 거 같았다.
 
-![](./uskudar-park-01.jpeg)  
+![](./uskudar-park-01.webp)  
 쥬스를 마시며 산책을 했는데 어느 공원이 보였고 어린이들이 뛰어노는 걸 보니 뭔가 뿌듯하고 사람사는 냄새가 나는 것 같았다.  
 확실히 나는 관광지보다는 자연, 동물, 가족들이 모여있는 곳이 나하고 어울리는 것 같았다.
 
-![](./uskudar-cat-01.jpeg)  
-![](./uskudar-bird-01.jpeg)  
+![](./uskudar-cat-01.webp)  
+![](./uskudar-bird-01.webp)  
 도심에는 고양이가, 해변에는 갈매기가 점령한 모습도 볼 수 있었다.
 
-![](./uskudar-food-01.jpeg)  
+![](./uskudar-food-01.webp)  
 관광객들이 많다보니 노점들도 많았는데 익숙한 옥수수도 보이니 반가웠다. 근데 우리나라처럼 찌는 거보다는 더 노랗고 뭔가 탄 자국도 보여서 우리 방식이랑은 좀 달라보였다.  
 
-![](./small-mosque-01.jpeg)  
+![](./small-mosque-01.webp)  
 그리고 모스크가 모두 거대한 게 아니고 그냥 일반 건물 안에 예배할 수 있는 곳도 존재했다.  
 마치 우리나라 상가 건물 2층에 교회가 있는 그런 느낌이었다.
 
-![](./fish-food-01.jpeg)  
+![](./fish-food-01.webp)  
 그리고 구시가지로 다시 복귀해서 저녁을 먹으러 Eminönü Balıkçısı로 왔다.  
 이틀 연속 케밥을 먹다보니 이제 케밥은 질려서 다른 음식을 추천해달라고 하니 챗GPT가 생선은 비리지도 않고 느끼하지도 않다고 해서 에미네뉘 선착장 근처에 있는 식당을 추천해주었다.
 
-![](./fish-food-02.jpeg)  
+![](./fish-food-02.webp)  
 챗GPT가 추천해준 생선수프를 먹었는데 너~~~~무너무 느끼하고 니글거렸다. 보기만해도 너무 기름졌고 레몬을 넣어도 간에 기별도 안 가는 느끼함이었다.  
-![](./fish-food-03.jpeg)  
+![](./fish-food-03.webp)  
 그리고 밥도 없이 저런 반찬으로 생선을 먹으려니 얼마 들어가지도 않고, 기름투성이 수프랑 먹으려니 더더욱 별로였다...
 $20.23(29,535)라는 거금을 들이고 이런 식사를 하니 또 너무 화가났다.
 
 ## 3일차 (이스탄불에서 파묵칼레로...)
-![](./istanbul-breakfast-06.jpeg)  
+![](./istanbul-breakfast-06.webp)  
 이스탄불에서 마지막 조식을 했는데 흰 계란은 봐도봐도 신기하고 탁구공 같다는 생각이 들었다.
 
-![](./blue-mosque-02.jpeg)  
-![](./blue-mosque-03.jpeg)  
-![](./blue-mosque-04.jpeg)  
+![](./blue-mosque-02.webp)  
+![](./blue-mosque-03.webp)  
+![](./blue-mosque-04.webp)  
 그리고 첫날 블루모스크를 보지 못한 게 아쉬워서 가서 내부도 간단히 구경을 했다.  
 
-![](./hagia-sophia-02.jpeg)  
+![](./hagia-sophia-02.webp)  
 그리고 아야소피아도 내부에 일부 구역은 구경할 수 있지 않을까... 싶었는데 입장권이 없으면 내부를 전혀 볼 수 없는 구조라서 그냥 돌아왔다.  
 
-![](./grand-bazaar-01.jpeg)  
-![](./grand-bazaar-02.jpeg)  
-![](./grand-bazaar-03.jpeg)  
-![](./grand-bazaar-04.jpeg)  
+![](./grand-bazaar-01.webp)  
+![](./grand-bazaar-02.webp)  
+![](./grand-bazaar-03.webp)  
+![](./grand-bazaar-04.webp)  
 그랜드 바자르라고 대형 시장이 있다고 해서 구경을 갔는데 굉장히 크고 블록 단위로 테마(옷, 그릇, 향신료 등등)이 있어서 구경하는 재미가 있었다. 
 
-![](./grand-bazaar-05.jpeg)  
+![](./grand-bazaar-05.webp)  
 그리고 그랜드 바자르를 나와서 다시 숙소로 돌아가는데 총포상 같은 게 보였다.  
 우리나라는 총포상이라 할지라도 저렇게 밖에서 보이듯이 총을 전시하지는 않는데 여기는 총을 대놓고 판매하는 게 신기했다.
 
-![](./istanbul-street-food-01.jpeg)  
-![](./istanbul-street-food-02.jpeg)  
+![](./istanbul-street-food-01.webp)  
+![](./istanbul-street-food-02.webp)  
 그리고 숙소에서 짐을 찾아 이스탄불 공항으로 가기 위해 Havaist 버스 정류장에 도착을 했다.  
 근데 갑자기 거기에서 안내를 하는 아저씨가 나에게 오더니 몇시 비행기냐고 물어보았다. 왜 물어보는지 몰랐는데 다가오는 버스에 2자리 밖에 없고, 나보다 늦게온 2명이 비행기 시간이 촉박한 상황이었다.  
 그래서 양보해달라는 눈치였고 나는 넉넉하게 나왔기 때문에 눈물을 머금고 양보해주었다. 원래는 공항에 가서 여유롭게 점심을 먹으려고 했는데 이제 공항에 가서 촉박할지 모르기 때문에 그냥 노점에 있는 군밤과 쥬스로 점심을 간단히 떼웠다.  
 
-![](./istanbul-airport-cafe-01.jpeg)  
+![](./istanbul-airport-cafe-01.webp)  
 그리고 이스탄불 공항에 와서 아아를 마셨는데 무슨 8천원 가까이 하는 것이었다. 너무 비싸다는 생각이 들어서 어글리 코리안의 면모를 보여주었다.  
 탑승까지 남은 시간동안 휴대폰/노트북을 충전하면서 콘센트를 두개나 차지했다.
 
-![](./denizli-boarding-pass.png)  
+![](./denizli-boarding-pass.webp)  
 파묵칼레로 가기 위해서는 데니즐리 공항을 가야했는데 국내선이라 그런지 1시간 10분 정도 밖에 걸리지 않았다.  
 항공권은 5만원이 들었다.
 
-![](./meal-in-flight-03.jpeg)  
+![](./meal-in-flight-03.webp)  
 근데 한시간 정도 밖에 가지 않는데도 기내식이 나와서 신기했다. 물론 간단한 샌드위치 형태로 나왔고, 물이 생수병이 아닌 요플레 같은 플라스틱 통에 담겨나오는 것도 신기했다.
 
-![](./dolmus-01.jpeg)  
+![](./dolmus-01.webp)  
 파묵칼레로 가기 위해서는 데니즐리 공항에서 버스를 타고 데니즐리 오토가르(버스정류장)으로 갔다가 돌무쉬를 타고 파묵칼레로 가면 된다.  
 아래 두 블로그 글이 큰 도움이 되었다. (참고로 돌무쉬는 현금(리라) 밖에 받지 않았다.)  
 * [[파묵칼레] 데니즐리공항에서 파묵칼레 가는 방법; 짐보관까지❤️](https://m.blog.naver.com/bom2690/223343594041)
@@ -348,80 +348,80 @@ $20.23(29,535)라는 거금을 들이고 이런 식사를 하니 또 너무 화�
 나도 데니즐리 오토가르에서 돌무쉬를 어디서 타야하는지 좀 헤맸는데 친절한 사람이 얼마나 기다려야하는지 다 알려줘서 고마웠다.  
 근데 갑자기 인스타를 물어봐서 알려줬는데 그래서 팔로우나 뭐라도 할 줄 알았는데 아무것도 하지 않았다. 아마 내가 인스타를 전혀 관리하지 않아서 그런 건가... 싶은데 왜 물어본 건지 모르겠다.  
 
-![](./hotel-02-01.jpeg)  
-![](./hotel-02-02.jpeg)  
+![](./hotel-02-01.webp)  
+![](./hotel-02-02.webp)  
 그리고 [Pamukkale Melrose Viewpoint Suites](https://www.melroseviewpoint.com/)라는 호텔에 도착했는데 시설은 매우 마음에 들었다. (1박 2일 기준 조식포함 44,166원)  
 저녁 늦게 도착하다보니 밖에 나가서 저녁을 먹기 애매해서 아껴뒀던 육개장 사발면을 먹어서 행복했다.  
 
 ## 4일차 (파묵칼레 석회붕 + 히에라폴리스)
-![](./hotel-02-breakfast-01.jpeg)  
-![](./hotel-02-breakfast-02.jpeg)  
+![](./hotel-02-breakfast-01.webp)  
+![](./hotel-02-breakfast-02.webp)  
 호텔에서 조식은 매우 고급스럽게 나왔고, 직접 가져다주셨다. 그리고 오므라이스를 원하면 얘기하라길래 한국식으로 볶음밥에 계란을 덮어주는 형태인 줄 알았는데 튀르키예에서는 그냥 계란후라이를 오므라이스라고 부르는 것 같았다.  
 
-![](./hotel-02-pool.jpeg)  
+![](./hotel-02-pool.webp)  
 저녁에 못 본 풀장도 봤는데 너무 추워보여서 수영할 엄두는 나지 않았다. 
 
-![](./hot-air-balloon-01.jpeg)  
+![](./hot-air-balloon-01.webp)  
 그리고 열기구는 카파도키아 지역에서만 하는 줄 알았는데 파묵칼레에서도 열기구를 탈 수 있는 것 같았다.
 
-![](./pamukkale-01.jpeg)  
+![](./pamukkale-01.webp)  
 숙소에서 조금만 가니 파묵칼레 석회붕이 나오기 시작했다.  
 입장료를 내려고 하는데 클레오파트라 풀은 겨울이라 종료됐다고 해서 아쉬웠고, 무슨 무선 이어폰(+오디오 가이드)까지 포함한 풀패키지 밖에 없었던 것 같고 가격은 $45.95(68,297원)나 하였다.  
 뭔가 상술에 당한 것 같아보였지만 톱카프 궁전에 비하면 선녀였고, 톱카프 궁전보다 만족도는 훨~~~~씬 높았다.
 
-![](./pamukkale-dog-01.jpeg)  
+![](./pamukkale-dog-01.webp)  
 입장하자마자 귀여운 댕댕이가 있어서 반가웠다. 역시 튀르키예는 어딜가나 동물이 있는 것 같다.  
 
-![](./pamukkale-02.jpeg)  
+![](./pamukkale-02.webp)  
 파묵칼레 석회붕 보호를 위해 맨발로 걸어 올라갔어야하는데 11월 아침이기도 했고, 해가 들지 않는 곳을 지나갈 때면 발이 너무 차가웠다.  
 <div class="video-container"><iframe src="https://www.youtube-nocookie.com/embed/8jzAuF9tpzE" title="YouTube video" loading="lazy" allowfullscreen></iframe></div>  
 
 이렇게 물이라도 있는 곳은 너무 차가워서 진짜 숨참고 겨우겨우 지나갔다.
 
-![](./pamukkale-07.jpeg)  
-![](./pamukkale-03.jpeg)  
+![](./pamukkale-07.webp)  
+![](./pamukkale-03.webp)  
 그래도 꼭대기로 올라오니 온천수가 나오는 것 같았고, 이쪽은 물이 따뜻해서 사람들이 제법 있었다.  
 
-![](./pamukkale-04.jpeg)  
-![](./pamukkale-05.jpeg)  
+![](./pamukkale-04.webp)  
+![](./pamukkale-05.webp)  
 그래도 꼭대기로 오니 올라온 보람이 있을 정도로 경치가 정말 아름다웠다.
 
-![](./pamukkale-06.jpeg)  
+![](./pamukkale-06.webp)  
 그리고 너무 발이 따갑다보니 네발로 걸어오고 그랬는데 그러다보니 손에 묻은 석회들로 인해 가방도 지저분해졌다.
 
-![](./pamukkale-cat-01.jpeg)  
+![](./pamukkale-cat-01.webp)  
 꼭대기에는 귀여운 고양이가 물을 마시고 있었다.  
 
 이제 파묵칼레 석회붕을 모두 구경한 후에는 히에라폴리스 유적지 관광을 할 차례였다.  
 사실 튀르키예에서는 히에라폴리스가 제일 기대됐다.  
 
-![](./kingdom-come-01.png)  
+![](./kingdom-come-01.webp)  
 마치 내가 중세시대 RPG 게임 속 주인공이 되어 맵을 돌아다니는 기분이 들 것만 같았다. (게임은 '킹덤 컴: 딜리버런스'이다.)  
 
-![](./hierapolis-01.jpeg)  
-![](./hierapolis-02.jpeg)  
-![](./hierapolis-03.jpeg)  
-![](./hierapolis-04.jpeg)  
-![](./hierapolis-05.jpeg)  
-![](./hierapolis-08.jpeg)  
+![](./hierapolis-01.webp)  
+![](./hierapolis-02.webp)  
+![](./hierapolis-03.webp)  
+![](./hierapolis-04.webp)  
+![](./hierapolis-05.webp)  
+![](./hierapolis-08.webp)  
 예상은 적중했고, 그 시대 그대로 건축물들이나 흔적들이 남아있다보니 마치 내가 그 시대를 살아가는 듯한 느낌이 들어서 정말 재미있었다.  
 
-![](./hierapolis-06.jpeg)  
+![](./hierapolis-06.webp)  
 원형극장은 정말 웅장했고, 가끔 여기서 음악 공연도 한다는데 라이브로 보면 정말 소름이 돋지 않을까 싶었다.  
 조카들에게도 영상통화를 걸어서 보여주니 매우 신기해했고 나보고 여기저기 가보라고 시켜서 진짜 게임 케릭터가 된 듯한 느낌이었다.  
 근데 히에라폴리스의 단점은 너무 커서 걸어서 돌아다니면서 보기에는 거리가 너무 멀다는 것이어서 시간이 촉박해서 엄청 여유롭게 보지는 못했다.  
 그리고 거의 3만보 가까이 걸어서 다리가 아프기도 했다.  
 
-![](./hierapolis-07.jpeg)  
+![](./hierapolis-07.webp)  
 그리고 유적지 안에 쓰레기와 속옷이 있는 것을 보았다. 이전에 케냐에서 같이 여행하던 일행 중에 이렇게 길가에 버려진 쓰레기를 보면 'What the fxxx'을 연발하던 에스토니아 사람이 있었는데 그 사람의 목소리가 들리는 것만 같았다.
 
-![](./pamukkale-lunch-01.jpeg)  
+![](./pamukkale-lunch-01.webp)  
 관광을 모두 마치고 점심을 먹으러 왔는데 아래 블로그에서 추천해준 맛집이라서 와봤는데 너~~~무 내 취향이었다.  
 * [24 튀르키예 #33. [파묵칼레③] 파묵칼레 맛집 ONUR Restaurant, 숨은 뷰 포인트](https://m.blog.naver.com/najilong5027/223549285343)
 
 나는 닭고기가 내 체질인 걸 알았기 때문에 블로그에서 시킨 치킨 스튜를 그대로 시켜봤는데 닭볶음탕 같은 맛이 났고 전혀 기름지거나 느끼하거나 잡내가 나지 않아서 너무너무 맛있게 먹었다.  
 
-![](./pamukkale-lunch-02.jpeg)  
+![](./pamukkale-lunch-02.webp)  
 그리고 서비스로 사탕?을 주었는데 나는 사탕을 딱히 좋아하지 않아서 예의상 하나만 먹고 나왔다.
 
 이제 다음 일정을 위해 페티예로 가야했다.  
@@ -436,8 +436,8 @@ $20.23(29,535)라는 거금을 들이고 이런 식사를 하니 또 너무 화�
 
 또 저녁 늦은 시간이라 밖에서 저녁을 먹기는 애매하고, 육개장을 지금 또 먹기는 아깝고... 했는데 다행히 숙소에서 레스토랑을 운영한다고 했다.  
 
-![](./hotel-03-dinner-01.jpeg)  
-![](./hotel-03-dinner-02.jpeg)  
+![](./hotel-03-dinner-01.webp)  
+![](./hotel-03-dinner-02.webp)  
 근데 올라와보니 식사보다는 술을 파는 분위기였고, 그나마 무난한 파스타를 하나 시켰다.  
 맛은 뭐 그럭저럭이었는데 $21.01 (30,838원)으로 너무 비싸서 눈물이 났다.  
 
@@ -445,32 +445,32 @@ $20.23(29,535)라는 거금을 들이고 이런 식사를 하니 또 너무 화�
 페티예는 패러글라이딩으로 유명하다고들 하는데 나는 단양에서 패러글라이딩을 한 번 해보기도 했고, 아저씨가 재밌는 거 보여준다고 하는데 바이킹처럼 위아래로 내려갔다 올라갔다를 반복해줬는데 나는 바이킹을 싫어해서 너무나 싫었다.  
 그래서 이번에는 패러글라이딩을 타지 않기로 했다.  
 
-![](./hotel-03-breakfast-01.jpeg)  
+![](./hotel-03-breakfast-01.webp)  
 어제 저녁을 먹었던 식당에서 아침을 먹었는데 퀄리티는 굉장히 좋았고, 자리에 앉으면 직접 가져다주었다.  
 오이 때문에 방울토마토를 하나도 먹지 못한 게 아쉬웠다.
 
-![](./fethiye-01.jpeg)  
+![](./fethiye-01.webp)  
 아침페 페티예 시장 산책을 나왔는데 열지 않은 가게들이 많이 보였다.  
 
-![](./fethiye-02.jpeg)  
-![](./fethiye-03.jpeg)  
+![](./fethiye-02.webp)  
+![](./fethiye-03.webp)  
 그리고 보트투어 도시답게 캐리비안의 해적 컨셉으로 꾸민 배들이 보였다.  
 나도 보트투어를 하고 싶었는데 내가 가는 시즌이 겨울 시즌이라고 운영을 하지 않아서 아쉬웠다.  
 
-![](./fethiye-04.jpeg)  
+![](./fethiye-04.webp)  
 그리고 놀이터가 보여서 와봤는데 이렇게 길게 늘어져있는 게 처음에는 '단체로 타는 그네인가?' 싶었는데 아마 저 줄을 밟고 건너는 것 같다.
 
-![](./fethiye-05.jpeg)  
+![](./fethiye-05.webp)  
 그리고 튀르키예 아이스크림을 현지에서 느껴보고 싶어서 한번 시켜봤는데 이스탄불이 아니라 페티예라 그런지 그냥 담아서 줬다.  
 맛도 뭐 그냥저냥 평범했다. 가격은 $4.75로 6,975원으로 좀 비싼 편이었다.  
 
-![](./oludeniz-01.jpeg)  
+![](./oludeniz-01.webp)  
 <div class="video-container"><iframe src="https://www.youtube-nocookie.com/embed/73mQOsJdwys" title="YouTube video" loading="lazy" allowfullscreen></iframe></div>  
 
 택시를 타고 페티예에서 욜루데니즈로 이동했다.  
 해변은 아름다웠는데 탈의실이 어디있는지 몰라서 여기서는 구경만 했는데 겨울이고 오전이라 그런지 수영하는 사람이 거의 보이지 않았다.
 
-![](./blue-lagoon-01.jpeg)  
+![](./blue-lagoon-01.webp)  
 그래서 돈내고 입장하는 블루라군에 왔다. (입장료는 $2.37로 3,500원 정도)
 
 <div class="video-container"><iframe src="https://www.youtube-nocookie.com/embed/Vh7eZhEFkb8" title="YouTube video" loading="lazy" allowfullscreen></iframe></div>  
@@ -481,21 +481,21 @@ $20.23(29,535)라는 거금을 들이고 이런 식사를 하니 또 너무 화�
 그리고 점심을 뭘 먹을까 고민하는데 한국말까지 써가며 적극적으로 호객행위하는 사장님이 있었다.  
 튀르키예 식 피자인 피데인데 닭고기가 들어간 걸 먹고싶다고 하자 치킨 피자는 있다고 해서 뭐 비슷하겠거니 하고 갔다.  
 
-![](./oludeniz-lunch-01.jpeg)  
+![](./oludeniz-lunch-01.webp)  
 맛을 봤는데 뭐 그냥 저냥... 한 2/3 정도만 먹을만한 맛이었다.  
 보니까 메뉴판에도 치킨 피자라는 메뉴는 없는데 사장님이 장사하기 위해서 발로 뛰는 느낌으로 보였다.  
 그리고 내가 한국인이라고 20%인가 15%인가를 할인해준다고 하였다.  
 그리고 자신들이 할인을 해주기 때문에 은근 현금 유도를 하면서 카드 기계가 없다고 종업원이 그러길래 나도 카드 밖에 없다고 했다. (현금은 택시탈 때 써야해서 없다고 했다. 또 ATM 수수료를 물고 싶지 않았다.)  
 그러니까 정말 현금이 없냐고 사장이 물어보더니 내가 진짜로 없다고 하자 마지못해 카드 기계에 전원을 키고 카드로 결제했다. ($11.87로 17,433원 정도에 먹었으니 적당한 가격에 먹은 것 같다.)
 
-![](./wedding-car-01.jpeg)  
+![](./wedding-car-01.webp)  
 그리고 숙소로 돌아오는 길에 웨딩카를 보았다. 나는 혼자 이렇게 여행을 왔는데 누군가는 신혼여행을 오다니 참 부러웠다.
 
-![](./fethiye-night-01.jpeg)  
+![](./fethiye-night-01.webp)  
 그리고 다음 행선지인 스페인 여행일정도 세우고 이제 튀르키예 음식이 질리기도 해서 저녁은 걸렀다.  
 너무 배가 고파서 육개장의 유혹이 땡겼지만 한 국가마다 육개장은 하나씩만 먹는다는 규칙을 지키기 위해 참았다.  
 페티예의 바다는 아침에 보면 너무 배가 많아서 징그러웠는데 밤에보니 보기 좋았다.  
-![fethiye-morning-01.jpeg](./fethiye-morning-01.jpeg)  
+![fethiye-morning-01.jpeg](./fethiye-morning-01.webp)  
 이렇게 아침과 비교해보면 얼마나 꼴보기 싫은지 알 수 있게 된다.
 
 ## 6일차 (스페인으로 떠나기)
@@ -503,11 +503,11 @@ $20.23(29,535)라는 거금을 들이고 이런 식사를 하니 또 너무 화�
 그러려면 오전 8시까지는 달라만 공항에 도착해야하고, 아침 일찍부터 움직여야하는데 대중교통으로 움직이면 불안해서 7시에 택시를 미리 예약해뒀는데 $61.5(90,254원)이나 들었다.  
 지나고 보니 조식도 못먹고 택시비는 9만원씩이나 쓰고 너무 촉박하게 움직였던 것 같아 굳이 이렇게까지 했어야했나... 하는 생각이 들었다.  
 
-![](./breakfast-in-airport-01.jpeg)  
+![](./breakfast-in-airport-01.webp)  
 챗GPT가 달라만 공항에 버거킹이 있을 거라고 해서 기대하면서 들어갔는데 버거킹은 없고 서브웨이만 있었다.  
 근데 나는 샌드위치보다는 고기가 들어간 따뜻한 햄버거가 먹고 싶어서 햄버거도 파는 식당으로 갔다.  
 
-![](./breakfast-in-airport-02.jpeg)  
+![](./breakfast-in-airport-02.webp)  
 혹시나 오이나 피클이 들어갈까봐 빼달라고 했는데 의미 전달이 잘못돼서 치킨 패티 빼고 다 빼주었다.  
 그래서 채소나 과일이 하나도 없는 뻑뻑한 버거를 비싼돈($22.24로 32,727원) 주고 먹어야했다.  
 감자튀김은 맛있었는데 메인인 햄버거가 너무 부실해서 어제 저녁 굶고 첫끼인데 내가 3만원이나 넘게 내고 이런 식사를 먹어야하나 화가 났다.  

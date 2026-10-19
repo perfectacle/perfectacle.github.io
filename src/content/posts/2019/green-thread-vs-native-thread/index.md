@@ -8,7 +8,7 @@ categories:
 date: 2019-03-10 18:24:06
 ---
 
-![](./thumb.png)
+![](./thumb.webp)
 
 ## [Green Thread](https://en.wikipedia.org/wiki/Green_threads)
 Green Thread는 우리가 알고 있는 쓰레드를 흉내낸 짝퉁 쓰레드이다.  

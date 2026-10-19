@@ -4,7 +4,7 @@ date: 2017-02-11 13:07:43
 categories: [Note, Java]
 tags: [Java, 자바의 정석, OOP]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 어제는 친구들이랑 노느라 공부를 조금 밖에 못 했다.  
 그만큼 오늘은 좀 빡시게 달려야겠다.  

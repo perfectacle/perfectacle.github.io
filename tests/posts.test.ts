@@ -35,6 +35,12 @@ describe('excerpt', () => {
     expect(excerpt(post(body))).toBe('TDZ에 대한 정리다.');
   });
 
+  it('keeps tildes and underscores that are not markdown syntax', () => {
+    expect(excerpt(post('1~2년 전에 쓴 snake_case 변수 이야기를 다시 꺼내 본다.'))).toBe(
+      '1~2년 전에 쓴 snake_case 변수 이야기를 다시 꺼내 본다.',
+    );
+  });
+
   it('truncates long paragraphs', () => {
     const text = excerpt(post('가'.repeat(300)), 100);
     expect(text).toHaveLength(101);

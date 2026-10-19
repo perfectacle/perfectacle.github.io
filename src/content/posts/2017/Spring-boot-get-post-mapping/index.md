@@ -4,7 +4,7 @@ categories: [Back-end, Spring]
 tags: [Java, Spring, Spring Boot]
 date: 2017-09-19 09:50:51
 ---
-![](./thumb.png)  
+![](./thumb.webp)  
 
 근본없이 궁금한 부분만 찾아서 공부하다보니 아직 정리가 덜 된 글이다 보니 그 점은 감안하고 보길 바란다.
 

@@ -4,7 +4,7 @@ date: 2017-08-07 11:53:42
 categories: [Programming, ECMAScript, 자알쓰]
 tags: [JS, ES, 자알쓰, Closure]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 ## 자알쓰란?
 `자`바스크립트 `알`고 `쓰`자. (잘 쓰자는 의미도 담겨있다.)  

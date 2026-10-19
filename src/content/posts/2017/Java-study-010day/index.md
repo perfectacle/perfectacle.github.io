@@ -4,7 +4,7 @@ date: 2017-02-13 13:53:36
 categories: [Note, Java]
 tags: [Java, 자바의 정석, OOP]
 ---
-![](./thumb.png)  
+![](./thumb.webp)  
 ## 생성자(Constructor)
 인스턴스가 생성될 때 호출되는 `인스턴스 초기화 메소드`  
 인스턴스 변수 초기화 작업에 주로 사용된다.  

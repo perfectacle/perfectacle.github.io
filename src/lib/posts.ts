@@ -1,4 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { toString } from 'mdast-util-to-string';
+import remarkParse from 'remark-parse';
+import { unified } from 'unified';
 import { slugize } from './slugize.ts';
 
 export type Post = CollectionEntry<'posts'>;
@@ -66,22 +69,15 @@ export async function getLatestPost(): Promise<Post> {
 /** Page-number path under a base, using Hexo's `page/N/` scheme. */
 export const pagePath = (base: string, n: number) => (n === 1 ? base : `${base}page/${n}/`);
 
-/** First real paragraph of the post as plain text. */
+/** First real paragraph of the post as plain text (markdown parsed, so `1~2년` or `snake_case` survive). */
 export function excerpt(post: Post, max = 180): string {
-  const body = post.body ?? '';
-  const blocks = body
-    .replace(/```[\s\S]*?```/g, '')
-    .split(/\n\s*\n/)
-    .map(b => b.trim());
-  for (const block of blocks) {
-    if (!block || /^(#|!\[|<|\{%|>|\||[-*+] |\d+\. )/.test(block)) continue;
-    const text = block
-      .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-      .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-      .replace(/<[^>]+>/g, '')
-      .replace(/[`*_~]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
+  const tree = unified()
+    .use(remarkParse)
+    .parse(post.body ?? '');
+  for (const node of tree.children) {
+    if (node.type !== 'paragraph') continue;
+    // Skip image-only or link-only lines (thumbnails, embeds) that have little text of their own.
+    const text = toString(node, { includeImageAlt: false }).replace(/\s+/g, ' ').trim();
     if (text.length < 10) continue;
     return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text;
   }
