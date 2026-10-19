@@ -10,8 +10,14 @@
   --content: 720px;
   --wide: 1080px;
   --radius: 10px;
+  /* System fonts only (no web font download): Apple SD Gothic Neo on Apple devices, Malgun Gothic on Windows,
+     Noto Sans KR on Android. Korean glyphs are listed before system-ui so Windows doesn't fall back to a CJK
+     font without Hangul. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', '맑은 고딕', 'Noto Sans KR', system-ui,
+    sans-serif;
   /* Pagefind search UI */
-  --pf-font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --pf-font: var(--font-sans);
   --pf-border-radius: var(--radius);
   color-scheme: light;
 }
@@ -43,15 +49,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family:
-    'Pretendard Variable',
-    Pretendard,
-    -apple-system,
-    BlinkMacSystemFont,
-    system-ui,
-    'Apple SD Gothic Neo',
-    'Noto Sans KR',
-    sans-serif;
+  font-family: var(--font-sans);
   font-size: 17px;
   line-height: 1.75;
   word-break: keep-all;

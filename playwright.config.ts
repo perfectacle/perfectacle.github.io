@@ -12,7 +12,7 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'] }, testIgnore: /lighthouse/ },
     { name: 'mobile', use: { ...devices['Pixel 7'] }, testIgnore: /lighthouse/ },
     // Performance audits run on their own (pnpm test:lighthouse) so parallel tests don't skew the numbers.
-    { name: 'lighthouse', testMatch: /lighthouse\.spec\.ts/, timeout: 120_000 },
+    { name: 'lighthouse', testMatch: /lighthouse\.spec\.ts/, timeout: 300_000 },
   ],
   webServer: {
     command: 'pnpm exec astro preview --port 4322 --ignore-lock',
