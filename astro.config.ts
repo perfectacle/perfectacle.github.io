@@ -8,6 +8,13 @@ import { rehypeYoutubeFacade } from './src/lib/rehype-youtube-facade.ts';
 import { rehypePostImages } from './src/lib/rehype-post-images.ts';
 
 export default defineConfig({
+  vite: {
+    build: {
+      // Mermaid splits layout engines (elk ~1.4MB, cytoscape) into chunks fetched only for diagrams that need them;
+      // what pages actually load is guarded by the Lighthouse script budgets instead.
+      chunkSizeWarningLimit: 1500,
+    },
+  },
   site: 'https://perfectacle.github.io',
   trailingSlash: 'ignore',
   build: { format: 'directory' },

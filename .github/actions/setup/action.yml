@@ -10,8 +10,9 @@ runs:
   using: composite
   steps:
     # setup-node's pnpm cache needs pnpm on PATH; corepack provides the version pinned in packageManager.
+    # pnpm only: shimming npm too makes corepack warn whenever setup-node calls npm.
     - shell: bash
-      run: corepack enable
+      run: corepack enable pnpm
 
     - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
