@@ -1,6 +1,6 @@
 # 오늘도 끄적끄적
 
-https://perfectacle.github.io — [Astro](https://astro.build) 로 만든 정적 블로그. `master` 에 push 하면 GitHub Actions 가 빌드해 Pages 로 배포한다.
+https://perfectacle.github.io — [Astro](https://astro.build) 로 만든 정적 블로그. `main` 에 push 하면 GitHub Actions 가 빌드해 Pages 로 배포한다.
 
 ## 글 쓰기
 
@@ -51,7 +51,7 @@ TypeScript 컴파일러(`tsc`)는 네이티브 버전(`@typescript/native`)을 �
 
 - **Renovate**(`renovate.json`)가 npm·GitHub Actions·Node·pnpm 을 갱신한다. 공개 7일이 지난 버전만 PR 을 만들고, 메이저 포함 전부 CI 통과 시 자동 머지한다.
 - **보안 업데이트**는 7일을 기다리지 않는다. Renovate 가 `pnpm-workspace.yaml` 의 `minimumReleaseAgeExclude` 에 해당 버전을 넣어 바로 PR 을 만들고, `minimumReleaseAgeExcludePrune` 이 쓸모없어진 예외를 정리한다.
-- master 는 `ci-ok` 체크 통과가 필수(관리자 직접 push 는 예외). CI 잡: lint·format·check·typecheck·test·audit·actionlint·build(+URL/dist 검사)·e2e, 그리고 **Renovate PR 에서만** base 와 결과물 비교(`output-diff`) — 렌더 결과가 한 글자라도 달라지면 실패해서 사람이 본다.
+- main 은 `ci-ok` 체크 통과가 필수(관리자 직접 push 는 예외). CI 잡: lint·format·check·typecheck·test·audit·actionlint·build(+URL/dist 검사)·e2e, 그리고 **Renovate PR 에서만** base 와 결과물 비교(`output-diff`) — 렌더 결과가 한 글자라도 달라지면 실패해서 사람이 본다.
 
 ## 구조
 

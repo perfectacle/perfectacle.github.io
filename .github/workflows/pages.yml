@@ -3,7 +3,7 @@ name: Pages
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
   workflow_dispatch:
 
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  # PR runs are superseded by newer pushes; master deploys always run to completion.
+  # PR runs are superseded by newer pushes; main deploys always run to completion.
   group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20
     env:
-      # master needs a fresh dist to deploy; a PR only needs the checks, which can be reused.
+      # main needs a fresh dist to deploy; a PR only needs the checks, which can be reused.
       REUSE: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -268,7 +268,7 @@ jobs:
 
       - run: node scripts/compare-output.ts base-snapshot.json head-snapshot.json
 
-  # The one required status check on master: passes only when every job above passed or was skipped by design.
+  # The one required status check on main: passes only when every job above passed or was skipped by design.
   ci-ok:
     if: always()
     needs: [verify, actionlint, build, e2e, output-baseline, output-diff]
