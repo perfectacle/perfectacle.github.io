@@ -128,4 +128,4 @@ console.log(2 ** 3); // 8
 ```
 
 ## 기타 유용한 연산자  
-&&, ||와 같은 [똑똑한 논리 연산자](/2017/02/13/es-logical-operator/), [~(Tilde) 연산자](/2017/02/13/es-tilt-operator/)도 참고해보자.
+&&, ||와 같은 [똑똑한 논리 연산자](../../2017/es-logical-operator/index.md), [~(Tilde) 연산자](../../2017/es-tilt-operator/index.md)도 참고해보자.

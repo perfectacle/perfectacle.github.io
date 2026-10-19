@@ -6,7 +6,7 @@ categories: [Back-end, Spring]
 ---
 ![](./thumb.png)
 
-일반 자바를 가지고 DI를 해본 [v3](/2017/09/04/di-v3/)에서는 Car 클래스를 자바 빈즈 스펙을 제대로 준수해서 만들지 않았다.  
+일반 자바를 가지고 DI를 해본 [v3](../../2017/di-v3/index.md)에서는 Car 클래스를 자바 빈즈 스펙을 제대로 준수해서 만들지 않았다.  
 따라서 한 번 자바 빈즈 스펙에 맞춰 바꿔보자.  
 ```java
 public class Car {
@@ -56,6 +56,6 @@ public class Driver {
 ```
 xml에서 id가 tire인 애만 바꾸면 컴파일을 다시 하지 않아도 타이어의 교체가 가능해진다.  
 하지만 여기서 코드가 더 줄어들을 수 있다.  
-[v2](/2017/09/05/spring-di-v2/)에서 확인해보자~  
+[v2](../../2017/spring-di-v2/index.md)에서 확인해보자~  
 
 참조 블로그 - [스프링을 통한 의존성 주입 - XML 파일 사용](http://expert0226.tistory.com/192)

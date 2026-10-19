@@ -93,9 +93,9 @@ filter에서는 딱히 필요성을 느끼지 못해 돌림직한 객체를 건�
 왜냐하면 객체는 순서가 없기 때문이다. (사실은 Symbol.Symbol(iterator) 프로퍼티가 없기 때문)  
 원리가 궁금한 사람은 아래 포스트들을 참고하자.  
 간단하게 Iterator 포스트 정도만 참고해도 될 것 같다.  
-* [Interface](/2016/12/25/es6-interface/)  
-* [Symbol](/2017/04/16/ES6-Symbol/)  
-* [Iterator](/2017/04/22/ES6-Iterator/)
+* [Interface](../../2016/es6-interface/index.md)  
+* [Symbol](../../2017/ES6-Symbol/index.md)  
+* [Iterator](../../2017/ES6-Iterator/index.md)
 ```javascript
 const obj = {name: '간장이', age: 255};
 // Object는 이터러블(반복을 돌릴 수 있는 애)이 아니기 때문에 이터레이터(반복해서 돌릴 수 있는 녀석)가 아니다.  
@@ -121,4 +121,4 @@ const _map = (list, iteratee) => {
 console.log(_map(obj, v => v)); // ['간장이', 255]
 ```
 
-그럼 이제 바로 다음 포스트인 [each](/2017/06/26/js-func-04-each/)를 공부해보자!  
+그럼 이제 바로 다음 포스트인 [each](../../2017/js-func-04-each/index.md)를 공부해보자!  

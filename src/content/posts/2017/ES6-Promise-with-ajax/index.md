@@ -245,4 +245,4 @@ getDataAjaxPromise(jsonURL[0])
 ## 마치며
 콜백 함수를 Promise로 바꾸긴 했지만 그래도 좀 번거로운 건 어쩔 수 없을까...?  
 그에 대한 해답이라고 하긴 뭐하지만  
-[(ES6+) ajax를 위한 fetch와 async/await](/2017/01/25/ES6-ajax-with-fetch/)에서 해결방안을 보자.  
+[(ES6+) ajax를 위한 fetch와 async/await](../../2017/ES6-ajax-with-fetch/index.md)에서 해결방안을 보자.  

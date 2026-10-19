@@ -232,4 +232,4 @@ const sub10 = _sub(10);
 console.log(sub10(3)); // -7
 ```
 짱구를 굴려봤지만 _curry를 이용해서 추상화 할 수가 없었다 ㅠㅠ...  
-아마 이 curryr의 진가는 [pipe](/2017/06/30/js-func-08-pipe/)와 go를 익히면 알게 될 것이다.  
+아마 이 curryr의 진가는 [pipe](../../2017/js-func-08-pipe/index.md)와 go를 익히면 알게 될 것이다.  

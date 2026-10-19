@@ -10,10 +10,10 @@ tags: [npm, Node.js, Webpack2, React, Router]
 ~~React Router v4가 정식으로 나와서 3은 deprecated 된 거나 마찬가지라고 본다.~~~  
 현재 React Router v3은 디프리케잇 되지 않고 React Router v4와 다른 노선을 탔을 뿐, 지원은 계속 해주는 것 같다.  
 따라서 레거시 환경을 싫어하기도 해서 한 번 마이그레이션을 간단하게 해보았다.  
-기본적으로 [웹팩](/2016/11/18/Module-bundling-with-Webpck/), [바벨](/2016/11/11/Babel-ES6-with-IE8/), 리액트 라우터 등등은 안다는 전제 하에 글을 썼다.  
+기본적으로 [웹팩](../../2016/Module-bundling-with-Webpck/index.md), [바벨](../../2016/Babel-ES6-with-IE8/index.md), 리액트 라우터 등등은 안다는 전제 하에 글을 썼다.  
 웹팩 2에 대한 모르는 부분은 아래 글을 조금씩 참조하면 도움이 될 것이다.  
-* [(Webpack 2) 트리 쉐이킹을 해보자!](/2017/03/12/webpack2-tree-shaking/)  
-* [(Webpack 2) 코드를 분할해보자!](/2017/03/13/webpack2-code-splitting/)
+* [(Webpack 2) 트리 쉐이킹을 해보자!](../../2017/webpack2-tree-shaking/index.md)  
+* [(Webpack 2) 코드를 분할해보자!](../../2017/webpack2-code-splitting/index.md)
 
 ## v3으로 만들어보기
 소스 코드는 [정재남](https://www.facebook.com/gomugomm?fref=ts) 님께서 제공해주신 [소스](https://github.com/react-study/todo-app/tree/_lecture/05_router-test/src/routerTest)를 이용했다.  
@@ -51,7 +51,7 @@ npm i -S express html-webpack-plugin react react-dom react-router@^3.x webpack
 }
 ```
 presets 부분이 요상하게 적혀있는데 트리 쉐이킹을 위한 것이니 모르는 사람은  
-[(Webpack 2) 트리 쉐이킹을 해보자!](/2017/03/12/webpack2-tree-shaking/)을 참조하자.  
+[(Webpack 2) 트리 쉐이킹을 해보자!](../../2017/webpack2-tree-shaking/index.md)을 참조하자.  
 
 이제 컴포넌트들을 하나 하나 작성해보자.  
 
@@ -202,7 +202,7 @@ export default App;
 component 대신에 getComponent를 써서 코드 스플리팅을 하였다.  
 또한 그 안에 `import(component)`와 같은 구문 때문에  
 `babel-plugin-syntax-dynamic-import`를 쓰게 된 거다.  
-혹시 코드 스플리팅에 대해 잘 모르는 사람은 [(Webpack 2) 코드를 분할해보자!](/2017/03/13/webpack2-code-splitting/)를 봐보자.  
+혹시 코드 스플리팅에 대해 잘 모르는 사람은 [(Webpack 2) 코드를 분할해보자!](../../2017/webpack2-code-splitting/index.md)를 봐보자.  
 
 ```javascript
 // index.js
@@ -363,7 +363,7 @@ module.exports = {
 process.noDeprecation = true;
 ```
 
-chunkhash가 뭔지 모르는 사람도 역시 [(Webpack 2) 코드를 분할해보자!](/2017/03/13/webpack2-code-splitting/#hash-vs-chunkhash)를 봐보자.
+chunkhash가 뭔지 모르는 사람도 역시 [(Webpack 2) 코드를 분할해보자!](../../2017/webpack2-code-splitting/index.md#hash-vs-chunkhash)를 봐보자.
 
 이제 배포용 파일을 테스트 하기 위해 express 프레임워크를 써서 서버 설정 파일을 작성하자.  
 ```javascript

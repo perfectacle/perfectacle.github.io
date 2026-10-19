@@ -99,5 +99,5 @@ console.log(_reduce(obj, (key, memo) => `${memo}${key}: ${obj[key]}\n`, ''));
 세미나 들은 걸 토대로 머리를 굴려봐서 짜봤는데 틀린 부분은 없는지 확신은 못 하겠다.  
 ~~여튼 뭐 돌아는 가니...~~
 
-[curry와 curryr](/2017/06/30/js-func-07-curry/), 그리고 [pipe](/2017/06/30/js-func-08-pipe/)와 go가 정말 함수형의 꽃인 것 같은데...  
-일단 다음 포스트인 [find](/2017/06/28/js-func-06-find/)를 보도록 하자!  
+[curry와 curryr](../../2017/js-func-07-curry/index.md), 그리고 [pipe](../../2017/js-func-08-pipe/index.md)와 go가 정말 함수형의 꽃인 것 같은데...  
+일단 다음 포스트인 [find](../../2017/js-func-06-find/index.md)를 보도록 하자!  

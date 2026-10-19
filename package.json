@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/copy-post-assets.mjs && pagefind --site dist",
+    "build": "astro build && node scripts/check-post-links.mjs && node scripts/copy-post-assets.mjs && pagefind --site dist",
     "preview": "astro preview"
   },
   "dependencies": {

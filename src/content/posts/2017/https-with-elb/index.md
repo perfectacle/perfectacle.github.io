@@ -10,7 +10,7 @@ ELB가 요청 분산 및 오토 스케일링을 위한 것도 있지만 SSL 암�
 인스턴스에 SSL 인증서를 물리면 인스턴스에서 암/복호화 등등의 리소스 낭비가 이뤄지지만 ELB에 물리면 ELB에서 다 처리되기 때문에  
 서버 입장에서는 부담이 더 줄어들게 된다.  
 하지만 역시 공짜는 아니니 [Elastic Load Balancing 요금](https://aws.amazon.com/ko/elasticloadbalancing/pricing/) 파트를 참조하자.  
-돈이 없거나(ㅜㅜ) 공부 목적이 있는 사람은 직접 [EC2 인스턴스(서버)에 HTTPS 서버 열기](/2017/10/05/letsencrypt-with-certbot-feat-aws/)를 참고하자.  
+돈이 없거나(ㅜㅜ) 공부 목적이 있는 사람은 직접 [EC2 인스턴스(서버)에 HTTPS 서버 열기](../../2017/letsencrypt-with-certbot-feat-aws/index.md)를 참고하자.  
 
 ## Certificate Manager(SSL 인증서)
 L4를 생성하기 전에 HTTPS 프로토콜을 위한 SSL 인증서를 만들어야한다.  
@@ -92,4 +92,4 @@ server {
 
 ## 마무리
 끝이다.  
-혹시 공부 목적이거나 과금이 부담된다면 [EC2 인스턴스(서버)에 HTTPS 서버 열기](/2017/10/05/letsencrypt-with-certbot-feat-aws/)를 참고하자.
+혹시 공부 목적이거나 과금이 부담된다면 [EC2 인스턴스(서버)에 HTTPS 서버 열기](../../2017/letsencrypt-with-certbot-feat-aws/index.md)를 참고하자.

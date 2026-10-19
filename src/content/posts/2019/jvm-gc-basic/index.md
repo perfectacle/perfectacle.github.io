@@ -279,7 +279,7 @@ Eden Space를 여러 버퍼로 나누어 각 어플리케이션 스레드에게 
 만약 본인에게 할당된 TLAB가 부족할 경우에는 크기를 동적으로 조정한다.
 
 ## 마치며
-해당 글을 읽고 [Garbage Collection Advanced](/2019/05/11/jvm-gc-advanced/) 편을 읽어보시면 GC에 대해 더 깊게 이해하실 수 있을 겁니다 :)
+해당 글을 읽고 [Garbage Collection Advanced](../../2019/jvm-gc-advanced/index.md) 편을 읽어보시면 GC에 대해 더 깊게 이해하실 수 있을 겁니다 :)
 
 ## 참조 링크
 * [Naver D2 - Java Garbage Collection](https://d2.naver.com/helloworld/1329)  

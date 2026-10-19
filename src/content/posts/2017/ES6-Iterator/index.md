@@ -8,8 +8,8 @@ tags: [JS, ES, ES6, ES2015, Interface, Symbol, Iterator]
 
 ## 들어가기에 앞서
 이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
-[(ES6) Interface](/2016/12/25/es6-interface/)와 [(ES6) Symbol](/2017/04/16/ES6-Symbol/)에 대한 내용은 링크를 참조하도록 하자.  
-또한 이 글을 다 읽고 나서 [ES6 Generator](/2017/04/22/ES6-Generator/)도 읽어보자.  
+[(ES6) Interface](../../2016/es6-interface/index.md)와 [(ES6) Symbol](../../2017/ES6-Symbol/index.md)에 대한 내용은 링크를 참조하도록 하자.  
+또한 이 글을 다 읽고 나서 [ES6 Generator](../../2017/ES6-Generator/index.md)도 읽어보자.  
 `Iterator는 반복자`란 뜻을 가지고 있으며, 대충 반복과 관련된 용어라는 것만 알고 글을 읽어보자.
 
 ## 다음에 나오는 예제는 이터레이터를 쓴다.
@@ -45,7 +45,7 @@ console.dir(Object.prototype);
 Symbol.iterator() 메소드를 눈 씻고 찾아볼 수가 없다.  
 따라서 for of와 같은 문법을 쓸 수 없다.  
 하지만 현재 object에도 spread operator와 destructuring assignment를 쓸 수 있게 한 제안이 Stage-3까지 올라가 있어서  
-[바벨](/2016/11/11/Babel-ES6-with-IE8/)의 [transform-object-rest-spread](https://babeljs.io/docs/plugins/transform-object-rest-spread/)나 [Stage 3 preset](https://babeljs.io/docs/plugins/preset-stage-3/)을 쓰면 된다.  
+[바벨](../../2016/Babel-ES6-with-IE8/index.md)의 [transform-object-rest-spread](https://babeljs.io/docs/plugins/transform-object-rest-spread/)나 [Stage 3 preset](https://babeljs.io/docs/plugins/preset-stage-3/)을 쓰면 된다.  
 그럼 이제 이터러블과 이터레이터가 뭔지 알아보자.
 
 ## Iterator 관련 Interface
@@ -247,7 +247,7 @@ for(const key of Reflect.ownKeys(obj)) console.log(obj[key]);
 ```
 
 ## 배열 순환 메소드를 개선시킨 break & continue  
-우리는 에서 [(ES5) 배열의 순회 메소드에서 break 기능 구현하기](/2017/02/12/ES5-array-loop-method-break/)배열에서 반복문에서 break, continue를 어떻게 구현할지 생각해보았다.  
+우리는 에서 [(ES5) 배열의 순회 메소드에서 break 기능 구현하기](../../2017/ES5-array-loop-method-break/index.md)배열에서 반복문에서 break, continue를 어떻게 구현할지 생각해보았다.  
 ```javascript
 var arr = [
   0, 1, 2, 3, 'q', 5, 6, 3.3, 5, 6, 3.3, 5, 6, 3.3,

@@ -11,7 +11,7 @@ date: 2021-08-08 23:29:33
 
 ## 3줄 요약
 1. @Transaction(readOnly = true)로 설정하면 select 할 당시 엔티티의 스냅샷을 만들지 않는다.
-1. [(JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다](/2021/05/05/readonly-transaction-begin-transaction/)에서 봤다 싶이 트랜잭션이 커밋될 때 flush를 하지 않는다.
+1. [(JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다](../../2021/readonly-transaction-begin-transaction/index.md)에서 봤다 싶이 트랜잭션이 커밋될 때 flush를 하지 않는다.
 1. flush를 할 필요가 없기 때문에 Dirty Checking을 할 필요가 없고, 그에 따라서 엔티티의 스냅샷도 만들지 않는 것이다.
 
 ## 엔티티 구조

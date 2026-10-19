@@ -5,7 +5,7 @@ categories: [Note, Java]
 date: 2023-07-10 01:04:44
 ---
 
-[Java Virtual Threads 훑어보기](/2022/12/29/look-over-java-virtual-threads/)에서 Virtual Thread에 대해 대충 훑어봤었고, 2023/09/19에 나오는 [JDK21(심지어 LTS)](https://openjdk.org/projects/jdk/21/)에서 [Virtual Threads (JEP 444)](https://openjdk.org/jeps/444)가 정식으로 출시된다는 소식을 들었다.  
+[Java Virtual Threads 훑어보기](../../2022/look-over-java-virtual-threads/index.md)에서 Virtual Thread에 대해 대충 훑어봤었고, 2023/09/19에 나오는 [JDK21(심지어 LTS)](https://openjdk.org/projects/jdk/21/)에서 [Virtual Threads (JEP 444)](https://openjdk.org/jeps/444)가 정식으로 출시된다는 소식을 들었다.  
 그러다보니 코틀린의 코루틴의 소식이 궁금했다.
 
 ![](./is-loom-a-java-equivalent-of-coroutines-in-kotlin.png)

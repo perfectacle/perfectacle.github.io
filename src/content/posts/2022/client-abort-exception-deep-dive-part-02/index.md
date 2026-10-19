@@ -7,7 +7,7 @@ date: 2022-03-20 10:30:19
 서버에서 아주 가끔가다가 ClientAbortException(java.io.IOExceiption: Broken pipe)이 발생해서 어떨 때 발생하는지 딥다이브 해봄.
 ![](./stacktrace.png)
 
-적다보니 글이 길어져 글을 나누었는데 해당 글을 읽기 전에 [(Tomcat) ClientAbortException은 왜 발생할까? (Part 1)](/2022/03/20/client-abort-exception-deep-dive-part-01)을 먼저 보는 것을 추천함.
+적다보니 글이 길어져 글을 나누었는데 해당 글을 읽기 전에 [(Tomcat) ClientAbortException은 왜 발생할까? (Part 1)](../../2022/client-abort-exception-deep-dive-part-01/index.md)을 먼저 보는 것을 추천함.
 
 ---
 

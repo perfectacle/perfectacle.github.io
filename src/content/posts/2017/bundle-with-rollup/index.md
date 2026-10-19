@@ -6,8 +6,8 @@ tags: [Rollup, CommonJS, ESModule, UMD]
 ---
 ![](./thumb.png)
 
-이 글은 [Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기](/2017/12/10/ts-node-mocha-chai)에서 이어지는 내용이며,  
-이 글을 본 이후에 [travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기](/2017/12/10/travis-ci-coveralls)를 보는 걸 추천드립니다.   
+이 글은 [Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기](../../2017/ts-node-mocha-chai/index.md)에서 이어지는 내용이며,  
+이 글을 본 이후에 [travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기](../../2017/travis-ci-coveralls/index.md)를 보는 걸 추천드립니다.   
 여러 주제를 다루다보니 깊게 다루지는 않고 각각이 무엇을 하는 것인지만 간단하게 설명과 예제를 곁들여 진행하고 있습니다.  
 또한 예제 진행은 [IntelliJ](https://www.jetbrains.com/idea/)를 통해 진행했습니다.  
 [WebStorm](https://www.jetbrains.com/webstorm/)으로 진행해도 상관 없고, [VS Code](https://code.visualstudio.com/)와 진행하면 더 짱짱맨일지도 모르겠습니다.  
@@ -372,5 +372,5 @@ console.log(removedDigits('93-05')); // -
 
 ## 마치며...
 저는 리액트를 써볼 때 웹팩을 써서 웹팩이 익숙했었는데 rollup을 써보고 나니 앱이 아닌 라이브러리의 경우에는 롤업이 더 적합한 것 같다는 느낌도 많이 들었네요.  
-이 다음 번 시리즈에는 마지막 포스트인 [travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기](/2017/12/10/travis-ci-coveralls)을 보시면 됩니다.  
+이 다음 번 시리즈에는 마지막 포스트인 [travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기](../../2017/travis-ci-coveralls/index.md)을 보시면 됩니다.  
 오픈소스, 남들과 협업할 때 어떻게 내 코드의 안전성을 쉽고 빠르게 보장할 수 있을지에 대해 정리해놓았습니다.

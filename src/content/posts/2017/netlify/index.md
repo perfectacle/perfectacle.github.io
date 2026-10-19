@@ -26,7 +26,7 @@ tags: [CD, CDN]
 netlify는 CI(빌드 및 배포)+CDN의 개념으로 볼 수 있다.  
 그리고 위의 단점들을 고스란히 해결해줬다.
 물론 커스텀 도메인이 없다면 *.netlify.com 이란 허접스러운 도메인을 써야해서 github.io라는 간지나는 도메인을 눈물을 머금으며 버릴 수 밖에 없다.  
-그나마 닷컴 도메인을 싸게 살 수 있으므로 관심이 있는 사람은 [(DNS) 1331원에 .com 도메인 사기 (feat. GoDaddy)](/2017/11/21/domain-register-godaddy/)를 참고하자.  
+그나마 닷컴 도메인을 싸게 살 수 있으므로 관심이 있는 사람은 [(DNS) 1331원에 .com 도메인 사기 (feat. GoDaddy)](../../2017/domain-register-godaddy/index.md)를 참고하자.  
 
 당연히 [회원가입](https://app.netlify.com/signup)부터 진행해야한다.  
 요즘은 소셜 로그인이 활성화가 돼있어서 좀 덜 귀찮은 편인 것 같다.  
@@ -69,7 +69,7 @@ github.io를 버리고 갑자기 도메인 이전을 하면 이전 사용자가 
 
 ## 도메인 세팅
 허접한 netlify 도메인에서 탈출할 시간이다.  
-단돈 1331원이면 가능하니 [(DNS) 1331원에 .com 도메인 사기 (feat. GoDaddy)](/2017/11/21/domain-register-godaddy/)를 참고해서 닷컴 도메인을 사두고 진행하자.  
+단돈 1331원이면 가능하니 [(DNS) 1331원에 .com 도메인 사기 (feat. GoDaddy)](../../2017/domain-register-godaddy/index.md)를 참고해서 닷컴 도메인을 사두고 진행하자.  
 이번엔 좌측 탭에서 Domain management를 클릭해주자.  
 
 Custom domain에서 add custom domain을 선택하고 자신의 도메인을 등록하자.  

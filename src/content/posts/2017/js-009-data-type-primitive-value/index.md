@@ -39,18 +39,18 @@ date: 2017-07-01 09:53:29
 
 자바스크립트에서 자료형은 크게 두 가지로 나뉜다.  
 1. [원시값](#원시값-Primitive-Value)  
-2. [객체](/2017/07/01/js-010-data-type-object/)  
+2. [객체](../../2017/js-010-data-type-object/index.md)  
 
 하나 하나 파헤쳐보자.  
 
 ### 원시값(Primitive Value)
 원시값에는 6가지 유형이 있다.  
 1. [boolean](#부울-Boolean)  
-2. [number](/2016/12/23/ES6-Number-type/)  
+2. [number](../../2016/ES6-Number-type/index.md)  
 3. [string](#문자열-String)  
 4. [null](#Null)  
 5. [undefined](#Undefined)  
-6. [Symbol](/2017/04/16/ES6-Symbol/)(ES2015에서 새로 생김)  
+6. [Symbol](../../2017/ES6-Symbol/index.md)(ES2015에서 새로 생김)  
 
 그리고 이 원시값에는 다음과 같은 특징이 있다.  
 1. 불변(Immutable)하는 값이다.  
@@ -189,4 +189,4 @@ a += ''; // 'undefined'
 console.log(b[4].valueOf()); // Cannot read property 'valueOf' of undefined
 ```
 
-분량이 길어졌으니 한 번 끊고 그 다음 자료형인 [객체](/2017/07/01/js-010-data-type-object/)에 대해서 공부해보자.  
+분량이 길어졌으니 한 번 끊고 그 다음 자료형인 [객체](../../2017/js-010-data-type-object/index.md)에 대해서 공부해보자.  
