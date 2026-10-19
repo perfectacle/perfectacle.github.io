@@ -1,4 +1,4 @@
-import { excerpt, getPosts, postPath, SITE, tagName } from '../lib/posts.ts';
+import { excerpt, getLatestPost, getPosts, postPath, SITE, tagName } from '../lib/posts.ts';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -26,7 +26,7 @@ ${post.data.tags.map(t => `    <category term="${esc(tagName(t))}"/>`).join('\n'
   <link href="${SITE.url}/" rel="alternate"/>
   <id>${SITE.url}/</id>
   <author><name>${esc(SITE.author)}</name></author>
-  <updated>${posts[0].data.date.toISOString()}</updated>
+  <updated>${(await getLatestPost()).data.date.toISOString()}</updated>
 ${entries.join('\n')}
 </feed>
 `;

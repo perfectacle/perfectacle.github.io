@@ -17,7 +17,11 @@ interface Props {
 const { title, heading, eyebrow, posts, base, current, total, description } = Astro.props;
 ---
 
-<Base title={current > 1 && title ? `${title} (${current}페이지)` : title} description={description} noindex={current > 1}>
+<Base
+  title={current > 1 && title ? `${title} (${current}페이지)` : title}
+  description={description}
+  noindex={current > 1}
+>
   <div class="container">
     {heading && (
       <header class="list-head">

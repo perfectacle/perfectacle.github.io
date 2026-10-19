@@ -40,7 +40,15 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  font-family:
+    'Pretendard Variable',
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    'Apple SD Gothic Neo',
+    'Noto Sans KR',
+    sans-serif;
   font-size: 17px;
   line-height: 1.75;
   word-break: keep-all;
@@ -105,14 +113,20 @@ iframe {
   margin: 2.2em 0 0.8em;
   letter-spacing: -0.01em;
 }
-.prose h1 { font-size: 1.75rem; }
+.prose h1 {
+  font-size: 1.75rem;
+}
 .prose h2 {
   font-size: 1.5rem;
   padding-bottom: 0.3em;
   border-bottom: 1px solid var(--border);
 }
-.prose h3 { font-size: 1.25rem; }
-.prose h4 { font-size: 1.1rem; }
+.prose h3 {
+  font-size: 1.25rem;
+}
+.prose h4 {
+  font-size: 1.1rem;
+}
 .prose p,
 .prose ul,
 .prose ol,

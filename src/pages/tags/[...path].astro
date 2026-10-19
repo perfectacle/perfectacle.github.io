@@ -24,5 +24,7 @@ const { tag, posts, current, total } = Astro.props;
   current={current}
   total={total}
 >
-  <p slot="intro" class="muted">글 {tag.posts.length}개</p>
+  <p slot="intro" class="muted">
+    글 {tag.posts.length}개
+  </p>
 </ListPage>

@@ -48,7 +48,9 @@ const hasMermaid = /```mermaid/.test(post.body ?? '');
 <Base title={post.data.title} description={excerpt(post, 150) || post.data.title} image={ogImage} type="article">
   <Fragment slot="head">
     <meta property="article:published_time" content={post.data.date.toISOString()} />
-    {post.data.tags.map(t => <meta property="article:tag" content={tagName(t)} />)}
+    {post.data.tags.map(t => (
+      <meta property="article:tag" content={tagName(t)} />
+    ))}
   </Fragment>
   <div class="layout">
     <article class="post" data-pagefind-body>
@@ -84,17 +86,33 @@ const hasMermaid = /```mermaid/.test(post.body ?? '');
 
       {post.data.tags.length > 0 && (
         <ul class="chips tags" data-pagefind-ignore>
-          {post.data.tags.map(t => <li><a class="chip" href={tagPath(t)}>#{tagName(t)}</a></li>)}
+          {post.data.tags.map(t => (
+            <li>
+              <a class="chip" href={tagPath(t)}>
+                #{tagName(t)}
+              </a>
+            </li>
+          ))}
         </ul>
       )}
 
       <nav class="siblings" aria-label="이전·다음 글" data-pagefind-ignore>
         {older ? (
-          <a href={postPath(older)} rel="prev"><span class="muted">이전 글</span>{older.data.title}</a>
-        ) : <span />}
+          <a href={postPath(older)} rel="prev">
+            <span class="muted">이전 글</span>
+            {older.data.title}
+          </a>
+        ) : (
+          <span />
+        )}
         {newer ? (
-          <a href={postPath(newer)} rel="next" class="next"><span class="muted">다음 글</span>{newer.data.title}</a>
-        ) : <span />}
+          <a href={postPath(newer)} rel="next" class="next">
+            <span class="muted">다음 글</span>
+            {newer.data.title}
+          </a>
+        ) : (
+          <span />
+        )}
       </nav>
 
       <Comments path={path} title={post.data.title} />
@@ -108,19 +126,20 @@ const hasMermaid = /```mermaid/.test(post.body ?? '');
     )}
   </div>
 
-  {hasMermaid && (
-    <script type="module" is:inline>
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.10.1/dist/mermaid.esm.min.mjs';
-      document.querySelectorAll('pre > code.language-mermaid').forEach(code => {
-        const div = document.createElement('div');
-        div.className = 'mermaid';
-        div.textContent = code.textContent;
-        code.parentElement.replaceWith(div);
-      });
-      mermaid.initialize({ startOnLoad: false, theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default' });
-      mermaid.run();
-    </script>
-  )}
+  {hasMermaid && <script type="module" is:inline>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.10.1/dist/mermaid.esm.min.mjs';
+    document.querySelectorAll('pre > code.language-mermaid').forEach(code => {
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code.textContent;
+      code.parentElement.replaceWith(div);
+    });
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default',
+    });
+    mermaid.run();
+  </script>}
 </Base>
 
 <style>

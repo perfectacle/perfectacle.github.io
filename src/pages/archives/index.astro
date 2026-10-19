@@ -16,7 +16,9 @@ for (const post of posts) {
     <p class="muted">전체 글 {posts.length}개</p>
     {[...years].map(([y, list]) => (
       <section>
-        <h2><a href={`/archives/${y}/`}>{y}</a> <span class="muted count">{list.length}</span></h2>
+        <h2>
+          <a href={`/archives/${y}/`}>{y}</a> <span class="muted count">{list.length}</span>
+        </h2>
         <ol>
           {list.map(post => (
             <li>

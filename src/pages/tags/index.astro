@@ -14,7 +14,8 @@ const max = Math.max(...tags.map(t => t.posts.length));
       {tags.map(tag => (
         <li>
           <a href={`/tags/${tag.slug}/`} style={`--w:${(0.85 + (tag.posts.length / max) * 0.6).toFixed(2)}rem`}>
-            #{tag.name}<sup>{tag.posts.length}</sup>
+            #{tag.name}
+            <sup>{tag.posts.length}</sup>
           </a>
         </li>
       ))}
