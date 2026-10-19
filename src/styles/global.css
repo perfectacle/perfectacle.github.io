@@ -10,6 +10,9 @@
   --content: 720px;
   --wide: 1080px;
   --radius: 10px;
+  /* Pagefind search UI */
+  --pf-font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --pf-border-radius: var(--radius);
   color-scheme: light;
 }
 

@@ -1,0 +1,45 @@
+---
+// Pagefind's component UI ships no Korean strings, so they are supplied here.
+const ko = {
+  placeholder: '검색',
+  clear_search: '지우기',
+  load_more: '더 보기',
+  search_label: '블로그 검색',
+  filters_label: '필터',
+  zero_results: "'[SEARCH_TERM]' 검색 결과가 없습니다",
+  many_results: "'[SEARCH_TERM]' 검색 결과 [COUNT]개",
+  one_result: "'[SEARCH_TERM]' 검색 결과 [COUNT]개",
+  total_zero_results: '결과 없음',
+  total_one_result: '결과 [COUNT]개',
+  total_many_results: '결과 [COUNT]개',
+  alt_search: "'[SEARCH_TERM]' 검색 결과가 없어 '[DIFFERENT_TERM]' 검색 결과를 대신 보여 드립니다",
+  search_suggestion: "'[SEARCH_TERM]' 검색 결과가 없습니다. 추천 검색어:",
+  searching: '[SEARCH_TERM] 검색 중…',
+  results_label: '검색 결과',
+  keyboard_navigate: '이동',
+  keyboard_select: '선택',
+  keyboard_clear: '지우기',
+  keyboard_close: '닫기',
+  keyboard_search: '검색',
+  error_search: '검색 중 오류가 발생했습니다',
+  filter_selected_one: '[COUNT]개 선택됨',
+  filter_selected_many: '[COUNT]개 선택됨',
+  input_hint: '입력하는 대로 결과가 바로 표시됩니다',
+  loading: '불러오는 중…',
+};
+---
+
+<link rel="stylesheet" href="/pagefind/pagefind-component-ui.css" />
+<script is:inline type="module" define:vars={{ ko }}>
+  // Components render their text when they connect and re-rendering after setTranslations duplicates
+  // the modal, so the markup waits in <template data-pagefind> until the Korean strings are in place.
+  await import('/pagefind/pagefind-component-ui.js');
+  const templates = [...document.querySelectorAll('template[data-pagefind]')];
+  const instances = new Set(['default']);
+  for (const tpl of templates)
+    tpl.content.querySelectorAll('[instance]').forEach(el => instances.add(el.getAttribute('instance')));
+  const manager = window.PagefindComponents.getInstanceManager();
+  for (const name of instances) manager.getInstance(name).setTranslations(ko);
+  for (const tpl of templates) tpl.replaceWith(tpl.content.cloneNode(true));
+  document.dispatchEvent(new Event('pagefind:ready'));
+</script>

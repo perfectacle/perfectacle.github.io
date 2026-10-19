@@ -5,29 +5,21 @@ import Base from '../layouts/Base.astro';
 <Base title="검색">
   <div class="container">
     <h1>검색</h1>
-    <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
-    <div id="search"></div>
+    <template data-pagefind>
+      <!-- Separate from the header modal's "default" instance, which would otherwise receive the results. -->
+      <pagefind-input instance="page"></pagefind-input>
+      <pagefind-summary instance="page"></pagefind-summary>
+      <pagefind-results instance="page"></pagefind-results>
+    </template>
     <noscript>
-      <p class="muted">검색은 JavaScript가 필요합니다.</p>
+      <p class="muted">검색하려면 JavaScript를 켜 주세요.</p>
     </noscript>
   </div>
-  <script is:inline src="/pagefind/pagefind-ui.js"></script>
-  <script is:inline>
-    window.addEventListener('DOMContentLoaded', () => {
-      const ui = new PagefindUI({
-        element: '#search',
-        showSubResults: true,
-        showImages: false,
-        resetStyles: false,
-        translations: {
-          placeholder: '글 제목이나 내용으로 검색',
-          zero_results: '[SEARCH_TERM]에 대한 결과가 없습니다',
-        },
-      });
-      // Pagefind's default UI labels the input only with a title attribute.
-      document.querySelector('#search input')?.setAttribute('aria-label', '검색어');
-      const q = new URLSearchParams(location.search).get('q');
-      if (q) ui.triggerSearch(q);
+  <script is:inline type="module">
+    // Shareable result links: /search/?q=...
+    const q = new URLSearchParams(location.search).get('q');
+    document.addEventListener('pagefind:ready', () => {
+      if (q) window.PagefindComponents.getInstanceManager().getInstance('page').triggerSearch(q);
     });
   </script>
 </Base>
@@ -36,13 +28,5 @@ import Base from '../layouts/Base.astro';
   h1 {
     margin: 0 0 20px;
     font-size: 1.9rem;
-  }
-  #search {
-    --pagefind-ui-primary: var(--accent);
-    --pagefind-ui-text: var(--fg);
-    --pagefind-ui-background: var(--bg);
-    --pagefind-ui-border: var(--border);
-    --pagefind-ui-tag: var(--bg-soft);
-    --pagefind-ui-font: inherit;
   }
 </style>
