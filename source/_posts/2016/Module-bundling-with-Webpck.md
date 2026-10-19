@@ -225,6 +225,7 @@ module.exports = {
 2. entry  
 [JavaScript 모듈화 도구, webpack](http://d2.naver.com/helloworld/0239818)에서는 아래와 같이 말하고 있다.
 <blockquote>
+
 ![](Module-bundling-with-Webpck/01.png)  
 서로 의존 관계에 있는 다양한 모듈을 사용하는 시작점이 되는 파일이다.
 </blockquote>

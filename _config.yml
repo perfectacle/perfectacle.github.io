@@ -13,7 +13,7 @@ language: ko
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: https://perfectacle.github.io/
 root: /
-permalink: :year/:month/:day/:title/
+permalink: :year/:month/:day/:name/
 permalink_defaults:
 
 # Directory
@@ -25,6 +25,16 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
+  - ads.txt
+  - google*.html
+  - naver*.html
+  - crawl-temp/**
+  - dynamic-table-generator/**
+  - es2015-module/**
+  - es6-module/**
+  - gokuden2/**
+  - mock/**
+  - test/**
 
 # Writing
 new_post_name: :title.md # File name of new posts
@@ -37,6 +47,11 @@ render_drafts: false
 post_asset_folder: true
 relative_link: false
 future: true
+marked:
+  prependRoot: true
+  postAsset: true
+  lazyload: true
+
 highlight:
   enable: true
   line_number: true
@@ -49,6 +64,7 @@ highlight:
 default_category: 미분류
 category_map:
 tag_map:
+  Hexo: hexo
 
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date
@@ -88,12 +104,6 @@ robotstxt:
   useragent: "*"
   allow:
     - /
-
-# Deployment
-## Docs: https://hexo.io/docs/deployment.html
-deploy:
-  type: git
-  repo: git@github.com:perfectacle/perfectacle.github.io.git
 
 archive_generator:
   enabled: true
