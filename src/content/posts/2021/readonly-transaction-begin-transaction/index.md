@@ -36,7 +36,7 @@ public SomeService {
 }
 ```
 
-![](./transaction-interceptor.png)
+![](./transaction-interceptor.webp)
 repository의 구현체는 프록시 객체로써 인터페이스이기 때문에 jdk dynamic 프록시 객체가 생성이 된다.  
 또한 TransactionInterceptor라는 Advisor를 가지고 있으며 
 1. [TransactionInterceptor.invoke()](https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/interceptor/TransactionInterceptor.java#L119)

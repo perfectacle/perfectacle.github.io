@@ -8,7 +8,7 @@ categories:
 date: 2018-05-30 02:11:22
 ---
 
-![](./thumb.png)
+![](./thumb.webp)
 
 ## 이더넷(Ethernet)
 네트워킹 방식에는 아래와 같은 애들이 존재한다.  

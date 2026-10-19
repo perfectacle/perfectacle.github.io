@@ -68,8 +68,8 @@ public interface ParentRepository extends JpaRepository<Parent, Long> {
 ```
 
 그리고 findByNo를 호출하면서 SomeAttributeConverter.convertToEntityAttribute 메서드는 몇 번 호출되는지 보자.
-![LoadEvent가 발생하면서 AttributeConvert가 호출되고 있다.](./convert-01.png)  
-![그 이후에 딥카피가 발생하면서 한 번 더 AttributeConvert가 호출되고 있다.](./convert-02.png)  
+![LoadEvent가 발생하면서 AttributeConvert가 호출되고 있다.](./convert-01.webp)  
+![그 이후에 딥카피가 발생하면서 한 번 더 AttributeConvert가 호출되고 있다.](./convert-02.webp)  
 
 [TwoPhaseLoad.initializeEntityFromEntityEntryLoadedState 메서드](https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/engine/internal/TwoPhaseLoad.java#L339)가 핵심이다.  
 ```java
@@ -135,6 +135,6 @@ public class SimpleJpaRepository<T, ID> implements JpaRepositoryImplementation<T
 
 위에서 보다싶이 SimpleJpaRepository는 타입에 readonly 트랜잭션이 적용돼있어서 해당 어노테이션을 오버라이딩 하지 않은 모든 메서드는 readonly 트랜잭션을 사용한다는 것을 알 수 있다.
 
-![readonly 트랜잭션이기 때문에 스냅샷을 만들지 않는 걸 볼 수 있다.](./readonly-01.png)
+![readonly 트랜잭션이기 때문에 스냅샷을 만들지 않는 걸 볼 수 있다.](./readonly-01.webp)
 
 이렇듯 JPA(하이버네이트)에서는 readonly 트랜잭션이면 성능최적화를 위해 엔티티의 스냅샷(딥카피)을 만들지 않는 걸 볼 수 있다.

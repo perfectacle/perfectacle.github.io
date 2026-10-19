@@ -5,7 +5,7 @@ categories: [tomcat]
 date: 2022-03-20 10:30:19
 ---
 서버에서 아주 가끔가다가 ClientAbortException(java.io.IOExceiption: Broken pipe)이 발생해서 어떨 때 발생하는지 딥다이브 해봄.
-![](./stacktrace.png)
+![](./stacktrace.webp)
 
 적다보니 글이 길어져 글을 나누었는데 해당 글을 읽기 전에 [(Tomcat) ClientAbortException은 왜 발생할까? (Part 1)](../../2022/client-abort-exception-deep-dive-part-01/index.md)을 먼저 보는 것을 추천함.
 
@@ -176,37 +176,37 @@ Process finished with exit code 0
 ```
 
 1. 231 ~ 233번 패킷은 TCP 3 Way Handshake (syn, syn/ack, ack)
-   ![](./large-response-in-read-timeout-tcp-3-way-handshake.png)
-   ![](./tcp-3-way-handshake.png)
-   ![](./large-response-in-read-timeout-tcp-3-way-handshake-socket-status.png)
+   ![](./large-response-in-read-timeout-tcp-3-way-handshake.webp)
+   ![](./tcp-3-way-handshake.webp)
+   ![](./large-response-in-read-timeout-tcp-3-way-handshake-socket-status.webp)
 2. 235번 패킷에서 클라이언트 → 서버로 HTTP 요청 패킷 전송 (06:56:05.568288)
-   ![](./large-response-in-read-timeout-send-http-request-packet.png)
+   ![](./large-response-in-read-timeout-send-http-request-packet.webp)
 3. 236번 패킷에서 서버가 요청 잘 받았다고 클라이언트한테 ACK 패킷 전송 (06:56:05.568329)
-   ![](./large-response-in-read-timeout-send-http-request-ack-packet.png)
+   ![](./large-response-in-read-timeout-send-http-request-ack-packet.webp)
 4. 237번 패킷은 서버에서 온 응답인데 ACK를 받은 06:56:05.5`68`329에서 Read Timeout으로 설정한 `25`ms 이전에 도착함 (06:56:05.5`82`682)
-   ![](./large-response-in-read-timeout-send-http-response-packet-01.png)
+   ![](./large-response-in-read-timeout-send-http-response-packet-01.webp)
 5. 238 ~ 240번 패킷은 서버에서 응답 패킷을 쪼개서 보내고 있음 (06:56:05.582700 ~ 06:56:05.582730)
-   ![](./large-response-in-read-timeout-send-http-response-packet-02.png)
+   ![](./large-response-in-read-timeout-send-http-response-packet-02.webp)
 6. 241번 패킷은 클라이언트가 서버한테 응답 패킷 잘 받았다고 ACK 패킷을 보내고 있음 (06:56:05.582740)
-   ![](./large-response-in-read-timeout-send-http-response-ack-packet-01.png)
+   ![](./large-response-in-read-timeout-send-http-response-ack-packet-01.webp)
 7. 858번 패킷은 마지막 응답 패킷인데 패킷 유실 때문인지 재전송을 하고 있다. (06:56:05.653137)
    원래 클라이언트가 생각했던 Read Timeout 25ms는 최초 ACK를 받은 06:56:05.5`68`329 시점부터 계산해보면 06:56:05.5`93`329이다.
    근데 마지막 응답 패킷이 온 걸 보면 06:56:05.`653`137으로 실제로는 ACK를 받은 시점으로부터 85ms가 흘렀다.
    즉, Read Timeout은 클라이언트의 모든 요청을 받은 시간이 아닌 각 응답 패킷을 받는데까지 걸리는 시간이다.
-   ![](./large-response-in-read-timeout-send-http-response-packet-03.png)
+   ![](./large-response-in-read-timeout-send-http-response-packet-03.webp)
 8. 859번 패킷에서 응답 패킷을 잘 받았다는 마지막 ACK 패킷을 서버에게 보내고 있다. (06:56:05.653169)
-   ![](./large-response-in-read-timeout-send-http-response-ack-packet-02.png)
+   ![](./large-response-in-read-timeout-send-http-response-ack-packet-02.webp)
 10. 866 ~ 871번 패킷은 TCP Connection Termination (FIN/ACK/FIN/ACK)이다. (06:56:16.068837 ~ 06:56:16.069725)
     클라이언트가 먼저 연결을 종료하겠다는 FIN 패킷을 보냈기 때문에 클라이언트가 Active Close
     서버는 클라이언트로부터 FIN 패킷을 받았기 때문에 서버는 Passive Close가 됨
     (무조건 클라이언트가 Active Close는 아니고 경우에 따라서 다름)
     마지막 패킷을 받은 이후 10초 동안 메인 함수의 Thread.sleep을 했기 때문에 10초 이후에 메인 함수가 종료(프로세스가 종료)되면서 커넥션을 끊게 되는 것이다.
-    ![](./large-response-in-read-timeout-tcp-connection-termination.png)
-    ![](./tcp-termination.png)
+    ![](./large-response-in-read-timeout-tcp-connection-termination.webp)
+    ![](./tcp-termination.webp)
 11. 소켓이 종료된 이후에 바로 해당 소켓이 사라지는 게 아니라 오동작을 막기 위해 30초(OS마다 다르지만 2 * MSL(Maximum Segment Lifetime, OS 커널 레벨에 하드코딩 돼있는데 대다수의 리눅스는 60로초 설정됨, 내가 쓰는 맥os는 30초)) 동안 TIME_WAIT 상태에서 대기를 함. (06:56:16)
-    ![](./large-response-in-read-timeout-tcp-time-wait-socket-status.png)
+    ![](./large-response-in-read-timeout-tcp-time-wait-socket-status.webp)
 12. 30초가 지나면 소켓이 사라지고 해당 소켓(로컬ip:로컬port, 서버ip:서버port 쌍)을 재사용 할 수 있다. (06:56:47)
-    ![](./large-response-in-read-timeout-tcp-socket-status.png)
+    ![](./large-response-in-read-timeout-tcp-socket-status.webp)
 
 ## 2. 각 응답 패킷의 시간 간격이 Read Timeout 안에 오지 않은 경우
 서버 쪽 API에서 각 응답을 주는 패킷의 지연시간이 제각각이라고 가정
@@ -453,33 +453,33 @@ Caused by: java.io.IOException: Broken pipe
 ```
 
 1. 174 ~ 176번 패킷은 TCP 3 Way Handshake (syn, syn/ack, ack)
-   ![](./stream-response-over-read-timeout-tcp-3-way-handshake.png)
-   ![](./tcp-3-way-handshake.png)
+   ![](./stream-response-over-read-timeout-tcp-3-way-handshake.webp)
+   ![](./tcp-3-way-handshake.webp)
 2. 178번 패킷에서 클라이언트 → 서버로 HTTP 요청 패킷 전송 (10:04:13.295356)
-   ![](./stream-response-over-read-timeout-send-http-request-packet.png)
+   ![](./stream-response-over-read-timeout-send-http-request-packet.webp)
 3. 179번 패킷에서 서버가 요청 잘 받았다고 클라이언트한테 ACK 패킷 전송 (10:04:13.295402)
-   ![](./stream-response-over-read-timeout-send-http-request-ack-packet.png)
+   ![](./stream-response-over-read-timeout-send-http-request-ack-packet.webp)
 4. 180번 패킷은 서버에서 온 첫 번째 응답 패킷(hello, once)인데 ACK를 받은 10:04:13.`295`402에서 Read Timeout으로 설정한 `200`ms 이전에 도착함 (10:04:13.`401`563)
-   ![](./stream-response-over-read-timeout-send-http-response-packet-01.png)
+   ![](./stream-response-over-read-timeout-send-http-response-packet-01.webp)
 5. 181번 패킷은 서버에서 보낸 응답 패킷을 잘 받았다는 ACK 패킷을 클라이언트 -> 서버로 보내고 있음. (10:04:13.401620)
-   ![](./stream-response-over-read-timeout-send-http-response-ack-packet-01.png)
+   ![](./stream-response-over-read-timeout-send-http-response-ack-packet-01.webp)
 6. 182번 패킷은 서버에서 온 두 번째 응답 패킷(hello, twice)인데 마지막 응답 패킷(hello, once)을 받은 10:04:13.`401`563에서 Read Timeout으로 설정한 `200`ms 이전에 도착함 (10:04:13.`506`841)
-   ![](./stream-response-over-read-timeout-send-http-response-packet-02.png)
+   ![](./stream-response-over-read-timeout-send-http-response-packet-02.webp)
 7. 183번 패킷은 서버에서 보낸 응답 패킷을 잘 받았다는 ACK 패킷을 클라이언트 -> 서버로 보내고 있음. (10:04:13.506895)
-   ![](./stream-response-over-read-timeout-send-http-response-ack-packet-02.png)
+   ![](./stream-response-over-read-timeout-send-http-response-ack-packet-02.webp)
 8. 184번 패킷은 서버에서 온 마지막 응답 패킷(hello, twice)을 받은 10:04:13.`506`841에서 Read Timeout으로 설정한 `200`ms이 넘도록 아무런 패킷이 오지 않아 Read Timeout이 발생해서 서버 측에 FIN/ACK 패킷을 날려서 커넥션을 종료할 준비를 하고 있음. (10:04:13.`713`445)
-   ![](./stream-response-over-read-timeout-send-fin-packet.png)
+   ![](./stream-response-over-read-timeout-send-fin-packet.webp)
 9. 185번 패킷에서 서버가 클라이언트로부터 FIN/ACK 패킷을 잘 받았다고 반대로 ACK 패킷을 클라이언트에게 보냄 (10:04:13.713503)
-   ![](./stream-response-over-read-timeout-send-ack-packet.png)
+   ![](./stream-response-over-read-timeout-send-ack-packet.webp)
 10. 클라이언트가 먼저 연결을 종료하겠다는 FIN 패킷을 보냈기 때문에 클라이언트가 Active Close
     서버는 클라이언트로부터 FIN 패킷을 받았기 때문에 서버는 Passive Close가 됨
     (무조건 클라이언트가 Active Close는 아니고 경우에 따라서 다름)
     그리고 아직까지는 서버(Passive Close)로부터 FIN 패킷을 받은 게 아니기 때문에 소켓이 정상적으로 종료된 게 아님.
-    ![](./tcp-termination.png)
+    ![](./tcp-termination.webp)
 11. 186번 패킷에서 서버 → 클라이언트로 HTTP 세 번째 응답 패킷(hello, thrice) 전송 (10:04:14.`012`150, 마지막 응답 패킷(hello, twice)를 보낸 10:04:13.`506`841에서 500ms가 지난 시점임.)
-    ![](./stream-response-over-read-timeout-send-http-response-packet-03.png)
+    ![](./stream-response-over-read-timeout-send-http-response-packet-03.webp)
 12. 187번 패킷을 보면 서버에서 FIN 패킷이 온 게 아니기 때문에 클라이언트는 다시 서버에게 RST 패킷을 보내서 소켓을 닫을 준비를 한다. (10:04:14.012215)
-     ![](./stream-response-over-read-timeout-send-rst-packet.png)
+     ![](./stream-response-over-read-timeout-send-rst-packet.webp)
 13. 소켓이 닫혔기 때문에 "bye"라는 응답패킷은 전송되지 않았다.
 
 # ClientAbortException을 해결하려면?

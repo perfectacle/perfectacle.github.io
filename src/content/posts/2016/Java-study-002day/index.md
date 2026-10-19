@@ -4,7 +4,7 @@ date: 2016-12-31 18:12:20
 categories: [Note, Java]
 tags: [Java, 자바의 정석, 부동소수점]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 ## char의 연산자별 형변환.
 전위&후위 연산자는 형변환을 하지 않고  

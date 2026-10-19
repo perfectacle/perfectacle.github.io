@@ -4,7 +4,7 @@ categories: [Middle-end, 자료구조]
 tags: [자료구조, Vector, ArrayList, LinkedList]
 date: 2017-08-02 14:58:36
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 위 개념들은 일단 자바에 존재한다. (다른 거에도 다 존재하려나...?)  
 비슷비슷해서 각각의 차이점이 궁금해서 정리해보았다.  

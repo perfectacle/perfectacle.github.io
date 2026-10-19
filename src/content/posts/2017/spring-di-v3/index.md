@@ -4,7 +4,7 @@ date: 2017-09-05 09:02:25
 tags: [Java, DI, Spring]
 categories: [Back-end, Spring]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 Car 클래스를 수정해보자.  
 ```java

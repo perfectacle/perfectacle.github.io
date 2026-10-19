@@ -9,7 +9,7 @@ categories:
 date: 2019-11-24 09:59:51
 ---
 
-![](./thumb.png)  
+![](./thumb.webp)  
 
 막연하게 양방향 암호화 하면 당연스레 AES를 떠올리고, 제대로 모른 채로 사용했다.  
 이제부터라도 조금은 알고 써야겠다는 생각이 들어서 살짝 정리해봤다.
@@ -64,8 +64,8 @@ Bouncy Castle 없이 PKCS#7 padding을 사용하려고 하면 java.security.NoSu
 #### EBC (Electronic Codebook)
 짧게 말하면 **실무에서는 절대 사용하면 안 되는** Mode이다.
 
-![](./ecb-enc.png)  
-![](./ecb-dec.png)
+![](./ecb-enc.webp)  
+![](./ecb-dec.webp)
 이미지 출처: [https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_Codebook_(ECB)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_Codebook_(ECB))
 
 EBC는 각 블럭을 독립적으로 암/복호화한다.  
@@ -173,8 +173,8 @@ internal class AES256ECBTest {
 #### CBC (Cipher Block Chaining)
 예제를 찾다보면 가장 많이 보이는 Mode인 것 같다.
 
-![](./cbc-enc.png)  
-![](./cbc-dec.png)
+![](./cbc-enc.webp)  
+![](./cbc-dec.webp)
 이미지 출처: [https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_(CBC)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_(CBC))
 
 [IV(Initialization vector)](https://en.wikipedia.org/wiki/Initialization_vector)라는 처음보는 값이 사용된다.  

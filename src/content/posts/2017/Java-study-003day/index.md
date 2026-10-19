@@ -4,7 +4,7 @@ date: 2017-01-01 20:00:22
 categories: [Note, Java]
 tags: [Java, 자바의 정석, 형변환, 정규화, 연산자]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 ## 형변환(캐스팅, Casting)
 기본형(primitive type)에서 boolean을 제외한 나머지 타입들은 형변환이 가능.  

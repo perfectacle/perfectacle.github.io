@@ -4,7 +4,7 @@ date: 2017-01-25 09:31:26
 categories: [Programming, C/C++]
 tags: [C, C++, Variable, Static]
 ---
-![](./thumb.png) 
+![](./thumb.webp) 
 
 * 전역 변수(Global Variable)  
 ```c

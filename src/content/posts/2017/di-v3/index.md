@@ -4,7 +4,7 @@ date: 2017-09-04 09:20:46
 tags: [Java, DI]
 categories: [Middle-end, Pattern]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 [v2](../../2017/di-v2/index.md)에는 자동차를 생산할 때 어떤 타이어를 만들지 정할 수 있고 새로운 타이어로 교체도 가능했다.  
 하지만 올바른 값이 들어왔는지 유효성 검사할 방법이 없다.  

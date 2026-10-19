@@ -4,7 +4,7 @@ date: 2017-01-20 15:31:25
 categories: [Note, Java]
 tags: [Java, 자바의 정석, 반복문]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 ## 반복문
 ## for문

@@ -31,6 +31,8 @@ jobs:
         # reuse: skip the job when a run with identical inputs already passed (audit is time-dependent, so never).
         include:
           - { task: lint, scope: code, reuse: true }
+          # Images live under src/content, so this one fingerprints everything.
+          - { task: 'lint:images', scope: all, reuse: true }
           - { task: 'format:check', scope: code, reuse: true }
           - { task: typecheck, scope: code, reuse: true }
           - { task: test, scope: code, reuse: true }

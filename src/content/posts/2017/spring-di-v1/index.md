@@ -4,7 +4,7 @@ date: 2017-09-04 09:35:22
 tags: [Java, DI, Spring]
 categories: [Back-end, Spring]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 일반 자바를 가지고 DI를 해본 [v3](../../2017/di-v3/index.md)에서는 Car 클래스를 자바 빈즈 스펙을 제대로 준수해서 만들지 않았다.  
 따라서 한 번 자바 빈즈 스펙에 맞춰 바꿔보자.  

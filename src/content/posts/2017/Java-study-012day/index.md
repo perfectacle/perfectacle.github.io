@@ -4,7 +4,7 @@ categories: [Note, Java]
 tags: [Java, 자바의 정석, OOP]
 date: 2017-08-02 11:35:34
 ---
-![](./thumb.png)
+![](./thumb.webp)
 
 ## 다형성(Polymorphism)  
 객체지향 개념에서 다형성이란 **여러 가지 형태를 가질수 있는 능력**을 의미함.  

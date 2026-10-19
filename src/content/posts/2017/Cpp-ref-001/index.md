@@ -4,7 +4,7 @@ date: 2017-01-02 09:59:21
 categories: [Programming, C/C++]
 tags: [C, C++, Pointer, Address]
 ---
-![](./thumb.png)  
+![](./thumb.webp)  
 
 ```c
 #include <iostream>

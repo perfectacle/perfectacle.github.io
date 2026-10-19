@@ -4,7 +4,7 @@ date: 2017-07-18 15:34:38
 tags: [review]
 categories: [기타, 잡동사니]
 ---
-![](./thumb.png)
+![](./thumb.webp)
 [프로젝트로 바로가기](../../2017/keyword-crawler/index.md)  
 
 # 왜 만들었나?  

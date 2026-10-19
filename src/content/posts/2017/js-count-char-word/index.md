@@ -4,7 +4,7 @@ date: 2017-07-18 23:14:51
 tags:
 categories:
 ---
-![](./thumb.png)  
+![](./thumb.webp)  
 ~~웰 컴 투 정규표현식~~
 
 문자 & 단어 세기
