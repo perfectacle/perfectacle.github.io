@@ -3,7 +3,7 @@ layout: ../layouts/Page.astro
 title: 양권성이란...?
 description: 소프트웨어 설계와 아키텍처에 관심 많은 서버 개발자 양권성의 소개
 ---
-![](/images/about/exobud.webp)  
+![](/about/exobud.webp)  
 * 소프트웨어 디자인, 설계, 아키텍처
 * Java, Kotlin, Spring (Boot)    
 * 힙합, Lofi, 재즈
