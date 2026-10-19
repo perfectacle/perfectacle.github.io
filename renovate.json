@@ -10,6 +10,7 @@
   "automerge": true,
   "automergeType": "pr",
   "platformAutomerge": true,
+  "automergeStrategy": "merge-commit",
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["before 6am on monday"]

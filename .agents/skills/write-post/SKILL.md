@@ -17,8 +17,8 @@ description: 블로그 글을 새로 쓰거나 고칠 때(src/content/posts/**).
    완료: `pnpm lint:images` 통과.
 4. **다른 글은 파일 경로로 링크한다** — `[제목](../../2017/ES6-Iterator/index.md#앵커)`(LINK-01). 앵커는 `pnpm build` 후 대상 글의 `dist/<연>/<월>/<일>/<slug>/index.html` 에서 heading 의 `id` 를 복사한다.
    완료: `pnpm build` 가 끝까지 돈다(못 찾는 글이면 `check-post-links` 가 실패시킨다).
-5. **확인한다** — `pnpm check && pnpm lint:images && pnpm build && pnpm verify:urls && pnpm verify:dist` 를 돌리고 `pnpm dev` 로 글을 열어 본다. 다른 글이나 사이트 코드를 건드리지 않았다면 작성자는 main 에 직접 push 해도 된다(관리자 우회). 에이전트가 쓴 글은 [git-workflow](../git-workflow/SKILL.md) 대로 PR 로 올린다.
-   완료: 글이 깨짐 없이 보이고, PR 이면 `ci-ok` 가 초록.
+5. **확인한다** — `pnpm check && pnpm lint:images && pnpm build && pnpm verify:urls && pnpm verify:dist` 를 돌리고 `pnpm dev` 로 글을 열어 본다. 글도 [git-workflow](../git-workflow/SKILL.md) 대로 PR 로 올린다(main 직접 push 는 막혀 있다).
+   완료: 글이 깨짐 없이 보이고 PR 의 `ci-ok` 가 초록.
 
 ## 규칙
 
