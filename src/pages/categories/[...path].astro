@@ -1,0 +1,37 @@
+---
+import ListPage from '../../components/ListPage.astro';
+import { categoryPath, flattenCategories, getCategoryTree, paginate } from '../../lib/posts.ts';
+
+export async function getStaticPaths() {
+  return flattenCategories(await getCategoryTree()).flatMap(node => {
+    const base = categoryPath(node.path);
+    const slugPath = base.slice('/categories/'.length, -1);
+    const pages = paginate(node.posts);
+    return pages.map((posts, i) => ({
+      params: { path: i === 0 ? slugPath : `${slugPath}/page/${i + 1}` },
+      props: { node, base, posts, current: i + 1, total: pages.length },
+    }));
+  });
+}
+const { node, base, posts, current, total } = Astro.props;
+---
+
+<ListPage
+  title={node.path.join(' / ')}
+  eyebrow={node.path.length > 1 ? node.path.slice(0, -1).join(' / ') : '카테고리'}
+  heading={node.name}
+  description={`'${node.path.join(' / ')}' 카테고리의 글 ${node.posts.length}개`}
+  posts={posts}
+  base={base}
+  current={current}
+  total={total}
+>
+  <div slot="intro">
+    <p class="muted">글 {node.posts.length}개</p>
+    {node.children.length > 0 && (
+      <ul class="chips">
+        {node.children.map(c => <li><a class="chip" href={categoryPath(c.path)}>{c.name} {c.posts.length}</a></li>)}
+      </ul>
+    )}
+  </div>
+</ListPage>

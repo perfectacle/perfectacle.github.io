@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getTags } from '../../lib/posts.ts';
+
+const tags = await getTags();
+const max = Math.max(...tags.map(t => t.posts.length));
+---
+
+<Base title="태그" description={`태그 ${tags.length}개`}>
+  <div class="container">
+    <h1>태그</h1>
+    <p class="muted">태그 {tags.length}개</p>
+    <ul class="cloud">
+      {tags.map(tag => (
+        <li>
+          <a href={`/tags/${tag.slug}/`} style={`--w:${(0.85 + (tag.posts.length / max) * 0.6).toFixed(2)}rem`}>
+            #{tag.name}<sup>{tag.posts.length}</sup>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>
+
+<style>
+  h1 {
+    margin: 0 0 4px;
+    font-size: 1.9rem;
+  }
+  .cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    list-style: none;
+    padding: 0;
+    margin-top: 24px;
+  }
+  .cloud a {
+    font-size: var(--w);
+    color: var(--fg);
+  }
+  .cloud a:hover {
+    color: var(--accent);
+  }
+  sup {
+    margin-left: 2px;
+    font-size: 0.65em;
+    color: var(--fg-muted);
+  }
+</style>

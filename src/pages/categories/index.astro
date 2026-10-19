@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import CategoryTree from '../../components/CategoryTree.astro';
+import { getCategoryTree } from '../../lib/posts.ts';
+
+const tree = await getCategoryTree();
+---
+
+<Base title="카테고리">
+  <div class="container">
+    <h1>카테고리</h1>
+    <CategoryTree nodes={tree} />
+  </div>
+</Base>
+
+<style>
+  h1 {
+    margin: 0 0 16px;
+    font-size: 1.9rem;
+  }
+</style>

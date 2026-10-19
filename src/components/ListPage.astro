@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from './PostList.astro';
+import Pagination from './Pagination.astro';
+import type { Post } from '../lib/posts.ts';
+
+interface Props {
+  title?: string;
+  heading?: string;
+  eyebrow?: string;
+  posts: Post[];
+  base: string;
+  current: number;
+  total: number;
+  description?: string;
+}
+const { title, heading, eyebrow, posts, base, current, total, description } = Astro.props;
+---
+
+<Base title={current > 1 && title ? `${title} (${current}페이지)` : title} description={description} noindex={current > 1}>
+  <div class="container">
+    {heading && (
+      <header class="list-head">
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <h1>{heading}</h1>
+        <slot name="intro" />
+      </header>
+    )}
+    <slot />
+    <PostList posts={posts} />
+    <Pagination base={base} current={current} total={total} />
+  </div>
+</Base>
+
+<style>
+  .list-head {
+    margin-bottom: 8px;
+  }
+  .eyebrow {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--fg-muted);
+  }
+  h1 {
+    margin: 2px 0 8px;
+    font-size: 1.9rem;
+    letter-spacing: -0.02em;
+  }
+</style>

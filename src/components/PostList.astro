@@ -1,0 +1,82 @@
+---
+import { excerpt, formatDate, postPath, tagPath, tagName, categoryPath, type Post } from '../lib/posts.ts';
+
+interface Props {
+  posts: Post[];
+  summary?: boolean;
+}
+const { posts, summary = true } = Astro.props;
+---
+
+<ol class="post-list">
+  {posts.map(post => {
+    const cats = post.data.categories;
+    return (
+      <li>
+        <article>
+          <div class="meta">
+            <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+            {cats.length > 0 && (
+              <>
+                <span aria-hidden="true">·</span>
+                <a class="cat" href={categoryPath(cats)}>{cats.at(-1)}</a>
+              </>
+            )}
+          </div>
+          <h2><a href={postPath(post)}>{post.data.title}</a></h2>
+          {summary && <p class="excerpt">{excerpt(post)}</p>}
+          {summary && post.data.tags.length > 0 && (
+            <ul class="chips">
+              {post.data.tags.slice(0, 5).map(t => <li><a class="chip" href={tagPath(t)}>#{tagName(t)}</a></li>)}
+            </ul>
+          )}
+        </article>
+      </li>
+    );
+  })}
+</ol>
+
+<style>
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li + li {
+    border-top: 1px solid var(--border);
+  }
+  article {
+    padding: 26px 0;
+  }
+  .meta {
+    display: flex;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--fg-muted);
+  }
+  .cat {
+    color: inherit;
+  }
+  h2 {
+    margin: 4px 0 8px;
+    font-size: 1.3rem;
+    line-height: 1.4;
+    letter-spacing: -0.015em;
+  }
+  h2 a {
+    color: var(--fg);
+  }
+  h2 a:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .excerpt {
+    margin: 0 0 12px;
+    color: var(--fg-muted);
+    font-size: 0.97rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

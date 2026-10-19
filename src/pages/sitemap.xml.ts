@@ -1,0 +1,23 @@
+import { flattenCategories, getCategoryTree, getPosts, getTags, categoryPath, postPath, SITE } from '../lib/posts.ts';
+
+export async function GET() {
+  const posts = await getPosts();
+  const urls: [string, string?][] = [
+    ['/', posts[0].data.date.toISOString()],
+    ...posts.map(p => [postPath(p), p.data.date.toISOString()] as [string, string]),
+    ['/about/'],
+    ['/archives/'],
+    ['/tags/'],
+    ['/categories/'],
+    ...(await getTags()).map(t => [`/tags/${t.slug}/`] as [string]),
+    ...flattenCategories(await getCategoryTree()).map(c => [categoryPath(c.path)] as [string]),
+  ];
+  const body = urls
+    .map(([path, lastmod]) => `  <url><loc>${encodeURI(new URL(path, SITE.url).href)}</loc>${lastmod ? `<lastmod>${lastmod.slice(0, 10)}</lastmod>` : ''}</url>`)
+    .join('\n');
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${body}
+</urlset>
+`, { headers: { 'Content-Type': 'application/xml; charset=utf-8' } });
+}

@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts, ymd, type Post } from '../../lib/posts.ts';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const groups = new Map<string, Post[]>();
+  for (const post of posts) {
+    const { y, m } = ymd(post.data.date);
+    for (const key of [y, `${y}/${m}`]) groups.set(key, [...(groups.get(key) ?? []), post]);
+  }
+  return [...groups].map(([key, list]) => ({ params: { path: key }, props: { key, posts: list } }));
+}
+const { key, posts } = Astro.props;
+const [y, m] = key.split('/');
+const label = m ? `${y}년 ${Number(m)}월` : `${y}년`;
+---
+
+<Base title={`${label} 아카이브`}>
+  <div class="container">
+    <p class="muted crumbs"><a href="/archives/">아카이브</a>{m && <> / <a href={`/archives/${y}/`}>{y}</a></>}</p>
+    <h1>{label}</h1>
+    <p class="muted">글 {posts.length}개</p>
+    <PostList posts={posts} summary={false} />
+  </div>
+</Base>
+
+<style>
+  .crumbs {
+    margin: 0;
+    font-size: 0.85rem;
+  }
+  h1 {
+    margin: 2px 0 4px;
+    font-size: 1.9rem;
+  }
+</style>

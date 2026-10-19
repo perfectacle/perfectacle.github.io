@@ -1,0 +1,76 @@
+---
+import Base from '../../layouts/Base.astro';
+import { formatDate, getPosts, postPath, ymd, type Post } from '../../lib/posts.ts';
+
+const posts = await getPosts();
+const years = new Map<string, Post[]>();
+for (const post of posts) {
+  const { y } = ymd(post.data.date);
+  years.set(y, [...(years.get(y) ?? []), post]);
+}
+---
+
+<Base title="아카이브" description={`전체 글 ${posts.length}개`}>
+  <div class="container">
+    <h1>아카이브</h1>
+    <p class="muted">전체 글 {posts.length}개</p>
+    {[...years].map(([y, list]) => (
+      <section>
+        <h2><a href={`/archives/${y}/`}>{y}</a> <span class="muted count">{list.length}</span></h2>
+        <ol>
+          {list.map(post => (
+            <li>
+              <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date).slice(5)}</time>
+              <a href={postPath(post)}>{post.data.title}</a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  h1 {
+    margin: 0 0 4px;
+    font-size: 1.9rem;
+  }
+  section {
+    margin-top: 36px;
+  }
+  h2 {
+    font-size: 1.35rem;
+    margin: 0 0 8px;
+  }
+  h2 a {
+    color: var(--fg);
+  }
+  .count {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    display: flex;
+    gap: 14px;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  time {
+    flex: none;
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+    padding-top: 2px;
+  }
+  li a {
+    color: var(--fg);
+  }
+  li a:hover {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import { SITE } from '../lib/posts.ts';
+
+interface Props {
+  /** Post path such as `/2022/06/06/slug/`. */
+  path: string;
+  title: string;
+}
+const { path, title } = Astro.props;
+// The Hexo/NexT era registered threads with identifier = path without the leading slash;
+// changing it would detach every existing Disqus thread.
+const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), title };
+---
+
+<section class="comments" data-pagefind-ignore>
+  <div id="disqus_thread" data-config={JSON.stringify(config)}>
+    <button type="button" class="load">댓글 불러오기</button>
+  </div>
+</section>
+
+<script>
+  const thread = document.getElementById('disqus_thread');
+  if (thread) {
+    const config = JSON.parse(thread.dataset.config!);
+    const load = () => {
+      if ((window as any).__disqusLoaded) return;
+      (window as any).__disqusLoaded = true;
+      (window as any).disqus_config = function (this: any) {
+        this.page.url = config.url;
+        this.page.identifier = config.identifier;
+        this.page.title = config.title;
+      };
+      const s = document.createElement('script');
+      s.src = 'https://exobud.disqus.com/embed.js';
+      s.dataset.timestamp = String(Date.now());
+      document.head.appendChild(s);
+    };
+    thread.querySelector('.load')?.addEventListener('click', load);
+    new IntersectionObserver((entries, obs) => {
+      if (entries.some(e => e.isIntersecting)) {
+        obs.disconnect();
+        load();
+      }
+    }, { rootMargin: '400px' }).observe(thread);
+  }
+</script>
+
+<style>
+  .comments {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .load {
+    font: inherit;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-soft);
+    color: var(--fg);
+    cursor: pointer;
+  }
+</style>
