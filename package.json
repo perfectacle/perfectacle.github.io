@@ -7,7 +7,7 @@
     "build": "astro build && node scripts/check-post-links.ts && node scripts/copy-post-assets.ts && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check",
-    "typecheck": "tsc",
+    "typecheck": "astro sync && tsc",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
