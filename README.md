@@ -37,9 +37,12 @@ pnpm build         # dist/ 생성 + 글 링크 검사 + 원본 이미지 복사 
 pnpm verify:urls   # Hexo 시절 URL(tests/fixtures/legacy-paths.txt) 이 전부 있는지
 pnpm lint          # ESLint
 pnpm format        # Prettier
-pnpm check         # 타입 검사(astro check)
+pnpm check         # .astro 포함 타입 검사(astro check, TS 6 API)
+pnpm typecheck     # .ts 타입 검사(TypeScript 7 tsc)
 pnpm test          # Vitest
 ```
+
+TypeScript 는 7 을 쓰되(`@typescript/native` → `tsc`), typescript-eslint·astro check 가 아직 TS 7 API 를 지원하지 않아 `typescript` 이름은 TS 6 API 호환 패키지(`@typescript/typescript6`)에 연결해 둔다(TS 공식 병행 방식).
 
 `pnpm-workspace.yaml` 의 `minimumReleaseAge` 로 공개 7일 안 된 버전은 설치되지 않는다. PR 마다 CI 가 lint·format·타입·테스트·빌드·URL 검사를 돌리고, master 머지 시 배포한다. 의존성 갱신은 Dependabot(같은 7일 쿨다운) PR 로 온다.
 
