@@ -2,7 +2,7 @@
 // and the feed and sitemap are well-formed and point at real pages.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, posix } from 'node:path';
-import { XMLValidator } from 'fast-xml-parser';
+import { SyntaxValidator } from 'fast-xml-validator';
 
 const DIST = 'dist';
 const SITE = 'https://perfectacle.github.io';
@@ -74,8 +74,11 @@ for (const page of pages) {
 
 for (const xml of ['sitemap.xml', 'atom.xml']) {
   const text = readFileSync(join(DIST, xml), 'utf8');
-  const valid = XMLValidator.validate(text);
-  if (valid !== true) problems.push(`${xml}: not well-formed (${valid.err.msg})`);
+  try {
+    SyntaxValidator.validate(text);
+  } catch (error) {
+    problems.push(`${xml}: not well-formed (${(error as Error).message})`);
+  }
   for (const [, loc = ''] of text.matchAll(/<loc>([^<]+)<\/loc>|<link href="([^"]+)"\/>/g)) {
     const url = new URL(decodeEntities(loc || ''), SITE);
     if (!existsSync(fileFor(url.pathname))) problems.push(`${xml}: ${url.pathname} (missing)`);

@@ -34,7 +34,8 @@ jobs:
           # Images live under src/content, so this one fingerprints everything.
           - { task: 'lint:images', scope: all, reuse: true }
           - { task: 'format:check', scope: code, reuse: true }
-          - { task: typecheck, scope: code, reuse: true }
+          # astro sync reads the posts collection, so it needs src/content checked out.
+          - { task: typecheck, scope: all, reuse: true }
           - { task: test, scope: code, reuse: true }
           - { task: check, scope: all, reuse: true }
           - { task: audit, scope: code, reuse: false }
