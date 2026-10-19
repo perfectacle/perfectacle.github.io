@@ -53,7 +53,12 @@ for (const page of pages) {
   const html = readFileSync(join(DIST, page), 'utf8')
     // Code samples contain markup-looking text that is not a real link.
     .replace(/<pre[\s\S]*?<\/pre>/g, '');
-  for (const [, attr, raw = ''] of html.matchAll(/\s(href|src)="([^"]*)"/g)) {
+  const refs = [...html.matchAll(/\s(href|src)="([^"]*)"/g)].map(([, attr = '', raw = '']) => [attr, raw]);
+  // Each srcset candidate is "<url> <descriptor>"; most screens load these instead of src.
+  for (const [, raw = ''] of html.matchAll(/\ssrcset="([^"]*)"/g)) {
+    for (const candidate of raw.split(',')) refs.push(['srcset', candidate.trim().split(/\s+/)[0] ?? '']);
+  }
+  for (const [attr, raw = ''] of refs) {
     const ref = decodeEntities(raw);
     if (!ref || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(ref)) continue;
     const url = new URL(ref, SITE + pageUrl);
