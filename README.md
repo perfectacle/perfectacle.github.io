@@ -40,11 +40,18 @@ pnpm format        # Prettier
 pnpm check         # .astro 포함 타입 검사(astro check, TS 6 API)
 pnpm typecheck     # .ts 타입 검사(TypeScript 7 tsc)
 pnpm test          # Vitest
+pnpm verify:dist   # 빌드 결과의 내부 링크·앵커·sitemap·atom 검사
+pnpm test:e2e      # Playwright E2E + axe 접근성(라이트/다크), 빌드 후
+pnpm audit         # 운영 의존성 high 이상 취약점
 ```
 
 TypeScript 는 7 을 쓰되(`@typescript/native` → `tsc`), typescript-eslint·astro check 가 아직 TS 7 API 를 지원하지 않아 `typescript` 이름은 TS 6 API 호환 패키지(`@typescript/typescript6`)에 연결해 둔다(TS 공식 병행 방식).
 
-`pnpm-workspace.yaml` 의 `minimumReleaseAge` 로 공개 7일 안 된 버전은 설치되지 않는다. PR 마다 CI 가 lint·format·타입·테스트·빌드·URL 검사를 돌리고, master 머지 시 배포한다. 의존성 갱신은 Dependabot(같은 7일 쿨다운) PR 로 온다.
+`pnpm-workspace.yaml` 의 `minimumReleaseAge` 로 공개 7일 안 된 버전은 설치되지 않는다. ## 의존성 자동 업데이트와 자동 머지
+
+- **Renovate**(`renovate.json`)가 npm·GitHub Actions·Node·pnpm 을 갱신한다. 공개 7일이 지난 버전만 PR 을 만들고, 메이저 포함 전부 CI 통과 시 자동 머지한다.
+- **보안 업데이트**는 7일을 기다리지 않는다. Renovate 가 `pnpm-workspace.yaml` 의 `minimumReleaseAgeExclude` 에 해당 버전을 넣어 바로 PR 을 만들고, `minimumReleaseAgeExcludePrune` 이 쓸모없어진 예외를 정리한다.
+- master 는 `ci-ok` 체크 통과가 필수(관리자 직접 push 는 예외). CI 잡: lint·format·check·typecheck·test·audit·actionlint·build(+URL/dist 검사)·e2e, 그리고 **Renovate PR 에서만** base 와 결과물 비교(`output-diff`) — 렌더 결과가 한 글자라도 달라지면 실패해서 사람이 본다.
 
 ## 구조
 

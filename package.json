@@ -12,7 +12,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "verify:urls": "node scripts/check-legacy-urls.ts"
+    "verify:urls": "node scripts/check-legacy-urls.ts",
+    "verify:dist": "node scripts/check-dist.ts",
+    "test:e2e": "playwright test",
+    "audit": "pnpm audit --prod --audit-level high"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.2",
@@ -26,13 +29,16 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.13.0",
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.0",
     "@types/hast": "3.0.5",
     "@types/mdast": "4.0.4",
     "@types/node": "26.6.5",
     "@typescript/native": "npm:typescript@7.0.2",
     "eslint": "10.12.0",
     "eslint-plugin-astro": "3.2.1",
+    "fast-xml-parser": "5.11.2",
     "globals": "17.13.0",
     "jiti": "2.7.0",
     "prettier": "3.9.10",

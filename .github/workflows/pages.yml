@@ -15,6 +15,10 @@ concurrency:
   group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  # Dependency PRs auto-merge on green, so they also have to prove the rendered site did not change.
+  IS_BOT_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.user.login == 'renovate[bot]' }}
+
 jobs:
   verify:
     name: ${{ matrix.task }}
@@ -23,32 +27,120 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        task: [lint, format:check, check, typecheck, test]
+        # scope=code: posts and static files are irrelevant, so they are neither checked out nor part of the fingerprint.
+        # reuse: skip the job when a run with identical inputs already passed (audit is time-dependent, so never).
+        include:
+          - { task: lint, scope: code, reuse: true }
+          - { task: 'format:check', scope: code, reuse: true }
+          - { task: typecheck, scope: code, reuse: true }
+          - { task: test, scope: code, reuse: true }
+          - { task: check, scope: all, reuse: true }
+          - { task: audit, scope: code, reuse: false }
+    steps:
+      - if: matrix.scope == 'code'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/src/content/
+            !/public/
+            !/drafts/
+
+      - if: matrix.scope == 'all'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - id: fingerprint
+        run: echo "key=verified-${{ matrix.task }}-${{ runner.arch }}-${{ matrix.scope == 'code' && hashFiles('**', '!src/content/**', '!public/**', '!drafts/**', '!.git/**') || hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
+
+      - if: matrix.reuse
+        id: verified
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
+          lookup-only: true
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: ./.github/actions/setup
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm run ${{ matrix.task }}
+
+      - if: matrix.reuse && steps.verified.outputs.cache-hit != 'true'
+        run: touch .verified
+
+      - if: matrix.reuse && steps.verified.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
+
+  actionlint:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ./.github/actions/setup
-
-      - run: pnpm run ${{ matrix.task }}
+      - uses: docker://rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667 # 1.7.12
+        with:
+          args: -color
 
   build:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 20
+    env:
+      # master needs a fresh dist to deploy; a PR only needs the checks, which can be reused.
+      REUSE: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: ./.github/actions/setup
+      - id: fingerprint
+        run: echo "key=verified-build-${{ runner.arch }}-${{ hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
 
-      # Optimized images are the bulk of build time; Astro reuses them from this cache when sources are unchanged.
-      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # Bot PRs always rebuild: output-diff needs the snapshot.
+      - if: env.REUSE == 'true' && env.IS_BOT_PR != 'true'
+        id: verified
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: node_modules/.astro/assets
-          key: astro-assets-${{ runner.arch }}-${{ hashFiles('src/content/posts/**/*.png', 'src/content/posts/**/*.jp*g', 'src/content/posts/**/*.gif', 'src/content/posts/**/*.webp') }}
-          restore-keys: astro-assets-${{ runner.arch }}-
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
+          lookup-only: true
 
-      - run: pnpm build
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: ./.github/actions/setup
 
-      - run: pnpm verify:urls
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: ./.github/actions/astro-assets-cache
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm build
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm verify:urls
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm verify:dist
+
+      - if: env.IS_BOT_PR == 'true'
+        run: node scripts/snapshot-output.ts dist head-snapshot.json
+
+      - if: env.IS_BOT_PR == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: head-snapshot
+          path: head-snapshot.json
+          retention-days: 3
+
+      - if: env.REUSE == 'true' && steps.verified.outputs.cache-hit != 'true'
+        run: touch .verified
+
+      - if: env.REUSE == 'true' && steps.verified.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
 
       - if: github.event_name != 'pull_request'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
@@ -58,9 +150,138 @@ jobs:
         with:
           path: ./dist
 
+  e2e:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Pages depend on posts too, so every tracked file is an input.
+      - id: fingerprint
+        run: echo "key=verified-e2e-${{ runner.arch }}-${{ hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
+
+      - id: verified
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
+          lookup-only: true
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: ./.github/actions/setup
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: ./.github/actions/astro-assets-cache
+
+      # Rebuilding here (images cached) is faster than shipping the ~450MB dist between jobs.
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm build
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        id: browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
+
+      # Browsers come from the cache when it hits; only the OS libraries still need installing.
+      - if: steps.verified.outputs.cache-hit != 'true' && steps.browsers.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+
+      - if: steps.verified.outputs.cache-hit != 'true' && steps.browsers.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: pnpm test:e2e
+
+      - if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        run: touch .verified
+
+      - if: steps.verified.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .verified
+          key: ${{ steps.fingerprint.outputs.key }}
+
+  output-baseline:
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'renovate[bot]'
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    steps:
+      # The PR's own scripts snapshot the base build, so both sides are normalized the same way.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+
+      - uses: ./.github/actions/setup
+        with:
+          working-directory: base
+
+      - uses: ./.github/actions/astro-assets-cache
+        with:
+          working-directory: base
+
+      - working-directory: base
+        run: pnpm build
+
+      - run: node scripts/snapshot-output.ts base/dist base-snapshot.json
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: base-snapshot
+          path: base-snapshot.json
+          retention-days: 3
+
+  output-diff:
+    needs: [build, output-baseline]
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: |
+            scripts
+            .node-version
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: '*-snapshot'
+          merge-multiple: true
+
+      - run: node scripts/compare-output.ts base-snapshot.json head-snapshot.json
+
+  # The one required status check on master: passes only when every job above passed or was skipped by design.
+  ci-ok:
+    if: always()
+    needs: [verify, actionlint, build, e2e, output-baseline, output-diff]
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 2
+    steps:
+      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
+      - run: echo ok
+
   deploy:
     if: github.event_name != 'pull_request'
-    needs: [verify, build]
+    needs: ci-ok
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 10
     permissions:

@@ -4,7 +4,7 @@
   --fg: #1f2328;
   --fg-muted: #656d76;
   --border: #e4e7eb;
-  --accent: #2f6fde;
+  --accent: #2a63c7;
   --accent-soft: #e8f0fd;
   --code-bg: #f6f8fa;
   --content: 720px;
@@ -104,6 +104,12 @@ iframe {
 /* Post body */
 .prose {
   font-size: 1.0625rem;
+}
+/* Underlined so links in running text don't rely on color alone. */
+.prose a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 .prose h1,
 .prose h2,

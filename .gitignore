@@ -5,3 +5,7 @@ dist/
 *.log
 .idea
 *.iml
+test-results/
+playwright-report/
+output-snapshot*.json
+.verified
