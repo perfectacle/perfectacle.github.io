@@ -1,0 +1,73 @@
+---
+import '../styles/patch-book.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const image = new URL('/images/patches/smrpg/forest.webp', Astro.site).href;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | perfectacle</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f4f0e5" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/images/favicon/favicon-32x32.png" sizes="32x32" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="224" />
+    <meta property="og:image:alt" content="슈퍼 마리오 RPG에서 크로코와 마주한 마리오 일행" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="perfectacle" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      본문으로 건너뛰기
+    </a>
+    <header class="book-masthead book-width">
+      <a class="wordmark" href="/">
+        perfectacle<span aria-hidden="true">.</span>
+      </a>
+      <nav aria-label="가이드북 메뉴">
+        <a href="/patches/">한글패치 목록</a>
+        <a href="/">
+          블로그 <span aria-hidden="true">↗</span>
+        </a>
+      </nav>
+    </header>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="book-footer book-width">
+      <div class="footer-line">
+        <a class="wordmark" href="/">
+          perfectacle<span aria-hidden="true">.</span>
+        </a>
+        <a href="#main">
+          맨 위로 <span aria-hidden="true">↑</span>
+        </a>
+      </div>
+      <p>슈퍼 마리오 RPG · 1996년 일본 슈퍼 패미컴판 · 개발 Square / 발매 Nintendo</p>
+      <p>게임 및 캐릭터 © 1995 Nintendo / SQUARE ENIX CO., LTD. 스크린샷은 한글패치 v1.1 적용 화면입니다.</p>
+      <p class="footer-links">
+        <a href="https://blog.naver.com/perfectacle">제작자 블로그</a>
+        <a href="https://cafe.naver.com/hansicgu/37278">분석 도구 안내</a>
+        <a href="https://www.nintendo.co.jp/clvs/manuals/ja/pdf/CLV-P-VABQJ.pdf">원작 공식 설명서</a>
+      </p>
+    </footer>
+  </body>
+</html>

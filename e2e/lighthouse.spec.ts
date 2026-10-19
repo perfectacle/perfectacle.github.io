@@ -13,6 +13,7 @@ const PAGES: Record<string, { scriptKb: number; tbtMs?: number }> = {
   // Mermaid loads and renders per diagram as it scrolls into view, so the initial page stays light.
   '/2022/09/25/hikari-cp-time-config/': { scriptKb: 60 },
   '/search/': { scriptKb: 60 },
+  '/patches/super-mario-rpg/': { scriptKb: 1 },
 };
 const MIN_SCORE = { performance: 0.8, accessibility: 0.95, 'best-practices': 0.95, seo: 0.95 };
 // Fonts: the site uses system fonts only, so any web font download is a regression.
