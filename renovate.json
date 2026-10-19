@@ -3,6 +3,7 @@
   "extends": ["config:recommended", "helpers:pinGitHubActionDigestsToSemver"],
   "timezone": "Asia/Seoul",
   "labels": ["dependencies"],
+  "ignorePaths": ["public/**", "drafts/**"],
   "rangeStrategy": "pin",
   "minimumReleaseAge": "7 days",
   "internalChecksFilter": "strict",
