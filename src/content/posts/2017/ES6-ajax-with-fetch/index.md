@@ -1,8 +1,8 @@
 ---
 title: (ES6+) ajax를 위한 fetch와 async/await
 date: 2017-01-25 18:37:49
-categories: [Programming, ECMAScript, ES2015+]
-tags: [JS, ES, ES6+, ES2015+, ajax]
+categories: [JavaScript, ES2015+]
+tags: [ajax]
 ---
 ![](./thumb.webp)  
 이 글을 읽기 전에 [(ES6) ajax 위주의 promise 실습](../../2017/ES6-Promise-with-ajax/index.md)를 먼저 읽을 것을 권한다.  

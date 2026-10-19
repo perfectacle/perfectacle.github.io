@@ -2,9 +2,8 @@
 title: Netty 용어사전
 tags:
   - TCP
-  - Netty
 categories:
-  - Note
+  - Server
   - Netty
 date: 2021-02-28 00:32:51
 ---

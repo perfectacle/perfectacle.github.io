@@ -1,8 +1,8 @@
 ---
 title: (ES6) ajax 위주의 promise 실습
 date: 2017-01-21 09:09:50
-categories: [Programming, ECMAScript, ES2015+]
-tags: [JS, ES, ES6, ES2015, ajax, promise]
+categories: [JavaScript, ES2015+]
+tags: [ajax, Promise]
 ---
 ![](./thumb.webp)
 

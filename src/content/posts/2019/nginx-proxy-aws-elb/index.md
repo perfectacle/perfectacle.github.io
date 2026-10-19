@@ -1,14 +1,12 @@
 ---
 title: (Troubleshooting) Nginx upstream에 AWS ELB DNS를 걸 때 주의사항
 tags:
-  - Troubleshooting
   - Nginx
   - Proxy
-  - AWS
   - ELB
 categories:
-  - Note
   - Troubleshooting
+  - 장애 대응
 date: 2019-04-28 21:53:56
 ---
 

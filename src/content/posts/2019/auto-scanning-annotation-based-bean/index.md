@@ -1,11 +1,10 @@
 ---
 title: 어노테이션이 달린 빈의 자동 스캔 (Without Spring Boot)
 tags:
-  - Spring
   - Bean
 categories:
-  - Back-end
   - Spring
+  - Core
 date: 2019-06-23 12:08:10
 ---
 

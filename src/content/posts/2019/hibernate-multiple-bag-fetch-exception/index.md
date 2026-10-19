@@ -1,13 +1,11 @@
 ---
 title: (Troubleshooting) Hibernate MultipleBagFetchException 정복하기
 tags:
-  - Troubleshooting
-  - JPA
   - Hibernate
   - ORM
 categories:
-  - Note
   - Troubleshooting
+  - 장애 대응
 date: 2019-05-01 20:04:41
 ---
 

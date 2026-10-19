@@ -1,12 +1,10 @@
 ---
 title: (Troubleshooting) Thread Dump 분석 도전기
 tags:
-  - Troubleshooting
-  - JVM
   - Thread
 categories:
-  - Note
   - Troubleshooting
+  - 장애 대응
 date: 2019-06-11 01:19:36
 ---
 

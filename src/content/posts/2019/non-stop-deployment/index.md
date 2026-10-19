@@ -1,7 +1,7 @@
 ---
 title: 무중단 배포란...?
 tags: [Deployment]
-categories: [Middle-end, DevOps]
+categories: [Infra, DevOps]
 date: 2019-04-21 23:03:23
 ---
 ![](./thumbs.webp)

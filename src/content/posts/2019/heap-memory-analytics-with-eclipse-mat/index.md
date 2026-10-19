@@ -1,12 +1,10 @@
 ---
 title: (Troubleshooting) 생애 첫 Heap 메모리 분석기 (feat. Eclipse MAT)
 tags:
-  - Troubleshooting
-  - JVM
   - Heap
 categories:
-  - Note
   - Troubleshooting
+  - 장애 대응
 date: 2019-04-28 23:25:38
 ---
 

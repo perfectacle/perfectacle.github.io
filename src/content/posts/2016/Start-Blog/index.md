@@ -1,7 +1,7 @@
 ---
 title: 블로그를 시작하다
 date: 2016-11-10 09:38:50
-categories: [기타, 잡동사니]
+categories: [일상, 회고]
 tags: [잡동사니]
 ---
 ![](./thumb.webp)

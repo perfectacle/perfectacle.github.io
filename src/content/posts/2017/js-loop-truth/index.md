@@ -1,13 +1,9 @@
 ---
 title: (자알쓰) 반복문의 진실 (번외편)
 tags:
-  - JS
-  - ES
-  - 자알쓰
   - Loop
 categories:
-  - Programming
-  - ECMAScript
+  - JavaScript
   - 자알쓰
 date: 2017-06-02 09:35:00
 ---

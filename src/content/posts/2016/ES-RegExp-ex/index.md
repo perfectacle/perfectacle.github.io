@@ -1,8 +1,8 @@
 ---
 title: (ES) 정규표현식 응용하기
 date: 2016-11-27 23:14:30
-categories: [Programming, ECMAScript]
-tags: [JS, ES, RegExp]
+categories: [JavaScript, 활용]
+tags: [RegExp]
 ---
 ![](./thumb.webp)  
 이 포스트는 정규표현식에 대한 기초 사항을 설명하진 않는다.  

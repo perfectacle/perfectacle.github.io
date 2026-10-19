@@ -1,7 +1,8 @@
 ---
 title: (Jackson) LocalDate, LocalTime, LocalDateTime 뽀개기 - Serialize
 date: 2018-01-16 10:54:25
-tags: [Java, Spring Boot, Jackson, JSON]
+tags: [Jackson, JSON]
+categories: [Java, 라이브러리]
 ---
 
 ![](./thumb.webp)

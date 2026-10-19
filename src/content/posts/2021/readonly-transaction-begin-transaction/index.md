@@ -1,10 +1,8 @@
 ---
 title: (JPA) Readonly 트랜잭션은 트랜잭션을 시작하지만 flush를 하지 않는다.
-tags:
-  - JPA
+tags: []
 categories:
-  - Back-end
-  - DB
+  - Spring
   - JPA
 date: 2021-05-05 17:46:16
 ---

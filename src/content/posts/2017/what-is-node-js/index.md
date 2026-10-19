@@ -1,8 +1,8 @@
 ---
 title: Node.js란...?
 date: 2017-06-18 21:12:33
-tags: [Node.js]
-categories: [Programming, Node.js]
+tags: []
+categories: [JavaScript, 활용]
 ---
 ![](./thumb.webp)
 이 글을 쓰게 된 계기는 다음과 같다.  

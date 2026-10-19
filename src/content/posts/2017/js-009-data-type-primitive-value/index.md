@@ -1,14 +1,10 @@
 ---
 title: (자알쓰) 자료형(원시값)
 tags:
-  - JS
-  - ES
-  - 자알쓰
   - 자료형
   - 원시값
 categories:
-  - Programming
-  - ECMAScript
+  - JavaScript
   - 자알쓰
 date: 2017-07-01 09:53:29
 ---

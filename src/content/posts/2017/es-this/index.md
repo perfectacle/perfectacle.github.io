@@ -1,8 +1,8 @@
 ---
 title: (ES) this
 date: 2017-02-15 09:00:37
-categories: [Programming, ECMAScript]
-tags: [JS, ES, this]
+categories: [JavaScript, 활용]
+tags: [this]
 ---
 ![](./thumb.webp)  
 자바스크립트에서 this는 상황에 따라 다른 값을 반환해서 아주 짜증나기 마련이다.  

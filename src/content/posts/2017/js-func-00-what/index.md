@@ -1,13 +1,9 @@
 ---
 title: (함수형 JS) 함수형 프로그래밍(JS)이란...?
-tags:
-  - JS
-  - ES
-  - 함수형
+tags: []
 categories:
-  - Programming
-  - ECMAScript
-  - 함수형 JS
+  - JavaScript
+  - 함수형
 date: 2017-06-30 21:33:47
 ---
 ![](./thumb.webp)

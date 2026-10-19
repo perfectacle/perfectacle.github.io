@@ -1,4 +1,4 @@
-import { excerpt, getLatestPost, getPosts, postPath, SITE, tagName } from '../lib/posts.ts';
+import { excerpt, getLatestPost, getPosts, postPath, SITE } from '../lib/posts.ts';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -15,7 +15,7 @@ export async function GET() {
     <updated>${date}</updated>
     <summary type="text">${esc(excerpt(post, 300))}</summary>
 ${post.data.categories.map(c => `    <category term="${esc(c)}"/>`).join('\n')}
-${post.data.tags.map(t => `    <category term="${esc(tagName(t))}"/>`).join('\n')}
+${post.data.tags.map(t => `    <category term="${esc(t)}"/>`).join('\n')}
   </entry>`;
   });
   const xml = `<?xml version="1.0" encoding="utf-8"?>

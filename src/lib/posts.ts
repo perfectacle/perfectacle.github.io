@@ -15,9 +15,6 @@ export const SITE = {
   perPage: 10,
 };
 
-// Merges tags that differ only by case, keeping the slug the Hexo build published.
-const TAG_MAP: Record<string, string> = { Hexo: 'hexo' };
-
 const pad = (n: number) => String(n).padStart(2, '0');
 
 export const ymd = (d: Date) => ({
@@ -43,8 +40,7 @@ export const postPath = (post: Post) => {
   return `/${y}/${m}/${d}/${postSlug(post)}/`;
 };
 
-export const tagName = (t: string) => TAG_MAP[t] ?? t;
-export const tagPath = (t: string) => `/tags/${slugize(tagName(t))}/`;
+export const tagPath = (t: string) => `/tags/${slugize(t)}/`;
 export const categoryPath = (cats: string[]) => `/categories/${cats.map(slugize).join('/')}/`;
 
 let cache: Post[] | undefined;
@@ -98,8 +94,7 @@ export interface TagInfo {
 export async function getTags(): Promise<TagInfo[]> {
   const map = new Map<string, TagInfo>();
   for (const post of await getPosts()) {
-    for (const raw of post.data.tags) {
-      const name = tagName(raw);
+    for (const name of post.data.tags) {
       const slug = slugize(name);
       const info = map.get(slug) ?? { name, slug, posts: [] };
       if (!info.posts.includes(post)) info.posts.push(post);

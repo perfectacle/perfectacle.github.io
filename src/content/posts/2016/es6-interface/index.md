@@ -1,8 +1,8 @@
 ---
 title: (ES6) Interface
 date: 2016-12-25 22:17:14
-categories: [Programming, ECMAScript, ES2015+]
-tags: [JS, ES, ES6, ES2015, Interface]
+categories: [JavaScript, ES2015+]
+tags: [Interface]
 ---
 ![](./thumb.webp)
 

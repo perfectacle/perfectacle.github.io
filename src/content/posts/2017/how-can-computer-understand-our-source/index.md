@@ -1,8 +1,8 @@
 ---
 title: (상식) 컴퓨터는 어떻게 우리가 작성한 코드를 이해할까?
 date: 2017-08-07 10:02:39
-categories: [기타, 등등]
-tags: [IT, Computer, 기계어, 컴파일, 인터프리터, JIT]
+categories: [CS, 상식]
+tags: [기계어, 컴파일, 인터프리터, JIT]
 ---
 ![](./thumb.webp)  
 

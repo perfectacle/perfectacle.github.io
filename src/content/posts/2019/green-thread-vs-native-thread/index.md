@@ -3,8 +3,8 @@ title: Green Thread vs Native Thread
 tags:
   - Thread
 categories:
-  - 기타
-  - 등등
+  - Java
+  - JVM
 date: 2019-03-10 18:24:06
 ---
 

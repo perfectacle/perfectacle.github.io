@@ -1,13 +1,11 @@
 ---
 title: 어떻게 웹플럭스는 적은 쓰레드만으로 많은 요청을 처리할 수 있을까?
 tags:
-  - Java
-  - Srping
   - Webflux
   - Reactive
 categories:
-  - Programming
   - Spring
+  - Core
 date: 2019-03-10 19:24:38
 ---
 

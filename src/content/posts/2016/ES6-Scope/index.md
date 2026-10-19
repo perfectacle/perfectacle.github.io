@@ -1,8 +1,8 @@
 ---
 title: (ES6) Scope
 date: 2016-11-10 21:18:24
-categories: [Programming, ECMAScript, ES2015+]
-tags: [JS, ES, ES6, ES2015, Scope]
+categories: [JavaScript, ES2015+]
+tags: [Scope]
 ---
 ![](./thumb.webp)
 

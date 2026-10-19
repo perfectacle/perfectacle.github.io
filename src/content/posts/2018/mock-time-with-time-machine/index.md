@@ -1,8 +1,8 @@
 ---
 title: (Java) 타임머신을 타고 시간 여행 떠나기
 date: 2018-03-30 00:41:17
-tags: [Test, Java]
-categories: [Middle-end, TDD]
+tags: [Test]
+categories: [설계, 테스트]
 ---
 ![타임머신을 타고 시간 여행을 떠나보자.](./thumb.webp)  
 

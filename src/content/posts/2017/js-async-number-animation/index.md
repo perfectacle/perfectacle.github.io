@@ -1,8 +1,8 @@
 ---
 title: (JS) 숫자가 증가하는 애니메이션 구현하기
 date: 2017-05-03 09:39:29
-categories: [Programming, ECMAScript]
-tags: [JS, ES, ES6, ES2015, ES6+, callback, promise, async, await]
+categories: [JavaScript, 활용]
+tags: [callback, Promise, async, await]
 ---
 ![](./thumb.webp)
 

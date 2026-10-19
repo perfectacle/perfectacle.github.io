@@ -1,7 +1,7 @@
 ---
 title: (Java) 자바의 정석 3판 011일차 - 상속과 포함, 오버라이딩, super, 패키지와 클래스, 접근 지정자
-categories: [Note, Java]
-tags: [Java, 자바의 정석, OOP]
+categories: [Java, 언어]
+tags: [자바의 정석, OOP]
 date: 2017-08-01 18:30:01
 ---
 

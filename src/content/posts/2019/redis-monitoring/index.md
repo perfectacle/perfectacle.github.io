@@ -2,11 +2,10 @@
 title: (Troubleshooting) 레디스 사망일기
 tags:
   - Redis
-  - Troubleshooting
   - Monitoring
 categories:
-  - Note
   - Troubleshooting
+  - 장애 대응
 date: 2019-05-29 03:00:50
 ---
 ![점점 산으로 가는 그래프...](./thumb.webp)

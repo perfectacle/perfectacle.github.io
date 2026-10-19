@@ -1,8 +1,8 @@
 ---
 title: (상식) 인터넷 속도에 대한 진실
 date: 2017-01-23 18:55:53
-categories: [기타, 등등]
-tags: [IT, Computer, 인터넷, 속도, 용량, 상식]
+categories: [CS, 상식]
+tags: [인터넷, 속도, 용량]
 ---
 ![](./thumb.webp)
 

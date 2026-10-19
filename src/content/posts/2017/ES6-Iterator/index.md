@@ -1,8 +1,8 @@
 ---
 title: (ES6) Iterator
 date: 2017-04-22 16:17:14
-categories: [Programming, ECMAScript, ES2015+]
-tags: [JS, ES, ES6, ES2015, Interface, Symbol, Iterator]
+categories: [JavaScript, ES2015+]
+tags: [Interface, Symbol, Iterator]
 ---
 ![](./thumb.webp)  
 

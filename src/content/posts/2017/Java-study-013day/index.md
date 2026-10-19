@@ -1,7 +1,7 @@
 ---
 title: (Java) 자바의 정석 3판 013일차 - Constant Pool
-categories: [Note, Java]
-tags: [Java, 자바의 정석]
+categories: [Java, 언어]
+tags: [자바의 정석]
 date: 2017-08-03 15:05:34
 ---
 ![](./thumb.webp)  

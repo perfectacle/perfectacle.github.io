@@ -1,8 +1,8 @@
 ---
 title: (자알쓰) JIT 컴파일
 date: 2017-08-07 11:53:42
-categories: [Programming, ECMAScript, 자알쓰]
-tags: [JS, ES, 자알쓰, JIT]
+categories: [JavaScript, 자알쓰]
+tags: [JIT]
 ---
 ![](./thumb.webp)
 

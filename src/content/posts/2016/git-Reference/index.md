@@ -1,8 +1,8 @@
 ---
 title: (git) 정리 노트
 date: 2016-11-19 16:55:28
-categories: [Middle-end, git]
-tags: [형상 관리, 버전 관리, 배포, git]
+categories: [도구, 기타]
+tags: [배포]
 ---
 ![](./thumb.webp)
 **이 포스트는 git을 접하다 보면 마주치는 다양한 상황들에 대해 대처하기 위해 정리한 글이다.**  

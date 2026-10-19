@@ -2,9 +2,8 @@
 title: Netty 이벤트 루프
 tags:
   - TCP
-  - Netty
 categories:
-  - Note
+  - Server
   - Netty
 date: 2021-02-28 01:32:12
 ---

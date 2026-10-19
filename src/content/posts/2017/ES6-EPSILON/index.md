@@ -1,14 +1,9 @@
 ---
 title: (ES6) Number.EPSILON은 왜 2.220446049250313e-16인가?
 categories:
-  - Programming
-  - ECMAScript
+  - JavaScript
   - ES2015+
 tags:
-  - JS
-  - ES
-  - ES6
-  - ES2015
   - EPSILON
 date: 2017-08-04 09:25:57
 ---

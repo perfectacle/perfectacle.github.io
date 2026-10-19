@@ -1,8 +1,8 @@
 ---
 title: (ES5) 배열의 순회 메소드에서 break 기능 구현하기
 date: 2017-02-12 22:51:05
-categories: [Programming, ECMAScript]
-tags: [JS, ES, ES5, Array]
+categories: [JavaScript, 활용]
+tags: [Array]
 ---
 ![](./thumb.webp)  
 이 글은 Outsider 님의 블로그 포스트 중  

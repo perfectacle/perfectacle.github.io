@@ -1,12 +1,9 @@
 ---
 title: (Troubleshooting) 내 로컬에서는 잘 되는데...? (내로잘)
-tags:
-  - Troubleshooting
-  - AWS
-  - Network
+tags: []
 categories:
-  - Note
   - Troubleshooting
+  - 장애 대응
 date: 2019-06-11 22:28:23
 ---
 

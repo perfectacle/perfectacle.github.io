@@ -1,7 +1,7 @@
 ---
 title: (Spring Boot) Gradle의 Profile(dev/production)을 구분지어보자.
-categories: [Back-end, Spring]
-tags: [Java, Spring, Spring Boot, Gradle]
+categories: [Spring, Spring Boot]
+tags: []
 date: 2017-09-23 09:06:20
 ---
 ![](./thumb.webp)  

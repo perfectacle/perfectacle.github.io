@@ -1,8 +1,8 @@
 ---
 title: (Java) 자바의 정석 3판 004일차 - 연산자(우선 순위 및 결합 규칙), switch 문
 date: 2017-01-02 09:05:49
-categories: [Note, Java]
-tags: [Java, 자바의 정석, 연산자, 조건문]
+categories: [Java, 언어]
+tags: [자바의 정석, 연산자, 조건문]
 ---
 ![](./thumb.webp)
 

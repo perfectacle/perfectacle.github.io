@@ -2,9 +2,8 @@
 title: Netty 이벤트 핸들러 실행 순서
 tags:
   - TCP
-  - Netty
 categories:
-  - Note
+  - Server
   - Netty
 date: 2021-02-28 15:53:46
 ---

@@ -1,13 +1,9 @@
 ---
 title: (자알쓰) 디버깅
 tags:
-  - JS
-  - ES
-  - 자알쓰
   - 디버깅
 categories:
-  - Programming
-  - ECMAScript
+  - JavaScript
   - 자알쓰
 date: 2017-08-04 09:44:39
 ---

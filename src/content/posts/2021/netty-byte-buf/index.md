@@ -2,9 +2,8 @@
 title: Netty ByteBuf
 tags:
   - TCP
-  - Netty
 categories:
-  - Note
+  - Server
   - Netty
 date: 2021-02-28 14:34:23
 ---

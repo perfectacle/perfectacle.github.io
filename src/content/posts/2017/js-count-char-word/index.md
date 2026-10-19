@@ -1,8 +1,8 @@
 ---
 title: (JS) 문자, 단어, 동음이의어 갯수 세기
 date: 2017-07-18 23:14:51
-tags:
-categories:
+tags: []
+categories: [JavaScript, 활용]
 ---
 ![](./thumb.webp)  
 ~~웰 컴 투 정규표현식~~

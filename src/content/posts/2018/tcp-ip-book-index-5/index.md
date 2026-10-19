@@ -1,8 +1,8 @@
 ---
 title: (네트워크) TCP/IP 쉽게, 더 쉽게 목차 리뷰 - 5장 하드웨어와 네트워크 인터페이스 계층
 date: 2018-04-01 14:14:24
-tags: [Network]
-categories: [Middle-end, Network]
+tags: []
+categories: [Infra, Network]
 ---
 
 ![](./thumb.webp)  

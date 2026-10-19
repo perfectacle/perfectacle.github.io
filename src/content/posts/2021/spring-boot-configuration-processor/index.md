@@ -1,7 +1,7 @@
 ---
 title: (Spring Boot) spring-boot-configuration-processor 활용하기
-categories: [Spring Boot]
-tags: [Spring Boot]
+categories: [Spring, Spring Boot]
+tags: []
 date: 2021-11-21 14:43:06
 ---
 ## Configuration Metadata

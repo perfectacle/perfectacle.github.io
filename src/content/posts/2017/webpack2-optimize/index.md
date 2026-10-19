@@ -1,7 +1,7 @@
 ---
 title: (Webpack 2) 최적화하기
-categories: [Front-end, Webpack]
-tags: [npm, Node.js, Webpack2, Optimize, gzip]
+categories: [Frontend, Webpack]
+tags: [npm, Webpack2, Optimize, gzip]
 date: 2017-04-18 09:56:26
 ---
 

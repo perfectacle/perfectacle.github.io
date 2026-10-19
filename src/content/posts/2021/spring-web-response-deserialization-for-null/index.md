@@ -1,11 +1,11 @@
 ---
 title: (Spring) 외부 API의 Response 객체를 만들 때 null을 주의하자
 tags:
-  - Spring
   - Web
   - Jackson
 categories:
   - Spring
+  - Core
 date: 2021-09-20 02:57:30
 ---
 

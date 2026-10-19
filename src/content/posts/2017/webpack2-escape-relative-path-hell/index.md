@@ -1,7 +1,7 @@
 ---
 title: (Webpack 2) 상대경로 헬파티에서 탈출하기
-categories: [Front-end, Webpack]
-tags: [npm, Node.js, Webpack2]
+categories: [Frontend, Webpack]
+tags: [npm, Webpack2]
 date: 2017-04-20 09:37:49
 ---
 

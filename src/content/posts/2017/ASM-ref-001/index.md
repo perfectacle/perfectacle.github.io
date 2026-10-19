@@ -1,7 +1,7 @@
 ---
 title: (ASM) 참고용 정리 - 기계어와 ASM, 고급 언어의 관계
 date: 2017-01-06 09:06:13
-categories: [Programming, ASM]
+categories: [CS, ASM·C/C++]
 tags: [ASM, Assembly]
 ---
 ![](./thumb.webp)

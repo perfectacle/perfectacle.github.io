@@ -1,7 +1,7 @@
 ---
 title: Java Virtual Threads 훑어보기
-tags: [Java, Virtual Threads, Loom, Spring, Spring Boot]
-categories: [Note, Java]
+tags: [Virtual Threads, Loom]
+categories: [Java, JVM]
 date: 2022-12-29 00:22:21
 ---
 

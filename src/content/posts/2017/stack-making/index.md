@@ -1,7 +1,7 @@
 ---
 title: (자료구조) List - Stack(Pushdown List)을 만들어보자!
-categories: [Middle-end, 자료구조]
-tags: [자료구조, Stack]
+categories: [CS, 자료구조]
+tags: [Stack]
 date: 2017-08-05 18:44:56
 ---
 ![](./thumb.webp)

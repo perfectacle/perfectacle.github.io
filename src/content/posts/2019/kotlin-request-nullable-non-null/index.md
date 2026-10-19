@@ -1,7 +1,7 @@
 ---
 title: (Kotlin) Request에서 Nullable? Non-Null?
-tags: [Kotlin, Spring]
-categories: [Note, Kotlin]
+tags: []
+categories: [Kotlin, 언어]
 date: 2019-09-18 01:23:39
 ---
 

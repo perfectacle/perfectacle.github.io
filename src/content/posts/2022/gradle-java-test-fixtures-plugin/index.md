@@ -1,7 +1,7 @@
 ---
 title: (Gradle) 테스트 의존성 관리하기 (feat. java-test-fixtures 플러그인)
-tags: [gradle]
-categories: [gradle]
+tags: []
+categories: [도구, Gradle]
 date: 2022-03-13 00:02:03
 ---
 

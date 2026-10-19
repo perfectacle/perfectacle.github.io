@@ -1,7 +1,7 @@
 ---
 title: (이펙티브 자바 3판) 3장 - 모든 객체의 공통 메서드, equals는 일반 규약을 지켜 재정의하라
-tags: [Java]
-categories: [Note, Java]
+tags: []
+categories: [Java, 언어]
 date: 2018-11-26 01:16:30
 ---
 ![](./thumb.webp)

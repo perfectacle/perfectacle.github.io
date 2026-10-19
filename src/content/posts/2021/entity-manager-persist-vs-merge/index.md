@@ -1,12 +1,11 @@
 ---
 title: (JPA) persist vs merge
 tags:
-  - JPA
   - Spring Data JPA
   - Hibernate
 categories:
-  - Back-end
   - Spring
+  - JPA
 date: 2021-06-13 04:02:52
 ---
 

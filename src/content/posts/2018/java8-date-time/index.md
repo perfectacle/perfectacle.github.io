@@ -5,8 +5,8 @@ tags:
   - Date
   - Time
 categories:
-  - Programming
   - Java
+  - 언어
 date: 2018-09-26 13:36:45
 ---
 

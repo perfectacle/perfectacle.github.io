@@ -1,8 +1,8 @@
 ---
 title: (ES6) Number 객체와 함수
 date: 2016-12-24 15:11:28
-categories: [Programming, ECMAScript, ES2015+]
-tags: [JS, ES, ES6, ES2015, Number]
+categories: [JavaScript, ES2015+]
+tags: [Number]
 ---
 ![](./thumb.webp)  
 [(ES6) 숫자형](../../2016/ES6-Number-type/index.md)을 보고 이 글을 보는 걸 추천한다.

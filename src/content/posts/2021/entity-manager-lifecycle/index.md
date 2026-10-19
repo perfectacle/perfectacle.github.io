@@ -1,10 +1,8 @@
 ---
 title: (JPA) 엔티티 매니저는 리퀘스트 당 하나만 생성되지 않을 수 있다.
-tags:
-  - JPA
+tags: []
 categories:
-  - Back-end
-  - DB
+  - Spring
   - JPA
 date: 2021-05-24 04:44:56
 ---

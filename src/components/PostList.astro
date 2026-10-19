@@ -1,5 +1,5 @@
 ---
-import { excerpt, formatDate, postPath, tagPath, tagName, categoryPath, type Post } from '../lib/posts.ts';
+import { excerpt, formatDate, postPath, tagPath, categoryPath, type Post } from '../lib/posts.ts';
 
 interface Props {
   posts: Post[];
@@ -34,7 +34,7 @@ const { posts, summary = true } = Astro.props;
               {post.data.tags.slice(0, 5).map(t => (
                 <li>
                   <a class="chip" href={tagPath(t)}>
-                    #{tagName(t)}
+                    #{t}
                   </a>
                 </li>
               ))}

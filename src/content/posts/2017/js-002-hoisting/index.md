@@ -1,8 +1,8 @@
 ---
 title: (자알쓰) Hoisting
 date: 2017-04-26 23:25:29
-categories: [Programming, ECMAScript, 자알쓰]
-tags: [JS, ES, 자알쓰, Hoisting]
+categories: [JavaScript, 자알쓰]
+tags: [Hoisting]
 ---
 ![](./thumb.webp)
 

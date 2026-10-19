@@ -1,8 +1,8 @@
 ---
 title: (Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자
 date: 2017-01-01 20:00:22
-categories: [Note, Java]
-tags: [Java, 자바의 정석, 형변환, 정규화, 연산자]
+categories: [Java, 언어]
+tags: [자바의 정석, 형변환, 정규화, 연산자]
 ---
 ![](./thumb.webp)
 

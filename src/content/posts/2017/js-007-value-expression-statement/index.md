@@ -1,15 +1,11 @@
 ---
 title: (자알쓰) 값 vs 식 vs 문
 tags:
-  - JS
-  - ES
-  - 자알쓰
   - Value
   - Expression
   - Statement
 categories:
-  - Programming
-  - ECMAScript
+  - JavaScript
   - 자알쓰
 date: 2017-06-02 09:35:27
 ---
