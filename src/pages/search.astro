@@ -24,6 +24,8 @@ import Base from '../layouts/Base.astro';
           zero_results: '[SEARCH_TERM]에 대한 결과가 없습니다',
         },
       });
+      // Pagefind's default UI labels the input only with a title attribute.
+      document.querySelector('#search input')?.setAttribute('aria-label', '검색어');
       const q = new URLSearchParams(location.search).get('q');
       if (q) ui.triggerSearch(q);
     });

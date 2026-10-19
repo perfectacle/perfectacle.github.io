@@ -1,6 +1,11 @@
 name: Setup
 description: Node from .node-version, pnpm from packageManager, frozen install
 
+inputs:
+  working-directory:
+    description: Project directory to install
+    default: .
+
 runs:
   using: composite
   steps:
@@ -12,6 +17,8 @@ runs:
       with:
         node-version-file: .node-version
         cache: pnpm
+        cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
 
     - shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: pnpm install --frozen-lockfile

@@ -31,13 +31,13 @@ console.dir(Number);
 
 ### Properties
 `*` 표시는 ES6에서 새로 추가됨.
-* [Number.POSITIVE_INFINITY](#Number-POSITIVE-INFINITY-amp-Number-NEGATIVE-INFINITY-amp-Number-NaN)  
-* [Number.NEGATIVE_INFINITY](#Number-POSITIVE-INFINITY-amp-Number-NEGATIVE-INFINITY-amp-Number-NaN)  
-* [Number.NaN](#Number-POSITIVE-INFINITY-amp-Number-NEGATIVE-INFINITY-amp-Number-NaN)  
-* [Number.MIN_VALUE](#Number-MIN-VALUE-amp-Number-MAX-VALUE)  
-* [Number.MAX_VALUE](#Number-MIN-VALUE-amp-Number-MAX-VALUE)  
-* [Number.MIN_SAFE_INTEGER](#Number-MIN-SAFE-INTEGER-amp-Number-MAX-SAFE-INTEGER) `*`  
-* [Number.MAX_SAFE_INTEGER](#Number-MIN-SAFE-INTEGER-amp-Number-MAX-SAFE-INTEGER) `*`   
+* [Number.POSITIVE_INFINITY](#Number-POSITIVE-INFINITY-Number-NEGATIVE-INFINITY-Number-NaN)  
+* [Number.NEGATIVE_INFINITY](#Number-POSITIVE-INFINITY-Number-NEGATIVE-INFINITY-Number-NaN)  
+* [Number.NaN](#Number-POSITIVE-INFINITY-Number-NEGATIVE-INFINITY-Number-NaN)  
+* [Number.MIN_VALUE](#Number-MIN-VALUE-Number-MAX-VALUE)  
+* [Number.MAX_VALUE](#Number-MIN-VALUE-Number-MAX-VALUE)  
+* [Number.MIN_SAFE_INTEGER](#Number-MIN-SAFE-INTEGER-Number-MAX-SAFE-INTEGER) `*`  
+* [Number.MAX_SAFE_INTEGER](#Number-MIN-SAFE-INTEGER-Number-MAX-SAFE-INTEGER) `*`   
 * [Number.EPSILON](#Number-EPSILON) `*`
 * [Number.prototype](#Number-prototype)
 
@@ -196,8 +196,8 @@ console.log(12.0.lastNum()); // 2
 * [Number.isSafeInteger()](#Number-isSafeInteger) `*`  
 * [Number.parseInt()](#Number-parseInt) `*`  
 * [Number.parseFloat()](#Number-parseFloat) `*`  
-* [Number.prototype.toFixed()](#Number-prototype-toFixed-amp-Number-prototype-toPrecision)  
-* [Number.prototype.toPrecision()](#Number-prototype-toFixed-amp-Number-prototype-toPrecision)  
+* [Number.prototype.toFixed()](#Number-prototype-toFixed-Number-prototype-toPrecision)  
+* [Number.prototype.toPrecision()](#Number-prototype-toFixed-Number-prototype-toPrecision)  
 * [Number.prototype.toExponential()](#Number-prototype-toExponential)  
 * [Number.prototype.toString()](#Number-prototype-toString)  
 * [Number.prototype.valueOf()](#Number-prototype-valueOf)

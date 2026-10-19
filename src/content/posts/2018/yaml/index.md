@@ -77,7 +77,7 @@ JSON 보다 [YAML의 모델](http://yaml.org/spec/1.2/spec.html#id2763452)이 �
 
 #### 용도
 * 대부분의 웹 기술([AJAX](https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX) 등등)에서 데이터 통신을 위해서 성능을 위한 것인지는 잘 모르겠지만 대부분 JSON을 많이 사용하고,
-[reference](#Anchor-amp-Alias)가 있는 YAML은 복잡한 object 구조를 표현하는데 적합해서, 오프라인에서 data serialization을 위해 더 적합하다.     
+[reference](#Anchor-Alias)가 있는 YAML은 복잡한 object 구조를 표현하는데 적합해서, 오프라인에서 data serialization을 위해 더 적합하다.     
 * 파이썬 커뮤니티에서는 `{ } [ ] : ,`과 같은 [Indicator](#Flow-Style-Indicator) 보다는 파이썬 문법과 비슷한 [indent](#Indentation)로 indicate level을 구분하는 YAML을 더 선호하고,
 자바스크립트 진영에서는 별도의 파서가 필요없고, Javascript Object와 구조가 유사한 JSON을 선호하는 편이다.  
 
@@ -576,12 +576,12 @@ c-comment   ::= “#”
 {"a": "b"}
 ```
 
-`&`: node의 [anchor property](#Anchor-amp-Alias)를 나타내는 문자
+`&`: node의 [anchor property](#Anchor-Alias)를 나타내는 문자
 ```
 c-anchor    ::= “&”
 ```
 
-`*`: [alias node](#Anchor-amp-Alias)를 나타내는 문자
+`*`: [alias node](#Anchor-Alias)를 나타내는 문자
 ```
 c-anchor    ::= “&”
 ```

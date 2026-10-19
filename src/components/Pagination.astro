@@ -23,7 +23,9 @@ for (let n = 1; n <= total; n++) {
         ← 이전
       </a>
     ) : (
-      <span class="disabled">← 이전</span>
+      <span class="placeholder" aria-hidden="true">
+        ← 이전
+      </span>
     )}
     <ol>
       {pages.map(p =>
@@ -43,7 +45,9 @@ for (let n = 1; n <= total; n++) {
         다음 →
       </a>
     ) : (
-      <span class="disabled">다음 →</span>
+      <span class="placeholder" aria-hidden="true">
+        다음 →
+      </span>
     )}
   </nav>
 )}
@@ -67,7 +71,7 @@ for (let n = 1; n <= total; n++) {
     padding: 0;
   }
   a,
-  .disabled,
+  .placeholder,
   .gap {
     display: inline-block;
     min-width: 34px;
@@ -84,7 +88,8 @@ for (let n = 1; n <= total; n++) {
     background: var(--accent);
     color: #fff;
   }
-  .disabled {
-    opacity: 0.4;
+  /* Keeps prev/next in place on the first and last page without showing a dead control. */
+  .placeholder {
+    visibility: hidden;
   }
 </style>
