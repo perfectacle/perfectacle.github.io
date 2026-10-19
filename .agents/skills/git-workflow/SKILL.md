@@ -15,7 +15,7 @@ description: 코드·설정을 바꾸기 전에(브랜치), 커밋할 때, PR �
    완료: `git log -1 --format='%an <%ae> %G?'` 가 주인 정보와 `G` 다.
 3. **로컬 검증을 끝낸다** — 바꾼 범위에 맞게 [site-code 절차 4](../site-code/SKILL.md#절차) 의 검사를 돌린다.
    완료: 전부 통과.
-4. **PR 을 올리고 자동 머지를 건다** — `gh pr create --base main` 후 `gh pr merge --auto --merge`. merge 커밋으로 넣어 PR 단위 이력을 남긴다. squash 는 꺼져 있다. 본문에는 무엇을·왜·어떻게 검증했는지와, 사용자가 알아야 할 부작용(옛 주소 변화 등)을 쓴다.
+4. **PR 을 올리고 자동 머지를 건다** — `gh pr create --base main` 후 `gh pr merge --auto --merge`. merge 커밋으로 넣어 PR 단위 이력을 남긴다. squash·rebase 는 꺼져 있다. 본문에는 무엇을·왜·어떻게 검증했는지와, 사용자가 알아야 할 부작용(옛 주소 변화 등)을 쓴다.
    완료: PR 이 열리고 auto-merge 가 켜졌다.
 5. **머지와 배포까지 지켜본다** — 실패하면 [ci](../ci/SKILL.md) 절차로 고친다. 머지 후 main 의 배포 잡이 성공했는지 본다.
    완료: main 배포 잡이 성공.
@@ -27,7 +27,7 @@ description: 코드·설정을 바꾸기 전에(브랜치), 커밋할 때, PR �
 글·코드·설정·문서 모든 변경은 브랜치에서 하고 PR 로 main 에 넣는다. 저장소 주인도 예외가 없다. 저장소 ruleset 이 아래를 강제한다.
 
 - 모든 브랜치: 서명된 커밋만 push 된다.
-- main: PR 필수(merge·rebase 만), `ci-ok` 필수, 삭제·force-push 금지. 커밋 메시지에 `[skip ci]` 류를 쓰지 않는다. 워크플로가 돌지 않아 `ci-ok` 가 생기지 않고 PR 이 머지되지 못한 채 멈춘다(개인 계정 저장소는 커밋 메시지 규칙을 ruleset 으로 걸 수 없다).
+- main: PR 필수(merge 커밋만), `ci-ok` 필수, 삭제·force-push 금지. 커밋 메시지에 `[skip ci]` 류를 쓰지 않는다. 워크플로가 돌지 않아 `ci-ok` 가 생기지 않고 PR 이 머지되지 못한 채 멈춘다(개인 계정 저장소는 커밋 메시지 규칙을 ruleset 으로 걸 수 없다).
 - 태그: 삭제·force-push 금지.
 
 - 이유: `ci-ok`(빌드·옛 주소·접근성·성능 검사)를 거쳐야 사이트가 깨지지 않는다는 보장이 생긴다.
