@@ -48,4 +48,25 @@ const max = Math.max(...tags.map(t => t.posts.length));
     font-size: 0.65em;
     color: var(--fg-muted);
   }
+  /* Pills with real padding: plain words 20px tall were easy to mis-tap on phones. */
+  .cloud {
+    gap: 8px;
+  }
+  .cloud a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+  .cloud a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+  }
+  sup {
+    vertical-align: baseline;
+    font-size: 0.75em;
+  }
 </style>

@@ -40,6 +40,10 @@ const ko = {
     tpl.content.querySelectorAll('[instance]').forEach(el => instances.add(el.getAttribute('instance')));
   const manager = window.PagefindComponents.getInstanceManager();
   for (const name of instances) manager.getInstance(name).setTranslations(ko);
+  // Keyboard shortcut hints mean nothing on touch screens and crowd the phone header.
+  if (matchMedia('(hover: none)').matches)
+    for (const tpl of templates)
+      tpl.content.querySelectorAll('pagefind-modal-trigger').forEach(el => el.setAttribute('hide-shortcut', ''));
   for (const tpl of templates) tpl.replaceWith(tpl.content.cloneNode(true));
   document.dispatchEvent(new Event('pagefind:ready'));
 </script>

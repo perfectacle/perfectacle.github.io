@@ -92,4 +92,18 @@ for (let n = 1; n <= total; n++) {
   .placeholder {
     visibility: hidden;
   }
+  a,
+  .placeholder,
+  .gap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+  }
+  @media (max-width: 480px) {
+    /* Only first, current and last page numbers fit next to the prev/next buttons. */
+    ol li:not(:has([aria-current])):not(:first-child):not(:last-child) {
+      display: none;
+    }
+  }
 </style>

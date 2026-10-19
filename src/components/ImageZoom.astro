@@ -1,0 +1,65 @@
+<script>
+  // Tap/click a post image to view it full screen with pinch-zoom and swipe (PhotoSwipe).
+  // The library is fetched on first use, so pages without a zoom pay nothing.
+  import 'photoswipe/style.css';
+
+  const zoomable = (img: HTMLImageElement) => !img.closest('a, .yt-facade');
+
+  /** Largest srcset candidate; Astro's responsive images go up to 2x the post column. */
+  function fullSize(img: HTMLImageElement) {
+    const candidates = (img.srcset || '')
+      .split(',')
+      .map(s => s.trim().split(/\s+/))
+      .map(([url, w]) => ({ url: url ?? '', w: Number.parseInt(w ?? '', 10) }))
+      .filter(c => c.url && c.w);
+    const best = candidates.sort((a, b) => b.w - a.w)[0];
+    const ratio = img.naturalHeight / img.naturalWidth || img.height / img.width || 1;
+    const width = best?.w ?? img.naturalWidth;
+    return { src: best?.url ?? img.currentSrc ?? img.src, width, height: Math.round(width * ratio), alt: img.alt };
+  }
+
+  const images = [...document.querySelectorAll<HTMLImageElement>('.prose img')].filter(zoomable);
+
+  async function open(index: number) {
+    const { default: PhotoSwipe } = await import('photoswipe');
+    const pswp = new PhotoSwipe({
+      dataSource: images.map(fullSize),
+      index,
+      bgOpacity: 0.92,
+      showHideAnimationType: 'fade',
+      closeTitle: '닫기',
+      zoomTitle: '확대/축소',
+      arrowPrevTitle: '이전 이미지',
+      arrowNextTitle: '다음 이미지',
+      errorMsg: '이미지를 불러오지 못했습니다',
+      indexIndicatorSep: ' / ',
+    });
+    // Focus goes back to the image that was opened, for keyboard users.
+    pswp.on('destroy', () => images[pswp.currIndex]?.focus({ preventScroll: true }));
+    pswp.init();
+  }
+
+  images.forEach((img, i) => {
+    img.classList.add('zoomable');
+    img.tabIndex = 0;
+    img.setAttribute('role', 'button');
+    img.setAttribute('aria-label', `${img.alt ? `${img.alt} — ` : ''}이미지 크게 보기`);
+    img.addEventListener('click', () => open(i));
+    img.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        void open(i);
+      }
+    });
+  });
+</script>
+
+<style is:global>
+  .prose img.zoomable {
+    cursor: zoom-in;
+  }
+  .prose img.zoomable:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+</style>

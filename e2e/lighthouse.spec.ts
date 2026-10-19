@@ -10,8 +10,8 @@ const PAGES: Record<string, { scriptKb: number; tbtMs?: number }> = {
   '/2022/06/06/tdd-is-design-activity/': { scriptKb: 60 },
   // 30+ YouTube embeds and ~150 images: guards the click-to-load facade and responsive images.
   '/2025/12/02/travel-001-kenya-01/': { scriptKb: 60 },
-  // Mermaid is loaded only on pages with diagrams.
-  '/2022/09/25/hikari-cp-time-config/': { scriptKb: 300, tbtMs: 1200 },
+  // Mermaid loads and renders per diagram as it scrolls into view, so the initial page stays light.
+  '/2022/09/25/hikari-cp-time-config/': { scriptKb: 60 },
   '/search/': { scriptKb: 60 },
 };
 const MIN_SCORE = { performance: 0.8, accessibility: 0.95, 'best-practices': 0.95, seo: 0.95 };

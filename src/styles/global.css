@@ -44,6 +44,18 @@ html {
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: 80px;
 }
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  touch-action: manipulation;
+}
 
 body {
   margin: 0;
@@ -142,8 +154,25 @@ iframe {
 .prose pre {
   margin: 0 0 1.25em;
 }
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+}
 .prose li + li {
-  margin-top: 0.25em;
+  margin-top: 0.3em;
+}
+.prose li > p {
+  margin: 0;
+}
+.prose p,
+.prose li {
+  text-wrap: pretty;
+}
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  text-wrap: balance;
 }
 .prose img {
   display: block;
@@ -182,6 +211,8 @@ iframe {
   background: var(--bg-soft);
 }
 .prose :not(pre) > code {
+  /* keep-all would push a long identifier past the edge instead of wrapping it */
+  word-break: break-all;
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.88em;
   padding: 0.15em 0.4em;
@@ -248,4 +279,66 @@ iframe {
 .chip:hover {
   text-decoration: none;
   filter: brightness(0.96);
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  html {
+    /* Two-row sticky header */
+    scroll-padding-top: 112px;
+  }
+  body {
+    line-height: 1.7;
+  }
+  .prose h2 {
+    font-size: 1.35rem;
+    margin: 1.9em 0 0.7em;
+  }
+  .prose h3 {
+    font-size: 1.15rem;
+    margin: 1.7em 0 0.6em;
+  }
+  .prose h4 {
+    font-size: 1.05rem;
+  }
+  .prose p,
+  .prose ul,
+  .prose ol,
+  .prose blockquote,
+  .prose table,
+  .prose pre {
+    margin-bottom: 1.1em;
+  }
+  .prose img {
+    margin: 1em auto;
+  }
+  .prose blockquote {
+    padding: 0.7em 0.9em;
+    border-left-width: 3px;
+    font-size: 0.96em;
+  }
+  /* Code and video use the full screen width; the 16px gutters cost ~8% on a phone. */
+  .prose pre,
+  .prose .video-container,
+  .prose .yt-frame:not(.video-container > .yt-frame) {
+    margin-inline: -16px;
+    border-radius: 0;
+  }
+  .prose pre {
+    border-inline: 0;
+    padding: 0.9em 16px;
+    font-size: 0.8125rem;
+    overscroll-behavior-x: contain;
+  }
+  .prose .video-container iframe,
+  .prose .yt-facade {
+    border-radius: 0;
+  }
+  .prose th,
+  .prose td {
+    padding: 0.5em 0.75em;
+  }
+  .prose th {
+    white-space: nowrap;
+  }
 }

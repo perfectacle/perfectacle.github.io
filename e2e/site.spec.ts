@@ -85,9 +85,17 @@ test('search modal opens with the shortcut and finds posts', async ({ page, isMo
   await expect(input).toBeHidden();
 });
 
-test('mermaid diagrams render to SVG', async ({ page }) => {
+test('mermaid diagrams render to SVG as they scroll into view', async ({ page }) => {
   await page.goto(MERMAID_POST);
-  await expect(page.locator('div.mermaid svg').first()).toBeVisible();
+  // Counted in one pass: diagrams near the top may already have been swapped in.
+  const total = await page.evaluate(() => document.querySelectorAll('code.language-mermaid, div.mermaid').length);
+  expect(total).toBeGreaterThan(0);
+  // Diagrams are swapped in as they near the viewport, so walk down the page.
+  for (let y = 0; y < (await page.evaluate(() => document.body.scrollHeight)); y += 600) {
+    await page.evaluate(top => window.scrollTo(0, top), y);
+    await page.waitForTimeout(50);
+  }
+  await expect(page.locator('div.mermaid svg')).toHaveCount(total);
   await expect(page.locator('code.language-mermaid')).toHaveCount(0);
 });
 
@@ -135,4 +143,27 @@ test('YouTube embeds keep their start time', async ({ page }) => {
   await facade.scrollIntoViewIfNeeded();
   await facade.click();
   await expect(page.locator('iframe[src*="G3sbCAv0gBE"][src*="start=512"]')).toHaveCount(1);
+});
+
+test('post images open full screen and close with Escape', async ({ page }) => {
+  await page.goto('/2025/12/02/travel-001-kenya-01/');
+  const img = page.locator('.prose img.zoomable').nth(1);
+  await img.scrollIntoViewIfNeeded();
+  await img.click();
+  const viewer = page.locator('.pswp');
+  await expect(viewer).toBeVisible();
+  await expect(page.locator('.pswp__counter')).toContainText('2 / ');
+  // Keys are ignored while the opening transition runs; it ends once the full-size image is shown.
+  await expect(page.locator('.pswp__img').first()).toBeVisible();
+  await page.waitForFunction(() => {
+    const viewerEl = document.querySelector('.pswp');
+    return !!viewerEl && getComputedStyle(viewerEl).opacity === '1';
+  });
+  await page.keyboard.press('Escape');
+  await expect(viewer).toHaveCount(0);
+});
+
+test('images inside links keep the link instead of zooming', async ({ page }) => {
+  await page.goto('/2016/11/26/Markdown-Badge/');
+  await expect(page.locator('.prose a img.zoomable')).toHaveCount(0);
 });
