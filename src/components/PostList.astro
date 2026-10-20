@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { cardSpans, thumbSizes } from '../lib/card-grid.ts';
 import {
   categoryPath,
   coverImage,
@@ -37,15 +38,17 @@ async function thumbnail(post: Post): Promise<ImageMetadata | undefined> {
   const load = postImages[`${dir}${file}`] ?? postImages[`${dir}${safeDecode(file)}`];
   return (await load?.())?.default;
 }
-// Rendered thumbnail width, mirroring the card grid below and --gutter (clamp(16px, 4vw - 10px, 48px), so the
-// frame minus gutters is 92vw + 20px): 3 cards of >= 340px with 28px gaps from 1148px, 2 from 900px, then rows.
-const THUMB_SIZES = [
-  '(min-width: 1450px) 430px',
-  '(min-width: 1148px) calc((92vw - 36px) / 3)',
-  '(min-width: 900px) calc((92vw - 8px) / 2)',
-  '(min-width: 641px) 168px',
-  '88px',
-].join(', ');
+// Each card's span in the 12-track grid at 2, 3 and 4 columns, worked out here so no row is left with one card.
+const spans = { 2: cardSpans(posts.length, 2), 3: cardSpans(posts.length, 3), 4: cardSpans(posts.length, 4) };
+const layoutOf = (i: number) => {
+  const at = { 2: spans[2][i] ?? 6, 3: spans[3][i] ?? 4, 4: spans[4][i] ?? 3 };
+  return {
+    style: `--s2:${at[2]};--s3:${at[3]};--s4:${at[4]}`,
+    // Half-width cards at 3 or 4 columns are the featured ones; at 2 columns every card is half width.
+    wide: ([3, 4] as const).filter(c => at[c] >= 6).join(' ') || undefined,
+    sizes: thumbSizes(at),
+  };
+};
 const items = await Promise.all(
   posts.map(async post => ({ post, thumb: summary ? await thumbnail(post) : undefined })),
 );
@@ -54,8 +57,9 @@ const items = await Promise.all(
 <ol class:list={['post-list', { cards: summary }]}>
   {items.map(({ post, thumb }, i) => {
     const cats = post.data.categories;
+    const layout = layoutOf(i);
     return (
-      <li>
+      <li style={summary ? layout.style : undefined} data-wide={summary ? layout.wide : undefined}>
         <article>
           <div class="body">
             <div class="meta">
@@ -98,10 +102,10 @@ const items = await Promise.all(
               class="thumb"
               src={thumb}
               alt=""
-              width={960}
-              height={540}
-              widths={[176, 352, 480, 720, 960]}
-              sizes={THUMB_SIZES}
+              width={1280}
+              height={720}
+              widths={[176, 352, 480, 720, 960, 1280]}
+              sizes={layout.sizes}
               fit="cover"
               loading={i < 3 ? 'eager' : 'lazy'}
               fetchpriority={i === 0 ? 'high' : undefined}
@@ -207,12 +211,17 @@ const items = await Promise.all(
     z-index: 1;
   }
   /* Wide screens: a grid of cards (image on top) instead of long single rows. */
+  /* 12 tracks so rows of 2, 3 or 4 cards can sit on one page; each card's span comes from cardSpans() as
+     --s2/--s3/--s4. The breakpoints and gap must change together with card-grid.ts, which builds `sizes`. */
   @media (min-width: 900px) {
     .cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      grid-template-columns: repeat(12, minmax(0, 1fr));
       gap: 40px 28px;
       padding-top: 16px;
+    }
+    .cards > li {
+      grid-column: span var(--s2, 6);
     }
     .cards > li + li {
       border-top: 0;
@@ -244,6 +253,33 @@ const items = await Promise.all(
     }
     .cards .excerpt {
       -webkit-line-clamp: 3;
+    }
+  }
+  @media (min-width: 1148px) {
+    .cards > li {
+      grid-column: span var(--s3, 4);
+    }
+  }
+  @media (min-width: 1700px) {
+    .cards > li {
+      grid-column: span var(--s4, 3);
+    }
+  }
+  /* The bigger cards on top get type to match their size. */
+  @media (min-width: 1148px) and (max-width: 1699px) {
+    .cards > li[data-wide~='3'] h2 {
+      font-size: 1.5rem;
+    }
+    .cards > li[data-wide~='3'] .excerpt {
+      font-size: 1rem;
+    }
+  }
+  @media (min-width: 1700px) {
+    .cards > li[data-wide~='4'] h2 {
+      font-size: 1.5rem;
+    }
+    .cards > li[data-wide~='4'] .excerpt {
+      font-size: 1rem;
     }
   }
   @media (max-width: 640px) {
