@@ -372,3 +372,60 @@ for (const width of [1000, 1280, 1920]) {
     }
   });
 }
+
+for (const width of [390, 800, 900, 1280, 1920]) {
+  test(`posts without an image get a title cover that fits at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    // A list page is found that holds image-less posts, rather than assuming which page that is.
+    let found = false;
+    for (let n = 1; n <= 8 && !found; n++) {
+      await page.goto(n === 1 ? '/' : `/page/${n}/`);
+      found = (await page.locator('[data-cover]').count()) >= 2;
+    }
+    expect(found).toBe(true);
+    const report = await page.locator('.post-list > li:has([data-cover])').evaluateAll(items =>
+      items.map(li => {
+        const cover = li.querySelector<HTMLElement>('[data-cover]');
+        const title = cover?.querySelector<HTMLElement>('.title');
+        const frame = cover?.parentElement;
+        if (!cover || !title || !frame)
+          return { hidden: null, sameTitle: false, visible: false, fitsFrame: false, titleInside: false };
+        const box = cover.getBoundingClientRect();
+        const f = frame.getBoundingClientRect();
+        const t = title.getBoundingClientRect();
+        const visible = getComputedStyle(title).display !== 'none';
+        return {
+          hidden: cover.getAttribute('aria-hidden'),
+          sameTitle: title.textContent?.replace(/^#\s*/, '').trim() === li.querySelector('h2')?.textContent?.trim(),
+          visible,
+          fitsFrame: box.width <= f.width + 1 && box.height <= f.height + 1,
+          titleInside: !visible || (t.bottom <= box.bottom + 1 && t.right <= box.right + 1 && t.width > 0),
+        };
+      }),
+    );
+    for (const r of report) {
+      expect(r.hidden).toBe('true');
+      expect(r.sameTitle).toBe(true);
+      expect(r.fitsFrame).toBe(true);
+      expect(r.titleInside).toBe(true);
+    }
+    // Phone thumbnails are too small for text, so the cover shows a mark instead of the title.
+    expect(report.some(r => r.visible)).toBe(width !== 390);
+  });
+}
+
+for (const width of [390, 800, 1280]) {
+  test(`tapping a title cover opens the post at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/page/4/');
+    const item = page.locator('.post-list > li:has([data-cover])').first();
+    const href = await item.locator('h2 a').getAttribute('href');
+    const cover = item.locator('[data-cover]');
+    await cover.scrollIntoViewIfNeeded();
+    const box = await cover.boundingBox();
+    expect(box).not.toBeNull();
+    // A real pointer at the cover's centre, so whatever is painted on top receives it.
+    if (box) await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(page).toHaveURL(new RegExp(`${href}$`));
+  });
+}
