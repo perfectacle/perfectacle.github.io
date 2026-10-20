@@ -2,12 +2,14 @@
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import { cardSpans, thumbSizes } from '../lib/card-grid.ts';
+import PostCover from './PostCover.astro';
 import {
   categoryPath,
   coverImage,
   excerpt,
   formatDate,
   postPath,
+  postSlug,
   readingMinutes,
   tagPath,
   type Post,
@@ -112,8 +114,12 @@ const items = await Promise.all(
             />
           ) : (
             summary && (
-              <div class="thumb thumb-empty" aria-hidden="true">
-                <span class="mono">{`{ ${cats.at(-1) ?? '글'} }`}</span>
+              <div class="thumb thumb-cover">
+                <PostCover
+                  title={post.data.title}
+                  slug={postSlug(post)}
+                  label={cats.length > 0 ? cats.join(' / ') : undefined}
+                />
               </div>
             )
           )}
@@ -192,12 +198,14 @@ const items = await Promise.all(
     border: 1px solid var(--border);
     background: var(--bg-soft);
   }
-  :global([data-theme='dark']) .thumb {
-    filter: brightness(0.9);
+  /* The cover's container query makes it a stacking context painted above the card's full-card link overlay;
+     letting pointers pass through keeps a tap on the cover opening the post, like a tap on an image does. */
+  .thumb-cover {
+    overflow: hidden;
+    pointer-events: none;
   }
-  /* Only cards need a stand-in: rows without an image simply give the text the room. */
-  .thumb-empty {
-    display: none;
+  :global([data-theme='dark']) img.thumb {
+    filter: brightness(0.9);
   }
   /* The title link covers the card so the whole item is a tap target; category and tags stay clickable above it. */
   h2 a::after {
@@ -238,18 +246,6 @@ const items = await Promise.all(
       height: auto;
       aspect-ratio: 16 / 9;
       margin: 0;
-    }
-    .cards .thumb-empty {
-      display: grid;
-      place-items: center;
-      padding: 16px;
-      background:
-        radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--accent) 22%, transparent) 1px, transparent 0) 0 0 /
-          14px 14px,
-        var(--bg-soft);
-      color: var(--fg-muted);
-      font-size: 0.95rem;
-      text-align: center;
     }
     .cards .excerpt {
       -webkit-line-clamp: 3;

@@ -1,0 +1,197 @@
+---
+import { coverFor } from '../lib/cover.ts';
+
+interface Props {
+  title: string;
+  /** Post folder name: the cover's file name and the seed for its accent and code lines. */
+  slug: string;
+  /** Category path shown in the status bar. */
+  label?: string | undefined;
+}
+const { title, slug, label } = Astro.props;
+const { accent, lines } = coverFor(slug);
+// A stand-in "image" for posts without one: the post's title in an editor window. It repeats the card title,
+// so it is hidden from assistive technology.
+---
+
+<div class="cover" style={`--cover-accent:${accent}`} aria-hidden="true" data-cover>
+  <div class="tab">
+    <span class="dots">
+      <i></i>
+      <i></i>
+      <i></i>
+    </span>
+    <span class="file">{slug}.md</span>
+  </div>
+  <div class="code">
+    <p class="title">
+      <span class="hash">#</span> {title}
+      <span class="cursor"></span>
+    </p>
+    {lines.map(w => (
+      <span class="line" style={`width:${w}%`} />
+    ))}
+  </div>
+  {label && <div class="status">{label}</div>}
+</div>
+
+<style>
+  /* Sizes are in container units so one cover fits every card size and the row and phone thumbnails. The cover
+     always sits on a dark "editor" background, in both themes, like the screenshots other cards show. */
+  .cover {
+    --cover-bg: #0f141a;
+    --cover-panel: #161b22;
+    --cover-fg: #e6edf3;
+    --cover-muted: #8b949e;
+    container-type: inline-size;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 100% 0, color-mix(in srgb, var(--cover-accent) 18%, transparent), transparent 55%),
+      var(--cover-bg);
+    color: var(--cover-fg);
+  }
+  .tab {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 2.4cqi;
+    height: clamp(16px, 6.5cqi, 30px);
+    padding: 0 3.5cqi;
+    background: var(--cover-panel);
+    border-bottom: 1px solid color-mix(in srgb, var(--cover-accent) 45%, transparent);
+    font-family: var(--font-mono);
+    font-size: clamp(9px, 2.6cqi, 13px);
+    color: var(--cover-muted);
+    white-space: nowrap;
+  }
+  .dots {
+    display: flex;
+    gap: 0.9cqi;
+  }
+  .dots i {
+    width: clamp(5px, 1.6cqi, 9px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--cover-muted) 55%, transparent);
+  }
+  .file {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .code {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2.2cqi;
+    padding: 4.5cqi 5cqi 0 calc(5cqi + 3ch);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Line-number gutter. */
+  .code::before {
+    content: '1\A 2\A 3\A 4\A 5\A 6';
+    position: absolute;
+    top: 4.8cqi;
+    left: 3.5cqi;
+    white-space: pre;
+    font-family: var(--font-mono);
+    font-size: clamp(8px, 2.4cqi, 12px);
+    line-height: 2.2;
+    color: var(--cover-muted);
+    opacity: 0.7;
+  }
+  .title {
+    margin: 0;
+    font-size: clamp(12px, 5.6cqi, 30px);
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .hash {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--cover-accent);
+  }
+  .cursor {
+    display: inline-block;
+    width: 0.45em;
+    height: 0.9em;
+    margin-left: 0.15em;
+    vertical-align: -0.08em;
+    background: var(--cover-accent);
+  }
+  .line {
+    flex: none;
+    height: clamp(4px, 1.5cqi, 8px);
+    border-radius: 99px;
+    background: color-mix(in srgb, var(--cover-muted) 28%, transparent);
+  }
+  .line:first-of-type {
+    background: color-mix(in srgb, var(--cover-accent) 40%, transparent);
+  }
+  .status {
+    flex: none;
+    margin-top: auto;
+    padding: 1.6cqi 3.5cqi;
+    border-top: 1px solid color-mix(in srgb, var(--cover-muted) 25%, transparent);
+    font-family: var(--font-mono);
+    font-size: clamp(9px, 2.4cqi, 12px);
+    color: var(--cover-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Row thumbnails: just the title on the editor background. */
+  @container (max-width: 240px) {
+    .tab,
+    .status,
+    .line,
+    .code::before {
+      display: none;
+    }
+    .code {
+      justify-content: center;
+      padding: 8px 10px;
+    }
+    .title {
+      font-size: 12.5px;
+      -webkit-line-clamp: 4;
+    }
+  }
+  /* Phone thumbnails are too small to read: a code-file mark instead of the title. */
+  @container (max-width: 120px) {
+    .title {
+      display: none;
+    }
+    .line {
+      display: block;
+      height: 4px;
+    }
+    .code {
+      gap: 6px;
+      justify-content: center;
+      padding: 0 12px;
+    }
+    .code::after {
+      content: '#';
+      order: -1;
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--cover-accent);
+    }
+  }
+</style>
