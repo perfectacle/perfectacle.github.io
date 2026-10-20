@@ -307,3 +307,68 @@ for (const reducedMotion of ['no-preference', 'reduce'] as const) {
     expect(blinking).toBe(reducedMotion === 'no-preference');
   });
 }
+
+// Pages whose post counts exercise the card distribution: a full page, the last (shorter) page, and the smallest
+// category of every size from 2 to 9 posts. Found from the built site so they keep tracking it as posts are added.
+const gridPages = async (page: Page) => {
+  await page.goto('/');
+  const last = Math.max(
+    ...(await page.locator('.pagination a').evaluateAll(as => as.map(a => Number(a.textContent?.trim()) || 0))),
+  );
+  await page.goto('/categories/');
+  const categories = await page.locator('.roots a').evaluateAll(as =>
+    as.map(a => ({
+      href: new URL((a as HTMLAnchorElement).href).pathname,
+      count: Number(a.querySelector('.count')?.textContent),
+    })),
+  );
+  const bySize = new Map<number, string>();
+  for (const { href, count } of categories) if (count >= 2 && count <= 9 && !bySize.has(count)) bySize.set(count, href);
+  return ['/', `/page/${last}/`, ...bySize.values()];
+};
+
+for (const width of [1000, 1280, 1920]) {
+  test(`card grid never leaves a lone card in a row at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    const paths = await gridPages(page);
+    expect(paths.length).toBeGreaterThan(4);
+    for (const path of paths) {
+      await page.goto(path);
+      const tops = await page
+        .locator('.cards > li')
+        .evaluateAll(els => els.map(el => Math.round(el.getBoundingClientRect().top)));
+      if (tops.length < 2) continue;
+      const rows = new Map<number, number>();
+      for (const top of tops) rows.set(top, (rows.get(top) ?? 0) + 1);
+      expect(
+        [...rows.values()].filter(n => n === 1),
+        `${path} rows ${[...rows.values()].join(',')}`,
+      ).toEqual([]);
+    }
+  });
+
+  // `sizes` is computed in card-grid.ts from copies of the grid's CSS numbers; this catches the two drifting apart.
+  test(`card thumbnails' sizes match their rendered width at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    for (const path of await gridPages(page)) {
+      await page.goto(path);
+      const mismatches = await page.locator('.cards img.thumb').evaluateAll(imgs =>
+        imgs.flatMap(img => {
+          // The first entry whose media condition matches gives the slot width; resolve it as a CSS length.
+          const entries = (img as HTMLImageElement).sizes.split(/,\s*(?![^(]*\))/);
+          const slot =
+            entries.map(e => /^\((.+?)\)\s+(.+)$/.exec(e)).find(m => m && matchMedia(`(${m[1]})`).matches)?.[2] ??
+            entries.at(-1);
+          const probe = document.createElement('div');
+          probe.style.cssText = `position:absolute;left:0;top:0;height:0;width:${slot}`;
+          document.body.append(probe);
+          const expected = probe.getBoundingClientRect().width;
+          probe.remove();
+          const actual = img.getBoundingClientRect().width;
+          return Math.abs(actual - expected) > 2 ? [`${Math.round(actual)} vs sizes ${Math.round(expected)}`] : [];
+        }),
+      );
+      expect(mismatches, path).toEqual([]);
+    }
+  });
+}
