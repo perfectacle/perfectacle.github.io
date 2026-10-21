@@ -1,4 +1,6 @@
 ---
+import ToolFiles from './ToolFiles.astro';
+
 interface Props {
   base: string;
 }
@@ -39,6 +41,60 @@ const dialogFlow = [
   '포인터 표 $F7:E000에서 ID마다 적힌 2바이트(그룹 안 위치)를 더합니다.',
   '그 자리에 대사 문자열이 있습니다.',
 ];
+
+const files = {
+  basics: [
+    { path: 'tools/py/dis65816.py', text: '롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러' },
+    { path: 'src/main.asm', text: '모든 후킹 코드. 맨 위 org 줄들이 덮어쓴 원래 코드 위치입니다' },
+  ],
+  font: [
+    { path: 'tools/py/glyphs.py', text: '롬의 폰트를 그림으로 뽑기 (위 256칸 그림을 이것으로 확인)' },
+    { path: 'tools/py/tiles.py', text: '롬의 아무 구간을 타일로 그려 보기' },
+    { path: 'data/tbl/korTBL2.tbl', text: 'v1.0 메뉴 폰트 코드표 (korTBL.tbl은 대사 폰트)' },
+  ],
+  slots: [
+    { path: 'tools/py/vramrefs.py', text: 'VRAM 덤프에서 화면이 실제로 참조하는 구간 찾기 (빈 칸 찾기)' },
+    { path: 'tools/py/vramchr.py', text: 'VRAM 덤프의 타일을 그림으로 보기' },
+    {
+      path: 'src/main.asm',
+      text: 'DrawItemName·DrawSkillName(그리기), ResetSlots(칸 비우기), NmiUpload(NMI 업로드), HeldName(들고 가는 이름)',
+    },
+    { path: 'tools/build.py', text: '새 이름 테이블과 동적 글리프 248자 생성' },
+  ],
+  battle: [{ path: 'src/main.asm', text: 'KoFetch(글자 읽기), KoGlyphX(그림 주소 계산), KoCopy(이름 복사)' }],
+  space: [
+    { path: 'src/main.asm', text: 'org $C3F000, $C3FC40, $E2B400 등 코드와 데이터를 넣은 빈 공간' },
+    { path: 'tools/make.sh', text: 'asar --fix-checksum=on으로 체크섬까지 다시 계산하는 빌드' },
+  ],
+  dialogue: [
+    { path: 'tools/py/dialogue.py', text: '대사 ID로 포인터 표와 뱅크 헤더를 따라가 주소 구하기' },
+    { path: 'tools/py/dlg_rewrite.py', text: '대사 다시 채우기, 1A를 1B+옵션으로 바꾸기, 가운데 정렬, 끝 코드 복구' },
+    { path: 'tools/py/textusage.py', text: '어떤 2바이트 코드가 실제로 쓰이는지 조사 (재활용할 빈 코드 찾기)' },
+    { path: 'tools/py/dump_text.py', text: '모든 텍스트를 읽을 수 있는 줄로 덤프' },
+    { path: 'tools/py/render_jp.py', text: '일본판 원문을 대사 폰트로 그려 보기' },
+    { path: 'src/main.asm', text: 'org $C06896(1B 분기), KoDlgName(한글 이름을 $7E:2D00에 복사)' },
+  ],
+  particles: [
+    { path: 'tools/build.py', text: '이름 앞 1바이트에 받침 비트(0x80) 넣기' },
+    { path: 'tools/py/textfix.py', text: '이름을 바꿀 때 바로 뒤 조사(이/가, 을/를 …)도 같이 고치기' },
+    { path: 'src/main.asm', text: 'KoLvSkill, KoLvAfterNum, KoLvAttr (레벨업 화면)' },
+  ],
+  ui: [
+    { path: 'src/main.asm', text: 'KoResultName·KoResultGeom·KoResultChar(결과 창), KoSpecialHint(필살기 안내)' },
+    { path: 'tools/make.sh', text: 'asar에 -Dres_ui=0을 주면 원판 배치로 빌드돼 전후 비교가 됩니다' },
+  ],
+  testing: [
+    { path: 'test/seq.lua, tools/run_seq.sh', text: '세이브스테이트에서 버튼 입력 재생, 화면·메모리 저장' },
+    { path: 'test/poke_state.lua, tools/make_states.sh', text: 'RAM 값을 바꿔 새 세이브스테이트 만들기' },
+    { path: 'test/harness/harness.asm, tools/make_harness.sh', text: '원하는 대사를 띄우는 테스트 전용 롬' },
+    { path: 'tools/py/scene_rom.py, test/warp_seq.lua', text: '출구를 바꾸거나 방을 워프해 원하는 장소로 가기' },
+    {
+      path: 'tools/py/verify_dialogue.py, verify_menu.py, shotcmp.py, tools/test_menu.sh',
+      text: '대사·메뉴 회귀 검사와 스크린샷 비교',
+    },
+    { path: 'tools/py/make_ips.py', text: '일본판 원본 기준 IPS 만들기 (헤더 없음/있음)' },
+  ],
+};
 ---
 
 <section id="making" class="section page-width" aria-labelledby="making-title">
@@ -67,7 +123,8 @@ const dialogFlow = [
     <a href={`${base}/downloads/Super_Mario_RPG_K_v1_1_tools.zip`} download>
       빌드 도구(zip, 600KB)
     </a>
-    로 받을 수 있습니다. 롬, asar, Mesen은 들어 있지 않고, 빌드 순서는 압축 파일 안 README.txt에 있습니다.
+    로 받을 수 있습니다. 롬, asar, Mesen은 들어 있지 않고, 빌드 순서는 압축 파일 안 README.txt에 있습니다. 아래 「자세히
+    보기」의 항목마다 그 내용을 다루는 파일을 적어 두었습니다.
   </p>
 
   <details class="more making">
@@ -164,6 +221,8 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
     ...</code></pre>
       <p>v1.1은 필드 메뉴, 전투 메뉴, 결과 창, 레벨업 화면, 대사 엔진 등 스무 곳 남짓에 이런 후킹을 걸었습니다.</p>
 
+      <ToolFiles items={files.basics} />
+
       <h3 class="pixel">2. 왜 v1.0은 이름을 영문으로 뒀나</h3>
       <p>
         메뉴 폰트의 글자 하나는 가로 8, 세로 12 픽셀 그림이고 한 줄에 2바이트씩 24바이트를 씁니다. 아래는 실제 롬에서
@@ -200,6 +259,8 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         칸이 없었던 것입니다. 롬을 키워도 칸 수는 늘지 않으니 병목은 용량이 아니라 "1바이트 코드 = 화면에 상주하는
         256칸" 이라는 구조였습니다.
       </p>
+
+      <ToolFiles items={files.font} />
 
       <h3 class="pixel">3. 필요한 글자만 올리는 임시 칸</h3>
       <p>
@@ -245,6 +306,8 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         </li>
       </ul>
 
+      <ToolFiles items={files.slots} />
+
       <h3 class="pixel">4. 전투 메뉴는 SA-1이 따로 그린다</h3>
       <p>
         전투 메뉴는 타일 방식이 아니라 SA-1이 BW-RAM에 비트맵을 만들고 글자를 직접 찍습니다. 같은 이름 테이블을 쓰되
@@ -262,6 +325,8 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         />
         <figcaption>위 v1.0, 아래 v1.1</figcaption>
       </figure>
+
+      <ToolFiles items={files.battle} />
 
       <h3 class="pixel">5. 롬을 4MB보다 키우지 않은 이유</h3>
       <p>
@@ -290,6 +355,8 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
           decoding="async"
         />
       </figure>
+
+      <ToolFiles items={files.space} />
 
       <h3 class="pixel">6. 대사 속 아이템 이름</h3>
       <p>대사는 4096개이고 ID로 찾습니다. 위치를 두 단계로 찾아가므로 대사를 고치면 이 표들도 다시 만들어야 합니다.</p>
@@ -342,6 +409,8 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         />
       </figure>
 
+      <ToolFiles items={files.dialogue} />
+
       <h3 class="pixel">7. 조사 자동 선택</h3>
       <p>
         "레벨3(이)가", "(을)를 배웠습니다" 같은 표기는 이름이 실행 중에 정해져서 생깁니다. v1.1은 빌드할 때 이름 마지막
@@ -361,6 +430,8 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
           decoding="async"
         />
       </figure>
+
+      <ToolFiles items={files.particles} />
 
       <h3 class="pixel">8. 원판부터 어색했던 화면</h3>
       <p>
@@ -391,6 +462,8 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         <figcaption>위 일본판, 아래 v1.1</figcaption>
       </figure>
 
+      <ToolFiles items={files.ui} />
+
       <h3 class="pixel">9. 확인은 에뮬레이터가</h3>
       <ul class="notes">
         <li>
@@ -400,6 +473,7 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         <li>상점 주인 대사 자리에 원하는 대사를 띄우는 테스트 전용 롬으로 v1.0과 v1.1을 같은 조건에서 찍습니다.</li>
         <li>고치기로 한 목록 밖에서 바뀐 대사가 0건인지, 메뉴 화면이 기준과 픽셀 단위로 같은지 비교합니다.</li>
       </ul>
+      <ToolFiles items={files.testing} />
     </div>
   </details>
 </section>

@@ -1,0 +1,46 @@
+---
+interface Props {
+  items: { path: string; text: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<aside class="tool-files" aria-label="빌드 도구에서 이 내용에 해당하는 파일">
+  <p class="tool-files-title">빌드 도구 속 파일</p>
+  <ul>
+    {items.map(item => (
+      <li>
+        <code>{item.path}</code> {item.text}
+      </li>
+    ))}
+  </ul>
+</aside>
+
+<style>
+  .tool-files {
+    padding: 10px 14px;
+    border: 1px dashed rgb(255 255 255 / 35%);
+    border-radius: 6px;
+    font-size: 0.875rem;
+  }
+
+  .tool-files-title {
+    margin: 0 0 4px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .tool-files ul {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .tool-files code {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 0.875em;
+    overflow-wrap: anywhere;
+  }
+</style>
