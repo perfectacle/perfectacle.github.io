@@ -1,15 +1,14 @@
 ---
-import MakingOf from '../../../../components/totsugeki/MakingOf.astro';
+import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
+import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
-import VersionPair from '../../../../components/kr-patch/VersionPair.astro';
+import MakingOf from '../../../../components/totsugeki/MakingOf.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
+import { TOTSUGEKI_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
 import { totsugekiGroups, totsugekiVersions } from '../../../../lib/totsugeki-showcase';
-import { GOKUDEN_TOTSUGEKI } from '../../../../lib/rom-patch';
 
-const base = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki';
-const ips = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1.ips`;
-const headeredIps = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1_Headered.ips`;
-const tools = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1_Tools.zip`;
+const patch = TOTSUGEKI_PATCH;
+const base = patch.path;
 const VISIBLE_PER_GROUP = 2;
 
 const play = [
@@ -77,89 +76,29 @@ const cast = [
     text: '천계에서 신을 모시는 시종. 천계에 올라온 오공의 수행을 맡습니다.',
   },
 ];
-
-const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
 ---
 
 <PatchBook
-  title="드래곤볼 Z 초오공전 돌격편 한글판"
-  trail={[
-    { name: '한글패치', path: '/games/kr-patches/' },
-    { name: '드래곤볼 Z 초오공전 돌격편', path: base + '/' },
-  ]}
-  description="1995년 슈퍼 패미컴 드래곤볼 Z 초오공전 돌격편 한글패치 v1.1. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다."
-  theme="gokuden"
+  title={`${patch.title} 한글판`}
+  trail={trail(patch)}
+  description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
+  theme={patch.theme}
   image={{ src: `${base}/images/title.webp`, alt: '드래곤볼 Z 초오공전 돌격편 한글판 타이틀 화면' }}
-  copyright={['게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995']}
-  links={[]}
+  copyright={[patch.copyright]}
 >
   <section class="hero page-width" aria-labelledby="title">
     <div class="hero-copy">
-      <p class="label">슈퍼 패미컴 · 1995 · 한글패치 v1.1</p>
+      <p class="label">{releaseLabel(patch)}</p>
       <h1 id="title" class="pixel">
-        드래곤볼 Z 초오공전 돌격편 한글판
+        {patch.title} 한글판
       </h1>
       <p class="lead">
         가지고 있는 일본판 게임 파일을 고르면 바로 한글판으로 바꿔 저장합니다. 따로 프로그램을 설치하지 않아도 됩니다.
       </p>
-      <PatchBox ips={ips} spec={GOKUDEN_TOTSUGEKI} output="Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1" />
-      <details class="manual">
-        <summary class="pointer">직접 패치하려면</summary>
-        <div class="manual-body">
-          <p>
-            Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 손대지 않은 일본판 원본에 적용하세요. 파일 크기에 맞는
-            IPS를 받으세요.
-          </p>
-          <ul class="downloads">
-            <li>
-              <a href={ips} download>
-                헤더 없는 파일용 IPS
-              </a>
-              <span>(2MB, {bytes(GOKUDEN_TOTSUGEKI.size)})</span>
-            </li>
-            <li>
-              <a href={headeredIps} download>
-                헤더 있는 파일용 IPS
-              </a>
-              <span>(2MB+512바이트, {bytes(GOKUDEN_TOTSUGEKI.size + 512)})</span>
-            </li>
-          </ul>
-          <table>
-            <caption>헤더 없는 파일 기준</caption>
-            <thead>
-              <tr>
-                <th scope="col">구분</th>
-                <th scope="col">크기</th>
-                <th scope="col">CRC32</th>
-                <th scope="col">MD5</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">일본판 원본</th>
-                <td>{bytes(GOKUDEN_TOTSUGEKI.size)}</td>
-                <td>
-                  <code>{GOKUDEN_TOTSUGEKI.original.crc32}</code>
-                </td>
-                <td>
-                  <code>{GOKUDEN_TOTSUGEKI.original.md5}</code>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">한글판 v1.1</th>
-                <td>{bytes(GOKUDEN_TOTSUGEKI.size)}</td>
-                <td>
-                  <code>{GOKUDEN_TOTSUGEKI.patched.crc32}</code>
-                </td>
-                <td>
-                  <code>{GOKUDEN_TOTSUGEKI.patched.md5}</code>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <p>세이브 구조는 바꾸지 않아 v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
-        </div>
-      </details>
+      <PatchBox ips={downloads(patch).ips} spec={patch.spec} output={patch.stem} />
+      <ManualPatch patch={patch}>
+        <p>세이브 구조는 바꾸지 않아 v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
+      </ManualPatch>
     </div>
     <figure class="hero-shot screen">
       <img
@@ -174,7 +113,7 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
 
   <nav class="toc page-width frame" aria-label="이 페이지 차례">
     <a class="pointer" href="#changes">
-      v1.1에서 달라진 것
+      v{patch.version}에서 달라진 것
     </a>
     <a class="pointer" href="#story">
       이야기
@@ -192,7 +131,7 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
 
   <section id="changes" class="section page-width" aria-labelledby="changes-title">
     <h2 id="changes-title" class="pixel">
-      v1.1에서 달라진 것
+      v{patch.version}에서 달라진 것
     </h2>
     <p>
       2012년에 낸 v1.0 이후 약 14년 만의 업데이트입니다. 대사 5,370줄을 일본어 원문과 한 줄씩 대조해 4,483줄을
@@ -206,27 +145,7 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
     </ul>
     <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.0과 v1.1을 나란히 놓았습니다.</p>
     {totsugekiGroups.map(group => (
-      <section class="compare-group" aria-labelledby={`group-${group.id}`}>
-        <h3 id={`group-${group.id}`} class="pixel">
-          {group.title}
-        </h3>
-        <p>{group.summary}</p>
-        <div class="compare-list">
-          {group.pairs.slice(0, VISIBLE_PER_GROUP).map(pair => (
-            <VersionPair pair={pair} base={base} versions={totsugekiVersions} />
-          ))}
-        </div>
-        {group.pairs.length > VISIBLE_PER_GROUP && (
-          <details class="more">
-            <summary class="pointer">{group.pairs.length - VISIBLE_PER_GROUP}장면 더 보기</summary>
-            <div class="compare-list">
-              {group.pairs.slice(VISIBLE_PER_GROUP).map(pair => (
-                <VersionPair pair={pair} base={base} versions={totsugekiVersions} />
-              ))}
-            </div>
-          </details>
-        )}
-      </section>
+      <CompareGroup group={group} base={base} versions={totsugekiVersions} visible={VISIBLE_PER_GROUP} />
     ))}
   </section>
 
@@ -325,11 +244,11 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
     </div>
   </section>
 
-  <MakingOf base={base} tools={tools} />
+  <MakingOf patch={patch} />
 
   <p class="back-to-top page-width">
     <a class="pointer" href="#title">
-      한글판 만들러 가기
+      한글패치 하러 가기
     </a>
   </p>
 </PatchBook>

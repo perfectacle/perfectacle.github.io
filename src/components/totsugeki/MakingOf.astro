@@ -1,10 +1,14 @@
 ---
+import ToolFiles from '../kr-patch/ToolFiles.astro';
+import { downloads, type KrPatch } from '../../lib/kr-patches';
+
 interface Props {
-  base: string;
-  tools: string;
+  patch: KrPatch;
 }
 
-const { base, tools } = Astro.props;
+const { patch } = Astro.props;
+const base = patch.path;
+const { tools } = downloads(patch);
 const img = (name: string) => `${base}/images/making/${name}`;
 
 const memories = [
@@ -70,7 +74,7 @@ const toolFiles = [
   { name: 'tables/', text: 'v1.1 텍스트, 메뉴 문자열, 일본어 원문과 v1.0 대조 덤프, 글자 코드표' },
 ];
 
-const sectionTools = {
+const sectionTools: Record<string, string[]> = {
   '1': ['tools/dis65816.py', 'lua/scenario.lua'],
   '2': ['tools/dialogue1.py', 'tools/text_patch1.py', 'tools/layout1.py', 'tools/lint1.py'],
   '3': ['tools/font1.py', 'tables/'],
@@ -80,6 +84,11 @@ const sectionTools = {
   '7': ['lua/scenario.lua', 'tools/pages1.py', 'tools/rgcmp1.py'],
   '8': ['tools/credits1.py', 'tools/fixsum.py'],
 };
+const toolsFor = (section: string) =>
+  (sectionTools[section] ?? []).map(path => ({
+    path,
+    text: toolFiles.find(file => file.name === path)?.text ?? '',
+  }));
 ---
 
 <section id="making" class="section page-width" aria-labelledby="making-title">
@@ -102,33 +111,20 @@ const sectionTools = {
     />
     <figcaption>v1.1 롬에서 꺼낸 새 글자 213자</figcaption>
   </figure>
+  <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="section-note">
-    슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다. 절마다 그 작업에 쓴 도구 파일 이름을
-    적었습니다. 아래 묶음을 받아 설명과 코드를 같이 볼 수 있습니다.
+    빌드 스크립트, 대사·폰트·타이틀 도구, Mesen 2용 Lua 스크립트와 대조 덤프는
+    <a href={tools} download>
+      빌드 도구(zip, 3MB)
+    </a>
+    로 받을 수 있습니다. 롬은 들어 있지 않습니다. 아래 「자세히 보기」의 항목마다 그 내용을 다루는 파일을 적어 두었고,
+    전체 목록은 마지막 <a href="#making-tools">빌드 도구 파일</a>에 있습니다.
   </p>
-  <ul class="downloads">
-    <li>
-      <a href={tools} download>
-        분석 도구 묶음
-      </a>
-      <span>(ZIP, 약 3MB, 게임 롬은 들어 있지 않음)</span>
-    </li>
-  </ul>
 
   <details class="more making">
     <summary class="pointer">자세히 보기</summary>
     <div class="making-body">
       <h3 class="pixel">1. 배경지식</h3>
-      <p class="tool-ref">
-        도구:{' '}
-        {sectionTools['1'].map((name, i) => (
-          <>
-            {i > 0 && ' · '}
-            <code>{name}</code>
-          </>
-        ))}{' '}
-        <a href="#making-tools">파일 설명</a>
-      </p>
       <h4>게임기 안의 메모리</h4>
       <p>
         CPU는 화면에 직접 그리지 않습니다. 그림 조각(타일)을 VRAM에 올려 두고 "이 칸에는 몇 번 타일" 이라는
@@ -188,17 +184,9 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
         DATA의 ENDING으로는 엔딩을 처음부터 볼 수 있습니다. 이 메뉴가 뒤에 나올 테스트의 바탕이 됐습니다.
       </p>
 
+      <ToolFiles items={toolsFor('1')} />
+
       <h3 class="pixel">2. 대사는 뱅크 밖으로 못 나간다</h3>
-      <p class="tool-ref">
-        도구:{' '}
-        {sectionTools['2'].map((name, i) => (
-          <>
-            {i > 0 && ' · '}
-            <code>{name}</code>
-          </>
-        ))}{' '}
-        <a href="#making-tools">파일 설명</a>
-      </p>
       <p>
         대사는 5,370줄이고 ID로 찾습니다. ID 범위마다 뱅크 하나와 포인터 표가 있습니다. 포인터는 2바이트라 뱅크 안의
         주소만 가리킬 수 있어서, 대사가 길어져도 다른 뱅크로 넘길 수 없습니다.
@@ -220,17 +208,9 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
         ))}
       </ol>
 
+      <ToolFiles items={toolsFor('2')} />
+
       <h3 class="pixel">3. 폰트 칸이 모자랐다</h3>
-      <p class="tool-ref">
-        도구:{' '}
-        {sectionTools['3'].map((name, i) => (
-          <>
-            {i > 0 && ' · '}
-            <code>{name}</code>
-          </>
-        ))}{' '}
-        <a href="#making-tools">파일 설명</a>
-      </p>
       <p>
         이 게임은 글자마다 폭이 다른 가변폭 폰트를 씁니다. 대사의 글자 하나는 2바이트 코드이고, 코드 범위에 따라 폰트를
         읽는 곳이 다릅니다.
@@ -283,17 +263,9 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
         고치면서 새로 필요해진 글자를 넣을 자리는 없었습니다.
       </p>
 
+      <ToolFiles items={toolsFor('3')} />
+
       <h3 class="pixel">4. 글자 칸을 512개 늘리기</h3>
-      <p class="tool-ref">
-        도구:{' '}
-        {sectionTools['4'].map((name, i) => (
-          <>
-            {i > 0 && ' · '}
-            <code>{name}</code>
-          </>
-        ))}{' '}
-        <a href="#making-tools">파일 설명</a>
-      </p>
       <p>
         글자를 그리는 코드(<code>$B7:9763</code>)는 코드 범위를 보고 어느 폰트를 읽을지 고릅니다. 그중 0x7F0 이상 코드를
         맡는 갈림길(<code>$B7:97BC</code>)을 "새 코드로 가라" 는 명령으로 덮어쓰고, 새 코드를 롬의 빈 공간에 두었습니다.
@@ -332,17 +304,9 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         일본판 원본에서도 0xFF였는지, 앞의 자료가 그 값을 읽지 않는지 확인한 곳만 썼습니다.
       </p>
 
+      <ToolFiles items={toolsFor('4')} />
+
       <h3 class="pixel">5. 타이틀 화면</h3>
-      <p class="tool-ref">
-        도구:{' '}
-        {sectionTools['5'].map((name, i) => (
-          <>
-            {i > 0 && ' · '}
-            <code>{name}</code>
-          </>
-        ))}{' '}
-        <a href="#making-tools">파일 설명</a>
-      </p>
       <p>
         타이틀 화면은 그림 여러 겹을 겹쳐서 만듭니다. 왼쪽부터 오공 그림, 배경 그라데이션, 로고와 글자가 있는
         층(BG3)입니다. 한글 타이틀은 이 중 글자 층만 고쳤습니다. 「超悟空伝 突激編」을 한글로 다시 그리고, 로고 아래
@@ -370,17 +334,9 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         건드리면 두 줄이 같이 바뀝니다.
       </p>
 
+      <ToolFiles items={toolsFor('5')} />
+
       <h3 class="pixel">6. 이벤트 표에서 못 나오던 문제</h3>
-      <p class="tool-ref">
-        도구:{' '}
-        {sectionTools['6'].map((name, i) => (
-          <>
-            {i > 0 && ' · '}
-            <code>{name}</code>
-          </>
-        ))}{' '}
-        <a href="#making-tools">파일 설명</a>
-      </p>
       <ol class="flow">
         {eventSteps.map(step => (
           <li>{step}</li>
@@ -411,17 +367,9 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         돌아오는 것을 확인했습니다.
       </p>
 
+      <ToolFiles items={toolsFor('6')} />
+
       <h3 class="pixel">7. 확인은 에뮬레이터가</h3>
-      <p class="tool-ref">
-        도구:{' '}
-        {sectionTools['7'].map((name, i) => (
-          <>
-            {i > 0 && ' · '}
-            <code>{name}</code>
-          </>
-        ))}{' '}
-        <a href="#making-tools">파일 설명</a>
-      </p>
       <p>대사 5,370줄을 사람이 다 띄워 볼 수는 없어서, 에뮬레이터 Mesen 2와 Lua 스크립트로 확인했습니다.</p>
       <ul class="notes">
         {regression.map(item => (
@@ -433,17 +381,9 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         </li>
       </ul>
 
+      <ToolFiles items={toolsFor('7')} />
+
       <h3 class="pixel">8. 그 밖에</h3>
-      <p class="tool-ref">
-        도구:{' '}
-        {sectionTools['8'].map((name, i) => (
-          <>
-            {i > 0 && ' · '}
-            <code>{name}</code>
-          </>
-        ))}{' '}
-        <a href="#making-tools">파일 설명</a>
-      </p>
       <ul class="notes">
         <li>
           세이브 구조는 바꾸지 않았습니다. v1.0에서 만든 세이브를 v1.1에서 불러와 이어서 진행되는 것을 확인했습니다.
@@ -458,22 +398,16 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         </li>
       </ul>
 
+      <ToolFiles items={toolsFor('8')} />
+
       <h3 id="making-tools" class="pixel">
-        9. 분석 도구
+        9. 빌드 도구 파일
       </h3>
-      <ul class="downloads">
-        <li>
-          <a href={tools} download>
-            분석 도구 묶음
-          </a>
-          <span>(ZIP, 약 3MB)</span>
-        </li>
-      </ul>
       <p>
-        위에서 설명한 주소 전체와 빌드 도구가 들어 있고, 게임 롬은 들어 있지 않습니다. 압축을 푼 폴더에 일본판 원본(헤더
-        없음, CRC32 <code>D531289B</code>)을 <code>super-gokuden-jp.smc</code>로 두고 <code>zsh tools/build.sh</code>를
-        실행하면 배포판과 같은 롬(CRC32 <code>7405D969</code>)이 나옵니다. Python 3(Pillow, numpy)이 필요하고, 사용법은
-        묶음 안의 README.txt에 있습니다.
+        위에서 설명한 주소 전체가 묶음 안에 있습니다. 압축을 푼 폴더에 일본판 원본(헤더 없음, CRC32{' '}
+        <code>{patch.spec.original.crc32}</code>)을 <code>super-gokuden-jp.smc</code>로 두고{' '}
+        <code>zsh tools/build.sh</code>를 실행하면 배포판과 같은 롬(CRC32 <code>{patch.spec.patched.crc32}</code>)이
+        나옵니다. Python 3(Pillow, numpy)이 필요하고, 사용법은 묶음 안의 README.txt에 있습니다.
       </p>
       <div class="table-wrap">
         <table>

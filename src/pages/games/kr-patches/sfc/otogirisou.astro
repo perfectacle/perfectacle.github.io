@@ -1,16 +1,17 @@
 ---
+import ComparePairs from '../../../../components/kr-patch/ComparePairs.astro';
+import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
-import VersionPair from '../../../../components/kr-patch/VersionPair.astro';
-import MakingOf from '../../../../components/otogirisou/MakingOf.astro';
 import ChapterChoices from '../../../../components/otogirisou/ChapterChoices.astro';
+import MakingOf from '../../../../components/otogirisou/MakingOf.astro';
 import SoundNovel from '../../../../components/otogirisou/SoundNovel.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
-import { otogirisouPairs, otogirisouVersions } from '../../../../lib/otogirisou-showcase';
-import { OTOGIRISOU, patchedSize } from '../../../../lib/rom-patch';
+import { OTOGIRISOU_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
+import { otogirisouPairs } from '../../../../lib/otogirisou-showcase';
+import { JAPANESE_AND_KOREAN } from '../../../../lib/version-pairs';
 
-const base = '/games/kr-patches/sfc/otogirisou';
-const ips = `${base}/downloads/Otogirisou_K_v1_2.ips`;
-const headeredIps = `${base}/downloads/Otogirisou_K_v1_2_Headered.ips`;
+const patch = OTOGIRISOU_PATCH;
+const base = patch.path;
 const VISIBLE_PAIRS = 4;
 
 const features = [
@@ -93,93 +94,32 @@ const chapter = (id: string) => {
   if (!found) throw new Error(`Unknown chapter ${id}`);
   return { mark: found.mark, next: chapters[i + 1] };
 };
-
-const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
-const korean = patchedSize(OTOGIRISOU);
 ---
 
 <PatchBook
-  title="제절초 한글판"
-  trail={[
-    { name: '한글패치', path: '/games/kr-patches/' },
-    { name: '제절초', path: base + '/' },
-  ]}
-  description="1992년 슈퍼 패미컴 사운드 노벨 제절초(弟切草) 한글패치 v1.2. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다."
-  theme="otogirisou"
+  title={`${patch.title} 한글판`}
+  trail={trail(patch)}
+  description={`${patch.year}년 슈퍼 패미컴 사운드 노벨 ${patch.title}(弟切草) 한글패치 v${patch.version}. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
+  theme={patch.theme}
   image={{ src: `${base}/images/scenes/title.webp`, alt: '제절초 타이틀 화면' }}
-  copyright={['게임 © 1992 CHUNSOFT']}
-  links={[]}
+  copyright={[patch.copyright]}
 >
   <section class="hero page-width" aria-labelledby="title">
     <div class="hero-copy">
-      <p class="label">슈퍼 패미컴 · 1992 · 한글패치 v1.2</p>
+      <p class="label">{releaseLabel(patch)}</p>
       <h1 id="title" class="pixel">
-        제절초 한글판
+        {patch.title} 한글판
       </h1>
       <p class="lead">
         가지고 있는 일본판 게임 파일을 고르면 바로 한글판으로 바꿔 저장합니다. 따로 프로그램을 설치하지 않아도 됩니다.
       </p>
-      <PatchBox ips={ips} spec={OTOGIRISOU} output="Otogirisou_K_v1_2" />
-      <details class="manual">
-        <summary class="pointer">직접 패치하려면</summary>
-        <div class="manual-body">
-          <p>
-            Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 손대지 않은 일본판 원본에 적용하세요. 파일 크기에 맞는
-            IPS를 받으세요. 패치하면 파일이 2MB로 늘어납니다.
-          </p>
-          <ul class="downloads">
-            <li>
-              <a href={ips} download>
-                헤더 없는 파일용 IPS
-              </a>
-              <span>(1MB, {bytes(OTOGIRISOU.size)})</span>
-            </li>
-            <li>
-              <a href={headeredIps} download>
-                헤더 있는 파일용 IPS
-              </a>
-              <span>(1MB+512바이트, {bytes(OTOGIRISOU.size + 512)})</span>
-            </li>
-          </ul>
-          <table>
-            <caption>헤더 없는 파일 기준</caption>
-            <thead>
-              <tr>
-                <th scope="col">구분</th>
-                <th scope="col">크기</th>
-                <th scope="col">CRC32</th>
-                <th scope="col">MD5</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">일본판 원본</th>
-                <td>{bytes(OTOGIRISOU.size)}</td>
-                <td>
-                  <code>{OTOGIRISOU.original.crc32}</code>
-                </td>
-                <td>
-                  <code>{OTOGIRISOU.original.md5}</code>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">한글판 v1.2</th>
-                <td>{bytes(korean)}</td>
-                <td>
-                  <code>{OTOGIRISOU.patched.crc32}</code>
-                </td>
-                <td>
-                  <code>{OTOGIRISOU.patched.md5}</code>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <p>
-            일본판 세이브 파일(.srm)도 패치한 파일과 같은 이름으로 바꾸면 이어서 할 수 있습니다. 엔딩에서 「終」이 나온
-            뒤에는 리셋해 주세요. 원작과 같은 동작입니다.
-          </p>
-        </div>
-      </details>
+      <PatchBox ips={downloads(patch).ips} spec={patch.spec} output={patch.stem} />
+      <ManualPatch patch={patch}>
+        <p>
+          일본판 세이브 파일(.srm)도 패치한 파일과 같은 이름으로 바꾸면 이어서 할 수 있습니다. 엔딩에서 「終」이 나온
+          뒤에는 리셋해 주세요. 원작과 같은 동작입니다.
+        </p>
+      </ManualPatch>
     </div>
     <SoundNovel base={base} chapters={chapters.map(c => ({ href: `#${c.id}`, label: c.label }))} />
   </section>
@@ -196,21 +136,7 @@ const korean = patchedSize(OTOGIRISOU);
       <li>장 제목과 엔딩 제목</li>
     </ul>
     <p class="section-note">같은 장면을 일본판과 한글판에서 찍어 나란히 놓았습니다.</p>
-    <div class="compare-list">
-      {otogirisouPairs.slice(0, VISIBLE_PAIRS).map(pair => (
-        <VersionPair pair={pair} base={base} versions={otogirisouVersions} />
-      ))}
-    </div>
-    {otogirisouPairs.length > VISIBLE_PAIRS && (
-      <details class="more">
-        <summary class="pointer">{otogirisouPairs.length - VISIBLE_PAIRS}장면 더 보기</summary>
-        <div class="compare-list">
-          {otogirisouPairs.slice(VISIBLE_PAIRS).map(pair => (
-            <VersionPair pair={pair} base={base} versions={otogirisouVersions} />
-          ))}
-        </div>
-      </details>
-    )}
+    <ComparePairs pairs={otogirisouPairs} base={base} versions={JAPANESE_AND_KOREAN} visible={VISIBLE_PAIRS} />
     <ChapterChoices next={chapter('korean').next} />
   </section>
 
@@ -321,5 +247,11 @@ const korean = patchedSize(OTOGIRISOU);
     <ChapterChoices next={chapter('play').next} />
   </section>
 
-  <MakingOf base={base} mark={chapter('making').mark} />
+  <MakingOf patch={patch} mark={chapter('making').mark} />
+
+  <p class="back-to-top page-width">
+    <a class="pointer" href="#title">
+      한글패치 하러 가기
+    </a>
+  </p>
 </PatchBook>

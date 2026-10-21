@@ -1,11 +1,15 @@
 ---
+import ToolFiles from '../kr-patch/ToolFiles.astro';
+import { downloads, type KrPatch } from '../../lib/kr-patches';
+
 interface Props {
-  base: string;
+  patch: KrPatch;
 }
 
-const { base } = Astro.props;
+const { patch } = Astro.props;
+const base = patch.path;
 const img = (name: string) => `${base}/images/making/${name}`;
-const tools = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_2_Tools.zip`;
+const { tools } = downloads(patch);
 
 const memories = [
   { name: '롬', size: '2MB', like: '책', role: '카트리지에 든 프로그램·대사·폰트·그림. 읽기만 합니다.' },
@@ -87,7 +91,7 @@ const sectionTitles: Record<string, string> = {
   'title-gfx': '6. 타이틀',
   credits: '7. 크레딧',
   testing: '8. 확인',
-  tools: '9. 분석 도구',
+  tools: '9. 빌드 도구 파일',
 };
 
 const buildSteps = [
@@ -120,9 +124,14 @@ const buildSteps = [
     />
     <figcaption>일본판 롬에 남아 있는 디버그 메뉴</figcaption>
   </figure>
+  <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="section-note">
-    슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다. 절마다 그 일을 한 도구 파일을 적어 두었고,
-    도구 묶음은 마지막 <a href="#making-tools">분석 도구</a>에서 받을 수 있습니다.
+    빌드 스크립트, 대사·폰트·LZSS 도구, 글자 표, 고친 대사 782줄, Mesen 2용 Lua 스크립트와 롬 분석 문서는
+    <a href={tools} download>
+      빌드 도구(zip, 2.4MB)
+    </a>
+    로 받을 수 있습니다. 롬은 들어 있지 않습니다. 아래 「자세히 보기」의 항목마다 그 내용을 다루는 파일을 적어 두었고,
+    전체 목록은 마지막 <a href="#making-tools">빌드 도구 파일</a>에 있습니다.
   </p>
 
   <details class="more making">
@@ -131,9 +140,6 @@ const buildSteps = [
       <h3 id="making-basics" class="pixel">
         1. 배경지식
       </h3>
-      <p class="tool">
-        관련 도구: <code>lua/dbgscene.lua</code> <a href="#making-tools">받기</a>
-      </p>
       <h4>게임기 안의 메모리</h4>
       <p>
         CPU는 화면에 직접 그리지 않습니다. 그림 조각(타일)을 VRAM에 올려 두고 "이 칸에는 몇 번 타일" 이라는
@@ -207,13 +213,11 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
         연속입니다.
       </p>
 
+      <ToolFiles items={[{ path: 'lua/dbgscene.lua', text: 'Mesen 2용. 디버그 메뉴로 원하는 장면 시작' }]} />
+
       <h3 id="making-dialogue" class="pixel">
         2. 대사가 롬에 들어 있는 모양
       </h3>
-      <p class="tool">
-        관련 도구: <code>tools/dialogue.py</code>, <code>tools/extract.py</code>, <code>tables/kr-v1.2.txt</code>{' '}
-        <a href="#making-tools">받기</a>
-      </p>
       <p>
         대사 글자 하나는 16비트(2바이트) 코드이고, 작은 쪽 바이트를 먼저 적습니다. <code>0A 00</code>은 줄바꿈,
         <code>00 00</code>은 대사 끝입니다. 한 페이지는 4줄이고, 한 줄에는 얼굴 그림이 있는 창은 10자, 나레이션 창은
@@ -275,13 +279,17 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
         ))}
       </ol>
 
+      <ToolFiles
+        items={[
+          { path: 'tools/dialogue.py', text: '대사 ID로 대사 위치 찾기' },
+          { path: 'tools/extract.py', text: '일본어·한국어 대사 덤프(TSV)' },
+          { path: 'tables/kr-v1.2.txt', text: 'v1.2 글자 코드표' },
+        ]}
+      />
+
       <h3 id="making-font" class="pixel">
         3. 폰트에 없는 글자
       </h3>
-      <p class="tool">
-        관련 도구: <code>tools/font.py</code>, <code>tools/usedsheet.py</code>, <code>tools/dialogue_patch.py</code>{' '}
-        <a href="#making-tools">받기</a>
-      </p>
       <p>
         대사 폰트는 16×16 픽셀이고, 8×8 타일 4장으로 나뉘어 들어 있습니다. 롬에 저장된 시트는 한 줄에 타일 16장이라 글자
         8개의 위 절반이 한 줄, 아래 절반이 그다음 줄입니다. 그래서 0x108–0x10F처럼 아래 절반 줄에 해당하는 코드는 글자로
@@ -316,25 +324,33 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
         그림은 「렇」이었습니다. 지금은 표의 글자와 롬의 그림을 대조해서 씁니다.
       </p>
 
+      <ToolFiles
+        items={[
+          { path: 'tools/font.py', text: '대사 폰트 글자 읽기' },
+          { path: 'tools/usedsheet.py', text: '대사에 쓰인 글자 목록' },
+          { path: 'tools/dialogue_patch.py', text: '대사 넣기, 옮기기, 새 글자 그리기' },
+        ]}
+      />
+
       <h3 id="making-relocate" class="pixel">
         4. 늘어난 대사는 같은 뱅크 안으로
       </h3>
-      <p class="tool">
-        관련 도구: <code>tools/dialogue_patch.py</code>, <code>tables/dialogue-v1.2.tsv</code>{' '}
-        <a href="#making-tools">받기</a>
-      </p>
       <p>
         포인터는 2바이트라 뱅크 번호 없이 같은 뱅크 안의 주소만 가리킵니다. 그래서 고친 대사가 원래보다 길면 다른
         뱅크로는 못 보내고, 같은 뱅크의 빈 공간으로 옮긴 뒤 포인터만 고칩니다. 여러 ID가 한 문자열을 같이 가리키는
         경우도 있어서, 그런 문자열은 제자리에서 고치지 않고 새 자리에 따로 씁니다.
       </p>
 
+      <ToolFiles
+        items={[
+          { path: 'tools/dialogue_patch.py', text: '대사 넣기, 옮기기, 새 글자 그리기' },
+          { path: 'tables/dialogue-v1.2.tsv', text: 'v1.2에서 고친 대사 782줄' },
+        ]}
+      />
+
       <h3 id="making-bugfix" class="pixel">
         5. 우주선이 맵 밖을 헤매던 이유
       </h3>
-      <p class="tool">
-        관련 도구: <code>tools/fix_overwrites.py</code> <a href="#making-tools">받기</a>
-      </p>
       <p>
         v1.1은 늘어난 대사를 0xFF가 이어진 곳에 넣었습니다. 비어 있다고 생각했기 때문입니다. 그런데 0xFF가 시작되는
         자리가 사실은 바로 앞 데이터의 끝 표시(<code>FF FF</code>)였습니다. 두 곳이 이렇게 덮였습니다.
@@ -363,12 +379,11 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
         고쳤습니다. 이제 빈 공간을 쓸 때는 앞뒤에 여유를 두고, 일본판 원본에서도 그 자리가 0xFF였는지 확인합니다.
       </p>
 
+      <ToolFiles items={[{ path: 'tools/fix_overwrites.py', text: 'v1.1이 덮어쓴 데이터 되살리기' }]} />
+
       <h3 id="making-title-gfx" class="pixel">
         6. 압축된 타이틀 그림
       </h3>
-      <p class="tool">
-        관련 도구: <code>tools/lz.py</code>, <code>tools/title.py</code> <a href="#making-tools">받기</a>
-      </p>
       <p>
         타이틀 로고는 롬에 LZSS로 압축돼 있습니다. 앞에서 나온 것과 같은 내용이 또 나오면 바이트를 다시 적지 않고 "몇
         바이트 앞에서 몇 바이트를 베껴라" 라고만 적는 방식입니다. 플래그 바이트 하나가 뒤따르는 항목 8개의 종류를 아래
@@ -403,12 +418,16 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
         로고와 저작권 줄은 원본 그대로입니다. 저작권 줄의 © 타일은 두 줄이 같이 쓰기 때문입니다.
       </p>
 
+      <ToolFiles
+        items={[
+          { path: 'tools/lz.py', text: 'LZSS 압축·해제' },
+          { path: 'tools/title.py', text: '타이틀 그림 그리기·넣기' },
+        ]}
+      />
+
       <h3 id="making-credits" class="pixel">
         7. 엔딩 크레딧과 세이브
       </h3>
-      <p class="tool">
-        관련 도구: <code>tools/credits.py</code>, <code>lua/crjump.lua</code> <a href="#making-tools">받기</a>
-      </p>
       <p>
         엔딩 크레딧도 대사와 같은 16비트 문자열이고, 이름 줄마다 포인터가 있습니다($83:949D). 「MR. 포포」를 「미스터
         포포」로 늘리면서 원래 자리에 줄여 넣지 않고 빈 공간으로 옮겨 포인터를 고쳤습니다. 제자리에서 글자 수를 바꾸면
@@ -419,12 +438,16 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
         지울 때는 슬롯 본체만이 아니라 요약 정보 두 곳(0x800대, 0x860대)도 같이 지워야 했습니다.
       </p>
 
+      <ToolFiles
+        items={[
+          { path: 'tools/credits.py', text: '엔딩 크레딧 고치기' },
+          { path: 'lua/crjump.lua', text: 'Mesen 2용. 엔딩 크레딧 바로 보기' },
+        ]}
+      />
+
       <h3 id="making-testing" class="pixel">
         8. 확인은 에뮬레이터가
       </h3>
-      <p class="tool">
-        관련 도구: <code>lua/dbgscene.lua</code>, <code>lua/lib.lua</code> <a href="#making-tools">받기</a>
-      </p>
       <ul class="notes">
         <li>
           Mesen 2와 Lua 스크립트로 디버그 메뉴에서 장면을 시작하고, 버튼을 눌러 대사를 넘기며 화면을 저장합니다. 중간의
@@ -438,19 +461,17 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
         <li>빌드 결과가 늘 같은 CRC32(E46C7A28)인지 확인합니다.</li>
       </ul>
 
+      <ToolFiles
+        items={[
+          { path: 'lua/dbgscene.lua', text: 'Mesen 2용. 디버그 메뉴로 원하는 장면 시작' },
+          { path: 'lua/lib.lua', text: 'Mesen 2 스크립트 공용 함수(버튼 입력, 세이브스테이트)' },
+        ]}
+      />
+
       <h3 id="making-tools" class="pixel">
-        9. 분석 도구
+        9. 빌드 도구 파일
       </h3>
-      <p>
-        빌드 스크립트, 대사·폰트·LZSS 도구, 글자 표, 고친 대사 782줄, Mesen 2용 Lua 스크립트와 롬 분석 문서를
-        묶었습니다. 같은 엔진을 쓰는 초오공전 돌격편을 분석할 때도 주소만 바꾸면 대부분 쓸 수 있습니다.
-      </p>
-      <p>
-        <a href={tools} download>
-          분석 도구 받기
-        </a>
-        <span>(zip, 2.4MB, 롬 파일은 들어 있지 않음)</span>
-      </p>
+      <p>같은 엔진을 쓰는 초오공전 돌격편을 분석할 때도 주소만 바꾸면 대부분 쓸 수 있습니다.</p>
       <div class="table-wrap">
         <table>
           <thead>
@@ -484,112 +505,3 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
     </div>
   </details>
 </section>
-
-<style>
-  .paper {
-    padding: 8px;
-    background: #fafafa;
-    border-radius: 8px;
-    box-shadow: 0 4px 0 rgb(0 0 0 / 35%);
-  }
-
-  .paper img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .paper.narrow {
-    max-width: 480px;
-  }
-
-  .paper figcaption {
-    padding-top: 6px;
-    color: #333;
-    font-size: 0.8125rem;
-    text-align: center;
-  }
-
-  .making-body {
-    display: grid;
-    gap: 16px;
-    max-width: 820px;
-  }
-
-  .making-body h3 {
-    margin-top: 24px;
-    color: var(--accent);
-  }
-
-  .making-body h4 {
-    margin: 8px 0 0;
-    font-size: 1rem;
-  }
-
-  .making-body p,
-  .making-body ul,
-  .making-body ol {
-    margin: 0;
-  }
-
-  .making-body code {
-    font-family: ui-monospace, Menlo, monospace;
-    font-size: 0.875em;
-  }
-
-  .making-body pre {
-    margin: 0;
-    padding: 12px 16px;
-    overflow-x: auto;
-    background: rgb(0 0 0 / 55%);
-    border-radius: 6px;
-    font-size: 0.875rem;
-    line-height: 1.6;
-  }
-
-  .table-wrap {
-    overflow-x: auto;
-  }
-
-  .making-body table {
-    border-collapse: collapse;
-    background: var(--panel);
-    font-size: 0.875rem;
-  }
-
-  .making-body th,
-  .making-body td {
-    padding: 6px 10px;
-    border: 1px solid rgb(255 255 255 / 25%);
-    text-align: left;
-    vertical-align: top;
-    white-space: nowrap;
-  }
-
-  .making-body .bytes td {
-    text-align: center;
-  }
-
-  .making-body td.wrap {
-    min-width: 16rem;
-    white-space: normal;
-  }
-
-  .flow {
-    display: grid;
-    gap: 8px;
-    padding: 12px 16px 12px 40px;
-    background: var(--panel);
-    border-left: 4px solid var(--accent);
-  }
-
-  .tool {
-    font-size: 0.875rem;
-  }
-
-  .notes {
-    display: grid;
-    gap: 8px;
-    padding-left: 20px;
-  }
-</style>

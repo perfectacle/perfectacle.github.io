@@ -1,21 +1,24 @@
 ---
 import PatchBook from '../../../layouts/PatchBook.astro';
+import { KR_PATCH_LIST_PATH, KR_PATCHES, SMRPG_PATCH, releaseLabel } from '../../../lib/kr-patches';
 
-const gokuden = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/';
-const kakusei = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/';
-const otogirisou = '/games/kr-patches/sfc/otogirisou/';
+// Games that share a credit line, like the two Super Gokuden parts, are credited together.
+const credits = Map.groupBy(KR_PATCHES, patch => patch.copyright);
+const copyright = [...credits].map(([line, patches]) => `${patches.map(patch => patch.title).join(' · ')}: ${line}`);
 ---
 
 <PatchBook
   title="한글패치"
-  trail={[{ name: '한글패치', path: '/games/kr-patches/' }]}
+  trail={[{ name: '한글패치', path: KR_PATCH_LIST_PATH }]}
   description="한국어로 즐기는 고전 게임. 슈퍼 마리오 RPG, 드래곤볼 Z 초오공전 돌격편·각성편, 제절초 한글패치를 이 사이트에서 바로 적용합니다."
-  copyright={[
-    '슈퍼 마리오 RPG © 1995 Nintendo / SQUARE ENIX CO., LTD.',
-    '드래곤볼 Z 초오공전 돌격편·각성편 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995',
-    '제절초 © 1992 CHUNSOFT',
-  ]}
-  links={[]}
+  theme="smrpg"
+  image={{
+    src: `${SMRPG_PATCH.path}/images/world-map-4x.webp`,
+    alt: '슈퍼 마리오 RPG의 월드맵',
+    width: 1024,
+    height: 896,
+  }}
+  copyright={copyright}
 >
   <section class="section page-width" aria-labelledby="catalogue-title">
     <h1 id="catalogue-title" class="pixel">
@@ -25,88 +28,30 @@ const otogirisou = '/games/kr-patches/sfc/otogirisou/';
       일본어로만 나왔던 게임을 한국어로 옮겼습니다. 게임 파일을 고르면 페이지에서 바로 한글판을 만듭니다.
     </p>
     <ul class="catalogue">
-      <li class="entry frame">
-        <a class="entry-shot screen" href="/games/kr-patches/sfc/super-mario-rpg/" tabindex="-1" aria-hidden="true">
-          <img
-            src="/games/kr-patches/sfc/super-mario-rpg/images/patch/geno_sky_ko.webp"
-            width="256"
-            height="224"
-            alt=""
-            fetchpriority="high"
-          />
-        </a>
-        <div>
-          <p class="label">슈퍼 패미컴 · 1996 · v1.1</p>
-          <h2 class="pixel">
-            <a href="/games/kr-patches/sfc/super-mario-rpg/">슈퍼 마리오 RPG</a>
-          </h2>
-          <p>스타 피스를 찾아 떠나는 마리오와 동료들의 모험. 대사·메뉴·전투까지 모두 한국어입니다.</p>
-          <a class="pointer" href="/games/kr-patches/sfc/super-mario-rpg/">
-            한글판 만들기
-          </a>
-        </div>
-      </li>
-      <li class="entry frame">
-        <a class="entry-shot screen" href={gokuden} tabindex="-1" aria-hidden="true">
-          <img src={`${gokuden}images/title.webp`} width="256" height="224" alt="" loading="lazy" decoding="async" />
-        </a>
-        <div>
-          <p class="label">슈퍼 패미컴 · 1995 · v1.1</p>
-          <h2 class="pixel">
-            <a href={gokuden}>드래곤볼 Z 초오공전 돌격편</a>
-          </h2>
-          <p>
-            부르마와 만난 날부터 피콜로 대마왕과의 결전까지, 소년 오공의 모험. v1.1에서 대사 전체를 원문과 다시
-            대조했습니다.
-          </p>
-          <a class="pointer" href={gokuden}>
-            한글판 만들기
-          </a>
-        </div>
-      </li>
-      <li class="entry frame">
-        <a class="entry-shot screen" href={kakusei} tabindex="-1" aria-hidden="true">
-          <img src={`${kakusei}images/title.webp`} width="256" height="224" alt="" loading="lazy" decoding="async" />
-        </a>
-        <div>
-          <p class="label">슈퍼 패미컴 · 1995 · v1.2</p>
-          <h2 class="pixel">
-            <a href={kakusei}>드래곤볼 Z 초오공전 각성편</a>
-          </h2>
-          <p>
-            제23회 천하제일 무술대회부터 나메크성에서 프리더와의 결전까지, 어른이 된 오공의 모험. v1.2에서 대사를 원문과
-            다시 대조했습니다.
-          </p>
-          <a class="pointer" href={kakusei}>
-            한글판 만들기
-          </a>
-        </div>
-      </li>
-      <li class="entry frame">
-        <a class="entry-shot screen" href={otogirisou} tabindex="-1" aria-hidden="true">
-          <img
-            src={`${otogirisou}images/scenes/title.webp`}
-            width="256"
-            height="224"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
-        </a>
-        <div>
-          <p class="label">슈퍼 패미컴 · 1992 · v1.2</p>
-          <h2 class="pixel">
-            <a href={otogirisou}>제절초</a>
-          </h2>
-          <p>
-            빗속 숲에서 찾아낸 낡은 저택, 고르는 보기마다 달라지는 이야기. 사운드 노벨의 첫 작품을 플로차트와 장 목록을
-            더해 한국어로 읽습니다.
-          </p>
-          <a class="pointer" href={otogirisou}>
-            한글판 만들기
-          </a>
-        </div>
-      </li>
+      {KR_PATCHES.map((patch, i) => {
+        const href = `${patch.path}/`;
+        return (
+          <li class="entry frame">
+            <a class="entry-shot screen" href={href} tabindex="-1" aria-hidden="true">
+              {i === 0 ? (
+                <img src={href + patch.card.image} width="256" height="224" alt="" fetchpriority="high" />
+              ) : (
+                <img src={href + patch.card.image} width="256" height="224" alt="" loading="lazy" decoding="async" />
+              )}
+            </a>
+            <div>
+              <p class="label">{releaseLabel(patch, '')}</p>
+              <h2 class="pixel">
+                <a href={href}>{patch.title}</a>
+              </h2>
+              <p>{patch.card.summary}</p>
+              <a class="pointer" href={href}>
+                한글판 만들기
+              </a>
+            </div>
+          </li>
+        );
+      })}
     </ul>
   </section>
 </PatchBook>

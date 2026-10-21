@@ -89,7 +89,6 @@ export const kakuseiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'title',
-        frames: 1,
         caption: '타이틀 로고를 "초오공전 각성편"으로 바꾸고 로고 아래 가타카나는 지웠습니다.',
         alt: '드래곤볼 Z 로고와 오공·오반이 있는 타이틀 화면',
       },
@@ -101,7 +100,6 @@ export const kakuseiGroups: VersionGroup[] = [
       },
       {
         id: 'credits_popo',
-        frames: 1,
         height: 100,
         caption: '엔딩 크레딧도 미스터 포포입니다.',
         alt: '엔딩 크레딧의 야지로베·카린·신·미스터 포포',
@@ -114,7 +112,6 @@ export const kakuseiGroups: VersionGroup[] = [
       },
       {
         id: 'nick_bulma',
-        frames: 1,
         caption: '부르마의 대사에서도 원문에 없던 별명을 덜어 냈습니다.',
         alt: '캡슐 하우스에서 크리링과 함께 있는 부르마',
       },

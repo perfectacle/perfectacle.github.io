@@ -222,7 +222,7 @@ test('Super Gokuden: Kakusei-hen explains how the patch was made and offers the 
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
     0,
   );
-  const tools = making.locator('a[href$="_Tools.zip"]');
+  const tools = making.locator('a[href$="_tools.zip"]');
   await expect(tools).toHaveAttribute('download', '');
   expect((await page.request.get((await tools.getAttribute('href')) ?? '')).status()).toBe(200);
 });

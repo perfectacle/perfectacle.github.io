@@ -1,0 +1,33 @@
+---
+import type { Version, VersionPair as Pair } from '../../lib/version-pairs';
+import VersionPair from './VersionPair.astro';
+
+interface Props {
+  pairs: Pair[];
+  base: string;
+  versions: Version[];
+  /** Scenes shown before the rest fold under "더 보기". */
+  visible: number;
+  /** Page guide who speaks the captions. */
+  speaker?: string | undefined;
+}
+
+const { pairs, base, versions, visible, speaker } = Astro.props;
+const folded = pairs.slice(visible);
+---
+
+<div class="compare-list">
+  {pairs.slice(0, visible).map(pair => (
+    <VersionPair pair={pair} base={base} versions={versions} speaker={speaker} />
+  ))}
+</div>
+{folded.length > 0 && (
+  <details class="more">
+    <summary class="pointer">{folded.length}장면 더 보기</summary>
+    <div class="compare-list">
+      {folded.map(pair => (
+        <VersionPair pair={pair} base={base} versions={versions} speaker={speaker} />
+      ))}
+    </div>
+  </details>
+)}

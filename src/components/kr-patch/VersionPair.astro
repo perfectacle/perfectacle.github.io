@@ -1,45 +1,60 @@
 ---
-import type { VersionPair } from '../../lib/version-pairs';
+import type { Version, VersionPair } from '../../lib/version-pairs';
+import Speech from './Speech.astro';
 
 interface Props {
   pair: VersionPair;
   base: string;
   /** Older release first; the last one is highlighted as the current patch. */
-  versions: { key: string; label: string }[];
+  versions: Version[];
+  /** Page guide who speaks the caption; without one the caption is a plain dialog box. */
+  speaker?: string | undefined;
 }
 
-const { pair, base, versions } = Astro.props;
+const { pair, base, versions, speaker } = Astro.props;
+const frames = pair.frames ?? 1;
 const height = pair.height ?? 224;
 const latest = versions.at(-1)?.key;
-const frames = Array.from({ length: pair.frames }, (_, i) => i + 1);
-const order = (frame: number) => (pair.frames > 1 ? ` (${frame}/${pair.frames})` : '');
+const order = (frame: number) => (frames > 1 ? ` (${frame}/${frames})` : '');
 ---
 
 <figure class="compare version-pair">
-  {frames.map(frame => (
+  {Array.from({ length: frames }, (_, i) => i + 1).map(frame => (
     <div class="compare-shots">
       {versions.map(version => {
         const gap = pair.gaps?.[`${version.key}:${frame}`];
-        return gap ? (
-          <div class="screen">
-            <span class="tag">{version.label}</span>
-            <p class="gap-note">{gap}</p>
-          </div>
-        ) : (
-          <div class="screen">
-            <span class:list={['tag', { 'tag-ko': version.key === latest }]}>{version.label}</span>
-            <img
-              src={`${base}/images/patch/${pair.id}_${version.key}_${frame}.webp`}
-              width="256"
-              height={height}
-              alt={`${version.label}: ${pair.alt}${order(frame)}`}
-              loading="lazy"
-              decoding="async"
-            />
+        return (
+          <div class="shot">
+            <span class:list={['tag', { 'tag-ko': version.key === latest }]} aria-hidden="true">
+              {version.label}
+            </span>
+            <div class="screen">
+              {gap ? (
+                <p class="gap-note">
+                  <span class="sr-only">{version.label}: </span>
+                  {gap}
+                </p>
+              ) : (
+                <img
+                  src={`${base}/images/patch/${pair.id}_${version.key}_${frame}.webp`}
+                  width="256"
+                  height={height}
+                  alt={`${version.label}: ${pair.alt}${order(frame)}`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+            </div>
           </div>
         );
       })}
     </div>
   ))}
-  <figcaption class="dialog">{pair.caption}</figcaption>
+  {speaker ? (
+    <Speech speaker={speaker} tag="figcaption">
+      {pair.caption}
+    </Speech>
+  ) : (
+    <figcaption class="dialog">{pair.caption}</figcaption>
+  )}
 </figure>

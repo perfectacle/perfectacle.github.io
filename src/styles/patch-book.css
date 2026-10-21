@@ -486,6 +486,13 @@ h3.pixel {
   gap: 10px;
 }
 
+/* The version tag sits on the screen's corner; the Super Mario RPG theme lifts it above instead. */
+.shot {
+  position: relative;
+  display: grid;
+  gap: 4px;
+}
+
 .tag {
   position: absolute;
   top: 4px;
@@ -664,23 +671,12 @@ h3.pixel {
 }
 
 /* Labels sit above each screen so they never cover the game's own name tags. */
-.shot {
-  display: grid;
-  gap: 4px;
+[data-theme='smrpg'] .shot {
   justify-items: start;
 }
 
-.shot-label {
-  padding: 0 6px;
-  background: rgb(0 0 0 / 75%);
-  color: var(--ink);
-  font-family: var(--pixel);
-  font-size: 0.75rem;
-}
-
-.shot-label-ko {
-  background: var(--accent);
-  color: #000;
+[data-theme='smrpg'] .tag {
+  position: static;
 }
 
 /* Screens stay at whole-number scales so every game pixel is the same size. */
@@ -1200,6 +1196,10 @@ h3.pixel {
   white-space: nowrap;
 }
 
+.making-body .bytes td {
+  text-align: center;
+}
+
 .making-body td.wrap {
   min-width: 16rem;
   white-space: normal;
@@ -1217,9 +1217,4 @@ h3.pixel {
   display: grid;
   gap: 8px;
   padding-left: 20px;
-}
-
-.tool-ref {
-  color: var(--muted);
-  font-size: 0.875rem;
 }

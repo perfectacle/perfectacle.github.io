@@ -1,16 +1,18 @@
 ---
-import ToolFiles from '../smrpg/ToolFiles.astro';
+import ToolFiles from '../kr-patch/ToolFiles.astro';
 import ChapterChoices from './ChapterChoices.astro';
+import { downloads, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
-  base: string;
+  patch: KrPatch;
   /** Chapter title shown above the heading, matching the page's other chapters. */
   mark: string;
 }
 
-const { base, mark } = Astro.props;
+const { patch, mark } = Astro.props;
+const base = patch.path;
 const img = (name: string) => `${base}/images/making/${name}`;
-const zip = `${base}/downloads/Otogirisou_K_v1_2_tools.zip`;
+const { tools } = downloads(patch);
 
 const memories = [
   {
@@ -94,12 +96,12 @@ const toolMap = [
   <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="section-note">
     빌드 스크립트, 어셈블리 소스, 대본, 글자표, 테스트 스크립트는
-    <a href={zip} download>
+    <a href={tools} download>
       빌드 도구(zip, 1.8MB)
     </a>
-    로 받을 수 있습니다. 각 단계 끝의 「빌드 도구 속 파일」에 그 단계에서 쓴 파일과 하는 일을 적었습니다. 롬, asar,
-    Mesen은 들어 있지 않고, 일본어 대본은 빌드할 때 가지고 있는 일본판 롬에서 뽑습니다. 빌드 순서는 압축 파일 안
-    tools/README.txt에 있습니다.
+    로 받을 수 있습니다. 각 단계 끝의 「빌드 도구 속 파일」에 그 단계에서 쓴 파일과 하는 일을 적었고, 전체 목록은 마지막
+    <a href="#making-tools">빌드 도구 파일</a>에 있습니다. 롬, asar, Mesen은 들어 있지 않고, 일본어 대본은 빌드할 때
+    가지고 있는 일본판 롬에서 뽑습니다. 빌드 순서는 압축 파일 안 tools/README.txt에 있습니다.
   </p>
 
   <details class="more making">
@@ -714,7 +716,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">18. 도구 한눈에 보기</h3>
+      <h3 id="making-tools" class="pixel">
+        18. 빌드 도구 파일
+      </h3>
       <div class="table-wrap">
         <table>
           <thead>
@@ -743,109 +747,15 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 </section>
 
 <style>
-  .paper {
-    padding: 8px;
-    background: #fafafa;
-    border-radius: 8px;
-    box-shadow: 0 4px 0 rgb(0 0 0 / 35%);
-  }
-
-  .paper img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .paper.narrow {
-    max-width: 480px;
-  }
-
-  .paper figcaption {
-    padding-top: 6px;
-    color: #333;
-    font-size: 0.8125rem;
-    text-align: center;
-  }
-
-  .making-body {
-    display: grid;
-    gap: 16px;
-    max-width: 820px;
-  }
-
-  .making-body h3 {
-    margin-top: 24px;
-    color: var(--accent);
-  }
-
-  .making-body h4 {
-    margin: 8px 0 0;
-    font-size: 1rem;
-  }
-
-  .making-body p,
-  .making-body ul,
-  .making-body ol {
-    margin: 0;
-  }
-
-  .making-body code {
-    font-family: ui-monospace, Menlo, monospace;
-    font-size: 0.875em;
-  }
-
+  /* The page is pitch black, so a darker code box would vanish into it. */
   .making-body pre {
-    margin: 0;
-    padding: 12px 16px;
-    overflow-x: auto;
     background: rgb(255 255 255 / 8%);
-    border-radius: 6px;
-    font-size: 0.875rem;
-    line-height: 1.6;
-  }
-
-  .table-wrap {
-    overflow-x: auto;
-  }
-
-  .making-body table {
-    border-collapse: collapse;
-    background: var(--panel);
-    font-size: 0.875rem;
   }
 
   .making-body caption {
     padding-bottom: 6px;
     color: var(--muted);
     text-align: left;
-  }
-
-  .making-body th,
-  .making-body td {
-    padding: 6px 10px;
-    border: 1px solid rgb(255 255 255 / 25%);
-    text-align: left;
-    vertical-align: top;
-    white-space: nowrap;
-  }
-
-  .making-body td.wrap {
-    min-width: 16rem;
-    white-space: normal;
-  }
-
-  .flow {
-    display: grid;
-    gap: 8px;
-    padding: 12px 16px 12px 40px;
-    background: var(--panel);
-    border-left: 4px solid var(--accent);
-  }
-
-  .notes {
-    display: grid;
-    gap: 8px;
-    padding-left: 20px;
   }
 
   code.file {

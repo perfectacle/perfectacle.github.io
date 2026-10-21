@@ -1,0 +1,24 @@
+---
+import type { Version, VersionGroup } from '../../lib/version-pairs';
+import ComparePairs from './ComparePairs.astro';
+import Speech from './Speech.astro';
+
+interface Props {
+  group: VersionGroup;
+  base: string;
+  versions: Version[];
+  visible: number;
+  /** Page guide who speaks the summary and captions. */
+  speaker?: string;
+}
+
+const { group, base, versions, visible, speaker } = Astro.props;
+---
+
+<section class="compare-group" aria-labelledby={`group-${group.id}`}>
+  <h3 id={`group-${group.id}`} class="pixel">
+    {group.title}
+  </h3>
+  {speaker ? <Speech speaker={speaker}>{group.summary}</Speech> : <p>{group.summary}</p>}
+  <ComparePairs pairs={group.pairs} base={base} versions={versions} visible={visible} speaker={speaker} />
+</section>

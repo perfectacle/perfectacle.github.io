@@ -1,0 +1,86 @@
+---
+import { downloads, formatBytes, type KrPatch } from '../../lib/kr-patches';
+import { megabytes, patchedSize } from '../../lib/rom-patch';
+
+interface Props {
+  patch: KrPatch;
+  /** Draw the checksum table in the game's window frame. */
+  framed?: boolean;
+}
+
+const { patch, framed = false } = Astro.props;
+const { spec } = patch;
+const { ips, headeredIps } = downloads(patch);
+const korean = patchedSize(spec);
+const rows = [
+  { name: '일본판 원본', size: spec.size, rom: spec.original },
+  { name: `한글판 v${patch.version}`, size: korean, rom: spec.patched },
+];
+---
+
+<details class="manual">
+  <summary class="pointer">직접 패치하려면</summary>
+  <div class="manual-body">
+    {headeredIps ? (
+      <>
+        <p>
+          Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 손대지 않은 일본판 원본에 적용하세요. 파일 크기에 맞는 IPS를
+          받으세요.
+          {korean !== spec.size && ` 패치하면 파일이 ${megabytes(spec, korean)}로 늘어납니다.`}
+        </p>
+        <ul class="downloads">
+          <li>
+            <a href={ips} download>
+              헤더 없는 파일용 IPS
+            </a>
+            <span>
+              ({megabytes(spec)}, {formatBytes(spec.size)})
+            </span>
+          </li>
+          <li>
+            <a href={headeredIps} download>
+              헤더 있는 파일용 IPS
+            </a>
+            <span>
+              ({megabytes(spec)}+512바이트, {formatBytes(spec.size + 512)})
+            </span>
+          </li>
+        </ul>
+      </>
+    ) : (
+      <p>
+        <a href={ips} download>
+          IPS 파일 받기
+        </a>
+        를 누른 뒤 Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 헤더 없는 일본판 원본에 적용하세요. 헤더가 있는
+        파일({megabytes(spec)}+512바이트)은 이 페이지의 패치 상자를 쓰면 알아서 처리합니다.
+      </p>
+    )}
+    <table class:list={{ frame: framed }}>
+      <caption>헤더 없는 파일 기준</caption>
+      <thead>
+        <tr>
+          <th scope="col">구분</th>
+          <th scope="col">크기</th>
+          <th scope="col">CRC32</th>
+          <th scope="col">MD5</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(row => (
+          <tr>
+            <th scope="row">{row.name}</th>
+            <td>{formatBytes(row.size)}</td>
+            <td>
+              <code>{row.rom.crc32}</code>
+            </td>
+            <td>
+              <code>{row.rom.md5}</code>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <slot />
+  </div>
+</details>
