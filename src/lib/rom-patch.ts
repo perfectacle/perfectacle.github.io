@@ -254,7 +254,7 @@ export function createPatchedRom(
   const original = validateOriginal(spec, source);
   const allowUnverified = options.allowUnverified === true;
   if (!original.valid && !allowUnverified)
-    throw new Error('일본판 원본의 CRC32와 MD5가 일치하지 않습니다. 수정되지 않은 원본을 확인해 주세요.');
+    throw new Error('손대지 않은 일본판 롬파일이 아닙니다. 다른 일본판 롬파일을 골라 주세요.');
   if (!hasGameHeader(spec, original.bytes))
     throw new Error(`${spec.name}의 게임 식별 정보와 다릅니다. 이 파일에는 패치를 적용할 수 없습니다.`);
   const output = applyIps(spec, original.bytes, ips);
