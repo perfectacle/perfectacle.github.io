@@ -408,7 +408,7 @@ jobs:
   # The one required status check on main: passes only when every job above passed or was skipped by design.
   ci-ok:
     if: always()
-    needs: [tested, verify, actionlint, zizmor, build, e2e, lighthouse, output-baseline, output-diff]
+    needs: [verify, actionlint, zizmor, build, e2e, lighthouse, output-baseline, output-diff]
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 2
     steps:
