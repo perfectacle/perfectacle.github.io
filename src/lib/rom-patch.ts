@@ -8,10 +8,14 @@ export interface RomSpec {
   /** The name players know the game by; it appears in the guidance messages. */
   name: string;
   size: number;
-  /** Cartridge header at $7FC0: internal name, then the map mode, cartridge type and ROM size bytes. */
+  /** Cartridge header at $7FC0: internal name (one char per byte), then the map mode, cartridge type and ROM size bytes. */
   header: { title: string; mapMode: number; cartType: number; romSize: number };
+  /** Internal name the patch writes, when it renames the cartridge. */
+  patchedTitle?: string;
   original: RomFingerprint;
   patched: RomFingerprint;
+  /** Earlier Korean releases; patching one of them again would break the game. */
+  previous?: (RomFingerprint & { version: string })[];
 }
 
 export const SMRPG: RomSpec = {
@@ -28,6 +32,43 @@ export const GOKUDEN_TOTSUGEKI: RomSpec = {
   header: { title: 'SFX DBZ TOTSUGEKIHEN', mapMode: 0x30, cartType: 0x02, romSize: 0x0b },
   original: { crc32: 'D531289B', md5: '8BD89634D1B2205B1E7EF016485C0076' },
   patched: { crc32: '7405D969', md5: 'FCA11D34E7D5AD8D9D2021AC1C8E34E5' },
+  previous: [{ version: 'v1.0', crc32: '52FEF8C3', md5: 'B00D892B59588393145CF3E848A1BA3A' }],
+};
+
+export const GOKUDEN_KAKUSEI: RomSpec = {
+  name: '초오공전 각성편',
+  size: 2097152,
+  // The internal name is half-width katakana (JIS X 0201): ｽｰﾊﾟｰｺﾞｸｳﾃﾞﾝ ｶｸｾｲﾍﾝ.
+  header: {
+    title: String.fromCharCode(
+      0xbd,
+      0xb0,
+      0xca,
+      0xdf,
+      0xb0,
+      0xba,
+      0xde,
+      0xb8,
+      0xb3,
+      0xc3,
+      0xde,
+      0xdd,
+      0x20,
+      0xb6,
+      0xb8,
+      0xbe,
+      0xb2,
+      0xcd,
+      0xdd,
+    ),
+    mapMode: 0x30,
+    cartType: 0x02,
+    romSize: 0x0b,
+  },
+  patchedTitle: 'DBZ SUPER GOKUDEN 2',
+  original: { crc32: '3172CD4F', md5: '8502A3E5C0FDC56B6495A644ACA54413' },
+  patched: { crc32: 'E46C7A28', md5: 'E2457778B2F11063A75DFA69681E6FA3' },
+  previous: [{ version: 'v1.1', crc32: '32219BC3', md5: 'DBCB002BD5B91ED839BA1425EE13F6DE' }],
 };
 
 const COPIER_HEADER = 512;
@@ -156,8 +197,8 @@ export function applyIps(spec: RomSpec, source: Uint8Array, ips: Uint8Array): Ui
   }
 }
 
-export function hasGameHeader(spec: RomSpec, normalizedBytes: Uint8Array): boolean {
-  const { title, mapMode, cartType, romSize } = spec.header;
+export function hasGameHeader(spec: RomSpec, normalizedBytes: Uint8Array, title = spec.header.title): boolean {
+  const { mapMode, cartType, romSize } = spec.header;
   return (
     normalizedBytes.length === spec.size &&
     Array.from(title).every((character, index) => normalizedBytes[0x7fc0 + index] === character.charCodeAt(0)) &&
@@ -191,7 +232,7 @@ export function createPatchedRom(
   if (!hasGameHeader(spec, original.bytes))
     throw new Error(`${spec.name}의 게임 식별 정보와 다릅니다. 이 파일에는 패치를 적용할 수 없습니다.`);
   const output = applyIps(spec, original.bytes, ips);
-  if (!hasGameHeader(spec, output))
+  if (!hasGameHeader(spec, output, spec.patchedTitle))
     throw new Error('패치 결과의 크기 또는 게임 식별 정보가 올바르지 않아 다운로드를 만들지 않았습니다.');
   const crc = crc32(output);
   const digest = md5(output);
@@ -201,6 +242,7 @@ export function createPatchedRom(
 
 export type RomVerdict =
   | { kind: 'too-small' | 'truncated' | 'wrong-size' | 'wrong-game' | 'other-region' }
+  | { kind: 'old-korean'; version: string | undefined }
   | { kind: 'already-korean' | 'original' | 'different'; bytes: Uint8Array; crc32: string; md5: string };
 
 /** First matching rule wins; the order mirrors what a player should hear first. */
@@ -213,6 +255,10 @@ export function classifyRom(spec: RomSpec, source: Uint8Array): RomVerdict {
   const digest = md5(bytes);
   if (matches(spec.patched, crc, digest)) return { kind: 'already-korean', bytes, crc32: crc, md5: digest };
   if (matches(spec.original, crc, digest)) return { kind: 'original', bytes, crc32: crc, md5: digest };
+  const earlier = spec.previous?.find(release => matches(release, crc, digest));
+  if (earlier) return { kind: 'old-korean', version: earlier.version };
+  if (spec.patchedTitle && hasGameHeader(spec, bytes, spec.patchedTitle))
+    return { kind: 'old-korean', version: undefined };
   if (!hasGameHeader(spec, bytes)) return { kind: 'wrong-game' };
   // Cartridge header destination code: 0x00 is Japan; other versions need a different patch.
   if (bytes[0x7fd9] !== 0x00) return { kind: 'other-region' };

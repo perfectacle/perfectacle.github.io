@@ -1,10 +1,18 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
-import { GOKUDEN_TOTSUGEKI, SMRPG, applyIps, hasGameHeader, type RomSpec } from '../src/lib/rom-patch.ts';
+import {
+  GOKUDEN_KAKUSEI,
+  GOKUDEN_TOTSUGEKI,
+  SMRPG,
+  applyIps,
+  hasGameHeader,
+  type RomSpec,
+} from '../src/lib/rom-patch.ts';
 
 const GOKUDEN = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/';
+const KAKUSEI = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/';
 
-for (const path of ['/games/kr-patches/', '/games/kr-patches/sfc/super-mario-rpg/', GOKUDEN]) {
+for (const path of ['/games/kr-patches/', '/games/kr-patches/sfc/super-mario-rpg/', GOKUDEN, KAKUSEI]) {
   for (const colorScheme of ['light', 'dark'] as const) {
     test(`${path} guide works in ${colorScheme}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme });
@@ -90,11 +98,12 @@ test('llms.txt points AI assistants to the patch pages', async ({ request }) => 
   const text = await (await request.get('/llms.txt')).text();
   expect(text).toContain(`https://perfectacle.github.io${GAME}`);
   expect(text).toContain(`https://perfectacle.github.io${GOKUDEN}`);
+  expect(text).toContain(`https://perfectacle.github.io${KAKUSEI}`);
 });
 
 test('catalogue lists every game page', async ({ page }) => {
   await page.goto('/games/kr-patches/');
-  for (const path of [GAME, GOKUDEN]) await expect(page.locator(`main h2 a[href="${path}"]`)).toHaveCount(1);
+  for (const path of [GAME, GOKUDEN, KAKUSEI]) await expect(page.locator(`main h2 a[href="${path}"]`)).toHaveCount(1);
 });
 
 test('Super Gokuden patch box checks for its own 2 MB ROM', async ({ page }) => {
@@ -119,7 +128,10 @@ test('Super Gokuden patch box checks for its own 2 MB ROM', async ({ page }) => 
 
 const gameRom = (spec: RomSpec) => {
   const rom = new Uint8Array(spec.size);
-  rom.set(new TextEncoder().encode(spec.header.title), 0x7fc0);
+  rom.set(
+    Array.from(spec.header.title, c => c.charCodeAt(0)),
+    0x7fc0,
+  );
   rom.set([spec.header.mapMode, spec.header.cartType, spec.header.romSize], 0x7fd5);
   return rom;
 };
@@ -127,12 +139,41 @@ const gameRom = (spec: RomSpec) => {
 for (const [spec, path] of [
   [SMRPG, `${GAME}downloads/Super_Mario_RPG_K_v1_1.ips`],
   [GOKUDEN_TOTSUGEKI, `${GOKUDEN}downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1.ips`],
+  [GOKUDEN_KAKUSEI, `${KAKUSEI}downloads/Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_2.ips`],
 ] as const) {
   test(`published ${spec.name} IPS keeps the ROM size and game header`, async ({ request }) => {
     const response = await request.get(path);
     expect(response.status()).toBe(200);
     const output = applyIps(spec, gameRom(spec), new Uint8Array(await response.body()));
     expect(output.length).toBe(spec.size);
-    expect(hasGameHeader(spec, output)).toBe(true);
+    expect(hasGameHeader(spec, output, spec.patchedTitle)).toBe(true);
   });
 }
+
+test('Super Gokuden: Kakusei-hen patch box tells it apart from Totsugeki-hen', async ({ page }) => {
+  await page.goto(KAKUSEI);
+  await expect(page.getByText('일본판 게임 파일 고르기')).toBeInViewport();
+  const totsugeki = new Uint8Array(GOKUDEN_TOTSUGEKI.size);
+  totsugeki.set(
+    Array.from(GOKUDEN_TOTSUGEKI.header.title, c => c.charCodeAt(0)),
+    0x7fc0,
+  );
+  await page.locator('.patch-box input[type=file]').setInputFiles({
+    name: 'totsugeki.sfc',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from(totsugeki),
+  });
+  await expect(page.locator('.patch-status')).toContainText('초오공전 각성편 한글판을 만들 수 없습니다');
+  const korean = new Uint8Array(GOKUDEN_KAKUSEI.size);
+  korean.set(
+    Array.from(GOKUDEN_KAKUSEI.patchedTitle ?? '', c => c.charCodeAt(0)),
+    0x7fc0,
+  );
+  korean.set([GOKUDEN_KAKUSEI.header.mapMode, GOKUDEN_KAKUSEI.header.cartType, GOKUDEN_KAKUSEI.header.romSize], 0x7fd5);
+  await page.locator('.patch-box input[type=file]').setInputFiles({
+    name: 'kakusei-v1.1.sfc',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.from(korean),
+  });
+  await expect(page.locator('.patch-status')).toContainText('예전에 나온 한글판 파일입니다');
+});

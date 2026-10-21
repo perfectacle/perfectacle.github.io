@@ -2,7 +2,7 @@
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import VersionPair from '../../../../components/kr-patch/VersionPair.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
-import { versionGroups } from '../../../../lib/gokuden-showcase';
+import { totsugekiGroups, totsugekiVersions } from '../../../../lib/totsugeki-showcase';
 import { GOKUDEN_TOTSUGEKI } from '../../../../lib/rom-patch';
 
 const base = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki';
@@ -158,7 +158,7 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
       <li>폰트에 없던 글자 213자(꽃·쫓·흙 등) 추가</li>
     </ul>
     <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.0과 v1.1을 나란히 놓았습니다.</p>
-    {versionGroups.map(group => (
+    {totsugekiGroups.map(group => (
       <section class="compare-group" aria-labelledby={`group-${group.id}`}>
         <h3 id={`group-${group.id}`} class="pixel">
           {group.title}
@@ -166,7 +166,7 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
         <p>{group.summary}</p>
         <div class="compare-list">
           {group.pairs.slice(0, VISIBLE_PER_GROUP).map(pair => (
-            <VersionPair pair={pair} base={base} />
+            <VersionPair pair={pair} base={base} versions={totsugekiVersions} />
           ))}
         </div>
         {group.pairs.length > VISIBLE_PER_GROUP && (
@@ -174,7 +174,7 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
             <summary class="pointer">{group.pairs.length - VISIBLE_PER_GROUP}장면 더 보기</summary>
             <div class="compare-list">
               {group.pairs.slice(VISIBLE_PER_GROUP).map(pair => (
-                <VersionPair pair={pair} base={base} />
+                <VersionPair pair={pair} base={base} versions={totsugekiVersions} />
               ))}
             </div>
           </details>

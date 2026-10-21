@@ -1,0 +1,255 @@
+---
+import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
+import VersionPair from '../../../../components/kr-patch/VersionPair.astro';
+import PatchBook from '../../../../layouts/PatchBook.astro';
+import { kakuseiGroups, kakuseiVersions } from '../../../../lib/kakusei-showcase';
+import { GOKUDEN_KAKUSEI } from '../../../../lib/rom-patch';
+
+const base = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei';
+const ips = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_2.ips`;
+const headeredIps = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_2_Headered.ips`;
+const VISIBLE_PER_GROUP = 2;
+
+const play = [
+  {
+    image: 'battle',
+    alt: '나메크성에서 애플이 연속 에너지탄을 쓰는 순간의 전투 화면',
+    title: '전투',
+    text: '상대가 기술을 쓰면 화면 위에 기술 이름이 뜹니다. 그 순간 맞는 버튼을 눌러 받아칩니다. 기술마다 계열이 있어 서로 이기고 지는 관계가 있습니다.',
+  },
+  {
+    image: 'quiz',
+    alt: '세 가지 답 중 하나를 고르는 DBZ 퀴즈',
+    title: 'DBZ 퀴즈',
+    text: '이야기 중간중간 DBZ 퀴즈가 나와 세 가지 답 중 하나를 고릅니다. 맞힌 비율은 세이브 화면에 남습니다.',
+  },
+  {
+    image: 'shenron',
+    alt: '신룡 앞에서 소원을 고르는 화면',
+    title: '신룡의 소원',
+    text: '드래곤볼을 모으면 신룡에게 소원을 빕니다. 전투력이나 체력을 올려 다음 싸움에 대비합니다.',
+  },
+  {
+    image: 'gravity',
+    alt: '20배 중력 속에서 수련을 시작하는 오공',
+    title: '수련',
+    text: '나메크성으로 가는 우주선 안에서는 20배 중력 속에서 수련합니다.',
+  },
+];
+
+const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
+---
+
+<PatchBook
+  title="드래곤볼 Z 초오공전 각성편 한글판"
+  trail={[
+    { name: '한글패치', path: '/games/kr-patches/' },
+    { name: '드래곤볼 Z 초오공전 각성편', path: base + '/' },
+  ]}
+  description="1995년 슈퍼 패미컴 드래곤볼 Z 초오공전 각성편 한글패치 v1.2. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다."
+  theme="kakusei"
+  image={{ src: `${base}/images/title.webp`, alt: '드래곤볼 Z 초오공전 각성편 한글판 타이틀 화면' }}
+  copyright={['게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995']}
+  links={[]}
+>
+  <section class="hero page-width" aria-labelledby="title">
+    <div class="hero-copy">
+      <p class="label">슈퍼 패미컴 · 1995 · 한글패치 v1.2</p>
+      <h1 id="title" class="pixel">
+        드래곤볼 Z 초오공전 각성편 한글판
+      </h1>
+      <p class="lead">
+        가지고 있는 일본판 게임 파일을 고르면 바로 한글판으로 바꿔 저장합니다. 따로 프로그램을 설치하지 않아도 됩니다.
+      </p>
+      <PatchBox ips={ips} spec={GOKUDEN_KAKUSEI} output="Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_2" />
+      <details class="manual">
+        <summary class="pointer">직접 패치하려면</summary>
+        <div class="manual-body">
+          <p>
+            Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 손대지 않은 일본판 원본에 적용하세요. 파일 크기에 맞는
+            IPS를 받으세요.
+          </p>
+          <ul class="downloads">
+            <li>
+              <a href={ips} download>
+                헤더 없는 파일용 IPS
+              </a>
+              <span>(2MB, {bytes(GOKUDEN_KAKUSEI.size)})</span>
+            </li>
+            <li>
+              <a href={headeredIps} download>
+                헤더 있는 파일용 IPS
+              </a>
+              <span>(2MB+512바이트, {bytes(GOKUDEN_KAKUSEI.size + 512)})</span>
+            </li>
+          </ul>
+          <table>
+            <caption>헤더 없는 파일 기준</caption>
+            <thead>
+              <tr>
+                <th scope="col">구분</th>
+                <th scope="col">크기</th>
+                <th scope="col">CRC32</th>
+                <th scope="col">MD5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">일본판 원본</th>
+                <td>{bytes(GOKUDEN_KAKUSEI.size)}</td>
+                <td>
+                  <code>{GOKUDEN_KAKUSEI.original.crc32}</code>
+                </td>
+                <td>
+                  <code>{GOKUDEN_KAKUSEI.original.md5}</code>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">한글판 v1.2</th>
+                <td>{bytes(GOKUDEN_KAKUSEI.size)}</td>
+                <td>
+                  <code>{GOKUDEN_KAKUSEI.patched.crc32}</code>
+                </td>
+                <td>
+                  <code>{GOKUDEN_KAKUSEI.patched.md5}</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p>세이브 구조는 바꾸지 않아 v1.1 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
+        </div>
+      </details>
+    </div>
+    <figure class="hero-shot screen">
+      <img
+        src={`${base}/images/title.webp`}
+        width="256"
+        height="224"
+        alt="'초오공전 각성편' 한글 로고와 오공·오반이 있는 타이틀 화면"
+        fetchpriority="high"
+      />
+    </figure>
+  </section>
+
+  <nav class="toc page-width frame" aria-label="이 페이지 차례">
+    <a class="pointer" href="#changes">
+      v1.2에서 달라진 것
+    </a>
+    <a class="pointer" href="#story">
+      이야기
+    </a>
+    <a class="pointer" href="#play">
+      진행 방식
+    </a>
+  </nav>
+
+  <section id="changes" class="section page-width" aria-labelledby="changes-title">
+    <h2 id="changes-title" class="pixel">
+      v1.2에서 달라진 것
+    </h2>
+    <p>2016년에 낸 v1.1 이후 약 10년 만의 업데이트입니다. 일본어 원문과 한 줄씩 대조해 대사 782줄을 고쳤습니다.</p>
+    <ul class="checklist frame">
+      <li>타이틀 화면 한글화</li>
+      <li>우주선이 맵 밖을 헤매던 버그 수정</li>
+      <li>캐릭터별 말투와 고유명사 정리</li>
+      <li>폰트에 없던 글자(깨·롭·블 등) 추가</li>
+    </ul>
+    <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓았습니다.</p>
+    {kakuseiGroups.map(group => (
+      <section class="compare-group" aria-labelledby={`group-${group.id}`}>
+        <h3 id={`group-${group.id}`} class="pixel">
+          {group.title}
+        </h3>
+        <p>{group.summary}</p>
+        <div class="compare-list">
+          {group.pairs.slice(0, VISIBLE_PER_GROUP).map(pair => (
+            <VersionPair pair={pair} base={base} versions={kakuseiVersions} />
+          ))}
+        </div>
+        {group.pairs.length > VISIBLE_PER_GROUP && (
+          <details class="more">
+            <summary class="pointer">{group.pairs.length - VISIBLE_PER_GROUP}장면 더 보기</summary>
+            <div class="compare-list">
+              {group.pairs.slice(VISIBLE_PER_GROUP).map(pair => (
+                <VersionPair pair={pair} base={base} versions={kakuseiVersions} />
+              ))}
+            </div>
+          </details>
+        )}
+      </section>
+    ))}
+  </section>
+
+  <section id="story" class="section page-width" aria-labelledby="story-title">
+    <h2 id="story-title" class="pixel">
+      이야기
+    </h2>
+    <div class="story">
+      <div class="story-copy">
+        <p class="lead">
+          피콜로 대마왕을 쓰러뜨리고 3년, 제23회 천하제일 무술대회에서 오공과 친구들이 다시 모입니다. 그로부터 5년 뒤
+          오공의 형이라는 사이어인 라데츠가 지구에 나타납니다.
+        </p>
+        <p>
+          지구로 오는 베지터와 내퍼에 맞서 1년을 수련하고, 드래곤볼을 찾아 나메크성으로 건너가 프리더와 결전을
+          벌이기까지, 원작 만화 《드래곤볼》의 어른이 된 오공의 이야기를 따라갑니다.
+        </p>
+        <p>
+          반다이가 1995년에 낸 슈퍼 패미컴 게임으로, 같은 해 나온{' '}
+          <a href="/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/">초오공전 돌격편</a>의 뒤를 잇습니다.
+        </p>
+      </div>
+      <div class="story-shots">
+        <figure class="screen">
+          <img
+            src={`${base}/images/scenes/vegeta.webp`}
+            width="256"
+            height="224"
+            alt="대원숭이로 변신해 모두 파괴해 주겠다고 외치는 베지터"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+        <figure class="screen">
+          <img
+            src={`${base}/images/scenes/frieza-ship.webp`}
+            width="256"
+            height="224"
+            alt="프리더의 우주선에서 베지터를 찾는 도도리아와 프리더 일당"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="play" class="section page-width" aria-labelledby="play-title">
+    <h2 id="play-title" class="pixel">
+      진행 방식
+    </h2>
+    <div class="play-list">
+      {play.map(item => (
+        <article class="play frame">
+          <figure class="screen">
+            <img
+              src={`${base}/images/scenes/${item.image}.webp`}
+              width="256"
+              height="224"
+              alt={item.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <h3 class="pixel">{item.title}</h3>
+          <p>{item.text}</p>
+        </article>
+      ))}
+    </div>
+    <p class="back-to-top">
+      <a class="pointer" href="#title">
+        한글판 만들러 가기
+      </a>
+    </p>
+  </section>
+</PatchBook>

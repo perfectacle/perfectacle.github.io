@@ -1,17 +1,16 @@
 ---
-import type { VersionPair } from '../../lib/gokuden-showcase';
+import type { VersionPair } from '../../lib/version-pairs';
 
 interface Props {
   pair: VersionPair;
   base: string;
+  /** Older release first; the last one is highlighted as the current patch. */
+  versions: { key: string; label: string }[];
 }
 
-const { pair, base } = Astro.props;
+const { pair, base, versions } = Astro.props;
 const height = pair.height ?? 224;
-const versions = [
-  { key: 'v10', label: 'v1.0' },
-  { key: 'v11', label: 'v1.1' },
-];
+const latest = versions.at(-1)?.key;
 const frames = Array.from({ length: pair.frames }, (_, i) => i + 1);
 const order = (frame: number) => (pair.frames > 1 ? ` (${frame}/${pair.frames})` : '');
 ---
@@ -28,7 +27,7 @@ const order = (frame: number) => (pair.frames > 1 ? ` (${frame}/${pair.frames})`
           </div>
         ) : (
           <div class="screen">
-            <span class:list={['tag', { 'tag-ko': version.key === 'v11' }]}>{version.label}</span>
+            <span class:list={['tag', { 'tag-ko': version.key === latest }]}>{version.label}</span>
             <img
               src={`${base}/images/patch/${pair.id}_${version.key}_${frame}.webp`}
               width="256"

@@ -151,6 +151,11 @@ const { ips, spec, output } = Astro.props;
             `${spec.name} 파일이지만 일본판이 아닙니다. 미국판 등 다른 나라 판에는 이 한글패치를 적용할 수 없습니다.`,
           );
           return;
+        case 'old-korean':
+          show(
+            `${verdict.version ? `이전 버전(${verdict.version})` : '예전에 나온'} 한글판 파일입니다. 새 버전은 수정하지 않은 일본판 원본에 적용해야 하니 일본판 파일을 골라 주세요.`,
+          );
+          return;
         case 'already-korean':
           show('이미 한글패치를 적용한 파일입니다. 그대로 즐기면 됩니다.');
           return;

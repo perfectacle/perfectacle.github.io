@@ -1,25 +1,12 @@
-export interface VersionPair {
-  /** File stem under images/patch; frame n loads `${id}_v10_${n}.webp` and `${id}_v11_${n}.webp`. */
-  id: string;
-  /** How many screens the scene spans, shown one after another. */
-  frames: number;
-  caption: string;
-  alt: string;
-  /** Screens one version does not have, keyed like `v10:2`, with the note shown in their place. */
-  gaps?: Record<string, string>;
-  /** Screen height when the capture is a strip rather than the full 224-line screen. */
-  height?: number;
-}
+import type { VersionGroup } from './version-pairs';
 
-export interface VersionGroup {
-  id: string;
-  title: string;
-  summary: string;
-  pairs: VersionPair[];
-}
+export const totsugekiVersions = [
+  { key: 'v10', label: 'v1.0' },
+  { key: 'v11', label: 'v1.1' },
+];
 
 /** Each pair is the same moment captured with the same input on v1.0 (2012) and v1.1. */
-export const versionGroups: VersionGroup[] = [
+export const totsugekiGroups: VersionGroup[] = [
   {
     id: 'restore',
     title: '원문대로 옮긴 대사',
