@@ -3,15 +3,17 @@ import PatchBook from '../../../layouts/PatchBook.astro';
 
 const gokuden = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/';
 const kakusei = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/';
+const otogirisou = '/games/kr-patches/sfc/otogirisou/';
 ---
 
 <PatchBook
   title="한글패치"
   trail={[{ name: '한글패치', path: '/games/kr-patches/' }]}
-  description="한국어로 즐기는 고전 게임. 슈퍼 마리오 RPG와 드래곤볼 Z 초오공전 돌격편·각성편 한글패치를 이 사이트에서 바로 적용합니다."
+  description="한국어로 즐기는 고전 게임. 슈퍼 마리오 RPG, 드래곤볼 Z 초오공전 돌격편·각성편, 제절초 한글패치를 이 사이트에서 바로 적용합니다."
   copyright={[
     '슈퍼 마리오 RPG © 1995 Nintendo / SQUARE ENIX CO., LTD.',
     '드래곤볼 Z 초오공전 돌격편·각성편 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995',
+    '제절초 © 1992 CHUNSOFT',
   ]}
   links={[]}
 >
@@ -76,6 +78,31 @@ const kakusei = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/';
             다시 대조했습니다.
           </p>
           <a class="pointer" href={kakusei}>
+            한글판 만들기
+          </a>
+        </div>
+      </li>
+      <li class="entry frame">
+        <a class="entry-shot screen" href={otogirisou} tabindex="-1" aria-hidden="true">
+          <img
+            src={`${otogirisou}images/scenes/title.webp`}
+            width="256"
+            height="224"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+        <div>
+          <p class="label">슈퍼 패미컴 · 1992 · v1.2</p>
+          <h2 class="pixel">
+            <a href={otogirisou}>제절초</a>
+          </h2>
+          <p>
+            빗속 숲에서 찾아낸 낡은 저택, 고르는 보기마다 달라지는 이야기. 사운드 노벨의 첫 작품을 플로차트와 장 목록을
+            더해 한국어로 읽습니다.
+          </p>
+          <a class="pointer" href={otogirisou}>
             한글판 만들기
           </a>
         </div>
