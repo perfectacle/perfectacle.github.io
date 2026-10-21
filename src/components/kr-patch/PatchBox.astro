@@ -113,7 +113,7 @@ const { ips, spec, output, speaker } = Astro.props;
         const name = `${output}${allowUnverified ? '_Unverified' : ''}.sfc`;
         save(rom, name);
         show(
-          `${name} 파일을 저장했습니다. 에뮬에서 이 롬파일을 열면 한글판으로 시작합니다.` +
+          `${name} 파일을 저장했습니다. 에뮬레이터에서 이 롬파일을 열면 한글판으로 시작합니다.` +
             (allowUnverified
               ? ' 원본과 다른 롬파일로 만들었으니 게임이 이상하면 다른 일본판 롬파일로 다시 만들어 주세요.'
               : ''),
