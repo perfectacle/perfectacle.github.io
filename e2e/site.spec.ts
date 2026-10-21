@@ -197,6 +197,24 @@ test('post header links straight to the comments', async ({ page }) => {
   await expect(page.locator('#comments')).toBeInViewport();
 });
 
+test('post describes itself as structured data for search engines', async ({ page }) => {
+  await page.goto(POST);
+  const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+  const types = blocks.map(b => (JSON.parse(b) as { '@type': string })['@type']);
+  expect(types).toEqual(['BlogPosting', 'BreadcrumbList']);
+  const article = JSON.parse(blocks[0] ?? '{}') as { url: string; headline: string };
+  expect(article.url).toBe(`https://perfectacle.github.io${POST}`);
+  expect(article.headline).toBe(await page.locator('h1').textContent());
+});
+
+test('llms.txt lists posts for AI assistants', async ({ request }) => {
+  const res = await request.get('/llms.txt');
+  expect(res.status()).toBe(200);
+  const text = await res.text();
+  expect(text).toMatch(/^# /);
+  expect(text).toContain(`https://perfectacle.github.io${POST}`);
+});
+
 test('post lists related posts', async ({ page }) => {
   await page.goto(POST);
   await expect(page.getByRole('region', { name: '관련 글' }).getByRole('link').first()).toBeVisible();

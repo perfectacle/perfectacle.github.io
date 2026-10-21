@@ -13,14 +13,16 @@ interface Props {
   current: number;
   total: number;
   description?: string;
+  jsonLd?: Record<string, unknown>[];
 }
-const { title, heading, eyebrow, posts, base, current, total, description } = Astro.props;
+const { title, heading, eyebrow, posts, base, current, total, description, jsonLd } = Astro.props;
 ---
 
 <Base
   title={current > 1 && title ? `${title} (${current}페이지)` : title}
   description={description}
   noindex={current > 1}
+  jsonLd={jsonLd}
 >
   <div class="container">
     {heading && (

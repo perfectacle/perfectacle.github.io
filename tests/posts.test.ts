@@ -51,6 +51,10 @@ describe('excerpt', () => {
     );
   });
 
+  it('keeps a space where a hard line break was', () => {
+    expect(excerpt(post('첫 줄이 끝났다.  \n둘째 줄이 이어진다.'))).toBe('첫 줄이 끝났다. 둘째 줄이 이어진다.');
+  });
+
   it('truncates long paragraphs', () => {
     const text = excerpt(post('가'.repeat(300)), 100);
     expect(text).toHaveLength(101);

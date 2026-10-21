@@ -2,6 +2,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import { toString } from 'mdast-util-to-string';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
+import { visit } from 'unist-util-visit';
 import { slugize } from './slugize.ts';
 
 export type Post = CollectionEntry<'posts'>;
@@ -72,6 +73,10 @@ export function excerpt(post: Post, max = 180): string {
     .parse(post.body ?? '');
   for (const node of tree.children) {
     if (node.type !== 'paragraph') continue;
+    // A hard break (two trailing spaces) has no text of its own; without this the lines run together.
+    visit(node, 'break', (_, i, parent) => {
+      if (parent && i !== undefined) parent.children[i] = { type: 'text', value: ' ' };
+    });
     // Skip image-only or link-only lines (thumbnails, embeds) that have little text of their own.
     const text = toString(node, { includeImageAlt: false }).replace(/\s+/g, ' ').trim();
     if (text.length < 10) continue;

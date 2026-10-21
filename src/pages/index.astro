@@ -1,6 +1,7 @@
 ---
 import ListPage from '../components/ListPage.astro';
 import { getPosts, paginate, SITE, ymd } from '../lib/posts.ts';
+import { website } from '../lib/structured-data.ts';
 
 const posts = await getPosts();
 const pages = paginate(posts);
@@ -8,7 +9,7 @@ const oldest = posts.at(-1);
 const since = oldest && ymd(oldest.data.date).y;
 ---
 
-<ListPage posts={pages[0]} base="/" current={1} total={pages.length}>
+<ListPage posts={pages[0]} base="/" current={1} total={pages.length} jsonLd={[website(SITE)]}>
   <header class="intro">
     <h1>{SITE.title}</h1>
     <p class="lede">{SITE.subtitle}</p>
