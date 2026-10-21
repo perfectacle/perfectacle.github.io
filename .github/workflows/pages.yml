@@ -22,7 +22,7 @@ env:
 jobs:
   verify:
     name: ${{ matrix.task }}
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 10
     strategy:
       fail-fast: false
@@ -84,7 +84,7 @@ jobs:
           key: ${{ steps.fingerprint.outputs.key }}
 
   actionlint:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -96,7 +96,7 @@ jobs:
           args: -color
 
   zizmor:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -109,7 +109,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
   build:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
       # main needs a fresh dist to deploy; a PR only needs the checks, which can be reused.
@@ -174,7 +174,7 @@ jobs:
           path: ./dist
 
   e2e:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -241,7 +241,7 @@ jobs:
 
   lighthouse:
     name: lighthouse (${{ matrix.shard }}/5)
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -313,7 +313,7 @@ jobs:
 
   output-baseline:
     if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'renovate[bot]'
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     steps:
       # The PR's own scripts snapshot the base build, so both sides are normalized the same way.
@@ -348,7 +348,7 @@ jobs:
 
   output-diff:
     needs: [build, output-baseline]
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -373,7 +373,7 @@ jobs:
   ci-ok:
     if: always()
     needs: [verify, actionlint, zizmor, build, e2e, lighthouse, output-baseline, output-diff]
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 2
     steps:
       - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -384,7 +384,7 @@ jobs:
     # success() would also require the skipped bot-only jobs upstream, so check ci-ok's own result.
     if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.ci-ok.result == 'success' }}
     needs: ci-ok
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 10
     permissions:
       pages: write
