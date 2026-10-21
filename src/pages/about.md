@@ -1,28 +1,30 @@
 ---
 layout: ../layouts/Page.astro
-title: 양권성이란...?
-description: 소프트웨어 설계와 아키텍처에 관심 많은 서버 개발자 양권성의 소개
+title: 소개
+description: 서버 개발자 양권성의 소개
 ---
-![](/about/exobud.webp)  
-* 소프트웨어 디자인, 설계, 아키텍처
-* Java, Kotlin, Spring (Boot)    
-* 힙합, Lofi, 재즈
+![](/about/profile.webp)  
+안녕하세요, 서버 개발자 양권성입니다.
 
-위 사항에 관심이 많습니다.  
-그 관심을 하나하나 제 것으로 만들기 위해 차근차근 공부해나가는 중입니다.
+## 경력
+* [누비랩](https://www.nuvilab.com) 백엔드 개발자 (2025.12 ~ 현재)
+* 토스페이먼츠 소프트웨어 엔지니어 (2020.08 ~ 2025.12)
+* 비바리퍼블리카(토스) 서버 개발자 (2019.08 ~ 2020.07)
+* 야놀자 서버 개발자 (2019.05 ~ 2019.08)
+* 레저큐 서버 개발자 (2017.08 ~ 2019.04)
 
-자작물은 아래와 같습니다.  
-* [떡밥밥](https://github.com/perfectacle/fish)  
-* [keyword-crawler](https://github.com/perfectacle/keyword-crawler)  
-* [dynamic-table-generator](https://github.com/perfectacle/tbl-maker)  
-* [check-browsers](https://www.npmjs.com/package/check-browsers)  
-* [async-to-sync](https://www.npmjs.com/package/async-to-sync)  
-* [perf-chk](https://www.npmjs.com/package/perf-chk)  
-* [hexo-theme-overdose-starter](https://github.com/perfectacle/hexo-theme-overdose-starter)  
+## 링크
+* [GitHub](https://github.com/perfectacle)
+* [LinkedIn](https://kr.linkedin.com/in/perfectacle)
 
-호기심이 많아 디버깅과 삽질을 많이하는 편입니다.  
-이 블로그도 저의 호기심을 정리해놓기 위해 만들었습니다.  
-여러분의 따뜻한 댓글이 저로 하여금 의지를 더 불타게 만듭니다.  
-블로그를 구독하시고자하시는 분들은 아래 RSS Feed를 구독하시면 되겠습니다.  
-[https://perfectacle.github.io/atom.xml](https://perfectacle.github.io/atom.xml)  
-감사합니다.
+## 관심사
+* Java, Kotlin, Spring 기반 서버 개발과 동시성 (Virtual Thread, 코루틴)
+* 소프트웨어 설계와 아키텍처
+* Kubernetes, 클라우드, 관측 가능성 같은 인프라와 운영
+* AI 코딩 에이전트와 함께 일하는 방식
+* 여행, 고전 게임 한글화
+* 음악: 힙합, 재즈, 보사노바, Lofi
+
+## 이 블로그
+궁금한 걸 파고들다 알게 된 것들을 정리해 두는 곳입니다.  
+새 글은 [RSS 피드](https://perfectacle.github.io/atom.xml) 로 받아 보실 수 있습니다.
