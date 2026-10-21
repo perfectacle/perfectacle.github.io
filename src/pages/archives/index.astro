@@ -56,16 +56,6 @@ for (const post of posts) {
     margin: 0;
     padding: 0;
   }
-  /* A year's titles are short rows; two columns use a wide screen without stretching each row. */
-  @media (min-width: 1100px) {
-    ol {
-      columns: 2;
-      column-gap: 48px;
-    }
-    li {
-      break-inside: avoid;
-    }
-  }
   li {
     display: flex;
     gap: 14px;
