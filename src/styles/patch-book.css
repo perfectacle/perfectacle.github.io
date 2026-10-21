@@ -253,15 +253,6 @@ summary.pointer:focus-visible::before {
   text-decoration: none;
 }
 
-.masthead nav {
-  display: flex;
-  gap: 40px;
-}
-
-.masthead nav a {
-  color: var(--ink);
-}
-
 .page-footer {
   display: grid;
   gap: 6px;

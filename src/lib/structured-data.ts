@@ -67,11 +67,20 @@ export const blogPosting = (site: SiteInfo, a: ArticleInfo): JsonLd => ({
   isPartOf: { '@type': 'Blog', name: site.title, url: abs(site, '/') },
 });
 
-/** Home, then each category level, then the page itself. */
-export const breadcrumbs = (site: SiteInfo, trail: { name: string; path: string }[]): JsonLd => ({
+interface Crumb {
+  name: string;
+  path: string;
+}
+
+/** `root` (the blog home unless given), then each category level, then the page itself. */
+export const breadcrumbs = (
+  site: SiteInfo,
+  trail: Crumb[],
+  root: Crumb | null = { name: site.title, path: '/' },
+): JsonLd => ({
   '@context': CONTEXT,
   '@type': 'BreadcrumbList',
-  itemListElement: [{ name: site.title, path: '/' }, ...trail].map((item, i) => ({
+  itemListElement: [...(root ? [root] : []), ...trail].map((item, i) => ({
     '@type': 'ListItem',
     position: i + 1,
     name: item.name,

@@ -100,6 +100,7 @@ export const OTOGIRISOU_PATCH: KrPatch = {
 export const KR_PATCHES = [SMRPG_PATCH, TOTSUGEKI_PATCH, KAKUSEI_PATCH, OTOGIRISOU_PATCH];
 
 export const KR_PATCH_LIST_PATH = '/games/kr-patches/';
+export const KR_PATCH_SITE_TITLE = '한글패치';
 
 export const downloads = (patch: KrPatch) => {
   const root = `${patch.path}/downloads/${patch.stem}`;
