@@ -1,22 +1,18 @@
 ---
-import { SITE } from '../lib/posts.ts';
-
 interface Props {
   /** Post path such as `/2022/06/06/slug/`. */
   path: string;
-  title: string;
 }
-const { path, title } = Astro.props;
-// The Hexo/NexT era registered threads with identifier = path without the leading slash;
-// changing it would detach every existing Disqus thread.
-const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), title };
+const { path } = Astro.props;
 ---
 
 <section id="comments" class="comments" aria-labelledby="comments-title" data-pagefind-ignore>
   <h2 id="comments-title" class="section-label">
     댓글
   </h2>
-  <div id="disqus_thread" data-config={JSON.stringify(config)}>
+  <!-- Waline keys threads by this path, and comments imported from Disqus were stored under it.
+       Changing it detaches every existing thread. -->
+  <div id="waline" data-path={path}>
     <button type="button" class="load">
       댓글 보기
     </button>
@@ -24,61 +20,52 @@ const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), t
 </section>
 
 <script>
-  interface DisqusPage {
-    url: string;
-    identifier: string;
-    title: string;
-  }
-  // Globals read by Disqus' embed.js.
-  const w = window as Window & { disqus_config?: (this: { page: DisqusPage }) => void; __disqusLoaded?: boolean };
+  const SERVER_URL = 'https://blog-comments-perfectacle.vercel.app';
+  // reCAPTCHA v3 site key (public). The server checks each comment's token with the matching secret.
+  const RECAPTCHA_V3_KEY = '6Ldj-PktAAAAANaZoskgwtGwP73TtTKAPgJTO5EW';
 
-  // Disqus injects ad iframes, its "Also on" recommendations and an ad-tracking script next to the comments.
-  // Stopping them at insertion keeps the ad networks from loading at all; hiding them would still load them.
-  const UNWANTED = [
-    /\/\/tempest\.services\.disqus\.com\/ads-iframe\//,
-    /\/recommendations\.js(?:$|\?)/,
-    /\.liadm\.com\//,
-  ];
-  const isUnwanted = (node: Node) =>
-    (node instanceof HTMLScriptElement || node instanceof HTMLIFrameElement) &&
-    UNWANTED.some(re => re.test(node.getAttribute('src') ?? ''));
-  const blockUnwanted = () => {
-    const { appendChild, insertBefore } = Node.prototype;
-    Node.prototype.appendChild = function <T extends Node>(this: Node, node: T): T {
-      return isUnwanted(node) ? node : (appendChild.call(this, node) as T);
+  const el = document.getElementById('waline');
+  if (el?.dataset.path) {
+    const path = el.dataset.path;
+    let loaded = false;
+    const load = async () => {
+      if (loaded) return;
+      loaded = true;
+      const [{ init }, { WALINE_KO }] = await Promise.all([
+        import('@waline/client'),
+        import('../lib/waline-locale.ts'),
+        import('@waline/client/waline.css'),
+      ]);
+      init({
+        el,
+        serverURL: SERVER_URL,
+        path,
+        lang: 'ko',
+        locale: WALINE_KO,
+        login: 'enable',
+        meta: ['nick', 'mail', 'link'],
+        requiredMeta: ['nick'],
+        // The defaults reach third-party services: emoji packs from a CDN, Giphy for GIF search, and images
+        // inlined as base64 into the database.
+        emoji: false,
+        search: false,
+        imageUploader: false,
+        reaction: false,
+        pageview: false,
+        comment: false,
+        recaptchaV3Key: RECAPTCHA_V3_KEY,
+      });
     };
-    Node.prototype.insertBefore = function <T extends Node>(this: Node, node: T, child: Node | null): T {
-      return isUnwanted(node) ? node : (insertBefore.call(this, node, child) as T);
-    };
-  };
-
-  const thread = document.getElementById('disqus_thread');
-  if (thread?.dataset.config) {
-    const config = JSON.parse(thread.dataset.config) as DisqusPage;
-    const load = () => {
-      if (w.__disqusLoaded) return;
-      w.__disqusLoaded = true;
-      w.disqus_config = function () {
-        this.page.url = config.url;
-        this.page.identifier = config.identifier;
-        this.page.title = config.title;
-      };
-      blockUnwanted();
-      const s = document.createElement('script');
-      s.src = 'https://exobud.disqus.com/embed.js';
-      s.dataset.timestamp = String(Date.now());
-      document.head.appendChild(s);
-    };
-    thread.querySelector('.load')?.addEventListener('click', load);
+    el.querySelector('.load')?.addEventListener('click', () => void load());
     new IntersectionObserver(
       (entries, obs) => {
         if (entries.some(e => e.isIntersecting)) {
           obs.disconnect();
-          load();
+          void load();
         }
       },
       { rootMargin: '400px' },
-    ).observe(thread);
+    ).observe(el);
   }
 </script>
 
@@ -87,6 +74,26 @@ const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), t
     margin-top: 48px;
     padding-top: 24px;
     border-top: 1px solid var(--border);
+    /* Waline reads these; pointing them at the site tokens makes it follow the light/dark theme. */
+    --waline-font-size: 1rem;
+    --waline-theme-color: var(--accent);
+    --waline-active-color: var(--accent);
+    --waline-color: var(--fg);
+    --waline-bg-color: var(--bg);
+    --waline-bg-color-light: var(--bg-soft);
+    --waline-bg-color-hover: var(--bg-soft);
+    --waline-border-color: var(--border);
+    /* Waline composes this from the border color on :root, so it has to be restated here to pick up --border. */
+    --waline-border: 1px solid var(--border);
+    --waline-disable-bg-color: var(--bg-soft);
+    --waline-disable-color: var(--fg-muted);
+    --waline-bq-color: var(--border);
+    --waline-info-bg-color: var(--bg-soft);
+    --waline-info-color: var(--fg-muted);
+    --waline-light-grey: var(--fg-muted);
+    --waline-dark-grey: var(--fg-muted);
+    --waline-white: var(--accent-fg);
+    --waline-badge-color: var(--accent);
   }
   .load {
     font: inherit;
@@ -101,9 +108,17 @@ const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), t
   .load:hover {
     border-color: var(--accent);
   }
-  /* Fallback in case Disqus inserts these another way than the guarded DOM methods. */
-  .comments :global(#disqus_recommendations),
-  .comments :global(#disqus_thread iframe[src*='/ads-iframe/']) {
-    display: none !important;
+  .comments :global(.wl-content pre) {
+    font-family: var(--font-mono);
+  }
+  .comments :global(.wl-editor) {
+    font-family: var(--font-sans);
+  }
+  /* Waline prints the count before the label ("2 댓글"); Korean reads "댓글 2". */
+  .comments :global(.wl-count) {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.3em;
   }
 </style>

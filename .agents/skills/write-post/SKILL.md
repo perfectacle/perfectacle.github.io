@@ -26,7 +26,7 @@ description: 블로그 글을 새로 쓰거나 고칠 때(src/content/posts/**).
 
 글 URL 은 `/<date 의 연>/<월>/<일>/<폴더명>/` 이다. 폴더의 연도 디렉터리는 정리용일 뿐 URL 에 쓰이지 않고, 날짜는 frontmatter `date` 문자열 그대로다(시간대 변환 없음).
 
-- 발행된 글의 `date` 와 폴더명은 바꾸지 않는다. 바꾸면 외부 링크·검색 결과·Disqus 댓글 스레드가 끊긴다. 오타가 있는 옛 slug(`Module-bundling-with-Webpck` 등)도 그대로 둔다.
+- 발행된 글의 `date` 와 폴더명은 바꾸지 않는다. 바꾸면 외부 링크·검색 결과·댓글 스레드가 끊긴다. 오타가 있는 옛 slug(`Module-bundling-with-Webpck` 등)도 그대로 둔다.
 - 새 글은 연도 폴더를 `date` 의 연도와 같게 둔다(어긋나도 동작은 하지만 찾기 어렵다).
 
 ### IMG-01 — 이미지

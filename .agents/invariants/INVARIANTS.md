@@ -9,7 +9,7 @@
 | URL-01 | 글 URL 은 `/YYYY/MM/DD/<폴더명>/`, 날짜는 frontmatter `date` 그대로. 발행된 글의 `date`·폴더명은 바꾸지 않는다 | [write-post §URL-01](../skills/write-post/SKILL.md#url-01--글-url)           |
 | URL-02 | 태그·카테고리 slug 와 본문 heading id 는 hexo-util slugize 규칙                                                | [site-code §URL-02](../skills/site-code/SKILL.md#url-02--slug-와-heading-id) |
 | URL-03 | Hexo 시절 페이지(`tests/fixtures/legacy-paths.txt` 의 모든 경로)는 항상 존재                                   | [site-code §URL-03](../skills/site-code/SKILL.md#url-03--옛-주소-계약)       |
-| CMT-01 | Disqus identifier 는 앞 슬래시 없는 경로(`2022/06/06/slug/`)                                                   | [site-code §CMT-01](../skills/site-code/SKILL.md#cmt-01--disqus-identifier)  |
+| CMT-01 | 댓글은 Waline 이 글 경로(`/2022/06/06/slug/`)로 묶는다. 이 경로를 바꾸지 않는다                                | [site-code §CMT-01](../skills/site-code/SKILL.md#cmt-01--댓글-경로)          |
 
 ## 콘텐츠
 
