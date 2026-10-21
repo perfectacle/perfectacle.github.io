@@ -1,6 +1,6 @@
 ---
 title: (Hexo) NexT 테마
-tags: [Theme, NexT]
+tags: [NexT]
 categories: [도구, Hexo]
 date: 2019-08-22 15:38:15
 ---

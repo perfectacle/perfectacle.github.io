@@ -1,7 +1,6 @@
 ---
 title: (자알쓰) 연산자
 tags:
-  - Value
   - Expression
   - Statement
 categories:

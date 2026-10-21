@@ -2,7 +2,7 @@
 title: (상식) 컴퓨터 용량 단위에 대한 진실
 date: 2017-01-23 17:57:03
 categories: [CS, 상식]
-tags: [용량]
+tags: [Data Unit]
 ---
 ![](./thumb.webp)
 

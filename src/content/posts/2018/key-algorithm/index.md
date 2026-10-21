@@ -1,6 +1,6 @@
 ---
 title: (보안) 대칭/비대칭키 암호화
-tags: [Security]
+tags: [Cryptography]
 categories: [CS, 보안]
 date: 2018-04-13 02:00:23
 ---

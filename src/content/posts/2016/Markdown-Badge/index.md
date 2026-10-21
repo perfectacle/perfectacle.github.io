@@ -2,7 +2,7 @@
 title: (Markdown) 개발자스러운 뱃지
 date: 2016-11-26 23:14:30
 categories: [도구, 기타]
-tags: [Markdown, md]
+tags: [Markdown]
 ---
 ![](./thumb.webp)  
 이번 포스트는 정말 별 것 없다.  

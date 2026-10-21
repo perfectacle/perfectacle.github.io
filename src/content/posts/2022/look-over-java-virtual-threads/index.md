@@ -1,6 +1,6 @@
 ---
 title: Java Virtual Threads 훑어보기
-tags: [Virtual Threads, Loom]
+tags: [Virtual Threads]
 categories: [Java, JVM]
 date: 2022-12-29 00:22:21
 ---

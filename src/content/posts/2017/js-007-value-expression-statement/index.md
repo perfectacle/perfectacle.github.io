@@ -1,7 +1,6 @@
 ---
 title: (자알쓰) 값 vs 식 vs 문
 tags:
-  - Value
   - Expression
   - Statement
 categories:

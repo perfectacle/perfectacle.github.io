@@ -1,6 +1,6 @@
 ---
 title: 라스베가스를 다녀오고... 1편 (feat. AWS re:Invent 2021) - 인천공항에서 세미나 첫 날까지
-tags: [reinvent]
+tags: ['AWS re:Invent']
 categories: [일상, 여행]
 date: 2021-12-31 14:29:31
 series: '라스베가스를 다녀오고... (AWS re:Invent 2021)'

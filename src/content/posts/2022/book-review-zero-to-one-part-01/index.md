@@ -1,6 +1,6 @@
 ---
 title: (독서노트) 제로 투 원 (ZERO to ONE) Part. 01
-tags: [독서노트, 제로 투 원, ZERO to ONE]
+tags: [독서노트, 제로 투 원]
 categories: [일상, 취미]
 date: 2022-01-22 15:02:19
 ---

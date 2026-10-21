@@ -1,6 +1,6 @@
 ---
 title: Unix Timestamp
-tags: [Time, Unix]
+tags: [DateTime, Unix Time]
 categories: [CS, 상식]
 date: 2018-09-25 23:05:08
 ---

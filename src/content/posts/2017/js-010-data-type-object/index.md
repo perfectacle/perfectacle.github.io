@@ -1,8 +1,7 @@
 ---
 title: (자알쓰) 자료형(객체)
 tags:
-  - 자료형
-  - 객체
+  - Data Type
 categories:
   - JavaScript
   - 자알쓰

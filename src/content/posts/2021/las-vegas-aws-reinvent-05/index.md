@@ -1,6 +1,6 @@
 ---
 title: 라스베가스를 다녀오고... 5편 (feat. AWS re:Invent 2021) - 세미자 마지막 날부터 인천공항까지
-tags: [reinvent]
+tags: ['AWS re:Invent']
 categories: [일상, 여행]
 date: 2021-12-31 23:27:31
 series: '라스베가스를 다녀오고... (AWS re:Invent 2021)'

@@ -2,7 +2,7 @@
 title: (Webpack 2) 트리 쉐이킹을 해보자!
 date: 2017-03-12 19:32:22
 categories: [Frontend, Webpack]
-tags: [npm, Webpack2, Babel]
+tags: [Babel]
 series: 'Webpack 2'
 seriesOrder: 1
 ---

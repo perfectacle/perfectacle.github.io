@@ -2,7 +2,7 @@
 title: (ES6) Interface
 date: 2016-12-25 22:17:14
 categories: [JavaScript, ES2015+]
-tags: [Interface]
+tags: [Iterator]
 ---
 ![](./thumb.webp)
 

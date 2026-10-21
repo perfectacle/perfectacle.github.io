@@ -2,7 +2,7 @@
 title: (자작) 키워드 크롤러
 date: 2017-07-18 13:59:43
 categories: [프로젝트, 자작]
-tags: [crawler, phantomjs, mecab]
+tags: [Crawler, PhantomJS, MeCab]
 ---
 ![차트라던지 표라던지 표현 방법은 유저가 직접 구현해야한다.](./thumb.webp)  
 

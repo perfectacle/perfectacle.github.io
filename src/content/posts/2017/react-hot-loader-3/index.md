@@ -2,7 +2,7 @@
 title: (React Hot Loader) v3로 마이그레이션 해보자!
 date: 2017-03-25 10:39:14
 categories: [Frontend, React]
-tags: [npm, Webpack2, Hot, Loader]
+tags: [React Hot Loader]
 ---
 ![요놈도 v1이 언제 deprecated 될지 모르니 얼른 마이그레이션 해보자](./thumb.webp)  
 

@@ -5,8 +5,6 @@ categories:
   - 자알쓰
 tags:
   - Module
-  - import
-  - export
 date: 2017-05-20 21:43:33
 series: '자알쓰'
 seriesOrder: 6

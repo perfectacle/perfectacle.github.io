@@ -2,7 +2,7 @@
 categories: [프로젝트, 자작]
 title: (자작) async-to-sync (자바스크립트 비동기 함수 헬퍼)
 date: 2017-05-01 12:47:00
-tags: [npm, Promise, async, await]
+tags: [npm, Promise, async]
 ---
 ![](./thumb.webp)
 # async-to-sync

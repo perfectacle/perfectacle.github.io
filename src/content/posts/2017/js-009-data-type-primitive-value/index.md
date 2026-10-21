@@ -1,8 +1,7 @@
 ---
 title: (자알쓰) 자료형(원시값)
 tags:
-  - 자료형
-  - 원시값
+  - Data Type
 categories:
   - JavaScript
   - 자알쓰
