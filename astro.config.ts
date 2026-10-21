@@ -7,7 +7,6 @@ import { remarkPostLinks } from './src/lib/remark-post-links.ts';
 import { rehypeYoutubeFacade } from './src/lib/rehype-youtube-facade.ts';
 import { rehypePostImages } from './src/lib/rehype-post-images.ts';
 import { rehypeCodeBlocks } from './src/lib/rehype-code-blocks.ts';
-import { TAXONOMY_REDIRECTS } from './src/lib/taxonomy-redirects.ts';
 
 export default defineConfig({
   vite: {
@@ -20,7 +19,6 @@ export default defineConfig({
   site: 'https://perfectacle.github.io',
   trailingSlash: 'ignore',
   build: { format: 'directory' },
-  redirects: TAXONOMY_REDIRECTS,
   // srcset/sizes for post images so phones don't download the 1600px originals.
   // Astro adds each image's own width (POST_IMAGE_WIDTH) and its 2x to these, dropping any wider than the original,
   // so an image gets at most four variants. Astro's default breakpoint list made ~6 variants per image,

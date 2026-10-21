@@ -32,13 +32,14 @@ description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, s
 - 이유: 외부 링크와 다른 글이 이 slug·앵커로 걸려 있다.
 - smartypants 는 `dashes: 'oldschool'`(Hexo 와 같이 `--` → en dash) 이다. heading id 에 들어가므로 바꾸지 않는다.
 - 확인: `pnpm test`(slugize·heading id 테스트), `pnpm verify:dist`(내부 앵커가 실제 id 를 가리키는지).
-- 저장소 주인이 명시적으로 바꾸라고 할 때만 바꾼다. 그때도 옛 주소는 지우지 않고 리다이렉트 페이지로 남기고(`src/lib/taxonomy-redirects.ts` 에 옛 → 새 경로를 더한다. `legacy-paths.txt` 항목은 유지), PR 본문에 영향받는 주소를 적는다. slugize 를 쓰는 곳은 `grep -rln slugize src scripts` 로 찾는다.
+- 저장소 주인이 명시적으로 바꾸라고 할 때만 바꾼다. 영향받는 주소는 PR 본문에 적는다. slugize 를 쓰는 곳은 `grep -rln slugize src scripts` 로 찾는다.
 
 ### URL-03 — 옛 주소 계약
 
 `tests/fixtures/legacy-paths.txt` 의 모든 경로(Hexo 시절 페이지·피드)는 빌드 결과에 항상 있어야 한다. 라우트·페이지네이션(10개씩, `page/N/`)·아카이브(연/월) 구조를 바꿀 때 이 계약을 깨지 않는다.
 
 - 확인: `pnpm build && pnpm verify:urls`.
+- 리다이렉트는 두지 않는다. 글 URL 은 바꾸지 않으므로 필요 없고([URL-01](../write-post/SKILL.md#url-01--글-url)), 태그·카테고리를 없애거나 이름을 바꾸면 옛 주소는 404 가 되도록 둔다. 이때 그 주소를 이 목록에서 빼고 PR 본문에 적는다. 저장소 주인이 정한 방침이다.
 - `public/` 의 데모 페이지·검색엔진 소유 확인 파일·`ads.txt` 도 이 계약에 들어 있다. 쓰지 않는 것처럼 보여도 지우지 않는다.
 - macOS 는 파일시스템이 대소문자를 구분하지 않아 `tags/Babel` 과 `tags/babel` 이 로컬에서 한 폴더로 겹쳐 보인다. 둘 다 생성되는지는 빌드 로그나 CI(Linux)로 확인한다.
 
