@@ -1,11 +1,14 @@
 ---
 import ToolFiles from '../smrpg/ToolFiles.astro';
+import ChapterChoices from './ChapterChoices.astro';
 
 interface Props {
   base: string;
+  /** Chapter title shown above the heading, matching the page's other chapters. */
+  mark: string;
 }
 
-const { base } = Astro.props;
+const { base, mark } = Astro.props;
 const img = (name: string) => `${base}/images/making/${name}`;
 const zip = `${base}/downloads/Otogirisou_K_v1_2_tools.zip`;
 
@@ -78,6 +81,7 @@ const toolMap = [
 ---
 
 <section id="making" class="section page-width" aria-labelledby="making-title">
+  <p class="label chapter-mark">{mark}</p>
   <h2 id="making-title" class="pixel">
     한글판을 만든 방법
   </h2>
@@ -735,6 +739,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
       </div>
     </div>
   </details>
+  <ChapterChoices />
 </section>
 
 <style>

@@ -2,6 +2,8 @@
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import VersionPair from '../../../../components/kr-patch/VersionPair.astro';
 import MakingOf from '../../../../components/otogirisou/MakingOf.astro';
+import ChapterChoices from '../../../../components/otogirisou/ChapterChoices.astro';
+import SoundNovel from '../../../../components/otogirisou/SoundNovel.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import { otogirisouPairs, otogirisouVersions } from '../../../../lib/otogirisou-showcase';
 import { OTOGIRISOU, patchedSize } from '../../../../lib/rom-patch';
@@ -40,7 +42,7 @@ const features = [
     image: 'flow-endings',
     alt: '본 엔딩 1개 중 「돌아본 얼굴」이 보이고 나머지는 아직 보지 않음인 엔딩 목록',
     title: '엔딩 목록',
-    text: '플로차트에서 X를 누르면 엔딩 18개 중 본 엔딩의 제목이 나옵니다. 아직 못 본 엔딩은 「아직 보지 않음」으로 남습니다.',
+    text: '플로차트에서 X를 누르면 대본에 있는 엔딩 18개 중 본 엔딩의 제목이 나옵니다. 원작에는 엔딩 제목이 없어 한글판에서 붙였고, 아직 못 본 엔딩은 「아직 보지 않음」으로 남습니다.',
   },
   {
     image: 'shiori',
@@ -76,6 +78,21 @@ const play = [
     text: '엔딩은 18개입니다. 끝까지 읽고 다시 시작하면 처음에는 없던 보기와 다른 이야기가 열립니다.',
   },
 ];
+
+// Each section reads as a chapter of the game; the title menu and the choices at each chapter's end follow this order.
+const chapters = [
+  { id: 'korean', label: '한국어로 바뀐 것', mark: '제1장' },
+  { id: 'features', label: '편의 기능', mark: '제2장' },
+  { id: 'story', label: '이야기', mark: '제3장' },
+  { id: 'play', label: '진행 방식', mark: '제4장' },
+  { id: 'making', label: '한글판을 만든 방법', mark: '숨겨진 장' },
+];
+const chapter = (id: string) => {
+  const i = chapters.findIndex(c => c.id === id);
+  const found = chapters[i];
+  if (!found) throw new Error(`Unknown chapter ${id}`);
+  return { mark: found.mark, next: chapters[i + 1] };
+};
 
 const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
 const korean = patchedSize(OTOGIRISOU);
@@ -164,36 +181,11 @@ const korean = patchedSize(OTOGIRISOU);
         </div>
       </details>
     </div>
-    <figure class="hero-shot screen">
-      <img
-        src={`${base}/images/scenes/title.webp`}
-        width="256"
-        height="224"
-        alt="저택 정문을 배경으로 붉은 글씨 '제절초'와 한자 弟切草가 있는 타이틀 화면"
-        fetchpriority="high"
-      />
-    </figure>
+    <SoundNovel base={base} chapters={chapters.map(c => ({ href: `#${c.id}`, label: c.label }))} />
   </section>
 
-  <nav class="toc page-width frame" aria-label="이 페이지 차례">
-    <a class="pointer" href="#korean">
-      한국어로 바뀐 것
-    </a>
-    <a class="pointer" href="#features">
-      편의 기능
-    </a>
-    <a class="pointer" href="#story">
-      이야기
-    </a>
-    <a class="pointer" href="#play">
-      진행 방식
-    </a>
-    <a class="pointer" href="#making">
-      만든 방법
-    </a>
-  </nav>
-
   <section id="korean" class="section page-width" aria-labelledby="korean-title">
+    <p class="label chapter-mark">{chapter('korean').mark}</p>
     <h2 id="korean-title" class="pixel">
       한국어로 바뀐 것
     </h2>
@@ -219,9 +211,11 @@ const korean = patchedSize(OTOGIRISOU);
         </div>
       </details>
     )}
+    <ChapterChoices next={chapter('korean').next} />
   </section>
 
   <section id="features" class="section page-width" aria-labelledby="features-title">
+    <p class="label chapter-mark">{chapter('features').mark}</p>
     <h2 id="features-title" class="pixel">
       편의 기능
     </h2>
@@ -254,22 +248,25 @@ const korean = patchedSize(OTOGIRISOU);
         </article>
       ))}
     </div>
+    <ChapterChoices next={chapter('features').next} />
   </section>
 
   <section id="story" class="section page-width" aria-labelledby="story-title">
+    <p class="label chapter-mark">{chapter('story').mark}</p>
     <h2 id="story-title" class="pixel">
       이야기
     </h2>
     <div class="story">
       <div class="story-copy">
-        <p class="lead">여름날 해 질 녘, 꾸불꾸불한 산길. 나는 옆자리에 나미를 태우고 집으로 돌아가는 길입니다.</p>
+        <p class="lead">여름날 해 질 녘, 꾸불꾸불한 산길. 나는 옆자리에 나미를 태우고 집으로 돌아가는 길이었다.</p>
         <p>
-          길가에 줄지어 핀 노란 꽃은 제절초(弟切草). 그 꽃에 얽힌 기묘한 전설을 들려주던 사이 비가 쏟아지고, 벼락에
-          쓰러진 나무가 차를 덮칩니다. 빗속 숲을 헤매던 두 사람 앞에 거대한 저택이 나타납니다. 비를 피해 들어간 저택에서
-          무슨 일이 기다리고 있는지는 고르는 보기에 따라 달라집니다.
+          길가에 줄지어 핀 노란 꽃은 제절초(弟切草). 그 꽃에 얽힌 기묘한 전설을 듣던 사이 비가 쏟아지고, 벼락에 쓰러진
+          나무가 차를 덮쳤다. 빗속 숲을 헤매던 우리 앞에 거대한 저택이 나타났다.
         </p>
-        <p>
+        <p>저 안에서 무엇이 기다리고 있을지는, 내가 고르는 보기에 달려 있다.</p>
+        <p class="section-note">
           춘소프트가 1992년에 낸 슈퍼 패미컴 게임으로, 그림과 소리 위에 문장을 읽어 가는 '사운드 노벨'의 첫 작품입니다.
+          시나리오는 나가사카 슈케이(長坂秀佳)가 썼습니다.
         </p>
       </div>
       <div class="story-shots">
@@ -295,9 +292,11 @@ const korean = patchedSize(OTOGIRISOU);
         </figure>
       </div>
     </div>
+    <ChapterChoices next={chapter('story').next} />
   </section>
 
   <section id="play" class="section page-width" aria-labelledby="play-title">
+    <p class="label chapter-mark">{chapter('play').mark}</p>
     <h2 id="play-title" class="pixel">
       진행 방식
     </h2>
@@ -319,13 +318,8 @@ const korean = patchedSize(OTOGIRISOU);
         </article>
       ))}
     </div>
+    <ChapterChoices next={chapter('play').next} />
   </section>
 
-  <MakingOf base={base} />
-
-  <p class="back-to-top page-width">
-    <a class="pointer" href="#title">
-      한글판 만들러 가기
-    </a>
-  </p>
+  <MakingOf base={base} mark={chapter('making').mark} />
 </PatchBook>

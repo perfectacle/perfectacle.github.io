@@ -243,3 +243,40 @@ test('Otogirisou patch box wants the 1 MB original and turns away a 2 MB Korean 
   await expect(status).toContainText('예전에 나온 한글판 파일입니다');
   await expect(status).not.toContainText('v1.');
 });
+
+test('Otogirisou title screen reads the opening page by page from the keyboard', async ({ page }) => {
+  await page.goto(OTOGIRI);
+  const novel = page.locator('[data-novel]');
+  const screen = novel.locator('img');
+  await novel.getByRole('link', { name: '처음부터 읽기' }).click();
+  await expect(screen).toHaveAttribute('src', /opening_ko_1\.webp$/);
+  await expect(novel.locator('[data-live]')).toContainText('여름날 해 질 녘');
+  await page.keyboard.press('Enter');
+  await expect(screen).toHaveAttribute('src', /wake_ko_1\.webp$/);
+  // With the Korean IME on, the A key arrives as a jamo; the physical key still turns the page.
+  await novel.locator('.novel-screen').dispatchEvent('keydown', { key: 'ㅁ', code: 'KeyA', bubbles: true });
+  await expect(screen).toHaveAttribute('src', /driving_ko_1\.webp$/);
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('ArrowLeft');
+  await expect(screen).toHaveAttribute('src', /opening_ko_1\.webp$/);
+  await page.keyboard.press('Escape');
+  await expect(screen).toHaveAttribute('src', /scenes\/title\.webp$/);
+  await expect(novel.getByRole('link', { name: '처음부터 읽기' })).toBeFocused();
+
+  await expect(novel.locator('.novel-screen')).not.toHaveAttribute('tabindex');
+  await page.keyboard.press('Enter');
+  for (let i = 0; i < 8; i++) await page.keyboard.press('a');
+  const enter = novel.getByRole('link', { name: /저택에 들어간다/ });
+  await expect(enter).toBeFocused();
+  await enter.click();
+  await expect(page.locator('.patch-box input[type=file]')).toBeFocused();
+});
+
+test('Otogirisou title menu and chapter choices point at sections on the page', async ({ page }) => {
+  await page.goto(OTOGIRI);
+  const hashes = await page
+    .locator('[data-menu="title"] a, .chapter-choices a')
+    .evaluateAll(as => as.map(a => (a as HTMLAnchorElement).hash));
+  expect(hashes.length).toBeGreaterThan(5);
+  for (const hash of new Set(hashes)) await expect(page.locator(hash)).toHaveCount(1);
+});
