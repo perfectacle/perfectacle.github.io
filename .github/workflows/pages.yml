@@ -20,8 +20,36 @@ env:
   IS_BOT_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.user.login == 'renovate[bot]' }}
 
 jobs:
+  # A push to main usually lands the exact tree a PR just verified, and PR caches are invisible to main,
+  # so re-running every check there only delays the deploy. Any other tree (main moved after the PR's
+  # checks, manual runs) still gets the full suite.
+  tested:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-26.04-arm
+    timeout-minutes: 2
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      verified: ${{ steps.lookup.outputs.verified }}
+    steps:
+      # A failed lookup runs everything instead of blocking the deploy.
+      # Markers from fork runs are ignored: a fork controls its own workflow file.
+      - id: lookup
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tree=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$GITHUB_SHA" --jq .tree.sha)
+          count=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=verified-tree-$tree" \
+            --jq "[.artifacts[] | select(.workflow_run.head_repository_id == $GITHUB_REPOSITORY_ID)] | length")
+          echo "tree $tree: $count verified PR run(s)"
+          echo "verified=$([ "$count" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
   verify:
     name: ${{ matrix.task }}
+    needs: tested
+    if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 10
     strategy:
@@ -84,6 +112,8 @@ jobs:
           key: ${{ steps.fingerprint.outputs.key }}
 
   actionlint:
+    needs: tested
+    if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 5
     steps:
@@ -96,6 +126,8 @@ jobs:
           args: -color
 
   zizmor:
+    needs: tested
+    if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 5
     steps:
@@ -174,6 +206,8 @@ jobs:
           path: ./dist
 
   e2e:
+    needs: tested
+    if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     steps:
@@ -241,6 +275,8 @@ jobs:
 
   lighthouse:
     name: lighthouse (${{ matrix.shard }}/5)
+    needs: tested
+    if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     strategy:
@@ -379,6 +415,27 @@ jobs:
       - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
         run: exit 1
       - run: echo ok
+
+      # Marks this merge result as verified so the push that lands it on main can skip the checks (see tested).
+      # Best effort: without the marker main just re-runs everything, so it must never fail ci-ok.
+      - if: github.event_name == 'pull_request'
+        id: tree
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tree=$(gh api "repos/$GITHUB_REPOSITORY/git/commits/$GITHUB_SHA" --jq .tree.sha)
+          touch verified
+          echo "sha=$tree" >> "$GITHUB_OUTPUT"
+
+      - if: steps.tree.outputs.sha != ''
+        continue-on-error: true
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: verified-tree-${{ steps.tree.outputs.sha }}
+          path: verified
+          retention-days: 7
+          overwrite: true
 
   deploy:
     # success() would also require the skipped bot-only jobs upstream, so check ci-ok's own result.
