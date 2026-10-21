@@ -1,6 +1,6 @@
 ---
 name: site-code
-description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, src/styles, astro.config.ts, scripts)를 바꿀 때. Hexo 호환 장치(slug·heading id·URL 계약·Disqus)와 변경 후 검증, 화면 변경 확인 방법.
+description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, src/styles, astro.config.ts, scripts)를 바꿀 때. Hexo 호환 장치(slug·heading id·URL 계약·댓글 경로)와 변경 후 검증, 화면 변경 확인 방법.
 ---
 
 # 사이트 코드 바꾸기
@@ -44,9 +44,13 @@ description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, s
 - 새 데모·예제 파일은 `public/lab/<이름>/` 아래에 둔다. 사이트 루트 이름을 차지하지 않아 나중에 만드는 페이지와 겹치지 않는다.
 - macOS 는 파일시스템이 대소문자를 구분하지 않아 `tags/Babel` 과 `tags/babel` 이 로컬에서 한 폴더로 겹쳐 보인다. 둘 다 생성되는지는 빌드 로그나 CI(Linux)로 확인한다.
 
-### CMT-01 — Disqus identifier
+### CMT-01 — 댓글 경로
 
-Disqus 의 `identifier` 는 앞 슬래시 없는 글 경로(`2022/06/06/slug/`), `url` 은 전체 permalink 다(`src/components/Comments.astro`). Hexo NexT 테마가 쓰던 값과 같아야 기존 댓글 스레드가 이어진다.
+댓글은 Waline 이 글 경로(`/2022/06/06/slug/`)를 키로 묶는다(`src/components/Comments.astro` 의 `path`). Disqus 시절 댓글도 이 경로로 옮겨 넣었다. Disqus 는 앞 슬래시 없는 경로(`2022/06/06/slug/`)를 identifier 로 썼고, 이관할 때 이 값을 글 경로로 맞췄다.
+
+- 이유: 경로가 바뀌면 그 글의 댓글 스레드가 통째로 안 보인다.
+- `path` 를 `location.pathname` 같은 런타임 값으로 바꾸지 않는다. 쿼리나 끝 슬래시 차이로 스레드가 갈라진다.
+- 확인: `pnpm test:e2e` 의 댓글 테스트가 서버에 보낸 `path` 를 검사한다.
 
 ## 참고
 

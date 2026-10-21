@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test';
 const POST = '/2022/06/06/tdd-is-design-activity/';
 const MERMAID_POST = '/2022/09/25/hikari-cp-time-config/';
 
-// Third-party embeds (Disqus, YouTube) log their own errors; only the site's are ours.
+// Third-party embeds (Waline, YouTube) log their own errors; only the site's are ours.
 const collectErrors = (page: Page) => {
   const errors: string[] = [];
   page.on('pageerror', e => errors.push(e.message));
@@ -33,7 +33,7 @@ for (const path of ['/', POST, '/archives/', '/tags/', '/categories/', '/about/'
     test(`${path} has no serious accessibility violations (${colorScheme})`, async ({ page }) => {
       await page.emulateMedia({ colorScheme });
       await page.goto(path);
-      const { violations } = await new AxeBuilder({ page }).exclude('#disqus_thread').analyze();
+      const { violations } = await new AxeBuilder({ page }).exclude('#waline').analyze();
       const serious = violations.filter(v => v.impact === 'serious' || v.impact === 'critical');
       expect(serious.map(v => `${v.id}: ${v.nodes.map(n => n.target.join(' ')).join(', ')}`)).toEqual([]);
     });
@@ -215,29 +215,53 @@ test('llms.txt lists posts for AI assistants', async ({ request }) => {
   expect(text).toContain(`https://perfectacle.github.io${POST}`);
 });
 
-test('Disqus loads comments without its ads, recommendations or ad tracker', async ({ page }) => {
-  // A stand-in embed.js that inserts what the real one does, so the test needs no network.
-  await page.route('https://exobud.disqus.com/embed.js', route =>
-    route.fulfill({
-      contentType: 'text/javascript',
-      body: `
-        const thread = document.getElementById('disqus_thread');
-        const frame = src => Object.assign(document.createElement('iframe'), { src });
-        thread.appendChild(frame('https://disqus.com/embed/comments/?f=exobud'));
-        thread.insertBefore(frame('//tempest.services.disqus.com/ads-iframe/taboola/?position=top'), thread.firstChild);
-        for (const src of ['https://exobud.disqus.com/recommendations.js', 'https://d-code.liadm.com/did-0049.min.js'])
-          document.head.appendChild(Object.assign(document.createElement('script'), { src }));
-      `,
-    }),
-  );
-  await page.route(/disqus\.com\/embed\/comments|liadm\.com|recommendations\.js|ads-iframe/, route =>
-    route.fulfill({ body: '' }),
-  );
+test('comments load from the Waline server without reaching other services', async ({ page }) => {
+  const outside: string[] = [];
+  page.on('request', r => {
+    const { hostname } = new URL(r.url());
+    if (
+      !['localhost', '127.0.0.1', 'blog-comments-perfectacle.vercel.app'].includes(hostname) &&
+      !r.url().startsWith('data:')
+    )
+      outside.push(r.url());
+  });
+  let asked = '';
+  await page.route('https://blog-comments-perfectacle.vercel.app/**', route => {
+    const url = new URL(route.request().url());
+    if (url.pathname === '/api/comment') asked = url.searchParams.get('path') ?? '';
+    return route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({
+        errno: 0,
+        errmsg: '',
+        data: {
+          page: 1,
+          totalPages: 1,
+          pageSize: 10,
+          count: 1,
+          data: [
+            {
+              objectId: '1',
+              nick: '손님',
+              comment: '<p>옛 댓글</p>',
+              avatar: '',
+              time: Date.now(),
+              link: '',
+              like: 0,
+              status: 'approved',
+              children: [],
+            },
+          ],
+        },
+      }),
+    });
+  });
   await page.goto(POST);
-  await page.locator('#disqus_thread .load').click();
-  await expect(page.locator('#disqus_thread iframe[src*="/embed/comments/"]')).toHaveCount(1);
-  await expect(page.locator('iframe[src*="/ads-iframe/"]')).toHaveCount(0);
-  await expect(page.locator('script[src*="recommendations.js"], script[src*="liadm.com"]')).toHaveCount(0);
+  await page.locator('#waline .load').click();
+  await expect(page.locator('#waline').getByText('옛 댓글')).toBeVisible();
+  await expect(page.locator('#waline textarea')).toBeVisible();
+  expect(asked).toBe(POST);
+  expect(outside).toEqual([]);
 });
 
 test('analytics stays off outside the published site', async ({ page }) => {
@@ -321,7 +345,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
     await expect(sheet).toBeVisible();
     // Contrast is sampled from the rendered pixels, so wait out the slide-in fade.
     await sheet.evaluate(el => Promise.all(el.getAnimations().map(a => a.finished)));
-    const { violations } = await new AxeBuilder({ page }).exclude('#disqus_thread').analyze();
+    const { violations } = await new AxeBuilder({ page }).exclude('#waline').analyze();
     const serious = violations.filter(v => v.impact === 'serious' || v.impact === 'critical');
     expect(serious.map(v => `${v.id}: ${v.nodes.map(n => n.target.join(' ')).join(', ')}`)).toEqual([]);
   });
