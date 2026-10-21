@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 432" width="860" height="432" font-family="sans-serif">
+<rect width="860" height="432" rx="12" fill="#fafafa"/>
+<text x="20" y="32" font-size="17" fill="#111">2MB 롬 지도 (칸 하나 = 뱅크 하나, 32KB)</text>
+<text x="46" y="60" font-size="13" fill="#334155">$80–$9F (파일 0x000000–0x0FFFFF)</text>
+<rect x="46" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<rect x="70" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<rect x="94" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<rect x="118" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<rect x="142" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<rect x="166" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="190" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="214" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="238" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<rect x="262" y="70" width="22" height="40" rx="3" fill="#bfdbfe" stroke="#2563eb"/>
+<rect x="286" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="310" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="334" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="358" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="382" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="406" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="430" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="454" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="478" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="502" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="526" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="550" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="574" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="598" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="622" y="70" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="646" y="70" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="670" y="70" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="694" y="70" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="718" y="70" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="742" y="70" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="766" y="70" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="790" y="70" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<text x="57" y="126" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$80</text>
+<text x="129" y="126" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$83</text>
+<text x="249" y="126" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$88</text>
+<text x="345" y="126" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$8C</text>
+<text x="441" y="126" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$90</text>
+<text x="537" y="126" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$94</text>
+<text x="633" y="126" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$98</text>
+<text x="729" y="126" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$9C</text>
+<text x="801" y="126" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$9F</text>
+<rect x="136.4" y="70" width="3" height="40" fill="#dc2626"/>
+<rect x="258.4" y="70" width="3" height="40" fill="#dc2626"/>
+<polyline points="273,130 273,150 281,150" fill="none" stroke="#1d4ed8" stroke-width="1"/>
+<text x="285" y="154" font-size="12.5" fill="#1d4ed8">$89:9B9D 타이틀 그림(LZSS) 3,608 → 3,232바이트</text>
+<polyline points="249,130 249,172 257,172" fill="none" stroke="#b91c1c" stroke-width="1"/>
+<text x="261" y="176" font-size="12.5" fill="#b91c1c">$88:FFAE 경로 레코드 끝 표시 되살림</text>
+<polyline points="129,130 129,194 137,194" fill="none" stroke="#b91c1c" stroke-width="1"/>
+<text x="141" y="198" font-size="12.5" fill="#b91c1c">$83:F3AF 좌표 표 끝 표시 되살림 · $83:F510 「미스터 포포」 줄</text>
+<polyline points="622,132 622,138 812,138 812,132" fill="none" stroke="#b45309" stroke-width="1.2"/>
+<text x="717.0" y="156" font-size="12.5" fill="#b45309" text-anchor="middle">대사 8뱅크 (ID 0x000–0xF94)</text>
+<text x="717.0" y="174" font-size="12.5" fill="#b45309" text-anchor="middle">v1.2: 782줄 고침 · 436줄 옮김</text>
+<text x="46" y="230" font-size="13" fill="#334155">$A0–$BF (파일 0x100000–0x1FFFFF)</text>
+<rect x="46" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="70" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="94" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="118" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="142" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="166" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="190" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="214" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="238" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="262" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="286" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="310" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="334" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="358" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="382" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="406" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="430" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="454" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="478" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="502" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="526" y="240" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<rect x="550" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="574" y="240" width="22" height="40" rx="3" fill="#e9d5ff" stroke="#9333ea"/>
+<rect x="598" y="240" width="22" height="40" rx="3" fill="#e9d5ff" stroke="#9333ea"/>
+<rect x="622" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="646" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="670" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="694" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="718" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="742" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="766" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="790" y="240" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<text x="57" y="296" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$A0</text>
+<text x="153" y="296" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$A4</text>
+<text x="249" y="296" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$A8</text>
+<text x="345" y="296" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$AC</text>
+<text x="441" y="296" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$B0</text>
+<text x="537" y="296" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$B4</text>
+<text x="609" y="296" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$B7</text>
+<text x="729" y="296" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$BC</text>
+<text x="801" y="296" font-size="10" text-anchor="middle" fill="#475569" font-family="ui-monospace,Menlo,monospace">$BF</text>
+<polyline points="537,300 537,318 529,318" fill="none" stroke="#15803d" stroke-width="1"/>
+<text x="525" y="322" font-size="12.5" fill="#15803d" text-anchor="end">$B4 다른 대사 뱅크(포인터 1,024개) · v1.2는 그대로</text>
+<polyline points="597.0,300 597.0,318 605.0,318" fill="none" stroke="#7e22ce" stroke-width="1"/>
+<text x="609.0" y="322" font-size="12.5" fill="#7e22ce">$B6–$B7 대사 폰트 · 새 글자 11자</text>
+<rect x="46" y="344" width="16" height="16" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<text x="70" y="357" font-size="12.5" fill="#334155">원래 그대로</text>
+<rect x="165.5" y="344" width="16" height="16" rx="3" fill="#fde68a" stroke="#d97706"/>
+<text x="189.5" y="357" font-size="12.5" fill="#334155">대사</text>
+<rect x="240.5" y="344" width="16" height="16" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<text x="264.5" y="357" font-size="12.5" fill="#334155">v1.1이 바꾼 메뉴·문자열</text>
+<rect x="439.5" y="344" width="16" height="16" rx="3" fill="#bfdbfe" stroke="#2563eb"/>
+<text x="463.5" y="357" font-size="12.5" fill="#334155">타이틀 그림</text>
+<rect x="559.0" y="344" width="16" height="16" rx="3" fill="#e9d5ff" stroke="#9333ea"/>
+<text x="583.0" y="357" font-size="12.5" fill="#334155">폰트</text>
+<rect x="640.0" y="344" width="3" height="16" fill="#dc2626"/>
+<text x="658.0" y="357" font-size="12.5" fill="#334155">v1.2가 되살린 곳</text>
+<text x="46" y="390" font-size="12" fill="#334155">v1.1: $80 디버그 메뉴 문구·롬 헤더 이름 · $81–$84 메뉴·글자판·상태 창·기술 이름·크레딧 · $88 지명</text>
+<text x="46" y="410" font-size="12" fill="#334155">v1.2: 대사 8뱅크 · $89 타이틀 · $B6–$B7 새 글자 · $83·$88 끝 표시와 크레딧 한 줄 · $80:FFDC 체크섬</text>
+</svg>
