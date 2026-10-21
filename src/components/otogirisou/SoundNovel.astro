@@ -1,0 +1,338 @@
+---
+interface Props {
+  base: string;
+  /** Title-menu entries after 「처음부터 읽기」; each points at a section of the page. */
+  chapters: { href: string; label: string }[];
+}
+
+const { base, chapters } = Astro.props;
+
+/** The opening of a new game on the Korean version, one screen per page, with the default name 코헤이. */
+const pages = [
+  {
+    id: 'opening',
+    text: '여름날 해 질 녘. 흐린 하늘 아래, 꾸불꾸불한 좁은 산길이 이어졌다. 길 양옆은 잡목림이어서 경치는 그다지 좋지 않았다.',
+  },
+  {
+    id: 'wake',
+    text: '선택지. A 「나미, 자?」 나는 작은 소리로 불러 보았다. B 「나미, 일어나 봐」 나는 나미의 어깨를 흔들었다.',
+  },
+  {
+    id: 'driving',
+    text: '「깨워서 미안해. 괜찮아, 더 자」 「아니야, 나야말로 코헤이 씨한테만 운전을 시켜 놓고… 혼자면 심심하잖아. 산속이라 라디오도 안 나오고…」',
+  },
+  {
+    id: 'flower',
+    text: '「아아, 저거. 저건 제절초야. 아우 제(弟) 자에 끊을 절(切) 자를 써서 제절초(弟切草)」 「제절초?」 「응」',
+  },
+  {
+    id: 'lightning',
+    text: '「꺄악!」 눈앞의 나무에 정통으로 벼락이 떨어졌다. 나무는 순식간에 두 쪽으로 쪼개지며 불타올랐다.',
+  },
+  {
+    id: 'crushed',
+    text: '「아아악! 코헤이 씨의 차가!」 쓰러진 나무가 정면으로 차를 짓뭉갰다. 지붕은 찌그러지고 앞 유리는 깨져, 차마 눈 뜨고 볼 수 없는 모습이었다. 「…괜찮아. 둘 다 무사했으니까」 나는 분한 마음을 감추고 한껏 허세를 부렸다.',
+  },
+  {
+    id: 'gate',
+    text: '갑자기 시야가 트이더니, 눈앞에 광대한 저택이 모습을 드러냈다. 우리는 벼락의 공포도 거센 빗줄기도 잊은 채, 한동안 멍하니 그 광경을 바라보았다. 비에 젖어 시커멓게 빛나는 거대한 철문. 그 쇠창살 틈으로 넓디넓은 정원이 내다보인다.',
+  },
+  {
+    id: 'intercom',
+    text: '선택지. A 나는 망설임 없이 인터폰을 눌렀다. B 「눌러 볼래?」 나는 나미에게 말했다. C 「역시 돌아갈까?」 나는 나미에게 말했다.',
+  },
+].map(page => ({ ...page, src: `${base}/images/patch/${page.id}_ko_1.webp` }));
+
+const title = {
+  src: `${base}/images/scenes/title.webp`,
+  alt: "저택 정문을 배경으로 붉은 글씨 '제절초'와 한자 弟切草가 있는 타이틀 화면",
+};
+---
+
+<div class="novel" data-novel data-pages={JSON.stringify(pages)} data-state="title">
+  <figure class="screen novel-screen">
+    <img src={title.src} width="256" height="224" alt={title.alt} fetchpriority="high" />
+  </figure>
+  <p class="sr-only" aria-live="polite" data-live></p>
+
+  <nav class="novel-menu" data-menu="title" aria-label="이 페이지 차례">
+    <a class="pointer" href="#korean" data-start>
+      처음부터 읽기
+    </a>
+    {chapters.map(chapter => (
+      <a class="pointer" href={chapter.href}>
+        {chapter.label}
+      </a>
+    ))}
+  </nav>
+
+  <div class="novel-menu" data-menu="end" hidden>
+    <a class="pointer" href="#title" data-enter>
+      저택에 들어간다 — 한글판 만들기
+    </a>
+    <button class="pointer" type="button" data-to-title>
+      타이틀로
+    </button>
+  </div>
+
+  <div class="novel-keys" data-menu="reading" hidden>
+    <button type="button" data-next>
+      A 다음
+    </button>
+    <button type="button" data-prev>
+      X 되감기
+    </button>
+    <button type="button" data-to-title>
+      B 타이틀
+    </button>
+  </div>
+</div>
+
+<style>
+  .novel {
+    display: grid;
+    gap: 12px;
+    max-width: 512px;
+  }
+
+  .novel[data-state='reading'] .novel-screen {
+    cursor: pointer;
+  }
+
+  .novel-screen:focus-visible {
+    outline-offset: 6px;
+  }
+
+  /* Lightning: the game whites out the screen for an instant before the struck tree appears. */
+  .novel-screen.flash::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    animation: flash 0.35s steps(3, jump-none) forwards;
+  }
+
+  @keyframes flash {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .novel-screen.flash::after {
+      display: none;
+    }
+  }
+
+  .novel-menu {
+    display: grid;
+    gap: 6px;
+    padding: 12px 16px 12px 40px;
+    background: #000;
+    border: 1px solid rgb(222 222 214 / 30%);
+  }
+
+  .novel-menu[hidden],
+  .novel-keys[hidden] {
+    display: none;
+  }
+
+  .novel-menu a,
+  .novel-menu button {
+    justify-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    font-family: var(--pixel);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  /* Like the game, the cursor rests on the first entry until the player moves it. */
+  .novel-menu:not(:hover, :focus-within) > :first-child::before {
+    opacity: 1;
+  }
+
+  .novel-menu :is(a, button):hover,
+  .novel-menu :is(a, button):focus-visible {
+    color: var(--accent);
+  }
+
+  /* Key help strip along the bottom of the screen, in the game's pale-on-black. */
+  .novel-keys {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    justify-content: center;
+  }
+
+  .novel-keys button {
+    min-height: 32px;
+    padding: 2px 10px;
+    border: 1px solid rgb(222 222 214 / 30%);
+    background: #000;
+    color: var(--ink);
+    font-family: var(--pixel);
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .novel-keys button:hover,
+  .novel-keys button:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>
+
+<script>
+  interface Page {
+    id: string;
+    text: string;
+    src: string;
+  }
+
+  const need = <T extends Element>(root: ParentNode, selector: string) => {
+    const element = root.querySelector<T>(selector);
+    if (!element) throw new Error(`Missing ${selector}`);
+    return element;
+  };
+
+  for (const novel of document.querySelectorAll<HTMLElement>('[data-novel]')) {
+    const pages: Page[] = JSON.parse(novel.dataset['pages'] ?? '[]');
+    const screen = need<HTMLElement>(novel, '.novel-screen');
+    const img = need<HTMLImageElement>(screen, 'img');
+    const live = need<HTMLElement>(novel, '[data-live]');
+    const startLink = need<HTMLElement>(novel, '[data-start]');
+    const endMenu = need<HTMLElement>(novel, '[data-menu="end"]');
+    const titleSrc = img.src;
+    const titleAlt = img.alt;
+    const menus = novel.querySelectorAll<HTMLElement>('[data-menu]');
+    let at = -1;
+
+    // The screen is a control only while reading; on the title and end screens the menu below it is the control.
+    const show = (state: 'title' | 'reading' | 'end') => {
+      novel.dataset['state'] = state;
+      for (const menu of menus) menu.hidden = menu.dataset['menu'] !== state;
+      if (state === 'reading') {
+        screen.tabIndex = 0;
+        screen.setAttribute('role', 'button');
+        screen.setAttribute('aria-label', '다음 페이지');
+      } else {
+        screen.removeAttribute('tabindex');
+        screen.removeAttribute('role');
+        screen.removeAttribute('aria-label');
+      }
+    };
+
+    const go = (i: number) => {
+      const page = pages[i];
+      if (!page) return;
+      at = i;
+      img.src = page.src;
+      img.alt = page.text;
+      live.textContent = page.text;
+      screen.classList.toggle('flash', page.id === 'lightning');
+      const next = pages[i + 1];
+      if (next) new Image().src = next.src;
+    };
+
+    const toTitle = () => {
+      at = -1;
+      img.src = titleSrc;
+      img.alt = titleAlt;
+      live.textContent = '';
+      screen.classList.remove('flash');
+      show('title');
+      startLink.focus();
+    };
+
+    const start = () => {
+      show('reading');
+      go(0);
+      screen.focus();
+    };
+
+    const next = () => {
+      const state = novel.dataset['state'];
+      if (state === 'title') return start();
+      if (state === 'end') return endMenu.querySelector<HTMLElement>('a')?.focus();
+      if (at < pages.length - 1) return go(at + 1);
+      show('end');
+      live.textContent = '저택 앞에 섰습니다. 한글판을 만들어 이어서 읽거나 타이틀로 돌아갈 수 있습니다.';
+      endMenu.querySelector<HTMLElement>('a')?.focus();
+    };
+
+    const prev = () => {
+      if (novel.dataset['state'] === 'end') {
+        show('reading');
+        go(at);
+        return screen.focus();
+      }
+      if (at > 0) go(at - 1);
+    };
+
+    startLink.addEventListener('click', event => {
+      event.preventDefault();
+      start();
+    });
+    novel.querySelector('[data-next]')?.addEventListener('click', next);
+    novel.querySelector('[data-prev]')?.addEventListener('click', prev);
+    for (const button of novel.querySelectorAll('[data-to-title]')) button.addEventListener('click', toTitle);
+    novel.querySelector('[data-enter]')?.addEventListener('click', event => {
+      const zone = document.querySelector<HTMLElement>('.patch-box .drop-zone');
+      if (!zone) return;
+      event.preventDefault();
+      zone.scrollIntoView({ block: 'center' });
+      zone.querySelector('input')?.focus({ preventScroll: true });
+    });
+    screen.addEventListener('click', next);
+
+    // Letter keys go by physical position (event.code): with the Korean IME on, event.key is a jamo, not a letter.
+    const LETTERS: Record<string, string> = { KeyA: 'a', KeyX: 'x', KeyB: 'b' };
+
+    // Keys only while focus is inside the novel, so the page keeps its own scrolling keys.
+    novel.addEventListener('keydown', event => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      const key = LETTERS[event.code] ?? event.key;
+      const target = event.target as HTMLElement;
+      const control = target.closest<HTMLElement>('a, button');
+
+      if (key === 'ArrowDown' || key === 'ArrowUp') {
+        const menu = target.closest<HTMLElement>('.novel-menu');
+        if (menu) {
+          const items = [...menu.querySelectorAll<HTMLElement>('a, button')];
+          const i = items.indexOf(target);
+          items[(i + (key === 'ArrowDown' ? 1 : -1) + items.length) % items.length]?.focus();
+          event.preventDefault();
+          return;
+        }
+      }
+
+      const activates = key === 'a' || key === 'Enter' || key === ' ';
+      // Holding a key down must not race past the last page into the end menu's link.
+      if (event.repeat && activates) return event.preventDefault();
+      if (control) {
+        // The browser already activates links on Enter and buttons on Enter or Space.
+        if (key === 'Enter' || (key === ' ' && control.tagName === 'BUTTON')) return;
+        if (activates) {
+          event.preventDefault();
+          return control.click();
+        }
+      }
+
+      const action =
+        activates || key === 'ArrowRight'
+          ? next
+          : key === 'x' || key === 'ArrowLeft'
+            ? prev
+            : (key === 'b' || key === 'Escape') && novel.dataset['state'] !== 'title'
+              ? toTitle
+              : null;
+      if (!action) return;
+      event.preventDefault();
+      action();
+    });
+  }
+</script>
