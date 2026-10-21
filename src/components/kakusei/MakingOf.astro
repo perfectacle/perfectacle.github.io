@@ -1,0 +1,595 @@
+---
+interface Props {
+  base: string;
+}
+
+const { base } = Astro.props;
+const img = (name: string) => `${base}/images/making/${name}`;
+const tools = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_2_Tools.zip`;
+
+const memories = [
+  { name: '롬', size: '2MB', like: '책', role: '카트리지에 든 프로그램·대사·폰트·그림. 읽기만 합니다.' },
+  {
+    name: 'WRAM',
+    size: '128KB',
+    like: '작업 책상',
+    role: 'CPU가 계산하며 값을 적어 두는 곳. 지금 장면 번호도 여기 있습니다.',
+  },
+  { name: 'VRAM', size: '64KB', like: '스티커판', role: '화면에 붙일 8×8 그림 조각(타일)을 올려 두는 곳.' },
+  { name: 'SRAM', size: '8KB', like: '수첩', role: '전원을 꺼도 남는 세이브 데이터. 에뮬레이터의 .srm 파일입니다.' },
+];
+
+const opcodes = [
+  { bytes: '80 0C', asm: 'BRA $806A', text: '무조건 12바이트 뒤로 건너뜁니다. 제품판은 아래 네 줄을 늘 건너뜁니다.' },
+  { bytes: 'AD 33 02', asm: 'LDA $0233', text: '$0233번지 값을 읽습니다. 주소는 거꾸로 적힙니다.' },
+  { bytes: '29 FF 00', asm: 'AND #$00FF', text: '아래 바이트만 남깁니다.' },
+  { bytes: 'D0 04', asm: 'BNE $806A', text: '0이 아니면 다음 4바이트를 건너뜁니다.' },
+  { bytes: '22 2B 9F 80', asm: 'JSL $809F2B', text: '디버그 메뉴 루틴을 부릅니다.' },
+];
+
+const lineBytes = [
+  ['A2 06', '크'],
+  ['45 09', '리'],
+  ['52 09', '링'],
+  ['0A 00', '줄바꿈'],
+  ['05 06', '좋'],
+  ['B4 05', '은'],
+  ['72 02', '빈칸'],
+  ['20 01', '걸'],
+  ['72 02', '빈칸'],
+  ['13 06', '줄'],
+  ['24 01', '게'],
+  ['00 00', '끝'],
+];
+
+const banks = [
+  { ids: '000–3DF', bank: '$99', table: '$99:8000' },
+  { ids: '3E0–5B6', bank: '$9A', table: '$9A:8000' },
+  { ids: '5B7–7AE', bank: '$9B', table: '$9B:8000' },
+  { ids: '7AF–97C', bank: '$9C', table: '$9C:8000' },
+  { ids: '97D–B44', bank: '$9D', table: '$9D:8000' },
+  { ids: 'B45–D15', bank: '$9E', table: '$9E:8000' },
+  { ids: 'D16–ED3', bank: '$9F', table: '$9F:8000' },
+  { ids: 'ED4–F94', bank: '$98', table: '$98:C1C8' },
+];
+
+const dialogFlow = [
+  '스크립트의 대사 명령(0x08)이 16비트 대사 ID를 줍니다. 예: 0x2A7',
+  'ID 범위로 뱅크를 고릅니다. 0x2A7은 $99입니다.',
+  '그 뱅크 첫머리 포인터 표에서 ID 순서대로 2바이트를 읽습니다. $99:8000 + 0x2A7 × 2 = $99:854E에 BE A9가 있습니다.',
+  '같은 뱅크의 $99:A9BE(파일 0xCA9BE)에 대사 문자열이 있습니다.',
+];
+
+const toolFiles = [
+  { file: 'tools/build.sh', text: '아래 순서대로 전체 빌드', section: 'tools' },
+  { file: 'tools/dialogue.py', text: '대사 ID로 대사 위치 찾기', section: 'dialogue' },
+  { file: 'tools/extract.py', text: '일본어·한국어 대사 덤프(TSV)', section: 'dialogue' },
+  { file: 'tools/font.py', text: '대사 폰트 글자 읽기', section: 'font' },
+  { file: 'tools/usedsheet.py', text: '대사에 쓰인 글자 목록', section: 'font' },
+  { file: 'tools/dialogue_patch.py', text: '대사 넣기, 옮기기, 새 글자 그리기', section: 'relocate' },
+  { file: 'tools/fix_overwrites.py', text: 'v1.1이 덮어쓴 데이터 되살리기', section: 'bugfix' },
+  { file: 'tools/lz.py', text: 'LZSS 압축·해제', section: 'title-gfx' },
+  { file: 'tools/title.py', text: '타이틀 그림 그리기·넣기', section: 'title-gfx' },
+  { file: 'tools/credits.py', text: '엔딩 크레딧 고치기', section: 'credits' },
+  { file: 'tools/fixsum.py', text: '롬 헤더 체크섬 다시 계산', section: 'tools' },
+  { file: 'tools/ips.py', text: 'IPS 적용·생성', section: 'tools' },
+  { file: 'tables/', text: '일본판·v1.1·v1.2 글자 표, 고친 대사 782줄', section: 'dialogue' },
+  { file: 'lua/', text: 'Mesen 2 스크립트: 디버그 메뉴 장면 시작, 크레딧 바로 보기', section: 'testing' },
+  { file: 'README.txt', text: '롬 분석 문서(주소·형식 전체)', section: 'basics' },
+];
+
+const sectionTitles: Record<string, string> = {
+  basics: '1. 배경지식',
+  dialogue: '2. 대사',
+  font: '3. 폰트',
+  relocate: '4. 대사 옮기기',
+  bugfix: '5. 진행 버그',
+  'title-gfx': '6. 타이틀',
+  credits: '7. 크레딧',
+  testing: '8. 확인',
+  tools: '9. 분석 도구',
+};
+
+const buildSteps = [
+  '일본판 원본에 v1.1 IPS를 적용합니다.',
+  'v1.1이 덮어쓴 데이터를 되살립니다.',
+  '타이틀 그림을 그려 다시 압축해 넣습니다.',
+  '고친 대사 782줄을 넣고, 늘어난 대사는 옮긴 뒤 포인터를 고칩니다.',
+  '엔딩 크레딧을 고칩니다.',
+  '롬 헤더 체크섬을 다시 계산하고 IPS를 만듭니다.',
+];
+---
+
+<section id="making" class="section page-width" aria-labelledby="making-title">
+  <h2 id="making-title" class="pixel">
+    한글판을 만든 방법
+  </h2>
+  <p class="lead">
+    v1.2는 2016년에 낸 v1.1 패치를 일본판에 적용한 롬에서 출발했습니다. 그 위에 v1.1이 만든 진행 버그를 고치고, 압축된
+    타이틀 그림을 풀어 한글로 다시 그리고, 대사 782줄을 고쳐 넣었습니다. 롬 크기는 원본과 같은 2MB입니다. 장면 확인은
+    일본판 롬 안에 남아 있던 개발자용 디버그 메뉴로 했습니다.
+  </p>
+  <figure class="paper">
+    <img
+      src={img('debug-menu.webp')}
+      width="1040"
+      height="448"
+      alt="일본판 롬에 남아 있는 디버그 메뉴. 왼쪽은 ADVENTURE·BATTLE·SOUND 첫 화면과 95/08/03 빌드 날짜, 오른쪽은 시나리오·플래그·메시지 번호를 고르는 ADVENTURE 화면"
+      loading="lazy"
+      decoding="async"
+    />
+    <figcaption>일본판 롬에 남아 있는 디버그 메뉴</figcaption>
+  </figure>
+  <p class="section-note">
+    슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다. 절마다 그 일을 한 도구 파일을 적어 두었고,
+    도구 묶음은 마지막 <a href="#making-tools">분석 도구</a>에서 받을 수 있습니다.
+  </p>
+
+  <details class="more making">
+    <summary class="pointer">자세히 보기</summary>
+    <div class="making-body">
+      <h3 id="making-basics" class="pixel">
+        1. 배경지식
+      </h3>
+      <p class="tool">
+        관련 도구: <code>lua/dbgscene.lua</code> <a href="#making-tools">받기</a>
+      </p>
+      <h4>게임기 안의 메모리</h4>
+      <p>
+        CPU는 화면에 직접 그리지 않습니다. 그림 조각(타일)을 VRAM에 올려 두고 "이 칸에는 몇 번 타일" 이라는
+        배치표(타일맵)를 적어 화면을 만듭니다. 대사 글자도 타일입니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">이름</th>
+              <th scope="col">크기</th>
+              <th scope="col">비유</th>
+              <th scope="col">하는 일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {memories.map(m => (
+              <tr>
+                <th scope="row">{m.name}</th>
+                <td>{m.size}</td>
+                <td>{m.like}</td>
+                <td class="wrap">{m.role}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h4>주소 읽는 법</h4>
+      <p>
+        <code>0xCA9BE</code> 같은 파일 오프셋은 롬 파일을 처음부터 센 위치이고, <code>$99:A9BE</code> 같은 SNES 주소는
+        CPU가 보는 <code>뱅크:주소</code>입니다. 이 게임은 LoROM이라 뱅크마다 뒤쪽 32KB($8000–$FFFF)에만 롬이 보입니다.
+        그래서 다음처럼 바꿉니다.
+      </p>
+      <pre><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
+$99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
+
+      <h4>어셈블리, 필요한 만큼만</h4>
+      <p>
+        어셈블리는 CPU가 실행하는 명령을 사람이 읽는 이름으로 적은 것이고, 롬 안에서는 그냥 바이트입니다. 전원을 켠 직후
+        실행되는 코드(<code>$80:805C</code>, 파일 <code>0x5C</code>)를 보겠습니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">바이트</th>
+              <th scope="col">어셈블리</th>
+              <th scope="col">뜻</th>
+            </tr>
+          </thead>
+          <tbody>
+            {opcodes.map(o => (
+              <tr>
+                <td>
+                  <code>{o.bytes}</code>
+                </td>
+                <td>
+                  <code>{o.asm}</code>
+                </td>
+                <td class="wrap">{o.text}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        첫 줄 <code>80 0C</code>를 아무 일도 안 하는 명령 두 개 <code>EA EA</code>(NOP NOP)로 바꾸면 건너뛰지 않고
+        디버그 메뉴로 들어갑니다. 위 화면이 그렇게 연 메뉴입니다. ADVENTURE에서 장면 번호를 넣고 시작하면 맵까지 그
+        장면에 맞게 불러와서, 처음부터 플레이하지 않고도 원하는 대사를 띄울 수 있습니다. 롬 해킹은 이런 바이트 바꾸기의
+        연속입니다.
+      </p>
+
+      <h3 id="making-dialogue" class="pixel">
+        2. 대사가 롬에 들어 있는 모양
+      </h3>
+      <p class="tool">
+        관련 도구: <code>tools/dialogue.py</code>, <code>tools/extract.py</code>, <code>tables/kr-v1.2.txt</code>{' '}
+        <a href="#making-tools">받기</a>
+      </p>
+      <p>
+        대사 글자 하나는 16비트(2바이트) 코드이고, 작은 쪽 바이트를 먼저 적습니다. <code>0A 00</code>은 줄바꿈,
+        <code>00 00</code>은 대사 끝입니다. 한 페이지는 4줄이고, 한 줄에는 얼굴 그림이 있는 창은 10자, 나레이션 창은
+        15자까지 들어갑니다. 크리링의 대사 하나를 롬에서 그대로 꺼내면 이렇습니다.
+      </p>
+      <div class="table-wrap">
+        <table class="bytes">
+          <tbody>
+            <tr>
+              <th scope="row">바이트</th>
+              {lineBytes.map(([b]) => (
+                <td>
+                  <code>{b}</code>
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <th scope="row">글자</th>
+              {lineBytes.map(([, ch]) => (
+                <td>{ch}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        대사 ID는 0x000부터 0xF94까지 4천 개 가까이 됩니다. ID 범위마다 뱅크가 정해져 있고, 뱅크 첫머리에 포인터 표가
+        있습니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">대사 ID</th>
+              <th scope="col">뱅크</th>
+              <th scope="col">포인터 표</th>
+            </tr>
+          </thead>
+          <tbody>
+            {banks.map(b => (
+              <tr>
+                <td>
+                  <code>{b.ids}</code>
+                </td>
+                <td>
+                  <code>{b.bank}</code>
+                </td>
+                <td>
+                  <code>{b.table}</code>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ol class="flow">
+        {dialogFlow.map(step => (
+          <li>{step}</li>
+        ))}
+      </ol>
+
+      <h3 id="making-font" class="pixel">
+        3. 폰트에 없는 글자
+      </h3>
+      <p class="tool">
+        관련 도구: <code>tools/font.py</code>, <code>tools/usedsheet.py</code>, <code>tools/dialogue_patch.py</code>{' '}
+        <a href="#making-tools">받기</a>
+      </p>
+      <p>
+        대사 폰트는 16×16 픽셀이고, 8×8 타일 4장으로 나뉘어 들어 있습니다. 롬에 저장된 시트는 한 줄에 타일 16장이라 글자
+        8개의 위 절반이 한 줄, 아래 절반이 그다음 줄입니다. 그래서 0x108–0x10F처럼 아래 절반 줄에 해당하는 코드는 글자로
+        쓰지 않습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('font-sheet.svg')}
+          width="620"
+          height="356"
+          alt="롬의 폰트 시트 네 줄. 파란 줄은 글자 8개의 위 절반, 빨간 줄은 아래 절반이고, 이어 붙이면 슈·가·각·간 같은 글자가 된다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        v1.1 폰트에는 대사를 고치며 필요해진 글자 몇 개가 없었습니다. 그래서 어떤 대사에서도 쓰지 않는 글자 자리를 찾아
+        Galmuri11 폰트로 깨·꽉·꾼·닿·렁·롭·벅·빡·뻐·셋·씻 11자를 그려 넣었습니다. 아래는 그렇게 넣은 「깨」입니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={img('glyph-kkae.svg')}
+          width="520"
+          height="412"
+          alt="대사 폰트 코드 0x123에 그려 넣은 「깨」를 16×16 픽셀 격자와 줄마다의 바이트 값으로 나타낸 그림"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        글자 표를 그대로 믿으면 안 된다는 것도 배웠습니다. v1.1 글자 표에는 922번이 「렁」이라고 적혀 있었지만 실제
+        그림은 「렇」이었습니다. 지금은 표의 글자와 롬의 그림을 대조해서 씁니다.
+      </p>
+
+      <h3 id="making-relocate" class="pixel">
+        4. 늘어난 대사는 같은 뱅크 안으로
+      </h3>
+      <p class="tool">
+        관련 도구: <code>tools/dialogue_patch.py</code>, <code>tables/dialogue-v1.2.tsv</code>{' '}
+        <a href="#making-tools">받기</a>
+      </p>
+      <p>
+        포인터는 2바이트라 뱅크 번호 없이 같은 뱅크 안의 주소만 가리킵니다. 그래서 고친 대사가 원래보다 길면 다른
+        뱅크로는 못 보내고, 같은 뱅크의 빈 공간으로 옮긴 뒤 포인터만 고칩니다. 여러 ID가 한 문자열을 같이 가리키는
+        경우도 있어서, 그런 문자열은 제자리에서 고치지 않고 새 자리에 따로 씁니다.
+      </p>
+
+      <h3 id="making-bugfix" class="pixel">
+        5. 우주선이 맵 밖을 헤매던 이유
+      </h3>
+      <p class="tool">
+        관련 도구: <code>tools/fix_overwrites.py</code> <a href="#making-tools">받기</a>
+      </p>
+      <p>
+        v1.1은 늘어난 대사를 0xFF가 이어진 곳에 넣었습니다. 비어 있다고 생각했기 때문입니다. 그런데 0xFF가 시작되는
+        자리가 사실은 바로 앞 데이터의 끝 표시(<code>FF FF</code>)였습니다. 두 곳이 이렇게 덮였습니다.
+      </p>
+      <ul class="notes">
+        <li>
+          <code>$88:FFAE</code>: 맵 이동 경로 레코드의 끝 표시와 그 뒤 레코드 하나. 이동 루틴이 대사 바이트를 경로로
+          읽어서 우주선이 맵 밖으로 나갔습니다.
+        </li>
+        <li>
+          <code>$83:F3AF</code>: 컷신 캐릭터 X 좌표 표의 끝 표시. 캐릭터가 엉뚱한 좌표 쪽으로 미끄러져 갔습니다.
+        </li>
+      </ul>
+      <figure class="paper">
+        <img
+          src={img('overwrite.svg')}
+          width="812"
+          height="252"
+          alt="파일 0x47FA8부터 16바이트. 일본판은 경로 레코드와 끝 표시 FFFF 뒤가 비어 있고, v1.1은 끝 표시부터 한글 대사로 덮였고, v1.2는 원래 바이트를 되살리고 대사를 뒤로 밀었다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        v1.2는 원래 바이트를 되살리고, 그 자리에 있던 대사를 뒤로 민 다음, 그 대사를 가리키는 포인터를 같은 만큼
+        고쳤습니다. 이제 빈 공간을 쓸 때는 앞뒤에 여유를 두고, 일본판 원본에서도 그 자리가 0xFF였는지 확인합니다.
+      </p>
+
+      <h3 id="making-title-gfx" class="pixel">
+        6. 압축된 타이틀 그림
+      </h3>
+      <p class="tool">
+        관련 도구: <code>tools/lz.py</code>, <code>tools/title.py</code> <a href="#making-tools">받기</a>
+      </p>
+      <p>
+        타이틀 로고는 롬에 LZSS로 압축돼 있습니다. 앞에서 나온 것과 같은 내용이 또 나오면 바이트를 다시 적지 않고 "몇
+        바이트 앞에서 몇 바이트를 베껴라" 라고만 적는 방식입니다. 플래그 바이트 하나가 뒤따르는 항목 8개의 종류를 아래
+        비트부터 알려 줍니다. 1이면 바이트 1개를 그대로, 0이면 2바이트짜리 "베껴라" 명령입니다. 일본판 타이틀 그림의
+        첫머리를 실제로 풀어 보면 이렇습니다.
+      </p>
+      <pre><code>50 13      풀면 0x1350 = 4,944바이트
+DC         플래그 11011100 → 아래 비트부터 0 0 1 1 1 0 1 1
+2F 01      베끼기: 길이 0xF+3 = 18, 거리 18 → 시작보다 앞이라 0으로 18바이트
+F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
+01 0F 3F   그대로 세 바이트
+89 00      베끼기: 길이 12, 거리 8 → 방금 쓴 8바이트를 겹쳐 가며 반복
+1F FF      그대로 두 바이트</code></pre>
+      <p>
+        타이틀 그림을 푸는 루틴($80:9DA7)은 다 푼 뒤에 타일마다 바이트 순서를 한 번 더 바꿉니다. 그래서 압축만 풀어서는
+        왼쪽처럼 줄무늬가 지고, 순서를 바꿔야 오른쪽처럼 제대로 보입니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('title-lzss.webp')}
+          width="1040"
+          height="912"
+          alt="타이틀 그림을 롬에서 꺼낸 결과. 위는 일본판, 아래는 v1.2이고 왼쪽은 압축만 푼 줄무늬 상태, 오른쪽은 바이트 순서를 바꿔 超悟空伝 覚醒編과 초오공전 각성편 로고가 보이는 상태"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>위 일본판, 아래 v1.2. 왼쪽은 압축만 푼 상태, 오른쪽은 순서를 바꾼 상태</figcaption>
+      </figure>
+      <p>
+        한글 로고를 그린 뒤 다시 압축했더니 원래 3,608바이트가 3,232바이트로 줄어 제자리에 들어갔습니다. 더 길어지면
+        같은 영역의 빈 공간(파일 0x4C801–0x4FFFF)으로 옮기고 위치 정보를 고치도록 해 두었습니다. 「DRAGON BALL Z」
+        로고와 저작권 줄은 원본 그대로입니다. 저작권 줄의 © 타일은 두 줄이 같이 쓰기 때문입니다.
+      </p>
+
+      <h3 id="making-credits" class="pixel">
+        7. 엔딩 크레딧과 세이브
+      </h3>
+      <p class="tool">
+        관련 도구: <code>tools/credits.py</code>, <code>lua/crjump.lua</code> <a href="#making-tools">받기</a>
+      </p>
+      <p>
+        엔딩 크레딧도 대사와 같은 16비트 문자열이고, 이름 줄마다 포인터가 있습니다($83:949D). 「MR. 포포」를 「미스터
+        포포」로 늘리면서 원래 자리에 줄여 넣지 않고 빈 공간으로 옮겨 포인터를 고쳤습니다. 제자리에서 글자 수를 바꾸면
+        가운데 정렬이 틀어집니다.
+      </p>
+      <p>
+        세이브 구조는 건드리지 않아 v1.1 세이브를 그대로 쓸 수 있습니다. 함께 배포한 100% 세이브 파일에서 깨진 슬롯을
+        지울 때는 슬롯 본체만이 아니라 요약 정보 두 곳(0x800대, 0x860대)도 같이 지워야 했습니다.
+      </p>
+
+      <h3 id="making-testing" class="pixel">
+        8. 확인은 에뮬레이터가
+      </h3>
+      <p class="tool">
+        관련 도구: <code>lua/dbgscene.lua</code>, <code>lua/lib.lua</code> <a href="#making-tools">받기</a>
+      </p>
+      <ul class="notes">
+        <li>
+          Mesen 2와 Lua 스크립트로 디버그 메뉴에서 장면을 시작하고, 버튼을 눌러 대사를 넘기며 화면을 저장합니다. 중간의
+          DBZ 퀴즈도 스크립트가 넘깁니다.
+        </li>
+        <li>
+          대사 포인터 표를 읽는 순간을 감시해 어느 프레임에 어떤 대사 ID가 떴는지 기록하고, 그 프레임을 찾아 찍습니다.
+        </li>
+        <li>위 비교 화면은 모두 이렇게 실제 장면에서 찍었습니다. 포인터를 억지로 바꿔 만든 화면은 쓰지 않았습니다.</li>
+        <li>376개 장면을 일본판, v1.1, v1.2로 끝까지 돌려 마지막 화면을 비교합니다.</li>
+        <li>빌드 결과가 늘 같은 CRC32(E46C7A28)인지 확인합니다.</li>
+      </ul>
+
+      <h3 id="making-tools" class="pixel">
+        9. 분석 도구
+      </h3>
+      <p>
+        빌드 스크립트, 대사·폰트·LZSS 도구, 글자 표, 고친 대사 782줄, Mesen 2용 Lua 스크립트와 롬 분석 문서를
+        묶었습니다. 같은 엔진을 쓰는 초오공전 돌격편을 분석할 때도 주소만 바꾸면 대부분 쓸 수 있습니다.
+      </p>
+      <p>
+        <a href={tools} download>
+          분석 도구 받기
+        </a>
+        <span>(zip, 2.4MB, 롬 파일은 들어 있지 않음)</span>
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">파일</th>
+              <th scope="col">하는 일</th>
+              <th scope="col">설명</th>
+            </tr>
+          </thead>
+          <tbody>
+            {toolFiles.map(t => (
+              <tr>
+                <td>
+                  <code>{t.file}</code>
+                </td>
+                <td class="wrap">{t.text}</td>
+                <td>
+                  <a href={`#making-${t.section}`}>{sectionTitles[t.section]}</a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>압축을 푼 폴더에 일본판 원본을 넣고 빌드 스크립트를 돌리면 아래 순서로 v1.2와 같은 롬이 나옵니다.</p>
+      <ol class="flow">
+        {buildSteps.map(step => (
+          <li>{step}</li>
+        ))}
+      </ol>
+    </div>
+  </details>
+</section>
+
+<style>
+  .paper {
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 8px;
+    box-shadow: 0 4px 0 rgb(0 0 0 / 35%);
+  }
+
+  .paper img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .paper.narrow {
+    max-width: 480px;
+  }
+
+  .paper figcaption {
+    padding-top: 6px;
+    color: #333;
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+
+  .making-body {
+    display: grid;
+    gap: 16px;
+    max-width: 820px;
+  }
+
+  .making-body h3 {
+    margin-top: 24px;
+    color: var(--accent);
+  }
+
+  .making-body h4 {
+    margin: 8px 0 0;
+    font-size: 1rem;
+  }
+
+  .making-body p,
+  .making-body ul,
+  .making-body ol {
+    margin: 0;
+  }
+
+  .making-body code {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 0.875em;
+  }
+
+  .making-body pre {
+    margin: 0;
+    padding: 12px 16px;
+    overflow-x: auto;
+    background: rgb(0 0 0 / 55%);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .making-body table {
+    border-collapse: collapse;
+    background: var(--panel);
+    font-size: 0.875rem;
+  }
+
+  .making-body th,
+  .making-body td {
+    padding: 6px 10px;
+    border: 1px solid rgb(255 255 255 / 25%);
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .making-body .bytes td {
+    text-align: center;
+  }
+
+  .making-body td.wrap {
+    min-width: 16rem;
+    white-space: normal;
+  }
+
+  .flow {
+    display: grid;
+    gap: 8px;
+    padding: 12px 16px 12px 40px;
+    background: var(--panel);
+    border-left: 4px solid var(--accent);
+  }
+
+  .tool {
+    font-size: 0.875rem;
+  }
+
+  .notes {
+    display: grid;
+    gap: 8px;
+    padding-left: 20px;
+  }
+</style>

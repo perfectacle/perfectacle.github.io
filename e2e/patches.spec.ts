@@ -177,3 +177,20 @@ test('Super Gokuden: Kakusei-hen patch box tells it apart from Totsugeki-hen', a
   });
   await expect(page.locator('.patch-status')).toContainText('예전에 나온 한글판 파일입니다');
 });
+
+test('Super Gokuden: Kakusei-hen explains how the patch was made and offers the analysis tools', async ({ page }) => {
+  await page.goto(KAKUSEI);
+  expect(await page.content()).not.toContain('cafe.naver.com/hansicgu');
+  const making = page.locator('#making');
+  await making.locator('summary').click();
+  for (const img of await making.locator('img').all()) {
+    await img.scrollIntoViewIfNeeded();
+    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+    0,
+  );
+  const tools = making.locator('a[href$="_Tools.zip"]');
+  await expect(tools).toHaveAttribute('download', '');
+  expect((await page.request.get((await tools.getAttribute('href')) ?? '')).status()).toBe(200);
+});

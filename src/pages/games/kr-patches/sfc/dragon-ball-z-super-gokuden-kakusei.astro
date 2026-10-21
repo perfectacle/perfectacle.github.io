@@ -1,4 +1,5 @@
 ---
+import MakingOf from '../../../../components/kakusei/MakingOf.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import VersionPair from '../../../../components/kr-patch/VersionPair.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
@@ -141,6 +142,9 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
     <a class="pointer" href="#play">
       진행 방식
     </a>
+    <a class="pointer" href="#making">
+      만든 방법
+    </a>
   </nav>
 
   <section id="changes" class="section page-width" aria-labelledby="changes-title">
@@ -246,10 +250,13 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
         </article>
       ))}
     </div>
-    <p class="back-to-top">
-      <a class="pointer" href="#title">
-        한글판 만들러 가기
-      </a>
-    </p>
   </section>
+
+  <MakingOf base={base} />
+
+  <p class="back-to-top page-width">
+    <a class="pointer" href="#title">
+      한글판 만들러 가기
+    </a>
+  </p>
 </PatchBook>
