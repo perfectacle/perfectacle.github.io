@@ -2,6 +2,7 @@
 import '../styles/patch-book.css';
 import Analytics from '../components/Analytics.astro';
 import { SITE } from '../lib/posts.ts';
+import { KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
 import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
 
 interface Props {
@@ -9,36 +10,18 @@ interface Props {
   description: string;
   /** Where this page sits below the home page, ending with the page itself. */
   trail: { name: string; path: string }[];
-  /** Which game's look the page takes; each theme ships its own font subset. */
-  theme?: 'smrpg' | 'gokuden' | 'kakusei' | 'otogirisou';
+  /** Which game's look the page takes. */
+  theme: KrPatchTheme;
   /** Social preview: a game screen, 256×224 unless a size is given. */
-  image?: { src: string; alt: string; width?: number; height?: number };
-  copyright?: string[];
+  image: { src: string; alt: string; width?: number; height?: number };
+  copyright: string[];
   links?: { href: string; label: string }[];
 }
 
-const themes = {
-  smrpg: { assets: '/games/kr-patches/sfc/super-mario-rpg', color: '#2b2d31' },
-  gokuden: { assets: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki', color: '#0b1a4a' },
-  kakusei: { assets: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei', color: '#101829' },
-  otogirisou: { assets: '/games/kr-patches/sfc/otogirisou', color: '#000000' },
-};
-const smrpgAssets = themes.smrpg.assets;
-const {
-  title,
-  description,
-  trail,
-  theme = 'smrpg',
-  image = {
-    src: `${smrpgAssets}/images/world-map-4x.webp`,
-    alt: '슈퍼 마리오 RPG의 월드맵',
-    width: 1024,
-    height: 896,
-  },
-  copyright = ['게임 및 캐릭터 © 1995 Nintendo / SQUARE ENIX CO., LTD.'],
-  links = [{ href: 'https://www.nintendo.co.jp/clvs/manuals/ja/pdf/CLV-P-VABQJ.pdf', label: '원작 공식 설명서' }],
-} = Astro.props;
-const { assets, color } = themes[theme];
+const { title, description, trail, theme, image, copyright, links = [] } = Astro.props;
+const patch = KR_PATCHES.find(p => p.theme === theme);
+if (!patch) throw new Error(`Unknown theme ${theme}`);
+const { path: assets, color } = patch;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const imageUrl = new URL(image.src, Astro.site).href;
 ---

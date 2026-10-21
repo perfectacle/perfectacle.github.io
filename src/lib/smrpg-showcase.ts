@@ -1,20 +1,10 @@
-export interface ComparePair {
-  /** File stem under images/patch; the page loads `${id}_jp.webp` and `${id}_ko.webp`. */
-  id: string;
-  /** Spoken by the page's guide, Toad, in his polite in-game voice. */
-  caption: string;
-  alt: string;
-}
+import type { VersionGroup } from './version-pairs';
 
-export interface CompareGroup {
-  id: string;
-  title: string;
-  summary: string;
-  pairs: ComparePair[];
-}
-
-/** Each pair is the same moment captured with the same input on the Japanese original and the Korean version. */
-export const compareGroups: CompareGroup[] = [
+/**
+ * Each pair is the same moment captured with the same input on the Japanese original and the Korean version.
+ * Summaries and captions are spoken by the page's guide, Toad, in his polite in-game voice.
+ */
+export const compareGroups: VersionGroup[] = [
   {
     id: 'story',
     title: '이야기',

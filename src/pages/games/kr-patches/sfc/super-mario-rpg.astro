@@ -1,16 +1,19 @@
 ---
-import ComparePair from '../../../../components/smrpg/ComparePair.astro';
-import MakingOf from '../../../../components/smrpg/MakingOf.astro';
+import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
+import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
-import Speech from '../../../../components/smrpg/Speech.astro';
+import Speech from '../../../../components/kr-patch/Speech.astro';
+import MakingOf from '../../../../components/smrpg/MakingOf.astro';
 import SpeechChain from '../../../../components/smrpg/SpeechChain.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
+import { SMRPG_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
 import { compareGroups } from '../../../../lib/smrpg-showcase';
-import { SMRPG } from '../../../../lib/rom-patch';
+import { JAPANESE_AND_KOREAN } from '../../../../lib/version-pairs';
 
-const base = '/games/kr-patches/sfc/super-mario-rpg';
-const ips = `${base}/downloads/Super_Mario_RPG_K_v1_1.ips`;
+const patch = SMRPG_PATCH;
+const base = patch.path;
 const VISIBLE_PER_GROUP = 4;
+const GUIDE = '키노피오';
 
 const play = [
   {
@@ -106,78 +109,40 @@ const story = [
     text: '1996년, 스퀘어가 개발하고 닌텐도가 발매한 슈퍼 패미컴 RPG. 마리오다운 점프와 장난기 위에, 동료를 모으고 성장하는 RPG의 재미를 얹었다.',
   },
 ];
-
-const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
 ---
 
 <PatchBook
-  title="슈퍼 마리오 RPG 한글판"
-  trail={[
-    { name: '한글패치', path: '/games/kr-patches/' },
-    { name: '슈퍼 마리오 RPG', path: base + '/' },
-  ]}
-  description="1996년 슈퍼 패미컴 슈퍼 마리오 RPG 한글패치 v1.1. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다."
+  title={`${patch.title} 한글판`}
+  trail={trail(patch)}
+  description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
+  theme={patch.theme}
+  image={{
+    src: `${base}/images/world-map-4x.webp`,
+    alt: '슈퍼 마리오 RPG의 월드맵',
+    width: 1024,
+    height: 896,
+  }}
+  copyright={[patch.copyright]}
+  links={[{ href: 'https://www.nintendo.co.jp/clvs/manuals/ja/pdf/CLV-P-VABQJ.pdf', label: '원작 공식 설명서' }]}
 >
   <section class="hero page-width" aria-labelledby="title">
     <div class="hero-copy">
-      <p class="label">슈퍼 패미컴 · 1996 · 한글패치 v1.1</p>
+      <p class="label">{releaseLabel(patch)}</p>
       <h1 id="title" class="pixel">
-        슈퍼 마리오 RPG 한글판
+        {patch.title} 한글판
       </h1>
-      <Speech speaker="키노피오">
+      <Speech speaker={GUIDE}>
         마리오 님, 가지고 계신 일본판 게임 파일을 고르시면 바로 한글판으로 바꿔 저장해 드려요. 따로 프로그램을 설치하지
         않아도 돼요.
       </Speech>
-      <PatchBox ips={ips} spec={SMRPG} output="Super_Mario_RPG_K_v1_1" speaker="키노피오" />
-      <details class="manual">
-        <summary class="pointer">직접 패치하려면</summary>
-        <div class="manual-body">
-          <p>
-            <a href={ips} download>
-              IPS 파일 받기
-            </a>
-            를 누른 뒤 Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 헤더 없는 일본판 원본에 적용하세요. 헤더가 있는
-            파일(4MB+512바이트)은 이 페이지의 패치 상자를 쓰면 알아서 처리합니다.
-          </p>
-          <table class="frame">
-            <caption>헤더 없는 파일 기준</caption>
-            <thead>
-              <tr>
-                <th scope="col">구분</th>
-                <th scope="col">크기</th>
-                <th scope="col">CRC32</th>
-                <th scope="col">MD5</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">일본판 원본</th>
-                <td>{bytes(SMRPG.size)}</td>
-                <td>
-                  <code>{SMRPG.original.crc32}</code>
-                </td>
-                <td>
-                  <code>{SMRPG.original.md5}</code>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">한글판 v1.1</th>
-                <td>{bytes(SMRPG.size)}</td>
-                <td>
-                  <code>{SMRPG.patched.crc32}</code>
-                </td>
-                <td>
-                  <code>{SMRPG.patched.md5}</code>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </details>
+      <PatchBox ips={downloads(patch).ips} spec={patch.spec} output={patch.stem} speaker={GUIDE} />
+      <ManualPatch patch={patch} framed>
+        <p>세이브 구조는 바꾸지 않아 v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
+      </ManualPatch>
     </div>
     <figure class="hero-shot screen">
       <img
-        src={`${base}/images/patch/geno_sky_ko.webp`}
+        src={`${base}/images/patch/geno_sky_ko_1.webp`}
         width="256"
         height="224"
         alt="한국어 대사로 '나는 천공의 사자!'라고 외치는 지노"
@@ -214,29 +179,15 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
       <li>전투 명령·적 이름·필살기 설명</li>
       <li>동료마다 다른 원작의 말투</li>
     </ul>
-    <Speech speaker="키노피오">같은 장면을 같은 입력으로 찍어서 일본판과 한글판을 나란히 놓았어요.</Speech>
+    <Speech speaker={GUIDE}>같은 장면을 같은 입력으로 찍어서 일본판과 한글판을 나란히 놓았어요.</Speech>
     {compareGroups.map(group => (
-      <section class="compare-group" aria-labelledby={`group-${group.id}`}>
-        <h3 id={`group-${group.id}`} class="pixel">
-          {group.title}
-        </h3>
-        <Speech speaker="키노피오">{group.summary}</Speech>
-        <div class="compare-list">
-          {group.pairs.slice(0, VISIBLE_PER_GROUP).map(pair => (
-            <ComparePair pair={pair} base={base} />
-          ))}
-        </div>
-        {group.pairs.length > VISIBLE_PER_GROUP && (
-          <details class="more">
-            <summary class="pointer">{group.pairs.length - VISIBLE_PER_GROUP}장면 더 보기</summary>
-            <div class="compare-list">
-              {group.pairs.slice(VISIBLE_PER_GROUP).map(pair => (
-                <ComparePair pair={pair} base={base} />
-              ))}
-            </div>
-          </details>
-        )}
-      </section>
+      <CompareGroup
+        group={group}
+        base={base}
+        versions={JAPANESE_AND_KOREAN}
+        visible={VISIBLE_PER_GROUP}
+        speaker={GUIDE}
+      />
     ))}
   </section>
 
@@ -249,7 +200,7 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
       <div class="story-shots">
         <figure class="screen">
           <img
-            src={`${base}/images/patch/chancellor_kidnap_ko.webp`}
+            src={`${base}/images/patch/chancellor_kidnap_ko_1.webp`}
             width="256"
             height="224"
             alt="피치 공주가 또 납치됐다며 놀라는 버섯 대신"
@@ -289,7 +240,7 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
             />
           </figure>
           <h3 class="pixel">{item.title}</h3>
-          <Speech speaker="키노피오">{item.text}</Speech>
+          <Speech speaker={GUIDE}>{item.text}</Speech>
           {item.buttons && (
             <ul class="pad-buttons" aria-label="전투 버튼">
               {item.buttons.map(button => (
@@ -332,11 +283,11 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
     </ul>
   </section>
 
-  <MakingOf base={base} />
+  <MakingOf patch={patch} />
 
   <p class="back-to-top page-width">
     <a class="pointer" href="#title">
-      한글판 만들러 가기
+      한글패치 하러 가기
     </a>
   </p>
 </PatchBook>

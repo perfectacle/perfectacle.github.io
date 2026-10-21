@@ -1,11 +1,14 @@
 ---
-import ToolFiles from './ToolFiles.astro';
+import ToolFiles from '../kr-patch/ToolFiles.astro';
+import { downloads, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
-  base: string;
+  patch: KrPatch;
 }
 
-const { base } = Astro.props;
+const { patch } = Astro.props;
+const base = patch.path;
+const { tools } = downloads(patch);
 const img = (name: string) => `${base}/images/making/${name}`;
 
 const memories = [
@@ -95,6 +98,10 @@ const files = {
     { path: 'tools/py/make_ips.py', text: '일본판 원본 기준 IPS 만들기 (헤더 없음/있음)' },
   ],
 };
+// A file used by several steps is listed once, with what it does in the first step that uses it.
+const allFiles = Object.values(files)
+  .flat()
+  .filter((file, i, list) => list.findIndex(other => other.path === file.path) === i);
 ---
 
 <section id="making" class="section page-width" aria-labelledby="making-title">
@@ -120,11 +127,12 @@ const files = {
   <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="section-note">
     빌드에 쓴 스크립트, 어셈블리 소스, 이름 데이터, v1.0 코드표는
-    <a href={`${base}/downloads/Super_Mario_RPG_K_v1_1_tools.zip`} download>
+    <a href={tools} download>
       빌드 도구(zip, 600KB)
     </a>
     로 받을 수 있습니다. 롬, asar, Mesen은 들어 있지 않고, 빌드 순서는 압축 파일 안 README.txt에 있습니다. 아래 「자세히
-    보기」의 항목마다 그 내용을 다루는 파일을 적어 두었습니다.
+    보기」의 항목마다 그 내용을 다루는 파일을 적어 두었고, 전체 목록은 마지막 <a href="#making-tools">빌드 도구 파일</a>
+    에 있습니다.
   </p>
 
   <details class="more making">
@@ -474,6 +482,30 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         <li>고치기로 한 목록 밖에서 바뀐 대사가 0건인지, 메뉴 화면이 기준과 픽셀 단위로 같은지 비교합니다.</li>
       </ul>
       <ToolFiles items={files.testing} />
+
+      <h3 id="making-tools" class="pixel">
+        10. 빌드 도구 파일
+      </h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">파일</th>
+              <th scope="col">하는 일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allFiles.map(file => (
+              <tr>
+                <td>
+                  <code>{file.path}</code>
+                </td>
+                <td class="wrap">{file.text}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   </details>
 </section>

@@ -41,13 +41,11 @@ export const totsugekiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'tone_goku',
-        frames: 1,
         caption: '오공은 할아버지에게도 반말을 씁니다.',
         alt: '할아버지에게 먹을 것을 잡아 오겠다는 오공',
       },
       {
         id: 'tone_tien',
-        frames: 1,
         caption: '천진반은 스승에게 깍듯한 존댓말을 씁니다.',
         alt: '황야에서 자기가 싸우겠다고 나서는 천진반',
       },
@@ -72,13 +70,11 @@ export const totsugekiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'joke_goku',
-        frames: 1,
         caption: '천하제일 무술대회 우승을 꿈꾸는 오공. 대학교 이름 말장난을 원문대로 고쳤습니다.',
         alt: '무대 위에서 우승을 중얼거리는 오공',
       },
       {
         id: 'joke_tao',
-        frames: 1,
         caption: '타오파이파이의 엄포도 원문대로 "손도 발도 안 쓰고 쓰러뜨려 주지"입니다.',
         alt: '레드 리본군 사령실에서 엄포를 놓는 타오파이파이',
       },
@@ -92,7 +88,6 @@ export const totsugekiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'title',
-        frames: 1,
         caption: '타이틀 로고를 "초오공전 돌격편"으로 바꾸고 로고 아래 가타카나는 지웠습니다.',
         alt: '드래곤볼 Z 로고와 여의봉을 든 오공이 있는 타이틀 화면',
       },
@@ -104,7 +99,6 @@ export const totsugekiGroups: VersionGroup[] = [
       },
       {
         id: 'ui_title_menu',
-        frames: 1,
         height: 80,
         caption: '타이틀 메뉴도 한국어입니다.',
         alt: '새 게임과 옵션을 고르는 타이틀 메뉴',
@@ -119,13 +113,11 @@ export const totsugekiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'layout_wrap_1',
-        frames: 1,
         caption: '줄 끝이 밀려나 세 줄이 된 브리프 박사의 대사.',
         alt: '캡슐 코퍼레이션에서 오공에게 말하는 브리프 박사',
       },
       {
         id: 'layout_wrap_2',
-        frames: 1,
         caption: '닫는 괄호만 다음 줄로 밀려났던 무천도사의 대사.',
         alt: '황야에서 혼잣말하는 무천도사',
       },
