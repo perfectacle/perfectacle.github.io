@@ -53,7 +53,7 @@ test('catalogue opens the game page, which leads with the patch box and plays no
   await expect(page).toHaveURL(/\/games\/kr-patches\/sfc\/super-mario-rpg\/$/);
   await expect(page.getByText('일본판 게임 파일 고르기')).toBeInViewport();
   const html = await page.content();
-  expect(html).not.toContain('hansicgu/37276');
+  expect(html).not.toContain('cafe.naver.com/hansicgu');
   expect(html).not.toContain('blog.naver.com');
   await expect(page.locator('audio, video, canvas, iframe')).toHaveCount(0);
   await expect(page.locator(`a[href$=".ips"]`)).toHaveAttribute('download', '');

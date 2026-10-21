@@ -31,10 +31,7 @@ const {
   theme = 'smrpg',
   image = { src: `${smrpgAssets}/images/world-map.webp`, alt: '슈퍼 마리오 RPG의 월드맵' },
   copyright = ['게임 및 캐릭터 © 1995 Nintendo / SQUARE ENIX CO., LTD.'],
-  links = [
-    { href: 'https://cafe.naver.com/hansicgu/37278', label: '분석 도구 안내' },
-    { href: 'https://www.nintendo.co.jp/clvs/manuals/ja/pdf/CLV-P-VABQJ.pdf', label: '원작 공식 설명서' },
-  ],
+  links = [{ href: 'https://www.nintendo.co.jp/clvs/manuals/ja/pdf/CLV-P-VABQJ.pdf', label: '원작 공식 설명서' }],
 } = Astro.props;
 const { assets, color } = themes[theme];
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
