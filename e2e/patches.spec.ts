@@ -201,6 +201,23 @@ test('Super Gokuden: Kakusei-hen explains how the patch was made and offers the 
   expect((await page.request.get((await tools.getAttribute('href')) ?? '')).status()).toBe(200);
 });
 
+test('Otogirisou explains how the patch was made and offers the build tools', async ({ page }) => {
+  await page.goto(OTOGIRI);
+  expect(await page.content()).not.toContain('cafe.naver.com/hansicgu');
+  const making = page.locator('#making');
+  await making.locator('summary').click();
+  for (const img of await making.locator('img').all()) {
+    await img.scrollIntoViewIfNeeded();
+    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+    0,
+  );
+  const tools = making.locator('a[href$="_tools.zip"]');
+  await expect(tools).toHaveAttribute('download', '');
+  expect((await page.request.get((await tools.getAttribute('href')) ?? '')).status()).toBe(200);
+});
+
 test('Otogirisou patch box wants the 1 MB original and turns away a 2 MB Korean build', async ({ page }) => {
   await page.goto(OTOGIRI);
   await expect(page.getByText('일본판 게임 파일 고르기')).toBeInViewport();

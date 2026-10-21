@@ -1,6 +1,7 @@
 ---
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import VersionPair from '../../../../components/kr-patch/VersionPair.astro';
+import MakingOf from '../../../../components/otogirisou/MakingOf.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import { otogirisouPairs, otogirisouVersions } from '../../../../lib/otogirisou-showcase';
 import { OTOGIRISOU, patchedSize } from '../../../../lib/rom-patch';
@@ -187,6 +188,9 @@ const korean = patchedSize(OTOGIRISOU);
     <a class="pointer" href="#play">
       진행 방식
     </a>
+    <a class="pointer" href="#making">
+      만든 방법
+    </a>
   </nav>
 
   <section id="korean" class="section page-width" aria-labelledby="korean-title">
@@ -315,10 +319,13 @@ const korean = patchedSize(OTOGIRISOU);
         </article>
       ))}
     </div>
-    <p class="back-to-top">
-      <a class="pointer" href="#title">
-        한글판 만들러 가기
-      </a>
-    </p>
   </section>
+
+  <MakingOf base={base} />
+
+  <p class="back-to-top page-width">
+    <a class="pointer" href="#title">
+      한글판 만들러 가기
+    </a>
+  </p>
 </PatchBook>
