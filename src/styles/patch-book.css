@@ -29,6 +29,20 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Galmuri11 Kakusei';
+  src: url('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/fonts/guide.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri11 Kakusei';
+  src: url('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/fonts/guide-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   --ink: #f4f1ea;
   --muted: #c9c4b8;
@@ -604,7 +618,7 @@ h3.pixel {
     linear-gradient(#0b1a4a, #050a24 1200px) #050a24;
 }
 
-[data-theme='gokuden'] .frame {
+:is([data-theme='gokuden'], [data-theme='kakusei']) .frame {
   border: 2px solid #fff;
   border-image: none;
   border-radius: 3px;
@@ -614,7 +628,7 @@ h3.pixel {
     5px 5px 0 rgb(0 0 0 / 70%);
 }
 
-[data-theme='gokuden'] .dialog {
+:is([data-theme='gokuden'], [data-theme='kakusei']) .dialog {
   background: #0031ff;
   border: 2px solid #fff;
   box-shadow:
@@ -623,7 +637,7 @@ h3.pixel {
 }
 
 /* The cursor becomes a dragon ball. */
-[data-theme='gokuden'] .pointer::before {
+:is([data-theme='gokuden'], [data-theme='kakusei']) .pointer::before {
   content: '★' / '';
   left: -28px;
   width: 18px;
@@ -638,15 +652,42 @@ h3.pixel {
   text-align: center;
 }
 
-[data-theme='gokuden'] .drop-zone:hover,
-[data-theme='gokuden'] .drop-zone.dragging,
-[data-theme='gokuden'] .drop-zone:focus-within {
+:is([data-theme='gokuden'], [data-theme='kakusei']) .drop-zone:hover,
+:is([data-theme='gokuden'], [data-theme='kakusei']) .drop-zone.dragging,
+:is([data-theme='gokuden'], [data-theme='kakusei']) .drop-zone:focus-within {
   background: rgb(255 204 51 / 12%);
 }
 
-[data-theme='gokuden'] .checklist li::before {
+:is([data-theme='gokuden'], [data-theme='kakusei']) .checklist li::before {
   content: '● ';
   color: #ffa31a;
+}
+
+/* Super Gokuden: Kakusei-hen uses steel-blue gradient windows with a pale cyan rim. */
+
+[data-theme='kakusei'] {
+  --accent: #ffcc33;
+  --link: #ffdd73;
+  --muted: #c4cbd8;
+  --panel: rgb(41 49 66 / 92%);
+  --dialog-ink: #fff;
+  --pixel: 'Galmuri11 Kakusei', ui-monospace, monospace;
+}
+
+[data-theme='kakusei'] body {
+  background:
+    radial-gradient(circle at 50% -400px, rgb(74 82 99 / 70%), transparent 900px),
+    linear-gradient(#18202f, #0a0f18 1200px) #0a0f18;
+}
+
+[data-theme='kakusei'] .frame {
+  border-color: #d6ffff;
+  background: linear-gradient(rgb(74 82 99 / 94%), rgb(16 24 41 / 94%));
+}
+
+[data-theme='kakusei'] .dialog {
+  border-color: #d6ffff;
+  background: linear-gradient(#4a5263, #101829);
 }
 
 .version-pair {

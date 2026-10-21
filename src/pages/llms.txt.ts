@@ -28,6 +28,7 @@ export async function GET() {
 - [한글패치 목록](${SITE.url}/games/kr-patches/): 일본어로만 나온 게임의 한국어 패치
 - [슈퍼 마리오 RPG 한글판](${SITE.url}/games/kr-patches/sfc/super-mario-rpg/): 일본판 슈퍼 패미컴 게임 파일을 고르면 브라우저에서 한글패치 v1.1 을 적용해 저장한다
 - [드래곤볼 Z 초오공전 돌격편 한글판](${SITE.url}/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/): 일본판 슈퍼 패미컴 게임 파일을 고르면 브라우저에서 한글패치 v1.1 을 적용해 저장한다
+- [드래곤볼 Z 초오공전 각성편 한글판](${SITE.url}/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/): 일본판 슈퍼 패미컴 게임 파일을 고르면 브라우저에서 한글패치 v1.2 를 적용해 저장한다
 
 ## 카테고리
 

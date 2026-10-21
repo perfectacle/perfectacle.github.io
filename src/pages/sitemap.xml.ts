@@ -21,6 +21,7 @@ export async function GET() {
     ['/games/kr-patches/'],
     ['/games/kr-patches/sfc/super-mario-rpg/'],
     ['/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/'],
+    ['/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/'],
     ...(await getTags()).map(t => [`/tags/${t.slug}/`] as [string]),
     ...flattenCategories(await getCategoryTree()).map(c => [categoryPath(c.path)] as [string]),
   ];

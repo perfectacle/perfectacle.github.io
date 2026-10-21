@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 import { deflateRawSync } from 'node:zlib';
 import {
+  GOKUDEN_KAKUSEI,
   GOKUDEN_TOTSUGEKI,
   SMRPG,
   applyIps,
@@ -226,7 +227,10 @@ describe('zip handling', () => {
 
 const gameRom = (spec: RomSpec) => {
   const rom = new Uint8Array(spec.size);
-  rom.set(encode(spec.header.title), 0x7fc0);
+  rom.set(
+    Array.from(spec.header.title, c => c.charCodeAt(0)),
+    0x7fc0,
+  );
   rom.set([spec.header.mapMode, spec.header.cartType, spec.header.romSize], 0x7fd5);
   return rom;
 };
@@ -252,5 +256,42 @@ describe('Super Gokuden: Totsugeki-hen (2 MB)', () => {
 
   it('mentions its own size when a patch would grow the ROM', () => {
     expect(() => applyIps(GOKUDEN_TOTSUGEKI, new Uint8Array(2097152), patch(32, 0, 0, 0, 1, 1))).toThrow('2MB');
+  });
+});
+
+describe('Super Gokuden: Kakusei-hen (2 MB, katakana header)', () => {
+  it('reads its half-width katakana internal name byte for byte', () => {
+    const rom = gameRom(GOKUDEN_KAKUSEI);
+    expect(Array.from(rom.subarray(0x7fc0, 0x7fc4))).toEqual([0xbd, 0xb0, 0xca, 0xdf]);
+    expect(classifyRom(GOKUDEN_KAKUSEI, rom).kind).toBe('different');
+  });
+
+  it('expects the Korean internal name its patch writes', () => {
+    const rename = [...encode(GOKUDEN_KAKUSEI.patchedTitle ?? '')];
+    const renaming = patch(0, 0x7f, 0xc0, 0, rename.length, ...rename);
+    const output = createPatchedRom(GOKUDEN_KAKUSEI, gameRom(GOKUDEN_KAKUSEI), renaming, { allowUnverified: true });
+    expect(hasGameHeader(GOKUDEN_KAKUSEI, output, GOKUDEN_KAKUSEI.patchedTitle)).toBe(true);
+    expect(() =>
+      createPatchedRom(GOKUDEN_KAKUSEI, gameRom(GOKUDEN_KAKUSEI), patch(), { allowUnverified: true }),
+    ).toThrow('게임 식별 정보');
+  });
+
+  it('does not mistake Totsugeki-hen for Kakusei-hen or the other way round', () => {
+    expect(classifyRom(GOKUDEN_KAKUSEI, gameRom(GOKUDEN_TOTSUGEKI)).kind).toBe('wrong-game');
+    expect(classifyRom(GOKUDEN_TOTSUGEKI, gameRom(GOKUDEN_KAKUSEI)).kind).toBe('wrong-game');
+  });
+});
+
+describe('earlier Korean releases', () => {
+  it('names the earlier release instead of offering to patch it again', () => {
+    const rom = gameRom(GOKUDEN_TOTSUGEKI);
+    const spec = { ...GOKUDEN_TOTSUGEKI, previous: [{ version: 'v0.9', crc32: crc32(rom), md5: md5(rom) }] };
+    expect(classifyRom(spec, rom)).toEqual({ kind: 'old-korean', version: 'v0.9' });
+  });
+
+  it('recognizes an unlisted Korean build by the internal name the patch writes', () => {
+    const rom = gameRom(GOKUDEN_KAKUSEI);
+    rom.set(encode(GOKUDEN_KAKUSEI.patchedTitle ?? ''), 0x7fc0);
+    expect(classifyRom(GOKUDEN_KAKUSEI, rom)).toEqual({ kind: 'old-korean', version: undefined });
   });
 });
