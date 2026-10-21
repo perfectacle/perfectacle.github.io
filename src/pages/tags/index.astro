@@ -4,17 +4,36 @@ import { byPostCount, getTags } from '../../lib/posts.ts';
 
 const tags = byPostCount(await getTags());
 const max = Math.max(...tags.map(t => t.posts.length));
+// Hue from the name, not the rank, so a tag keeps its colour when other tags gain posts.
+const hue = (name: string) => [...name].reduce((h, c) => (h * 31 + (c.codePointAt(0) ?? 0)) % 360, 7);
+const HOT = 8;
 ---
 
 <Base title="태그" description={`태그 ${tags.length}개`}>
   <div class="container">
     <h1>태그</h1>
     <p class="muted">태그 {tags.length}개</p>
+    <div class="tools" hidden>
+      <label class="visually-hidden" for="tag-filter">
+        태그 찾기
+      </label>
+      <input id="tag-filter" type="search" placeholder="태그 찾기" autocomplete="off" spellcheck="false" />
+      <p class="hint muted">
+        <span class="fine">태그를 끌어서 던지거나 빈 곳을 눌러 보세요.</span>
+        <span class="coarse">태그를 길게 누르면 잡아서 옮길 수 있습니다.</span>
+      </p>
+      <p class="status" role="status"></p>
+    </div>
     <ul class="cloud">
-      {tags.map(tag => (
-        <li>
+      {tags.map((tag, i) => (
+        <li
+          class:list={{ hot: i < HOT }}
+          data-name={tag.name}
+          data-count={tag.posts.length}
+          style={`--h:${hue(tag.name)}`}
+        >
           <a href={`/tags/${tag.slug}/`} style={`--w:${(0.85 + (tag.posts.length / max) * 0.6).toFixed(2)}rem`}>
-            #{tag.name}
+            <span class="name">#&#8288;{tag.name}</span>
             <sup>{tag.posts.length}</sup>
           </a>
         </li>
@@ -23,34 +42,33 @@ const max = Math.max(...tags.map(t => t.posts.length));
   </div>
 </Base>
 
+<script>
+  import { mountTagCloud } from '../../lib/tag-cloud.ts';
+
+  const list = document.querySelector<HTMLElement>('.cloud');
+  const tools = document.querySelector<HTMLElement>('.tools');
+  const input = tools?.querySelector('input');
+  const status = tools?.querySelector<HTMLElement>('.status');
+  if (list && tools && input && status) {
+    tools.hidden = false;
+    mountTagCloud(list, input, status);
+  }
+</script>
+
 <style>
   h1 {
     margin: 0 0 4px;
     font-size: 1.9rem;
   }
+
+  /* Plain pill list: what visitors without JavaScript get, and what the bubbles start from. */
   .cloud {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 14px;
+    gap: 8px;
     list-style: none;
     padding: 0;
     margin-top: 24px;
-  }
-  .cloud a {
-    font-size: var(--w);
-    color: var(--fg);
-  }
-  .cloud a:hover {
-    color: var(--accent);
-  }
-  sup {
-    margin-left: 2px;
-    font-size: 0.65em;
-    color: var(--fg-muted);
-  }
-  /* Pills with real padding: plain words 20px tall were easy to mis-tap on phones. */
-  .cloud {
-    gap: 8px;
   }
   .cloud a {
     display: inline-flex;
@@ -60,13 +78,279 @@ const max = Math.max(...tags.map(t => t.posts.length));
     padding: 0 12px;
     border: 1px solid var(--border);
     border-radius: 999px;
+    font-size: var(--w);
+    color: var(--fg);
   }
   .cloud a:hover {
     border-color: var(--accent);
+    color: var(--accent);
     text-decoration: none;
   }
   sup {
+    margin-left: 2px;
     vertical-align: baseline;
     font-size: 0.75em;
+    color: var(--fg-muted);
+  }
+
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    margin-top: 20px;
+  }
+  .tools[hidden] {
+    display: none;
+  }
+  .tools input {
+    flex: 0 1 280px;
+    min-width: 0;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-soft);
+    color: var(--fg);
+    font: inherit;
+  }
+  .tools input:focus-visible {
+    border-color: var(--accent);
+    outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    outline-offset: 1px;
+  }
+  .tools p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+  .hint .coarse {
+    display: none;
+  }
+  @media (pointer: coarse) {
+    .hint .fine {
+      display: none;
+    }
+    .hint .coarse {
+      display: inline;
+    }
+  }
+  .status {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  /* Bubble mode, switched on by the script. */
+  .cloud.is-live {
+    --bubble-top: 97%;
+    --bubble-mid: 86%;
+    --bubble-edge: 74%;
+    --bubble-fg: 22%;
+    --bubble-sat: 78%;
+    --glow: 0.28;
+    position: relative;
+    display: block;
+    margin-top: 16px;
+    overflow: hidden;
+    border-radius: 24px;
+    background:
+      radial-gradient(
+        420px circle at var(--mx, 50%) var(--my, 30%),
+        color-mix(in srgb, var(--accent) 10%, transparent),
+        transparent 70%
+      ),
+      var(--bg-soft);
+    /* Vertical swipes still scroll the page; a long press takes over once a bubble is held. */
+    touch-action: pan-y pinch-zoom;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    contain: layout paint;
+  }
+  :global(:root[data-theme='dark']) .cloud.is-live {
+    --bubble-top: 34%;
+    --bubble-mid: 22%;
+    --bubble-edge: 14%;
+    --bubble-fg: 90%;
+    --bubble-sat: 60%;
+    --glow: 0.45;
+  }
+  /* Only the glow reads the pointer position; inherited, every bubble would restyle on each mouse move. */
+  @property --mx {
+    syntax: '<length-percentage>';
+    inherits: false;
+    initial-value: 50%;
+  }
+  @property --my {
+    syntax: '<length-percentage>';
+    inherits: false;
+    initial-value: 30%;
+  }
+  .cloud.grabbing {
+    cursor: grabbing;
+  }
+  .is-live li {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--d);
+    height: var(--d);
+    transform-origin: center;
+    will-change: transform;
+  }
+  .is-live a {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    font-size: var(--fs);
+    font-weight: 600;
+    line-height: 1.15;
+    text-align: center;
+    color: hsl(var(--h) 70% var(--bubble-fg));
+    background: radial-gradient(
+      circle at 32% 26%,
+      hsl(var(--h) var(--bubble-sat) var(--bubble-top)),
+      hsl(var(--h) var(--bubble-sat) var(--bubble-mid)) 58%,
+      hsl(var(--h) var(--bubble-sat) var(--bubble-edge))
+    );
+    box-shadow:
+      inset -4px -6px 14px hsl(var(--h) 60% 30% / 0.18),
+      0 6px 18px hsl(var(--h) 70% 45% / var(--glow));
+    cursor: grab;
+    transition:
+      box-shadow 0.25s,
+      opacity 0.3s,
+      filter 0.3s;
+    -webkit-user-drag: none;
+  }
+  .is-live a:hover,
+  .is-live a:focus-visible {
+    color: hsl(var(--h) 70% var(--bubble-fg));
+    box-shadow:
+      inset -4px -6px 14px hsl(var(--h) 60% 30% / 0.18),
+      0 0 0 3px hsl(var(--h) 80% 55% / 0.55),
+      0 10px 32px hsl(var(--h) 80% 50% / calc(var(--glow) + 0.2));
+  }
+  .is-live a:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .is-live .name {
+    padding: 0 2px;
+    white-space: nowrap;
+  }
+  /* Break only between words; a word too long for its bubble is shrunk by the script instead of split. */
+  .is-live li.wrap .name {
+    max-width: var(--wrap);
+    white-space: normal;
+    word-break: keep-all;
+    overflow-wrap: normal;
+  }
+  .is-live sup {
+    margin: 2px 0 0;
+    padding: 0 0.5em;
+    border-radius: 999px;
+    font-size: max(0.62em, 10px);
+    line-height: 1.5;
+    color: inherit;
+    background: hsl(var(--h) 60% 50% / 0.16);
+  }
+  .is-live li.held {
+    z-index: 1;
+  }
+  .is-live .held a {
+    cursor: grabbing;
+    box-shadow:
+      inset -4px -6px 14px hsl(var(--h) 60% 30% / 0.18),
+      0 0 0 3px hsl(var(--h) 80% 55% / 0.7),
+      0 18px 40px hsl(var(--h) 80% 40% / calc(var(--glow) + 0.25));
+  }
+  .is-live.searching li.miss a,
+  .is-live.searching li.miss::before {
+    opacity: 0.35;
+    filter: grayscale(0.8);
+  }
+
+  /* The busiest tags wear a halo. It sits on the li because the a is its own stacking context while it bobs. */
+  .is-live li.hot::before {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    z-index: -1;
+    border-radius: 50%;
+    background: conic-gradient(
+      hsl(var(--h) 90% 60% / 0.75),
+      hsl(calc(var(--h) + 120) 90% 60% / 0.75),
+      hsl(calc(var(--h) + 240) 90% 60% / 0.75),
+      hsl(var(--h) 90% 60% / 0.75)
+    );
+    filter: blur(4px);
+  }
+  :global(.tag-ripple) {
+    position: absolute;
+    width: 440px;
+    height: 440px;
+    margin: -220px 0 0 -220px;
+    border: 3px solid color-mix(in srgb, var(--accent) 70%, transparent);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: tag-ripple 0.6s ease-out forwards;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .is-live a {
+      animation: tag-bob 5s ease-in-out infinite alternate;
+    }
+    .is-live li:nth-child(3n) a {
+      animation-duration: 6.2s;
+      animation-delay: -2s;
+    }
+    .is-live li:nth-child(3n + 1) a {
+      animation-duration: 4.4s;
+      animation-delay: -3.1s;
+    }
+    .is-live li.hot::before {
+      animation: tag-spin 6s linear infinite;
+    }
+    .is-live li.pop a {
+      animation: tag-pop 0.22s ease-out forwards;
+    }
+  }
+  @keyframes tag-bob {
+    from {
+      translate: 0 -2px;
+    }
+    to {
+      translate: 0 2px;
+    }
+  }
+  @keyframes tag-spin {
+    to {
+      rotate: 1turn;
+    }
+  }
+  @keyframes tag-pop {
+    to {
+      scale: 1.35;
+      opacity: 0;
+    }
+  }
+  @keyframes tag-ripple {
+    from {
+      scale: 0.05;
+      opacity: 1;
+    }
+    to {
+      scale: 1;
+      opacity: 0;
+    }
   }
 </style>
