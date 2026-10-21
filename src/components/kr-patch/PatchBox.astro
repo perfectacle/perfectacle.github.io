@@ -6,13 +6,22 @@ interface Props {
   spec: RomSpec;
   /** File name of the saved Korean ROM, without the extension. */
   output: string;
+  /** Character who speaks the box's messages, shown as the game's `<name>` tag. */
+  speaker?: string;
 }
 
-const { ips, spec, output } = Astro.props;
+const { ips, spec, output, speaker } = Astro.props;
 ---
 
 <div class="patch-box frame" data-ips={ips} data-spec={JSON.stringify(spec)} data-output={output}>
   <p class="inapp-warning dialog" hidden>
+    {speaker && (
+      <span class="speaker">
+        <span aria-hidden="true">&lt;</span>
+        {speaker}
+        <span aria-hidden="true">&gt;</span>
+      </span>
+    )}
     메신저 앱 안에서 열린 화면이라 파일을 고르거나 저장하지 못할 수 있습니다. 메뉴에서 "다른 브라우저로 열기"를 눌러
     크롬이나 사파리로 열어 주세요.
   </p>
@@ -22,7 +31,16 @@ const { ips, spec, output } = Astro.props;
     <span class="drop-hint">.sfc · .smc · .zip 파일을 고르거나 여기로 끌어다 놓으세요</span>
   </label>
   <div class="patch-status dialog" role="status" aria-live="polite" hidden>
-    <p class="status-text"></p>
+    <p>
+      {speaker && (
+        <span class="speaker">
+          <span aria-hidden="true">&lt;</span>
+          {speaker}
+          <span aria-hidden="true">&gt;</span>
+        </span>
+      )}
+      <span class="status-text"></span>
+    </p>
     <div class="status-actions"></div>
   </div>
   <p class="privacy">파일은 이 기기 안에서만 바꾸고 어디에도 보내지 않습니다.</p>

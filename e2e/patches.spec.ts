@@ -83,6 +83,32 @@ test('comparison groups reveal the remaining scenes on demand', async ({ page })
   await expect.poll(() => hidden.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
 });
 
+test('the story is told one dialog box at a time, paged with ▶', async ({ page }) => {
+  await page.goto(GAME);
+  const boxes = page.locator('#story .speech');
+  const count = await boxes.count();
+  expect(count).toBeGreaterThan(1);
+  await expect(boxes.nth(1)).toBeHidden();
+  for (let i = 1; i < count; i++) {
+    await boxes
+      .nth(i - 1)
+      .getByRole('button', { name: '다음 대사 보기' })
+      .click();
+    await expect(boxes.nth(i)).toBeVisible();
+  }
+  await expect(page.locator('#story .next')).toHaveCount(0);
+});
+
+test('comparison screens stay at least 1x on a phone so the dialog is readable', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(GAME);
+  const widths = await page
+    .locator('#korean .compare-group > .compare-list img')
+    .evaluateAll(imgs => imgs.map(img => img.getBoundingClientRect().width));
+  expect(widths.length).toBeGreaterThan(0);
+  for (const width of widths) expect(width).toBeGreaterThanOrEqual(256);
+});
+
 test('patch pages describe where they sit and keep analytics off outside the published site', async ({ page }) => {
   const gtag: string[] = [];
   page.on('request', r => {

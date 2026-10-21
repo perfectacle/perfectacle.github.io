@@ -1,0 +1,20 @@
+---
+interface Props {
+  /** Shown as the game's `<name>` tag; omit for narration boxes, which the game prints without one. */
+  speaker?: string | undefined;
+  tag?: 'div' | 'figcaption';
+}
+
+const { speaker, tag: Tag = 'div' } = Astro.props;
+---
+
+<Tag class="dialog speech">
+  {speaker && (
+    <span class="speaker">
+      <span aria-hidden="true">&lt;</span>
+      {speaker}
+      <span aria-hidden="true">&gt;</span>
+    </span>
+  )}
+  <slot />
+</Tag>
