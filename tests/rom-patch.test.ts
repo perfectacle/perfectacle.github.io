@@ -1,5 +1,4 @@
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
 import { deflateRawSync } from 'node:zlib';
 import {
@@ -254,21 +253,4 @@ describe('Super Gokuden: Totsugeki-hen (2 MB)', () => {
   it('mentions its own size when a patch would grow the ROM', () => {
     expect(() => applyIps(GOKUDEN_TOTSUGEKI, new Uint8Array(2097152), patch(32, 0, 0, 0, 1, 1))).toThrow('2MB');
   });
-});
-
-describe('published IPS files', () => {
-  for (const [spec, file] of [
-    [SMRPG, 'super-mario-rpg/downloads/Super_Mario_RPG_K_v1_1.ips'],
-    [
-      GOKUDEN_TOTSUGEKI,
-      'dragon-ball-z-super-gokuden-totsugeki/downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1.ips',
-    ],
-  ] as const) {
-    it(`${spec.name} patch keeps the ROM size and game header`, () => {
-      const ips = new Uint8Array(readFileSync(new URL(`../public/games/kr-patches/sfc/${file}`, import.meta.url)));
-      const output = applyIps(spec, gameRom(spec), ips);
-      expect(output.length).toBe(spec.size);
-      expect(hasGameHeader(spec, output)).toBe(true);
-    });
-  }
 });

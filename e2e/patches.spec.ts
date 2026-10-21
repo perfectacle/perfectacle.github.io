@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { GOKUDEN_TOTSUGEKI, SMRPG, applyIps, hasGameHeader, type RomSpec } from '../src/lib/rom-patch.ts';
 
 const GOKUDEN = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/';
 
@@ -115,3 +116,23 @@ test('Super Gokuden patch box checks for its own 2 MB ROM', async ({ page }) => 
   await expect(status).toContainText('초오공전 돌격편 한글판을 만들 수 없습니다');
   for (const link of await page.locator('a[href$=".ips"]').all()) await expect(link).toHaveAttribute('download', '');
 });
+
+const gameRom = (spec: RomSpec) => {
+  const rom = new Uint8Array(spec.size);
+  rom.set(new TextEncoder().encode(spec.header.title), 0x7fc0);
+  rom.set([spec.header.mapMode, spec.header.cartType, spec.header.romSize], 0x7fd5);
+  return rom;
+};
+
+for (const [spec, path] of [
+  [SMRPG, `${GAME}downloads/Super_Mario_RPG_K_v1_1.ips`],
+  [GOKUDEN_TOTSUGEKI, `${GOKUDEN}downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1.ips`],
+] as const) {
+  test(`published ${spec.name} IPS keeps the ROM size and game header`, async ({ request }) => {
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    const output = applyIps(spec, gameRom(spec), new Uint8Array(await response.body()));
+    expect(output.length).toBe(spec.size);
+    expect(hasGameHeader(spec, output)).toBe(true);
+  });
+}
