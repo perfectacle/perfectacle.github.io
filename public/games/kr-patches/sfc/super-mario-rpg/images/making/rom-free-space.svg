@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 458" width="860" height="458" font-family="sans-serif">
+<rect width="860" height="458" rx="12" fill="#fafafa"/>
+<text x="20" y="32" font-size="17" fill="#111">4MB 롬 = 1MB 블록 4개 · <tspan fill="#dc2626">빨간 칸</tspan> = v1.1 이 코드·데이터를 넣은 빈 공간</text>
+<text x="20" y="85" font-size="15" fill="#111" font-family="ui-monospace,Menlo,monospace">$C0–$CF</text>
+<rect x="110" y="60" width="720" height="40" fill="#e2e8f0" stroke="#94a3b8"/>
+<text x="110" y="115" font-size="11" fill="#64748b" font-family="ui-monospace,Menlo,monospace">파일 0x000000</text>
+<text x="830" y="115" font-size="11" fill="#64748b" text-anchor="end" font-family="ui-monospace,Menlo,monospace">0x0FFFFF</text>
+<rect x="287.2" y="60" width="3.0" height="40" fill="#dc2626"/>
+<polyline points="288.7,100 288.7,130 296.7,130" fill="none" stroke="#dc2626" stroke-width="1"/>
+<text x="300.7" y="134" font-size="12.5" fill="#b91c1c" text-anchor="start">$C3:F000 필드 메뉴 코드</text>
+<rect x="289.3" y="60" width="3.0" height="40" fill="#dc2626"/>
+<polyline points="290.8,100 290.8,148 298.8,148" fill="none" stroke="#dc2626" stroke-width="1"/>
+<text x="302.8" y="152" font-size="12.5" fill="#b91c1c" text-anchor="start">$C3:FC40 전투 메뉴·결과 창 코드</text>
+<text x="20" y="191" font-size="15" fill="#111" font-family="ui-monospace,Menlo,monospace">$D0–$DF</text>
+<rect x="110" y="166" width="720" height="40" fill="#e2e8f0" stroke="#94a3b8"/>
+<text x="110" y="221" font-size="11" fill="#64748b" font-family="ui-monospace,Menlo,monospace">파일 0x100000</text>
+<text x="830" y="221" font-size="11" fill="#64748b" text-anchor="end" font-family="ui-monospace,Menlo,monospace">0x1FFFFF</text>
+<text x="20" y="261" font-size="15" fill="#111" font-family="ui-monospace,Menlo,monospace">$E0–$EF</text>
+<rect x="110" y="236" width="720" height="40" fill="#e2e8f0" stroke="#94a3b8"/>
+<text x="110" y="291" font-size="11" fill="#64748b" font-family="ui-monospace,Menlo,monospace">파일 0x200000</text>
+<text x="830" y="291" font-size="11" fill="#64748b" text-anchor="end" font-family="ui-monospace,Menlo,monospace">0x2FFFFF</text>
+<rect x="231.6" y="236" width="13.4" height="40" fill="#dc2626"/>
+<polyline points="238.3,276 238.3,306 246.3,306" fill="none" stroke="#dc2626" stroke-width="1"/>
+<text x="250.3" y="310" font-size="12.5" fill="#b91c1c" text-anchor="start">$E2:B400 새 이름 테이블·코드</text>
+<rect x="317.6" y="236" width="3.0" height="40" fill="#dc2626"/>
+<polyline points="319.1,276 319.1,324 327.1,324" fill="none" stroke="#dc2626" stroke-width="1"/>
+<text x="331.1" y="328" font-size="12.5" fill="#b91c1c" text-anchor="start">$E4:9D00 대사 폰트 확장 32자</text>
+<rect x="331.8" y="236" width="3.2" height="40" fill="#dc2626"/>
+<polyline points="333.4,276 333.4,342 341.4,342" fill="none" stroke="#dc2626" stroke-width="1"/>
+<text x="345.4" y="346" font-size="12.5" fill="#b91c1c" text-anchor="start">$E4:EDD8~ 동적 글리프 248자</text>
+<rect x="338.1" y="236" width="3.0" height="40" fill="#dc2626"/>
+<rect x="340.1" y="236" width="3.0" height="40" fill="#dc2626"/>
+<rect x="341.5" y="236" width="3.0" height="40" fill="#dc2626"/>
+<text x="20" y="385" font-size="15" fill="#111" font-family="ui-monospace,Menlo,monospace">$F0–$FF</text>
+<rect x="110" y="360" width="720" height="40" fill="#e2e8f0" stroke="#94a3b8"/>
+<text x="110" y="415" font-size="11" fill="#64748b" font-family="ui-monospace,Menlo,monospace">파일 0x300000</text>
+<text x="830" y="415" font-size="11" fill="#64748b" text-anchor="end" font-family="ui-monospace,Menlo,monospace">0x3FFFFF</text>
+<rect x="783.3" y="360" width="3.0" height="40" fill="#dc2626"/>
+<polyline points="784.8,400 784.8,430 776.8,430" fill="none" stroke="#dc2626" stroke-width="1"/>
+<text x="772.8" y="434" font-size="12.5" fill="#b91c1c" text-anchor="end">$FE:F61C 길어진 메뉴 문구</text>
+</svg>

@@ -1,5 +1,6 @@
 ---
 import ComparePair from '../../../../components/smrpg/ComparePair.astro';
+import MakingOf from '../../../../components/smrpg/MakingOf.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import { compareGroups } from '../../../../lib/smrpg-showcase';
@@ -160,6 +161,9 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
     <a class="pointer" href="#cast">
       주인공과 동료
     </a>
+    <a class="pointer" href="#making">
+      만든 방법
+    </a>
   </nav>
 
   <section id="korean" class="section page-width" aria-labelledby="korean-title">
@@ -290,10 +294,13 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
         </li>
       ))}
     </ul>
-    <p class="back-to-top">
-      <a class="pointer" href="#title">
-        한글판 만들러 가기
-      </a>
-    </p>
   </section>
+
+  <MakingOf base={base} />
+
+  <p class="back-to-top page-width">
+    <a class="pointer" href="#title">
+      한글판 만들러 가기
+    </a>
+  </p>
 </PatchBook>
