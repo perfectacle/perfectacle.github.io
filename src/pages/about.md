@@ -3,7 +3,7 @@ layout: ../layouts/Page.astro
 title: 소개
 description: 서버 개발자 양권성의 소개
 ---
-![](/about/exobud.webp)  
+![](/about/profile.webp)  
 안녕하세요, 서버 개발자 양권성입니다.
 
 ## 경력
