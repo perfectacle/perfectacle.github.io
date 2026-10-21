@@ -1,4 +1,5 @@
 ---
+import MakingOf from '../../../../components/totsugeki/MakingOf.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import VersionPair from '../../../../components/kr-patch/VersionPair.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
@@ -8,6 +9,7 @@ import { GOKUDEN_TOTSUGEKI } from '../../../../lib/rom-patch';
 const base = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki';
 const ips = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1.ips`;
 const headeredIps = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1_Headered.ips`;
+const tools = `${base}/downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1_Tools.zip`;
 const VISIBLE_PER_GROUP = 2;
 
 const play = [
@@ -141,6 +143,9 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
     <a class="pointer" href="#play">
       진행 방식
     </a>
+    <a class="pointer" href="#making">
+      만든 방법
+    </a>
   </nav>
 
   <section id="changes" class="section page-width" aria-labelledby="changes-title">
@@ -246,10 +251,13 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
         </article>
       ))}
     </div>
-    <p class="back-to-top">
-      <a class="pointer" href="#title">
-        한글판 만들러 가기
-      </a>
-    </p>
   </section>
+
+  <MakingOf base={base} tools={tools} />
+
+  <p class="back-to-top page-width">
+    <a class="pointer" href="#title">
+      한글판 만들러 가기
+    </a>
+  </p>
 </PatchBook>
