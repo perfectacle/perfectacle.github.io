@@ -36,7 +36,7 @@ const lineRules = [
 
 const eventSteps = [
   '대사가 떠 있을 때 START를 누르면 스토리 현황 화면이 열립니다.',
-  '오른쪽 메뉴에서 「클리어 표」를 고르고, 기술습득표에서 B를 누르면 이벤트 목록이 나옵니다.',
+  '오른쪽 메뉴에서 「클리어 표」를 고르고, 기술습득표에서 B를 누르면 이벤트 표가 나옵니다.',
   '목록을 맨 아래까지 내리면 204개 뒤에 숨은 줄 하나를 더 그립니다.',
 ];
 
@@ -62,11 +62,11 @@ const toolFiles = [
   { name: 'tools/credits1.py', text: '엔딩 크레딧 줄 정렬' },
   { name: 'tools/fixsum.py', text: '헤더 체크섬 다시 계산' },
   { name: 'tools/ips.py', text: 'IPS 만들기와 적용' },
-  { name: 'tools/dis65816.py', text: '65816 역어셈블러' },
+  { name: 'tools/dis65816.py', text: '65c816 역어셈블러' },
   { name: 'tools/pages1.py', text: '촬영한 화면에서 페이지별 완성 화면 고르기' },
   { name: 'tools/rgcmp1.py', text: '두 롬의 시나리오별 대사 ID 순서 비교' },
   { name: 'lua/scenario.lua', text: 'Mesen 2용. 디버그 시나리오 시작, A 연타, 대사 ID 기록, 촬영' },
-  { name: 'lua/eventlist.lua', text: 'Mesen 2용. 이벤트 목록 문제 재현' },
+  { name: 'lua/eventlist.lua', text: 'Mesen 2용. 이벤트 표 문제 재현' },
   { name: 'tables/', text: 'v1.1 텍스트, 메뉴 문자열, 일본어 원문과 v1.0 대조 덤프, 글자 코드표' },
 ];
 
@@ -103,7 +103,7 @@ const sectionTools = {
     <figcaption>v1.1 롬에서 꺼낸 새 글자 213자</figcaption>
   </figure>
   <p class="section-note">
-    슈퍼 패미컴 구조나 65816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다. 절마다 그 작업에 쓴 도구 파일 이름을
+    슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다. 절마다 그 작업에 쓴 도구 파일 이름을
     적었습니다. 아래 묶음을 받아 설명과 코드를 같이 볼 수 있습니다.
   </p>
   <ul class="downloads">
@@ -370,7 +370,7 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         건드리면 두 줄이 같이 바뀝니다.
       </p>
 
-      <h3 class="pixel">6. 이벤트 목록에서 못 나오던 문제</h3>
+      <h3 class="pixel">6. 이벤트 표에서 못 나오던 문제</h3>
       <p class="tool-ref">
         도구:{' '}
         {sectionTools['6'].map((name, i) => (

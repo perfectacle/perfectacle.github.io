@@ -923,6 +923,13 @@ h3.pixel {
   background: rgb(255 204 51 / 12%);
 }
 
+/* Portraits are the game's own 38x48 dialog face windows, rim included, so no extra outline. */
+:is([data-theme='gokuden'], [data-theme='kakusei']) .portrait {
+  width: 76px;
+  height: 96px;
+  box-shadow: 3px 3px 0 rgb(0 0 0 / 70%);
+}
+
 :is([data-theme='gokuden'], [data-theme='kakusei']) .checklist li::before {
   content: '● ';
   color: #ffa31a;

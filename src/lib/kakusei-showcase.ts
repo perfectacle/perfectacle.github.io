@@ -31,8 +31,8 @@ export const kakuseiGroups: VersionGroup[] = [
       {
         id: 'restore_dodonpa',
         frames: 4,
-        caption: '도백백이 슈퍼 도돈파를 쓰기 전의 대사를 원문대로 채웠습니다.',
-        alt: '대결장에서 천진반에게 슈퍼 도돈파를 예고하는 도백백',
+        caption: '타오파이파이가 슈퍼 도돈파를 쓰기 전의 대사를 원문대로 채웠습니다.',
+        alt: '대결장에서 천진반에게 슈퍼 도돈파를 예고하는 타오파이파이',
         gaps: { 'v11:2': missing, 'v11:3': missing },
       },
       {
@@ -116,7 +116,7 @@ export const kakuseiGroups: VersionGroup[] = [
         id: 'nick_bulma',
         frames: 1,
         caption: '부르마의 대사에서도 원문에 없던 별명을 덜어 냈습니다.',
-        alt: '캡슐하우스에서 크리링과 함께 있는 부르마',
+        alt: '캡슐 하우스에서 크리링과 함께 있는 부르마',
       },
       {
         id: 'spell_piccolo',
