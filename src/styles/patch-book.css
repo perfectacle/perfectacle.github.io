@@ -615,6 +615,257 @@ h3.pixel {
   margin-left: 30px;
 }
 
+/* Super Mario RPG: the page speaks to the player through the game's own windows, as if the guide were part of the game. */
+
+.speech {
+  line-height: 1.75;
+}
+
+.speaker {
+  margin-right: 0.5em;
+  font-weight: 700;
+}
+
+.speech-chain {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.speech[hidden] {
+  display: none;
+}
+
+/* The game's ▶ prompt that waits for the A button. */
+.speech .next {
+  display: block;
+  min-width: 32px;
+  min-height: 24px;
+  margin: 2px 0 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--dialog-ink);
+  font: inherit;
+  cursor: pointer;
+  animation: next-bob 0.8s steps(2, jump-none) infinite alternate;
+}
+
+@keyframes next-bob {
+  to {
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speech .next {
+    animation: none;
+  }
+}
+
+/* Labels sit above each screen so they never cover the game's own name tags. */
+.shot {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+}
+
+.shot-label {
+  padding: 0 6px;
+  background: rgb(0 0 0 / 75%);
+  color: var(--ink);
+  font-family: var(--pixel);
+  font-size: 0.75rem;
+}
+
+.shot-label-ko {
+  background: var(--accent);
+  color: #000;
+}
+
+/* Screens stay at whole-number scales so every game pixel is the same size. */
+[data-theme='smrpg'] .compare-shots {
+  grid-template-columns: repeat(auto-fit, 256px);
+  justify-content: center;
+}
+
+[data-theme='smrpg'] .shot .screen {
+  width: 256px;
+}
+
+[data-theme='smrpg'] .hero-shot {
+  justify-self: center;
+  width: 256px;
+  max-width: none;
+}
+
+@media (min-width: 560px) {
+  [data-theme='smrpg'] .hero-shot {
+    width: 512px;
+  }
+}
+
+@media (min-width: 900px) {
+  [data-theme='smrpg'] .hero {
+    grid-template-columns: minmax(0, 1fr) 256px;
+  }
+
+  [data-theme='smrpg'] .hero-shot {
+    width: 256px;
+  }
+}
+
+@media (min-width: 1104px) {
+  [data-theme='smrpg'] .hero {
+    grid-template-columns: minmax(0, 1fr) 512px;
+  }
+
+  [data-theme='smrpg'] .hero-shot {
+    width: 512px;
+  }
+}
+
+[data-theme='smrpg'] .play-list {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+}
+
+[data-theme='smrpg'] .play .screen {
+  justify-self: center;
+  width: 256px;
+}
+
+[data-theme='smrpg'] .cast-list {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
+}
+
+[data-theme='smrpg'] .member {
+  flex-wrap: wrap;
+}
+
+[data-theme='smrpg'] .member > div {
+  display: grid;
+  flex: 1 1 200px;
+  gap: 8px;
+}
+
+[data-theme='smrpg'] .member p:not(.label) {
+  font-family: var(--pixel);
+}
+
+[data-theme='smrpg'] .portrait {
+  width: 144px;
+  height: 144px;
+}
+
+/* Section titles are window name tabs, not web headings. */
+[data-theme='smrpg'] .section > h2.pixel {
+  justify-self: start;
+  border: 16px solid transparent;
+  border-image: url('/games/kr-patches/sfc/super-mario-rpg/images/ui/frame.webp') 16 fill / 16px stretch;
+  padding: 0 12px;
+  background: var(--panel);
+  background-clip: padding-box;
+  font-size: 1.5rem;
+  text-shadow: none;
+}
+
+/* In the game's menus the hand always rests on an item, even before the player moves it. */
+[data-theme='smrpg'] .toc:not(:hover, :focus-within) > a:first-child::before {
+  opacity: 1;
+}
+
+[data-theme='smrpg'] .drop-zone {
+  justify-items: start;
+  padding: 8px 8px 8px 34px;
+  border: 0;
+  border-radius: 0;
+  text-align: left;
+}
+
+[data-theme='smrpg'] .drop-zone.dragging {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+[data-theme='smrpg'] .drop-title::before {
+  opacity: 1;
+}
+
+[data-theme='smrpg'] .manual th,
+[data-theme='smrpg'] .manual td {
+  padding: 2px 20px 2px 0;
+  border: 0;
+}
+
+[data-theme='smrpg'] .manual :is(thead th, tbody th) {
+  color: var(--accent);
+  font-family: var(--pixel);
+}
+
+[data-theme='smrpg'] .masthead nav {
+  border: 16px solid transparent;
+  border-image: url('/games/kr-patches/sfc/super-mario-rpg/images/ui/frame.webp') 16 fill / 16px stretch;
+  padding: 0 8px 0 30px;
+  background: var(--panel);
+  background-clip: padding-box;
+}
+
+/* Like the copyright line under the title screen. */
+[data-theme='smrpg'] .page-footer {
+  justify-items: center;
+  font-family: var(--pixel);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.pad-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 0;
+  list-style: none;
+  font-family: var(--pixel);
+}
+
+.pad-buttons li {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Colors of the Super Famicom pad's face buttons. */
+.pad-key {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-shadow:
+    inset -2px -2px 0 rgb(0 0 0 / 30%),
+    0 0 0 2px #000;
+  font-weight: 700;
+}
+
+.pad-a {
+  background: #c8102e;
+  color: #fff;
+}
+
+.pad-b {
+  background: #f5c400;
+  color: #000;
+}
+
+.pad-x {
+  background: #1f3fbf;
+  color: #fff;
+}
+
+.pad-y {
+  background: #3ccf6a;
+  color: #000;
+}
+
 /* Dragon Ball Z Super Gokuden: the game's own navy windows with a white rim and a hard black shadow. */
 
 [data-theme='gokuden'] {

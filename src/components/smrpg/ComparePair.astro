@@ -1,5 +1,6 @@
 ---
 import type { ComparePair } from '../../lib/smrpg-showcase';
+import Speech from './Speech.astro';
 
 interface Props {
   pair: ComparePair;
@@ -16,18 +17,24 @@ const shots = [
 <figure class="compare">
   <div class="compare-shots">
     {shots.map(shot => (
-      <div class="screen">
-        <span class:list={['tag', { 'tag-ko': shot.suffix === 'ko' }]}>{shot.label}</span>
-        <img
-          src={`${base}/images/patch/${pair.id}_${shot.suffix}.webp`}
-          width="256"
-          height="224"
-          alt={`${shot.label}: ${pair.alt}`}
-          loading="lazy"
-          decoding="async"
-        />
+      <div class="shot">
+        <span class:list={['shot-label', { 'shot-label-ko': shot.suffix === 'ko' }]} aria-hidden="true">
+          {shot.label}
+        </span>
+        <div class="screen">
+          <img
+            src={`${base}/images/patch/${pair.id}_${shot.suffix}.webp`}
+            width="256"
+            height="224"
+            alt={`${shot.label}: ${pair.alt}`}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
       </div>
     ))}
   </div>
-  <figcaption class="dialog">{pair.caption}</figcaption>
+  <Speech speaker="키노피오" tag="figcaption">
+    {pair.caption}
+  </Speech>
 </figure>
