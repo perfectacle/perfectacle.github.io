@@ -46,8 +46,9 @@ jobs:
           echo "tree $tree: $count verified PR run(s)"
           echo "verified=$([ "$count" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
+  # No matrix expression in job names: a job skipped by its `if` is never expanded, so the raw `${{ }}` would show up.
+  # GitHub appends the matrix values on its own, hence the single matrix key here.
   verify:
-    name: ${{ matrix.task }}
     needs: tested
     if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}
     runs-on: ubuntu-26.04-arm
@@ -55,20 +56,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # scope=code: posts and static files are irrelevant, so they are neither checked out nor part of the fingerprint.
-        # reuse: skip the job when a run with identical inputs already passed (audit is time-dependent, so never).
-        include:
-          - { task: lint, scope: code, reuse: true }
-          # Images live under src/content, so this one fingerprints everything.
-          - { task: 'lint:images', scope: all, reuse: true }
-          - { task: 'format:check', scope: code, reuse: true }
-          # astro sync reads the posts collection, so it needs src/content checked out.
-          - { task: typecheck, scope: all, reuse: true }
-          - { task: test, scope: code, reuse: true }
-          - { task: check, scope: all, reuse: true }
-          - { task: audit, scope: code, reuse: false }
+        task: [lint, 'lint:images', 'format:check', typecheck, test, check, audit]
+    env:
+      # code: posts and static files are irrelevant, so they are neither checked out nor part of the fingerprint.
+      # lint:images reads images under src/content, and typecheck/check run astro sync over the posts collection.
+      SCOPE: ${{ contains(fromJSON('["lint", "format:check", "test", "audit"]'), matrix.task) && 'code' || 'all' }}
+      # Skip the job when a run with identical inputs already passed (audit is time-dependent, so never).
+      REUSE: ${{ matrix.task != 'audit' }}
     steps:
-      - if: matrix.scope == 'code'
+      - if: env.SCOPE == 'code'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -80,15 +76,15 @@ jobs:
             !/public/
             !/drafts/
 
-      - if: matrix.scope == 'all'
+      - if: env.SCOPE == 'all'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - id: fingerprint
-        run: echo "key=verified-${{ matrix.task }}-${{ runner.arch }}-${{ matrix.scope == 'code' && hashFiles('**', '!src/content/**', '!public/**', '!drafts/**', '!.git/**') || hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
+        run: echo "key=verified-${{ matrix.task }}-${{ runner.arch }}-${{ env.SCOPE == 'code' && hashFiles('**', '!src/content/**', '!public/**', '!drafts/**', '!.git/**') || hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
 
-      - if: matrix.reuse
+      - if: env.REUSE == 'true'
         id: verified
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -102,10 +98,10 @@ jobs:
       - if: steps.verified.outputs.cache-hit != 'true'
         run: pnpm run ${{ matrix.task }}
 
-      - if: matrix.reuse && steps.verified.outputs.cache-hit != 'true'
+      - if: env.REUSE == 'true' && steps.verified.outputs.cache-hit != 'true'
         run: touch .verified
 
-      - if: matrix.reuse && steps.verified.outputs.cache-hit != 'true'
+      - if: env.REUSE == 'true' && steps.verified.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .verified
@@ -274,7 +270,6 @@ jobs:
           key: ${{ steps.fingerprint.outputs.key }}
 
   lighthouse:
-    name: lighthouse (${{ matrix.shard }}/5)
     needs: tested
     if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}
     runs-on: ubuntu-26.04-arm
