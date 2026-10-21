@@ -1,0 +1,500 @@
+---
+interface Props {
+  base: string;
+  tools: string;
+}
+
+const { base, tools } = Astro.props;
+const img = (name: string) => `${base}/images/making/${name}`;
+
+const memories = [
+  { name: '롬', size: '2MB', like: '책', role: '카트리지에 든 프로그램·대사·폰트·그림. 읽기만 합니다.' },
+  {
+    name: 'WRAM',
+    size: '128KB',
+    like: '작업 책상',
+    role: 'CPU가 계산하며 값을 적어 두는 곳. 지금 보고 있는 장면 번호 같은 것이 여기 있습니다.',
+  },
+  { name: 'VRAM', size: '64KB', like: '스티커판', role: '화면에 붙일 8×8 그림 조각(타일)을 올려 두는 곳.' },
+  { name: 'SRAM', size: '-', like: '수첩', role: '전원을 꺼도 남는 세이브 데이터.' },
+];
+
+const fontRanges = [
+  { code: '0x100–0x4FF', size: '8×16', width: '9px', origin: '가나', where: '$83:DE00' },
+  { code: '0x500–0x7EF', size: '16×16', width: '13px', origin: '한자', where: '$83:8000' },
+  { code: '0x7F0–0xBEF', size: '16×16', width: '13px', origin: '한자', where: '$BF:8000' },
+];
+
+const dialogBanks = ['$A8', '$A9', '$AB', '$9D', '$9E', '$B2', '$B4', '$B5', '$8E'];
+
+const lineRules = [
+  '단어 중간에서 끊지 않습니다.',
+  '위아래 줄 길이를 비슷하게 맞춥니다.',
+  '필요한 것보다 줄을 많이 쓰지 않습니다.',
+  '더듬는 말(「주‥죽어」)은 한 줄에 둡니다.',
+];
+
+const eventSteps = [
+  '대사가 떠 있을 때 START를 누르면 스토리 현황 화면이 열립니다.',
+  '오른쪽 메뉴에서 「클리어 표」를 고르고, 기술습득표에서 B를 누르면 이벤트 목록이 나옵니다.',
+  '목록을 맨 아래까지 내리면 204개 뒤에 숨은 줄 하나를 더 그립니다.',
+];
+
+const regression = [
+  '디버그 메뉴로 256개 시나리오를 하나씩 시작하고, A 버튼을 일정 간격으로 눌러 8000프레임씩 진행합니다.',
+  '게임은 대사를 띄울 때마다 대사 ID로 창 정보($8E:C9BA + ID×2)를 읽습니다. 이 자리를 누가 읽는지 감시하면 어떤 대사가 몇 번째로 나왔는지 기록할 수 있습니다.',
+  '일본판과 v1.1의 대사 ID 순서를 시나리오마다 비교했습니다. 순서가 다르거나 v1.1에서 먼저 멈춘 시나리오는 없었습니다. 한글 대사가 짧아 같은 시간에 더 진행한 경우만 있었습니다.',
+  '패치 노트의 비교 화면도 이 방법으로 찍었습니다. 3프레임마다 화면을 저장하고, 아래 절반의 흰 글자가 지워지기 직전 화면을 그 페이지의 완성 화면으로 골랐습니다.',
+];
+
+const toolFiles = [
+  { name: 'tools/build.sh', text: '전체 빌드 순서. 일본판 + v1.0 IPS → 타이틀 → 텍스트 → 체크섬' },
+  { name: 'tools/dialogue1.py', text: '대사 포인터 표 읽기' },
+  { name: 'tools/textsets.py', text: '전투 대사·선택지·장소 이름 등 그 밖의 포인터 표 정의' },
+  { name: 'tools/extract1.py', text: '일본어·한국어 대사 덤프(TSV)' },
+  { name: 'tools/text_patch1.py', text: '텍스트 삽입, 뱅크별 재배치, 새 글자 그리기, 메뉴 문자열 수정' },
+  { name: 'tools/layout1.py', text: '창 폭·페이지 검사' },
+  { name: 'tools/lint1.py', text: '표기·말투 규칙 검사' },
+  { name: 'tools/font1.py', text: '폰트 글자 읽기' },
+  { name: 'tools/fontext1.py', text: '글자 추가 블록과 렌더러 후킹' },
+  { name: 'tools/title.py', text: '타이틀 그래픽 생성' },
+  { name: 'tools/lz.py', text: 'LZSS 압축과 해제' },
+  { name: 'tools/credits1.py', text: '엔딩 크레딧 줄 정렬' },
+  { name: 'tools/fixsum.py', text: '헤더 체크섬 다시 계산' },
+  { name: 'tools/ips.py', text: 'IPS 만들기와 적용' },
+  { name: 'tools/dis65816.py', text: '65816 역어셈블러' },
+  { name: 'tools/pages1.py', text: '촬영한 화면에서 페이지별 완성 화면 고르기' },
+  { name: 'tools/rgcmp1.py', text: '두 롬의 시나리오별 대사 ID 순서 비교' },
+  { name: 'lua/scenario.lua', text: 'Mesen 2용. 디버그 시나리오 시작, A 연타, 대사 ID 기록, 촬영' },
+  { name: 'lua/eventlist.lua', text: 'Mesen 2용. 이벤트 목록 문제 재현' },
+  { name: 'tables/', text: 'v1.1 텍스트, 메뉴 문자열, 일본어 원문과 v1.0 대조 덤프, 글자 코드표' },
+];
+
+const sectionTools = {
+  '1': ['tools/dis65816.py', 'lua/scenario.lua'],
+  '2': ['tools/dialogue1.py', 'tools/text_patch1.py', 'tools/layout1.py', 'tools/lint1.py'],
+  '3': ['tools/font1.py', 'tables/'],
+  '4': ['tools/fontext1.py', 'tools/text_patch1.py'],
+  '5': ['tools/title.py', 'tools/lz.py'],
+  '6': ['lua/eventlist.lua'],
+  '7': ['lua/scenario.lua', 'tools/pages1.py', 'tools/rgcmp1.py'],
+  '8': ['tools/credits1.py', 'tools/fixsum.py'],
+};
+---
+
+<section id="making" class="section page-width" aria-labelledby="making-title">
+  <h2 id="making-title" class="pixel">
+    한글판을 만든 방법
+  </h2>
+  <p class="lead">
+    v1.0은 한자와 가나가 있던 폰트 자리 1,010칸에 한글을 다시 그려 썼고, 그 칸은 거의 다 차 있었습니다. 대사를 원문에
+    맞춰 다시 옮기니 꽃·쫓·흙처럼 그 칸에 없는 글자가 필요해졌습니다. v1.1은 게임이 글자 그림을 찾는 코드에 새 길을 하나
+    끼워 넣어 512자를 더 넣을 수 있게 했습니다. 아래는 v1.1에서 새로 그린 213자를 롬에서 꺼낸 것입니다.
+  </p>
+  <figure class="paper">
+    <img
+      src={img('new-glyphs.webp')}
+      width="978"
+      height="654"
+      alt="v1.1에서 새로 그린 한글 213자. 남색 칸에 흰 글자와 짙은 그림자로 그려져 있다"
+      loading="lazy"
+      decoding="async"
+    />
+    <figcaption>v1.1 롬에서 꺼낸 새 글자 213자</figcaption>
+  </figure>
+  <p class="section-note">
+    슈퍼 패미컴 구조나 65816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다. 절마다 그 작업에 쓴 도구 파일 이름을
+    적었습니다. 아래 묶음을 받아 설명과 코드를 같이 볼 수 있습니다.
+  </p>
+  <ul class="downloads">
+    <li>
+      <a href={tools} download>
+        분석 도구 묶음
+      </a>
+      <span>(ZIP, 약 3MB, 게임 롬은 들어 있지 않음)</span>
+    </li>
+  </ul>
+
+  <details class="more making">
+    <summary class="pointer">자세히 보기</summary>
+    <div class="making-body">
+      <h3 class="pixel">1. 배경지식</h3>
+      <p class="tool-ref">
+        도구:{' '}
+        {sectionTools['1'].map((name, i) => (
+          <>
+            {i > 0 && ' · '}
+            <code>{name}</code>
+          </>
+        ))}{' '}
+        <a href="#making-tools">파일 설명</a>
+      </p>
+      <h4>게임기 안의 메모리</h4>
+      <p>
+        CPU는 화면에 직접 그리지 않습니다. 그림 조각(타일)을 VRAM에 올려 두고 "이 칸에는 몇 번 타일" 이라는
+        배치표(타일맵)를 적어 화면을 만듭니다. 대사 글자도 폰트에서 읽어 와 타일로 그립니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">이름</th>
+              <th scope="col">크기</th>
+              <th scope="col">비유</th>
+              <th scope="col">하는 일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {memories.map(m => (
+              <tr>
+                <th scope="row">{m.name}</th>
+                <td>{m.size}</td>
+                <td>{m.like}</td>
+                <td class="wrap">{m.role}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h4>주소 읽는 법</h4>
+      <p>
+        <code>0x1B97BC</code> 같은 파일 오프셋은 롬 파일을 처음부터 센 위치이고, <code>$B7:97BC</code> 같은 SNES 주소는
+        CPU가 보는 <code>뱅크:주소</code>입니다. 이 게임은 LoROM이라는 방식이라 뱅크마다 뒤쪽 32KB에만 롬이 보입니다.
+        그래서 다음처럼 바꿉니다.
+      </p>
+      <pre><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
+$B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
+
+      <h4>어셈블리, 필요한 만큼만</h4>
+      <p>
+        어셈블리는 CPU가 실행하는 명령을 사람이 읽는 이름으로 적은 것이고, 롬 안에서는 그냥 바이트입니다. 롬 파일{' '}
+        <code>0x61</code>에는 <code>80 04</code>가 있습니다. <code>80</code>은 BRA(무조건 건너뛰기)이고 <code>04</code>
+        는 건너뛸 바이트 수입니다. 건너뛰는 4바이트 안에 개발자용 디버그 메뉴로 가는 명령이 있어서 제품판에서는 메뉴가
+        열리지 않습니다. 두 바이트를 <code>EA EA</code>(NOP, 아무 일도 안 함)로 바꾸면 디버그 메뉴가 열립니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={img('debug-menu.webp')}
+          width="512"
+          height="448"
+          alt="남색 화면에 날짜와 TITLE, FMAP, BATTLE, ADVENTURE, DATA, VOICE, ADVSE, BTLSE 메뉴가 있는 디버그 메뉴"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        ADVENTURE의 SCENARIO SELECT로 장면 번호(0x00–0xFF)를 고르면 그 장면을 실제 플레이와 같은 상태로 시작합니다.
+        DATA의 ENDING으로는 엔딩을 처음부터 볼 수 있습니다. 이 메뉴가 뒤에 나올 테스트의 바탕이 됐습니다.
+      </p>
+
+      <h3 class="pixel">2. 대사는 뱅크 밖으로 못 나간다</h3>
+      <p class="tool-ref">
+        도구:{' '}
+        {sectionTools['2'].map((name, i) => (
+          <>
+            {i > 0 && ' · '}
+            <code>{name}</code>
+          </>
+        ))}{' '}
+        <a href="#making-tools">파일 설명</a>
+      </p>
+      <p>
+        대사는 5,370줄이고 ID로 찾습니다. ID 범위마다 뱅크 하나와 포인터 표가 있습니다. 포인터는 2바이트라 뱅크 안의
+        주소만 가리킬 수 있어서, 대사가 길어져도 다른 뱅크로 넘길 수 없습니다.
+      </p>
+      <p>
+        대사가 들어 있는 뱅크: {dialogBanks.join(' · ')}. v1.1은 뱅크마다 일본어 문자열이 있던 영역 전체를 처음부터 다시
+        채웠습니다. 똑같은 문자열은 하나만 두고 포인터 여러 개가 같이 가리키게 해서 공간을 아꼈습니다.
+      </p>
+      <h4>창 폭과 페이지</h4>
+      <p>
+        얼굴이 나오는 창은 폭 128px, 나레이션 창은 176px이고 한 페이지는 3줄입니다. 줄이 폭을 넘으면 엔진이 알아서 줄을
+        바꾸는데, 그러면 한 줄이 밀려 페이지가 엉뚱한 곳에서 넘어갑니다. v1.0에도 이렇게 넘치는 줄이 24줄 있었습니다.
+        v1.1은 글자마다 폭을 더해 모든 줄을 검사했고, 넘치는 줄이 0이 될 때까지 고쳤습니다. 줄을 나눌 때는 이렇게
+        정했습니다.
+      </p>
+      <ol class="flow">
+        {lineRules.map(rule => (
+          <li>{rule}</li>
+        ))}
+      </ol>
+
+      <h3 class="pixel">3. 폰트 칸이 모자랐다</h3>
+      <p class="tool-ref">
+        도구:{' '}
+        {sectionTools['3'].map((name, i) => (
+          <>
+            {i > 0 && ' · '}
+            <code>{name}</code>
+          </>
+        ))}{' '}
+        <a href="#making-tools">파일 설명</a>
+      </p>
+      <p>
+        이 게임은 글자마다 폭이 다른 가변폭 폰트를 씁니다. 대사의 글자 하나는 2바이트 코드이고, 코드 범위에 따라 폰트를
+        읽는 곳이 다릅니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">코드</th>
+              <th scope="col">크기</th>
+              <th scope="col">폭</th>
+              <th scope="col">원래 글자</th>
+              <th scope="col">롬 위치</th>
+            </tr>
+          </thead>
+          <tbody>
+            {fontRanges.map(r => (
+              <tr>
+                <td>
+                  <code>{r.code}</code>
+                </td>
+                <td>{r.size}</td>
+                <td>{r.width}</td>
+                <td>{r.origin}</td>
+                <td>
+                  <code>{r.where}</code>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        한 글자는 두 겹으로 되어 있습니다. 한 겹은 글자 모양, 다른 한 겹은 오른쪽 아래로 비키는 그림자입니다. v1.0은
+        한자 자리 850개와 가나 자리 160개에 한글을 그려 넣었습니다. 아래는 v1.0 롬의 16×16 칸 전체입니다. 남색은 한글이
+        들어간 칸, 노란색은 한글이 아닌 칸(기호와 남은 한자)입니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('font-v1.webp')}
+          width="1156"
+          height="1012"
+          alt="v1.0 폰트의 16×16 칸 888개. 대부분 한글로 차 있고 끝부분 몇 줄만 기호와 한자다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        한글 음절은 자주 쓰는 것만 해도 2,350자입니다. 1,010칸에는 v1.0 번역문에 쓴 글자만 골라 넣을 수 있었고, 대사를
+        고치면서 새로 필요해진 글자를 넣을 자리는 없었습니다.
+      </p>
+
+      <h3 class="pixel">4. 글자 칸을 512개 늘리기</h3>
+      <p class="tool-ref">
+        도구:{' '}
+        {sectionTools['4'].map((name, i) => (
+          <>
+            {i > 0 && ' · '}
+            <code>{name}</code>
+          </>
+        ))}{' '}
+        <a href="#making-tools">파일 설명</a>
+      </p>
+      <p>
+        글자를 그리는 코드(<code>$B7:9763</code>)는 코드 범위를 보고 어느 폰트를 읽을지 고릅니다. 그중 0x7F0 이상 코드를
+        맡는 갈림길(<code>$B7:97BC</code>)을 "새 코드로 가라" 는 명령으로 덮어쓰고, 새 코드를 롬의 빈 공간에 두었습니다.
+        이렇게 원래 코드 중간에 새 코드를 끼워 넣는 것을 후킹이라고 합니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('font-blocks.svg')}
+          width="860"
+          height="430"
+          alt="코드 0x100부터 0xBEF까지는 원래 폰트 세 곳을 읽고, 0xC00 이상은 후킹한 코드가 블록 표를 보고 롬의 빈 공간 8곳 중 하나를 읽는다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <pre><code>CMP #$0C00      ; 코드가 0xC00 이상이면
+BCS ext         ; 새 블록으로 간다
+...             ; 아니면 원래 $BF 폰트 처리
+ext:
+SEC
+SBC #$0C00      ; 0xC00을 빼고 128로 나눠 몇 번째 블록인지 구한다
+...
+LDA base_tab,X  ; 블록 표에서 그 블록의 주소를 읽고
+JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
+      <p>
+        블록 하나는 4KB이고 글자 64개가 들어갑니다. 원본에서 0xFF로 비어 있던 4KB 8곳을 찾아 512자를 넣을 자리를
+        만들었습니다. 글자 폭은 원래부터 0x500 이상 코드를 모두 13px로 계산하므로 따로 고칠 필요가 없었습니다.
+      </p>
+      <p>
+        새 글자는 먼저 v1.1에서 더 쓰지 않게 된 칸 37개에 넣고, 나머지 176자를 새 블록에 넣었습니다. 글자 모양은 픽셀
+        폰트 Galmuri11로 그리고, 그림자는 원래 폰트와 같은 방식으로 만들었습니다.
+      </p>
+      <h4>빈 공간을 고를 때 조심한 것</h4>
+      <p>
+        0xFF가 길게 이어진 곳이라고 다 빈 공간은 아닙니다. 바로 앞의 자료가 0xFFFF를 끝 표시로 쓰고 있을 수 있습니다.
+        일본판 원본에서도 0xFF였는지, 앞의 자료가 그 값을 읽지 않는지 확인한 곳만 썼습니다.
+      </p>
+
+      <h3 class="pixel">5. 타이틀 화면</h3>
+      <p class="tool-ref">
+        도구:{' '}
+        {sectionTools['5'].map((name, i) => (
+          <>
+            {i > 0 && ' · '}
+            <code>{name}</code>
+          </>
+        ))}{' '}
+        <a href="#making-tools">파일 설명</a>
+      </p>
+      <p>
+        타이틀 화면은 그림 여러 겹을 겹쳐서 만듭니다. 왼쪽부터 오공 그림, 배경 그라데이션, 로고와 글자가 있는
+        층(BG3)입니다. 한글 타이틀은 이 중 글자 층만 고쳤습니다. 「超悟空伝 突激編」을 한글로 다시 그리고, 로고 아래
+        가타카나는 지웠습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('title-layers.webp')}
+          width="1568"
+          height="512"
+          alt="일본판 타이틀 화면을 세 겹으로 나눈 그림. 오공, 파랑에서 초록으로 바뀌는 배경, 로고와 저작권 글자"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>일본판 타이틀의 세 겹</figcaption>
+      </figure>
+      <p>
+        글자 층의 타일과 배치표는 LZSS라는 방식으로 압축되어 있습니다. 같은 무늬가 앞에 나왔으면 "몇 칸 앞에서 몇 바이트
+        복사" 로 줄여 쓰는 방식입니다. 새로 그린 그림을 같은 방식으로 다시 압축하니 원래보다 길어져서, 롬의 빈 공간으로
+        옮기고 그 위치를 가리키는 항목을 고쳤습니다. 압축 형식과 그림 배치가 각성편과 같아서 각성편 v1.2를 만들 때 쓴
+        도구를 주소만 바꿔 썼습니다.
+      </p>
+      <p>
+        「DRAGON BALL Z」 로고와 「© BANDAI 1995」는 원본 그대로입니다. 이 © 타일은 위쪽 저작권 줄과 함께 쓰기 때문에
+        건드리면 두 줄이 같이 바뀝니다.
+      </p>
+
+      <h3 class="pixel">6. 이벤트 목록에서 못 나오던 문제</h3>
+      <p class="tool-ref">
+        도구:{' '}
+        {sectionTools['6'].map((name, i) => (
+          <>
+            {i > 0 && ' · '}
+            <code>{name}</code>
+          </>
+        ))}{' '}
+        <a href="#making-tools">파일 설명</a>
+      </p>
+      <ol class="flow">
+        {eventSteps.map(step => (
+          <li>{step}</li>
+        ))}
+      </ol>
+      <p>
+        이벤트는 204개(0–203번)인데, 목록을 내리는 조건이 205줄을 기준으로 되어 있어서 맨 아래에서 없는 204번 줄을
+        그립니다. 그 줄의 포인터 자리에는 첫 이벤트 이름의 글자 코드가 있습니다. 게임은 이 값을 주소로 알고 WRAM의 그
+        자리를 문자열로 읽습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('event-list.svg')}
+          width="860"
+          height="360"
+          alt="포인터 표의 0–203번은 이벤트 이름을 가리키고, 숨은 204번은 WRAM의 쓰레기 값을 가리켜 줄이 넘친다. v1.1은 204번에 빈 문자열을 넣었다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        그 자리 값은 게임 상황마다 다릅니다. 끝 표시가 늦게 나오면 줄이 넘치고, B로 목록을 닫을 수 없게 됩니다.
+        일본판에도 있는 동작이지만, v1.0은 첫 글자 코드가 바뀌면서 읽는 주소가 <code>$7E:0686</code>이 됐습니다. 디버그
+        메뉴로 장면을 바꿔 가며 재현해 보니 0xC0번 장면에서 실제로 목록이 닫히지 않았습니다.
+      </p>
+      <p>
+        v1.1은 204번 자리에 빈 문자열을 가리키는 포인터를 넣었습니다. 같은 0xC0번 장면에서 B를 두 번 눌러 게임으로
+        돌아오는 것을 확인했습니다.
+      </p>
+
+      <h3 class="pixel">7. 확인은 에뮬레이터가</h3>
+      <p class="tool-ref">
+        도구:{' '}
+        {sectionTools['7'].map((name, i) => (
+          <>
+            {i > 0 && ' · '}
+            <code>{name}</code>
+          </>
+        ))}{' '}
+        <a href="#making-tools">파일 설명</a>
+      </p>
+      <p>대사 5,370줄을 사람이 다 띄워 볼 수는 없어서, 에뮬레이터 Mesen 2와 Lua 스크립트로 확인했습니다.</p>
+      <ul class="notes">
+        {regression.map(item => (
+          <li>{item}</li>
+        ))}
+        <li>
+          A 버튼을 여러 프레임 누르고 있으면 글자 출력 완료와 페이지 넘김이 한꺼번에 일어나 페이지가 화면에 다 나오지
+          않습니다. 촬영할 때는 1프레임만 눌렀습니다.
+        </li>
+      </ul>
+
+      <h3 class="pixel">8. 그 밖에</h3>
+      <p class="tool-ref">
+        도구:{' '}
+        {sectionTools['8'].map((name, i) => (
+          <>
+            {i > 0 && ' · '}
+            <code>{name}</code>
+          </>
+        ))}{' '}
+        <a href="#making-tools">파일 설명</a>
+      </p>
+      <ul class="notes">
+        <li>
+          세이브 구조는 바꾸지 않았습니다. v1.0에서 만든 세이브를 v1.1에서 불러와 이어서 진행되는 것을 확인했습니다.
+        </li>
+        <li>
+          엔딩 크레딧은 줄마다 칸 크기가 일본어 줄 길이로 정해져 있어 그보다 길게 쓸 수 없습니다. 출연진은 열 가운데에
+          맞춰 다시 줄을 세웠습니다.
+        </li>
+        <li>
+          롬 헤더에는 롬 전체를 더한 체크섬이 있습니다. 롬을 고친 뒤 다시 계산해 넣었습니다(파일{' '}
+          <code>0x7FDC–0x7FDF</code>).
+        </li>
+      </ul>
+
+      <h3 id="making-tools" class="pixel">
+        9. 분석 도구
+      </h3>
+      <ul class="downloads">
+        <li>
+          <a href={tools} download>
+            분석 도구 묶음
+          </a>
+          <span>(ZIP, 약 3MB)</span>
+        </li>
+      </ul>
+      <p>
+        위에서 설명한 주소 전체와 빌드 도구가 들어 있고, 게임 롬은 들어 있지 않습니다. 압축을 푼 폴더에 일본판 원본(헤더
+        없음, CRC32 <code>D531289B</code>)을 <code>super-gokuden-jp.smc</code>로 두고 <code>zsh tools/build.sh</code>를
+        실행하면 배포판과 같은 롬(CRC32 <code>7405D969</code>)이 나옵니다. Python 3(Pillow, numpy)이 필요하고, 사용법은
+        묶음 안의 README.txt에 있습니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">파일</th>
+              <th scope="col">하는 일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {toolFiles.map(f => (
+              <tr>
+                <td>
+                  <code>{f.name}</code>
+                </td>
+                <td class="wrap">{f.text}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>

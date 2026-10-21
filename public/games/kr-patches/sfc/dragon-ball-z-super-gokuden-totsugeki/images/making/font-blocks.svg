@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 430" width="860" height="430" font-family="sans-serif">
+<rect width="860" height="430" rx="12" fill="#fafafa"/>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#64748b"/></marker><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f97316"/></marker><marker id="c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker></defs>
+<text x="20" y="32" font-size="17" text-anchor="start" fill="#111">글자 코드 범위마다 폰트를 읽는 곳이 다르다</text>
+<rect x="20" y="60" width="190" height="54" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+<text x="115.0" y="83.0" font-size="14" text-anchor="middle" fill="#111">0x100–0x4FF</text>
+<text x="115.0" y="101.0" font-size="14" text-anchor="middle" fill="#111">가나 8×16</text>
+<line x1="210" y1="87" x2="560" y2="87" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+<rect x="560" y="60" width="280" height="54" rx="8" fill="#f1f5f9" stroke="#64748b"/>
+<text x="700.0" y="83.0" font-size="14" text-anchor="middle" fill="#111">롬 $83:DE00~</text>
+<text x="700.0" y="101.0" font-size="14" text-anchor="middle" fill="#111">v1.0이 한글로 다시 그림</text>
+<rect x="20" y="132" width="190" height="54" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+<text x="115.0" y="155.0" font-size="14" text-anchor="middle" fill="#111">0x500–0x7EF</text>
+<text x="115.0" y="173.0" font-size="14" text-anchor="middle" fill="#111">한자 16×16</text>
+<line x1="210" y1="159" x2="560" y2="159" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+<rect x="560" y="132" width="280" height="54" rx="8" fill="#f1f5f9" stroke="#64748b"/>
+<text x="700.0" y="155.0" font-size="14" text-anchor="middle" fill="#111">롬 $83:8000~</text>
+<text x="700.0" y="173.0" font-size="14" text-anchor="middle" fill="#111">v1.0이 한글로 다시 그림</text>
+<rect x="20" y="204" width="190" height="54" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+<text x="115.0" y="227.0" font-size="14" text-anchor="middle" fill="#111">0x7F0–0xBEF</text>
+<text x="115.0" y="245.0" font-size="14" text-anchor="middle" fill="#111">한자 16×16</text>
+<line x1="210" y1="231" x2="560" y2="231" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+<rect x="560" y="204" width="280" height="54" rx="8" fill="#f1f5f9" stroke="#64748b"/>
+<text x="700.0" y="227.0" font-size="14" text-anchor="middle" fill="#111">롬 $BF:8000~</text>
+<text x="700.0" y="245.0" font-size="14" text-anchor="middle" fill="#111">v1.0이 한글로 다시 그림</text>
+<rect x="20" y="276" width="190" height="54" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="115.0" y="299.0" font-size="14" text-anchor="middle" fill="#111">0xC00–</text>
+<text x="115.0" y="317.0" font-size="14" text-anchor="middle" fill="#111">v1.1에서 추가</text>
+<rect x="290" y="276" width="190" height="54" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="385.0" y="299.0" font-size="14" text-anchor="middle" fill="#111">후킹: 분기 $B7:97BC</text>
+<text x="385.0" y="317.0" font-size="14" text-anchor="middle" fill="#111">블록 표를 찾아봄</text>
+<line x1="210" y1="303" x2="290" y2="303" stroke="#f97316" stroke-width="2" marker-end="url(#b)"/>
+<rect x="560" y="270" width="64" height="30" rx="5" fill="#ffedd5" stroke="#f97316"/>
+<text x="592" y="290" font-size="11" text-anchor="middle" fill="#111">$81:EF00</text>
+<rect x="630" y="270" width="64" height="30" rx="5" fill="#ffedd5" stroke="#f97316"/>
+<text x="662" y="290" font-size="11" text-anchor="middle" fill="#111">$84:EE00</text>
+<rect x="700" y="270" width="64" height="30" rx="5" fill="#ffedd5" stroke="#f97316"/>
+<text x="732" y="290" font-size="11" text-anchor="middle" fill="#111">$86:E000</text>
+<rect x="770" y="270" width="64" height="30" rx="5" fill="#ffedd5" stroke="#f97316"/>
+<text x="802" y="290" font-size="11" text-anchor="middle" fill="#111">$86:F000</text>
+<rect x="560" y="306" width="64" height="30" rx="5" fill="#ffedd5" stroke="#f97316"/>
+<text x="592" y="326" font-size="11" text-anchor="middle" fill="#111">$A6:E600</text>
+<rect x="630" y="306" width="64" height="30" rx="5" fill="#ffedd5" stroke="#f97316"/>
+<text x="662" y="326" font-size="11" text-anchor="middle" fill="#111">$AE:EA00</text>
+<rect x="700" y="306" width="64" height="30" rx="5" fill="#ffedd5" stroke="#f97316"/>
+<text x="732" y="326" font-size="11" text-anchor="middle" fill="#111">$B1:E500</text>
+<rect x="770" y="306" width="64" height="30" rx="5" fill="#ffedd5" stroke="#f97316"/>
+<text x="802" y="326" font-size="11" text-anchor="middle" fill="#111">$B6:E600</text>
+<line x1="480" y1="303" x2="560" y2="303" stroke="#f97316" stroke-width="2" marker-end="url(#b)"/>
+<text x="840" y="362" font-size="13" text-anchor="end" fill="#9a3412">원본에서 0xFF로 비어 있던 4KB 8곳 · 블록마다 64자</text>
+<text x="20" y="408" font-size="13" text-anchor="start" fill="#475569">폭 계산은 원래부터 0x500 이상을 모두 13px로 보므로, 새 코드도 고칠 필요가 없었다.</text>
+</svg>
