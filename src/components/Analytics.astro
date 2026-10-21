@@ -1,0 +1,29 @@
+<script>
+  import { ANALYTICS_HOST, GA_MEASUREMENT_ID } from '../lib/analytics.ts';
+
+  // Only the published site reports, so local previews and CI runs never reach the stats.
+  if (location.hostname === ANALYTICS_HOST) {
+    const w = window as Window & { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void };
+    const dataLayer = (w.dataLayer ??= []);
+    w.gtag = function () {
+      // gtag.js only recognises the `arguments` object itself, not an array copy of it.
+      // eslint-disable-next-line prefer-rest-params
+      dataLayer.push(arguments);
+    };
+    w.gtag('js', new Date());
+    w.gtag('config', GA_MEASUREMENT_ID);
+
+    // gtag.js alone outweighs the rest of a page's scripts; fetching it once the page is idle keeps it off the
+    // first paint and interaction. Calls made before then wait in dataLayer.
+    const inject = () => {
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+      document.head.appendChild(s);
+    };
+    const whenIdle = () =>
+      'requestIdleCallback' in window ? requestIdleCallback(inject, { timeout: 3000 }) : setTimeout(inject, 1);
+    if (document.readyState === 'complete') whenIdle();
+    else addEventListener('load', whenIdle, { once: true });
+  }
+</script>
