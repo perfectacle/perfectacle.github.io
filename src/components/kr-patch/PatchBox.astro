@@ -14,6 +14,24 @@ const { ips, spec, output, speaker } = Astro.props;
 ---
 
 <div class="patch-box frame" data-ips={ips} data-spec={JSON.stringify(spec)} data-output={output}>
+  <div class="patch-intro">
+    <h2 class="patch-heading">여기서 바로 한글패치</h2>
+    <p>따로 프로그램을 설치하지 않아도 됩니다.</p>
+  </div>
+  <ol class="patch-steps" aria-label="한글패치 방법">
+    <li>
+      <strong>파일 준비</strong>
+      <span>패치하지 않은 이 게임의 일본판 롬파일을 준비합니다.</span>
+    </li>
+    <li>
+      <strong>선택하면 자동 패치</strong>
+      <span>아래에서 파일을 고르면 확인 후 한글판으로 바꿔 저장합니다.</span>
+    </li>
+    <li>
+      <strong>저장한 파일로 실행</strong>
+      <span>저장된 .sfc 파일을 에뮬레이터에서 엽니다.</span>
+    </li>
+  </ol>
   <p class="inapp-warning dialog" hidden>
     {speaker && (
       <span class="speaker">
@@ -26,9 +44,9 @@ const { ips, spec, output, speaker } = Astro.props;
     크롬이나 사파리로 열어 주세요.
   </p>
   <label class="drop-zone">
-    <input class="sr-only" type="file" accept=".sfc,.smc,.fig,.swc,.zip" />
-    <span class="drop-title pointer">일본판 롬파일 고르기</span>
-    <span class="drop-hint">고르거나 끌어다 놓으면 쓸 수 있는 롬파일인지 바로 알려 드립니다 (.sfc · .smc · .zip)</span>
+    <input class="sr-only" type="file" accept=".sfc,.smc,.fig,.swc,.zip" aria-label="일본판 롬파일 고르기" />
+    <span class="drop-title">일본판 롬파일 고르기</span>
+    <span class="drop-hint">또는 파일을 여기에 끌어다 놓으세요 (.sfc · .smc · .zip)</span>
   </label>
   <div class="patch-status dialog" role="status" aria-live="polite" hidden>
     <p>

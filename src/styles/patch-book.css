@@ -296,38 +296,97 @@ h1.pixel {
   gap: 12px;
 }
 
-.drop-zone {
+.patch-intro {
   display: grid;
-  gap: 4px;
-  justify-items: center;
-  padding: 28px 16px;
+  gap: 2px;
+}
+
+.patch-heading {
+  color: var(--ink);
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.patch-intro p,
+.patch-steps {
+  font-size: 0.875rem;
+}
+
+.patch-intro p {
+  color: var(--muted);
+}
+
+.patch-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: patch-step;
+}
+
+.patch-steps li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: 10px;
+  counter-increment: patch-step;
+}
+
+.patch-steps li::before {
+  content: counter(patch-step);
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  align-self: start;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.patch-steps strong {
+  color: var(--ink);
+}
+
+.patch-steps span {
+  color: var(--muted);
+}
+
+.patch-box .drop-zone {
+  display: grid;
+  gap: 10px;
+  justify-items: stretch;
+  padding: 12px;
   border: 2px dashed rgb(255 255 255 / 45%);
   border-radius: 6px;
   text-align: center;
   cursor: pointer;
 }
 
-.drop-zone:hover,
-.drop-zone.dragging,
-.drop-zone:focus-within {
+.patch-box .drop-zone:hover,
+.patch-box .drop-zone.dragging,
+.patch-box .drop-zone:focus-within {
   border-color: var(--accent);
-  background: rgb(255 211 77 / 10%);
+  background: rgb(255 255 255 / 8%);
 }
 
-.drop-zone:focus-within {
+.patch-box .drop-zone:focus-within {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
 .drop-title {
-  color: var(--accent);
-  font-size: 1.25rem;
+  display: block;
+  padding: 12px 8px;
+  border-radius: 4px;
+  background: var(--accent);
+  color: #161616;
+  font-size: 1rem;
   font-weight: 700;
-}
-
-.drop-zone:hover .drop-title::before,
-.drop-zone:focus-within .drop-title::before {
-  opacity: 1;
+  line-height: 1.5;
+  box-shadow: 0 3px 0 rgb(0 0 0 / 45%);
 }
 
 .drop-hint,
@@ -335,6 +394,33 @@ h1.pixel {
 .section-note {
   color: var(--muted);
   font-size: 0.875rem;
+}
+
+@media (max-width: 559px) {
+  .hero {
+    padding-top: 12px;
+  }
+
+  .hero-copy {
+    gap: 12px;
+  }
+
+  h1.pixel {
+    font-size: 1.75rem;
+  }
+
+  .patch-box.frame {
+    padding: 12px;
+  }
+
+  .patch-steps {
+    gap: 8px;
+    line-height: 1.5;
+  }
+
+  .patch-box .drop-zone {
+    padding: 10px;
+  }
 }
 
 .patch-status {
@@ -758,23 +844,6 @@ h3.pixel {
 
 /* In the game's menus the hand always rests on an item, even before the player moves it. */
 [data-theme='smrpg'] .toc:not(:hover, :focus-within) > a:first-child::before {
-  opacity: 1;
-}
-
-[data-theme='smrpg'] .drop-zone {
-  justify-items: start;
-  padding: 8px 8px 8px 34px;
-  border: 0;
-  border-radius: 0;
-  text-align: left;
-}
-
-[data-theme='smrpg'] .drop-zone.dragging {
-  outline: 3px solid var(--accent);
-  outline-offset: 3px;
-}
-
-[data-theme='smrpg'] .drop-title::before {
   opacity: 1;
 }
 

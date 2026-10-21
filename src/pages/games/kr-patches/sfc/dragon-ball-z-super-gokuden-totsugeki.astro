@@ -92,10 +92,6 @@ const cast = [
       <h1 id="title" class="pixel">
         {patch.title} 한글판
       </h1>
-      <p class="lead">
-        가지고 있는 일본판 롬파일을 고르면 쓸 수 있는 롬파일인지 바로 확인하고 한글판으로 바꿔 저장합니다. 따로
-        프로그램을 설치하지 않아도 됩니다.
-      </p>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} output={patch.stem} />
       <ManualPatch patch={patch}>
         <p>세이브 구조는 바꾸지 않아 v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>

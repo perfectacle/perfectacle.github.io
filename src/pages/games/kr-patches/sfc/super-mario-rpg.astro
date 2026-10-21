@@ -131,10 +131,6 @@ const story = [
       <h1 id="title" class="pixel">
         {patch.title} 한글판
       </h1>
-      <Speech speaker={GUIDE}>
-        마리오 님, 가지고 계신 일본판 롬파일을 고르시면 쓸 수 있는 롬파일인지 바로 확인하고 한글판으로 바꿔 저장해
-        드려요. 따로 프로그램을 설치하지 않아도 돼요.
-      </Speech>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} output={patch.stem} speaker={GUIDE} />
       <ManualPatch patch={patch} framed>
         <p>세이브 구조는 바꾸지 않아 v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
