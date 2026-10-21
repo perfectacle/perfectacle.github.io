@@ -114,7 +114,7 @@ const story = [
 <PatchBook
   title={`${patch.title} 한글판`}
   trail={trail(patch)}
-  description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
+  description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
   theme={patch.theme}
   image={{
     src: `${base}/images/world-map-4x.webp`,
@@ -132,8 +132,8 @@ const story = [
         {patch.title} 한글판
       </h1>
       <Speech speaker={GUIDE}>
-        마리오 님, 가지고 계신 일본판 게임 파일을 고르시면 바로 한글판으로 바꿔 저장해 드려요. 따로 프로그램을 설치하지
-        않아도 돼요.
+        마리오 님, 가지고 계신 일본판 롬파일을 고르시면 쓸 수 있는 롬파일인지 바로 확인하고 한글판으로 바꿔 저장해
+        드려요. 따로 프로그램을 설치하지 않아도 돼요.
       </Speech>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} output={patch.stem} speaker={GUIDE} />
       <ManualPatch patch={patch} framed>

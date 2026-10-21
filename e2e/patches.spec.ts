@@ -51,7 +51,7 @@ test('catalogue opens the game page, which leads with the patch box and plays no
   await page.goto('/games/kr-patches/');
   await page.locator(`main a[href="${GAME}"]`).first().click();
   await expect(page).toHaveURL(/\/games\/kr-patches\/sfc\/super-mario-rpg\/$/);
-  await expect(page.getByText('일본판 게임 파일 고르기')).toBeInViewport();
+  await expect(page.getByText('일본판 롬파일 고르기')).toBeInViewport();
   const html = await page.content();
   expect(html).not.toContain('cafe.naver.com/hansicgu');
   expect(html).not.toContain('blog.naver.com');
@@ -70,7 +70,7 @@ test('patch box explains why a file cannot be patched', async ({ page }) => {
     mimeType: 'application/octet-stream',
     buffer: Buffer.alloc(4 * 1024 * 1024),
   });
-  await expect(status).toContainText('다른 게임 파일');
+  await expect(status).toContainText('다른 게임 롬파일');
 });
 
 test('comparison groups reveal the remaining scenes on demand', async ({ page }) => {
@@ -139,7 +139,7 @@ test('catalogue lists every game page', async ({ page }) => {
 
 test('Super Gokuden patch box checks for its own 2 MB ROM', async ({ page }) => {
   await page.goto(GOKUDEN);
-  await expect(page.getByText('일본판 게임 파일 고르기')).toBeInViewport();
+  await expect(page.getByText('일본판 롬파일 고르기')).toBeInViewport();
   const input = page.locator('.patch-box input[type=file]');
   const status = page.locator('.patch-status');
   await input.setInputFiles({
@@ -147,13 +147,13 @@ test('Super Gokuden patch box checks for its own 2 MB ROM', async ({ page }) => 
     mimeType: 'application/octet-stream',
     buffer: Buffer.alloc(4 * 1024 * 1024),
   });
-  await expect(status).toContainText('크기가 2MB인 파일이 필요합니다');
+  await expect(status).toContainText('일본판 롬파일은 2MB입니다');
   await input.setInputFiles({
     name: 'other.sfc',
     mimeType: 'application/octet-stream',
     buffer: Buffer.alloc(2 * 1024 * 1024),
   });
-  await expect(status).toContainText('초오공전 돌격편 한글판을 만들 수 없습니다');
+  await expect(status).toContainText('초오공전 돌격편 일본판 롬파일을 골라 주세요');
   for (const link of await page.locator('a[href$=".ips"]').all()) await expect(link).toHaveAttribute('download', '');
 });
 
@@ -184,7 +184,7 @@ for (const [spec, path] of [
 
 test('Super Gokuden: Kakusei-hen patch box tells it apart from Totsugeki-hen', async ({ page }) => {
   await page.goto(KAKUSEI);
-  await expect(page.getByText('일본판 게임 파일 고르기')).toBeInViewport();
+  await expect(page.getByText('일본판 롬파일 고르기')).toBeInViewport();
   const totsugeki = new Uint8Array(GOKUDEN_TOTSUGEKI.size);
   totsugeki.set(
     Array.from(GOKUDEN_TOTSUGEKI.header.title, c => c.charCodeAt(0)),
@@ -195,7 +195,7 @@ test('Super Gokuden: Kakusei-hen patch box tells it apart from Totsugeki-hen', a
     mimeType: 'application/octet-stream',
     buffer: Buffer.from(totsugeki),
   });
-  await expect(page.locator('.patch-status')).toContainText('초오공전 각성편 한글판을 만들 수 없습니다');
+  await expect(page.locator('.patch-status')).toContainText('초오공전 각성편 일본판 롬파일을 골라 주세요');
   const korean = new Uint8Array(GOKUDEN_KAKUSEI.size);
   korean.set(
     Array.from(GOKUDEN_KAKUSEI.patchedTitle ?? '', c => c.charCodeAt(0)),
@@ -207,7 +207,7 @@ test('Super Gokuden: Kakusei-hen patch box tells it apart from Totsugeki-hen', a
     mimeType: 'application/octet-stream',
     buffer: Buffer.from(korean),
   });
-  await expect(page.locator('.patch-status')).toContainText('예전에 나온 한글판 파일입니다');
+  await expect(page.locator('.patch-status')).toContainText('예전에 나온 한글판 롬파일입니다');
 });
 
 test('Super Gokuden: Kakusei-hen explains how the patch was made and offers the analysis tools', async ({ page }) => {
@@ -246,7 +246,7 @@ test('Otogirisou explains how the patch was made and offers the build tools', as
 
 test('Otogirisou patch box wants the 1 MB original and turns away a 2 MB Korean build', async ({ page }) => {
   await page.goto(OTOGIRI);
-  await expect(page.getByText('일본판 게임 파일 고르기')).toBeInViewport();
+  await expect(page.getByText('일본판 롬파일 고르기')).toBeInViewport();
   const input = page.locator('.patch-box input[type=file]');
   const status = page.locator('.patch-status');
   await input.setInputFiles({
@@ -254,7 +254,7 @@ test('Otogirisou patch box wants the 1 MB original and turns away a 2 MB Korean 
     mimeType: 'application/octet-stream',
     buffer: Buffer.alloc(2 * 1024 * 1024),
   });
-  await expect(status).toContainText('크기가 1MB인 파일이 필요합니다');
+  await expect(status).toContainText('일본판 롬파일은 1MB입니다');
   const korean = new Uint8Array(2 * 1024 * 1024);
   korean.set(
     Array.from(OTOGIRISOU.header.title, c => c.charCodeAt(0)),
@@ -266,7 +266,7 @@ test('Otogirisou patch box wants the 1 MB original and turns away a 2 MB Korean 
     mimeType: 'application/octet-stream',
     buffer: Buffer.from(korean),
   });
-  await expect(status).toContainText('예전에 나온 한글판 파일입니다');
+  await expect(status).toContainText('예전에 나온 한글판 롬파일입니다');
   await expect(status).not.toContainText('v1.');
 });
 
