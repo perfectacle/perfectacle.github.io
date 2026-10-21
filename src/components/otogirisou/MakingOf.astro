@@ -17,16 +17,28 @@ const { tools } = downloads(patch);
 const memories = [
   {
     name: '롬',
+    size: '1MB → 2MB',
     like: '책',
-    role: '카트리지에 든 프로그램·대사·그림·폰트. 읽기만 합니다. 이 게임은 1MB, 한글판은 2MB.',
+    role: '카트리지에 든 프로그램·대사·그림·폰트. 읽기만 합니다. 일본판은 1MB, 한글판은 2MB입니다.',
   },
   {
     name: 'WRAM',
+    size: '128KB',
     like: '작업 책상',
-    role: 'CPU가 계산하며 값을 적어 두는 128KB. 지금 읽는 위치, 선택지 기록이 여기 있습니다.',
+    role: 'CPU가 계산하며 값을 적어 두는 곳. 지금 읽는 위치, 선택지 기록이 여기 있습니다.',
   },
-  { name: 'SRAM', like: '책갈피', role: '전원을 꺼도 남는 세이브 메모리. 책갈피 슬롯 4개가 들어 있습니다.' },
-  { name: 'VRAM', like: '스티커판', role: '화면에 붙일 그림 조각을 올려 두는 64KB. CPU가 아무 때나 쓸 수 없습니다.' },
+  {
+    name: 'SRAM',
+    size: '8KB',
+    like: '책갈피',
+    role: '전원을 꺼도 남는 세이브 메모리. 책갈피 슬롯 4개가 들어 있습니다.',
+  },
+  {
+    name: 'VRAM',
+    size: '64KB',
+    like: '스티커판',
+    role: '화면에 붙일 그림 조각을 올려 두는 곳. CPU가 아무 때나 쓸 수 없습니다.',
+  },
 ];
 
 const codes = [
@@ -64,56 +76,135 @@ const emulators = [
 ];
 
 const toolMap = [
-  { job: '대사 꺼내기·다시 넣기', files: ['tools/script.py', 'tools/dump.py', 'tools/assemble.py'] },
-  { job: '롬 코드 읽기', files: ['tools/dis65816.py'] },
-  { job: '2회차 멈춤 수정', files: ['tools/fixes.py', 'lua/lap.lua'] },
-  { job: 'A 버튼 대기 맞추기', files: ['tools/waits.py', 'tools/fixwaits.py', 'lua/waitdemo.lua'] },
-  { job: '글자표·새 글자', files: ['tools/font.py', 'tools/ocr/', 'tools/mkfont.py', 'tools/glyph_workbench.py'] },
-  { job: '단어 단위 줄바꿈', files: ['asm/wordwrap.asm', 'tools/layout.py', 'tools/splitpages.py'] },
-  { job: '재번역 반영', files: ['tools/trcheck.py', 'tools/trmerge.py', 'tools/rvapply.py'] },
-  { job: '옛 세이브 이어하기', files: ['tools/savemap.py', 'asm/savecompat.asm'] },
-  { job: '장·엔딩·메뉴 데이터', files: ['tools/qol.py', 'tables/qol-chapters.tsv', 'tables/qol-endings.tsv'] },
-  { job: '편의 기능 코드', files: ['asm/qol.asm'] },
-  { job: '플로차트', files: ['tools/flow.py', 'asm/flow.asm'] },
-  { job: '화면 찍기·비교', files: ['lua/pages.lua', 'lua/name.lua', 'lua/jumpsave.py', 'tools/patchnote.py'] },
-  { job: '엔진 추적', files: ['lua/qol/pcs.lua', 'lua/qol/wtrace.lua', 'lua/qol/trace.lua', 'lua/qol/watch.lua'] },
-  { job: '장 이동 회귀', files: ['lua/qol/menujump.sh', 'lua/qol/chjump.sh'] },
-  { job: '에뮬레이터 호환성', files: ['compat/lr.py', 'compat/run_all.sh'] },
+  {
+    job: '대사 꺼내기·다시 넣기',
+    files: ['tools/script.py', 'tools/dump.py', 'tools/assemble.py'],
+    section: 'script',
+  },
+  { job: '롬 코드 읽기', files: ['tools/dis65816.py'], section: 'script' },
+  { job: '2회차 멈춤 수정', files: ['tools/fixes.py', 'lua/lap.lua'], section: 'lap2' },
+  { job: 'A 버튼 대기 맞추기', files: ['tools/waits.py', 'tools/fixwaits.py', 'lua/waitdemo.lua'], section: 'a-wait' },
+  {
+    job: '글자표·새 글자',
+    files: ['tools/font.py', 'tools/ocr/', 'tools/mkfont.py', 'tools/glyph_workbench.py'],
+    section: 'font',
+  },
+  {
+    job: '단어 단위 줄바꿈',
+    files: ['asm/wordwrap.asm', 'tools/layout.py', 'tools/splitpages.py'],
+    section: 'wordwrap',
+  },
+  { job: '재번역 반영', files: ['tools/trcheck.py', 'tools/trmerge.py', 'tools/rvapply.py'], section: 'retranslate' },
+  { job: '옛 세이브 이어하기', files: ['tools/savemap.py', 'asm/savecompat.asm'], section: 'save-compat' },
+  {
+    job: '장·엔딩·메뉴 데이터',
+    files: ['tools/qol.py', 'tables/qol-chapters.tsv', 'tables/qol-endings.tsv'],
+    section: 'menu',
+  },
+  { job: '편의 기능 코드', files: ['asm/qol.asm'], section: 'menu' },
+  { job: '플로차트', files: ['tools/flow.py', 'asm/flow.asm'], section: 'flowchart' },
+  {
+    job: '화면 찍기·비교',
+    files: ['lua/pages.lua', 'lua/name.lua', 'lua/jumpsave.py', 'tools/patchnote.py'],
+    section: 'testing',
+  },
+  {
+    job: '엔진 추적',
+    files: ['lua/qol/pcs.lua', 'lua/qol/wtrace.lua', 'lua/qol/trace.lua', 'lua/qol/watch.lua'],
+    section: 'readers',
+  },
+  { job: '장 이동 회귀', files: ['lua/qol/menujump.sh', 'lua/qol/chjump.sh'], section: 'scene-music' },
+  { job: '에뮬레이터 호환성', files: ['compat/lr.py', 'compat/run_all.sh'], section: 'testing' },
+  { job: '롬 분석 문서(주소·형식 전체)', files: ['ANALYSIS.txt'], section: 'next' },
+];
+
+const sectionTitles: Record<string, string> = {
+  script: '2. 대사',
+  lap2: '3. 2회차 멈춤',
+  'a-wait': '4. A 버튼',
+  font: '5. 글자표',
+  wordwrap: '6. 줄바꿈',
+  retranslate: '7. 재번역',
+  'save-compat': '8. 옛 세이브',
+  menu: '11. 메뉴',
+  flowchart: '14. 플로차트',
+  readers: '10. 대본 읽는 손',
+  'scene-music': '12. 배경과 음악',
+  testing: '17. 확인',
+  next: '18. 다음 사람에게',
+};
+
+const unverified = [
+  '실기(실제 슈퍼 패미컴, 플래시 카트리지)에서 돌려 본 기록은 작업 노트에 없습니다. 위 에뮬레이터 결과가 전부입니다.',
+  '줄 수, 입력 대기, 점프는 도구로 모든 갈래를 계산했습니다. 화면으로 확인한 것은 장 30개의 첫 화면, 시나리오 3개를 3만 프레임씩 진행한 결과, 1~4회차 시작입니다.',
+  'WRAM 빈 곳은 6,000프레임 동안 한 번도 쓰이지 않은 곳입니다. 그 플레이에서 지나지 않은 장면이 그곳을 쓸 가능성은 남아 있습니다.',
+  '엔진이 폰트 그룹 표의 끝을 무엇으로 판단하는지는 확인하지 않았습니다. 도구는 글자 수나 폭이 0인 칸에서 멈추게 했습니다.',
+  '장 목록 메뉴를 열면 장면에 떠 있던 스프라이트(눈동자 등)가 메뉴 위에도 보인다고 작업 보고서에 남아 있고, 고친 기록은 없습니다.',
+  'v1.0이 대사 자리 중 $16:806A–$16:AE4E만 다른 바이트로 채운 이유, 대본 위치 사본 네 벌 중 $1989의 용도는 확인하지 않았습니다.',
+  '{23}과 {24}는 $7F:FFF0의 번호로 장면을 고르는 코드인데, 장면 표가 0으로 지워져 있습니다. 디버그 기능의 흔적으로 보지만 추정입니다.',
+];
+
+const freeSpace = [
+  { range: '$1A:96D1–$1A:FFFF', note: '편의 기능 코드 뒤' },
+  { range: '$1C:E628–$1D:FFFF', note: '플로차트 데이터 뒤부터 뱅크 하나 넘게' },
+  { range: '$18:81D0–$18:FFFF', note: '세이브 호환 코드 뒤' },
+  { range: '$35:AF67–$3F:FFFF', note: '대본 뒤. 대본이 늘어날 자리' },
+];
+
+const toolVersions = [
+  { name: 'asar', version: '1.91' },
+  { name: 'Mesen 2', version: '2.1.1' },
+  { name: 'Python', version: '3.9.6 (Pillow 11.3.0)' },
 ];
 ---
 
 <section id="making" class="section page-width" aria-labelledby="making-title">
   <p class="label chapter-mark">{mark}</p>
   <h2 id="making-title" class="pixel">
-    한글판을 만든 방법
+    롬 분석 노트
   </h2>
   <p class="lead">
-    2016년에 낸 v1.0은 2회차부터 멈추거나, A 버튼을 누르지 않았는데 화면이 넘어가거나, 단어 중간에서 줄이 끊기는 문제가
-    있었습니다. v1.1은 이 문제를 롬에서 원인을 찾아 고치고 번역을 원문과 대조해 다시 다듬었습니다. v1.2는 한 걸음 더
-    나아가 원작에 없던 플로차트, 장 목록, 엔딩 목록을 넣었습니다. 게임 엔진에 새 화면과 새 동작을 끼워 넣은 것이라 번역
-    패치라기보다 개조 롬에 가깝습니다.
+    이 롬을 다시 분석하거나 한글판을 이어서 고칠 사람을 위해 남기는 기록입니다. 2016년에 낸 v1.0은 2회차부터 멈추거나, A
+    버튼을 누르지 않았는데 화면이 넘어가거나, 단어 중간에서 줄이 끊기는 문제가 있었습니다. v1.1은 이 문제를 롬에서
+    원인을 찾아 고치고 번역을 원문과 대조해 다시 다듬었습니다. v1.2는 한 걸음 더 나아가 원작에 없던 플로차트, 장 목록,
+    엔딩 목록을 넣었습니다. 게임 엔진에 새 화면과 새 동작을 끼워 넣은 것이라 번역 패치라기보다 개조 롬에 가깝습니다.
   </p>
+  <figure class="paper">
+    <img
+      src={img('versions.webp')}
+      width="1568"
+      height="448"
+      alt="세 화면을 나란히 놓은 그림. 왼쪽은 v1.0 2회차에서 w로 가득 차 멈춘 화면, 가운데는 v1.1에서 단어 단위로 줄이 바뀐 산길 장면, 오른쪽은 v1.2 플로차트의 제1장 강낚시 귀갓길"
+      loading="lazy"
+      decoding="async"
+    />
+    <figcaption>왼쪽부터 v1.0 2회차 멈춤, v1.1 단어 단위 줄바꿈, v1.2 플로차트</figcaption>
+  </figure>
   <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="section-note">
-    빌드 스크립트, 어셈블리 소스, 대본, 글자표, 테스트 스크립트는
+    빌드 스크립트, 어셈블리 소스, 대본, 글자표, 테스트 스크립트와 롬 분석 문서는
     <a href={tools} download>
       빌드 도구(zip, 1.8MB)
     </a>
     로 받을 수 있습니다. 각 단계 끝의 「빌드 도구 속 파일」에 그 단계에서 쓴 파일과 하는 일을 적었고, 전체 목록은 마지막
     <a href="#making-tools">빌드 도구 파일</a>에 있습니다. 롬, asar, Mesen은 들어 있지 않고, 일본어 대본은 빌드할 때
-    가지고 있는 일본판 롬에서 뽑습니다. 빌드 순서는 압축 파일 안 tools/README.txt에 있습니다.
+    가지고 있는 일본판 롬에서 뽑습니다. 빌드 순서는 압축 파일 안 tools/README.txt에, 롬 주소와 형식 전체는
+    ANALYSIS.txt에 있습니다.
   </p>
 
   <details class="more making">
     <summary class="pointer">자세히 보기</summary>
     <div class="making-body">
-      <h3 class="pixel">1. 배경지식</h3>
+      <h3 id="making-basics" class="pixel">
+        1. 배경지식
+      </h3>
       <h4>게임기 안의 메모리</h4>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th scope="col">이름</th>
+              <th scope="col">크기</th>
               <th scope="col">비유</th>
               <th scope="col">하는 일</th>
             </tr>
@@ -122,6 +213,7 @@ const toolMap = [
             {memories.map(m => (
               <tr>
                 <th scope="row">{m.name}</th>
+                <td>{m.size}</td>
                 <td>{m.like}</td>
                 <td class="wrap">{m.role}</td>
               </tr>
@@ -167,12 +259,35 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
       <pre><code>org $009CF9      ; 입력 대기 중 X(되감기)를 확인하던 자리를
     JSL SelCheck ; Select도 확인하는 새 코드로 보낸다</code></pre>
 
-      <h3 class="pixel">2. 대사가 들어 있는 방식</h3>
+      <h3 id="making-script" class="pixel">
+        2. 대사가 들어 있는 방식
+      </h3>
       <p>
         일본판은 대사 전체를 허프만 부호로 압축해 비트 단위로 이어 붙였습니다. 자주 나오는 글자일수록 짧은 비트로 적는
         방식이라, 점프 주소도 바이트가 아니라 "기준점에서 몇 번째 비트" 로 적혀 있습니다. v1.0은 압축을 버리고 글자마다
         2바이트로 적은 대사를 롬 뒤쪽에 새로 늘린 1MB에 넣었습니다. 대신 일본판 대사가 있던 자리는 0으로 비었는데, 이
         자리가 나중에 v1.1과 v1.2의 코드가 들어갈 곳이 됐습니다.
+      </p>
+      <p>
+        대본의 첫 문장을 두 롬에서 그대로 꺼내 보면 차이가 보입니다. 일본판은 기준점(<code>$15:E401</code>)에서 126번째
+        비트부터 「夏の夕暮。」와 줄바꿈이 61비트에 들어 있습니다. 비트를 하나씩 읽어 허프만 트리를 따라 내려가다가 잎에
+        닿으면 글자 하나가 나옵니다. v1.0의 「여름의 해질녘.」은 <code>$20:8018</code>(파일 0x100018)부터 2바이트씩
+        18바이트입니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('script-bits.svg')}
+          width="860"
+          height="490"
+          alt="일본판 첫 문장 夏の夕暮。는 글자마다 5~16비트로 이어 붙은 61비트이고, v1.0의 여름의 해질녘.은 글자마다 2바이트씩 18바이트다. 아래는 の의 비트 01001을 따라 노드 0B6C에서 잎 862E까지 내려가는 길"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        글자마다 길이가 다르니 일본판에서는 "몇 번째 글자" 를 바이트로 셀 수 없습니다. 그래서 점프 주소도 비트
+        번호입니다. 첫 선택지의 첫 보기는 일본판에서 3,109번째 비트, v1.0에서는 <code>$20:8349</code>로 갑니다. 대본
+        전체는 일본판이 약 30만 바이트, v1.0이 694,995바이트입니다.
       </p>
       <p>
         먼저 두 형식을 모두 읽는 파서를 만들고 대본을 6,730줄의 텍스트로 꺼냈습니다. 점프 대상이 되는 곳에서 줄을
@@ -189,7 +304,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">3. 2회차에 멈추던 이유</h3>
+      <h3 id="making-lap2" class="pixel">
+        3. 2회차에 멈추던 이유
+      </h3>
       <p>
         게임은 새 회차를 시작할 때 회차 수와 난수로 세 시나리오 중 하나를 고르고, 시작 주소 표($02:A627)에서 그
         시나리오의 첫 위치를 읽습니다. 2번 시나리오는 2회차부터 뽑힙니다. v1.0은 표의 0번, 1번만 새 대사 위치로 바꾸고
@@ -216,7 +333,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">4. A 버튼 없이 넘어가던 화면</h3>
+      <h3 id="making-a-wait" class="pixel">
+        4. A 버튼 없이 넘어가던 화면
+      </h3>
       <p>
         엔진은 「」』.?! 같은 문장 끝 글자를 찍으면 알아서 A 버튼을 기다리고, <code>{'{16}'}</code>을 만나도 기다립니다.
         v1.0은 일본어의 「。」를 「…」나 띄어쓰기로 옮기면서 기다림이 빠진 곳과, 자동 대기 바로 뒤에{' '}
@@ -247,7 +366,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">5. 글자표를 눈으로 읽게 하기</h3>
+      <h3 id="making-font" class="pixel">
+        5. 글자표를 눈으로 읽게 하기
+      </h3>
       <p>
         대사를 고치려면 롬 속 글자 번호가 어떤 한글인지 적은 글자표가 있어야 하는데, v1.0의 글자표는 남아 있지
         않았습니다. 그래서 폰트 1,282자를 그림으로 그려 macOS의 문자 인식(Vision)에 읽혔습니다. 한 글자씩 넣으면 잘 못
@@ -273,7 +394,23 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         다르기 때문입니다. Galmuri 폰트로 전부 새로 그리는 안도 나란히 찍어 비교했는데, v1.0 글자가 더 보기 좋아서
         그대로 두었습니다. 글자를 넣을 자리도 문제였습니다. 폰트는 크기가 같은 글자끼리 묶은 그룹 표로 찾는데, 표 바로
         뒤에 다른 데이터가 있어 그룹은 58개가 한계이고 v1.0이 58개를 다 썼습니다. 아무 데서도 쓰지 않는 채움 글자를 이웃
-        그룹과 같은 크기의 빈 글자로 바꿔 그룹을 합치니 48개로 줄어 자리가 생겼습니다.
+        그룹과 같은 크기의 빈 글자로 바꿔 그룹을 합치니 45개로 줄었고, 새 글자 75자를 3개 그룹으로 더해도 48개라 자리가
+        남았습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('font-groups.svg')}
+          width="860"
+          height="380"
+          alt="폰트 그룹 표를 칸으로 그린 그림. v1.0은 58칸이 꽉 차서 바로 뒤 $00:F5CE의 줄 끝 문자 목록에 닿아 있고, v1.1과 v1.2는 합친 45칸과 새 글자 3칸을 쓰고 10칸이 빈다. 아래는 첫 칸 05 92 00 80 2C를 517자, 폭 9, $1F:8000, 높이 11로 읽는 법"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        빈 글자로 바꾼 코드는 168개입니다. 대사, 이름 입력 화면의 글자 표, 문자 목록 두 곳 어디에서도 쓰지 않는 코드만
+        골랐습니다. 이름 입력 화면이 대사와 같은 코드를 쓰기 때문에, 어디서든 쓰이는 글자는 코드와 모양을 그대로
+        두었습니다.
       </p>
       <ToolFiles
         items={[
@@ -285,7 +422,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">6. 단어 단위 줄바꿈</h3>
+      <h3 id="making-wordwrap" class="pixel">
+        6. 단어 단위 줄바꿈
+      </h3>
       <p>
         일본어는 띄어쓰기가 없어 엔진이 글자 단위로 줄을 바꿔도 자연스럽습니다. 한국어는 「유명/했는데」처럼 단어
         중간에서 끊기고, 줄 끝 공백이 다음 줄 첫머리로 넘어가 한 칸 들여 쓴 것처럼 보였습니다.
@@ -320,7 +459,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">7. 원문 대조 재번역</h3>
+      <h3 id="making-retranslate" class="pixel">
+        7. 원문 대조 재번역
+      </h3>
       <p>
         6,730줄을 일본어 원문과 나란히 놓고 다시 다듬었습니다. 새로 번역하지 않고 v1.0 문장을 바탕으로 오역과 누락을
         고쳤습니다. 뱀 여자가 「뱀파이어」가 된 곳, 고사포가 「고주파」가 된 곳, 「나라 미인이라 나미」 대목이 통째로
@@ -351,7 +492,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">8. 옛 세이브로 이어하기</h3>
+      <h3 id="making-save-compat" class="pixel">
+        8. 옛 세이브로 이어하기
+      </h3>
       <p>
         세이브에는 "대본의 어디까지 읽었나" 가 롬 주소로 들어 있습니다. 대사를 다시 쓰면 같은 장면의 주소가 모두
         달라지므로, v1.0이나 일본판 세이브를 그대로 불러오면 엉뚱한 곳을 읽습니다. 그래서 줄마다 옛 주소와 새 주소를
@@ -365,7 +508,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">9. v1.2 편의 기능: 빈 버튼 찾기</h3>
+      <h3 id="making-select" class="pixel">
+        9. v1.2 편의 기능: 빈 버튼 찾기
+      </h3>
       <p>
         여기부터는 원작에 없는 기능을 엔진에 더한 이야기입니다. 엔딩이 18개인 게임을 처음부터 다시 읽어 가며 모으는 것은
         고역이라, 같은 춘소프트의 「카마이타치의 밤」에 있는 장 선택을 옮겨 오는 것에서 시작했습니다. 카마이타치의 밤
@@ -379,7 +524,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         Select를 먼저 보게 했습니다.
       </p>
 
-      <h3 class="pixel">10. 대본을 읽는 손이 셋</h3>
+      <h3 id="making-readers" class="pixel">
+        10. 대본을 읽는 손이 셋
+      </h3>
       <p>
         장을 고르면 "지금 읽는 위치" 를 그 장의 시작 주소로 바꾸면 될 것 같았습니다. 결과는 무시되거나, 검은 화면에서
         영원히 멈추는 것이었습니다. 멈춘 화면에서 거꾸로 따라갔습니다. 대본이 메뉴 버퍼의 한 곳에서 서 있었고, 그 자리는
@@ -427,7 +574,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">11. 메뉴는 그리지 않고 대본으로 쓴다</h3>
+      <h3 id="making-menu" class="pixel">
+        11. 메뉴는 그리지 않고 대본으로 쓴다
+      </h3>
       <p>
         장 목록을 화면에 새로 그리려면 커서, 소리, 입력 처리를 모두 새로 만들어야 합니다. 그 대신 메뉴를 대본으로 써서
         게임에게 읽혔습니다. 대본에 선택지 명령을 쓰면 게임이 원래 선택지 화면 그대로 보여 주고, 커서와 효과음도 원래
@@ -483,7 +632,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">12. 장으로 옮길 때 배경과 음악</h3>
+      <h3 id="making-scene-music" class="pixel">
+        12. 장으로 옮길 때 배경과 음악
+      </h3>
       <p>
         장 첫 페이지가 배경을 정하지 않는 경우가 많았습니다. 원래 흐름에서는 바로 앞 장면의 배경이 이어지기 때문입니다.
         빌드할 때 대본을 따라가며 "이 장 시작 직전에 마지막으로 적용된 배경 명령" 을 찾아, 장으로 점프하기 직전에 그
@@ -521,7 +672,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">13. 읽은 장과 본 엔딩 기록</h3>
+      <h3 id="making-records" class="pixel">
+        13. 읽은 장과 본 엔딩 기록
+      </h3>
       <p>
         기록은 SRAM에서 책갈피 슬롯 4개 뒤의 빈 곳($70:1800)에 둡니다. 맨 앞 2바이트 표식이 없으면 처음 켤 때
         초기화합니다. 그래서 v1.1, v1.0, 일본판 세이브를 그대로 불러올 수 있습니다.
@@ -564,7 +717,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">14. 플로차트</h3>
+      <h3 id="making-flowchart" class="pixel">
+        14. 플로차트
+      </h3>
       <p>
         선택지 382개와 엔딩 18개가 노드입니다. 보기들이 가는 곳을 이어 보면 나무가 아니라 그물입니다. 대부분의 선택지가
         나란히 흐르는 여러 갈래 사이를 오가고, 두 길 이상에서 들어오는 노드가 305개나 됩니다. 아래는 모든 노드를 다 봤을
@@ -624,7 +779,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">15. 책갈피와 노란 글씨</h3>
+      <h3 id="making-yellow" class="pixel">
+        15. 책갈피와 노란 글씨
+      </h3>
       <p>
         X로 되감아 본 페이지를 노란 글씨로 보이게 하는 것은 의외로 간단했습니다. 글자는 팔레트의 한 색으로 찍히므로,
         되감기에 들어갈 때 그 색을 노랑으로 바꾸고 나올 때 되돌리면 됩니다. 팔레트는 화면 갱신 틈에만 바꿀 수 있어
@@ -643,7 +800,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">16. 코드를 둔 자리</h3>
+      <h3 id="making-space" class="pixel">
+        16. 코드를 둔 자리
+      </h3>
       <p>
         v1.1과 v1.2의 코드와 표는 모두 v1.0이 일본판 대사를 0으로 지운 자리에 들어갔습니다. 롬을 더 늘리지 않아도
         됐습니다. WRAM은 6,000프레임을 플레이하며 게임이 쓰는 곳을 모두 기록한 뒤, 한 번도 쓰이지 않은 곳만 골라 메뉴
@@ -666,7 +825,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
-      <h3 class="pixel">17. 확인은 에뮬레이터가</h3>
+      <h3 id="making-testing" class="pixel">
+        17. 확인은 에뮬레이터가
+      </h3>
       <p>
         Mesen 2의 테스트 모드와 Lua 스크립트로 버튼 입력을 재생하고, 원하는 순간의 화면과 메모리를 저장했습니다. 멈춤을
         찾을 때는 이 순서가 가장 빨랐습니다.
@@ -716,8 +877,57 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ]}
       />
 
+      <h3 id="making-next" class="pixel">
+        18. 다음 사람에게
+      </h3>
+      <p>
+        롬 주소와 형식은 빌드 도구 압축 파일 맨 위의 ANALYSIS.txt에 모았습니다. 헤더, 메모리 지도, 대본 형식, 제어 코드,
+        폰트 그룹 표, 후킹 지점 전체(원래 바이트와 바꾼 바이트), 세이브 형식, 쓴 공간이 들어 있고, 직접 확인한 것은
+        [실측], 짐작만 한 것은 [추정]으로 나눠 적었습니다. 여기에는 확인하지 못한 것과 남은 자리만 적습니다.
+      </p>
+      <h4>확인하지 못한 것</h4>
+      <ul class="notes">
+        {unverified.map(u => (
+          <li>{u}</li>
+        ))}
+      </ul>
+      <h4>남은 자리</h4>
+      <p>
+        v1.2 롬에서 0이 길게 이어진 곳 중 큰 것입니다. 0이 이어졌다고 비어 있다는 뜻은 아닙니다. 표의 일부가 0일 수도
+        있으니, 쓰기 전에 빌드 도구가 그 주소를 쓰는지 확인하세요. 폰트 그룹 표에는 빈 칸이 10개 남아 있습니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            {freeSpace.map(f => (
+              <tr>
+                <td>
+                  <code>{f.range}</code>
+                </td>
+                <td class="wrap">{f.note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <h4>쓴 도구</h4>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            {toolVersions.map(t => (
+              <tr>
+                <th scope="row">{t.name}</th>
+                <td>{t.version}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>글자표를 읽을 때 쓴 문자 인식은 macOS의 Vision이라, tools/ocr/는 macOS에서만 돌아갑니다.</p>
+      <ToolFiles items={[{ path: 'ANALYSIS.txt', text: '롬 분석 문서. 주소와 형식 전체' }]} />
+
       <h3 id="making-tools" class="pixel">
-        18. 빌드 도구 파일
+        19. 빌드 도구 파일
       </h3>
       <div class="table-wrap">
         <table>
@@ -725,6 +935,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
             <tr>
               <th scope="col">하는 일</th>
               <th scope="col">파일</th>
+              <th scope="col">설명</th>
             </tr>
           </thead>
           <tbody>
@@ -735,6 +946,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
                   {t.files.map(f => (
                     <code class="file">{f}</code>
                   ))}
+                </td>
+                <td>
+                  <a href={`#making-${t.section}`}>{sectionTitles[t.section]}</a>
                 </td>
               </tr>
             ))}
