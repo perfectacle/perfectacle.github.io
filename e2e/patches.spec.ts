@@ -68,3 +68,22 @@ test('comparison groups reveal the remaining scenes on demand', async ({ page })
   await hidden.scrollIntoViewIfNeeded();
   await expect.poll(() => hidden.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
 });
+
+test('patch pages describe where they sit and keep analytics off outside the published site', async ({ page }) => {
+  const gtag: string[] = [];
+  page.on('request', r => {
+    if (r.url().includes('googletagmanager.com')) gtag.push(r.url());
+  });
+  await page.goto(GAME, { waitUntil: 'load' });
+  const [block] = await page.locator('script[type="application/ld+json"]').allTextContents();
+  const crumbs = JSON.parse(block ?? '{}') as { '@type': string; itemListElement: { item: string }[] };
+  expect(crumbs['@type']).toBe('BreadcrumbList');
+  expect(crumbs.itemListElement.map(i => new URL(i.item).pathname)).toEqual(['/', '/games/kr-patches/', GAME]);
+  await page.waitForTimeout(3500);
+  expect(gtag).toEqual([]);
+});
+
+test('llms.txt points AI assistants to the patch pages', async ({ request }) => {
+  const text = await (await request.get('/llms.txt')).text();
+  expect(text).toContain(`https://perfectacle.github.io${GAME}`);
+});

@@ -23,6 +23,11 @@ export async function GET() {
 - 피드(최근 20개): ${SITE.url}/atom.xml
 - 사이트맵: ${SITE.url}/sitemap.xml
 
+## 한글패치
+
+- [한글패치 목록](${SITE.url}/games/kr-patches/): 일본어로만 나온 게임의 한국어 패치
+- [슈퍼 마리오 RPG 한글판](${SITE.url}/games/kr-patches/sfc/super-mario-rpg/): 일본판 슈퍼 패미컴 게임 파일을 고르면 브라우저에서 한글패치 v1.1 을 적용해 저장한다
+
 ## 카테고리
 
 ${topics}
