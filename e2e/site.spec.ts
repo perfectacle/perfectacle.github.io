@@ -281,6 +281,83 @@ test('tags index lists the most used tags first', async ({ page }) => {
   expect(counts).toEqual([...counts].sort((a, b) => b - a));
 });
 
+const bubbleCentre = (page: Page, nth: number) =>
+  page
+    .locator('.cloud.is-live > li')
+    .nth(nth)
+    .evaluate(el => {
+      const r = el.getBoundingClientRect();
+      return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+    });
+
+test('tags turn into bubbles that keep their links and grow with post count', async ({ page }) => {
+  await page.goto('/tags/');
+  const items = page.locator('.cloud.is-live > li');
+  await expect(items.first()).toBeVisible();
+  expect(await items.count()).toBeGreaterThan(10);
+  await expect(items.first().locator('a')).toHaveAttribute('href', /^\/tags\/.+\/$/);
+  const width = (i: number) => items.nth(i).evaluate(el => el.getBoundingClientRect().width);
+  await expect.poll(async () => (await width(0)) / (await width((await items.count()) - 1))).toBeGreaterThan(1.5);
+});
+
+test('a bubble can be dragged without following its link', async ({ page }) => {
+  await page.goto('/tags/');
+  const before = await bubbleCentre(page, 0);
+  await page.mouse.move(before.x, before.y);
+  await page.mouse.down();
+  await page.mouse.move(before.x + 150, before.y + 120, { steps: 10 });
+  await page.mouse.up();
+  await expect.poll(async () => (await bubbleCentre(page, 0)).x).toBeGreaterThan(before.x + 50);
+  await expect(page).toHaveURL(/\/tags\/$/);
+});
+
+test('clicking a bubble opens its tag page', async ({ page }) => {
+  await page.goto('/tags/');
+  const href = await page
+    .locator('.cloud.is-live > li a')
+    .first()
+    .evaluate(a => (a as HTMLAnchorElement).href);
+  // The bubbles bob forever, so Playwright's wait for a still element would never end; click where it is.
+  const { x, y } = await bubbleCentre(page, 0);
+  await page.mouse.click(x, y);
+  await expect(page).toHaveURL(href);
+});
+
+test('searching tags marks the misses and Enter opens the first hit', async ({ page }) => {
+  await page.goto('/tags/');
+  const search = page.getByRole('searchbox', { name: '태그 찾기' });
+  const status = page.locator('.tools').getByRole('status');
+  await search.fill('java');
+  await expect(status).toHaveText(/태그 \d+개 찾음/);
+  const hits = page.locator('.cloud.is-live > li:not(.miss)');
+  expect(await hits.count()).toBeGreaterThan(0);
+  for (const name of await hits.evaluateAll(els => els.map(el => (el as HTMLElement).dataset.name ?? ''))) {
+    expect(name.toLowerCase()).toContain('java');
+  }
+  await search.fill('없는태그없는태그');
+  await expect(status).toHaveText('찾는 태그가 없습니다');
+  await search.fill('java');
+  const first = await hits
+    .first()
+    .locator('a')
+    .evaluate(a => (a as HTMLAnchorElement).href);
+  await search.press('Enter');
+  await expect(page).toHaveURL(first);
+});
+
+test('with reduced motion the bubbles start at rest', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/tags/');
+  const first = await bubbleCentre(page, 0);
+  await page.waitForTimeout(300);
+  expect(await bubbleCentre(page, 0)).toEqual(first);
+  const scale = await page
+    .locator('.cloud.is-live > li')
+    .first()
+    .evaluate(el => new DOMMatrix(getComputedStyle(el).transform).a);
+  expect(scale).toBeCloseTo(1, 1);
+});
+
 test('series follow seriesOrder, not publish dates', async ({ page }) => {
   // 함수형 JS: the introduction was written after parts 01–06 but is read first.
   await page.goto('/2017/06/26/js-func-01-why-make/');
