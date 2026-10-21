@@ -12,6 +12,7 @@
 - **slug·heading id·Disqus identifier 규칙을 바꾸지 않는다** — 옛 주소·앵커·댓글 호환 장치다. [site-code](.agents/skills/site-code/SKILL.md#규칙)
 - **글 이미지는 글 폴더 안에 WebP 로, 다른 글 링크는 파일 경로로** — [IMG-01](.agents/skills/write-post/SKILL.md#img-01--이미지), [LINK-01](.agents/skills/write-post/SKILL.md#link-01--글-간-링크)
 - **릴리스된 지 7일 안 된 의존성을 들이지 않는다** — 보안 수정만 Renovate 가 예외 처리한다. [DEP-01](.agents/skills/dependencies/SKILL.md#dep-01--7일-쿨다운)
+- **작업마다 최신 `origin/main` 에서 워크트리를 파고, 머지·배포가 끝나면 지운다** — 다른 에이전트 세션과 체크아웃을 나눠 쓰지 않는다. [GIT-02](.agents/skills/git-workflow/SKILL.md#git-02--작업마다-워크트리)
 - **코드·설정·문서 변경은 브랜치 → PR, `ci-ok` 를 통과시킨다** — [GIT-01](.agents/skills/git-workflow/SKILL.md#git-01--브랜치와-pr), [CI-01](.agents/skills/ci/SKILL.md#ci-01--ci-ok-와-자동-머지)
 - **검사가 실패하면 기준을 낮추지 말고 원인을 고친다** — [CI-02](.agents/skills/ci/SKILL.md#ci-02--실패는-원인을-고친다)
 
@@ -25,7 +26,7 @@
 | 사이트 코드(src/lib·pages·components·layouts·styles, astro.config, scripts)를 바꾼다 | [site-code](.agents/skills/site-code/SKILL.md)       |
 | 의존성·pnpm·Node·Actions 버전을 바꾸거나 Renovate PR 을 고친다                       | [dependencies](.agents/skills/dependencies/SKILL.md) |
 | 워크플로를 바꾸거나 CI 실패를 고친다                                                 | [ci](.agents/skills/ci/SKILL.md)                     |
-| 브랜치·커밋·PR 을 만든다                                                             | [git-workflow](.agents/skills/git-workflow/SKILL.md) |
+| 워크트리·브랜치·커밋·PR 을 만들거나 정리한다                                         | [git-workflow](.agents/skills/git-workflow/SKILL.md) |
 | 사이트 UI 문구나 README 를 쓴다                                                      | [korean-copy](.agents/skills/korean-copy/SKILL.md)   |
 
 명령은 `package.json` 의 `scripts`, CI 구성은 `.github/workflows/pages.yml` 에서 바로 확인한다.
