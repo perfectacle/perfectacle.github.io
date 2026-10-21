@@ -25,6 +25,8 @@ description: GitHub Actions 워크플로를 바꾸거나 CI 가 실패했을 때
 main 은 `ci-ok` 체크 통과가 필수다(저장소 ruleset). `ci-ok` 는 모든 잡을 모아 하나라도 실패·취소면 실패한다. 통과한 PR 은 GitHub 자동 머지로 머지된다. 배포는 PR 이 아닌 실행(main push·수동 실행)에서만 하고, `github-pages` 환경이 main 만 허용한다.
 
 - 새 잡을 추가하면 `ci-ok` 의 `needs` 에 넣는다. 빠지면 그 잡이 실패해도 머지된다.
+- 새 검사 잡에는 `needs: tested` 와 `if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}` 를 붙인다. 안 붙이면 PR 이 이미 검사한 트리라도 main 에서 다시 돈다([main 재검사 생략](#참고)). `!cancelled()` 가 빠지면 `tested` 가 skip 되는 PR 에서 그 잡도 skip 된다. `build`·`deploy` 처럼 main 에서 늘 돌아야 하는 잡에는 붙이지 않는다. `tested` 는 `ci-ok` 의 `needs` 에 넣지 않는다. 표식 조회만 하는 잡이라, 그 잡이 죽어도 검사는 전부 돌고 배포까지 막을 이유가 없다.
+- matrix 잡의 `name` 에 matrix 식을 쓰지 않는다. 잡 수준 `if` 로 skip 된 matrix 잡은 펼쳐지지 않아 `${{ matrix.shard }}` 가 그대로 찍힌다. `name` 을 비우면 GitHub 이 matrix 값을 붙여 `verify (lint)` 로 보여 준다. 그래서 이름에 보일 키 하나만 matrix 에 두고, 나머지 설정은 그 키로 계산한다(`verify` 의 `env.SCOPE`·`env.REUSE`).
 - 자동 머지는 체크가 통과하는 순간 일어난다. PR 에 커밋을 더 올릴 계획이면 그 전에 머지될 수 있으니, 다 올린 뒤에 `gh pr merge --auto --merge` 를 건다.
 - Renovate PR 에서만 `output-baseline`/`output-diff` 가 돌아 base 와 렌더 결과(페이지 목록·본문 HTML)를 비교한다. 한 글자라도 다르면 실패해 사람이 보게 된다. 사람 PR 은 의도적으로 결과를 바꾸므로 돌지 않는다.
 - 배포 잡은 `needs.ci-ok.result == 'success'` 로 판정한다. 기본 `success()` 는 봇 전용으로 skip 된 상위 잡 때문에 거짓이 되어 배포가 건너뛰어진다.
@@ -39,7 +41,7 @@ main 은 `ci-ok` 체크 통과가 필수다(저장소 ruleset). `ci-ok` 는 모�
 ## 참고
 
 - **결과 재사용**: PR 에서 잡마다 입력 파일 해시로 "통과 표식"을 캐시해 같은 입력이면 설치·실행을 건너뛴다. 입력 범위를 바꾸는 변경(새 파일 종류를 읽는 검사 등)은 그 잡의 fingerprint 패턴도 같이 고친다.
-- **main 재검사 생략**: PR 캐시는 main 에서 읽히지 않는다. 그래서 PR 의 `ci-ok` 가 통과하면 머지 결과의 트리 해시로 `verified-tree-<트리>` 아티팩트를 남긴다. main push 때 `tested` 잡이 같은 트리의 표식을 찾으면 검사 잡을 건너뛰고 build·deploy 만 돈다. PR 검사 뒤 main 이 움직였거나(필수 체크가 strict 가 아니다) 수동 실행이면 트리가 달라 전부 다시 돈다. 그래서 main 실행은 그때만 최후 방어선 역할을 한다. 새 검사 잡도 `needs: tested` 와 같은 `if` 를 붙인다.
+- **main 재검사 생략**: PR 캐시는 main 에서 읽히지 않는다. 그래서 PR 의 `ci-ok` 가 통과하면 머지 결과의 트리 해시로 `verified-tree-<트리>` 아티팩트를 남긴다. main push 때 `tested` 잡이 같은 트리의 표식을 찾으면 검사 잡을 건너뛰고 build·deploy 만 돈다. PR 검사 뒤 main 이 움직였거나(필수 체크가 strict 가 아니다) 수동 실행이면 트리가 달라 전부 다시 돈다. 그래서 main 실행은 그때만 최후 방어선 역할을 한다.
 - **이미지 캐시** 키에는 `astro.config.ts` 와 `src/lib/rehype-post-images.ts` 의 해시가 들어간다(`.github/actions/astro-assets-cache`). 이미지 처리 설정을 다른 파일로 옮기면 키도 고친다.
 - **동시 실행 한도**: 무료 계정은 동시 20잡이다. 대기열에 오래 머물면 다른 실행과 겹친 것이다. PR 이 main 과 충돌하면 `pull_request` 워크플로가 아예 시작되지 않는다(머지 상태 `DIRTY`).
 - **외부 링크 점검**: `links.yml` 이 매주 깨진 외부 링크를 `broken-links` 이슈로 올린다. 옛 글의 죽은 링크는 글 작성자가 판단할 일이라 에이전트가 임의로 고치지 않는다.
