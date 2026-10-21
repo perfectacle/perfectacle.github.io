@@ -10,7 +10,7 @@ interface Props {
   /** Where this page sits below the home page, ending with the page itself. */
   trail: { name: string; path: string }[];
   /** Which game's look the page takes; each theme ships its own font subset. */
-  theme?: 'smrpg' | 'gokuden' | 'kakusei';
+  theme?: 'smrpg' | 'gokuden' | 'kakusei' | 'otogirisou';
   /** Social preview: a 256×224 game screen. */
   image?: { src: string; alt: string };
   copyright?: string[];
@@ -21,6 +21,7 @@ const themes = {
   smrpg: { assets: '/games/kr-patches/sfc/super-mario-rpg', color: '#2b2d31' },
   gokuden: { assets: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki', color: '#0b1a4a' },
   kakusei: { assets: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei', color: '#101829' },
+  otogirisou: { assets: '/games/kr-patches/sfc/otogirisou', color: '#000000' },
 };
 const smrpgAssets = themes.smrpg.assets;
 const {

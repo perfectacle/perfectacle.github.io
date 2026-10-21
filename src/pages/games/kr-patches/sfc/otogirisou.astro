@@ -1,0 +1,324 @@
+---
+import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
+import VersionPair from '../../../../components/kr-patch/VersionPair.astro';
+import PatchBook from '../../../../layouts/PatchBook.astro';
+import { otogirisouPairs, otogirisouVersions } from '../../../../lib/otogirisou-showcase';
+import { OTOGIRISOU, patchedSize } from '../../../../lib/rom-patch';
+
+const base = '/games/kr-patches/sfc/otogirisou';
+const ips = `${base}/downloads/Otogirisou_K_v1_2.ips`;
+const headeredIps = `${base}/downloads/Otogirisou_K_v1_2_Headered.ips`;
+const VISIBLE_PAIRS = 4;
+
+const features = [
+  {
+    image: 'flow-open',
+    alt: '제1장의 선택지들이 나무 모양으로 이어진 플로차트',
+    title: '플로차트',
+    text: '읽는 중에 Select를 누르면 지금까지 고른 선택지와 본 엔딩이 장마다 나무 모양으로 나옵니다. 상자 하나가 선택지 하나이고, 고른 보기는 노란색입니다.',
+    keys: [
+      '십자 키: 상자 고르기',
+      'L / R: 이전 장 / 다음 장',
+      'A: 그 선택지가 나오는 페이지로 이동',
+      'B 또는 Select: 읽던 페이지로 돌아가기',
+    ],
+  },
+  {
+    image: 'flow-jump',
+    alt: '선택지로 이동해 차 안 장면에서 보기를 고르는 화면',
+    title: '선택지로 이동',
+    text: '플로차트에서 상자를 고르면 그 선택지가 나오는 페이지로 바로 갑니다. 그 장면의 배경과 음악도 함께 바뀌니 다른 보기를 골라 다른 결말을 찾아보세요.',
+  },
+  {
+    image: 'menu-all',
+    alt: '제1장부터 제3장까지 장 제목이 나열된 장 목록',
+    title: '장 목록',
+    text: '플로차트에서 Y를 누르면 읽은 장의 목록이 나오고, 고른 장의 처음부터 다시 읽습니다. 이야기를 세 갈래 30장으로 나누고 장마다 제목을 붙였습니다.',
+  },
+  {
+    image: 'flow-endings',
+    alt: '본 엔딩 1개 중 「돌아본 얼굴」이 보이고 나머지는 아직 보지 않음인 엔딩 목록',
+    title: '엔딩 목록',
+    text: '플로차트에서 X를 누르면 엔딩 18개 중 본 엔딩의 제목이 나옵니다. 아직 못 본 엔딩은 「아직 보지 않음」으로 남습니다.',
+  },
+  {
+    image: 'shiori',
+    alt: '첫 슬롯에 「제6장 두 권의 일기」가 적힌 책갈피 화면',
+    title: '책갈피에 마지막 장',
+    text: '세이브 슬롯인 책갈피에 마지막으로 읽은 장이 나와서 어디까지 읽었는지 바로 알 수 있습니다.',
+  },
+  {
+    image: 'backlog-yellow',
+    alt: '되감아 본 페이지의 대사가 노란 글씨로 보이는 화면',
+    title: '되감은 페이지는 노란 글씨',
+    text: 'X로 지난 페이지를 되감아 보면 글씨가 노랗게 바뀌어 지금 읽는 페이지와 구별됩니다.',
+  },
+];
+
+const play = [
+  {
+    image: 'scenes/reading',
+    alt: '빗속에 노란 꽃이 흔들리는 정원 위로 문장이 가득 쓰인 화면',
+    title: '읽기',
+    text: '그림과 소리 위로 문장이 흘러갑니다. A로 다음 페이지를 넘기고, X로 지난 페이지를 되감아 봅니다.',
+  },
+  {
+    image: 'scenes/choice',
+    alt: '매 그림 위로 보기 두 개가 나열된 선택지 화면',
+    title: '선택지',
+    text: '중간중간 나오는 선택지로 이야기가 갈립니다. 같은 장면도 어떤 보기를 고르느냐에 따라 전혀 다른 분위기로 흘러갑니다.',
+  },
+  {
+    image: 'features/jump-ch8',
+    alt: '차고의 낡은 자동차 앞에서 사고가 계획된 범행이었을지 생각하는 장면',
+    title: '여러 번 읽기',
+    text: '엔딩은 18개입니다. 끝까지 읽고 다시 시작하면 처음에는 없던 보기와 다른 이야기가 열립니다.',
+  },
+];
+
+const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
+const korean = patchedSize(OTOGIRISOU);
+---
+
+<PatchBook
+  title="제절초 한글판"
+  trail={[
+    { name: '한글패치', path: '/games/kr-patches/' },
+    { name: '제절초', path: base + '/' },
+  ]}
+  description="1992년 슈퍼 패미컴 사운드 노벨 제절초(弟切草) 한글패치 v1.2. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다."
+  theme="otogirisou"
+  image={{ src: `${base}/images/scenes/title.webp`, alt: '제절초 타이틀 화면' }}
+  copyright={['게임 © 1992 CHUNSOFT']}
+  links={[]}
+>
+  <section class="hero page-width" aria-labelledby="title">
+    <div class="hero-copy">
+      <p class="label">슈퍼 패미컴 · 1992 · 한글패치 v1.2</p>
+      <h1 id="title" class="pixel">
+        제절초 한글판
+      </h1>
+      <p class="lead">
+        가지고 있는 일본판 게임 파일을 고르면 바로 한글판으로 바꿔 저장합니다. 따로 프로그램을 설치하지 않아도 됩니다.
+      </p>
+      <PatchBox ips={ips} spec={OTOGIRISOU} output="Otogirisou_K_v1_2" />
+      <details class="manual">
+        <summary class="pointer">직접 패치하려면</summary>
+        <div class="manual-body">
+          <p>
+            Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 손대지 않은 일본판 원본에 적용하세요. 파일 크기에 맞는
+            IPS를 받으세요. 패치하면 파일이 2MB로 늘어납니다.
+          </p>
+          <ul class="downloads">
+            <li>
+              <a href={ips} download>
+                헤더 없는 파일용 IPS
+              </a>
+              <span>(1MB, {bytes(OTOGIRISOU.size)})</span>
+            </li>
+            <li>
+              <a href={headeredIps} download>
+                헤더 있는 파일용 IPS
+              </a>
+              <span>(1MB+512바이트, {bytes(OTOGIRISOU.size + 512)})</span>
+            </li>
+          </ul>
+          <table>
+            <caption>헤더 없는 파일 기준</caption>
+            <thead>
+              <tr>
+                <th scope="col">구분</th>
+                <th scope="col">크기</th>
+                <th scope="col">CRC32</th>
+                <th scope="col">MD5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">일본판 원본</th>
+                <td>{bytes(OTOGIRISOU.size)}</td>
+                <td>
+                  <code>{OTOGIRISOU.original.crc32}</code>
+                </td>
+                <td>
+                  <code>{OTOGIRISOU.original.md5}</code>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">한글판 v1.2</th>
+                <td>{bytes(korean)}</td>
+                <td>
+                  <code>{OTOGIRISOU.patched.crc32}</code>
+                </td>
+                <td>
+                  <code>{OTOGIRISOU.patched.md5}</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            일본판 세이브 파일(.srm)도 패치한 파일과 같은 이름으로 바꾸면 이어서 할 수 있습니다. 엔딩에서 「終」이 나온
+            뒤에는 리셋해 주세요. 원작과 같은 동작입니다.
+          </p>
+        </div>
+      </details>
+    </div>
+    <figure class="hero-shot screen">
+      <img
+        src={`${base}/images/scenes/title.webp`}
+        width="256"
+        height="224"
+        alt="저택 정문을 배경으로 붉은 글씨 '제절초'와 한자 弟切草가 있는 타이틀 화면"
+        fetchpriority="high"
+      />
+    </figure>
+  </section>
+
+  <nav class="toc page-width frame" aria-label="이 페이지 차례">
+    <a class="pointer" href="#korean">
+      한국어로 바뀐 것
+    </a>
+    <a class="pointer" href="#features">
+      편의 기능
+    </a>
+    <a class="pointer" href="#story">
+      이야기
+    </a>
+    <a class="pointer" href="#play">
+      진행 방식
+    </a>
+  </nav>
+
+  <section id="korean" class="section page-width" aria-labelledby="korean-title">
+    <h2 id="korean-title" class="pixel">
+      한국어로 바뀐 것
+    </h2>
+    <ul class="checklist frame">
+      <li>모든 문장과 선택지</li>
+      <li>이름 입력·책갈피 화면</li>
+      <li>띄어쓰기에 맞춘 줄바꿈</li>
+      <li>장 제목과 엔딩 제목</li>
+    </ul>
+    <p class="section-note">같은 장면을 일본판과 한글판에서 찍어 나란히 놓았습니다.</p>
+    <div class="compare-list">
+      {otogirisouPairs.slice(0, VISIBLE_PAIRS).map(pair => (
+        <VersionPair pair={pair} base={base} versions={otogirisouVersions} />
+      ))}
+    </div>
+    {otogirisouPairs.length > VISIBLE_PAIRS && (
+      <details class="more">
+        <summary class="pointer">{otogirisouPairs.length - VISIBLE_PAIRS}장면 더 보기</summary>
+        <div class="compare-list">
+          {otogirisouPairs.slice(VISIBLE_PAIRS).map(pair => (
+            <VersionPair pair={pair} base={base} versions={otogirisouVersions} />
+          ))}
+        </div>
+      </details>
+    )}
+  </section>
+
+  <section id="features" class="section page-width" aria-labelledby="features-title">
+    <h2 id="features-title" class="pixel">
+      편의 기능
+    </h2>
+    <p>
+      제절초는 선택지에 따라 결말이 여러 개로 갈리지만, 원작에는 읽은 곳으로 되돌아가는 기능이 없어 다른 엔딩을 보려면
+      처음부터 다시 읽어야 했습니다. 같은 춘소프트의 「카마이타치의 밤」을 참고해 아래 기능을 더했습니다.
+    </p>
+    <div class="feature-list">
+      {features.map(item => (
+        <article class="feature frame">
+          <figure class="screen">
+            <img
+              src={`${base}/images/features/${item.image}.webp`}
+              width="256"
+              height="224"
+              alt={item.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <h3 class="pixel">{item.title}</h3>
+          <p>{item.text}</p>
+          {item.keys && (
+            <ul class="keys">
+              {item.keys.map(key => (
+                <li>{key}</li>
+              ))}
+            </ul>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="story" class="section page-width" aria-labelledby="story-title">
+    <h2 id="story-title" class="pixel">
+      이야기
+    </h2>
+    <div class="story">
+      <div class="story-copy">
+        <p class="lead">여름날 해 질 녘, 꾸불꾸불한 산길. 나는 옆자리에 나미를 태우고 집으로 돌아가는 길입니다.</p>
+        <p>
+          길가에 줄지어 핀 노란 꽃은 제절초(弟切草). 그 꽃에 얽힌 기묘한 전설을 들려주던 사이 비가 쏟아지고, 벼락에
+          쓰러진 나무가 차를 덮칩니다. 빗속 숲을 헤매던 두 사람 앞에 거대한 저택이 나타납니다. 비를 피해 들어간 저택에서
+          무슨 일이 기다리고 있는지는 고르는 보기에 따라 달라집니다.
+        </p>
+        <p>
+          춘소프트가 1992년에 낸 슈퍼 패미컴 게임으로, 그림과 소리 위에 문장을 읽어 가는 '사운드 노벨'의 첫 작품입니다.
+        </p>
+      </div>
+      <div class="story-shots">
+        <figure class="screen">
+          <img
+            src={`${base}/images/scenes/road.webp`}
+            width="256"
+            height="224"
+            alt="전조등을 켜고 밤 산길을 달리며 커브 표지판을 읽는 장면"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+        <figure class="screen">
+          <img
+            src={`${base}/images/scenes/mansion.webp`}
+            width="256"
+            height="224"
+            alt="빗속 멀리 보이는 저택을 보고 굉장하다고 중얼거리는 나미"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="play" class="section page-width" aria-labelledby="play-title">
+    <h2 id="play-title" class="pixel">
+      진행 방식
+    </h2>
+    <div class="play-list">
+      {play.map(item => (
+        <article class="play frame">
+          <figure class="screen">
+            <img
+              src={`${base}/images/${item.image}.webp`}
+              width="256"
+              height="224"
+              alt={item.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <h3 class="pixel">{item.title}</h3>
+          <p>{item.text}</p>
+        </article>
+      ))}
+    </div>
+    <p class="back-to-top">
+      <a class="pointer" href="#title">
+        한글판 만들러 가기
+      </a>
+    </p>
+  </section>
+</PatchBook>

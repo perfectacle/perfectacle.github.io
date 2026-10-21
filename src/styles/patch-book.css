@@ -43,6 +43,20 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Galmuri11 Otogirisou';
+  src: url('/games/kr-patches/sfc/otogirisou/fonts/guide.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Galmuri11 Otogirisou';
+  src: url('/games/kr-patches/sfc/otogirisou/fonts/guide-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
   --ink: #f4f1ea;
   --muted: #c9c4b8;
@@ -717,4 +731,86 @@ h3.pixel {
   margin-left: 6px;
   color: var(--muted);
   font-size: 0.875rem;
+}
+
+/* Otogirisou: the sound novel prints pale text straight onto dark scenes; menus mark the choice in pink. */
+
+[data-theme='otogirisou'] {
+  --ink: #deded6;
+  --muted: #aaa69e;
+  --accent: #de7b9c;
+  --link: #eea3bc;
+  --panel: rgb(0 0 0 / 80%);
+  --dialog-ink: #deded6;
+  --pixel: 'Galmuri11 Otogirisou', ui-monospace, monospace;
+}
+
+[data-theme='otogirisou'] body {
+  background:
+    radial-gradient(ellipse at 50% -300px, rgb(120 0 48 / 55%), transparent 900px),
+    linear-gradient(#1a0010, #000 1000px) #000;
+}
+
+[data-theme='otogirisou'] .frame {
+  border: 1px solid rgb(222 222 214 / 22%);
+  border-image: none;
+  padding: 14px 18px;
+}
+
+[data-theme='otogirisou'] .dialog {
+  background: #000;
+  border: 1px solid rgb(222 222 214 / 30%);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* The game's own cursor: a small white triangle before the highlighted line. */
+[data-theme='otogirisou'] .pointer::before {
+  content: '▶' / '';
+  left: -22px;
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--ink);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+[data-theme='otogirisou'] .drop-zone:hover,
+[data-theme='otogirisou'] .drop-zone.dragging,
+[data-theme='otogirisou'] .drop-zone:focus-within {
+  background: rgb(222 123 156 / 12%);
+}
+
+[data-theme='otogirisou'] .checklist li::before {
+  content: '▶ ';
+  color: var(--accent);
+  font-size: 0.75em;
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 24px;
+}
+
+.feature h3 {
+  margin-top: 12px;
+}
+
+.feature p {
+  margin-top: 6px;
+}
+
+.feature .keys {
+  margin-top: 8px;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+/* Story text starts at the top edge of the screen, so the version tag moves out of its way. */
+[data-theme='otogirisou'] .tag {
+  top: auto;
+  bottom: 4px;
 }
