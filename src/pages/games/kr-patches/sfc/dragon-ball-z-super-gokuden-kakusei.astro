@@ -38,6 +38,45 @@ const play = [
   },
 ];
 
+const cast = [
+  {
+    id: 'goku',
+    name: '손오공',
+    role: '계왕권 · 원기옥',
+    text: '어른이 되어 오반의 아버지가 된 오공. 계왕에게 배운 기술로 사이어인과 프리더에 맞섭니다.',
+  },
+  {
+    id: 'piccolo',
+    name: '피콜로',
+    role: '오반의 스승',
+    text: '무술대회 결승에서 마주니어로 오공과 싸운 숙적. 사이어인이 온다는 걸 알고 오반을 단련시킵니다.',
+  },
+  {
+    id: 'vegeta',
+    name: '베지터',
+    role: '사이어인',
+    text: '내퍼와 함께 지구를 찾아온 사이어인. 영원한 생명을 노리고 나메크성의 드래곤볼을 쫓습니다.',
+  },
+  {
+    id: 'krillin',
+    name: '크리링',
+    role: '오공의 친구',
+    text: '무천도사 밑에서 함께 수행한 오공의 단짝. 오반과 함께 나메크성으로 건너갑니다.',
+  },
+  {
+    id: 'frieza',
+    name: '프리더',
+    role: '나메크성의 적',
+    text: '영원한 생명을 얻으려 나메크성의 드래곤볼을 노리는 우주의 지배자. 누구에게나 존댓말을 씁니다.',
+  },
+  {
+    id: 'kaio',
+    name: '계왕',
+    role: '오공의 스승',
+    text: '계왕별에 사는 신. 오공에게 계왕권과 원기옥을 가르칩니다. 말장난을 좋아합니다.',
+  },
+];
+
 const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
 ---
 
@@ -139,6 +178,9 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
     <a class="pointer" href="#story">
       이야기
     </a>
+    <a class="pointer" href="#cast">
+      등장인물
+    </a>
     <a class="pointer" href="#play">
       진행 방식
     </a>
@@ -191,15 +233,15 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
     <div class="story">
       <div class="story-copy">
         <p class="lead">
-          피콜로 대마왕을 쓰러뜨리고 3년, 제23회 천하제일 무술대회에서 오공과 친구들이 다시 모입니다. 그로부터 5년 뒤
-          오공의 형이라는 사이어인 라데츠가 지구에 나타납니다.
+          피콜로 대마왕을 쓰러뜨리고 3년, 제23회 천하제일 무술대회 결승에서 오공은 마주니어와 맞붙습니다. 그로부터 5년
+          뒤 오공의 형이라는 사이어인 라데츠가 지구에 나타납니다.
         </p>
         <p>
-          지구로 오는 베지터와 내퍼에 맞서 1년을 수련하고, 드래곤볼을 찾아 나메크성으로 건너가 프리더와 결전을
-          벌이기까지, 원작 만화 《드래곤볼》의 어른이 된 오공의 이야기를 따라갑니다.
+          지구로 오는 베지터와 내퍼에 맞서 1년을 수련하고, 드래곤볼을 찾아 나메크성으로 건너가 프리더와의 결전 끝에
+          초사이어인으로 각성하기까지, 원작 만화 《드래곤볼》의 어른이 된 오공의 이야기를 따라갑니다.
         </p>
         <p>
-          반다이가 1995년에 낸 슈퍼 패미컴 게임으로, 같은 해 나온{' '}
+          반다이가 1995년 9월 22일에 낸 슈퍼 패미컴 게임으로, 개발은 TOSE가 맡았습니다. 같은 해 3월에 나온{' '}
           <a href="/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/">초오공전 돌격편</a>의 뒤를 잇습니다.
         </p>
       </div>
@@ -226,6 +268,32 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
         </figure>
       </div>
     </div>
+  </section>
+
+  <section id="cast" class="section page-width" aria-labelledby="cast-title">
+    <h2 id="cast-title" class="pixel">
+      등장인물
+    </h2>
+    <ul class="cast-list">
+      {cast.map(member => (
+        <li class="member frame">
+          <img
+            class="portrait"
+            src={`${base}/images/cast/${member.id}.webp`}
+            width="38"
+            height="48"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <h3 class="pixel">{member.name}</h3>
+            <p class="label">{member.role}</p>
+            <p>{member.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
   </section>
 
   <section id="play" class="section page-width" aria-labelledby="play-title">

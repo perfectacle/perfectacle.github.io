@@ -39,6 +39,45 @@ const play = [
   },
 ];
 
+const cast = [
+  {
+    id: 'goku',
+    name: '손오공',
+    role: '여의봉 · 근두운 · 에네르기파',
+    text: '산속에서 할아버지의 유품인 사성구를 지키며 사는 꼬리 달린 소년. 부르마를 만나 처음으로 산을 나섭니다.',
+  },
+  {
+    id: 'bulma',
+    name: '부르마',
+    role: '드래곤 레이더',
+    text: '캡슐 코퍼레이션의 딸. 직접 만든 드래곤 레이더를 들고 드래곤볼을 찾아다닙니다.',
+  },
+  {
+    id: 'roshi',
+    name: '무천도사',
+    role: '에네르기파',
+    text: '거북선인이라고도 불리는 무술의 달인. 오공과 크리링을 제자로 받아 수행시킵니다.',
+  },
+  {
+    id: 'tien',
+    name: '천진반',
+    role: '기공포',
+    text: '학선인의 제자. 천하제일 무술대회에서 오공과 맞붙은 뒤 동료가 됩니다.',
+  },
+  {
+    id: 'tao',
+    name: '타오파이파이',
+    role: '도돈파',
+    text: '레드 리본군이 고용한 세계 최고의 킬러. 학선인의 동생입니다.',
+  },
+  {
+    id: 'popo',
+    name: '미스터 포포',
+    role: '신의 시종',
+    text: '천계에서 신을 모시는 시종. 천계에 올라온 오공의 수행을 맡습니다.',
+  },
+];
+
 const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
 ---
 
@@ -140,6 +179,9 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
     <a class="pointer" href="#story">
       이야기
     </a>
+    <a class="pointer" href="#cast">
+      등장인물
+    </a>
     <a class="pointer" href="#play">
       진행 방식
     </a>
@@ -202,7 +244,11 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
           드래곤볼을 노리는 피라후 일당과 레드 리본군, 무천도사 밑에서의 수행과 천하제일 무술대회를 거쳐 피콜로
           대마왕과의 결전까지, 원작 만화 《드래곤볼》의 소년 오공 시절을 따라갑니다.
         </p>
-        <p>반다이가 1995년에 낸 슈퍼 패미컴 게임입니다. 같은 해 나온 초오공전 각성편이 그 뒤 이야기를 다룹니다.</p>
+        <p>
+          반다이가 1995년 3월 24일에 낸 슈퍼 패미컴 게임으로, 개발은 TOSE가 맡았습니다. 같은 해 9월에 나온{' '}
+          <a href="/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/">초오공전 각성편</a>이 그 뒤 이야기를
+          다룹니다.
+        </p>
       </div>
       <div class="story-shots">
         <figure class="screen">
@@ -227,6 +273,32 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
         </figure>
       </div>
     </div>
+  </section>
+
+  <section id="cast" class="section page-width" aria-labelledby="cast-title">
+    <h2 id="cast-title" class="pixel">
+      등장인물
+    </h2>
+    <ul class="cast-list">
+      {cast.map(member => (
+        <li class="member frame">
+          <img
+            class="portrait"
+            src={`${base}/images/cast/${member.id}.webp`}
+            width="38"
+            height="48"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <h3 class="pixel">{member.name}</h3>
+            <p class="label">{member.role}</p>
+            <p>{member.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
   </section>
 
   <section id="play" class="section page-width" aria-labelledby="play-title">
