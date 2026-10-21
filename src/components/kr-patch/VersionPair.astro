@@ -1,0 +1,46 @@
+---
+import type { VersionPair } from '../../lib/gokuden-showcase';
+
+interface Props {
+  pair: VersionPair;
+  base: string;
+}
+
+const { pair, base } = Astro.props;
+const height = pair.height ?? 224;
+const versions = [
+  { key: 'v10', label: 'v1.0' },
+  { key: 'v11', label: 'v1.1' },
+];
+const frames = Array.from({ length: pair.frames }, (_, i) => i + 1);
+const order = (frame: number) => (pair.frames > 1 ? ` (${frame}/${pair.frames})` : '');
+---
+
+<figure class="compare version-pair">
+  {frames.map(frame => (
+    <div class="compare-shots">
+      {versions.map(version => {
+        const gap = pair.gaps?.[`${version.key}:${frame}`];
+        return gap ? (
+          <div class="screen">
+            <span class="tag">{version.label}</span>
+            <p class="gap-note">{gap}</p>
+          </div>
+        ) : (
+          <div class="screen">
+            <span class:list={['tag', { 'tag-ko': version.key === 'v11' }]}>{version.label}</span>
+            <img
+              src={`${base}/images/patch/${pair.id}_${version.key}_${frame}.webp`}
+              width="256"
+              height={height}
+              alt={`${version.label}: ${pair.alt}${order(frame)}`}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        );
+      })}
+    </div>
+  ))}
+  <figcaption class="dialog">{pair.caption}</figcaption>
+</figure>

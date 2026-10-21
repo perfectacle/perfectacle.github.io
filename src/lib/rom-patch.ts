@@ -1,13 +1,42 @@
-export const SMRPG_ORIGINAL = Object.freeze({
+export interface RomFingerprint {
+  crc32: string;
+  md5: string;
+}
+
+/** One game's Japanese original and its Korean patch result, both without a copier header. */
+export interface RomSpec {
+  /** The name players know the game by; it appears in the guidance messages. */
+  name: string;
+  size: number;
+  /** Cartridge header at $7FC0: internal name, then the map mode, cartridge type and ROM size bytes. */
+  header: { title: string; mapMode: number; cartType: number; romSize: number };
+  original: RomFingerprint;
+  patched: RomFingerprint;
+}
+
+export const SMRPG: RomSpec = {
+  name: '슈퍼 마리오 RPG',
   size: 4194304,
-  crc32: '5527071E',
-  md5: '59483FEB9EB20207E3241E005FBDDE7E',
-});
-export const SMRPG_PATCHED = Object.freeze({
-  size: 4194304,
-  crc32: 'ABD8AC13',
-  md5: '8E5320631EDCF274BF5C7A62C0417C55',
-});
+  header: { title: 'SUPER MARIO RPG', mapMode: 0x23, cartType: 0x35, romSize: 0x0c },
+  original: { crc32: '5527071E', md5: '59483FEB9EB20207E3241E005FBDDE7E' },
+  patched: { crc32: 'ABD8AC13', md5: '8E5320631EDCF274BF5C7A62C0417C55' },
+};
+
+export const GOKUDEN_TOTSUGEKI: RomSpec = {
+  name: '초오공전 돌격편',
+  size: 2097152,
+  header: { title: 'SFX DBZ TOTSUGEKIHEN', mapMode: 0x30, cartType: 0x02, romSize: 0x0b },
+  original: { crc32: 'D531289B', md5: '8BD89634D1B2205B1E7EF016485C0076' },
+  patched: { crc32: '7405D969', md5: 'FCA11D34E7D5AD8D9D2021AC1C8E34E5' },
+};
+
+const COPIER_HEADER = 512;
+const MIN_ROM_SIZE = 1048576;
+
+export const megabytes = (spec: RomSpec) => `${spec.size / 1048576}MB`;
+
+const matches = (fingerprint: RomFingerprint, crc: string, digest: string) =>
+  crc === fingerprint.crc32 && digest === fingerprint.md5;
 
 const crcTable = Uint32Array.from({ length: 256 }, (_, index) => {
   let value = index;
@@ -73,25 +102,25 @@ export interface OriginalValidation {
   valid: boolean;
 }
 
-export function validateOriginal(source: Uint8Array): OriginalValidation {
-  if (source.length !== SMRPG_ORIGINAL.size && source.length !== SMRPG_ORIGINAL.size + 512) {
-    throw new Error('일본판 원본 4MB(4,194,304바이트) 또는 4MB+512바이트(4,194,816바이트) 파일만 사용할 수 있습니다.');
+export function validateOriginal(spec: RomSpec, source: Uint8Array): OriginalValidation {
+  if (source.length !== spec.size && source.length !== spec.size + COPIER_HEADER) {
+    const mb = megabytes(spec);
+    const count = (n: number) => n.toLocaleString('ko-KR');
+    throw new Error(
+      `일본판 원본 ${mb}(${count(spec.size)}바이트) 또는 ${mb}+512바이트(${count(spec.size + COPIER_HEADER)}바이트) 파일만 사용할 수 있습니다.`,
+    );
   }
-  const headered = source.length === SMRPG_ORIGINAL.size + 512;
-  const bytes = source.subarray(headered ? 512 : 0);
+  const headered = source.length === spec.size + COPIER_HEADER;
+  const bytes = source.subarray(headered ? COPIER_HEADER : 0);
   const crc = crc32(bytes);
   const digest = md5(bytes);
-  return {
-    bytes,
-    headered,
-    crc32: crc,
-    md5: digest,
-    valid: crc === SMRPG_ORIGINAL.crc32 && digest === SMRPG_ORIGINAL.md5,
-  };
+  return { bytes, headered, crc32: crc, md5: digest, valid: matches(spec.original, crc, digest) };
 }
 
-export function applyIps(source: Uint8Array, ips: Uint8Array): Uint8Array {
-  if (source.length !== SMRPG_ORIGINAL.size) throw new Error('헤더 없는 4MB ROM에만 패치를 적용할 수 있습니다.');
+/** Applies an IPS patch that must keep the ROM at the spec's size. */
+export function applyIps(spec: RomSpec, source: Uint8Array, ips: Uint8Array): Uint8Array {
+  const mb = megabytes(spec);
+  if (source.length !== spec.size) throw new Error(`헤더 없는 ${mb} ROM에만 패치를 적용할 수 있습니다.`);
   let cursor = 0;
   const patchView = new DataView(ips.buffer, ips.byteOffset, ips.byteLength);
   const read = (count: number): number => {
@@ -107,7 +136,7 @@ export function applyIps(source: Uint8Array, ips: Uint8Array): Uint8Array {
     if (offset === 0x454f46) {
       const remaining = ips.length - cursor;
       if (remaining !== 0 && (remaining !== 3 || read(3) !== output.length)) {
-        throw new Error('IPS 끝부분 또는 출력 크기가 올바르지 않습니다. v1.1은 4MB만 지원합니다.');
+        throw new Error(`IPS 끝부분 또는 출력 크기가 올바르지 않습니다. 이 패치는 ${mb}만 지원합니다.`);
       }
       return output;
     }
@@ -116,10 +145,10 @@ export function applyIps(source: Uint8Array, ips: Uint8Array): Uint8Array {
       size = read(2);
       const value = read(1);
       if (size === 0) throw new Error('IPS 반복 기록의 길이가 올바르지 않습니다.');
-      if (offset + size > output.length) throw new Error('IPS 기록이 4MB ROM 범위를 벗어납니다.');
+      if (offset + size > output.length) throw new Error(`IPS 기록이 ${mb} ROM 범위를 벗어납니다.`);
       output.fill(value, offset, offset + size);
     } else {
-      if (offset + size > output.length) throw new Error('IPS 기록이 4MB ROM 범위를 벗어납니다.');
+      if (offset + size > output.length) throw new Error(`IPS 기록이 ${mb} ROM 범위를 벗어납니다.`);
       if (cursor + size > ips.length) throw new Error('IPS 기록이 중간에 끊겼습니다.');
       output.set(ips.subarray(cursor, cursor + size), offset);
       cursor += size;
@@ -127,14 +156,14 @@ export function applyIps(source: Uint8Array, ips: Uint8Array): Uint8Array {
   }
 }
 
-export function hasSmrpgHeader(normalizedBytes: Uint8Array): boolean {
-  const title = 'SUPER MARIO RPG';
+export function hasGameHeader(spec: RomSpec, normalizedBytes: Uint8Array): boolean {
+  const { title, mapMode, cartType, romSize } = spec.header;
   return (
-    normalizedBytes.length === SMRPG_ORIGINAL.size &&
+    normalizedBytes.length === spec.size &&
     Array.from(title).every((character, index) => normalizedBytes[0x7fc0 + index] === character.charCodeAt(0)) &&
-    normalizedBytes[0x7fd5] === 0x23 &&
-    normalizedBytes[0x7fd6] === 0x35 &&
-    normalizedBytes[0x7fd7] === 0x0c
+    normalizedBytes[0x7fd5] === mapMode &&
+    normalizedBytes[0x7fd6] === cartType &&
+    normalizedBytes[0x7fd7] === romSize
   );
 }
 
@@ -150,49 +179,41 @@ export class PatchOutputHashError extends Error {
 }
 
 export function createPatchedRom(
+  spec: RomSpec,
   source: Uint8Array,
   ips: Uint8Array,
   options: { allowUnverified?: boolean } = {},
 ): Uint8Array {
-  const original = validateOriginal(source);
+  const original = validateOriginal(spec, source);
   const allowUnverified = options.allowUnverified === true;
   if (!original.valid && !allowUnverified)
     throw new Error('일본판 원본의 CRC32와 MD5가 일치하지 않습니다. 수정되지 않은 원본을 확인해 주세요.');
-  if (!hasSmrpgHeader(original.bytes))
-    throw new Error('슈퍼 마리오 RPG의 게임 식별 정보와 다릅니다. 이 파일에는 패치를 적용할 수 없습니다.');
-  const output = applyIps(original.bytes, ips);
-  if (!hasSmrpgHeader(output))
+  if (!hasGameHeader(spec, original.bytes))
+    throw new Error(`${spec.name}의 게임 식별 정보와 다릅니다. 이 파일에는 패치를 적용할 수 없습니다.`);
+  const output = applyIps(spec, original.bytes, ips);
+  if (!hasGameHeader(spec, output))
     throw new Error('패치 결과의 크기 또는 게임 식별 정보가 올바르지 않아 다운로드를 만들지 않았습니다.');
   const crc = crc32(output);
   const digest = md5(output);
-  if (!allowUnverified && (crc !== SMRPG_PATCHED.crc32 || digest !== SMRPG_PATCHED.md5)) {
-    throw new PatchOutputHashError(crc, digest);
-  }
+  if (!allowUnverified && !matches(spec.patched, crc, digest)) throw new PatchOutputHashError(crc, digest);
   return output;
 }
-
-const HEADERED_SIZE = SMRPG_ORIGINAL.size + 512;
-const MIN_ROM_SIZE = 1048576;
 
 export type RomVerdict =
   | { kind: 'too-small' | 'truncated' | 'wrong-size' | 'wrong-game' | 'other-region' }
   | { kind: 'already-korean' | 'original' | 'different'; bytes: Uint8Array; crc32: string; md5: string };
 
 /** First matching rule wins; the order mirrors what a player should hear first. */
-export function classifyRom(source: Uint8Array): RomVerdict {
+export function classifyRom(spec: RomSpec, source: Uint8Array): RomVerdict {
   if (source.length < MIN_ROM_SIZE) return { kind: 'too-small' };
-  if (source.length < SMRPG_ORIGINAL.size) return { kind: 'truncated' };
-  if (source.length !== SMRPG_ORIGINAL.size && source.length !== HEADERED_SIZE) return { kind: 'wrong-size' };
-  const bytes = source.subarray(source.length === HEADERED_SIZE ? 512 : 0);
+  if (source.length < spec.size) return { kind: 'truncated' };
+  if (source.length !== spec.size && source.length !== spec.size + COPIER_HEADER) return { kind: 'wrong-size' };
+  const bytes = source.subarray(source.length === spec.size ? 0 : COPIER_HEADER);
   const crc = crc32(bytes);
   const digest = md5(bytes);
-  if (crc === SMRPG_PATCHED.crc32 && digest === SMRPG_PATCHED.md5) {
-    return { kind: 'already-korean', bytes, crc32: crc, md5: digest };
-  }
-  if (crc === SMRPG_ORIGINAL.crc32 && digest === SMRPG_ORIGINAL.md5) {
-    return { kind: 'original', bytes, crc32: crc, md5: digest };
-  }
-  if (!hasSmrpgHeader(bytes)) return { kind: 'wrong-game' };
+  if (matches(spec.patched, crc, digest)) return { kind: 'already-korean', bytes, crc32: crc, md5: digest };
+  if (matches(spec.original, crc, digest)) return { kind: 'original', bytes, crc32: crc, md5: digest };
+  if (!hasGameHeader(spec, bytes)) return { kind: 'wrong-game' };
   // Cartridge header destination code: 0x00 is Japan; other versions need a different patch.
   if (bytes[0x7fd9] !== 0x00) return { kind: 'other-region' };
   return { kind: 'different', bytes, crc32: crc, md5: digest };
@@ -222,7 +243,10 @@ const romName = /\.(sfc|smc|fig|swc)$/i;
  * Pulls the single ROM out of a zip using the browser's built-in inflater.
  * Returns undefined when the archive needs to be opened by hand (no ROM, several ROMs, encryption, other methods).
  */
-export async function extractRomFromZip(zip: Uint8Array): Promise<{ name: string; bytes: Uint8Array } | undefined> {
+export async function extractRomFromZip(
+  spec: RomSpec,
+  zip: Uint8Array,
+): Promise<{ name: string; bytes: Uint8Array } | undefined> {
   const view = new DataView(zip.buffer, zip.byteOffset, zip.byteLength);
   let end = -1;
   for (let i = zip.length - 22; i >= Math.max(0, zip.length - 65557); i--) {
@@ -248,7 +272,7 @@ export async function extractRomFromZip(zip: Uint8Array): Promise<{ name: string
       local: view.getUint32(cursor + 42, true),
       name: decoder.decode(zip.subarray(cursor + 46, cursor + 46 + nameLength)),
     };
-    if (romName.test(entry.name) || entry.size === SMRPG_ORIGINAL.size || entry.size === HEADERED_SIZE) {
+    if (romName.test(entry.name) || entry.size === spec.size || entry.size === spec.size + COPIER_HEADER) {
       candidates.push(entry);
     }
     cursor += 46 + nameLength + view.getUint16(cursor + 30, true) + view.getUint16(cursor + 32, true);

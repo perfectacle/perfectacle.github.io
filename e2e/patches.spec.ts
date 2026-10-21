@@ -1,7 +1,9 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-for (const path of ['/games/kr-patches/', '/games/kr-patches/sfc/super-mario-rpg/']) {
+const GOKUDEN = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/';
+
+for (const path of ['/games/kr-patches/', '/games/kr-patches/sfc/super-mario-rpg/', GOKUDEN]) {
   for (const colorScheme of ['light', 'dark'] as const) {
     test(`${path} guide works in ${colorScheme}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme });
@@ -86,4 +88,30 @@ test('patch pages describe where they sit and keep analytics off outside the pub
 test('llms.txt points AI assistants to the patch pages', async ({ request }) => {
   const text = await (await request.get('/llms.txt')).text();
   expect(text).toContain(`https://perfectacle.github.io${GAME}`);
+  expect(text).toContain(`https://perfectacle.github.io${GOKUDEN}`);
+});
+
+test('catalogue lists every game page', async ({ page }) => {
+  await page.goto('/games/kr-patches/');
+  for (const path of [GAME, GOKUDEN]) await expect(page.locator(`main h2 a[href="${path}"]`)).toHaveCount(1);
+});
+
+test('Super Gokuden patch box checks for its own 2 MB ROM', async ({ page }) => {
+  await page.goto(GOKUDEN);
+  await expect(page.getByText('일본판 게임 파일 고르기')).toBeInViewport();
+  const input = page.locator('.patch-box input[type=file]');
+  const status = page.locator('.patch-status');
+  await input.setInputFiles({
+    name: 'smrpg.sfc',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.alloc(4 * 1024 * 1024),
+  });
+  await expect(status).toContainText('크기가 2MB인 파일이 필요합니다');
+  await input.setInputFiles({
+    name: 'other.sfc',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.alloc(2 * 1024 * 1024),
+  });
+  await expect(status).toContainText('초오공전 돌격편 한글판을 만들 수 없습니다');
+  for (const link of await page.locator('a[href$=".ips"]').all()) await expect(link).toHaveAttribute('download', '');
 });
