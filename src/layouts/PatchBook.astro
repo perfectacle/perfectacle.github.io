@@ -1,0 +1,82 @@
+---
+import '../styles/patch-book.css';
+import Analytics from '../components/Analytics.astro';
+import { SITE } from '../lib/posts.ts';
+import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Where this page sits below the home page, ending with the page itself. */
+  trail: { name: string; path: string }[];
+}
+
+const { title, description, trail } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const assets = '/games/kr-patches/sfc/super-mario-rpg';
+const image = new URL(`${assets}/images/world-map.webp`, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | {SITE.title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.author} />
+    <meta name="theme-color" content="#2b2d31" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/images/favicon/favicon-32x32.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/images/favicon/apple-touch-icon.png" />
+    <link rel="alternate" type="application/atom+xml" title={SITE.title} href="/atom.xml" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <link rel="preload" href={`${assets}/fonts/guide.woff2`} as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="224" />
+    <meta property="og:image:alt" content="슈퍼 마리오 RPG의 월드맵" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline type="application/ld+json" set:html={serializeJsonLd(breadcrumbs(SITE, trail))} />
+    <Analytics />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      본문으로 건너뛰기
+    </a>
+    <header class="masthead page-width">
+      <a class="wordmark" href="/">
+        {SITE.title}
+      </a>
+      <nav aria-label="사이트 메뉴">
+        <a class="pointer" href="/games/kr-patches/">
+          한글패치 목록
+        </a>
+        <a class="pointer" href="/">
+          블로그
+        </a>
+      </nav>
+    </header>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="page-footer page-width">
+      <p>게임 및 캐릭터 © 1995 Nintendo / SQUARE ENIX CO., LTD. 화면과 그림은 원작 게임에서 가져왔습니다.</p>
+      <p>
+        제목·라벨 글꼴은 <a href="https://galmuri.quiple.dev/">Galmuri</a>(SIL Open Font License 1.1)입니다.
+      </p>
+      <p>
+        <a href="https://cafe.naver.com/hansicgu/37278">분석 도구 안내</a>
+        <span aria-hidden="true"> · </span>
+        <a href="https://www.nintendo.co.jp/clvs/manuals/ja/pdf/CLV-P-VABQJ.pdf">원작 공식 설명서</a>
+      </p>
+    </footer>
+  </body>
+</html>

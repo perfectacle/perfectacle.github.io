@@ -1,0 +1,299 @@
+---
+import ComparePair from '../../../../components/smrpg/ComparePair.astro';
+import PatchBox from '../../../../components/smrpg/PatchBox.astro';
+import PatchBook from '../../../../layouts/PatchBook.astro';
+import { compareGroups } from '../../../../lib/smrpg-showcase';
+import { SMRPG_ORIGINAL, SMRPG_PATCHED } from '../../../../lib/smrpg-patch';
+
+const base = '/games/kr-patches/sfc/super-mario-rpg';
+const ips = `${base}/downloads/Super_Mario_RPG_K_v1_1.ips`;
+const VISIBLE_PER_GROUP = 4;
+
+const play = [
+  {
+    image: 'moleville',
+    alt: '바위 언덕 사이로 두더지 마을을 둘러보는 마리오',
+    title: '탐험',
+    text: '비스듬히 내려다보는 입체 세계를 걷고 점프합니다. 높은 곳에 올라서거나 숨은 상자를 찾으며 다음 마을로 향합니다.',
+  },
+  {
+    image: 'battle',
+    alt: '마리오가 전투 명령을 고르는 화면',
+    title: '전투',
+    text: '필드에 보이는 적과 부딪히면 전투가 시작됩니다. 버튼마다 공격·필살기·아이템·방어 명령이 하나씩 붙어 있습니다.',
+  },
+  {
+    image: 'specials',
+    alt: '마리오와 마로의 필살기 설명이 보이는 메뉴',
+    title: '타이밍',
+    text: '공격이 닿는 순간 버튼을 누르면 피해가 커지고, 맞는 순간 누르면 피해를 줄입니다. 필살기마다 누르는 방법이 다릅니다.',
+  },
+  {
+    image: 'shop',
+    alt: '아이템 이름과 설명이 보이는 상점 화면',
+    title: '성장',
+    text: '레벨이 오르면 능력치 하나를 골라 키웁니다. 상점에서 장비와 아이템을 갖추고 동료를 바꿔 가며 싸웁니다.',
+  },
+];
+
+const cast = [
+  {
+    id: 'mario',
+    name: '마리오',
+    role: '점프 · 불꽃',
+    text: '이번에도 피치 공주를 구하러 나섰다가, 일곱 별을 찾는 모험을 맡게 됩니다.',
+  },
+  {
+    id: 'mallow',
+    name: '마로',
+    role: '날씨 · 회복',
+    text: '자신을 개구리라 믿는 구름 같은 아이. 잘 울지만 날씨를 부리는 힘이 있습니다.',
+  },
+  {
+    id: 'geno',
+    name: '지노',
+    role: '별의 사자',
+    text: '별에서 내려와 인형의 몸을 빌린 사자. 일곱 별을 되찾으려 마리오와 함께합니다.',
+  },
+  {
+    id: 'bowser',
+    name: '쿠파',
+    role: '힘 · 물리 공격',
+    text: '거대한 검에 성을 빼앗긴 라이벌. 성을 되찾으려 이번에는 같은 편이 됩니다.',
+  },
+  {
+    id: 'peach',
+    name: '피치',
+    role: '회복 · 지원',
+    text: '구해야 할 공주이자, 합류한 뒤에는 회복으로 일행을 지탱하는 동료입니다.',
+  },
+];
+
+const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
+---
+
+<PatchBook
+  title="슈퍼 마리오 RPG 한글판"
+  trail={[
+    { name: '한글패치', path: '/games/kr-patches/' },
+    { name: '슈퍼 마리오 RPG', path: base + '/' },
+  ]}
+  description="1996년 슈퍼 패미컴 슈퍼 마리오 RPG 한글패치 v1.1. 일본판 게임 파일을 고르면 이 페이지에서 바로 한글판을 만듭니다."
+>
+  <section class="hero page-width" aria-labelledby="title">
+    <div class="hero-copy">
+      <p class="label">슈퍼 패미컴 · 1996 · 한글패치 v1.1</p>
+      <h1 id="title" class="pixel">
+        슈퍼 마리오 RPG 한글판
+      </h1>
+      <p class="lead">
+        가지고 있는 일본판 게임 파일을 고르면 바로 한글판으로 바꿔 저장합니다. 따로 프로그램을 설치하지 않아도 됩니다.
+      </p>
+      <PatchBox ips={ips} />
+      <details class="manual">
+        <summary class="pointer">직접 패치하려면</summary>
+        <div class="manual-body">
+          <p>
+            <a href={ips} download>
+              IPS 파일 받기
+            </a>
+            를 누른 뒤 Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 헤더 없는 일본판 원본에 적용하세요. 헤더가 있는
+            파일(4MB+512바이트)은 이 페이지의 패치 상자를 쓰면 알아서 처리합니다.
+          </p>
+          <table>
+            <caption>헤더 없는 파일 기준</caption>
+            <thead>
+              <tr>
+                <th scope="col">구분</th>
+                <th scope="col">크기</th>
+                <th scope="col">CRC32</th>
+                <th scope="col">MD5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">일본판 원본</th>
+                <td>{bytes(SMRPG_ORIGINAL.size)}</td>
+                <td>
+                  <code>{SMRPG_ORIGINAL.crc32}</code>
+                </td>
+                <td>
+                  <code>{SMRPG_ORIGINAL.md5}</code>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">한글판 v1.1</th>
+                <td>{bytes(SMRPG_PATCHED.size)}</td>
+                <td>
+                  <code>{SMRPG_PATCHED.crc32}</code>
+                </td>
+                <td>
+                  <code>{SMRPG_PATCHED.md5}</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+    <figure class="hero-shot screen">
+      <img
+        src={`${base}/images/patch/geno_sky_ko.webp`}
+        width="256"
+        height="224"
+        alt="한국어 대사로 '나는 천공의 사자!'라고 외치는 지노"
+        fetchpriority="high"
+      />
+    </figure>
+  </section>
+
+  <nav class="toc page-width frame" aria-label="이 페이지 차례">
+    <a class="pointer" href="#korean">
+      한국어로 바뀐 것
+    </a>
+    <a class="pointer" href="#story">
+      이야기
+    </a>
+    <a class="pointer" href="#play">
+      진행 방식
+    </a>
+    <a class="pointer" href="#cast">
+      주인공과 동료
+    </a>
+  </nav>
+
+  <section id="korean" class="section page-width" aria-labelledby="korean-title">
+    <h2 id="korean-title" class="pixel">
+      한국어로 바뀐 것
+    </h2>
+    <ul class="checklist frame">
+      <li>모든 대사와 이름</li>
+      <li>메뉴·상점·아이템 설명</li>
+      <li>전투 명령·적 이름·필살기 설명</li>
+      <li>동료마다 다른 원작의 말투</li>
+    </ul>
+    <p class="section-note">같은 장면을 같은 입력으로 찍어 일본판과 한글판을 나란히 놓았습니다.</p>
+    {compareGroups.map(group => (
+      <section class="compare-group" aria-labelledby={`group-${group.id}`}>
+        <h3 id={`group-${group.id}`} class="pixel">
+          {group.title}
+        </h3>
+        <p>{group.summary}</p>
+        <div class="compare-list">
+          {group.pairs.slice(0, VISIBLE_PER_GROUP).map(pair => (
+            <ComparePair pair={pair} base={base} />
+          ))}
+        </div>
+        {group.pairs.length > VISIBLE_PER_GROUP && (
+          <details class="more">
+            <summary class="pointer">{group.pairs.length - VISIBLE_PER_GROUP}장면 더 보기</summary>
+            <div class="compare-list">
+              {group.pairs.slice(VISIBLE_PER_GROUP).map(pair => (
+                <ComparePair pair={pair} base={base} />
+              ))}
+            </div>
+          </details>
+        )}
+      </section>
+    ))}
+  </section>
+
+  <section id="story" class="section page-width" aria-labelledby="story-title">
+    <h2 id="story-title" class="pixel">
+      이야기
+    </h2>
+    <div class="story">
+      <div class="story-copy">
+        <p class="lead">
+          피치 공주를 구하러 쿠파 성에 간 마리오. 그런데 하늘에서 거대한 검이 내리꽂히고, 마리오는 성 밖으로 튕겨
+          나갑니다.
+        </p>
+        <p>
+          검과 함께 나타난 무리는 소원을 들어주는 별의 길을 끊어 버렸고, 산산이 흩어진 일곱 별 조각은 세계 곳곳으로
+          떨어졌습니다. 마리오는 버섯 왕국에서 만난 뜻밖의 동료들과 함께 별을 되찾으러 떠납니다.
+        </p>
+        <p>
+          Square가 개발하고 Nintendo가 1996년에 발매한 슈퍼 패미컴 RPG입니다. 마리오다운 점프와 장난기 위에 동료를
+          모으고 성장하는 RPG의 재미를 얹었습니다.
+        </p>
+      </div>
+      <div class="story-shots">
+        <figure class="screen">
+          <img
+            src={`${base}/images/patch/chancellor_kidnap_ko.webp`}
+            width="256"
+            height="224"
+            alt="피치 공주가 또 납치됐다며 놀라는 버섯 대신"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+        <figure class="screen">
+          <img
+            src={`${base}/images/scenes/castle.webp`}
+            width="256"
+            height="224"
+            alt="공주의 기운을 느끼며 성 안을 걷는 마리오"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="play" class="section page-width" aria-labelledby="play-title">
+    <h2 id="play-title" class="pixel">
+      진행 방식
+    </h2>
+    <div class="play-list">
+      {play.map(item => (
+        <article class="play frame">
+          <figure class="screen">
+            <img
+              src={`${base}/images/scenes/${item.image}.webp`}
+              width="256"
+              height="224"
+              alt={item.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <h3 class="pixel">{item.title}</h3>
+          <p>{item.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="cast" class="section page-width" aria-labelledby="cast-title">
+    <h2 id="cast-title" class="pixel">
+      주인공과 동료
+    </h2>
+    <ul class="cast-list">
+      {cast.map(member => (
+        <li class="member frame">
+          <img
+            class="portrait"
+            src={`${base}/images/cast/${member.id}.webp`}
+            width="72"
+            height="72"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <h3 class="pixel">{member.name}</h3>
+            <p class="label">{member.role}</p>
+            <p>{member.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <p class="back-to-top">
+      <a class="pointer" href="#title">
+        한글판 만들러 가기
+      </a>
+    </p>
+  </section>
+</PatchBook>

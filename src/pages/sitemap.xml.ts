@@ -18,6 +18,8 @@ export async function GET() {
     ['/archives/'],
     ['/tags/'],
     ['/categories/'],
+    ['/games/kr-patches/'],
+    ['/games/kr-patches/sfc/super-mario-rpg/'],
     ...(await getTags()).map(t => [`/tags/${t.slug}/`] as [string]),
     ...flattenCategories(await getCategoryTree()).map(c => [categoryPath(c.path)] as [string]),
   ];
