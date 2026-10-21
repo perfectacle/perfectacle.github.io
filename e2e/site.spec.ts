@@ -215,6 +215,31 @@ test('llms.txt lists posts for AI assistants', async ({ request }) => {
   expect(text).toContain(`https://perfectacle.github.io${POST}`);
 });
 
+test('Disqus loads comments without its ads, recommendations or ad tracker', async ({ page }) => {
+  // A stand-in embed.js that inserts what the real one does, so the test needs no network.
+  await page.route('https://exobud.disqus.com/embed.js', route =>
+    route.fulfill({
+      contentType: 'text/javascript',
+      body: `
+        const thread = document.getElementById('disqus_thread');
+        const frame = src => Object.assign(document.createElement('iframe'), { src });
+        thread.appendChild(frame('https://disqus.com/embed/comments/?f=exobud'));
+        thread.insertBefore(frame('//tempest.services.disqus.com/ads-iframe/taboola/?position=top'), thread.firstChild);
+        for (const src of ['https://exobud.disqus.com/recommendations.js', 'https://d-code.liadm.com/did-0049.min.js'])
+          document.head.appendChild(Object.assign(document.createElement('script'), { src }));
+      `,
+    }),
+  );
+  await page.route(/disqus\.com\/embed\/comments|liadm\.com|recommendations\.js|ads-iframe/, route =>
+    route.fulfill({ body: '' }),
+  );
+  await page.goto(POST);
+  await page.locator('#disqus_thread .load').click();
+  await expect(page.locator('#disqus_thread iframe[src*="/embed/comments/"]')).toHaveCount(1);
+  await expect(page.locator('iframe[src*="/ads-iframe/"]')).toHaveCount(0);
+  await expect(page.locator('script[src*="recommendations.js"], script[src*="liadm.com"]')).toHaveCount(0);
+});
+
 test('post lists related posts', async ({ page }) => {
   await page.goto(POST);
   await expect(page.getByRole('region', { name: '관련 글' }).getByRole('link').first()).toBeVisible();
