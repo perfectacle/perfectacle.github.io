@@ -21,10 +21,11 @@
 
 ## 의존성·CI·git
 
-| ID     | 요지                                                                        | 소유자                                                                      |
-| ------ | --------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| DEP-01 | 릴리스된 지 7일 지난 버전만 쓴다(보안 수정만 예외)                          | [dependencies §DEP-01](../skills/dependencies/SKILL.md#dep-01--7일-쿨다운)  |
-| DEP-02 | 의존성을 바꾸면 lockfile 과 `pnpm install --frozen-lockfile` 이 맞아야 한다 | [dependencies §DEP-02](../skills/dependencies/SKILL.md#dep-02--lockfile)    |
-| CI-01  | main 은 `ci-ok` 통과가 필수, 통과한 PR 은 자동 머지                         | [ci §CI-01](../skills/ci/SKILL.md#ci-01--ci-ok-와-자동-머지)                |
-| CI-02  | 실패하면 기준을 낮추지 말고 원인을 고친다                                   | [ci §CI-02](../skills/ci/SKILL.md#ci-02--실패는-원인을-고친다)              |
-| GIT-01 | 코드·설정·문서 변경은 브랜치 → PR, 머지 전 로컬 검증                        | [git-workflow §GIT-01](../skills/git-workflow/SKILL.md#git-01--브랜치와-pr) |
+| ID     | 요지                                                                        | 소유자                                                                            |
+| ------ | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| DEP-01 | 릴리스된 지 7일 지난 버전만 쓴다(보안 수정만 예외)                          | [dependencies §DEP-01](../skills/dependencies/SKILL.md#dep-01--7일-쿨다운)        |
+| DEP-02 | 의존성을 바꾸면 lockfile 과 `pnpm install --frozen-lockfile` 이 맞아야 한다 | [dependencies §DEP-02](../skills/dependencies/SKILL.md#dep-02--lockfile)          |
+| CI-01  | main 은 `ci-ok` 통과가 필수, 통과한 PR 은 자동 머지                         | [ci §CI-01](../skills/ci/SKILL.md#ci-01--ci-ok-와-자동-머지)                      |
+| CI-02  | 실패하면 기준을 낮추지 말고 원인을 고친다                                   | [ci §CI-02](../skills/ci/SKILL.md#ci-02--실패는-원인을-고친다)                    |
+| GIT-01 | 코드·설정·문서 변경은 브랜치 → PR, 머지 전 로컬 검증                        | [git-workflow §GIT-01](../skills/git-workflow/SKILL.md#git-01--브랜치와-pr)       |
+| GIT-02 | 작업마다 최신 `origin/main` 에서 워크트리를 파고, 머지·배포가 끝나면 지운다 | [git-workflow §GIT-02](../skills/git-workflow/SKILL.md#git-02--작업마다-워크트리) |
