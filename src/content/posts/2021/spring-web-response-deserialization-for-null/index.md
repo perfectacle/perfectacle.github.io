@@ -1,7 +1,7 @@
 ---
 title: (Spring) 외부 API의 Response 객체를 만들 때 null을 주의하자
 tags:
-  - Web
+  - DTO
   - Jackson
 categories:
   - Spring

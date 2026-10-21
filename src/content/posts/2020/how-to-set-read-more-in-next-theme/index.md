@@ -1,6 +1,6 @@
 ---
 title: (Hexo) NexT 테마에서 '더 읽어보기'를 설정하는 방법
-tags: [Theme, NexT]
+tags: [NexT]
 categories: [도구, Hexo]
 date: 2020-05-31 12:15:21
 ---

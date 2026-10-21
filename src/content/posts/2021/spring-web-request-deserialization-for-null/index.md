@@ -1,7 +1,7 @@
 ---
 title: (Spring) 외부에서 호출하는 Request 객체를 만들 때 null을 주의하자
 tags:
-  - Web
+  - DTO
   - Jackson
 categories:
   - Spring

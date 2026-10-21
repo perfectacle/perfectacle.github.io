@@ -1,7 +1,7 @@
 ---
 title: (자알쓰) 디버깅
 tags:
-  - 디버깅
+  - Debugging
 categories:
   - JavaScript
   - 자알쓰

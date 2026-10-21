@@ -2,7 +2,7 @@
 title:  (Webpack) devtool 옵션 퍼포먼스
 date: 2016-11-14 22:48:48
 categories: [Frontend, Webpack]
-tags: [npm, Debugging, Performance, Source Map]
+tags: [Debugging, Performance, Source Map]
 ---
 ![](./thumb.webp)
 

@@ -1,7 +1,7 @@
 ---
 title: (자알쓰) 변수
 tags:
-  - 변수
+  - Variable
 categories:
   - JavaScript
   - 자알쓰

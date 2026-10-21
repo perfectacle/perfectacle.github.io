@@ -4,7 +4,7 @@ categories:
   - JavaScript
   - ES2015+
 tags:
-  - EPSILON
+  - Floating Point
 date: 2017-08-04 09:25:57
 ---
 

@@ -2,7 +2,7 @@
 title: (React Router) v4로 마이그레이션 해보자!
 date: 2017-03-25 09:39:14
 categories: [Frontend, React]
-tags: [npm, Webpack2, Router]
+tags: [React Router]
 ---
 ![](./thumb.webp)  
 

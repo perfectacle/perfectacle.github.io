@@ -2,7 +2,7 @@
 title: (Java) 자바의 정석 3판 003일차 - 형변환, 정규화, 연산자
 date: 2017-01-01 20:00:22
 categories: [Java, 언어]
-tags: [자바의 정석, 형변환, 정규화, 연산자]
+tags: [자바의 정석, Type Casting, Floating Point, Operator]
 series: '자바의 정석 3판 스터디'
 seriesOrder: 3
 ---

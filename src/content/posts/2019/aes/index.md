@@ -1,7 +1,7 @@
 ---
 title: AES 256 CBC + PBKDF2
 tags:
-  - 암호화
+  - Cryptography
   - AES
 categories:
   - CS

@@ -1,7 +1,7 @@
 ---
 title: (Java) 자바의 정석 3판 014일차 - 오류(에러와 예외), 유용한 클래스
 categories: [Java, 언어]
-tags: [자바의 정석, 예외, 내장 클래스]
+tags: [자바의 정석, Exception]
 date: 2017-08-04 15:17:49
 series: '자바의 정석 3판 스터디'
 seriesOrder: 14

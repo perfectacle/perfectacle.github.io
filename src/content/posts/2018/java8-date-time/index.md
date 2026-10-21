@@ -1,9 +1,8 @@
 ---
 title: (Java8) 날짜와 시간 API
 tags:
-  - Java8
-  - Date
-  - Time
+  - Java 8
+  - DateTime
 categories:
   - Java
   - 언어

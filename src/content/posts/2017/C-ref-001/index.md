@@ -2,7 +2,7 @@
 title: (C/C++) 참고용 정리 - 포인터와 배열
 date: 2017-01-23 11:00:21
 categories: [CS, ASM·C/C++]
-tags: [C, C++, Pointer, Address, Array]
+tags: [C, C++, Pointer, Array]
 series: 'C/C++ 참고용 정리'
 seriesOrder: 1
 ---

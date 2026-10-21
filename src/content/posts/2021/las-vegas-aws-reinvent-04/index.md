@@ -1,6 +1,6 @@
 ---
 title: 라스베가스를 다녀오고... 4편 (feat. AWS re:Invent 2021) - 세미나 넷째 날
-tags: [reinvent]
+tags: ['AWS re:Invent']
 categories: [일상, 여행]
 date: 2021-12-31 21:28:31
 series: '라스베가스를 다녀오고... (AWS re:Invent 2021)'

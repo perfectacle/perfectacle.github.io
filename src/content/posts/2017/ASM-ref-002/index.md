@@ -2,7 +2,7 @@
 title: (ASM) 참고용 정리 - 리틀 엔디안, 빅 엔디안
 date: 2017-01-24 09:52:21
 categories: [CS, ASM·C/C++]
-tags: [ASM, Assembly, Endian]
+tags: [Assembly, Endianness]
 series: 'ASM 참고용 정리'
 seriesOrder: 2
 ---

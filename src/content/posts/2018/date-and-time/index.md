@@ -1,11 +1,8 @@
 ---
 title: 날짜와 시간
 tags:
-  - Time
-  - Date
+  - DateTime
   - UTC
-  - GMT
-  - Zulu
 categories:
   - CS
   - 상식

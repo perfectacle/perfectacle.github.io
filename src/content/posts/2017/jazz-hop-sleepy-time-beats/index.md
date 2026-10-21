@@ -1,7 +1,7 @@
 ---
 title: (JazzHop) redpest - Sleepy time beats 
 date: 2017-08-28 22:07:11
-tags: [Jazz, Hiphop, JazzHop, Lofi, Chill, Sleepy]
+tags: [JazzHop, Lofi]
 categories: [일상, 취미]
 image: ./thumb.webp
 ---

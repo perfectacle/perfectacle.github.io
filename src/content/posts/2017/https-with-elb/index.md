@@ -1,7 +1,7 @@
 ---
 title: (ELB) HTTPS 서버를 열어보자
 date: 2017-10-05 17:50:29
-tags: [ELB, CertificateManager, HTTPS, EC2, Route53, Nginx]
+tags: [ELB, ACM, HTTPS, EC2, Route53, Nginx]
 categories: [Infra, AWS]
 ---
 ![요청을 분산해주는 Load Balancer](./thumb.webp)  

@@ -2,7 +2,7 @@
 title: (ES6+) 비동기 함수를 깔끔하게 처리해보자. 
 date: 2017-04-03 21:18:09
 categories: [JavaScript, ES2015+]
-tags: [callback, Promise, async, await]
+tags: [callback, Promise, async]
 ---
 ![](./thumb.webp)
 
