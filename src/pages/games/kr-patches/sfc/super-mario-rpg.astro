@@ -1,9 +1,9 @@
 ---
 import ComparePair from '../../../../components/smrpg/ComparePair.astro';
-import PatchBox from '../../../../components/smrpg/PatchBox.astro';
+import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import { compareGroups } from '../../../../lib/smrpg-showcase';
-import { SMRPG_ORIGINAL, SMRPG_PATCHED } from '../../../../lib/smrpg-patch';
+import { SMRPG } from '../../../../lib/rom-patch';
 
 const base = '/games/kr-patches/sfc/super-mario-rpg';
 const ips = `${base}/downloads/Super_Mario_RPG_K_v1_1.ips`;
@@ -89,7 +89,7 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
       <p class="lead">
         가지고 있는 일본판 게임 파일을 고르면 바로 한글판으로 바꿔 저장합니다. 따로 프로그램을 설치하지 않아도 됩니다.
       </p>
-      <PatchBox ips={ips} />
+      <PatchBox ips={ips} spec={SMRPG} output="Super_Mario_RPG_K_v1_1" />
       <details class="manual">
         <summary class="pointer">직접 패치하려면</summary>
         <div class="manual-body">
@@ -113,22 +113,22 @@ const bytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
             <tbody>
               <tr>
                 <th scope="row">일본판 원본</th>
-                <td>{bytes(SMRPG_ORIGINAL.size)}</td>
+                <td>{bytes(SMRPG.size)}</td>
                 <td>
-                  <code>{SMRPG_ORIGINAL.crc32}</code>
+                  <code>{SMRPG.original.crc32}</code>
                 </td>
                 <td>
-                  <code>{SMRPG_ORIGINAL.md5}</code>
+                  <code>{SMRPG.original.md5}</code>
                 </td>
               </tr>
               <tr>
                 <th scope="row">한글판 v1.1</th>
-                <td>{bytes(SMRPG_PATCHED.size)}</td>
+                <td>{bytes(SMRPG.size)}</td>
                 <td>
-                  <code>{SMRPG_PATCHED.crc32}</code>
+                  <code>{SMRPG.patched.crc32}</code>
                 </td>
                 <td>
-                  <code>{SMRPG_PATCHED.md5}</code>
+                  <code>{SMRPG.patched.md5}</code>
                 </td>
               </tr>
             </tbody>

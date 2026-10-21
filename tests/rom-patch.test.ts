@@ -2,17 +2,20 @@ import { createHash } from 'node:crypto';
 import { describe, expect, it, vi } from 'vitest';
 import { deflateRawSync } from 'node:zlib';
 import {
+  GOKUDEN_TOTSUGEKI,
+  SMRPG,
   applyIps,
   classifyRom,
   crc32,
   createPatchedRom,
   extractRomFromZip,
-  hasSmrpgHeader,
+  hasGameHeader,
   isOtherArchive,
   isZip,
   md5,
   validateOriginal,
-} from '../src/lib/smrpg-patch.ts';
+  type RomSpec,
+} from '../src/lib/rom-patch.ts';
 
 // Most cases hash a full 4 MB ROM, which can exceed the default timeout on a loaded machine.
 vi.setConfig({ testTimeout: 30000 });
@@ -47,7 +50,7 @@ describe('MD5 matches independent reference values', () => {
 
 it('applies literal and RLE records without mutating the original', () => {
   const source = new Uint8Array(4194304);
-  const result = applyIps(source, patch(0, 0, 1, 0, 3, 9, 8, 7, 0, 0, 8, 0, 0, 0, 3, 170));
+  const result = applyIps(SMRPG, source, patch(0, 0, 1, 0, 3, 9, 8, 7, 0, 0, 8, 0, 0, 0, 3, 170));
   expect(Array.from(result.slice(0, 12))).toEqual([0, 9, 8, 7, 0, 0, 0, 0, 170, 170, 170, 0]);
   expect(source.every(value => value === 0)).toBe(true);
   expect(result.length).toBe(source.length);
@@ -65,17 +68,17 @@ for (const [name, data] of [
   ['changed output size trailer', new Uint8Array([...patch(), 63, 255, 255])],
 ] as const) {
   it(`rejects ${name}`, () => {
-    expect(() => applyIps(new Uint8Array(4194304), data)).toThrow();
+    expect(() => applyIps(SMRPG, new Uint8Array(4194304), data)).toThrow();
   });
 }
 
 it('refuses to patch an unidentified original', () => {
-  expect(() => createPatchedRom(new Uint8Array(4194304), patch())).toThrow();
+  expect(() => createPatchedRom(SMRPG, new Uint8Array(4194304), patch())).toThrow();
 });
 
 it('accepts an IPS EOF trailer only when it preserves the fixed output size', () => {
   const source = new Uint8Array(4194304);
-  expect(applyIps(source, new Uint8Array([...patch(), 64, 0, 0]))).toEqual(source);
+  expect(applyIps(SMRPG, source, new Uint8Array([...patch(), 64, 0, 0]))).toEqual(source);
 });
 
 const unknownRevision = () => {
@@ -87,9 +90,9 @@ const unknownRevision = () => {
 
 it('recognizes a plausible game header without claiming the ROM is verified', () => {
   const bytes = unknownRevision();
-  expect(hasSmrpgHeader(bytes)).toBe(true);
-  expect(validateOriginal(bytes).valid).toBe(false);
-  expect(hasSmrpgHeader(new Uint8Array(4194304))).toBe(false);
+  expect(hasGameHeader(SMRPG, bytes)).toBe(true);
+  expect(validateOriginal(SMRPG, bytes).valid).toBe(false);
+  expect(hasGameHeader(SMRPG, new Uint8Array(4194304))).toBe(false);
 });
 
 it('normalizes a 512-byte copier header before computing both hashes', () => {
@@ -97,7 +100,7 @@ it('normalizes a 512-byte copier header before computing both hashes', () => {
   const headered = new Uint8Array(bytes.length + 512);
   headered.fill(170, 0, 512);
   headered.set(bytes, 512);
-  const result = validateOriginal(headered);
+  const result = validateOriginal(SMRPG, headered);
   expect(result.headered).toBe(true);
   expect(result.bytes).toEqual(bytes);
   expect(result.crc32).toBe(crc32(bytes));
@@ -107,20 +110,22 @@ it('normalizes a 512-byte copier header before computing both hashes', () => {
 it('requires an explicit override to patch a plausible but unknown original', () => {
   const bytes = unknownRevision();
   const ips = patch(0, 0, 1, 0, 1, 42);
-  expect(() => createPatchedRom(bytes, ips)).toThrow();
-  const result = createPatchedRom(bytes, ips, { allowUnverified: true });
+  expect(() => createPatchedRom(SMRPG, bytes, ips)).toThrow();
+  const result = createPatchedRom(SMRPG, bytes, ips, { allowUnverified: true });
   expect(result[1]).toBe(42);
   expect(bytes[1]).toBe(0);
 });
 
 it('still blocks unrelated games, wrong sizes and damaged IPS in override mode', () => {
-  expect(() => createPatchedRom(new Uint8Array(4194304), patch(), { allowUnverified: true })).toThrow();
-  expect(() => createPatchedRom(new Uint8Array(10), patch(), { allowUnverified: true })).toThrow();
-  expect(() => createPatchedRom(unknownRevision(), encode('PATCH'), { allowUnverified: true })).toThrow();
+  expect(() => createPatchedRom(SMRPG, new Uint8Array(4194304), patch(), { allowUnverified: true })).toThrow();
+  expect(() => createPatchedRom(SMRPG, new Uint8Array(10), patch(), { allowUnverified: true })).toThrow();
+  expect(() => createPatchedRom(SMRPG, unknownRevision(), encode('PATCH'), { allowUnverified: true })).toThrow();
 });
 
 it('blocks a structurally invalid patch result even when override is explicit', () => {
-  expect(() => createPatchedRom(unknownRevision(), patch(0, 127, 213, 0, 1, 0), { allowUnverified: true })).toThrow();
+  expect(() =>
+    createPatchedRom(SMRPG, unknownRevision(), patch(0, 127, 213, 0, 1, 0), { allowUnverified: true }),
+  ).toThrow();
 });
 
 const fakeRom = (region = 0x00) => {
@@ -135,22 +140,22 @@ const fakeRom = (region = 0x00) => {
 
 describe('classifyRom', () => {
   it('sorts files by size before hashing', () => {
-    expect(classifyRom(new Uint8Array(1000)).kind).toBe('too-small');
-    expect(classifyRom(new Uint8Array(2097152)).kind).toBe('truncated');
-    expect(classifyRom(new Uint8Array(4194305)).kind).toBe('wrong-size');
-    expect(classifyRom(new Uint8Array(8388608)).kind).toBe('wrong-size');
+    expect(classifyRom(SMRPG, new Uint8Array(1000)).kind).toBe('too-small');
+    expect(classifyRom(SMRPG, new Uint8Array(2097152)).kind).toBe('truncated');
+    expect(classifyRom(SMRPG, new Uint8Array(4194305)).kind).toBe('wrong-size');
+    expect(classifyRom(SMRPG, new Uint8Array(8388608)).kind).toBe('wrong-size');
   });
 
   it('tells other games, other regions and modified Japanese dumps apart', () => {
-    expect(classifyRom(new Uint8Array(4194304)).kind).toBe('wrong-game');
-    expect(classifyRom(fakeRom(0x01)).kind).toBe('other-region');
-    expect(classifyRom(fakeRom()).kind).toBe('different');
+    expect(classifyRom(SMRPG, new Uint8Array(4194304)).kind).toBe('wrong-game');
+    expect(classifyRom(SMRPG, fakeRom(0x01)).kind).toBe('other-region');
+    expect(classifyRom(SMRPG, fakeRom()).kind).toBe('different');
   });
 
   it('ignores a 512-byte copier header silently', () => {
     const headered = new Uint8Array(4194816);
     headered.set(fakeRom(), 512);
-    const verdict = classifyRom(headered);
+    const verdict = classifyRom(SMRPG, headered);
     expect(verdict.kind).toBe('different');
     if (verdict.kind === 'different') expect(verdict.bytes.length).toBe(4194304);
   });
@@ -200,19 +205,52 @@ describe('zip handling', () => {
         { name: 'readme.txt', data: encode('hi'), method },
         { name: 'Super Mario RPG (J).sfc', data: rom, method },
       ]);
-      const found = await extractRomFromZip(zip);
+      const found = await extractRomFromZip(SMRPG, zip);
       expect(found?.name).toBe('Super Mario RPG (J).sfc');
       expect(Array.from(found?.bytes ?? [])).toEqual(Array.from(rom));
     }
   });
 
   it('asks for manual unzip when there is no ROM or more than one', async () => {
-    expect(await extractRomFromZip(zipOf([{ name: 'readme.txt', data: encode('hi'), method: 0 }]))).toBeUndefined();
+    expect(
+      await extractRomFromZip(SMRPG, zipOf([{ name: 'readme.txt', data: encode('hi'), method: 0 }])),
+    ).toBeUndefined();
     const two = zipOf([
       { name: 'a.sfc', data: rom, method: 0 },
       { name: 'b.smc', data: rom, method: 0 },
     ]);
-    expect(await extractRomFromZip(two)).toBeUndefined();
-    expect(await extractRomFromZip(encode('not a zip at all, just text'))).toBeUndefined();
+    expect(await extractRomFromZip(SMRPG, two)).toBeUndefined();
+    expect(await extractRomFromZip(SMRPG, encode('not a zip at all, just text'))).toBeUndefined();
+  });
+});
+
+const gameRom = (spec: RomSpec) => {
+  const rom = new Uint8Array(spec.size);
+  rom.set(encode(spec.header.title), 0x7fc0);
+  rom.set([spec.header.mapMode, spec.header.cartType, spec.header.romSize], 0x7fd5);
+  return rom;
+};
+
+describe('Super Gokuden: Totsugeki-hen (2 MB)', () => {
+  it('sorts files by its own size', () => {
+    expect(classifyRom(GOKUDEN_TOTSUGEKI, new Uint8Array(1000)).kind).toBe('too-small');
+    expect(classifyRom(GOKUDEN_TOTSUGEKI, new Uint8Array(1572864)).kind).toBe('truncated');
+    expect(classifyRom(GOKUDEN_TOTSUGEKI, new Uint8Array(4194304)).kind).toBe('wrong-size');
+    expect(classifyRom(GOKUDEN_TOTSUGEKI, new Uint8Array(2097152)).kind).toBe('wrong-game');
+  });
+
+  it('accepts its header with or without a copier header and rejects the other game', () => {
+    expect(classifyRom(GOKUDEN_TOTSUGEKI, gameRom(GOKUDEN_TOTSUGEKI)).kind).toBe('different');
+    const headered = new Uint8Array(2097152 + 512);
+    headered.set(gameRom(GOKUDEN_TOTSUGEKI), 512);
+    const verdict = classifyRom(GOKUDEN_TOTSUGEKI, headered);
+    expect(verdict.kind).toBe('different');
+    if (verdict.kind === 'different') expect(verdict.bytes.length).toBe(2097152);
+    expect(hasGameHeader(GOKUDEN_TOTSUGEKI, gameRom(SMRPG))).toBe(false);
+    expect(hasGameHeader(SMRPG, gameRom(GOKUDEN_TOTSUGEKI))).toBe(false);
+  });
+
+  it('mentions its own size when a patch would grow the ROM', () => {
+    expect(() => applyIps(GOKUDEN_TOTSUGEKI, new Uint8Array(2097152), patch(32, 0, 0, 0, 1, 1))).toThrow('2MB');
   });
 });
