@@ -1,0 +1,270 @@
+export const SMRPG_ORIGINAL = Object.freeze({
+  size: 4194304,
+  crc32: '5527071E',
+  md5: '59483FEB9EB20207E3241E005FBDDE7E',
+});
+export const SMRPG_PATCHED = Object.freeze({
+  size: 4194304,
+  crc32: 'ABD8AC13',
+  md5: '8E5320631EDCF274BF5C7A62C0417C55',
+});
+
+const crcTable = Uint32Array.from({ length: 256 }, (_, index) => {
+  let value = index;
+  for (let bit = 0; bit < 8; bit++) value = value & 1 ? 0xedb88320 ^ (value >>> 1) : value >>> 1;
+  return value >>> 0;
+});
+
+export function crc32(bytes: Uint8Array): string {
+  let crc = 0xffffffff;
+  for (const byte of bytes) crc = ((crcTable[(crc ^ byte) & 255] ?? 0) ^ (crc >>> 8)) >>> 0;
+  return ((crc ^ 0xffffffff) >>> 0).toString(16).padStart(8, '0').toUpperCase();
+}
+
+const shifts = [7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21];
+const sineTable = Int32Array.from({ length: 64 }, (_, i) => Math.floor(2 ** 32 * Math.abs(Math.sin(i + 1))));
+
+// RFC 1321 MD5 is needed to compare the published ROM fingerprints; Web Crypto does not offer MD5.
+export function md5(bytes: Uint8Array): string {
+  const padded = new Uint8Array(Math.ceil((bytes.length + 9) / 64) * 64);
+  padded.set(bytes);
+  padded[bytes.length] = 0x80;
+  const view = new DataView(padded.buffer);
+  view.setUint32(padded.length - 8, (bytes.length * 8) >>> 0, true);
+  view.setUint32(padded.length - 4, Math.floor(bytes.length / 0x20000000), true);
+  let a0 = 0x67452301;
+  let b0 = 0xefcdab89;
+  let c0 = 0x98badcfe;
+  let d0 = 0x10325476;
+  for (let offset = 0; offset < padded.length; offset += 64) {
+    let a = a0,
+      b = b0,
+      c = c0,
+      d = d0;
+    for (let i = 0; i < 64; i++) {
+      const round = i >>> 4;
+      const f =
+        round === 0 ? (b & c) | (~b & d) : round === 1 ? (d & b) | (~d & c) : round === 2 ? b ^ c ^ d : c ^ (b | ~d);
+      const word = round === 0 ? i : round === 1 ? (5 * i + 1) % 16 : round === 2 ? (3 * i + 5) % 16 : (7 * i) % 16;
+      const sum = (a + f + (sineTable[i] ?? 0) + view.getInt32(offset + word * 4, true)) | 0;
+      const shift = shifts[round * 4 + (i % 4)] ?? 0;
+      a = d;
+      d = c;
+      c = b;
+      b = (b + ((sum << shift) | (sum >>> (32 - shift)))) | 0;
+    }
+    a0 = (a0 + a) | 0;
+    b0 = (b0 + b) | 0;
+    c0 = (c0 + c) | 0;
+    d0 = (d0 + d) | 0;
+  }
+  const result = new DataView(new ArrayBuffer(16));
+  [a0, b0, c0, d0].forEach((word, i) => result.setInt32(i * 4, word, true));
+  return Array.from(new Uint8Array(result.buffer), byte => byte.toString(16).padStart(2, '0'))
+    .join('')
+    .toUpperCase();
+}
+
+export interface OriginalValidation {
+  bytes: Uint8Array;
+  headered: boolean;
+  crc32: string;
+  md5: string;
+  valid: boolean;
+}
+
+export function validateOriginal(source: Uint8Array): OriginalValidation {
+  if (source.length !== SMRPG_ORIGINAL.size && source.length !== SMRPG_ORIGINAL.size + 512) {
+    throw new Error('일본판 원본 4MB(4,194,304바이트) 또는 4MB+512바이트(4,194,816바이트) 파일만 사용할 수 있습니다.');
+  }
+  const headered = source.length === SMRPG_ORIGINAL.size + 512;
+  const bytes = source.subarray(headered ? 512 : 0);
+  const crc = crc32(bytes);
+  const digest = md5(bytes);
+  return {
+    bytes,
+    headered,
+    crc32: crc,
+    md5: digest,
+    valid: crc === SMRPG_ORIGINAL.crc32 && digest === SMRPG_ORIGINAL.md5,
+  };
+}
+
+export function applyIps(source: Uint8Array, ips: Uint8Array): Uint8Array {
+  if (source.length !== SMRPG_ORIGINAL.size) throw new Error('헤더 없는 4MB ROM에만 패치를 적용할 수 있습니다.');
+  let cursor = 0;
+  const patchView = new DataView(ips.buffer, ips.byteOffset, ips.byteLength);
+  const read = (count: number): number => {
+    if (cursor + count > ips.length) throw new Error('IPS 파일이 중간에 끊겼습니다. 다시 시도해 주세요.');
+    let value = 0;
+    for (let i = 0; i < count; i++) value = value * 256 + patchView.getUint8(cursor++);
+    return value;
+  };
+  if (read(3) !== 0x504154 || read(2) !== 0x4348) throw new Error('올바른 IPS 패치 파일이 아닙니다.');
+  const output = source.slice();
+  while (true) {
+    const offset = read(3);
+    if (offset === 0x454f46) {
+      const remaining = ips.length - cursor;
+      if (remaining !== 0 && (remaining !== 3 || read(3) !== output.length)) {
+        throw new Error('IPS 끝부분 또는 출력 크기가 올바르지 않습니다. v1.1은 4MB만 지원합니다.');
+      }
+      return output;
+    }
+    let size = read(2);
+    if (size === 0) {
+      size = read(2);
+      const value = read(1);
+      if (size === 0) throw new Error('IPS 반복 기록의 길이가 올바르지 않습니다.');
+      if (offset + size > output.length) throw new Error('IPS 기록이 4MB ROM 범위를 벗어납니다.');
+      output.fill(value, offset, offset + size);
+    } else {
+      if (offset + size > output.length) throw new Error('IPS 기록이 4MB ROM 범위를 벗어납니다.');
+      if (cursor + size > ips.length) throw new Error('IPS 기록이 중간에 끊겼습니다.');
+      output.set(ips.subarray(cursor, cursor + size), offset);
+      cursor += size;
+    }
+  }
+}
+
+export function hasSmrpgHeader(normalizedBytes: Uint8Array): boolean {
+  const title = 'SUPER MARIO RPG';
+  return (
+    normalizedBytes.length === SMRPG_ORIGINAL.size &&
+    Array.from(title).every((character, index) => normalizedBytes[0x7fc0 + index] === character.charCodeAt(0)) &&
+    normalizedBytes[0x7fd5] === 0x23 &&
+    normalizedBytes[0x7fd6] === 0x35 &&
+    normalizedBytes[0x7fd7] === 0x0c
+  );
+}
+
+export class PatchOutputHashError extends Error {
+  readonly crc32: string;
+  readonly md5: string;
+
+  constructor(crc32: string, md5: string) {
+    super('패치 결과의 체크섬이 일치하지 않아 다운로드를 만들지 않았습니다. 다시 시도해 주세요.');
+    this.crc32 = crc32;
+    this.md5 = md5;
+  }
+}
+
+export function createPatchedRom(
+  source: Uint8Array,
+  ips: Uint8Array,
+  options: { allowUnverified?: boolean } = {},
+): Uint8Array {
+  const original = validateOriginal(source);
+  const allowUnverified = options.allowUnverified === true;
+  if (!original.valid && !allowUnverified)
+    throw new Error('일본판 원본의 CRC32와 MD5가 일치하지 않습니다. 수정되지 않은 원본을 확인해 주세요.');
+  if (!hasSmrpgHeader(original.bytes))
+    throw new Error('슈퍼 마리오 RPG의 게임 식별 정보와 다릅니다. 이 파일에는 패치를 적용할 수 없습니다.');
+  const output = applyIps(original.bytes, ips);
+  if (!hasSmrpgHeader(output))
+    throw new Error('패치 결과의 크기 또는 게임 식별 정보가 올바르지 않아 다운로드를 만들지 않았습니다.');
+  const crc = crc32(output);
+  const digest = md5(output);
+  if (!allowUnverified && (crc !== SMRPG_PATCHED.crc32 || digest !== SMRPG_PATCHED.md5)) {
+    throw new PatchOutputHashError(crc, digest);
+  }
+  return output;
+}
+
+const HEADERED_SIZE = SMRPG_ORIGINAL.size + 512;
+const MIN_ROM_SIZE = 1048576;
+
+export type RomVerdict =
+  | { kind: 'too-small' | 'truncated' | 'wrong-size' | 'wrong-game' | 'other-region' }
+  | { kind: 'already-korean' | 'original' | 'different'; bytes: Uint8Array; crc32: string; md5: string };
+
+/** First matching rule wins; the order mirrors what a player should hear first. */
+export function classifyRom(source: Uint8Array): RomVerdict {
+  if (source.length < MIN_ROM_SIZE) return { kind: 'too-small' };
+  if (source.length < SMRPG_ORIGINAL.size) return { kind: 'truncated' };
+  if (source.length !== SMRPG_ORIGINAL.size && source.length !== HEADERED_SIZE) return { kind: 'wrong-size' };
+  const bytes = source.subarray(source.length === HEADERED_SIZE ? 512 : 0);
+  const crc = crc32(bytes);
+  const digest = md5(bytes);
+  if (crc === SMRPG_PATCHED.crc32 && digest === SMRPG_PATCHED.md5) {
+    return { kind: 'already-korean', bytes, crc32: crc, md5: digest };
+  }
+  if (crc === SMRPG_ORIGINAL.crc32 && digest === SMRPG_ORIGINAL.md5) {
+    return { kind: 'original', bytes, crc32: crc, md5: digest };
+  }
+  if (!hasSmrpgHeader(bytes)) return { kind: 'wrong-game' };
+  // Cartridge header destination code: 0x00 is Japan; other versions need a different patch.
+  if (bytes[0x7fd9] !== 0x00) return { kind: 'other-region' };
+  return { kind: 'different', bytes, crc32: crc, md5: digest };
+}
+
+const archiveSignatures = [
+  [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c], // 7z
+  [0x52, 0x61, 0x72, 0x21], // rar
+  [0x41, 0x4c, 0x5a, 0x01], // alz
+  [0x45, 0x47, 0x47, 0x41], // egg
+];
+
+export function isZip(bytes: Uint8Array, name = ''): boolean {
+  return (bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 0x03 && bytes[3] === 0x04) || /\.zip$/i.test(name);
+}
+
+/** Archives the browser cannot open on its own. */
+export function isOtherArchive(bytes: Uint8Array, name = ''): boolean {
+  return (
+    /\.(7z|rar|alz|egg)$/i.test(name) || archiveSignatures.some(signature => signature.every((b, i) => bytes[i] === b))
+  );
+}
+
+const romName = /\.(sfc|smc|fig|swc)$/i;
+
+/**
+ * Pulls the single ROM out of a zip using the browser's built-in inflater.
+ * Returns undefined when the archive needs to be opened by hand (no ROM, several ROMs, encryption, other methods).
+ */
+export async function extractRomFromZip(zip: Uint8Array): Promise<{ name: string; bytes: Uint8Array } | undefined> {
+  const view = new DataView(zip.buffer, zip.byteOffset, zip.byteLength);
+  let end = -1;
+  for (let i = zip.length - 22; i >= Math.max(0, zip.length - 65557); i--) {
+    if (view.getUint32(i, true) === 0x06054b50) {
+      end = i;
+      break;
+    }
+  }
+  if (end < 0) return undefined;
+  const count = view.getUint16(end + 10, true);
+  let cursor = view.getUint32(end + 16, true);
+  const decoder = new TextDecoder();
+  const candidates: { name: string; flags: number; method: number; compressed: number; size: number; local: number }[] =
+    [];
+  for (let i = 0; i < count; i++) {
+    if (cursor + 46 > zip.length || view.getUint32(cursor, true) !== 0x02014b50) return undefined;
+    const nameLength = view.getUint16(cursor + 28, true);
+    const entry = {
+      flags: view.getUint16(cursor + 8, true),
+      method: view.getUint16(cursor + 10, true),
+      compressed: view.getUint32(cursor + 20, true),
+      size: view.getUint32(cursor + 24, true),
+      local: view.getUint32(cursor + 42, true),
+      name: decoder.decode(zip.subarray(cursor + 46, cursor + 46 + nameLength)),
+    };
+    if (romName.test(entry.name) || entry.size === SMRPG_ORIGINAL.size || entry.size === HEADERED_SIZE) {
+      candidates.push(entry);
+    }
+    cursor += 46 + nameLength + view.getUint16(cursor + 30, true) + view.getUint16(cursor + 32, true);
+  }
+  const entry = candidates.length === 1 ? candidates[0] : undefined;
+  if (!entry || entry.flags & 1 || (entry.method !== 0 && entry.method !== 8)) return undefined;
+  if (entry.local + 30 > zip.length || view.getUint32(entry.local, true) !== 0x04034b50) return undefined;
+  const start = entry.local + 30 + view.getUint16(entry.local + 26, true) + view.getUint16(entry.local + 28, true);
+  const data = zip.subarray(start, start + entry.compressed);
+  if (data.length !== entry.compressed) return undefined;
+  if (entry.method === 0) return { name: entry.name, bytes: data.slice() };
+  try {
+    const stream = new Blob([data.slice()]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    const bytes = new Uint8Array(await new Response(stream).arrayBuffer());
+    return bytes.length === entry.size ? { name: entry.name, bytes } : undefined;
+  } catch {
+    return undefined;
+  }
+}

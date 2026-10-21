@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-for (const path of ['/patches/', '/patches/super-mario-rpg/']) {
+for (const path of ['/games/kr-patches/', '/games/kr-patches/sfc/super-mario-rpg/']) {
   for (const colorScheme of ['light', 'dark'] as const) {
     test(`${path} guide works in ${colorScheme}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme });
@@ -15,6 +15,7 @@ for (const path of ['/patches/', '/patches/super-mario-rpg/']) {
         await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
       ).toBe(0);
       for (const img of await page.locator('main img').all()) {
+        if (!(await img.isVisible())) continue;
         await img.scrollIntoViewIfNeeded();
         await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
       }
@@ -30,13 +31,40 @@ for (const path of ['/patches/', '/patches/super-mario-rpg/']) {
   }
 }
 
-test('catalogue opens the final Korean guide and links to the official patch release', async ({ page }) => {
-  await page.goto('/patches/');
-  await page.locator('main a[href="/patches/super-mario-rpg/"]').first().click();
-  await expect(page).toHaveURL(/\/patches\/super-mario-rpg\/$/);
-  await expect(page.locator('main')).toContainText('v1.1');
-  await expect(page.locator('a[href="https://cafe.naver.com/hansicgu/37276"]').first()).toBeVisible();
-  await expect(page.locator('a[href="https://cafe.naver.com/hansicgu/37278"]').first()).toBeAttached();
-  await expect(page.locator('main')).not.toContainText('v1.0');
-  await expect(page.locator('audio, video, iframe')).toHaveCount(0);
+const GAME = '/games/kr-patches/sfc/super-mario-rpg/';
+
+test('catalogue opens the game page, which leads with the patch box and plays no media', async ({ page }) => {
+  await page.goto('/games/kr-patches/');
+  await page.locator(`main a[href="${GAME}"]`).first().click();
+  await expect(page).toHaveURL(/\/games\/kr-patches\/sfc\/super-mario-rpg\/$/);
+  await expect(page.getByText('일본판 게임 파일 고르기')).toBeInViewport();
+  const html = await page.content();
+  expect(html).not.toContain('hansicgu/37276');
+  expect(html).not.toContain('blog.naver.com');
+  await expect(page.locator('audio, video, canvas, iframe')).toHaveCount(0);
+  await expect(page.locator(`a[href$=".ips"]`)).toHaveAttribute('download', '');
+});
+
+test('patch box explains why a file cannot be patched', async ({ page }) => {
+  await page.goto(GAME);
+  const input = page.locator('.patch-box input[type=file]');
+  const status = page.locator('.patch-status');
+  await input.setInputFiles({ name: 'photo.sfc', mimeType: 'application/octet-stream', buffer: Buffer.alloc(1024) });
+  await expect(status).toContainText('너무 작습니다');
+  await input.setInputFiles({
+    name: 'other.sfc',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.alloc(4 * 1024 * 1024),
+  });
+  await expect(status).toContainText('다른 게임 파일');
+});
+
+test('comparison groups reveal the remaining scenes on demand', async ({ page }) => {
+  await page.goto(GAME);
+  const more = page.locator('#korean details.more').first();
+  const hidden = more.locator('img').first();
+  await expect(hidden).not.toBeVisible();
+  await more.locator('summary').click();
+  await hidden.scrollIntoViewIfNeeded();
+  await expect.poll(() => hidden.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
 });

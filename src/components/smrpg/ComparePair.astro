@@ -1,0 +1,33 @@
+---
+import type { ComparePair } from '../../lib/smrpg-showcase';
+
+interface Props {
+  pair: ComparePair;
+  base: string;
+}
+
+const { pair, base } = Astro.props;
+const shots = [
+  { suffix: 'jp', label: '일본판' },
+  { suffix: 'ko', label: '한글판' },
+];
+---
+
+<figure class="compare">
+  <div class="compare-shots">
+    {shots.map(shot => (
+      <div class="screen">
+        <span class:list={['tag', { 'tag-ko': shot.suffix === 'ko' }]}>{shot.label}</span>
+        <img
+          src={`${base}/images/patch/${pair.id}_${shot.suffix}.webp`}
+          width="256"
+          height="224"
+          alt={`${shot.label}: ${pair.alt}`}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    ))}
+  </div>
+  <figcaption class="dialog">{pair.caption}</figcaption>
+</figure>
