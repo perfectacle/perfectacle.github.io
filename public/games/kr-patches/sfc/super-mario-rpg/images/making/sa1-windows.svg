@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 400" width="860" height="400" font-family="sans-serif">
+<rect width="860" height="400" rx="12" fill="#fafafa"/>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#f97316"/></marker><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker></defs>
+<text x="20" y="32" font-size="17" fill="#111">SA-1 은 4MB 롬을 1MB 창 4개로 보여 준다</text>
+<rect x="20" y="90" width="150" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+<text x="95.0" y="121.0" font-size="14" text-anchor="middle" fill="#111">S-CPU</text>
+<text x="95.0" y="139.0" font-size="14" text-anchor="middle" fill="#111">3.58MHz · 필드 메뉴 등</text>
+<rect x="20" y="230" width="150" height="70" rx="8" fill="#dcfce7" stroke="#16a34a"/>
+<text x="95.0" y="261.0" font-size="14" text-anchor="middle" fill="#111">SA-1</text>
+<text x="95.0" y="279.0" font-size="14" text-anchor="middle" fill="#111">10.74MHz · 전투 화면 등</text>
+<rect x="330" y="70" width="130" height="54" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="395.0" y="102.0" font-size="14" text-anchor="middle" fill="#111">$C0 창</text>
+<rect x="620" y="70" width="200" height="54" rx="8" fill="#f1f5f9" stroke="#64748b"/>
+<text x="720.0" y="102.0" font-size="14" text-anchor="middle" fill="#111">롬 블록 0 (0x000000~)</text>
+<line x1="460" y1="97" x2="620" y2="97" stroke="#f97316" stroke-width="2" marker-end="url(#a)"/>
+<line x1="170" y1="125" x2="330" y2="97" stroke="#3b82f6" stroke-width="1" opacity="0.45"/>
+<line x1="170" y1="265" x2="330" y2="97" stroke="#16a34a" stroke-width="1" opacity="0.45"/>
+<rect x="330" y="142" width="130" height="54" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="395.0" y="174.0" font-size="14" text-anchor="middle" fill="#111">$D0 창</text>
+<rect x="620" y="142" width="200" height="54" rx="8" fill="#f1f5f9" stroke="#64748b"/>
+<text x="720.0" y="174.0" font-size="14" text-anchor="middle" fill="#111">롬 블록 1 (0x100000~)</text>
+<line x1="460" y1="169" x2="620" y2="169" stroke="#f97316" stroke-width="2" marker-end="url(#a)"/>
+<line x1="170" y1="125" x2="330" y2="169" stroke="#3b82f6" stroke-width="1" opacity="0.45"/>
+<line x1="170" y1="265" x2="330" y2="169" stroke="#16a34a" stroke-width="1" opacity="0.45"/>
+<rect x="330" y="214" width="130" height="54" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="395.0" y="246.0" font-size="14" text-anchor="middle" fill="#111">$E0 창</text>
+<rect x="620" y="214" width="200" height="54" rx="8" fill="#f1f5f9" stroke="#64748b"/>
+<text x="720.0" y="246.0" font-size="14" text-anchor="middle" fill="#111">롬 블록 2 (0x200000~)</text>
+<line x1="460" y1="241" x2="620" y2="241" stroke="#f97316" stroke-width="2" marker-end="url(#a)"/>
+<line x1="170" y1="125" x2="330" y2="241" stroke="#3b82f6" stroke-width="1" opacity="0.45"/>
+<line x1="170" y1="265" x2="330" y2="241" stroke="#16a34a" stroke-width="1" opacity="0.45"/>
+<rect x="330" y="286" width="130" height="54" rx="8" fill="#fff7ed" stroke="#f97316"/>
+<text x="395.0" y="318.0" font-size="14" text-anchor="middle" fill="#111">$F0 창</text>
+<rect x="620" y="286" width="200" height="54" rx="8" fill="#f1f5f9" stroke="#64748b"/>
+<text x="720.0" y="318.0" font-size="14" text-anchor="middle" fill="#111">롬 블록 3 (0x300000~)</text>
+<line x1="460" y1="313" x2="620" y2="313" stroke="#f97316" stroke-width="2" marker-end="url(#a)"/>
+<line x1="170" y1="125" x2="330" y2="313" stroke="#3b82f6" stroke-width="1" opacity="0.45"/>
+<line x1="170" y1="265" x2="330" y2="313" stroke="#16a34a" stroke-width="1" opacity="0.45"/>
+<rect x="620" y="352" width="200" height="40" rx="8" fill="#ffffff" stroke="#dc2626" stroke-dasharray="6 4"/>
+<text x="720.0" y="377.0" font-size="13" text-anchor="middle" fill="#111">블록 4~ (4MB 너머)</text>
+<path d="M460 286 C 540 286, 540 372, 620 372" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#b)"/>
+<text x="478" y="360" font-size="12" fill="#b91c1c" text-anchor="end">창을 바꾸는 순간</text>
+<text x="478" y="376" font-size="12" fill="#b91c1c" text-anchor="end">다른 CPU 가 엉뚱한 블록을 읽는다</text>
+</svg>

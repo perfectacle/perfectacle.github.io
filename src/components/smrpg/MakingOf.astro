@@ -1,0 +1,502 @@
+---
+interface Props {
+  base: string;
+}
+
+const { base } = Astro.props;
+const img = (name: string) => `${base}/images/making/${name}`;
+
+const memories = [
+  { name: '롬', size: '4MB', like: '책', role: '카트리지에 든 프로그램·대사·폰트. 읽기만 합니다.' },
+  {
+    name: 'WRAM',
+    size: '128KB',
+    like: '작업 책상',
+    role: 'CPU가 계산하며 값을 적어 두는 곳. HP와 인벤토리도 여기 있습니다.',
+  },
+  { name: 'VRAM', size: '64KB', like: '스티커판', role: '화면에 붙일 8×8 그림 조각(타일)을 올려 두는 곳.' },
+  { name: 'BW-RAM', size: '-', like: 'SA-1 책상', role: '카트리지 안의 두 번째 CPU(SA-1)가 쓰는 메모리.' },
+];
+
+const opcodes = [
+  { bytes: 'AF AE FF 00', asm: 'LDA $00FFAE', text: '$00:FFAE 값을 읽습니다. 주소는 거꾸로 적힙니다.' },
+  { bytes: '05 80', asm: 'ORA $80', text: '$80번지 값과 OR 합니다. 둘 다 0일 때만 0입니다.' },
+  { bytes: 'F0 01', asm: 'BEQ +1', text: '결과가 0이면 다음 1바이트(RTS)를 건너뛰고 디버그 메뉴로 갑니다.' },
+  { bytes: '60', asm: 'RTS', text: '아니면 그냥 돌아갑니다. 제품판은 늘 여기로 옵니다.' },
+];
+
+const glyphFlow = [
+  '이름에서 글자 하나를 읽습니다.',
+  '메뉴 폰트에 있는 글자면 원래 타일을 그대로 씁니다.',
+  '없는 글자면 이미 올려 둔 임시 칸이 있는지 찾고, 없으면 빈 칸을 하나 배정합니다.',
+  '게임의 외곽선 루틴($C3:6869)으로 8×12 글자를 메뉴 글자 모양으로 바꿔 WRAM에 모아 둡니다(최대 12자).',
+  '화면 갱신 틈(NMI)에 DMA로 VRAM에 한꺼번에 옮깁니다.',
+];
+
+const dialogFlow = [
+  '대사 ID(0x000–0xFFF)를 512로 나눠 그룹(0–7)을 구합니다.',
+  '뱅크 $E2–$E4 첫머리 헤더에서 그 그룹의 시작 주소를 찾습니다.',
+  '포인터 표 $F7:E000에서 ID마다 적힌 2바이트(그룹 안 위치)를 더합니다.',
+  '그 자리에 대사 문자열이 있습니다.',
+];
+---
+
+<section id="making" class="section page-width" aria-labelledby="making-title">
+  <h2 id="making-title" class="pixel">
+    한글판을 만든 방법
+  </h2>
+  <p class="lead">
+    v1.0은 대사와 메뉴는 한글이었지만 아이템·필살기·적 이름은 MUSHROOM, HAMMER 같은 영문이었습니다. 롬 용량이 모자라서가
+    아니라 메뉴 화면에 한 번에 올려 둘 수 있는 글자가 256개뿐이었기 때문입니다. v1.1은 필요한 글자만 그때그때 빈 칸에
+    올리는 코드를 게임에 끼워 넣어 이 문제를 풀었습니다. 롬 크기는 원본과 같은 4MB입니다.
+  </p>
+  <figure class="paper">
+    <img
+      src={img('names-shop.webp')}
+      width="1150"
+      height="920"
+      alt="위는 v1.0, 아래는 v1.1 상점 화면. 영문 아이템 이름이 한글로 바뀌었다"
+      loading="lazy"
+      decoding="async"
+    />
+    <figcaption>위 v1.0, 아래 v1.1</figcaption>
+  </figure>
+  <p class="section-note">
+    슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다. 주소와 후킹 위치 전체는 아래 분석 도구
+    안내에 있습니다.
+  </p>
+
+  <details class="more making">
+    <summary class="pointer">자세히 보기</summary>
+    <div class="making-body">
+      <h3 class="pixel">1. 배경지식</h3>
+      <h4>게임기 안의 메모리</h4>
+      <p>
+        CPU는 화면에 직접 그리지 않습니다. 그림 조각(타일)을 VRAM에 올려 두고 "이 칸에는 몇 번 타일" 이라는
+        배치표(타일맵)를 적어 화면을 만듭니다. 글자도 타일입니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">이름</th>
+              <th scope="col">크기</th>
+              <th scope="col">비유</th>
+              <th scope="col">하는 일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {memories.map(m => (
+              <tr>
+                <th scope="row">{m.name}</th>
+                <td>{m.size}</td>
+                <td>{m.like}</td>
+                <td class="wrap">{m.role}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h4>CPU가 둘: S-CPU와 SA-1</h4>
+      <p>
+        이 게임 카트리지에는 SA-1이라는 CPU가 하나 더 들어 있습니다. 본체 CPU(S-CPU, 3.58MHz)보다 세 배쯤 빠르고, 두
+        CPU가 동시에 돕니다. 둘 다 65c816 계열이라 같은 어셈블리로 짭니다. 필드 메뉴는 S-CPU가, 전투 메뉴는 SA-1이
+        그려서 아이템 이름 하나를 바꾸려 해도 두 길을 따로 고쳐야 했습니다.
+      </p>
+
+      <h4>주소 읽는 법</h4>
+      <p>
+        <code>0x22B400</code> 같은 파일 오프셋은 롬 파일을 처음부터 센 위치이고, <code>$E2:B400</code> 같은 SNES 주소는
+        CPU가 보는 <code>뱅크:주소</code>입니다. 뱅크는 64KB짜리 칸 번호입니다. 이 게임은 다음처럼 바꿉니다.
+      </p>
+      <pre><code>파일 오프셋 = (뱅크 &amp; 0x3F) × 0x10000 + 주소
+$E2:B400 → 0x22 × 0x10000 + 0xB400 = 0x22B400</code></pre>
+
+      <h4>어셈블리, 필요한 만큼만</h4>
+      <p>
+        어셈블리는 CPU가 실행하는 명령을 사람이 읽는 이름으로 적은 것이고, 롬 안에서는 그냥 바이트입니다. 전투 디버그
+        메뉴를 막는 코드(파일 <code>0x106A9</code>)를 예로 보겠습니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">바이트</th>
+              <th scope="col">어셈블리</th>
+              <th scope="col">뜻</th>
+            </tr>
+          </thead>
+          <tbody>
+            {opcodes.map(o => (
+              <tr>
+                <td>
+                  <code>{o.bytes}</code>
+                </td>
+                <td>
+                  <code>{o.asm}</code>
+                </td>
+                <td class="wrap">{o.text}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <code>F0</code>(BEQ, 0이면 건너뛰기) 한 바이트를 <code>80</code>(BRA, 무조건 건너뛰기)으로 바꾸면 전투 중
+        Start로 개발자용 디버그 메뉴가 열립니다. 롬 해킹은 이런 바이트 바꾸기의 연속입니다.
+      </p>
+
+      <h4>후킹: 원래 코드 중간에 새 코드 끼우기</h4>
+      <p>
+        원래 코드 사이에는 새 기능을 넣을 자리가 없습니다. 그래서 원래 코드의 한 지점을 "새 코드로 가라" 는 명령으로
+        덮어쓰고, 새 코드는 롬의 빈 공간에 둡니다. 실제 패치 소스는 이렇게 생겼습니다.
+      </p>
+      <pre><code>org $C37990          ; 원래 아이템 이름을 그리러 가는 자리를
+    JMP DrawItemName ; "DrawItemName으로 가라" 로 덮어쓴다
+
+org $C3F000          ; 원본에서 비어 있던(0xFF) 공간
+DrawItemName:        ; 한글 이름을 그리는 새 코드
+    ...</code></pre>
+      <p>v1.1은 필드 메뉴, 전투 메뉴, 결과 창, 레벨업 화면, 대사 엔진 등 스무 곳 남짓에 이런 후킹을 걸었습니다.</p>
+
+      <h3 class="pixel">2. 왜 v1.0은 이름을 영문으로 뒀나</h3>
+      <p>
+        메뉴 폰트의 글자 하나는 가로 8, 세로 12 픽셀 그림이고 한 줄에 2바이트씩 24바이트를 씁니다. 아래는 실제 롬에서
+        꺼낸 「마」입니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={img('glyph-ma.svg')}
+          width="436"
+          height="354"
+          alt="메뉴 폰트의 「마」 글자를 8×12 픽셀 격자와 줄마다의 바이트 값으로 나타낸 그림"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        아이템 이름은 글자 하나를 1바이트 코드로 적습니다. 1바이트로 고를 수 있는 값은 256개이고 0x00–0x1F를 빼면 글자
+        칸은 224개입니다. 메뉴를 열면 게임은 이 폰트 전체를 VRAM에 통째로 올려 두고, 코드 c를 (c − 0x20) × 2번 타일로
+        고정해서 그립니다. 아래는 v1.0 롬의 메뉴 폰트 256칸입니다. 회색은 빈 코드, 노란색은 아이콘·영숫자, 파란색은
+        v1.0이 넣은 한글 165자입니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={img('menu-font-v1.webp')}
+          width="696"
+          height="938"
+          alt="v1.0 메뉴 폰트 256칸. 0x20부터 0xFF까지 빈칸 없이 아이콘·영숫자·한글로 차 있다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        빈칸이 없습니다. 이름을 한글로 쓰려면 음절이 226자 필요했는데 이 표에 있는 것은 88자뿐이었습니다. 138자가 들어갈
+        칸이 없었던 것입니다. 롬을 키워도 칸 수는 늘지 않으니 병목은 용량이 아니라 "1바이트 코드 = 화면에 상주하는
+        256칸" 이라는 구조였습니다.
+      </p>
+
+      <h3 class="pixel">3. 필요한 글자만 올리는 임시 칸</h3>
+      <p>
+        필드 메뉴의 VRAM을 덤프해 보니 BG1 타일 $200–$2FF(VRAM $6000–$7FFF)는 이 화면에서 아무도 쓰지 않았습니다. 메뉴를
+        열 때마다 원래 내용을 다시 올리므로 잠깐 빌려 써도 뒤탈이 없습니다. 글자 하나가 타일 2장이니 128글자가
+        들어갑니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('vram-slots.svg')}
+          width="860"
+          height="250"
+          alt="필드 메뉴 VRAM. 타일 $000–$1FF는 상주 폰트, $200–$2FF는 128칸짜리 임시 글자 칸"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        새 이름 테이블은 롬 $E2:B400의 빈 공간에 만들고 글자를 2바이트로 적었습니다. 0x0000–0x00FF는 원래 메뉴 폰트의
+        글자이고, 0x8000 | n은 롬에 따로 넣은 글자 248자 중 n번째입니다. 그리는 순서는 이렇습니다.
+      </p>
+      <ol class="flow">
+        {glyphFlow.map(step => (
+          <li>{step}</li>
+        ))}
+      </ol>
+      <p>
+        마지막 단계가 바로 복사가 아닌 이유가 있습니다. 브라운관 TV는 화면을 위에서 아래로 한 줄씩 그리고, 그동안에는
+        CPU가 VRAM을 건드릴 수 없습니다. 한 화면을 다 그리고 다음 화면을 시작하기 전 짧은 틈(VBlank)에만 쓸 수 있고, 그
+        틈이 시작될 때 걸리는 신호가 NMI입니다. 그래서 미리 준비해 둔 글자를 NMI 때 DMA(CPU 대신 데이터를 빠르게 옮기는
+        장치)로 옮깁니다.
+      </p>
+      <h4>만들며 밟은 지뢰</h4>
+      <ul class="notes">
+        <li>
+          처음에는 게임의 "NMI 때 할 일" 목록(8칸)에 업로드를 등록했습니다. 그런데 목록이 꽉 차면 등록 루틴이 사운드
+          명령을 보내고 등록을 포기해서, 토드의 메뉴 튜토리얼에서 음악이 바뀌었습니다. 결국 NMI 루틴 자체를
+          후킹했습니다.
+        </li>
+        <li>
+          패치 변수를 평소 0인 WRAM $7E:F580 근처에 뒀는데, 아이템을 캐릭터에게 가져갈 때 이름을 그리는 스프라이트
+          버퍼였습니다. "평소에 0" 이 "아무도 안 쓴다" 는 뜻은 아니었습니다.
+        </li>
+      </ul>
+
+      <h3 class="pixel">4. 전투 메뉴는 SA-1이 따로 그린다</h3>
+      <p>
+        전투 메뉴는 타일 방식이 아니라 SA-1이 BW-RAM에 비트맵을 만들고 글자를 직접 찍습니다. 같은 이름 테이블을 쓰되
+        글자 읽기, 그림 주소 계산, 이름 복사 세 곳을 후킹했습니다. 그림 주소를 $E4:2B00에 16비트 값을 더해 구하기 때문에
+        새 글자는 거기서 64KB 안에만 둘 수 있어서, 그 범위의 빈 구간 네 곳에 나눠 넣었습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('names-battle.webp')}
+          width="1670"
+          height="920"
+          alt="위는 v1.0, 아래는 v1.1 전투 화면. 적 이름, 아이템 목록, 사용 메시지가 한글이 됐다"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>위 v1.0, 아래 v1.1</figcaption>
+      </figure>
+
+      <h3 class="pixel">5. 롬을 4MB보다 키우지 않은 이유</h3>
+      <p>
+        SA-1은 4MB 롬을 1MB짜리 창 4개로 CPU에 보여 줍니다. 4MB 너머를 읽으려면 실행 중에 창 하나를 다른 블록으로 돌려야
+        하는데, 두 CPU가 동시에 돌기 때문에 한쪽이 창을 돌린 순간 다른 쪽이 원래 데이터를 읽으려 하면 엉뚱한 값을
+        받습니다. 책 한 권을 둘이 같이 읽는데 한 사람이 말없이 페이지를 넘기는 상황입니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('sa1-windows.svg')}
+          width="860"
+          height="400"
+          alt="S-CPU와 SA-1이 $C0, $D0, $E0, $F0 창 4개로 롬 블록 0–3을 읽는다. 창을 블록 4로 돌리면 다른 CPU가 잘못 읽는다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>그래서 롬을 늘리지 않고, 일본판 원본에서도 0이나 0xFF로 비어 있던 공간만 찾아 썼습니다.</p>
+      <figure class="paper">
+        <img
+          src={img('rom-free-space.svg')}
+          width="860"
+          height="458"
+          alt="4MB 롬 지도. v1.1은 원본의 빈 공간 몇 곳에만 코드와 데이터를 넣었다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <h3 class="pixel">6. 대사 속 아이템 이름</h3>
+      <p>대사는 4096개이고 ID로 찾습니다. 위치를 두 단계로 찾아가므로 대사를 고치면 이 표들도 다시 만들어야 합니다.</p>
+      <ol class="flow">
+        {dialogFlow.map(step => (
+          <li>{step}</li>
+        ))}
+      </ol>
+      <p>
+        v1.0은 대사에 『MUSHROOM』을 얻었습니다처럼 영문 이름을 직접 적었습니다. v1.1은 이를 한글로 바꾸고 그룹 순서를
+        지킨 채 뱅크마다 다시 채운 뒤 헤더와 포인터 표를 새로 만들었습니다. 한글 이름이 짧고 쓰레기 바이트도 빼서 세
+        뱅크 합쳐 약 1만 9천 바이트가 오히려 줄었습니다.
+      </p>
+      <h4>안 쓰던 제어 코드 되살리기</h4>
+      <p>
+        대사 안에는 글자 말고 명령도 섞여 있습니다. 00은 대사 끝, 01은 줄바꿈, 1A는 "여기 아이템 이름을 끼워라" 입니다.
+        원판에서 아무 일도 안 하던 1B를 1A와 같은 처리로 보내고, 뒤에 붙는 1바이트로 「」 감싸기, 가운데 정렬, 을/를
+        붙이기를 고르게 했습니다. 이름 길이는 실행 중에야 정해지므로 가운데 정렬도 실행 중에 합니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={img('banner.webp')}
+          width="1150"
+          height="1376"
+          alt="획득 메시지. 위부터 일본판, v1.0, v1.1이고 노란 선이 화면 가운데다"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>노란 선이 화면 가운데. 위부터 일본판, v1.0, v1.1</figcaption>
+      </figure>
+      <h4>대사 폰트에 없는 21자</h4>
+      <p>
+        대사 폰트는 1바이트와 2바이트 코드를 섞어 992자를 쓰는데, 2바이트 코드 768개가 v1.0에서 전부 차 있었습니다.
+        이름에 필요한 캔, 깃, 링, 쑥, 츠 같은 21자는 어떤 텍스트에서도 쓰지 않는 코드를 찾아 그 자리에 그렸습니다.
+        처음에는 대사만 보고 골랐다가 메뉴 튜토리얼의 「봅」이 깨졌습니다. 같은 인코딩이 전투 대사, 아이템 설명, 메뉴
+        문구 등에도 쓰였기 때문입니다. 지금은 모든 영역을 검사해서, 쓰이는 코드를 재활용하려 하면 빌드가 멈춥니다.
+      </p>
+      <p>
+        대사를 다시 채우다 v1.0이 남긴 문제도 찾았습니다. 끝 코드 뒤에 원문 조각이 남아 있었고, 끝 코드가 너무 일찍
+        들어가 비어 버린 대사도 있었습니다. 일본판과 대조해 복구했습니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={img('restored.webp')}
+          width="630"
+          height="920"
+          alt="두더지 마을 양동이 소녀에게 카보쿠키를 주면 v1.0에서 빠졌던 개구리 코인 획득 메시지가 나온다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <h3 class="pixel">7. 조사 자동 선택</h3>
+      <p>
+        "레벨3(이)가", "(을)를 배웠습니다" 같은 표기는 이름이 실행 중에 정해져서 생깁니다. v1.1은 빌드할 때 이름 마지막
+        글자에 받침이 있는지 계산해 이름 앞 1바이트에 표시해 두고, 게임은 그 비트만 보고 을/를을 고릅니다.
+      </p>
+      <pre><code>받침 번호 = (글자 코드 − 0xAC00) % 28   ; 0이면 받침 없음
+버섯 → 「섯」 받침 있음 → 버섯을
+회복샤워 → 「워」 받침 없음 → 회복샤워를</code></pre>
+      <p>숫자는 읽는 소리로 정했습니다. 마지막 자리가 2, 4, 5, 9면 「가」, 나머지는 「이」입니다.</p>
+      <figure class="paper">
+        <img
+          src={img('particles-levelup.webp')}
+          width="2190"
+          height="920"
+          alt="레벨업 화면에서 필살기 이름과 레벨 숫자 뒤의 조사가 받침에 맞게 나온다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <h3 class="pixel">8. 원판부터 어색했던 화면</h3>
+      <p>
+        전투 결과 창은 아이템 이름을 오른쪽 정렬하고, 5글자 이하면 「아이템」과 같은 줄에 두며 창을 한 줄 줄였습니다.
+        필살기 화면 안내는 이름을 4칸 고정으로 그려 「マロ&#x3000;&#x3000;が…」처럼 빈칸이 생기던 것을 이름 바로 뒤로
+        당겼습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('result-jp.webp')}
+          width="1670"
+          height="920"
+          alt="위는 일본판, 아래는 v1.1 전투 결과 창"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>위 일본판, 아래 v1.1</figcaption>
+      </figure>
+      <figure class="paper">
+        <img
+          src={img('special-hint.webp')}
+          width="1150"
+          height="920"
+          alt="위는 일본판, 아래는 v1.1 필살기 화면의 다음 기술 안내"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>위 일본판, 아래 v1.1</figcaption>
+      </figure>
+
+      <h3 class="pixel">9. 확인은 에뮬레이터가</h3>
+      <ul class="notes">
+        <li>
+          Mesen 2와 Lua 스크립트로 세이브스테이트에서 버튼 입력을 재생하고, 원하는 순간의 화면과 메모리를 저장합니다.
+        </li>
+        <li>인벤토리에 아이템을 직접 넣거나 경험치를 레벨업 직전으로 바꿔 보고 싶은 화면을 바로 만듭니다.</li>
+        <li>상점 주인 대사 자리에 원하는 대사를 띄우는 테스트 전용 롬으로 v1.0과 v1.1을 같은 조건에서 찍습니다.</li>
+        <li>고치기로 한 목록 밖에서 바뀐 대사가 0건인지, 메뉴 화면이 기준과 픽셀 단위로 같은지 비교합니다.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<style>
+  .paper {
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 8px;
+    box-shadow: 0 4px 0 rgb(0 0 0 / 35%);
+  }
+
+  .paper img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .paper.narrow {
+    max-width: 480px;
+  }
+
+  .paper figcaption {
+    padding-top: 6px;
+    color: #333;
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+
+  .making-body {
+    display: grid;
+    gap: 16px;
+    max-width: 820px;
+  }
+
+  .making-body h3 {
+    margin-top: 24px;
+    color: var(--accent);
+  }
+
+  .making-body h4 {
+    margin: 8px 0 0;
+    font-size: 1rem;
+  }
+
+  .making-body p,
+  .making-body ul,
+  .making-body ol {
+    margin: 0;
+  }
+
+  .making-body code {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 0.875em;
+  }
+
+  .making-body pre {
+    margin: 0;
+    padding: 12px 16px;
+    overflow-x: auto;
+    background: rgb(0 0 0 / 55%);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .making-body table {
+    border-collapse: collapse;
+    background: var(--panel);
+    font-size: 0.875rem;
+  }
+
+  .making-body th,
+  .making-body td {
+    padding: 6px 10px;
+    border: 1px solid rgb(255 255 255 / 25%);
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .making-body td.wrap {
+    min-width: 16rem;
+    white-space: normal;
+  }
+
+  .flow {
+    display: grid;
+    gap: 8px;
+    padding: 12px 16px 12px 40px;
+    background: var(--panel);
+    border-left: 4px solid var(--accent);
+  }
+
+  .notes {
+    display: grid;
+    gap: 8px;
+    padding-left: 20px;
+  }
+</style>

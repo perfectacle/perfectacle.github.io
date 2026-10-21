@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 250" width="860" height="250" font-family="sans-serif">
+<rect width="860" height="250" rx="12" fill="#fafafa"/>
+<text x="20" y="32" font-size="17" fill="#111">필드 메뉴의 VRAM (BG1 글자 타일)</text>
+<rect x="30" y="70" width="533" height="60" fill="#bbdefb" stroke="#1e88e5"/>
+<rect x="563" y="70" width="267" height="60" fill="#fde68a" stroke="#d97706"/>
+<text x="297" y="96" font-size="15" text-anchor="middle" fill="#111">타일 $000–$1FF · 메뉴 폰트 256글자 (글자당 2장)</text>
+<text x="297" y="118" font-size="13" text-anchor="middle" fill="#333">메뉴를 여는 동안 항상 여기 있다 = 코드 1바이트로 고르는 글자</text>
+<text x="697" y="96" font-size="15" text-anchor="middle" fill="#111">타일 $200–$2FF</text>
+<text x="697" y="118" font-size="13" text-anchor="middle" fill="#333">VRAM $6000–$7FFF</text>
+<text x="30" y="150" font-size="12" fill="#64748b" font-family="ui-monospace,Menlo,monospace">$000</text>
+<text x="563" y="150" font-size="12" fill="#64748b" text-anchor="middle" font-family="ui-monospace,Menlo,monospace">$200</text>
+<text x="830" y="150" font-size="12" fill="#64748b" text-anchor="end" font-family="ui-monospace,Menlo,monospace">$2FF</text>
+<text x="30" y="190" font-size="14" fill="#1e3a8a">v1.0: 여기 224칸이 꽉 찼다 (한글 165자 + 영숫자·기호·아이콘)</text>
+<text x="30" y="215" font-size="14" fill="#92400e">v1.1: 메뉴 화면에서 안 쓰는 노란 칸을 128칸짜리 「임시 글자 칸」으로 쓴다</text>
+</svg>
