@@ -43,6 +43,13 @@ describe('breadcrumbs', () => {
       { '@type': 'ListItem', position: 2, name: 'Java', item: 'https://example.com/categories/Java/' },
     ]);
   });
+
+  it('starts at the trail itself when there is no root', () => {
+    const data = breadcrumbs(site, [{ name: '한글패치', path: '/games/kr-patches/' }], null);
+    expect(data['itemListElement']).toEqual([
+      { '@type': 'ListItem', position: 1, name: '한글패치', item: 'https://example.com/games/kr-patches/' },
+    ]);
+  });
 });
 
 describe('website and profilePage', () => {

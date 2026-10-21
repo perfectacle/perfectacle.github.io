@@ -2,13 +2,13 @@
 import '../styles/patch-book.css';
 import Analytics from '../components/Analytics.astro';
 import { SITE } from '../lib/posts.ts';
-import { KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
+import { KR_PATCH_LIST_PATH, KR_PATCH_SITE_TITLE, KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
 import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
 
 interface Props {
   title: string;
   description: string;
-  /** Where this page sits below the home page, ending with the page itself. */
+  /** Where this page sits, from the patch list down to the page itself. */
   trail: { name: string; path: string }[];
   /** Which game's look the page takes. */
   theme: KrPatchTheme;
@@ -24,6 +24,7 @@ if (!patch) throw new Error(`Unknown theme ${theme}`);
 const { path: assets, color } = patch;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const imageUrl = new URL(image.src, Astro.site).href;
+const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH_SITE_TITLE}`;
 ---
 
 <!doctype html>
@@ -31,7 +32,7 @@ const imageUrl = new URL(image.src, Astro.site).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} | {SITE.title}</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <meta name="author" content={SITE.author} />
     <meta name="theme-color" content={color} />
@@ -39,7 +40,6 @@ const imageUrl = new URL(image.src, Astro.site).href;
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/images/favicon/favicon-32x32.png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/images/favicon/apple-touch-icon.png" />
-    <link rel="alternate" type="application/atom+xml" title={SITE.title} href="/atom.xml" />
     <link rel="sitemap" href="/sitemap.xml" />
     <link rel="preload" href={`${assets}/fonts/guide.woff2`} as="font" type="font/woff2" crossorigin />
     <meta property="og:type" content="website" />
@@ -51,9 +51,9 @@ const imageUrl = new URL(image.src, Astro.site).href;
     <meta property="og:image:height" content={String(image.height ?? 224)} />
     <meta property="og:image:alt" content={image.alt} />
     <meta property="og:locale" content="ko_KR" />
-    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:site_name" content={KR_PATCH_SITE_TITLE} />
     <meta name="twitter:card" content="summary_large_image" />
-    <script is:inline type="application/ld+json" set:html={serializeJsonLd(breadcrumbs(SITE, trail))} />
+    <script is:inline type="application/ld+json" set:html={serializeJsonLd(breadcrumbs(SITE, trail, null))} />
     <Analytics />
   </head>
   <body>
@@ -61,17 +61,9 @@ const imageUrl = new URL(image.src, Astro.site).href;
       본문으로 건너뛰기
     </a>
     <header class="masthead page-width">
-      <a class="wordmark" href="/">
-        {SITE.title}
+      <a class="wordmark" href={KR_PATCH_LIST_PATH}>
+        {KR_PATCH_SITE_TITLE}
       </a>
-      <nav aria-label="사이트 메뉴">
-        <a class="pointer" href="/games/kr-patches/">
-          한글패치 목록
-        </a>
-        <a class="pointer" href="/">
-          블로그
-        </a>
-      </nav>
     </header>
     <main id="main" tabindex="-1">
       <slot />

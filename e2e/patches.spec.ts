@@ -118,7 +118,7 @@ test('patch pages describe where they sit and keep analytics off outside the pub
   const [block] = await page.locator('script[type="application/ld+json"]').allTextContents();
   const crumbs = JSON.parse(block ?? '{}') as { '@type': string; itemListElement: { item: string }[] };
   expect(crumbs['@type']).toBe('BreadcrumbList');
-  expect(crumbs.itemListElement.map(i => new URL(i.item).pathname)).toEqual(['/', '/games/kr-patches/', GAME]);
+  expect(crumbs.itemListElement.map(i => new URL(i.item).pathname)).toEqual(['/games/kr-patches/', GAME]);
   await page.waitForTimeout(3500);
   expect(gtag).toEqual([]);
 });
