@@ -2,6 +2,7 @@
 layout: ../layouts/Page.astro
 title: 소개
 description: 서버 개발자 양권성의 소개
+profileImage: /about/profile.webp
 ---
 <div class="profile">
 <img src="/about/profile.webp" alt="양권성 프로필 사진" width="240" height="240">

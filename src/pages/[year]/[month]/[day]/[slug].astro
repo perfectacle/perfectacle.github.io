@@ -21,7 +21,9 @@ import {
   ymd,
   type Post,
   type SeriesInfo,
+  SITE,
 } from '../../../../lib/posts.ts';
+import { blogPosting, breadcrumbs } from '../../../../lib/structured-data.ts';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -56,11 +58,29 @@ const ogFile = coverImage(post);
 const ogImage = ogFile ? `${path}${ogFile}` : undefined;
 const toc = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 const cats = post.data.categories;
+const description = excerpt(post, 150) || post.data.title;
+const jsonLd = [
+  blogPosting(SITE, {
+    title: post.data.title,
+    description,
+    path,
+    date: post.data.date,
+    tags: post.data.tags,
+    categories: cats,
+    image: ogImage,
+  }),
+  breadcrumbs(SITE, [
+    ...cats.map((c, i) => ({ name: c, path: categoryPath(cats.slice(0, i + 1)) })),
+    { name: post.data.title, path },
+  ]),
+];
 ---
 
-<Base title={post.data.title} description={excerpt(post, 150) || post.data.title} image={ogImage} type="article">
+<Base title={post.data.title} description={description} image={ogImage} type="article" jsonLd={jsonLd}>
   <Fragment slot="head">
     <meta property="article:published_time" content={post.data.date.toISOString()} />
+    <meta property="article:author" content={new URL('/about/', SITE.url).href} />
+    {cats[0] && <meta property="article:section" content={cats[0]} />}
     {post.data.tags.map(t => (
       <meta property="article:tag" content={t} />
     ))}

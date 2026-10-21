@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import SearchUi from '../components/SearchUi.astro';
 import { SITE } from '../lib/posts.ts';
+import { serializeJsonLd } from '../lib/structured-data.ts';
 
 interface Props {
   title?: string | undefined;
@@ -9,9 +10,10 @@ interface Props {
   image?: string | undefined;
   type?: 'website' | 'article';
   noindex?: boolean;
+  jsonLd?: Record<string, unknown>[] | undefined;
 }
 
-const { title, description = SITE.description, image, type = 'website', noindex = false } = Astro.props;
+const { title, description = SITE.description, image, type = 'website', noindex = false, jsonLd = [] } = Astro.props;
 const fullTitle = title ? `${title} | ${SITE.title}` : SITE.title;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL(image ?? '/images/avatar/avatar.png', Astro.site).href;
@@ -31,6 +33,7 @@ const current = Astro.url.pathname;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={SITE.author} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
     <meta property="og:type" content={type} />
@@ -39,6 +42,7 @@ const current = Astro.url.pathname;
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={SITE.title} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={title ?? SITE.title} />
     <meta property="og:locale" content="ko_KR" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
@@ -47,6 +51,9 @@ const current = Astro.url.pathname;
     <link rel="apple-touch-icon" href="/images/favicon/apple-touch-icon.png" />
     <link rel="alternate" type="application/atom+xml" title={SITE.title} href="/atom.xml" />
     <link rel="sitemap" href="/sitemap.xml" />
+    {jsonLd.map(data => (
+      <script is:inline type="application/ld+json" set:html={serializeJsonLd(data)} />
+    ))}
     <SearchUi />
     <slot name="head" />
     <script is:inline>

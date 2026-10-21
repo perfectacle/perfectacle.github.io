@@ -1,10 +1,14 @@
 ---
 import Base from './Base.astro';
+import { SITE } from '../lib/posts.ts';
+import { profilePage } from '../lib/structured-data.ts';
 
 const { frontmatter } = Astro.props;
+// `profileImage` marks the author's profile page.
+const jsonLd = frontmatter.profileImage ? [profilePage(SITE, frontmatter.profileImage)] : [];
 ---
 
-<Base title={frontmatter.title} description={frontmatter.description}>
+<Base title={frontmatter.title} description={frontmatter.description} jsonLd={jsonLd}>
   <article class="container narrow">
     <h1>{frontmatter.title}</h1>
     <div class="prose">
