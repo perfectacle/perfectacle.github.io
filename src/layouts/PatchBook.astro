@@ -11,7 +11,7 @@ interface Props {
   /** Where this page sits, from the patch list down to the page itself. */
   trail: { name: string; path: string }[];
   /** Which game's look the page takes. */
-  theme: KrPatchTheme;
+  theme: KrPatchTheme | 'sfc';
   /** Social preview: a game screen, 256×224 unless a size is given. */
   image: { src: string; alt: string; width?: number; height?: number };
   copyright: string[];
@@ -20,8 +20,9 @@ interface Props {
 
 const { title, description, trail, theme, image, copyright, links = [] } = Astro.props;
 const patch = KR_PATCHES.find(p => p.theme === theme);
-if (!patch) throw new Error(`Unknown theme ${theme}`);
-const { path: assets, color } = patch;
+if (!patch && theme !== 'sfc') throw new Error(`Unknown theme ${theme}`);
+const assets = patch?.path;
+const color = patch?.color ?? '#080e23';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const imageUrl = new URL(image.src, Astro.site).href;
 const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH_SITE_TITLE}`;
@@ -41,7 +42,7 @@ const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH
     <link rel="icon" href="/images/favicon/favicon-32x32.png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/images/favicon/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap.xml" />
-    <link rel="preload" href={`${assets}/fonts/guide.woff2`} as="font" type="font/woff2" crossorigin />
+    {assets && <link rel="preload" href={`${assets}/fonts/guide.woff2`} as="font" type="font/woff2" crossorigin />}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -60,11 +61,15 @@ const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH
     <a class="skip-link" href="#main">
       본문으로 건너뛰기
     </a>
-    <header class="masthead page-width">
-      <a class="wordmark" href={KR_PATCH_LIST_PATH}>
-        {KR_PATCH_SITE_TITLE}
-      </a>
-    </header>
+    {theme !== 'sfc' && (
+      <header class="masthead page-width">
+        <nav aria-label="한글패치">
+          <a class="wordmark" href={KR_PATCH_LIST_PATH}>
+            <span aria-hidden="true">←</span> 한글패치 목록
+          </a>
+        </nav>
+      </header>
+    )}
     <main id="main" tabindex="-1">
       <slot />
     </main>

@@ -1,6 +1,7 @@
 ---
 import PatchBook from '../../../layouts/PatchBook.astro';
-import { KR_PATCH_LIST_PATH, KR_PATCHES, SMRPG_PATCH, releaseLabel } from '../../../lib/kr-patches';
+import { KR_PATCH_LIST_PATH, KR_PATCHES } from '../../../lib/kr-patches';
+import '../../../styles/patch-catalogue.css';
 
 // Games that share a credit line, like the two Super Gokuden parts, are credited together.
 const credits = Map.groupBy(KR_PATCHES, patch => patch.copyright);
@@ -10,45 +11,59 @@ const copyright = [...credits].map(([line, patches]) => `${patches.map(patch => 
 <PatchBook
   title="한글패치"
   trail={[{ name: '한글패치', path: KR_PATCH_LIST_PATH }]}
-  description="한국어로 즐기는 고전 게임. 슈퍼 마리오 RPG, 드래곤볼 Z 초오공전 돌격편·각성편, 제절초 한글패치를 이 사이트에서 바로 적용합니다."
-  theme="smrpg"
+  description="한국어로 즐기는 슈퍼 패미컴 게임. 게임을 고르고 일본판 롬파일에 한글패치를 바로 적용합니다."
+  theme="sfc"
   image={{
-    src: `${SMRPG_PATCH.path}/images/world-map-4x.webp`,
-    alt: '슈퍼 마리오 RPG의 월드맵',
-    width: 1024,
-    height: 896,
+    src: '/images/favicon/apple-touch-icon.png',
+    alt: '한글패치 사이트 아이콘',
+    width: 180,
+    height: 180,
   }}
   copyright={copyright}
 >
-  <section class="section page-width" aria-labelledby="catalogue-title">
-    <h1 id="catalogue-title" class="pixel">
-      한글패치
-    </h1>
-    <p class="lead">
-      일본어로만 나왔던 게임을 한국어로 옮겼습니다. 일본판 롬파일을 고르면 페이지에서 바로 한글판을 만듭니다.
-    </p>
-    <ul class="catalogue">
+  <section class="patch-catalogue page-width" aria-labelledby="catalogue-title">
+    <div class="console-heading">
+      <div>
+        <p class="console-label">SFC · GAME SELECT</p>
+        <h1 id="catalogue-title">한글패치</h1>
+      </div>
+      <div class="select-emblem" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <p class="catalogue-intro">게임을 고르면 한글패치를 바로 적용할 수 있습니다.</p>
+    <div class="catalogue-divider" aria-hidden="true"></div>
+    <ul class="game-catalogue">
       {KR_PATCHES.map((patch, i) => {
         const href = `${patch.path}/`;
         return (
-          <li class="entry frame">
-            <a class="entry-shot screen" href={href} tabindex="-1" aria-hidden="true">
-              {i === 0 ? (
-                <img src={href + patch.card.image} width="256" height="224" alt="" fetchpriority="high" />
-              ) : (
-                <img src={href + patch.card.image} width="256" height="224" alt="" loading="lazy" decoding="async" />
-              )}
+          <li>
+            <a class="game-card" href={href}>
+              <div class="selection-slot" aria-hidden="true">
+                <span>{String(i + 1).padStart(2, '0')}</span>
+                <span class="slot-meter"></span>
+                <span>SFC</span>
+              </div>
+              <div class="game-screen">
+                {i === 0 ? (
+                  <img src={href + patch.card.image} width="256" height="224" alt="" fetchpriority="high" />
+                ) : (
+                  <img src={href + patch.card.image} width="256" height="224" alt="" loading="lazy" decoding="async" />
+                )}
+              </div>
+              <div class="game-card-copy">
+                <p class="game-release">
+                  {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}
+                </p>
+                <h2>{patch.title}</h2>
+                <span class="game-card-arrow" aria-hidden="true">
+                  ▶
+                </span>
+              </div>
             </a>
-            <div>
-              <p class="label">{releaseLabel(patch, '')}</p>
-              <h2 class="pixel">
-                <a href={href}>{patch.title}</a>
-              </h2>
-              <p>{patch.card.summary}</p>
-              <a class="pointer" href={href}>
-                한글판 만들기
-              </a>
-            </div>
           </li>
         );
       })}

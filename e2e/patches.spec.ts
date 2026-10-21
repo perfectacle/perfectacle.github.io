@@ -49,6 +49,7 @@ const GAME = '/games/kr-patches/sfc/super-mario-rpg/';
 
 test('catalogue opens the game page, which leads with the patch box and plays no media', async ({ page }) => {
   await page.goto('/games/kr-patches/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'sfc');
   await page.locator(`main a[href="${GAME}"]`).first().click();
   await expect(page).toHaveURL(/\/games\/kr-patches\/sfc\/super-mario-rpg\/$/);
   await expect(page.getByText('일본판 롬파일 고르기')).toBeInViewport();
@@ -133,9 +134,58 @@ test('llms.txt points AI assistants to the patch pages', async ({ request }) => 
 
 test('catalogue lists every game page', async ({ page }) => {
   await page.goto('/games/kr-patches/');
-  for (const path of [GAME, GOKUDEN, KAKUSEI, OTOGIRI])
-    await expect(page.locator(`main h2 a[href="${path}"]`)).toHaveCount(1);
+  await expect(page.locator('header')).toHaveCount(0);
+  await expect(page.getByText('한글판 만들기', { exact: true })).toHaveCount(0);
+  for (const text of [
+    '대사·메뉴·전투까지 모두 한국어입니다.',
+    'v1.1에서 대사 전체를 원문과 다시 대조했습니다.',
+    'v1.2에서 대사를 원문과 다시 대조했습니다.',
+    '사운드 노벨의 첫 작품을 플로차트와 장 목록을 더해 한국어로 읽습니다.',
+  ])
+    await expect(page.locator('main')).not.toContainText(text);
+  for (const path of [GAME, GOKUDEN, KAKUSEI, OTOGIRI]) {
+    const card = page.locator(`main a[href="${path}"]`);
+    await expect(card).toHaveCount(1);
+    await expect(card.locator('h2')).toHaveCount(1);
+    await expect(card.locator('img')).toHaveCount(1);
+    await card.focus();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(path);
+    await page.goto('/games/kr-patches/');
+  }
 });
+
+for (const path of [GAME, GOKUDEN, KAKUSEI, OTOGIRI]) {
+  test(`${path} leads with patch instructions and supports choosing a file from the keyboard`, async ({ page }) => {
+    await page.goto(path);
+    const back = page.locator('header').getByRole('link', { name: '한글패치 목록', exact: true });
+    await expect(back).toBeInViewport();
+    await expect(back).toHaveAttribute('href', '/games/kr-patches/');
+    const box = page.locator('.patch-box');
+    await expect(box.getByRole('heading', { name: '여기서 바로 한글패치' })).toBeInViewport();
+    const steps = box.getByRole('list', { name: '한글패치 방법' });
+    await expect(steps.getByRole('listitem')).toHaveCount(3);
+    await expect(steps).toContainText('파일 준비');
+    await expect(steps).toContainText('선택하면 자동 패치');
+    await expect(steps).toContainText('저장한 파일로 실행');
+    await expect(box.getByText('일본판 롬파일 고르기', { exact: true })).toBeInViewport();
+    const input = box.locator('input[type=file]');
+    await input.focus();
+    await expect(input).toBeFocused();
+    const chooser = page.waitForEvent('filechooser');
+    await page.keyboard.press('Enter');
+    await (
+      await chooser
+    ).setFiles({
+      name: 'photo.sfc',
+      mimeType: 'application/octet-stream',
+      buffer: Buffer.alloc(1024),
+    });
+    await expect(box.locator('.patch-status')).toContainText('너무 작습니다');
+    await back.click();
+    await expect(page).toHaveURL('/games/kr-patches/');
+  });
+}
 
 test('Super Gokuden patch box checks for its own 2 MB ROM', async ({ page }) => {
   await page.goto(GOKUDEN);
