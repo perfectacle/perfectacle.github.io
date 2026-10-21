@@ -32,6 +32,26 @@ const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), t
   // Globals read by Disqus' embed.js.
   const w = window as Window & { disqus_config?: (this: { page: DisqusPage }) => void; __disqusLoaded?: boolean };
 
+  // Disqus injects ad iframes, its "Also on" recommendations and an ad-tracking script next to the comments.
+  // Stopping them at insertion keeps the ad networks from loading at all; hiding them would still load them.
+  const UNWANTED = [
+    /\/\/tempest\.services\.disqus\.com\/ads-iframe\//,
+    /\/recommendations\.js(?:$|\?)/,
+    /\.liadm\.com\//,
+  ];
+  const isUnwanted = (node: Node) =>
+    (node instanceof HTMLScriptElement || node instanceof HTMLIFrameElement) &&
+    UNWANTED.some(re => re.test(node.getAttribute('src') ?? ''));
+  const blockUnwanted = () => {
+    const { appendChild, insertBefore } = Node.prototype;
+    Node.prototype.appendChild = function <T extends Node>(this: Node, node: T): T {
+      return isUnwanted(node) ? node : (appendChild.call(this, node) as T);
+    };
+    Node.prototype.insertBefore = function <T extends Node>(this: Node, node: T, child: Node | null): T {
+      return isUnwanted(node) ? node : (insertBefore.call(this, node, child) as T);
+    };
+  };
+
   const thread = document.getElementById('disqus_thread');
   if (thread?.dataset.config) {
     const config = JSON.parse(thread.dataset.config) as DisqusPage;
@@ -43,6 +63,7 @@ const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), t
         this.page.identifier = config.identifier;
         this.page.title = config.title;
       };
+      blockUnwanted();
       const s = document.createElement('script');
       s.src = 'https://exobud.disqus.com/embed.js';
       s.dataset.timestamp = String(Date.now());
@@ -79,5 +100,10 @@ const config = { url: new URL(path, SITE.url).href, identifier: path.slice(1), t
   }
   .load:hover {
     border-color: var(--accent);
+  }
+  /* Fallback in case Disqus inserts these another way than the guarded DOM methods. */
+  .comments :global(#disqus_recommendations),
+  .comments :global(#disqus_thread iframe[src*='/ads-iframe/']) {
+    display: none !important;
   }
 </style>
