@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 430" width="860" height="430" font-family="sans-serif">
+<rect width="860" height="430" rx="12" fill="#fafafa"/>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#334155"/></marker></defs>
+<text x="20" y="32" font-size="17" fill="#111">대본 하나를 셋이 따로 읽는다</text>
+<rect x="40" y="70" width="780" height="44" rx="6" fill="#ffffff" stroke="#64748b"/>
+<text x="430" y="62" font-size="13" text-anchor="middle" fill="#475569">대본 (글자 + 제어 코드)</text>
+<text x="95.7" y="97" font-size="13" text-anchor="middle" fill="#334155">페이지</text>
+<line x1="151.4" y1="70" x2="151.4" y2="114" stroke="#cbd5e1"/>
+<text x="207.10000000000002" y="97" font-size="13" text-anchor="middle" fill="#334155">페이지</text>
+<line x1="262.8" y1="70" x2="262.8" y2="114" stroke="#cbd5e1"/>
+<text x="318.5" y="97" font-size="13" text-anchor="middle" fill="#2563eb">장면 코드</text>
+<line x1="374.20000000000005" y1="70" x2="374.20000000000005" y2="114" stroke="#cbd5e1"/>
+<text x="429.90000000000003" y="97" font-size="13" text-anchor="middle" fill="#334155">페이지</text>
+<line x1="485.6" y1="70" x2="485.6" y2="114" stroke="#cbd5e1"/>
+<text x="541.3000000000001" y="97" font-size="13" text-anchor="middle" fill="#dc2626">선택지</text>
+<line x1="597.0" y1="70" x2="597.0" y2="114" stroke="#cbd5e1"/>
+<text x="652.7" y="97" font-size="13" text-anchor="middle" fill="#334155">페이지</text>
+<line x1="708.4000000000001" y1="70" x2="708.4000000000001" y2="114" stroke="#cbd5e1"/>
+<text x="764.1000000000001" y="97" font-size="13" text-anchor="middle" fill="#dc2626">점프</text>
+<rect x="50" y="170" width="230" height="48" rx="8" fill="#dcfce7" stroke="#16a34a"/>
+<text x="165" y="190" font-size="14" text-anchor="middle" fill="#111">본문 (위치 $195B)</text>
+<text x="165" y="208" font-size="12" text-anchor="middle" fill="#334155">글자를 화면에 찍는다</text>
+<line x1="165" y1="170" x2="165" y2="118" stroke="#16a34a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="200" y="232" width="230" height="48" rx="8" fill="#fef3c7" stroke="#d97706"/>
+<text x="315" y="252" font-size="14" text-anchor="middle" fill="#111">배치 미리 읽기 (위치 $1972)</text>
+<text x="315" y="270" font-size="12" text-anchor="middle" fill="#334155">줄 나눔을 미리 잰다 · 태스크 0</text>
+<line x1="315" y1="232" x2="315" y2="118" stroke="#d97706" stroke-width="2" marker-end="url(#a)"/>
+<rect x="460" y="294" width="230" height="48" rx="8" fill="#dbeafe" stroke="#2563eb"/>
+<text x="575" y="314" font-size="14" text-anchor="middle" fill="#111">장면 미리 읽기 (위치 $19A0)</text>
+<text x="575" y="332" font-size="12" text-anchor="middle" fill="#334155">그림을 미리 올린다 · 태스크 2</text>
+<line x1="575" y1="294" x2="575" y2="118" stroke="#2563eb" stroke-width="2" marker-end="url(#a)"/>
+<text x="40" y="380" font-size="13" fill="#111">본문이 장면 코드에 닿으면 장면 미리 읽기가 그 그림을 다 올릴 때까지 기다린다.</text>
+<text x="40" y="404" font-size="13" fill="#b91c1c">본문 위치만 바꾸면 장면 미리 읽기는 옛 자리를 읽고 있어서, 기다리는 그림이 영영 오지 않는다 → 검은 화면에서 멈춤</text>
+</svg>

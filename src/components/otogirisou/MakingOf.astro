@@ -1,0 +1,853 @@
+---
+interface Props {
+  base: string;
+}
+
+const { base } = Astro.props;
+const img = (name: string) => `${base}/images/making/${name}`;
+const zip = `${base}/downloads/Otogirisou_K_v1_2_tools.zip`;
+
+const memories = [
+  {
+    name: '롬',
+    like: '책',
+    role: '카트리지에 든 프로그램·대사·그림·폰트. 읽기만 합니다. 이 게임은 1MB, 한글판은 2MB.',
+  },
+  {
+    name: 'WRAM',
+    like: '작업 책상',
+    role: 'CPU가 계산하며 값을 적어 두는 128KB. 지금 읽는 위치, 선택지 기록이 여기 있습니다.',
+  },
+  { name: 'SRAM', like: '책갈피', role: '전원을 꺼도 남는 세이브 메모리. 책갈피 슬롯 4개가 들어 있습니다.' },
+  { name: 'VRAM', like: '스티커판', role: '화면에 붙일 그림 조각을 올려 두는 64KB. CPU가 아무 때나 쓸 수 없습니다.' },
+];
+
+const codes = [
+  { code: '{00}', text: '줄바꿈' },
+  { code: '{03:@주소}', text: '대본의 다른 곳으로 점프' },
+  { code: '{16}', text: 'A 버튼을 기다림' },
+  { code: '{19} {1A}', text: '선택지. 보기마다 갈 곳(점프 주소)이 붙어 있음' },
+  { code: '{1C}', text: '선택지 보기 하나의 끝' },
+  { code: '{20}', text: '주인공 이름' },
+  { code: '{25}', text: '화면을 지우고 다음 페이지로' },
+  { code: '{2E}…{37}', text: '배경 그림 바꾸기' },
+  { code: '{39}…{3D}', text: '음악·효과음 재생과 정지' },
+];
+
+const recordLayout = [
+  { offset: '+0', size: '4바이트', text: '이번 회차에 읽은 장 (장 하나가 1비트)' },
+  { offset: '+4', size: '4바이트', text: '지금까지 읽은 장' },
+  { offset: '+8', size: '4바이트', text: '본 엔딩' },
+  { offset: '+12', size: '1바이트', text: '마지막으로 읽은 장 (책갈피에 표시)' },
+  { offset: '+13', size: '2바이트', text: '장에 들어갈 때의 갈래 변수와 그 유무' },
+];
+
+const debugSteps = [
+  '프레임마다 CPU가 실행 중인 주소(PC)를 기록해 어디서 멈췄는지 찾습니다.',
+  '멈춘 곳이 기다리는 메모리 값에 쓰기 감시를 걸어, 그 값을 바꾸는 코드의 주소와 호출 순서를 봅니다.',
+  '정상으로 진행하는 경우에도 같은 감시를 걸어 두 기록을 나란히 비교합니다.',
+];
+
+const emulators = [
+  { name: 'Mesen 2', result: '정상 (1~4회차, 모든 세이브 종류 이어하기)' },
+  { name: 'bsnes, bsnes-hd beta', result: '정상' },
+  { name: 'snes9x, snes9x2010', result: '정상' },
+  { name: 'Beetle Supafaust', result: '정상' },
+  { name: 'Mesen-S 코어', result: '판정 불가 (일본판 원본도 테스트 프로그램에서 바로 종료)' },
+];
+
+const toolMap = [
+  { job: '대사 꺼내기·다시 넣기', files: ['tools/script.py', 'tools/dump.py', 'tools/assemble.py'] },
+  { job: '롬 코드 읽기', files: ['tools/dis65816.py'] },
+  { job: '2회차 멈춤 수정', files: ['tools/fixes.py', 'lua/lap.lua'] },
+  { job: 'A 버튼 대기 맞추기', files: ['tools/waits.py', 'tools/fixwaits.py', 'lua/waitdemo.lua'] },
+  { job: '글자표·새 글자', files: ['tools/font.py', 'tools/ocr/', 'tools/mkfont.py', 'tools/glyph_workbench.py'] },
+  { job: '단어 단위 줄바꿈', files: ['asm/wordwrap.asm', 'tools/layout.py', 'tools/splitpages.py'] },
+  { job: '재번역 반영', files: ['tools/trcheck.py', 'tools/trmerge.py', 'tools/rvapply.py'] },
+  { job: '옛 세이브 이어하기', files: ['tools/savemap.py', 'asm/savecompat.asm'] },
+  { job: '장·엔딩·메뉴 데이터', files: ['tools/qol.py', 'tables/qol-chapters.tsv', 'tables/qol-endings.tsv'] },
+  { job: '편의 기능 코드', files: ['asm/qol.asm'] },
+  { job: '플로차트', files: ['tools/flow.py', 'asm/flow.asm'] },
+  { job: '화면 찍기·비교', files: ['lua/pages.lua', 'lua/name.lua', 'lua/jumpsave.py', 'tools/patchnote.py'] },
+  { job: '엔진 추적', files: ['lua/qol/pcs.lua', 'lua/qol/wtrace.lua', 'lua/qol/trace.lua', 'lua/qol/watch.lua'] },
+  { job: '장 이동 회귀', files: ['lua/qol/menujump.sh', 'lua/qol/chjump.sh'] },
+  { job: '에뮬레이터 호환성', files: ['compat/lr.py', 'compat/run_all.sh'] },
+];
+---
+
+<section id="making" class="section page-width" aria-labelledby="making-title">
+  <h2 id="making-title" class="pixel">
+    한글판을 만든 방법
+  </h2>
+  <p class="lead">
+    2016년에 낸 v1.0은 2회차부터 멈추거나, A 버튼을 누르지 않았는데 화면이 넘어가거나, 단어 중간에서 줄이 끊기는 문제가
+    있었습니다. v1.1은 이 문제를 롬에서 원인을 찾아 고치고 번역을 원문과 대조해 다시 다듬었습니다. v1.2는 한 걸음 더
+    나아가 원작에 없던 플로차트, 장 목록, 엔딩 목록을 넣었습니다. 게임 엔진에 새 화면과 새 동작을 끼워 넣은 것이라 번역
+    패치라기보다 개조 롬에 가깝습니다.
+  </p>
+  <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
+  <p class="section-note">
+    빌드 스크립트, 어셈블리 소스, 대본, 글자표, 테스트 스크립트는
+    <a href={zip} download>
+      빌드 도구(zip, 1.8MB)
+    </a>
+    로 받을 수 있습니다. 각 단계 끝의 「쓴 도구」가 압축 파일 안의 파일 이름입니다. 롬, asar, Mesen은 들어 있지 않고,
+    일본어 대본은 빌드할 때 가지고 있는 일본판 롬에서 뽑습니다. 빌드 순서는 압축 파일 안 tools/README.txt에 있습니다.
+  </p>
+
+  <details class="more making">
+    <summary class="pointer">자세히 보기</summary>
+    <div class="making-body">
+      <h3 class="pixel">1. 배경지식</h3>
+      <h4>게임기 안의 메모리</h4>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">이름</th>
+              <th scope="col">비유</th>
+              <th scope="col">하는 일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {memories.map(m => (
+              <tr>
+                <th scope="row">{m.name}</th>
+                <td>{m.like}</td>
+                <td class="wrap">{m.role}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h4>주소 읽는 법</h4>
+      <p>
+        <code>$15:E401</code> 같은 SNES 주소는 CPU가 보는 <code>뱅크:주소</code>이고, <code>0xAE401</code> 같은 파일
+        오프셋은 롬 파일을 처음부터 센 위치입니다. 이 게임(LoROM)은 뱅크 하나가 롬의 32KB를 비춥니다.
+      </p>
+      <pre><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
+$15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
+
+      <h4>대본은 글자와 명령의 줄</h4>
+      <p>
+        사운드 노벨의 대본은 글자 사이사이에 명령(제어 코드)이 섞인 하나의 긴 줄입니다. 게임은 이 줄을 앞에서부터 읽으며
+        글자는 화면에 찍고 명령은 실행합니다. 아래 표기는 이 글에서 쓰는 형식입니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            {codes.map(c => (
+              <tr>
+                <td>
+                  <code>{c.code}</code>
+                </td>
+                <td class="wrap">{c.text}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h4>후킹</h4>
+      <p>
+        원래 코드 사이에는 새 기능을 넣을 자리가 없습니다. 그래서 원래 코드의 한 지점을 "새 코드로 가라" 는 명령으로
+        덮어쓰고, 새 코드는 롬의 빈 공간에 둡니다. v1.1과 v1.2는 이런 지점을 스무 곳 넘게 바꿨습니다. 어셈블리 소스는
+        asar로 롬에 덮어씁니다.
+      </p>
+      <pre><code>org $009CF9      ; 입력 대기 중 X(되감기)를 확인하던 자리를
+    JSL SelCheck ; Select도 확인하는 새 코드로 보낸다</code></pre>
+
+      <h3 class="pixel">2. 대사가 들어 있는 방식</h3>
+      <p>
+        일본판은 대사 전체를 허프만 부호로 압축해 비트 단위로 이어 붙였습니다. 자주 나오는 글자일수록 짧은 비트로 적는
+        방식이라, 점프 주소도 바이트가 아니라 "기준점에서 몇 번째 비트" 로 적혀 있습니다. v1.0은 압축을 버리고 글자마다
+        2바이트로 적은 대사를 롬 뒤쪽에 새로 늘린 1MB에 넣었습니다. 대신 일본판 대사가 있던 자리는 0으로 비었는데, 이
+        자리가 나중에 v1.1과 v1.2의 코드가 들어갈 곳이 됐습니다.
+      </p>
+      <p>
+        먼저 두 형식을 모두 읽는 파서를 만들고 대본을 6,730줄의 텍스트로 꺼냈습니다. 점프 대상이 되는 곳에서 줄을
+        나눴더니 일본어 대본과 한국어 대본이 줄 번호까지 똑같이 맞았습니다. 그다음 꺼낸 대본을 고치지 않고 다시 조립했을
+        때 v1.0 롬과 바이트 단위로 같아지는 것을 확인했습니다. 이게 맞아야 이후의 수정이 다른 곳을 망가뜨리지 않았다고
+        믿을 수 있습니다.
+      </p>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>tools/script.py</code>
+        <code>tools/dump.py</code>
+        <code>tools/assemble.py</code>
+        <code>tools/dis65816.py</code>
+      </p>
+
+      <h3 class="pixel">3. 2회차에 멈추던 이유</h3>
+      <p>
+        게임은 새 회차를 시작할 때 회차 수와 난수로 세 시나리오 중 하나를 고르고, 시작 주소 표($02:A627)에서 그
+        시나리오의 첫 위치를 읽습니다. 2번 시나리오는 2회차부터 뽑힙니다. v1.0은 표의 0번, 1번만 새 대사 위치로 바꾸고
+        2번은 일본판 값을 그대로 둬서, 2번이 뽑히면 엉뚱한 데이터를 대사로 읽었습니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={img('freeze-lap2.webp')}
+          width="630"
+          height="920"
+          alt="위는 v1.0 2회차에서 화면이 w로 가득 차 멈춘 모습, 아래는 v1.1에서 정상으로 시작한 2번 시나리오"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        번역문은 v1.0에도 들어 있었습니다. 0번 시나리오 끝 바로 다음이 2번 시나리오의 시작이라, 3바이트만 고쳐 넣으면
+        됐습니다. 회차 수를 메모리에서 직접 1, 2, 3으로 바꿔 세 시나리오가 모두 정상으로 시작하는 것을 확인했습니다.
+      </p>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>tools/fixes.py</code>
+        <code>lua/lap.lua</code>
+      </p>
+
+      <h3 class="pixel">4. A 버튼 없이 넘어가던 화면</h3>
+      <p>
+        엔진은 「」』.?! 같은 문장 끝 글자를 찍으면 알아서 A 버튼을 기다리고, <code>{'{16}'}</code>을 만나도 기다립니다.
+        v1.0은 일본어의 「。」를 「…」나 띄어쓰기로 옮기면서 기다림이 빠진 곳과, 자동 대기 바로 뒤에{' '}
+        <code>{'{16}'}</code>이 또 붙은 곳이 생겼습니다. 앞의 경우는 버튼을 누르지 않아도 페이지가 지워졌고, 뒤의 경우는
+        두 번 눌러야 넘어갔습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('a-wait.webp')}
+          width="1150"
+          height="970"
+          alt="v1.0은 버튼을 누르지 않고 2초 뒤 다음 화면으로 넘어가 있고, v1.1은 같은 자리에서 기다린다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        한국어 대본과 일본어 대본이 줄 단위로 맞으니, 줄마다 "어디서 기다리는가" 를 두 대본에서 계산해 비교할 수
+        있습니다. 일본판이 기다리는 곳에만 <code>{'{16}'}</code>을 90곳 남짓 넣고, 겹친 대기 30곳 남짓을 지웠습니다. 첫
+        자동 수정은 기준을 잘못 잡아 270곳 넘게 고쳐 버려서, 비교 결과를 줄마다 다시 보며 범위를 좁혔습니다. 지금은
+        빌드할 때마다 이 비교 결과를 파일로 남기고, 0건이어야 통과입니다.
+      </p>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>tools/waits.py</code>
+        <code>tools/fixwaits.py</code>
+        <code>lua/waitdemo.lua</code>
+      </p>
+
+      <h3 class="pixel">5. 글자표를 눈으로 읽게 하기</h3>
+      <p>
+        대사를 고치려면 롬 속 글자 번호가 어떤 한글인지 적은 글자표가 있어야 하는데, v1.0의 글자표는 남아 있지
+        않았습니다. 그래서 폰트 1,282자를 그림으로 그려 macOS의 문자 인식(Vision)에 읽혔습니다. 한 글자씩 넣으면 잘 못
+        읽어서 여러 글자를 한 줄로 이어 붙였고, 조건을 바꿔 9번 읽힌 뒤 다수결로 정했습니다. 이 폰트의 ㅇ은 모서리만 빈
+        사각형이라 문자 인식이 ㅁ으로 자주 읽었습니다. 받침과 초성의 모서리 픽셀을 보고 가리는 규칙을 더했습니다.
+        ㅗ·ㅜ의 꼭지는 1픽셀이라 작게 줄인 그림에서는 ㅡ와 구별되지 않아서, 남은 의심 글자는 픽셀을 직접 보며 대사
+        문맥과 맞춰 검수했습니다. 잋→잊, 꿀→훌, 뒸→뒀처럼 30자를 바로잡았습니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={img('glyph-mieum.svg')}
+          width="560"
+          height="330"
+          alt="v1.0 폰트의 「마」와 「아」를 픽셀 격자로 그린 그림. 네 모서리 픽셀 하나씩만 다르다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        재번역으로 새로 필요해진 글자 75자는 v1.0 글자의 부분을 오려 붙이거나 직접 그려서 같은 모양으로 맞췄습니다. 예를
+        들어 「갹」은 「같」의 ㄱ, 「걷」의 ㅓ, 「밑」의 받침 ㅌ을 이어 붙였습니다. 처음에는 자모를 기계적으로 합성해
+        봤지만, 이미 있는 글자로 시험하니 크게 틀린 것이 300자가 넘었습니다. 이 폰트는 글자마다 자모 위치가 조금씩
+        다르기 때문입니다. Galmuri 폰트로 전부 새로 그리는 안도 나란히 찍어 비교했는데, v1.0 글자가 더 보기 좋아서
+        그대로 두었습니다. 글자를 넣을 자리도 문제였습니다. 폰트는 크기가 같은 글자끼리 묶은 그룹 표로 찾는데, 표 바로
+        뒤에 다른 데이터가 있어 그룹은 58개가 한계이고 v1.0이 58개를 다 썼습니다. 아무 데서도 쓰지 않는 채움 글자를 이웃
+        그룹과 같은 크기의 빈 글자로 바꿔 그룹을 합치니 48개로 줄어 자리가 생겼습니다.
+      </p>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>tools/font.py</code>
+        <code>tools/ocr/</code>
+        <code>tools/glyph_workbench.py</code>
+        <code>tools/mkfont.py</code>
+        <code>tables/newglyphs.json</code>
+      </p>
+
+      <h3 class="pixel">6. 단어 단위 줄바꿈</h3>
+      <p>
+        일본어는 띄어쓰기가 없어 엔진이 글자 단위로 줄을 바꿔도 자연스럽습니다. 한국어는 「유명/했는데」처럼 단어
+        중간에서 끊기고, 줄 끝 공백이 다음 줄 첫머리로 넘어가 한 칸 들여 쓴 것처럼 보였습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('wordwrap.webp')}
+          width="1064"
+          height="940"
+          alt="왼쪽 v1.0은 단어 중간에서 줄이 끊기고, 오른쪽 v1.1은 단어 단위로 줄이 바뀐다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p>
+        글자를 찍는 루틴($00:A777)을 후킹해, 공백이나 쉼표·마침표 뒤에서 대본의 다음 단어 폭을 미리 재고 줄 끝을 넘으면
+        먼저 줄을 바꾸게 했습니다. 주인공 이름처럼 길이가 그때그때 다른 것도 실행 중에 재므로 맞게 동작합니다. 대신 줄이
+        늘어나 한 화면 9줄을 넘는 페이지가 생깁니다. 대본의 모든 갈래를 따라가며 페이지마다 줄 수를 계산하는
+        시뮬레이터를 만들어 넘치는 54페이지를 찾았고, 기다림이 있는 문장 끝에서 페이지를 나눴습니다.
+      </p>
+      <p>
+        시뮬레이터와 실제 게임이 어긋난 적도 있습니다. 시뮬레이터로는 맞았는데 비교 화면에서 「그/럴」처럼 끊긴 줄이
+        보였습니다. 마침표·느낌표는 찍히는 순간 엔진이 입력 대기 명령을 버퍼에 끼워 넣는데, 후킹 코드가 그 상태를
+        "이름을 찍는 중" 으로 착각해 단어 폭 재기를 건너뛰고 있었습니다. 또 「!?」가 「! ?」로 벌어지는 곳이 143곳
+        있었는데, 넓은 「!」 글자에 뒤 간격이 들어 있어서였습니다. 이 경우만 좁은 「!」를 쓰게 했습니다.
+      </p>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>asm/wordwrap.asm</code>
+        <code>tools/layout.py</code>
+        <code>tools/splitpages.py</code>
+      </p>
+
+      <h3 class="pixel">7. 원문 대조 재번역</h3>
+      <p>
+        6,730줄을 일본어 원문과 나란히 놓고 다시 다듬었습니다. 새로 번역하지 않고 v1.0 문장을 바탕으로 오역과 누락을
+        고쳤습니다. 뱀 여자가 「뱀파이어」가 된 곳, 고사포가 「고주파」가 된 곳, 「나라 미인이라 나미」 대목이 통째로
+        빠진 곳 같은 것들입니다. 「번번번…」으로 깨진 대사 8곳(옛 도구가 「………」를 잘못 바꾼 흔적), 효과 명령의 인자
+        자리에 글자가 들어가 버린 줄 같은 데이터 오류도 이때 찾았습니다.
+      </p>
+      <ul class="notes">
+        <li>
+          대본을 24묶음으로 나눠 여럿이 나란히 고쳤더니 묶음마다 용어가 갈렸습니다(피아노 방/홀, 칼/나이프 등). 갈린
+          용어를 한곳에 모아 한꺼번에 통일했습니다.
+        </li>
+        <li>
+          검수는 두 관점이 토론하는 방식으로 했습니다. 공포 사운드 노벨 팬과 국어 교정자가 서로의 수정안을 반박하고,
+          반박을 이겨 낸 수정만 남겼습니다. 이렇게 약 300건을 고쳤습니다. v1.0의 말장난 중 분위기를 깨지 않는 것은
+          살렸습니다.
+        </li>
+        <li>
+          제어 코드는 한 줄에서 하나라도 어긋나면 게임이 엉뚱하게 흘러가므로, 고친 문장은 제어 코드 배열이 원래와 같을
+          때만 반영되게 했습니다. 바꿀 구절이 그 줄에 정확히 한 번 있을 때만 바꾸는 것도 같은 이유입니다.
+        </li>
+      </ul>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>tools/trcheck.py</code>
+        <code>tools/trmerge.py</code>
+        <code>tools/rvapply.py</code>
+        <code>tables/script.txt</code>
+      </p>
+
+      <h3 class="pixel">8. 옛 세이브로 이어하기</h3>
+      <p>
+        세이브에는 "대본의 어디까지 읽었나" 가 롬 주소로 들어 있습니다. 대사를 다시 쓰면 같은 장면의 주소가 모두
+        달라지므로, v1.0이나 일본판 세이브를 그대로 불러오면 엉뚱한 곳을 읽습니다. 그래서 줄마다 옛 주소와 새 주소를
+        짝지은 변환표(각 4,854곳)를 롬에 넣고, 세이브를 불러올 때 표에서 찾아 바꾼 뒤 "변환함" 표식을 남기게 했습니다.
+        일본판 세이브의 이름은 한글 롬에서 다른 글자로 보이므로 기본 이름 코헤이로 바꿉니다.
+      </p>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>tools/savemap.py</code>
+        <code>asm/savecompat.asm</code>
+      </p>
+
+      <h3 class="pixel">9. v1.2 편의 기능: 빈 버튼 찾기</h3>
+      <p>
+        여기부터는 원작에 없는 기능을 엔진에 더한 이야기입니다. 엔딩이 18개인 게임을 처음부터 다시 읽어 가며 모으는 것은
+        고역이라, 같은 춘소프트의 「카마이타치의 밤」에 있는 장 선택을 옮겨 오는 것에서 시작했습니다. 카마이타치의 밤
+        SFC판을 에뮬레이터로 직접 돌려 보고 설명서를 읽어 동작을 맞췄습니다. 처음에는 R로 장 화면을 여는 줄 알았는데,
+        설명서에 R은 쓰지 않는다고 적혀 있었습니다. 앞서 누른 Select가 늦게 반영된 것을 잘못 본 것이었습니다. 나중에
+        GBA판의 플로차트까지 더했습니다.
+      </p>
+      <p>
+        먼저 기능을 열 버튼이 필요했습니다. 게임이 패드 값을 받아 쓰는 루틴($00:8B9A)을 읽어 보니 Select와 R은 어디서도
+        쓰지 않았습니다. A 버튼 입력 대기 중 X를 누르면 되감기로 가는 자리($00:9CF9)가 있어서, 그 바로 앞을 후킹해
+        Select를 먼저 보게 했습니다.
+      </p>
+
+      <h3 class="pixel">10. 대본을 읽는 손이 셋</h3>
+      <p>
+        장을 고르면 "지금 읽는 위치" 를 그 장의 시작 주소로 바꾸면 될 것 같았습니다. 결과는 무시되거나, 검은 화면에서
+        영원히 멈추는 것이었습니다. 멈춘 화면에서 거꾸로 따라갔습니다. 대본이 메뉴 버퍼의 한 곳에서 서 있었고, 그 자리는
+        장면 번호가 준비되기를 기다리는 배경 명령이었습니다. 그 장면 번호를 쓰는 코드를 감시하니 태스크를 시작하는
+        루틴이 나왔고, 그 태스크를 다시 시작하는 곳이 점프 명령 처리 뒤에 있었습니다. 대본을 읽는 손이 하나가 아니었던
+        것입니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('three-readers.svg')}
+          width="860"
+          height="430"
+          alt="대본을 본문, 배치 미리 읽기, 장면 미리 읽기 셋이 각자 다른 위치에서 읽는 도식"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <ul class="notes">
+        <li>
+          엔진은 태스크(번갈아 도는 작은 프로그램)를 여러 개 돌립니다. 본문 말고도 줄 나눔을 미리 재는 태스크와, 다음
+          장면 그림을 미리 올려 두는 태스크가 각자의 위치에서 대본을 읽습니다.
+        </li>
+        <li>
+          위치는 네 벌 있고, 엔진은 그중 하나에서 본문 위치를 다시 읽어 옵니다. 하나만 바꾸면 다음 순간 원래 값으로
+          돌아갑니다. 세이브를 불러올 때처럼 네 벌을 모두 써야 합니다.
+        </li>
+        <li>
+          본문이 배경 명령에 닿으면 장면 미리 읽기가 그 그림을 준비할 때까지 기다립니다. 장면 미리 읽기가 옛 자리를 읽고
+          있으면 기다리는 그림이 영영 오지 않습니다. 게임은 점프 명령을 실행한 뒤 미리 읽기를 새 위치에서 다시 시작하는
+          루틴($00:9A5A)을 부르는데, 위치를 직접 바꿀 때도 이걸 불러야 했습니다.
+        </li>
+        <li>
+          줄 나눔 태스크는 앞서 읽으면서 $28보다 작은 번호의 명령은 실제로 실행합니다. 처음에 메뉴 동작을 안 쓰는
+          <code>{'{23}'}</code>에 달았더니 메뉴를 고르기도 전에 미리 실행됐습니다. 그래서 새 명령은 $28 이상인{' '}
+          <code>{'{44}'}</code>로 옮겼고, 점프를 가로채는 후킹은 본문이 읽을 때만 동작하게 했습니다.
+        </li>
+      </ul>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>lua/qol/pcs.lua</code>
+        <code>lua/qol/wtrace.lua</code>
+        <code>lua/qol/trace.lua</code>
+        <code>lua/qol/watch.lua</code>
+        <code>tools/dis65816.py</code>
+      </p>
+
+      <h3 class="pixel">11. 메뉴는 그리지 않고 대본으로 쓴다</h3>
+      <p>
+        장 목록을 화면에 새로 그리려면 커서, 소리, 입력 처리를 모두 새로 만들어야 합니다. 그 대신 메뉴를 대본으로 써서
+        게임에게 읽혔습니다. 대본에 선택지 명령을 쓰면 게임이 원래 선택지 화면 그대로 보여 주고, 커서와 효과음도 원래
+        것이 나옵니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('menu-script.svg')}
+          width="860"
+          height="470"
+          alt="Select를 누르면 WRAM에 메뉴 대본을 쓰고 대본 위치를 그쪽으로 옮기면, 게임의 선택지 코드가 메뉴를 보여 주고 고른 보기의 새 명령이 장으로 점프하는 흐름"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <figure class="paper narrow">
+        <img
+          src={img('menu-page.webp')}
+          width="512"
+          height="448"
+          alt="어디부터 다시 읽을까요 아래 제3장, 지금까지 읽은 모든 장, 엔딩 목록, 돌아가기 보기가 나열된 화면"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>게임의 선택지 화면이 그대로 메뉴가 됩니다</figcaption>
+      </figure>
+      <ul class="notes">
+        <li>
+          대본에서 쓰지 않는 명령 번호 <code>{'{44}'}</code>를 "메뉴 동작" 으로 새로 달았습니다. 보기마다 이 명령이 붙어
+          있어, 고르면 장 번호, 다음 쪽, 엔딩 목록, 돌아가기 중 하나를 실행합니다.
+        </li>
+        <li>
+          메뉴 대본은 롬이 아니라 WRAM의 빈 곳에 실행 중에 씁니다. 이번 회차에 읽은 장만 보여야 하기 때문입니다. "다음
+          쪽" 을 고르면 다른 버퍼에 다음 쪽을 쓰고 그쪽으로 넘어갑니다. 지금 읽고 있는 버퍼를 덮어쓰지 않으려고 두 벌을
+          번갈아 씁니다.
+        </li>
+        <li>
+          게임 입장에서는 메뉴도 선택지라서, 고를 때마다 "골라 본 선택지 수" 가 늘고 되감기 기록이 지워지고 자동 저장이
+          일어납니다. 메뉴를 열 때 이 값들을 저장해 두고, 메뉴 밖으로 점프하는 순간 되돌리게 했습니다. 메뉴 안에서는
+          자동 저장도 건너뜁니다.
+        </li>
+        <li>
+          고르자마자 화면 지우기 <code>{'{25}'}</code>를 쓰면, 선택지가 아직 보기를 지우는 중이라 다음 페이지가 멈추는
+          경우가 있었습니다. 앞에 잠깐 멈춤 <code>{'{17:5}'}</code>을 넣었습니다.
+        </li>
+        <li>한 번에 보이는 보기는 5개까지입니다. 6개를 넣으면 화면이 깨져서, 장 목록은 한 쪽에 3개씩 나눴습니다.</li>
+      </ul>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>asm/qol.asm</code>
+        <code>tools/qol.py</code>
+        <code>tables/qol-chapters.tsv</code>
+      </p>
+
+      <h3 class="pixel">12. 장으로 옮길 때 배경과 음악</h3>
+      <p>
+        장 첫 페이지가 배경을 정하지 않는 경우가 많았습니다. 원래 흐름에서는 바로 앞 장면의 배경이 이어지기 때문입니다.
+        빌드할 때 대본을 따라가며 "이 장 시작 직전에 마지막으로 적용된 배경 명령" 을 찾아, 장으로 점프하기 직전에 그
+        명령을 넣었습니다. 시나리오 첫머리의 배경 명령은 아주 천천히 밝아져 10초 가까이 검은 화면이 이어져서, 점프용으로
+        넣을 때는 속도를 바꿔 3초쯤으로 줄였습니다.
+      </p>
+      <p>
+        사실 대본 점프는 두 번째 방식입니다. 처음에는 세이브를 고쳐 쓰고 게임을 다시 시작하는 방식(웜 재시작)으로 장을
+        옮겼습니다. 그런데 사운드 칩 프로그램이 돌고 있으면 다시 올리는 단계에서 멈췄고, 올리기를 건너뛰면 화면에
+        줄무늬가 생기거나 에뮬레이터마다 다른 곳에서 멈췄습니다. 고치고 고쳐 코어 4개는 통과했지만 snes9x와 Mesen은 끝내
+        검은 화면에서 멈췄습니다. 그래서 이 방식을 버리고 모든 이동을 게임 자신의 대본 점프로 바꿨습니다. 게임이 원래
+        하는 동작이라 에뮬레이터를 가리지 않습니다.
+      </p>
+      <p>
+        대가로 음악은 직접 챙겨야 했습니다. 게임의 사운드 명령 다섯 개를 후킹해 지금 반복 재생 중인
+        음악·환경음(57가지)을 비트맵으로 기억하게 했습니다. 빌드 때 계산한 "그 장에서 울려야 할 반복음" 과 비교해, 꺼야
+        할 것은 끄고 켜야 할 것은 페이드 인하는 명령을 점프 앞에 넣습니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={`${base}/images/features/jump-ch8.webp`}
+          width="256"
+          height="224"
+          alt="배경 명령이 없는 8장으로 옮겨도 원래 장면인 차고에서 시작한다"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>첫 페이지에 배경 명령이 없는 8장도 차고 장면에서 시작합니다</figcaption>
+      </figure>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>tools/qol.py</code>
+        <code>lua/qol/menujump.sh</code>
+        <code>lua/qol/chjump.sh</code>
+      </p>
+
+      <h3 class="pixel">13. 읽은 장과 본 엔딩 기록</h3>
+      <p>
+        기록은 SRAM에서 책갈피 슬롯 4개 뒤의 빈 곳($70:1800)에 둡니다. 맨 앞 2바이트 표식이 없으면 처음 켤 때
+        초기화합니다. 그래서 v1.1, v1.0, 일본판 세이브를 그대로 불러올 수 있습니다.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <caption>슬롯마다 16바이트</caption>
+          <tbody>
+            {recordLayout.map(r => (
+              <tr>
+                <td>
+                  <code>{r.offset}</code>
+                </td>
+                <td>{r.size}</td>
+                <td class="wrap">{r.text}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ul class="notes">
+        <li>
+          이야기를 30장으로 나누고 장마다 대본의 줄 범위를 정했습니다. 자동 저장이 일어날 때 읽는 위치가 어느 장 범위에
+          들어가는지 보고 그 장을 기록합니다. 여러 갈래를 오가도 들어간 장은 빠짐없이 남습니다.
+        </li>
+        <li>
+          엔딩 끝의 <code>{'{1D}'}</code>는 명령처럼 생겼지만 실행되지 않고, 새 회차 처리 코드가 이 값을 직접 찾습니다.
+          그래서 <code>{'{1D}'}</code>에 기록 코드를 다는 대신, 새 회차가 시나리오를 고르는 순간을 후킹해 그때의 위치로
+          어느 엔딩이었는지 판단합니다.
+        </li>
+        <li>
+          몇몇 장은 첫머리에서 변수 하나로 갈래를 정합니다. 다른 곳에서 바로 그 장으로 옮기면 변수 값이 달라 엉뚱한
+          갈래로 가므로, 장에 들어갈 때의 값을 남겨 뒀다가 옮길 때 되돌립니다.
+        </li>
+      </ul>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>asm/qol.asm</code>
+        <code>tables/qol-endings.tsv</code>
+      </p>
+
+      <h3 class="pixel">14. 플로차트</h3>
+      <p>
+        선택지 382개와 엔딩 18개가 노드입니다. 보기들이 가는 곳을 이어 보면 나무가 아니라 그물입니다. 대부분의 선택지가
+        나란히 흐르는 여러 갈래 사이를 오가고, 두 길 이상에서 들어오는 노드가 305개나 됩니다. 아래는 모든 노드를 다 봤을
+        때의 지도로, 흰 상자가 한 화면에 들어가는 양입니다.
+      </p>
+      <figure class="paper narrow">
+        <img
+          src={img('flow-map.webp')}
+          width="860"
+          height="1496"
+          alt="파란 선택지 노드와 빨간 엔딩 노드가 41줄로 늘어선 전체 지도. 왼쪽 위 흰 상자가 한 화면 크기다"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>파랑은 선택지, 빨강은 엔딩</figcaption>
+      </figure>
+      <p>
+        첫 시안은 선택지를 대본 순서대로 한 줄에 꿰어 그렸는데, 분기가 하나도 안 보이는 사슬이 됐습니다. 보기마다 가는
+        곳을 세어 보니 3~4곳으로 갈리는 선택지가 292개, 2곳이 46개, 말투만 다르고 같은 곳으로 가는 것이 44개였습니다. 한
+        화면에 다 그리면 선이 엉키므로, GBA판처럼 본 노드만 그리고 장 단위로 나무를 나눴습니다. 번호는 시나리오 시작 세
+        곳부터 너비 우선으로 매겨 형제 노드가 이어진 번호를 갖게 했습니다. 깊이 우선으로 매기면 첫 보기만 따라가도 그물
+        전체를 돈 뒤에야 형제로 돌아와서, 1번의 자식이 2번, 378번, 381번처럼 흩어집니다. 다른 장으로 가는 길은 "→ 장
+        번호" 상자로 다음 줄에 둡니다.
+      </p>
+      <ul class="notes">
+        <li>
+          "어느 보기를 골랐나" 는 새로 저장하지 않았습니다. 게임이 선택지마다 고른 보기를 이미 세이브 변수의 상위 비트에
+          남기고 있었습니다. 선택지 382개가 변수 380개를 쓰고, 둘이 같이 쓰는 변수는 2개뿐이라 그대로 쓸 수 있었습니다.
+        </li>
+        <li>
+          화면은 배경 레이어를 끄고 글자 레이어만 남긴 뒤, 그 레이어의 비트맵(WRAM)에 상자와 선을 픽셀 단위로 직접
+          찍습니다. 번호와 A–E는 게임 폰트가 너무 커서 4×6 픽셀 글자 17개를 새로 그렸고, 장 제목만 게임 폰트로 씁니다.
+        </li>
+        <li>
+          플로차트가 떠 있는 동안은 입력 대기 후킹 안에서 자체 루프로 돕니다. 매 프레임 글자 레이어를 VRAM에 올리고 화면
+          갱신을 기다립니다. 닫을 때는 버튼을 뗄 때까지 기다리는데, 안 그러면 게임이 그 버튼을 새 입력으로 받아 페이지가
+          한 장 넘어갔습니다.
+        </li>
+        <li>
+          A를 누르면 그 선택지가 있는 페이지의 처음으로 갑니다. 메뉴와 같은 방식으로 화면 지우기, 배경, 음악, 점프
+          명령을 대본으로 써서 게임에게 읽힙니다.
+        </li>
+        <li>
+          스포일러를 줄이려고 아직 지나지 않은 노드는 그리지도, 커서로 가지도, 미니맵에 점을 찍지도 않습니다. 다만
+          지나간 선택지는 고르지 않은 보기 글자도 보여 주고 고른 보기만 노랗게 칠해서, "여기서 다른 걸 골라 볼 수 있다"
+          는 것까지만 알게 했습니다.
+        </li>
+        <li>
+          상자가 6개 이하인 줄은 가운데에 놓고, 그보다 긴 줄만 왼쪽부터 놓고 좌우로 스크롤합니다. 위아래로 움직이면
+          화면에서 가로 위치가 가장 가까운 상자로 갑니다.
+        </li>
+      </ul>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>tools/flow.py</code>
+        <code>asm/flow.asm</code>
+      </p>
+
+      <h3 class="pixel">15. 책갈피와 노란 글씨</h3>
+      <p>
+        X로 되감아 본 페이지를 노란 글씨로 보이게 하는 것은 의외로 간단했습니다. 글자는 팔레트의 한 색으로 찍히므로,
+        되감기에 들어갈 때 그 색을 노랑으로 바꾸고 나올 때 되돌리면 됩니다. 팔레트는 화면 갱신 틈에만 바꿀 수 있어
+        게임의 팔레트 사본을 고친 뒤 "다음 틈에 올려라" 표시를 켭니다. 책갈피 화면은 슬롯을 그리는 루틴을 후킹해, 장
+        기록이 있는 슬롯은 둘째 줄에 페이지 수 대신 마지막으로 읽은 장 제목을 게임 폰트로 그립니다.
+      </p>
+      <p>
+        여기서도 한 번 검은 화면에 멈췄습니다. 65c816은 돌아오는 명령이 두 가지(RTS, RTL)라 부를 때와 같은 짝으로
+        돌아가야 하는데, 먼 곳에서 불린 코드(JSL)가 가까운 호출용 루틴(RTS로 끝남)으로 그냥 뛰어가 버려 엉뚱한 주소로
+        돌아갔습니다. 짝을 맞추는 중간 단계를 두어 고쳤습니다.
+      </p>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>asm/qol.asm</code>
+        <code>lua/qol/cgram.lua</code>
+      </p>
+
+      <h3 class="pixel">16. 코드를 둔 자리</h3>
+      <p>
+        v1.1과 v1.2의 코드와 표는 모두 v1.0이 일본판 대사를 0으로 지운 자리에 들어갔습니다. 롬을 더 늘리지 않아도
+        됐습니다. WRAM은 6,000프레임을 플레이하며 게임이 쓰는 곳을 모두 기록한 뒤, 한 번도 쓰이지 않은 곳만 골라 메뉴
+        버퍼와 플로차트 작업 공간으로 썼습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('rom-map.svg')}
+          width="860"
+          height="420"
+          alt="2MB 롬을 뱅크 64칸으로 그린 지도. 일본판 대사가 있던 $15–$1F 자리에 v1.1과 v1.2 코드가 들어가고, 늘린 1MB에 한글 대사가 있다"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>lua/qol/wrange.lua</code>
+        <code>lua/qol/wdump.lua</code>
+      </p>
+
+      <h3 class="pixel">17. 확인은 에뮬레이터가</h3>
+      <p>
+        Mesen 2의 테스트 모드와 Lua 스크립트로 버튼 입력을 재생하고, 원하는 순간의 화면과 메모리를 저장했습니다. 멈춤을
+        찾을 때는 이 순서가 가장 빨랐습니다.
+      </p>
+      <ol class="flow">
+        {debugSteps.map(step => (
+          <li>{step}</li>
+        ))}
+      </ol>
+      <ul class="notes">
+        <li>회귀 검사: 같은 세이브에서 A를 3만 프레임 연타했을 때 자동 저장 위치의 순서가 v1.1과 같은지 비교합니다.</li>
+        <li>장 이동: 30장을 하나씩 메뉴로 옮겨 첫 화면을 찍고 배경과 첫 문장을 확인합니다.</li>
+        <li>
+          깊은 장면은 그 장면 직전에서 이어지는 세이브 파일을 직접 만들어 찍습니다. 비교 화면은 일본판 기본 이름
+          코헤이로 찍었습니다.
+        </li>
+        <li>
+          libretro 코어를 직접 불러 쓰는 작은 프로그램을 만들어, 같은 입력을 여러 에뮬레이터에 넣고 새 게임, 이어하기,
+          장 목록, 플로차트를 비교했습니다.
+        </li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">에뮬레이터</th>
+              <th scope="col">결과</th>
+            </tr>
+          </thead>
+          <tbody>
+            {emulators.map(e => (
+              <tr>
+                <th scope="row">{e.name}</th>
+                <td class="wrap">{e.result}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="tools">
+        <span>쓴 도구</span>
+        <code>lua/pages.lua</code>
+        <code>lua/jumpsave.py</code>
+        <code>lua/qol/menujump.sh</code>
+        <code>compat/lr.py</code>
+        <code>compat/run_all.sh</code>
+      </p>
+
+      <h3 class="pixel">18. 도구 한눈에 보기</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">하는 일</th>
+              <th scope="col">파일</th>
+            </tr>
+          </thead>
+          <tbody>
+            {toolMap.map(t => (
+              <tr>
+                <th scope="row">{t.job}</th>
+                <td class="wrap">
+                  {t.files.map(f => (
+                    <code class="file">{f}</code>
+                  ))}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+
+<style>
+  .paper {
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 8px;
+    box-shadow: 0 4px 0 rgb(0 0 0 / 35%);
+  }
+
+  .paper img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .paper.narrow {
+    max-width: 480px;
+  }
+
+  .paper figcaption {
+    padding-top: 6px;
+    color: #333;
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+
+  .making-body {
+    display: grid;
+    gap: 16px;
+    max-width: 820px;
+  }
+
+  .making-body h3 {
+    margin-top: 24px;
+    color: var(--accent);
+  }
+
+  .making-body h4 {
+    margin: 8px 0 0;
+    font-size: 1rem;
+  }
+
+  .making-body p,
+  .making-body ul,
+  .making-body ol {
+    margin: 0;
+  }
+
+  .making-body code {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 0.875em;
+  }
+
+  .making-body pre {
+    margin: 0;
+    padding: 12px 16px;
+    overflow-x: auto;
+    background: rgb(255 255 255 / 8%);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .making-body table {
+    border-collapse: collapse;
+    background: var(--panel);
+    font-size: 0.875rem;
+  }
+
+  .making-body caption {
+    padding-bottom: 6px;
+    color: var(--muted);
+    text-align: left;
+  }
+
+  .making-body th,
+  .making-body td {
+    padding: 6px 10px;
+    border: 1px solid rgb(255 255 255 / 25%);
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .making-body td.wrap {
+    min-width: 16rem;
+    white-space: normal;
+  }
+
+  .flow {
+    display: grid;
+    gap: 8px;
+    padding: 12px 16px 12px 40px;
+    background: var(--panel);
+    border-left: 4px solid var(--accent);
+  }
+
+  .notes {
+    display: grid;
+    gap: 8px;
+    padding-left: 20px;
+  }
+
+  /* Ties each step to the files in the tools archive that did the work. */
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .tools span {
+    margin-right: 4px;
+  }
+
+  .tools code,
+  code.file {
+    padding: 2px 6px;
+    border: 1px solid rgb(255 255 255 / 20%);
+    border-radius: 4px;
+  }
+
+  code.file {
+    display: inline-block;
+    margin: 2px 4px 2px 0;
+  }
+</style>

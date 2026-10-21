@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 420" width="860" height="420" font-family="sans-serif">
+<rect width="860" height="420" rx="12" fill="#fafafa"/>
+<text x="20" y="32" font-size="17" fill="#111">2MB 롬 지도 (칸 하나 = 뱅크 하나, 32KB)</text>
+<text x="46" y="60" font-size="13" fill="#334155">일본판 원래 1MB ($00–$1F)</text>
+<rect x="46" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<text x="57" y="128" font-size="10" text-anchor="middle" fill="#475569">$00</text>
+<rect x="70" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="94" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="118" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="142" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<text x="153" y="128" font-size="10" text-anchor="middle" fill="#475569">$04</text>
+<rect x="166" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="190" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="214" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="238" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<text x="249" y="128" font-size="10" text-anchor="middle" fill="#475569">$08</text>
+<rect x="262" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="286" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="310" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="334" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<text x="345" y="128" font-size="10" text-anchor="middle" fill="#475569">$0C</text>
+<rect x="358" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="382" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="406" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="430" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<text x="441" y="128" font-size="10" text-anchor="middle" fill="#475569">$10</text>
+<rect x="454" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="478" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="502" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<rect x="526" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<text x="537" y="128" font-size="10" text-anchor="middle" fill="#475569">$14</text>
+<rect x="550" y="70" width="22" height="40" rx="3" fill="#e2e8f0" stroke="#64748b"/>
+<text x="561" y="128" font-size="10" text-anchor="middle" fill="#475569">$15</text>
+<rect x="574" y="70" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="598" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<text x="609" y="128" font-size="10" text-anchor="middle" fill="#475569">$17</text>
+<rect x="622" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<text x="633" y="128" font-size="10" text-anchor="middle" fill="#475569">$18</text>
+<rect x="646" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<rect x="670" y="70" width="22" height="40" rx="3" fill="#bfdbfe" stroke="#2563eb"/>
+<text x="681" y="128" font-size="10" text-anchor="middle" fill="#475569">$1A</text>
+<rect x="694" y="70" width="22" height="40" rx="3" fill="#bfdbfe" stroke="#2563eb"/>
+<rect x="718" y="70" width="22" height="40" rx="3" fill="#bfdbfe" stroke="#2563eb"/>
+<text x="729" y="128" font-size="10" text-anchor="middle" fill="#475569">$1C</text>
+<rect x="742" y="70" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="766" y="70" width="22" height="40" rx="3" fill="#bbf7d0" stroke="#16a34a"/>
+<text x="777" y="128" font-size="10" text-anchor="middle" fill="#475569">$1E</text>
+<rect x="790" y="70" width="22" height="40" rx="3" fill="#e9d5ff" stroke="#9333ea"/>
+<text x="801" y="128" font-size="10" text-anchor="middle" fill="#475569">$1F</text>
+<text x="46" y="170" font-size="13" fill="#334155">v1.0이 늘린 1MB ($20–$3F)</text>
+<rect x="46" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<text x="57" y="238" font-size="10" text-anchor="middle" fill="#475569">$20</text>
+<rect x="70" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="94" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="118" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="142" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<text x="153" y="238" font-size="10" text-anchor="middle" fill="#475569">$24</text>
+<rect x="166" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="190" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="214" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="238" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<text x="249" y="238" font-size="10" text-anchor="middle" fill="#475569">$28</text>
+<rect x="262" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="286" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="310" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="334" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<text x="345" y="238" font-size="10" text-anchor="middle" fill="#475569">$2C</text>
+<rect x="358" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="382" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="406" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="430" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<text x="441" y="238" font-size="10" text-anchor="middle" fill="#475569">$30</text>
+<rect x="454" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="478" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="502" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<rect x="526" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<text x="537" y="238" font-size="10" text-anchor="middle" fill="#475569">$34</text>
+<rect x="550" y="180" width="22" height="40" rx="3" fill="#fde68a" stroke="#d97706"/>
+<text x="561" y="238" font-size="10" text-anchor="middle" fill="#475569">$35</text>
+<rect x="574" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="598" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="622" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<text x="633" y="238" font-size="10" text-anchor="middle" fill="#475569">$38</text>
+<rect x="646" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="670" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="694" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="718" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<text x="729" y="238" font-size="10" text-anchor="middle" fill="#475569">$3C</text>
+<rect x="742" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="766" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<rect x="790" y="180" width="22" height="40" rx="3" fill="#ffffff" stroke="#94a3b8"/>
+<path d="M550 142 v6 H812 v-6" fill="none" stroke="#b45309" stroke-width="1.5"/>
+<text x="681.0" y="162" font-size="12" text-anchor="middle" fill="#b45309">일본판 대사가 있던 자리 (v1.0이 0으로 비움)</text>
+<path d="M46 252 v6 H572 v-6" fill="none" stroke="#b45309" stroke-width="1.5"/>
+<text x="309.0" y="272" font-size="12" text-anchor="middle" fill="#b45309">한글 대사 (16비트 기호, 압축 없음)</text>
+<rect x="46" y="300" width="18" height="18" rx="3" fill="#e2e8f0" stroke="#64748b"/><text x="72" y="314" font-size="13" fill="#111">원래 코드·그림</text>
+<rect x="181" y="300" width="18" height="18" rx="3" fill="#e9d5ff" stroke="#9333ea"/><text x="207" y="314" font-size="13" fill="#111">폰트</text>
+<rect x="316" y="300" width="18" height="18" rx="3" fill="#fde68a" stroke="#d97706"/><text x="342" y="314" font-size="13" fill="#111">v1.0 대사</text>
+<rect x="451" y="300" width="18" height="18" rx="3" fill="#bbf7d0" stroke="#16a34a"/><text x="477" y="314" font-size="13" fill="#111">v1.1 코드·표</text>
+<rect x="586" y="300" width="18" height="18" rx="3" fill="#bfdbfe" stroke="#2563eb"/><text x="612" y="314" font-size="13" fill="#111">v1.2 편의 기능</text>
+<rect x="721" y="300" width="18" height="18" rx="3" fill="#ffffff" stroke="#94a3b8"/><text x="747" y="314" font-size="13" fill="#111">빈 곳</text>
+<text x="46" y="356" font-size="13" fill="#334155">v1.1: $17 v1.0 세이브 변환표 · $18 세이브 호환 코드 · $19 일본판 세이브 변환표 · $1E 단어 줄바꿈</text>
+<text x="46" y="380" font-size="13" fill="#334155">v1.2: $1A 편의 기능 코드 · $1B 장·엔딩·메뉴 문자열 표 · $1C 플로차트 노드 표</text>
+</svg>
