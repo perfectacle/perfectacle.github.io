@@ -12,10 +12,12 @@ export interface RomSpec {
   header: { title: string; mapMode: number; cartType: number; romSize: number };
   /** Internal name the patch writes, when it renames the cartridge. */
   patchedTitle?: string;
+  /** ROM size after patching, when the patch expands the cartridge. */
+  patchedSize?: number;
   original: RomFingerprint;
   patched: RomFingerprint;
   /** Earlier Korean releases; patching one of them again would break the game. */
-  previous?: (RomFingerprint & { version: string })[];
+  previous?: (RomFingerprint & { version?: string })[];
 }
 
 export const SMRPG: RomSpec = {
@@ -71,10 +73,24 @@ export const GOKUDEN_KAKUSEI: RomSpec = {
   previous: [{ version: 'v1.1', crc32: '32219BC3', md5: 'DBCB002BD5B91ED839BA1425EE13F6DE' }],
 };
 
+export const OTOGIRISOU: RomSpec = {
+  name: '제절초',
+  size: 1048576,
+  header: { title: 'OTOGIRISOU', mapMode: 0x20, cartType: 0x02, romSize: 0x0a },
+  patchedSize: 2097152,
+  original: { crc32: '8E4BEFD0', md5: 'AE1E9C92D0B7E6DBA6C6007D99C9C3F4' },
+  patched: { crc32: '2C31A0B2', md5: 'CD48C59B3B80D6C9E3C648E8BDD5A4E0' },
+  previous: [
+    { crc32: 'C70A8E66', md5: '12A3FA116DB687AA4A60A7DB4A67D383' },
+    { crc32: '27EE014E', md5: 'F45317CFAAAB68CCA5D8984AF8452535' },
+  ],
+};
+
 const COPIER_HEADER = 512;
 const MIN_ROM_SIZE = 1048576;
 
-export const megabytes = (spec: RomSpec) => `${spec.size / 1048576}MB`;
+export const megabytes = (spec: RomSpec, size = spec.size) => `${size / 1048576}MB`;
+export const patchedSize = (spec: RomSpec) => spec.patchedSize ?? spec.size;
 
 const matches = (fingerprint: RomFingerprint, crc: string, digest: string) =>
   crc === fingerprint.crc32 && digest === fingerprint.md5;
@@ -158,10 +174,11 @@ export function validateOriginal(spec: RomSpec, source: Uint8Array): OriginalVal
   return { bytes, headered, crc32: crc, md5: digest, valid: matches(spec.original, crc, digest) };
 }
 
-/** Applies an IPS patch that must keep the ROM at the spec's size. */
+/** Applies an IPS patch whose result must have the spec's patched size. */
 export function applyIps(spec: RomSpec, source: Uint8Array, ips: Uint8Array): Uint8Array {
-  const mb = megabytes(spec);
-  if (source.length !== spec.size) throw new Error(`헤더 없는 ${mb} ROM에만 패치를 적용할 수 있습니다.`);
+  if (source.length !== spec.size) throw new Error(`헤더 없는 ${megabytes(spec)} ROM에만 패치를 적용할 수 있습니다.`);
+  const target = patchedSize(spec);
+  const mb = megabytes(spec, target);
   let cursor = 0;
   const patchView = new DataView(ips.buffer, ips.byteOffset, ips.byteLength);
   const read = (count: number): number => {
@@ -171,7 +188,8 @@ export function applyIps(spec: RomSpec, source: Uint8Array, ips: Uint8Array): Ui
     return value;
   };
   if (read(3) !== 0x504154 || read(2) !== 0x4348) throw new Error('올바른 IPS 패치 파일이 아닙니다.');
-  const output = source.slice();
+  const output = new Uint8Array(target);
+  output.set(source);
   while (true) {
     const offset = read(3);
     if (offset === 0x454f46) {
@@ -197,10 +215,18 @@ export function applyIps(spec: RomSpec, source: Uint8Array, ips: Uint8Array): Ui
   }
 }
 
-export function hasGameHeader(spec: RomSpec, normalizedBytes: Uint8Array, title = spec.header.title): boolean {
-  const { mapMode, cartType, romSize } = spec.header;
+/** `patched` checks the name and size the patch writes; the ROM size byte doubles with each doubling of the size. */
+export function hasGameHeader(
+  spec: RomSpec,
+  normalizedBytes: Uint8Array,
+  which: 'original' | 'patched' = 'original',
+): boolean {
+  const { mapMode, cartType } = spec.header;
+  const size = which === 'patched' ? patchedSize(spec) : spec.size;
+  const title = which === 'patched' ? (spec.patchedTitle ?? spec.header.title) : spec.header.title;
+  const romSize = spec.header.romSize + Math.log2(size / spec.size);
   return (
-    normalizedBytes.length === spec.size &&
+    normalizedBytes.length === size &&
     Array.from(title).every((character, index) => normalizedBytes[0x7fc0 + index] === character.charCodeAt(0)) &&
     normalizedBytes[0x7fd5] === mapMode &&
     normalizedBytes[0x7fd6] === cartType &&
@@ -232,7 +258,7 @@ export function createPatchedRom(
   if (!hasGameHeader(spec, original.bytes))
     throw new Error(`${spec.name}의 게임 식별 정보와 다릅니다. 이 파일에는 패치를 적용할 수 없습니다.`);
   const output = applyIps(spec, original.bytes, ips);
-  if (!hasGameHeader(spec, output, spec.patchedTitle))
+  if (!hasGameHeader(spec, output, 'patched'))
     throw new Error('패치 결과의 크기 또는 게임 식별 정보가 올바르지 않아 다운로드를 만들지 않았습니다.');
   const crc = crc32(output);
   const digest = md5(output);
@@ -242,23 +268,25 @@ export function createPatchedRom(
 
 export type RomVerdict =
   | { kind: 'too-small' | 'truncated' | 'wrong-size' | 'wrong-game' | 'other-region' }
-  | { kind: 'old-korean'; version: string | undefined }
+  | { kind: 'old-korean'; version?: string | undefined }
   | { kind: 'already-korean' | 'original' | 'different'; bytes: Uint8Array; crc32: string; md5: string };
 
 /** First matching rule wins; the order mirrors what a player should hear first. */
 export function classifyRom(spec: RomSpec, source: Uint8Array): RomVerdict {
   if (source.length < MIN_ROM_SIZE) return { kind: 'too-small' };
   if (source.length < spec.size) return { kind: 'truncated' };
-  if (source.length !== spec.size && source.length !== spec.size + COPIER_HEADER) return { kind: 'wrong-size' };
-  const bytes = source.subarray(source.length === spec.size ? 0 : COPIER_HEADER);
+  const size = [spec.size, patchedSize(spec)].find(n => source.length === n || source.length === n + COPIER_HEADER);
+  if (size === undefined) return { kind: 'wrong-size' };
+  const bytes = source.subarray(source.length - size);
   const crc = crc32(bytes);
   const digest = md5(bytes);
   if (matches(spec.patched, crc, digest)) return { kind: 'already-korean', bytes, crc32: crc, md5: digest };
   if (matches(spec.original, crc, digest)) return { kind: 'original', bytes, crc32: crc, md5: digest };
   const earlier = spec.previous?.find(release => matches(release, crc, digest));
   if (earlier) return { kind: 'old-korean', version: earlier.version };
-  if (spec.patchedTitle && hasGameHeader(spec, bytes, spec.patchedTitle))
-    return { kind: 'old-korean', version: undefined };
+  const renamed = spec.patchedTitle !== undefined || patchedSize(spec) !== spec.size;
+  if (renamed && hasGameHeader(spec, bytes, 'patched')) return { kind: 'old-korean' };
+  if (size !== spec.size) return { kind: 'wrong-size' };
   if (!hasGameHeader(spec, bytes)) return { kind: 'wrong-game' };
   // Cartridge header destination code: 0x00 is Japan; other versions need a different patch.
   if (bytes[0x7fd9] !== 0x00) return { kind: 'other-region' };

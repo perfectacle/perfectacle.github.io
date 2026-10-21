@@ -4,6 +4,7 @@ import { deflateRawSync } from 'node:zlib';
 import {
   GOKUDEN_KAKUSEI,
   GOKUDEN_TOTSUGEKI,
+  OTOGIRISOU,
   SMRPG,
   applyIps,
   classifyRom,
@@ -270,7 +271,7 @@ describe('Super Gokuden: Kakusei-hen (2 MB, katakana header)', () => {
     const rename = [...encode(GOKUDEN_KAKUSEI.patchedTitle ?? '')];
     const renaming = patch(0, 0x7f, 0xc0, 0, rename.length, ...rename);
     const output = createPatchedRom(GOKUDEN_KAKUSEI, gameRom(GOKUDEN_KAKUSEI), renaming, { allowUnverified: true });
-    expect(hasGameHeader(GOKUDEN_KAKUSEI, output, GOKUDEN_KAKUSEI.patchedTitle)).toBe(true);
+    expect(hasGameHeader(GOKUDEN_KAKUSEI, output, 'patched')).toBe(true);
     expect(() =>
       createPatchedRom(GOKUDEN_KAKUSEI, gameRom(GOKUDEN_KAKUSEI), patch(), { allowUnverified: true }),
     ).toThrow('게임 식별 정보');
@@ -293,5 +294,50 @@ describe('earlier Korean releases', () => {
     const rom = gameRom(GOKUDEN_KAKUSEI);
     rom.set(encode(GOKUDEN_KAKUSEI.patchedTitle ?? ''), 0x7fc0);
     expect(classifyRom(GOKUDEN_KAKUSEI, rom)).toEqual({ kind: 'old-korean', version: undefined });
+  });
+});
+
+describe('Otogirisou (1 MB, expanded to 2 MB)', () => {
+  const grown = (rom: Uint8Array) => {
+    const out = new Uint8Array(OTOGIRISOU.patchedSize ?? 0);
+    out.set(rom);
+    out[0x7fd7] = OTOGIRISOU.header.romSize + 1;
+    return out;
+  };
+
+  it('grows the ROM to the size the IPS ends with and writes past the original end', () => {
+    const source = gameRom(OTOGIRISOU);
+    const output = applyIps(
+      OTOGIRISOU,
+      source,
+      new Uint8Array([...patch(0x10, 0, 0, 0, 1, 7, 0, 0x7f, 0xd7, 0, 1, 0x0b), 0x20, 0, 0]),
+    );
+    expect(output.length).toBe(2097152);
+    expect(output[0x100000]).toBe(7);
+    expect(hasGameHeader(OTOGIRISOU, output, 'patched')).toBe(true);
+    expect(hasGameHeader(OTOGIRISOU, output)).toBe(false);
+  });
+
+  it('rejects an IPS that ends at a size other than 2 MB', () => {
+    expect(() => applyIps(OTOGIRISOU, gameRom(OTOGIRISOU), new Uint8Array([...patch(), 0x10, 0, 0]))).toThrow('2MB');
+  });
+
+  it('accepts the 1 MB original with or without a copier header', () => {
+    expect(classifyRom(OTOGIRISOU, gameRom(OTOGIRISOU)).kind).toBe('different');
+    const headered = new Uint8Array(1048576 + 512);
+    headered.set(gameRom(OTOGIRISOU), 512);
+    expect(classifyRom(OTOGIRISOU, headered).kind).toBe('different');
+  });
+
+  it('tells a 2 MB Korean build from another 2 MB game', () => {
+    expect(classifyRom(OTOGIRISOU, grown(gameRom(OTOGIRISOU)))).toEqual({ kind: 'old-korean' });
+    expect(classifyRom(OTOGIRISOU, new Uint8Array(2097152)).kind).toBe('wrong-size');
+    expect(classifyRom(OTOGIRISOU, gameRom(GOKUDEN_TOTSUGEKI)).kind).toBe('wrong-size');
+  });
+
+  it('does not name a version for earlier releases', () => {
+    const rom = grown(gameRom(OTOGIRISOU));
+    const spec = { ...OTOGIRISOU, previous: [{ crc32: crc32(rom), md5: md5(rom) }] };
+    expect(classifyRom(spec, rom)).toEqual({ kind: 'old-korean' });
   });
 });

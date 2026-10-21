@@ -17,6 +17,7 @@ const PAGES: Record<string, { scriptKb: number; tbtMs?: number }> = {
   '/games/kr-patches/sfc/super-mario-rpg/': { scriptKb: 5 },
   '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/': { scriptKb: 5 },
   '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/': { scriptKb: 5 },
+  '/games/kr-patches/sfc/otogirisou/': { scriptKb: 5 },
 };
 const MIN_SCORE = { performance: 0.8, accessibility: 0.95, 'best-practices': 0.95, seo: 0.95 };
 // Fonts: the site uses system fonts only, so any web font download is a regression.
