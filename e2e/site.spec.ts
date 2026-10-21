@@ -240,6 +240,16 @@ test('Disqus loads comments without its ads, recommendations or ad tracker', asy
   await expect(page.locator('script[src*="recommendations.js"], script[src*="liadm.com"]')).toHaveCount(0);
 });
 
+test('analytics stays off outside the published site', async ({ page }) => {
+  const gtag: string[] = [];
+  page.on('request', r => {
+    if (r.url().includes('googletagmanager.com')) gtag.push(r.url());
+  });
+  await page.goto(POST, { waitUntil: 'load' });
+  await page.waitForTimeout(3500);
+  expect(gtag).toEqual([]);
+});
+
 test('post lists related posts', async ({ page }) => {
   await page.goto(POST);
   await expect(page.getByRole('region', { name: '관련 글' }).getByRole('link').first()).toBeVisible();
