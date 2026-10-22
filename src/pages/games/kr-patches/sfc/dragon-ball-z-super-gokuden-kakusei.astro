@@ -93,10 +93,11 @@ const castGroups = [
   trail={trail(patch)}
   description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
   sections={[
-    { id: 'changes', label: `v${patch.version}에서 달라진 것` },
+    { id: 'changes', label: '한국어로 바뀐 것' },
     { id: 'story', label: '이야기' },
     { id: 'cast', label: '등장인물' },
     { id: 'play', label: '진행 방식' },
+    { id: 'patch-notes', label: '패치 노트' },
     { id: 'making', label: '롬 분석 노트' },
   ]}
   theme={patch.theme}
@@ -127,19 +128,18 @@ const castGroups = [
 
   <section id="changes" class="section page-width" aria-labelledby="changes-title">
     <h2 id="changes-title" class="pixel">
-      v{patch.version}에서 달라진 것
+      한국어로 바뀐 것
     </h2>
-    <p>2016년에 낸 v1.1 이후 약 10년 만의 업데이트입니다. 일본어 원문과 한 줄씩 대조해 대사 782줄을 고쳤습니다.</p>
+    <p>
+      천하제일 무술대회부터 프리더와의 결전까지, 대사와 선택지를 한국어로 읽습니다. 타이틀·메뉴·전투 화면과 DBZ 퀴즈도
+      한국어로 즐길 수 있습니다.
+    </p>
     <ul class="checklist frame">
-      <li>타이틀 화면 한글화</li>
-      <li>우주선이 맵 밖을 헤매던 버그 수정</li>
-      <li>캐릭터별 말투와 고유명사 정리</li>
-      <li>폰트에 없던 글자(깨·롭·블 등) 추가</li>
+      <li>이야기 대사와 선택지</li>
+      <li>타이틀 화면과 메뉴</li>
+      <li>전투 대사와 캐릭터별 말투</li>
+      <li>DBZ 퀴즈와 신룡의 소원</li>
     </ul>
-    <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓았습니다.</p>
-    {kakuseiGroups.map(group => (
-      <CompareGroup group={group} base={base} versions={kakuseiVersions} visible={VISIBLE_PER_GROUP} />
-    ))}
   </section>
 
   <section id="story" class="section page-width" aria-labelledby="story-title">
@@ -238,6 +238,54 @@ const castGroups = [
         </article>
       ))}
     </div>
+  </section>
+
+  <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
+    <h2 id="patch-notes-title" class="pixel">
+      패치 노트
+    </h2>
+    <article class="patch-release" aria-labelledby="release-1-2">
+      <h3 id="release-1-2" class="pixel">
+        v1.2 · 최신 버전
+      </h3>
+      <p class="section-note">
+        <time datetime="2026-10-18">2026년 10월 18일</time>
+      </p>
+      <ul>
+        <li>대사 782줄을 수정하고 누락된 대사를 복구했습니다.</li>
+        <li>캐릭터 말투·이름·맞춤법·줄바꿈을 다듬었습니다.</li>
+        <li>타이틀 화면을 한국어로 옮겼습니다.</li>
+        <li>폰트에 없던 글자 11자(깨·롭 등)를 추가했습니다.</li>
+        <li>베지터·부르마의 우주선 장면에서 진행이 막히던 문제를 수정했습니다.</li>
+        <li>v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+      </ul>
+      <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓았습니다.</p>
+      {kakuseiGroups.map(group => (
+        <CompareGroup group={group} base={base} versions={kakuseiVersions} visible={VISIBLE_PER_GROUP} />
+      ))}
+    </article>
+    <article class="patch-release" aria-labelledby="release-1-1">
+      <h3 id="release-1-1" class="pixel">
+        v1.1
+      </h3>
+      <p class="section-note">
+        <time datetime="2016-01-04">2016년 1월 4일</time>
+      </p>
+      <ul>
+        <li>DBZ 퀴즈 일부의 난이도를 조정했습니다.</li>
+      </ul>
+    </article>
+    <article class="patch-release" aria-labelledby="release-1-0">
+      <h3 id="release-1-0" class="pixel">
+        v1.0
+      </h3>
+      <p class="section-note">
+        <time datetime="2011-12-30">2011년 12월 30일</time>
+      </p>
+      <ul>
+        <li>최초 한글패치입니다.</li>
+      </ul>
+    </article>
   </section>
 
   <MakingOf patch={patch} />

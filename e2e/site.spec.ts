@@ -594,6 +594,40 @@ const PATCH_GUIDES = [
 for (const game of PATCH_GUIDES) {
   const path = `/games/kr-patches/sfc/${game}/`;
 
+  test(`${game} presents the current translation separately from version history`, async ({ page }) => {
+    await page.goto(path);
+    const notes = page.locator('#patch-notes');
+    const versions = ['otogirisou', 'dragon-ball-z-super-gokuden-kakusei'].includes(game)
+      ? ['v1.2 · 최신 버전', 'v1.1', 'v1.0']
+      : ['v1.1 · 최신 버전', 'v1.0'];
+    await expect(notes.locator('.patch-release > h3')).toHaveText(versions);
+    const releaseDates: Record<string, Record<string, string>> = {
+      'super-mario-rpg': { '1-0': '2015-03-12', '1-1': '2026-10-18' },
+      'dragon-ball-z-super-gokuden-totsugeki': { '1-0': '2012-12-12', '1-1': '2026-10-18' },
+      'dragon-ball-z-super-gokuden-kakusei': { '1-0': '2011-12-30', '1-1': '2016-01-04', '1-2': '2026-10-18' },
+      otogirisou: { '1-0': '2016-09-29', '1-1': '2026-10-18', '1-2': '2026-10-22' },
+    };
+    const dates = releaseDates[game];
+    if (!dates) throw new Error(`Missing release dates for ${game}`);
+    await expect(notes.locator('time')).toHaveCount(versions.length);
+    for (const [version, date] of Object.entries(dates)) {
+      await expect(notes.locator(`[aria-labelledby="release-${version}"] time`)).toHaveAttribute('datetime', date);
+    }
+    await expect(notes.locator('.patch-release').last()).toContainText('최초 한글패치');
+    await expect(notes.locator('.patch-release').first()).toContainText('세이브 파일');
+    const korean = page.locator(game.startsWith('dragon-ball') ? '#changes' : '#korean');
+    await expect(korean.getByRole('heading', { level: 2 })).toHaveText('한국어로 바뀐 것');
+    await expect(korean).not.toContainText(/업데이트|v1\.[012]/);
+    if (game.startsWith('dragon-ball')) {
+      await expect(korean.locator('.compare-group')).toHaveCount(0);
+      expect(await notes.locator('.compare-group').count()).toBeGreaterThan(0);
+    }
+    if (game === 'otogirisou') {
+      await expect(page.locator('#play a[href="#patch-notes"]')).toBeAttached();
+      await expect(notes.locator('a[href="#making"]')).toBeAttached();
+    }
+  });
+
   test(`${game} mobile navigation does not shift content when scripts load`, async ({ page, isMobile }) => {
     test.skip(!isMobile);
     const resume: (() => Promise<void>)[] = [];
@@ -611,7 +645,10 @@ for (const game of PATCH_GUIDES) {
     expect((await patch.boundingBox())?.y).toBe(before?.y);
   });
 
-  test(`${game} section navigation moves between the story, play and patch`, async ({ page, isMobile }) => {
+  test(`${game} section navigation moves between the story, play, patch notes and patch`, async ({
+    page,
+    isMobile,
+  }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(path);
     const nav = page.getByRole('navigation', { name: '페이지 내 이동', exact: true });
@@ -628,7 +665,7 @@ for (const game of PATCH_GUIDES) {
     }
     if (game === 'super-mario-rpg') expect(hrefs).toContain('#making');
 
-    for (const hash of ['#story', '#play', '#patch']) {
+    for (const hash of ['#story', '#play', '#patch-notes', '#patch']) {
       if (isMobile) {
         await expect(menu).not.toHaveAttribute('open', '');
         await summary.focus();

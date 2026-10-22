@@ -120,6 +120,7 @@ const story = [
     { id: 'story', label: '이야기' },
     { id: 'play', label: '진행 방식' },
     { id: 'cast', label: '주인공과 동료' },
+    { id: 'patch-notes', label: '패치 노트' },
     { id: 'making', label: '롬 분석 노트' },
   ]}
   theme={patch.theme}
@@ -266,6 +267,38 @@ const story = [
         </li>
       ))}
     </ul>
+  </section>
+
+  <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
+    <h2 id="patch-notes-title" class="pixel">
+      패치 노트
+    </h2>
+    <article class="patch-release" aria-labelledby="release-1-1">
+      <h3 id="release-1-1" class="pixel">
+        v1.1 · 최신 버전
+      </h3>
+      <p class="section-note">
+        <time datetime="2026-10-18">2026년 10월 18일</time>
+      </p>
+      <ul>
+        <li>아이템·필살기·적 이름을 한국어로 옮겼습니다.</li>
+        <li>대사 속 이름과 조사 처리를 개선했습니다.</li>
+        <li>전투 결과·레벨업·필살기 화면을 개선했습니다.</li>
+        <li>잘리거나 비어 있던 대사를 복구했습니다.</li>
+        <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+      </ul>
+    </article>
+    <article class="patch-release" aria-labelledby="release-1-0">
+      <h3 id="release-1-0" class="pixel">
+        v1.0
+      </h3>
+      <p class="section-note">
+        <time datetime="2015-03-12">2015년 3월 12일</time>
+      </p>
+      <ul>
+        <li>대사와 메뉴를 한국어로 옮긴 최초 한글패치입니다.</li>
+      </ul>
+    </article>
   </section>
 
   <MakingOf patch={patch} />
