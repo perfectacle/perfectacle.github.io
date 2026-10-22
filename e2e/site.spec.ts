@@ -675,6 +675,7 @@ const PATCH_SCREEN_COVERAGE: Record<string, { version: string; images: string[] 
         'restored',
       ],
     },
+    { version: 'release-1-0', images: ['title.webp'] },
   ],
   'dragon-ball-z-super-gokuden-totsugeki': [
     {
@@ -709,6 +710,7 @@ const PATCH_SCREEN_COVERAGE: Record<string, { version: string; images: string[] 
       images: ['flow-open', 'flow-jump', 'menu-all', 'flow-endings', 'shiori', 'backlog-yellow'],
     },
     { version: 'release-1-1', images: ['freeze-lap2', 'a-wait', 'overflow', 'fix-sign', 'wordwrap'] },
+    { version: 'release-1-0', images: ['title.webp'] },
   ],
 };
 

@@ -2,6 +2,12 @@
   "version": "1.0",
   "images": [
     {
+      "file": "title.webp",
+      "source": "smrpg/rom/smrpg_kr_v1.sfc",
+      "frame": 1200,
+      "input": "Start at frame 1000"
+    },
+    {
       "file": "castle-dialogue.webp",
       "source": "smrpg/test/out/patchnotes/typo_castle_toad/before/end.png"
     },
