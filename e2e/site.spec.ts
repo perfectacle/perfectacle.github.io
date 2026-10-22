@@ -584,6 +584,33 @@ for (const width of [390, 800, 1280]) {
   });
 }
 
+test('SMRPG secrets keep spoilers folded and support independent keyboard disclosure', async ({ page }) => {
+  await page.goto('/games/kr-patches/sfc/super-mario-rpg/#secrets');
+  const secrets = page.locator('#secrets');
+  const details = secrets.locator('details');
+  expect(await details.count()).toBeGreaterThan(1);
+  await expect(secrets.locator('details[open]')).toHaveCount(0);
+
+  const first = details.nth(0);
+  const second = details.nth(1);
+  await expect(first.locator('.secret-body')).toBeHidden();
+  await first.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  await expect(first.locator('.secret-body')).toBeVisible();
+  await expect(second.locator('.secret-body')).toBeHidden();
+
+  await second.locator('summary').focus();
+  await page.keyboard.press('Space');
+  await expect(second.locator('.secret-body')).toBeVisible();
+  await expect(first.locator('.secret-body')).toBeVisible();
+
+  await first.locator('summary').focus();
+  await page.keyboard.press('Enter');
+  await expect(first.locator('.secret-body')).toBeHidden();
+  await expect(second.locator('.secret-body')).toBeVisible();
+  await noHorizontalOverflow(page);
+});
+
 const PATCH_GUIDES = [
   'super-mario-rpg',
   'dragon-ball-z-super-gokuden-totsugeki',
@@ -663,9 +690,19 @@ for (const game of PATCH_GUIDES) {
       expect(href).toMatch(/^#.+/);
       await expect(page.locator(`[id="${href?.slice(1)}"]`)).toHaveCount(1);
     }
-    if (game === 'super-mario-rpg') expect(hrefs).toContain('#making');
+    if (game === 'super-mario-rpg') {
+      expect(hrefs).toContain('#making');
+      expect(hrefs).toContain('#secrets');
+    }
 
-    for (const hash of ['#story', '#play', '#patch-notes', '#patch']) {
+    const destinations = [
+      '#story',
+      '#play',
+      ...(game === 'super-mario-rpg' ? ['#secrets'] : []),
+      '#patch-notes',
+      '#patch',
+    ];
+    for (const hash of destinations) {
       if (isMobile) {
         await expect(menu).not.toHaveAttribute('open', '');
         await summary.focus();
