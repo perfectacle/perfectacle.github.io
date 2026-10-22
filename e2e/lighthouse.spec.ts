@@ -13,6 +13,7 @@ const PAGES: Record<string, { scriptKb: number; tbtMs?: number }> = {
   // Mermaid loads and renders per diagram as it scrolls into view, so the initial page stays light.
   '/2022/09/25/hikari-cp-time-config/': { scriptKb: 60 },
   '/search/': { scriptKb: 60 },
+  '/games/kr-patches/': { scriptKb: 5 },
   // The patch logic loads only after a file is picked; the first view ships just the patch box wiring.
   '/games/kr-patches/sfc/super-mario-rpg/': { scriptKb: 5 },
   '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/': { scriptKb: 5 },

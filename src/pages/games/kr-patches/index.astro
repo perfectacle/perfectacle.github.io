@@ -1,11 +1,8 @@
 ---
 import PatchBook from '../../../layouts/PatchBook.astro';
+import SfcController from '../../../components/kr-patch/SfcController.astro';
 import { KR_PATCH_LIST_PATH, KR_PATCHES } from '../../../lib/kr-patches';
 import '../../../styles/patch-catalogue.css';
-
-// Games that share a credit line, like the two Super Gokuden parts, are credited together.
-const credits = Map.groupBy(KR_PATCHES, patch => patch.copyright);
-const copyright = [...credits].map(([line, patches]) => `${patches.map(patch => patch.title).join(' · ')}: ${line}`);
 ---
 
 <PatchBook
@@ -19,54 +16,120 @@ const copyright = [...credits].map(([line, patches]) => `${patches.map(patch => 
     width: 180,
     height: 180,
   }}
-  copyright={copyright}
+  copyright={[]}
+  links={[
+    { href: 'https://spritedatabase.net/file/8203', label: '록맨 X3 스프라이트' },
+    { href: 'https://spritedatabase.net/file/7653', label: '동키콩 컨트리 2 스프라이트' },
+    { href: 'https://spritedatabase.net/file/31727', label: '스트리트 파이터 II 스프라이트' },
+  ]}
 >
-  <section class="patch-catalogue page-width" aria-labelledby="catalogue-title">
-    <div class="console-heading">
-      <div>
-        <p class="console-label">SFC · GAME SELECT</p>
-        <h1 id="catalogue-title">한글패치</h1>
+  <div class="catalogue-world">
+    <div class="world-rail world-rail-left" aria-hidden="true">
+      <div class="world-scene world-scene-metal">
+        <img
+          class="world-sprite sprite-mega-man-x"
+          src="/games/kr-patches/catalogue/sprites/mega-man-x.webp"
+          width="29"
+          height="34"
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="world-stars"></div>
+        <div class="world-platform"></div>
       </div>
-      <div class="select-emblem" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+      <div class="world-scene world-scene-jungle">
+        <img
+          class="world-sprite sprite-diddy-kong"
+          src="/games/kr-patches/catalogue/sprites/diddy-kong.webp"
+          width="38"
+          height="37"
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="world-canopy"></div>
+        <div class="world-platform"></div>
       </div>
     </div>
-    <p class="catalogue-intro">게임을 고르면 한글패치를 바로 적용할 수 있습니다.</p>
-    <div class="catalogue-divider" aria-hidden="true"></div>
-    <ul class="game-catalogue">
-      {KR_PATCHES.map((patch, i) => {
-        const href = `${patch.path}/`;
-        return (
-          <li>
-            <a class="game-card" href={href}>
-              <div class="selection-slot" aria-hidden="true">
-                <span>{String(i + 1).padStart(2, '0')}</span>
-                <span class="slot-meter"></span>
-                <span>SFC</span>
-              </div>
-              <div class="game-screen">
-                {i === 0 ? (
-                  <img src={href + patch.card.image} width="256" height="224" alt="" fetchpriority="high" />
-                ) : (
-                  <img src={href + patch.card.image} width="256" height="224" alt="" loading="lazy" decoding="async" />
-                )}
-              </div>
-              <div class="game-card-copy">
-                <p class="game-release">
-                  {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}
-                </p>
-                <h2>{patch.title}</h2>
-                <span class="game-card-arrow" aria-hidden="true">
-                  ▶
-                </span>
-              </div>
-            </a>
-          </li>
-        );
-      })}
-    </ul>
-  </section>
+    <section class="patch-catalogue page-width" aria-labelledby="catalogue-title">
+      <div class="console-heading">
+        <div>
+          <p class="console-label">SFC · GAME SELECT</p>
+          <h1 id="catalogue-title">한글패치</h1>
+        </div>
+        <SfcController />
+      </div>
+      <p class="catalogue-intro">게임을 고르면 한글패치를 바로 적용할 수 있습니다.</p>
+      <div class="catalogue-divider" aria-hidden="true"></div>
+      <ul class="game-catalogue">
+        {KR_PATCHES.map((patch, i) => {
+          const href = `${patch.path}/`;
+          const image =
+            patch.theme === 'smrpg'
+              ? '/games/kr-patches/catalogue/super-mario-rpg-title.webp'
+              : href + patch.card.image;
+          return (
+            <li>
+              <a class="game-card" href={href}>
+                <div class="selection-slot" aria-hidden="true">
+                  <span>{String(i + 1).padStart(2, '0')}</span>
+                  <span class="slot-meter"></span>
+                  <span>SFC</span>
+                </div>
+                <div class="game-screen">
+                  {i === 0 ? (
+                    <img src={image} width="256" height="224" alt="" fetchpriority="high" />
+                  ) : (
+                    <img src={image} width="256" height="224" alt="" loading="lazy" decoding="async" />
+                  )}
+                </div>
+                <div class="game-card-copy">
+                  <p class="game-release">
+                    게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}
+                  </p>
+                  <h2>{patch.title}</h2>
+                  <p class="patch-release">
+                    한글패치 출시일 <time datetime="2026-10-18">2026-10-18</time>
+                  </p>
+                  <span class="game-card-arrow" aria-hidden="true">
+                    ▶
+                  </span>
+                </div>
+                <p class="game-copyright">{patch.copyright}</p>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+    <div class="world-rail world-rail-right" aria-hidden="true">
+      <div class="world-scene world-scene-fight">
+        <img
+          class="world-sprite sprite-ryu"
+          src="/games/kr-patches/catalogue/sprites/ryu.webp"
+          width="43"
+          height="81"
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="world-sun"></div>
+        <div class="world-platform"></div>
+      </div>
+      <div class="world-scene world-scene-bonus">
+        <img
+          class="world-sprite sprite-dixie-kong"
+          src="/games/kr-patches/catalogue/sprites/dixie-kong.webp"
+          width="35"
+          height="36"
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="world-stars"></div>
+        <div class="world-platform"></div>
+      </div>
+    </div>
+  </div>
 </PatchBook>

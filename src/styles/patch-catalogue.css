@@ -57,36 +57,12 @@
     6px 6px 0 #030918;
 }
 
-.select-emblem {
-  display: grid;
+.sfc-controller {
+  display: block;
+  width: 192px;
+  height: 96px;
   flex: none;
-  grid-template-columns: repeat(2, 20px);
-  gap: 7px;
-  transform: rotate(-45deg);
-}
-
-.select-emblem span {
-  aspect-ratio: 1;
-  box-shadow:
-    inset 3px 3px rgb(255 255 255 / 28%),
-    inset -3px -3px rgb(0 0 0 / 30%),
-    3px 3px #02081a;
-}
-
-.select-emblem span:nth-child(1) {
-  background: #2683db;
-}
-
-.select-emblem span:nth-child(2) {
-  background: #3fba8b;
-}
-
-.select-emblem span:nth-child(3) {
-  background: #e9bc43;
-}
-
-.select-emblem span:nth-child(4) {
-  background: #df5257;
+  filter: drop-shadow(4px 6px 0 #030918);
 }
 
 .catalogue-intro {
@@ -109,7 +85,8 @@
 
 .game-card {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   border: 3px solid #5aafdb;
   padding: 6px;
@@ -208,7 +185,7 @@
 
 .game-card-copy {
   position: relative;
-  min-height: 120px;
+  min-height: 146px;
   padding: 18px 36px 16px 12px;
 }
 
@@ -263,10 +240,9 @@
     gap: 28px;
   }
 
-  .select-emblem {
-    grid-template-columns: repeat(2, 15px);
-    gap: 5px;
-    margin-right: 6px;
+  .sfc-controller {
+    width: 112px;
+    height: 56px;
   }
 
   .console-label {
@@ -276,5 +252,259 @@
 
   .catalogue-intro {
     max-width: 20em;
+  }
+}
+
+.patch-release {
+  margin-top: 10px;
+  color: #bbd1e4;
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+
+.patch-release time {
+  display: inline-block;
+  margin-left: 6px;
+  color: #ffe395;
+  font-family: ui-monospace, monospace;
+}
+
+.game-copyright {
+  margin: auto 8px 0;
+  border-top: 1px solid #315173;
+  padding: 12px 4px 10px;
+  color: #acbddb;
+  font-size: 0.6875rem;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.catalogue-world {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.world-rail {
+  display: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (min-width: 1200px) {
+  .catalogue-world {
+    grid-template-columns: minmax(112px, 1fr) minmax(0, 1040px) minmax(112px, 1fr);
+    gap: 12px;
+    padding-inline: 12px;
+    overflow: clip;
+  }
+
+  [data-theme='sfc'] .patch-catalogue.page-width {
+    width: 100%;
+  }
+
+  .world-rail {
+    position: relative;
+    display: block;
+    min-width: 0;
+  }
+
+  .world-scene {
+    position: absolute;
+    inset-inline: 0;
+    height: 240px;
+    max-width: 256px;
+    margin-inline: auto;
+  }
+
+  .world-scene-metal {
+    top: 170px;
+    background: linear-gradient(transparent 30%, #10365080);
+  }
+
+  .world-scene-jungle {
+    top: 790px;
+    background: linear-gradient(transparent 20%, #16363c90);
+  }
+
+  .world-scene-fight {
+    top: 460px;
+    background: linear-gradient(transparent, #442b4e80);
+  }
+
+  .world-scene-bonus {
+    top: 1050px;
+    background: linear-gradient(transparent, #17365b80);
+  }
+
+  .world-platform {
+    position: absolute;
+    inset: auto 0 0;
+    height: 44px;
+    border-top: 6px solid #88ccd3;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 28px, #0b182d 28px 32px) 0 8px / 100% 20px no-repeat,
+      linear-gradient(#285573 0 8px, #1c334e 8px 28px, #0a152b 28px);
+    box-shadow:
+      0 -4px #214e6c,
+      0 5px #040c1c;
+  }
+
+  .world-platform::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 5px;
+    background: repeating-linear-gradient(135deg, #d5b857 0 8px, #27384a 8px 16px);
+  }
+
+  .world-scene-jungle .world-platform {
+    height: 52px;
+    border-color: #77ac4d;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 18px, #142d2b 18px 24px) 0 16px / 100% 100%,
+      linear-gradient(#365d37 0 12px, #5c4b34 12px 20px, #312c2b 20px);
+    box-shadow:
+      0 -4px #2d633f,
+      0 5px #040c1c;
+  }
+
+  .world-scene-jungle .world-platform::after {
+    background: repeating-linear-gradient(90deg, #95ba5b 0 12px, #50854c 12px 24px);
+  }
+
+  .world-scene-fight .world-platform {
+    border-color: #e7bd86;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 36px, #48334b 36px 40px) 0 12px / 100% 100%,
+      linear-gradient(#9a6b64 0 12px, #694954 12px 28px, #382c43 28px);
+    box-shadow:
+      0 -4px #9a6b64,
+      0 5px #040c1c;
+  }
+
+  .world-scene-fight .world-platform::after {
+    background: #c69a7a;
+  }
+
+  .world-stars {
+    position: absolute;
+    top: 28px;
+    left: 20%;
+    width: 4px;
+    height: 4px;
+    background: #82bed7;
+    box-shadow:
+      24px 32px #3f779f,
+      52px -20px #82bed7,
+      -12px 80px #3f779f,
+      72px 64px #3f779f;
+  }
+
+  .world-canopy {
+    position: absolute;
+    inset: 50px 0 0;
+    background: #244f42;
+    clip-path: polygon(
+      0 40%,
+      12% 40%,
+      12% 24%,
+      24% 24%,
+      24% 8%,
+      40% 8%,
+      40% 24%,
+      52% 24%,
+      52% 48%,
+      68% 48%,
+      68% 32%,
+      84% 32%,
+      84% 16%,
+      100% 16%,
+      100% 100%,
+      0 100%
+    );
+    opacity: 0.6;
+  }
+
+  .world-sun {
+    position: absolute;
+    top: 30px;
+    left: calc(50% - 36px);
+    width: 72px;
+    height: 72px;
+    background: repeating-linear-gradient(#c58569 0 8px, transparent 8px 12px);
+    clip-path: polygon(
+      24% 0,
+      76% 0,
+      76% 12%,
+      88% 12%,
+      88% 24%,
+      100% 24%,
+      100% 76%,
+      88% 76%,
+      88% 88%,
+      76% 88%,
+      76% 100%,
+      24% 100%,
+      24% 88%,
+      12% 88%,
+      12% 76%,
+      0 76%,
+      0 24%,
+      12% 24%,
+      12% 12%,
+      24% 12%
+    );
+  }
+
+  .world-sprite {
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    bottom: 44px;
+    max-width: none;
+    image-rendering: pixelated;
+    transform: translateX(-50%);
+  }
+
+  .world-scene-jungle .world-sprite {
+    bottom: 52px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .sprite-mega-man-x {
+    width: 87px;
+    height: 102px;
+  }
+  .sprite-diddy-kong {
+    width: 114px;
+    height: 111px;
+  }
+  .sprite-dixie-kong {
+    width: 105px;
+    height: 108px;
+  }
+  .sprite-ryu {
+    width: 86px;
+    height: 162px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .sprite-mega-man-x {
+    width: 116px;
+    height: 136px;
+  }
+  .sprite-diddy-kong {
+    width: 152px;
+    height: 148px;
+  }
+  .sprite-dixie-kong {
+    width: 140px;
+    height: 144px;
+  }
+  .sprite-ryu {
+    width: 129px;
+    height: 243px;
   }
 }
