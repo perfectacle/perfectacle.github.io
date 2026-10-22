@@ -120,7 +120,7 @@ const cast = [
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem} />
       <ManualPatch patch={patch}>
-        <p>세이브 구조는 바꾸지 않아 v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
+        <p>세이브 구조는 바꾸지 않아 v1.0·v1.1 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
       </ManualPatch>
     </div>
     <figure class="hero-shot screen">
@@ -249,9 +249,131 @@ const cast = [
     <h2 id="patch-notes-title" class="pixel">
       패치 노트
     </h2>
+    <article class="patch-release" aria-labelledby="release-1-2">
+      <h3 id="release-1-2" class="pixel">
+        v1.2 · 최신 버전
+      </h3>
+      <p class="section-note">
+        <time datetime="2026-10-23">2026년 10월 23일</time>
+      </p>
+      <p class="release-overview">엔딩 암호를 각성편에 그대로 칠 수 있게 바꾸고, 잘못 보이던 글자를 바로잡았습니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>엔딩 암호를 각성편에 그대로 칠 수 있는 「손오공은사이어인」으로 바꿨습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/patch/password_v11_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.1 엔딩 화면. 한글 50자로 된 암호와 TO BE CONTINUED"
+          caption="v1.1: 기록을 담은 50자 암호"
+        />
+        <ReleaseScreenshot
+          src={`${base}/images/patch/password_v12_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.2 엔딩 화면. 가운데에 손오공은사이어인과 TO BE CONTINUED"
+          caption="v1.2: 「손오공은사이어인」"
+        />
+        <ul>
+          <li>
+            각성편 v1.3의 암호 화면에 이 여덟 글자를 넣으면 통과합니다. 이름은 넘어가지 않고 각성편 기본 이름으로
+            시작합니다.
+          </li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/patch/kakusei_phrase_v12_1.webp`}
+          width={256}
+          height={224}
+          alt="각성편 v1.3 암호 화면에 손오공은사이어인을 넣은 모습"
+          caption="각성편 v1.3에 입력"
+        />
+        <ReleaseScreenshot
+          src={`${base}/images/patch/kakusei_phrase_v12_2.webp`}
+          width={256}
+          height={224}
+          alt="암호가 통과해 열린 각성편 v1.3 이름 화면. 기본 이름 엑소버드"
+          caption="통과해 이름 화면으로"
+        />
+        <ul>
+          <li>
+            작은 글자 다섯 개를 다·동·레·렉·저로 다시 그렸습니다. v1.1에서는 나·등·러·러·지와 똑같거나 거의 같게 보여,
+            이 글자로 지은 이름이 다른 이름처럼 보였습니다.
+          </li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/patch/name_v11_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.1 대화창. 이름 다동레렉저가 나등러러지로 보인다"
+          caption="v1.1: 이름 「다동레렉저」가 「나등러러지」로 보임"
+        />
+        <ReleaseScreenshot
+          src={`${base}/images/patch/name_v12_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.2 대화창. 이름 다동레렉저가 그대로 보인다"
+          caption="v1.2"
+        />
+        <ul>
+          <li>엔딩 스태프 소개의 「디러터」를 「디렉터」로 고쳤습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/patch/credits_v11_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.1 엔딩 스태프 소개. 디러터 신사쿠 시마다"
+          caption="v1.1"
+        />
+        <ReleaseScreenshot
+          src={`${base}/images/patch/credits_v12_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.2 엔딩 스태프 소개. 디렉터 신사쿠 시마다"
+          caption="v1.2"
+        />
+        <ul>
+          <li>「저 녀석 떠‥평범한」을 「저 녀석 펴‥평범한」으로 고쳤습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/patch/dialogue_pyeo2_v11_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.1 오공의 대화창. 저 녀석 떠‥평범한 꼬마가 아닌 듯한"
+          caption="v1.1: 실험용 롬에서 대사 05D5를 첫 대사 자리에 띄운 화면. 같은 글자 코드와 같은 폭의 창이고, 얼굴만 오공입니다."
+        />
+        <ReleaseScreenshot
+          src={`${base}/images/patch/dialogue_pyeo2_v12_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.2 오공의 대화창. 저 녀석 펴‥평범한 꼬마가 아닌 듯한"
+          caption="v1.2: 실험용 롬에서 대사 05D5를 첫 대사 자리에 띄운 화면. 같은 글자 코드와 같은 폭의 창이고, 얼굴만 오공입니다."
+        />
+        <ul>
+          <li>「누가 있는지 살떠봐!!」를 「누가 있는지 살펴봐!!」로 고쳤습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/patch/dialogue_pyeo_v11_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.1 카메하우스 상공. 누가 있는지 살떠봐!!"
+          caption="v1.1"
+        />
+        <ReleaseScreenshot
+          src={`${base}/images/patch/dialogue_pyeo_v12_1.webp`}
+          width={256}
+          height={224}
+          alt="v1.2 카메하우스 상공. 누가 있는지 살펴봐!!"
+          caption="v1.2"
+        />
+        <ul>
+          <li>v1.0·v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+        </ul>
+      </ReleaseDetails>
+    </article>
     <article class="patch-release" aria-labelledby="release-1-1">
       <h3 id="release-1-1" class="pixel">
-        v1.1 · 최신 버전
+        v1.1
       </h3>
       <p class="section-note">
         <time datetime="2026-10-18">2026년 10월 18일</time>

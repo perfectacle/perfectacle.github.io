@@ -37,8 +37,11 @@ export const GOKUDEN_TOTSUGEKI: RomSpec = {
   size: 2097152,
   header: { title: 'SFX DBZ TOTSUGEKIHEN', mapMode: 0x30, cartType: 0x02, romSize: 0x0b },
   original: { crc32: 'D531289B', md5: '8BD89634D1B2205B1E7EF016485C0076' },
-  patched: { crc32: '7405D969', md5: 'FCA11D34E7D5AD8D9D2021AC1C8E34E5' },
-  previous: [{ version: 'v1.0', crc32: '52FEF8C3', md5: 'B00D892B59588393145CF3E848A1BA3A' }],
+  patched: { crc32: '81DAD733', md5: '96EDB7C2748B1EADBE9375410D3934FF' },
+  previous: [
+    { version: 'v1.1', crc32: '7405D969', md5: 'FCA11D34E7D5AD8D9D2021AC1C8E34E5' },
+    { version: 'v1.0', crc32: '52FEF8C3', md5: 'B00D892B59588393145CF3E848A1BA3A' },
+  ],
 };
 
 export const GOKUDEN_KAKUSEI: RomSpec = {
