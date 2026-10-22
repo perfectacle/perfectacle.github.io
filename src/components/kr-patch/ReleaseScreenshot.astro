@@ -1,5 +1,5 @@
 ---
-import type { ScreenshotHighlight } from '../../lib/version-pairs';
+import type { ScreenshotCrop, ScreenshotHighlight } from '../../lib/version-pairs';
 import Screenshot from './Screenshot.astro';
 
 interface Props {
@@ -9,13 +9,32 @@ interface Props {
   alt: string;
   caption: string;
   highlights?: ScreenshotHighlight[];
+  panels?: { label: string; crop: ScreenshotCrop; alt: string }[];
 }
 
-const { src, width, height, alt, caption, highlights } = Astro.props;
+const { src, width, height, alt, caption, highlights, panels } = Astro.props;
 ---
 
 <figure class="release-screenshot">
-  <Screenshot src={src} width={width} height={height} alt={alt} highlights={highlights} />
+  {panels?.length ? (
+    <div class="release-panels">
+      {panels.map(panel => (
+        <div class="release-panel">
+          <p class="panel-label">{panel.label}</p>
+          <Screenshot
+            src={src}
+            width={width}
+            height={height}
+            alt={panel.alt}
+            crop={panel.crop}
+            highlights={highlights}
+          />
+        </div>
+      ))}
+    </div>
+  ) : (
+    <Screenshot src={src} width={width} height={height} alt={alt} highlights={highlights} />
+  )}
   <figcaption>{caption}</figcaption>
 </figure>
 
@@ -25,7 +44,33 @@ const { src, width, height, alt, caption, highlights } = Astro.props;
     justify-items: start;
     gap: 8px;
     min-width: 0;
+    width: 100%;
+    max-width: 1040px;
     margin: 0;
+  }
+
+  .release-panels {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+  }
+
+  .release-panel {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    min-width: 0;
+  }
+
+  .panel-label {
+    font-weight: bold;
+  }
+
+  @media (max-width: 599px) {
+    .release-panels {
+      grid-template-columns: 1fr;
+    }
   }
 
   figcaption {

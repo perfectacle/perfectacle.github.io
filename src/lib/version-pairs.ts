@@ -1,4 +1,5 @@
 export type ScreenshotHighlight = readonly [x: number, y: number, width: number, height: number];
+export type ScreenshotCrop = readonly [x: number, y: number, width: number, height: number];
 
 export interface VersionPair {
   /** File stem under images/patch; frame n of version key `vNN` loads `${id}_vNN_${n}.webp`. */

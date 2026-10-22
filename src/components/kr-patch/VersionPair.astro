@@ -58,3 +58,9 @@ const order = (frame: number) => (frames > 1 ? ` (${frame}/${frames})` : '');
     <figcaption class="dialog">{pair.caption}</figcaption>
   )}
 </figure>
+
+<style>
+  .version-pair :global(.patch-image-trigger) {
+    width: min(100%, 256px);
+  }
+</style>
