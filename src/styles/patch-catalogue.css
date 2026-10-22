@@ -7,7 +7,19 @@
 }
 
 [data-theme='sfc'] body {
-  background: #182b22;
+  position: relative;
+  isolation: isolate;
+  background: #182d21;
+}
+
+[data-theme='sfc'] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: #182d21 url('/games/kr-patches/catalogue/rabite-forest-waterfall.webp') center / cover no-repeat;
+  image-rendering: pixelated;
 }
 
 [data-theme='sfc'] .page-width {
@@ -21,227 +33,6 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   padding-bottom: 100px;
-  background: #182b22;
-}
-
-.forest-scenery {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  user-select: none;
-}
-
-.forest-sky {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 620px;
-  background: linear-gradient(
-    #70647d 0 72px,
-    #ad7b83 72px 148px,
-    #d49b85 148px 240px,
-    #e6b48c 240px 340px,
-    #a99a76 340px 430px,
-    #56705a 430px 520px,
-    #274838 520px
-  );
-}
-
-.forest-sun {
-  position: absolute;
-  top: 118px;
-  left: calc(50% - 620px);
-  width: 104px;
-  height: 104px;
-  background: #f2cd99;
-  clip-path: polygon(
-    24% 0,
-    76% 0,
-    76% 8%,
-    92% 8%,
-    92% 24%,
-    100% 24%,
-    100% 76%,
-    92% 76%,
-    92% 92%,
-    76% 92%,
-    76% 100%,
-    24% 100%,
-    24% 92%,
-    8% 92%,
-    8% 76%,
-    0 76%,
-    0 24%,
-    8% 24%,
-    8% 8%,
-    24% 8%
-  );
-}
-
-.forest-clouds {
-  position: absolute;
-  top: 64px;
-  left: 0;
-  width: 136px;
-  height: 8px;
-  background: #c39696;
-  box-shadow:
-    24px -8px #c39696,
-    64px 8px #c39696,
-    290px 58px #dbab98,
-    330px 50px #dbab98,
-    1040px 0 #c39696,
-    1072px -8px #c39696,
-    1490px 80px #dbab98,
-    1520px 72px #dbab98;
-}
-
-.forest-mountains {
-  position: absolute;
-  top: 252px;
-  left: -5%;
-  width: 110%;
-  height: 310px;
-  background: #666d69;
-  clip-path: polygon(
-    0 48%,
-    5% 48%,
-    5% 38%,
-    9% 38%,
-    9% 26%,
-    13% 26%,
-    13% 14%,
-    17% 14%,
-    17% 26%,
-    21% 26%,
-    21% 38%,
-    26% 38%,
-    26% 50%,
-    34% 50%,
-    34% 38%,
-    38% 38%,
-    38% 24%,
-    43% 24%,
-    43% 12%,
-    48% 12%,
-    48% 0,
-    52% 0,
-    52% 14%,
-    57% 14%,
-    57% 30%,
-    62% 30%,
-    62% 42%,
-    68% 42%,
-    68% 32%,
-    73% 32%,
-    73% 20%,
-    78% 20%,
-    78% 34%,
-    83% 34%,
-    83% 48%,
-    90% 48%,
-    90% 34%,
-    95% 34%,
-    95% 24%,
-    100% 24%,
-    100% 100%,
-    0 100%
-  );
-}
-
-.forest-trees {
-  position: absolute;
-  inset: 240px -80px 0;
-  background: linear-gradient(transparent 0 160px, #284b39 160px 300px, #203b2d 300px);
-}
-
-.forest-tree {
-  position: absolute;
-  top: 44px;
-  bottom: 0;
-  left: calc(var(--tree) * 9.1%);
-  width: 200px;
-  background: linear-gradient(
-    90deg,
-    transparent 0 76px,
-    #252f24 76px 84px,
-    #4b4930 84px 96px,
-    #363c29 96px 116px,
-    #1a3025 116px 124px,
-    transparent 124px
-  );
-}
-
-.forest-tree::before,
-.forest-tree::after {
-  content: '';
-  position: absolute;
-  width: 240px;
-  height: 240px;
-  left: -20px;
-  background: #34583d;
-  clip-path: polygon(
-    32% 0,
-    68% 0,
-    68% 8%,
-    84% 8%,
-    84% 20%,
-    92% 20%,
-    92% 36%,
-    100% 36%,
-    100% 68%,
-    92% 68%,
-    92% 80%,
-    76% 80%,
-    76% 92%,
-    60% 92%,
-    60% 100%,
-    28% 100%,
-    28% 92%,
-    12% 92%,
-    12% 76%,
-    0 76%,
-    0 36%,
-    8% 36%,
-    8% 20%,
-    20% 20%,
-    20% 8%,
-    32% 8%
-  );
-}
-
-.forest-tree::after {
-  top: 76px;
-  left: -40px;
-  background: #294831;
-  box-shadow: inset 0 20px #416340;
-}
-
-.forest-tree:nth-child(3n + 1) {
-  top: 90px;
-}
-
-.forest-tree:nth-child(3n + 2) {
-  top: 136px;
-}
-
-.forest-tree:nth-child(even)::before {
-  background: #486645;
-}
-
-.forest-floor {
-  position: absolute;
-  inset: auto 0 0;
-  height: 76px;
-  border-top: 8px solid #72904c;
-  background:
-    repeating-linear-gradient(90deg, transparent 0 24px, #4b432e 24px 32px, transparent 32px 72px) 0 24px / 100% 8px
-      repeat-x,
-    linear-gradient(#395934 0 8px, #263d29 8px 16px, #584b31 16px 24px, #3d3828 24px);
-  box-shadow:
-    0 -8px #3e6439,
-    0 8px #111f19;
 }
 
 .patch-catalogue {
@@ -263,15 +54,6 @@
     inset 0 -5px #a8a4b0;
 }
 
-.console-label {
-  margin-bottom: 14px;
-  color: #57426e;
-  font:
-    700 0.875rem/1.5 ui-monospace,
-    monospace;
-  letter-spacing: 0.16em;
-}
-
 .console-heading h1 {
   color: #3c334c;
   font-family: var(--pixel);
@@ -289,24 +71,11 @@
   filter: drop-shadow(4px 6px 0 #88808f);
 }
 
-.catalogue-intro {
-  width: fit-content;
-  margin-block: 28px 32px;
-  padding: 8px 12px;
-  border-left: 4px solid #c5aa70;
-  background: #182b22;
-  color: #f0e8cf;
-  font-size: 0.9375rem;
-}
-
-.catalogue-divider {
-  display: none;
-}
-
 .game-catalogue {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 32px;
+  margin-top: 32px;
   padding: 0;
   list-style: none;
 }
@@ -387,7 +156,7 @@
 .game-card-copy {
   position: relative;
   min-height: 146px;
-  padding: 18px 40px 16px 12px;
+  padding: 18px 12px 16px;
 }
 
 .game-release {
@@ -410,43 +179,6 @@
   text-shadow: 1px 1px #f3eee4;
 }
 
-.game-card-arrow {
-  position: absolute;
-  right: 8px;
-  bottom: 24px;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  background: #70558c;
-  box-shadow:
-    inset 2px 2px #9e86b6,
-    2px 2px #8e8796;
-  color: #fff4df;
-  font:
-    1rem/1 ui-monospace,
-    monospace;
-}
-
-.game-card:hover .game-card-arrow,
-.game-card:focus-visible .game-card-arrow {
-  background: #4e3569;
-}
-
-.patch-release {
-  margin-top: 10px;
-  color: #494352;
-  font-size: 0.75rem;
-  line-height: 1.8;
-}
-
-.patch-release time {
-  display: inline-block;
-  margin-left: 6px;
-  color: #5b3f75;
-  font-family: ui-monospace, monospace;
-}
-
 .game-copyright {
   margin: auto 8px 0;
   border-top: 1px solid #a39caa;
@@ -462,6 +194,8 @@
   border-top: 2px solid #53634a;
   color: #cbc7ae;
   font-size: 0.75rem;
+  background: rgb(16 24 24 / 85%);
+  padding-block: 24px;
 }
 
 .world-rail {
@@ -486,20 +220,6 @@
     width: 104px;
     height: 52px;
   }
-  .console-label {
-    font-size: 0.6875rem;
-    letter-spacing: 0.06em;
-  }
-  .catalogue-intro {
-    max-width: 20em;
-  }
-  .forest-sun {
-    left: auto;
-    right: 12px;
-    top: 12px;
-    width: 64px;
-    height: 64px;
-  }
 }
 
 @media (min-width: 1200px) {
@@ -513,15 +233,22 @@
     width: 100%;
   }
 
+  .patch-catalogue {
+    grid-column: 2;
+  }
+
   .world-rail {
-    position: relative;
+    position: fixed;
     display: block;
-    min-width: 0;
+    left: 50%;
+    top: 50%;
+    width: max(100vw, calc(100vh * 512 / 304));
+    height: max(100vh, calc(100vw * 304 / 512));
+    transform: translate(-50%, -50%);
   }
 
   .world-sprite {
     position: absolute;
-    left: 50%;
     width: calc(var(--frame-width) * var(--sprite-scale));
     height: calc(var(--frame-height) * var(--sprite-scale));
     background-image: var(--sprite-image);
@@ -529,38 +256,8 @@
     background-size: calc(var(--frame-width) * var(--sprite-scale) * var(--frame-count)) 100%;
     background-position: 0 0;
     image-rendering: pixelated;
-    transform: translateX(-50%);
+    transform: translate(-50%, -100%);
     animation: sprite-frames var(--frame-duration) steps(var(--frame-count)) infinite;
-  }
-
-  .world-sprite::after {
-    content: '';
-    position: absolute;
-    top: calc(100% - 2px * var(--sprite-scale));
-    left: -10%;
-    width: 120%;
-    height: 24px;
-    border-top: 6px solid #83924b;
-    background: linear-gradient(#4c6738 0 6px, #635332 6px 14px, #3a3928 14px);
-    box-shadow: 4px 4px #122219;
-  }
-
-  .sprite-diddy-kong::after {
-    height: 40px;
-    border-top: 8px solid #b2995c;
-    background: repeating-linear-gradient(90deg, #5b4129 0 10px, #80603a 10px 16px, #493c28 16px 24px);
-    box-shadow:
-      inset 0 5px #6e522e,
-      4px 4px #122219;
-    clip-path: polygon(0 0, 100% 0, 100% 80%, 92% 80%, 92% 100%, 8% 100%, 8% 80%, 0 80%);
-  }
-
-  .sprite-ryu::after {
-    border-top: 6px solid #9c9c7f;
-    background: repeating-linear-gradient(90deg, #686c5d 0 30px, #414f43 30px 34px);
-    box-shadow:
-      inset 0 6px #7e826d,
-      4px 4px #122219;
   }
 
   .sprite-mega-man-x {
@@ -570,7 +267,8 @@
     --frame-count: 10;
     --frame-duration: 0.5s;
     --sprite-scale: 2;
-    top: 280px;
+    left: calc(43 / 512 * 100%);
+    top: calc(194 / 304 * 100% + 2px * var(--sprite-scale));
   }
 
   .sprite-diddy-kong {
@@ -580,7 +278,8 @@
     --frame-count: 256;
     --frame-duration: 12.8s;
     --sprite-scale: 2;
-    top: 880px;
+    left: calc(60 / 512 * 100%);
+    top: calc(96 / 304 * 100% + 2px * var(--sprite-scale));
   }
 
   .sprite-ryu {
@@ -589,8 +288,9 @@
     --frame-height: 144px;
     --frame-count: 86;
     --frame-duration: 4.3s;
-    --sprite-scale: 1;
-    top: 450px;
+    --sprite-scale: 2;
+    left: calc(479 / 512 * 100%);
+    top: calc(225 / 304 * 100% + 2px * var(--sprite-scale));
   }
 }
 
@@ -600,20 +300,45 @@
   }
 }
 
-@media (min-width: 1600px) {
+@media (min-width: 1800px) {
   .sprite-mega-man-x,
-  .sprite-diddy-kong {
-    --sprite-scale: 3;
-  }
-
+  .sprite-diddy-kong,
   .sprite-ryu {
-    --sprite-scale: 2;
+    --sprite-scale: 3;
   }
 }
 
-@media (min-width: 1800px) {
+@media (min-width: 1200px) and (max-width: 1499px) {
+  .sprite-mega-man-x {
+    left: calc(70 / 512 * 100%);
+    top: calc(135 / 304 * 100% + 2px * var(--sprite-scale));
+  }
+
   .sprite-ryu {
-    --sprite-scale: 3;
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1499px) and (min-aspect-ratio: 8 / 5) {
+  .sprite-mega-man-x {
+    left: calc(30 / 512 * 100%);
+    top: calc(194 / 304 * 100% + 2px * var(--sprite-scale));
+  }
+
+  .sprite-diddy-kong {
+    left: calc(30 / 512 * 100%);
+    top: calc(51 / 304 * 100% + 2px * var(--sprite-scale));
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1499px) and (max-aspect-ratio: 4 / 3) {
+  .sprite-mega-man-x {
+    left: calc(96 / 512 * 100%);
+    top: calc(141 / 304 * 100% + 2px * var(--sprite-scale));
+  }
+
+  .sprite-diddy-kong {
+    display: none;
   }
 }
 
