@@ -332,11 +332,11 @@
   }
 
   .sprite-diddy-kong {
-    --sprite-image: url('/games/kr-patches/catalogue/sprites/diddy-kong-juggle.webp');
+    --sprite-image: url('/games/kr-patches/catalogue/sprites/diddy-kong-cap-juggle.webp');
     --frame-width: 56px;
     --frame-height: 72px;
-    --frame-count: 174;
-    --frame-duration: 8.7s;
+    --frame-count: 256;
+    --frame-duration: 12.8s;
     --sprite-scale: 2;
     top: 880px;
   }
