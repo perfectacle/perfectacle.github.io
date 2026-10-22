@@ -61,12 +61,16 @@ test('AVIF post images retain working original WebP fallbacks', async ({ page })
   await page.goto('/2025/12/02/travel-001-kenya-01/');
   const picture = page.locator('.prose picture:has(source[type="image/avif"])').first();
   await expect(picture).toBeVisible();
-  const image = picture.locator('img');
-  const original = await image.getAttribute('src');
+  const original = await picture.locator('img').getAttribute('src');
   expect(original).toMatch(/^\/2025\/12\/02\/travel-001-kenya-01\/.+\.webp$/);
+  const image = page.locator(`.prose img[src="${original}"]`).first();
+  await image.scrollIntoViewIfNeeded();
   await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.currentSrc)).toMatch(/\.avif$/);
+  await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
   await picture.locator('source').evaluate(source => source.remove());
-  await expect.poll(() => image.evaluate((el: HTMLImageElement) => new URL(el.currentSrc).pathname)).toBe(original);
+  await expect
+    .poll(() => image.evaluate((el: HTMLImageElement) => (el.currentSrc ? new URL(el.currentSrc).pathname : '')))
+    .toBe(original);
   await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
 });
 
@@ -174,8 +178,16 @@ test('post images open full screen and close with Escape', async ({ page }) => {
   await expect(viewer).toBeVisible();
   await expect(page.locator('.pswp__counter')).toContainText('2 / ');
   // Keys are ignored while the opening transition runs; it ends once the full-size image is shown.
-  await expect(page.locator('.pswp__img').first()).toBeVisible();
-  if (fullSize) await expect(page.locator('.pswp__img').first()).toHaveAttribute('src', fullSize);
+  const currentImage = page.locator('.pswp__item[aria-hidden="false"] img.pswp__img');
+  await expect(currentImage).toBeInViewport();
+  if (fullSize) await expect(currentImage).toHaveAttribute('src', fullSize);
+  await expect
+    .poll(() =>
+      currentImage.evaluate(
+        (el: HTMLImageElement) => el.complete && el.naturalWidth > 0 && el.width > 0 && el.height > 0,
+      ),
+    )
+    .toBe(true);
   await page.waitForFunction(() => {
     const viewerEl = document.querySelector('.pswp');
     return !!viewerEl && getComputedStyle(viewerEl).opacity === '1';
