@@ -583,3 +583,94 @@ for (const width of [390, 800, 1280]) {
     await expect(page).toHaveURL(new RegExp(`${href}$`));
   });
 }
+
+const PATCH_GUIDES = [
+  'super-mario-rpg',
+  'dragon-ball-z-super-gokuden-totsugeki',
+  'dragon-ball-z-super-gokuden-kakusei',
+  'otogirisou',
+];
+
+for (const game of PATCH_GUIDES) {
+  const path = `/games/kr-patches/sfc/${game}/`;
+
+  test(`${game} section navigation moves between the story, play and patch`, async ({ page, isMobile }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(path);
+    const nav = page.getByRole('navigation', { name: '페이지 내 이동', exact: true });
+    const menu = nav.locator('details');
+    const summary = menu.locator('summary');
+    const links = nav.locator('a');
+    const hrefs = await links.evaluateAll(items => items.map(item => item.getAttribute('href')));
+    expect(hrefs[0]).toBe('#patch');
+    expect(hrefs.at(-1)).toBe('#main');
+    for (const href of hrefs) {
+      expect(href).toMatch(/^#.+/);
+      await expect(page.locator(`[id="${href?.slice(1)}"]`)).toHaveCount(1);
+    }
+    if (game === 'super-mario-rpg') expect(hrefs).toContain('#making');
+
+    for (const hash of ['#story', '#play', '#patch']) {
+      if (isMobile) {
+        await expect(menu).not.toHaveAttribute('open', '');
+        await summary.focus();
+        await page.keyboard.press('Enter');
+        await expect(menu).toHaveAttribute('open', '');
+      }
+      const link = nav.locator(`a[href="${hash}"]`);
+      const label = (await link.innerText()).trim();
+      if (isMobile) {
+        await link.focus();
+        await page.keyboard.press('Enter');
+      } else await link.click();
+      await expect(page).toHaveURL(new RegExp(`${hash}$`));
+      await expect(nav.locator('[aria-current="location"]')).toHaveCount(1);
+      await expect(link).toHaveAttribute('aria-current', 'location');
+      await expect(page.locator(hash)).toBeInViewport();
+      if (isMobile) {
+        await expect(menu).not.toHaveAttribute('open', '');
+        await expect(summary).toContainText(label);
+        const heading = hash === '#patch' ? page.locator(hash) : page.locator(`${hash} h2`).first();
+        await expect
+          .poll(async () => {
+            const titleBox = await heading.boundingBox();
+            const menuBox = await summary.boundingBox();
+            return !!titleBox && !!menuBox && titleBox.y >= menuBox.y + menuBox.height;
+          })
+          .toBe(true);
+      }
+    }
+    await noHorizontalOverflow(page);
+  });
+
+  test(`${game} section navigation follows direct links and manual scrolling`, async ({ page, isMobile }) => {
+    if (isMobile) await page.setViewportSize({ width: 390, height: 900 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(`${path}#story`);
+    const nav = page.getByRole('navigation', { name: '페이지 내 이동', exact: true });
+    const current = nav.locator('[aria-current="location"]');
+    await expect(current).toHaveCount(1);
+    await expect(current).toHaveAttribute('href', '#story');
+
+    await page.locator('#play').evaluate(element => {
+      window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top - 24);
+    });
+    await expect(current).toHaveAttribute('href', '#play');
+    await page.locator('#story').evaluate(element => {
+      window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top + 300);
+    });
+    await expect(current).toHaveAttribute('href', '#story');
+    const control = isMobile ? nav.locator('summary') : nav;
+    await expect(control).toBeInViewport({ ratio: 1 });
+    if (!isMobile) {
+      const menuBox = await nav.boundingBox();
+      const sectionBox = await page.locator('#story').boundingBox();
+      expect(menuBox).not.toBeNull();
+      expect(sectionBox).not.toBeNull();
+      if (!menuBox || !sectionBox) throw new Error('The navigation and section must have visible bounds.');
+      expect(menuBox.width).toBeGreaterThanOrEqual(200);
+      expect(menuBox.width).toBeLessThanOrEqual(220);
+      expect(sectionBox.x + sectionBox.width).toBeLessThanOrEqual(menuBox.x);
+    }
+  });
+}

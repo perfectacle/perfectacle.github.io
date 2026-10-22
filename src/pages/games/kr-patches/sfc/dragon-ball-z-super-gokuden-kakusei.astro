@@ -82,6 +82,13 @@ const cast = [
   title={`${patch.title} 한글판`}
   trail={trail(patch)}
   description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
+  sections={[
+    { id: 'changes', label: `v${patch.version}에서 달라진 것` },
+    { id: 'story', label: '이야기' },
+    { id: 'cast', label: '등장인물' },
+    { id: 'play', label: '진행 방식' },
+    { id: 'making', label: '롬 분석 노트' },
+  ]}
   theme={patch.theme}
   image={{ src: `${base}/images/title.webp`, alt: '드래곤볼 Z 초오공전 각성편 한글판 타이틀 화면' }}
   copyright={[patch.copyright]}
@@ -107,24 +114,6 @@ const cast = [
       />
     </figure>
   </section>
-
-  <nav class="toc page-width frame" aria-label="이 페이지 차례">
-    <a class="pointer" href="#changes">
-      v{patch.version}에서 달라진 것
-    </a>
-    <a class="pointer" href="#story">
-      이야기
-    </a>
-    <a class="pointer" href="#cast">
-      등장인물
-    </a>
-    <a class="pointer" href="#play">
-      진행 방식
-    </a>
-    <a class="pointer" href="#making">
-      롬 분석 노트
-    </a>
-  </nav>
 
   <section id="changes" class="section page-width" aria-labelledby="changes-title">
     <h2 id="changes-title" class="pixel">

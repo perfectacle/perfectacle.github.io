@@ -1,0 +1,226 @@
+---
+interface Props {
+  sections: { id: string; label: string }[];
+}
+
+const { sections } = Astro.props;
+const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id: 'main', label: '맨 위로' }];
+---
+
+<nav class="patch-section-nav" aria-label="페이지 내 이동">
+  <details class="section-nav-menu frame" open>
+    <summary class="pixel">
+      <span class="section-nav-caption">이 페이지 차례</span>
+      <span class="section-nav-current">맨 위로</span>
+    </summary>
+    <p class="section-nav-heading pixel" aria-hidden="true">
+      이 페이지 차례
+    </p>
+    <ul>
+      {items.map(({ id, label }) => (
+        <li>
+          <a class="pointer" href={`#${id}`} aria-current={id === 'main' ? 'location' : undefined}>
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </details>
+</nav>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('.patch-section-nav');
+  const menu = nav?.querySelector<HTMLDetailsElement>('details');
+  const current = nav?.querySelector<HTMLElement>('.section-nav-current');
+
+  if (nav && menu && current) {
+    nav.dataset['enhanced'] = 'true';
+    const wide = window.matchMedia('(min-width: 1200px)');
+    const links = [...nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+    const targets = links.flatMap(link => {
+      const target = document.getElementById(link.hash.slice(1));
+      return target ? [{ link, target }] : [];
+    });
+    let anchorMargin = 0;
+    const update = () => {
+      const threshold = Math.max(anchorMargin, wide.matches ? 32 : nav.getBoundingClientRect().height + 24) + 2;
+      const ordered = [...targets].sort(
+        (a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top,
+      );
+      let active = ordered[0];
+      for (const item of ordered) {
+        if (item.target.getBoundingClientRect().top <= threshold) active = item;
+      }
+      for (const { link } of targets) {
+        if (link === active?.link) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      }
+      current.textContent = active?.link.textContent?.trim() ?? '맨 위로';
+    };
+    let scheduled = false;
+    const schedule = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        update();
+      });
+    };
+    const measure = () => {
+      const target = targets[0]?.target;
+      anchorMargin = target ? parseFloat(getComputedStyle(target).scrollMarginTop) || 0 : 0;
+      schedule();
+    };
+    const resize = () => {
+      menu.open = wide.matches;
+      measure();
+    };
+    for (const link of links) {
+      link.addEventListener('click', () => {
+        if (!wide.matches) menu.open = false;
+        schedule();
+      });
+    }
+    menu.addEventListener('toggle', () => {
+      if (wide.matches && !menu.open) menu.open = true;
+    });
+    wide.addEventListener('change', resize);
+    window.addEventListener('resize', measure);
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('hashchange', schedule);
+    window.addEventListener('popstate', schedule);
+    window.addEventListener('pageshow', schedule);
+    window.addEventListener('load', measure, { once: true });
+    resize();
+  }
+</script>
+
+<style is:global>
+  .patch-section-nav {
+    position: relative;
+    top: 0;
+    z-index: 5;
+    padding: 8px 16px;
+    font-size: 0.875rem;
+  }
+
+  .section-nav-menu.frame {
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+    background-color: #14161e;
+  }
+
+  .section-nav-menu summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 12px;
+    align-items: center;
+    cursor: pointer;
+    list-style: none;
+    min-height: 28px;
+  }
+
+  .section-nav-menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .section-nav-menu summary::after {
+    content: '＋' / '';
+    margin-left: auto;
+    color: var(--accent);
+  }
+
+  .section-nav-menu[open] summary::after {
+    content: '−' / '';
+  }
+
+  .section-nav-caption {
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+
+  .section-nav-current {
+    color: var(--accent);
+  }
+
+  .section-nav-heading {
+    display: none;
+  }
+
+  .section-nav-menu ul {
+    display: grid;
+    gap: 4px;
+    padding: 8px 0 0 30px;
+    list-style: none;
+  }
+
+  .section-nav-menu a {
+    display: block;
+    padding-block: 8px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  .section-nav-menu a[aria-current='location'] {
+    color: var(--accent);
+  }
+
+  .section-nav-menu a[aria-current='location']::before {
+    opacity: 1;
+  }
+
+  .has-section-nav :is(#main, #patch, .section, .section [id]) {
+    scroll-margin-top: 104px;
+  }
+
+  [data-theme='gokuden'] .section-nav-menu.frame {
+    background-color: #00008c;
+  }
+
+  [data-theme='otogirisou'] .section-nav-menu.frame {
+    background-color: #000;
+  }
+
+  @media (max-width: 1199px) {
+    .patch-section-nav[data-enhanced] {
+      position: sticky;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .has-section-nav {
+      padding-right: 240px;
+    }
+
+    .patch-section-nav {
+      position: fixed;
+      top: 80px;
+      right: 16px;
+      width: 208px;
+      padding: 0;
+    }
+
+    .section-nav-menu.frame {
+      max-height: calc(100dvh - 96px);
+      padding: 12px 8px;
+    }
+
+    .section-nav-menu summary {
+      display: none;
+    }
+
+    .section-nav-heading {
+      display: block;
+      padding: 0 4px 8px;
+      color: var(--muted);
+    }
+
+    .section-nav-menu ul {
+      padding-top: 0;
+    }
+
+    .has-section-nav :is(#main, #patch, .section, .section [id]) {
+      scroll-margin-top: 24px;
+    }
+  }
+</style>

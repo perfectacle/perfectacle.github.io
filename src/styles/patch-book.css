@@ -493,21 +493,6 @@ h1.pixel {
   white-space: nowrap;
 }
 
-/* Table of contents */
-
-.toc {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 56px;
-  justify-content: center;
-  width: min(100% - 32px, 1072px);
-  padding: 8px 16px 8px 46px;
-}
-
-.toc a {
-  color: var(--ink);
-}
-
 /* Sections */
 
 .section {
@@ -840,11 +825,6 @@ h3.pixel {
   background-clip: padding-box;
   font-size: 1.5rem;
   text-shadow: none;
-}
-
-/* In the game's menus the hand always rests on an item, even before the player moves it. */
-[data-theme='smrpg'] .toc:not(:hover, :focus-within) > a:first-child::before {
-  opacity: 1;
 }
 
 [data-theme='smrpg'] .manual th,
