@@ -1,4 +1,6 @@
 ---
+import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
+import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
@@ -9,7 +11,10 @@ import { kakuseiGroups, kakuseiVersions } from '../../../../lib/kakusei-showcase
 
 const patch = KAKUSEI_PATCH;
 const base = patch.path;
-const VISIBLE_PER_GROUP = 2;
+const releaseGroups = kakuseiGroups.map(group => ({
+  ...group,
+  pairs: group.pairs.filter(pair => ['restore_match', 'tone_frieza_1', 'title'].includes(pair.id)),
+}));
 
 const play = [
   {
@@ -251,18 +256,21 @@ const castGroups = [
       <p class="section-note">
         <time datetime="2026-10-18">2026년 10월 18일</time>
       </p>
-      <ul>
-        <li>대사 782줄을 수정하고 누락된 대사를 복구했습니다.</li>
-        <li>캐릭터 말투·이름·맞춤법·줄바꿈을 다듬었습니다.</li>
-        <li>타이틀 화면을 한국어로 옮겼습니다.</li>
-        <li>폰트에 없던 글자 11자(깨·롭 등)를 추가했습니다.</li>
-        <li>베지터·부르마의 우주선 장면에서 진행이 막히던 문제를 수정했습니다.</li>
-        <li>v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
-      </ul>
-      <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓았습니다.</p>
-      {kakuseiGroups.map(group => (
-        <CompareGroup group={group} base={base} versions={kakuseiVersions} visible={VISIBLE_PER_GROUP} />
-      ))}
+      <p class="release-overview">대사와 타이틀을 다듬고, 우주선 장면의 진행 오류를 고쳤습니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>대사 782줄을 수정하고 누락된 대사를 복구했습니다.</li>
+          <li>캐릭터 말투·이름·맞춤법·줄바꿈을 다듬었습니다.</li>
+          <li>타이틀 화면을 한국어로 옮겼습니다.</li>
+          <li>폰트에 없던 글자 11자(깨·롭 등)를 추가했습니다.</li>
+          <li>베지터·부르마의 우주선 장면에서 진행이 막히던 문제를 수정했습니다.</li>
+          <li>v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+        </ul>
+        <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓았습니다.</p>
+        {releaseGroups.map(group => (
+          <CompareGroup group={group} base={base} versions={kakuseiVersions} visible={group.pairs.length} />
+        ))}
+      </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-1">
       <h3 id="release-1-1" class="pixel">
@@ -271,9 +279,27 @@ const castGroups = [
       <p class="section-note">
         <time datetime="2016-01-04">2016년 1월 4일</time>
       </p>
-      <ul>
-        <li>DBZ 퀴즈 일부의 난이도를 조정했습니다.</li>
-      </ul>
+      <p class="release-overview">DBZ 퀴즈 일부의 난이도를 조정했습니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>DBZ 퀴즈 일부의 난이도를 조정했습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-1/quiz-choices.webp`}
+          width={256}
+          height={239}
+          alt="나메크성에서 세 가지 답을 고르는 DBZ 퀴즈 화면"
+          caption="v1.1 공개 글에 실린 DBZ 퀴즈 선택지"
+        />
+
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-1/preliminary-choices.webp`}
+          width={256}
+          height={239}
+          alt="예선 회장에서 두 가지 대답 중 하나를 고르는 화면"
+          caption="v1.1 공개 글에 실린 예선 회장 선택지"
+        />
+      </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-0">
       <h3 id="release-1-0" class="pixel">
@@ -282,9 +308,28 @@ const castGroups = [
       <p class="section-note">
         <time datetime="2011-12-30">2011년 12월 30일</time>
       </p>
-      <ul>
-        <li>최초 한글패치입니다.</li>
-      </ul>
+      <p class="release-overview">드래곤볼 Z 초오공전 각성편의 첫 한글판입니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>최초 한글패치입니다.</li>
+        </ul>
+
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-0/piccolo-dialogue.webp`}
+          width={256}
+          height={239}
+          alt="피콜로의 전투 대사 화면"
+          caption="v1.0의 피콜로 전투 대사"
+        />
+
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-0/training-choices.webp`}
+          width={256}
+          height={239}
+          alt="계왕성에서 전투력과 체력 중 고르는 선택지"
+          caption="v1.0의 계왕성 수련 선택지"
+        />
+      </ReleaseDetails>
     </article>
   </section>
 

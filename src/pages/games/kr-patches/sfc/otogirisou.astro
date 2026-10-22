@@ -1,4 +1,6 @@
 ---
+import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
+import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import ComparePairs from '../../../../components/kr-patch/ComparePairs.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
@@ -265,13 +267,43 @@ const chapter = (id: string) => {
       <p class="section-note">
         <time datetime="2026-10-22">2026년 10월 22일</time>
       </p>
-      <ul>
-        <li>플로차트와 선택지 이동 기능을 추가했습니다.</li>
-        <li>장 목록 30장과 엔딩 목록 18개를 추가했습니다.</li>
-        <li>책갈피에 마지막으로 읽은 장을 표시합니다.</li>
-        <li>되감기로 돌아온 부분을 노란 글씨로 표시합니다.</li>
-        <li>기존 세이브 파일을 그대로 사용할 수 있습니다.</li>
-      </ul>
+      <p class="release-overview">플로차트·장 목록·엔딩 목록을 추가하고, 책갈피와 되감기를 개선했습니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>플로차트와 선택지 이동 기능을 추가했습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/features/flow-open.webp`}
+          width={256}
+          height={224}
+          alt="현재 장의 분기와 선택지가 보이는 플로차트 화면"
+          caption="현재 장의 분기를 확인하는 플로차트"
+        />
+        <ul>
+          <li>장 목록 30장과 엔딩 목록 18개를 추가했습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/features/flow-endings.webp`}
+          width={256}
+          height={224}
+          alt="발견한 엔딩을 확인하는 엔딩 목록 화면"
+          caption="엔딩 목록에서 진행 상황 확인"
+        />
+        <ul>
+          <li>책갈피에 마지막으로 읽은 장을 표시합니다.</li>
+          <li>되감기로 돌아온 부분을 노란 글씨로 표시합니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/features/backlog-yellow.webp`}
+          width={256}
+          height={224}
+          alt="되감기로 돌아온 대사가 노란색으로 표시된 화면"
+          caption="되감기로 돌아온 부분을 노란 글씨로 구분"
+        />
+        <ul>
+          <li>기존 세이브 파일을 그대로 사용할 수 있습니다.</li>
+        </ul>
+      </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-1">
       <h3 id="release-1-1" class="pixel">
@@ -280,13 +312,34 @@ const chapter = (id: string) => {
       <p class="section-note">
         <time datetime="2026-10-18">2026년 10월 18일</time>
       </p>
-      <ul>
-        <li>2회차 시나리오에서 진행이 멈추던 문제를 수정했습니다.</li>
-        <li>자동 넘김·입력 대기·화면 밖으로 나가던 텍스트 문제를 수정했습니다.</li>
-        <li>일본어 원문과 대조해 번역을 검수했습니다.</li>
-        <li>단어 단위 줄바꿈을 적용하고 폰트를 재구성했습니다.</li>
-        <li>기존 세이브 파일의 읽던 위치를 변환해 이어서 할 수 있도록 했습니다.</li>
-      </ul>
+      <p class="release-overview">진행·입력 오류를 고치고, 번역과 단어 단위 줄바꿈을 다듬었습니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>2회차 시나리오에서 진행이 멈추던 문제를 수정했습니다.</li>
+          <li>자동 넘김·입력 대기·화면 밖으로 나가던 텍스트 문제를 수정했습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/making/a-wait.webp`}
+          width={1150}
+          height={970}
+          alt="위 v1.0은 버튼을 누르지 않아도 넘어가고, 아래 v1.1은 입력을 기다립니다."
+          caption="입력 대기 수정: 위 v1.0, 아래 v1.1"
+        />
+        <ul>
+          <li>일본어 원문과 대조해 번역을 검수했습니다.</li>
+          <li>단어 단위 줄바꿈을 적용하고 폰트를 재구성했습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/making/wordwrap.webp`}
+          width={1064}
+          height={940}
+          alt="왼쪽 v1.0은 단어 중간에서 끊기고, 오른쪽 v1.1은 단어 단위로 줄이 바뀝니다."
+          caption="줄바꿈 개선: 왼쪽 v1.0, 오른쪽 v1.1"
+        />
+        <ul>
+          <li>기존 세이브 파일의 읽던 위치를 변환해 이어서 할 수 있도록 했습니다.</li>
+        </ul>
+      </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-0">
       <h3 id="release-1-0" class="pixel">
@@ -295,9 +348,27 @@ const chapter = (id: string) => {
       <p class="section-note">
         <time datetime="2016-09-29">2016년 9월 29일</time>
       </p>
-      <ul>
-        <li>최초 한글패치입니다.</li>
-      </ul>
+      <p class="release-overview">제절초의 첫 한글판입니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>최초 한글패치입니다.</li>
+        </ul>
+
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-0/mountain-flowers.webp`}
+          width={256}
+          height={224}
+          alt="산길에서 제절초 꽃을 발견하는 v1.0 장면"
+          caption="v1.0: 산길에서 제절초 꽃을 발견하는 장면"
+        />
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-0/flower-name.webp`}
+          width={256}
+          height={224}
+          alt="제절초 꽃 이름의 유래를 묻는 v1.0 대사 화면"
+          caption="v1.0: 제절초 꽃 이름의 유래를 묻는 대사"
+        />
+      </ReleaseDetails>
     </article>
     <ChapterChoices next={chapter('patch-notes').next} />
   </section>

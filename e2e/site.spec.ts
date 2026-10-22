@@ -664,6 +664,37 @@ for (const game of PATCH_GUIDES) {
     }
   });
 
+  test(`${game} patch notes reveal each version with keyboard controls`, async ({ page }) => {
+    await page.goto(path);
+    const releases = page.locator('#patch-notes .patch-release');
+    for (const release of await releases.all()) {
+      const detail = release.locator('details');
+      await expect(detail).toHaveCount(1);
+      await expect(detail).not.toHaveAttribute('open');
+      await expect(release.locator('h3').first()).toBeVisible();
+      await expect(release.locator('time')).toBeVisible();
+      await expect(release.locator('.release-overview')).toBeVisible();
+      const toggle = detail.locator('summary');
+      await expect(toggle).toHaveText('패치 내용 자세히 보기');
+      await toggle.focus();
+      await page.keyboard.press('Enter');
+      await expect(detail).toHaveAttribute('open', '');
+      await expect(detail.locator('.release-body')).toBeVisible();
+      expect(await detail.locator('img').count()).toBeGreaterThan(0);
+      for (const image of await detail.locator('img').all()) {
+        await image.scrollIntoViewIfNeeded();
+        await expect(image).toBeVisible();
+        await expect.poll(() => image.evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+        await expect(image).toHaveAttribute('alt', /.+/);
+      }
+      await noHorizontalOverflow(page);
+      await toggle.focus();
+      await page.keyboard.press('Space');
+      await expect(detail).not.toHaveAttribute('open');
+      await expect(detail.locator('.release-body')).toBeHidden();
+    }
+  });
+
   test(`${game} mobile navigation does not shift content when scripts load`, async ({ page, isMobile }) => {
     test.skip(!isMobile);
     const resume: (() => Promise<void>)[] = [];

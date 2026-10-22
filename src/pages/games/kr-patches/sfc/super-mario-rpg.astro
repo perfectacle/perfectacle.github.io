@@ -1,4 +1,6 @@
 ---
+import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
+import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
@@ -284,13 +286,43 @@ const story = [
       <p class="section-note">
         <time datetime="2026-10-18">2026년 10월 18일</time>
       </p>
-      <ul>
-        <li>아이템·필살기·적 이름을 한국어로 옮겼습니다.</li>
-        <li>대사 속 이름과 조사 처리를 개선했습니다.</li>
-        <li>전투 결과·레벨업·필살기 화면을 개선했습니다.</li>
-        <li>잘리거나 비어 있던 대사를 복구했습니다.</li>
-        <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
-      </ul>
+      <p class="release-overview">이름 한글화와 조사 처리를 개선하고, 빠진 대사를 복구했습니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>아이템·필살기·적 이름을 한국어로 옮겼습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/making/names-shop.webp`}
+          width={1150}
+          height={920}
+          alt="위는 v1.0, 아래는 v1.1 상점 화면. 영문 아이템 이름이 한글로 바뀌었습니다."
+          caption="아이템 이름 한글화: 위 v1.0, 아래 v1.1"
+        />
+        <ul>
+          <li>대사 속 이름과 조사 처리를 개선했습니다.</li>
+          <li>전투 결과·레벨업·필살기 화면을 개선했습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/making/particles-levelup.webp`}
+          width={2190}
+          height={920}
+          alt="레벨업 화면에서 필살기 이름과 레벨 숫자 뒤의 조사가 받침에 맞게 나옵니다."
+          caption="레벨업 화면의 이름과 조사 처리"
+        />
+        <ul>
+          <li>잘리거나 비어 있던 대사를 복구했습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/making/restored.webp`}
+          width={630}
+          height={920}
+          alt="두더지 마을에서 카보쿠키를 주면 빠졌던 개구리 코인 획득 메시지가 나옵니다."
+          caption="누락됐던 보상 메시지 복구"
+        />
+        <ul>
+          <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+        </ul>
+      </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-0">
       <h3 id="release-1-0" class="pixel">
@@ -299,9 +331,28 @@ const story = [
       <p class="section-note">
         <time datetime="2015-03-12">2015년 3월 12일</time>
       </p>
-      <ul>
-        <li>대사와 메뉴를 한국어로 옮긴 최초 한글패치입니다.</li>
-      </ul>
+      <p class="release-overview">대사와 메뉴를 한국어로 옮긴 첫 버전입니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>대사와 메뉴를 한국어로 옮긴 최초 한글패치입니다.</li>
+        </ul>
+
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-0/castle-dialogue.webp`}
+          width={256}
+          height={224}
+          alt="버섯성에서 키노피오와 나누는 v1.0 대사 화면"
+          caption="v1.0: 버섯성에서 키노피오와 나누는 대사"
+        />
+
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-0/item-tutorial.webp`}
+          width={256}
+          height={224}
+          alt="회복 아이템의 효과를 설명하는 v1.0 화면"
+          caption="v1.0: 회복 아이템의 효과 설명"
+        />
+      </ReleaseDetails>
     </article>
   </section>
 

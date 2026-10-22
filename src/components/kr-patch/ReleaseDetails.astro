@@ -1,0 +1,36 @@
+<details class="release-details">
+  <summary class="pointer">패치 내용 자세히 보기</summary>
+  <div class="release-body">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .release-details {
+    min-width: 0;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+  }
+
+  summary {
+    padding: 14px 16px;
+    cursor: pointer;
+  }
+
+  summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .release-body {
+    display: grid;
+    gap: 20px;
+    min-width: 0;
+    padding: 4px 16px 20px;
+  }
+
+  .release-body :global(ul) {
+    padding-left: 1.5em;
+    list-style: disc;
+  }
+</style>

@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "images": [
+    {
+      "file": "castle-dialogue.webp",
+      "source": "smrpg/test/out/patchnotes/typo_castle_toad/before/end.png"
+    },
+    {
+      "file": "item-tutorial.webp",
+      "source": "smrpg/test/out/patchnotes/toad_tutorial/before/end.png"
+    }
+  ]
+}
