@@ -149,6 +149,8 @@ test('catalogue lists every game page', async ({ page }) => {
   await expect(page.locator('header')).toHaveCount(0);
   await expect(page.getByText('한글판 만들기', { exact: true })).toHaveCount(0);
   for (const text of [
+    '게임을 고르면 한글패치를 바로 적용할 수 있습니다.',
+    'SFC · GAME SELECT',
     '대사·메뉴·전투까지 모두 한국어입니다.',
     'v1.1에서 대사 전체를 원문과 다시 대조했습니다.',
     'v1.2에서 대사를 원문과 다시 대조했습니다.',
@@ -229,16 +231,17 @@ for (const width of [390, 768, 1280]) {
 
 test('catalogue cards show the patch release date and their own game credits', async ({ page }) => {
   await page.goto('/games/kr-patches/');
-  for (const [path, copyright] of [
-    [GAME, '게임 © 1995 Nintendo / SQUARE · 캐릭터 © Nintendo, © SQUARE'],
-    [GOKUDEN, '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
-    [KAKUSEI, '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
-    [OTOGIRI, '게임 © 1992 CHUNSOFT'],
+  for (const [path, version, copyright] of [
+    [GAME, '1.1', '게임 © 1995 Nintendo / SQUARE · 캐릭터 © Nintendo, © SQUARE'],
+    [GOKUDEN, '1.1', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
+    [KAKUSEI, '1.2', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
+    [OTOGIRI, '1.2', '게임 © 1992 CHUNSOFT'],
   ] as const) {
     const card = page.locator(`main a[href="${path}"]`);
-    await expect(card).toContainText('한글패치 출시일');
+    await expect(card).not.toContainText('한글패치 출시일');
+    await expect(card.locator('.game-release')).toContainText(`한글패치 v${version} (2026-10-18)`);
     await expect(card.locator('time')).toHaveAttribute('datetime', '2026-10-18');
-    await expect(card.locator('time')).toHaveText('2026-10-18');
+    await expect(card.locator('time')).toHaveText('(2026-10-18)');
     await expect(card).toContainText(copyright);
   }
   await expect(page.locator('footer')).not.toContainText('Nintendo');
@@ -246,79 +249,95 @@ test('catalogue cards show the patch release date and their own game credits', a
   await expect(page.locator('footer')).not.toContainText('CHUNSOFT');
 });
 
-for (const width of [1280, 1920]) {
-  test(`catalogue loads three transparent animated characters at ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 1080 });
-    await page.goto('/games/kr-patches/');
-    await expect(page.locator('svg.sfc-controller[aria-hidden="true"]')).toBeVisible();
-    await expect(page.locator('.world-rail[aria-hidden="true"]')).toHaveCount(2);
-    await expect(page.locator('.world-sprite')).toHaveCount(3);
-    for (const name of ['mega-man-x', 'diddy-kong', 'ryu']) {
-      const sprite = page.locator(`.world-rail .sprite-${name}`);
-      await expect(sprite).toBeVisible();
-      expect(await loadSpriteImage(sprite)).toBe(true);
-    }
-    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
-      0,
-    );
+test('catalogue characters stay on the original forest ground through scrolling and resizing', async ({ page }) => {
+  await page.goto('/games/kr-patches/');
+  await expect(page.locator('svg.sfc-controller[aria-hidden="true"]')).toBeVisible();
+  await expect(page.locator('.world-rail[aria-hidden="true"]')).toHaveCount(2);
+  await expect(page.locator('.world-sprite')).toHaveCount(3);
+  const background = await page.locator('body').evaluate(async element => {
+    const style = getComputedStyle(element, '::before');
+    const url = style.backgroundImage.match(/^url\(["']?(.+?)["']?\)$/)?.[1];
+    if (!url) throw new Error('The catalogue must have an original game background');
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    return {
+      path: new URL(url).pathname,
+      width: image.naturalWidth,
+      height: image.naturalHeight,
+      position: style.position,
+      size: style.backgroundSize,
+      alignment: style.backgroundPosition,
+      pointerEvents: style.pointerEvents,
+    };
   });
-}
-
-for (const width of [390, 1280, 1920]) {
-  test(`catalogue scenery stays decorative and supports characters away from cards at ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 1080 });
-    await page.goto('/games/kr-patches/');
-    const scenery = page.locator('.forest-scenery');
-    await expect(scenery).toHaveAttribute('aria-hidden', 'true');
-    await expect(scenery).toHaveCSS('pointer-events', 'none');
-    await expect(scenery.locator('a, button, input, select, textarea, [tabindex]')).toHaveCount(0);
-    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
-      0,
-    );
-    for (const sprite of await page.locator('.world-sprite').all()) {
-      if (width === 390) {
-        await expect(sprite).toBeHidden();
-        continue;
-      }
-      const bounds = await sprite.evaluate(element => {
-        const rect = element.getBoundingClientRect();
-        const platform = getComputedStyle(element, '::after');
-        const left = rect.left + parseFloat(platform.left);
-        const top = rect.top + parseFloat(platform.top);
-        return {
-          feetBaseline: rect.bottom - 2 * Number(getComputedStyle(element).getPropertyValue('--sprite-scale')),
-          platformContent: platform.content,
-          platform: {
-            left,
-            top,
-            right: left + parseFloat(platform.width),
-            bottom: top + parseFloat(platform.height),
-          },
-          sprite: { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom },
-          cards: [...document.querySelectorAll('.game-card')].map(card => {
-            const box = card.getBoundingClientRect();
-            return { left: box.left, top: box.top, right: box.right, bottom: box.bottom };
-          }),
-        };
-      });
-      expect(bounds.platformContent).not.toBe('none');
-      expect(bounds.platform.top).toBeCloseTo(bounds.feetBaseline, 0);
-      expect(bounds.platform.bottom).toBeGreaterThan(bounds.platform.top);
-      expect(bounds.platform.left).toBeGreaterThanOrEqual(0);
-      expect(bounds.platform.right).toBeLessThanOrEqual(width);
-      for (const decoration of [bounds.sprite, bounds.platform]) {
+  expect(background).toEqual({
+    path: '/games/kr-patches/catalogue/rabite-forest-waterfall.webp',
+    width: 512,
+    height: 304,
+    position: 'fixed',
+    size: 'cover',
+    alignment: '50% 50%',
+    pointerEvents: 'none',
+  });
+  const layouts: { width: number; height: number; ground: Partial<Record<string, [number, number]>> }[] = [
+    { width: 1920, height: 1080, ground: { 'mega-man-x': [43, 194], 'diddy-kong': [60, 96], ryu: [479, 225] } },
+    { width: 1280, height: 1080, ground: { 'mega-man-x': [96, 141] } },
+    { width: 1280, height: 900, ground: { 'mega-man-x': [70, 135], 'diddy-kong': [60, 96] } },
+    { width: 390, height: 844, ground: {} },
+  ];
+  for (const { width, height, ground } of layouts) {
+    await page.setViewportSize({ width, height });
+    const scale = Math.max(width / background.width, height / background.height);
+    const offsetX = (width - background.width * scale) / 2;
+    const offsetY = (height - background.height * scale) / 2;
+    for (const scrollY of [0, 700]) {
+      await page.evaluate(y => window.scrollTo(0, y), scrollY);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
+      ).toBe(0);
+      for (const name of ['mega-man-x', 'diddy-kong', 'ryu'] as const) {
+        const sprite = page.locator(`.world-rail .sprite-${name}`);
+        const point = ground[name];
+        if (!point) {
+          await expect(sprite).toBeHidden();
+          continue;
+        }
+        await expect(sprite).toBeVisible();
+        expect(await loadSpriteImage(sprite)).toBe(true);
+        const bounds = await sprite.evaluate(element => {
+          const rect = element.getBoundingClientRect();
+          return {
+            centerX: (rect.left + rect.right) / 2,
+            feetY: rect.bottom - 2 * Number(getComputedStyle(element).getPropertyValue('--sprite-scale')),
+            platformContent: getComputedStyle(element, '::after').content,
+            left: rect.left,
+            top: rect.top,
+            right: rect.right,
+            bottom: rect.bottom,
+            cards: [...document.querySelectorAll('.game-card')].map(card => {
+              const box = card.getBoundingClientRect();
+              return { left: box.left, top: box.top, right: box.right, bottom: box.bottom };
+            }),
+          };
+        });
+        expect(bounds.centerX).toBeCloseTo(offsetX + point[0] * scale, 0);
+        expect(bounds.feetY).toBeCloseTo(offsetY + point[1] * scale, 0);
+        expect(['none', 'normal']).toContain(bounds.platformContent);
+        expect(bounds.left).toBeGreaterThanOrEqual(0);
+        expect(bounds.right).toBeLessThanOrEqual(width);
         for (const card of bounds.cards) {
           expect(
-            decoration.right <= card.left ||
-              decoration.left >= card.right ||
-              decoration.bottom <= card.top ||
-              decoration.top >= card.bottom,
+            bounds.right <= card.left ||
+              bounds.left >= card.right ||
+              bounds.bottom <= card.top ||
+              bounds.top >= card.bottom,
           ).toBe(true);
         }
       }
     }
-  });
-}
+  }
+});
 
 test('catalogue characters change pose in place and return to their initial frame', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });

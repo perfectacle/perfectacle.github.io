@@ -18,24 +18,13 @@ import '../../../styles/patch-catalogue.css';
   }}
   copyright={[]}
   links={[
+    { href: 'https://www.fantasyanime.com/mana/som2maps.htm', label: '성검전설 3 배경 © 1995 SQUARE · FantasyAnime' },
     { href: 'https://spritedatabase.net/file/8203', label: '록맨 X3 스프라이트' },
     { href: 'https://spritedatabase.net/file/7653', label: '동키콩 컨트리 2 스프라이트' },
     { href: 'https://spritedatabase.net/file/31727', label: '스트리트 파이터 II 스프라이트' },
   ]}
 >
   <div class="catalogue-world">
-    <div class="forest-scenery" aria-hidden="true">
-      <div class="forest-sky"></div>
-      <div class="forest-sun"></div>
-      <div class="forest-clouds"></div>
-      <div class="forest-mountains"></div>
-      <div class="forest-trees">
-        {Array.from({ length: 12 }, (_, i) => (
-          <i class="forest-tree" style={`--tree: ${i}`}></i>
-        ))}
-      </div>
-      <div class="forest-floor"></div>
-    </div>
     <div class="world-rail world-rail-left" aria-hidden="true">
       <div class="world-sprite sprite-mega-man-x"></div>
       <div class="world-sprite sprite-diddy-kong"></div>
@@ -43,13 +32,10 @@ import '../../../styles/patch-catalogue.css';
     <section class="patch-catalogue page-width" aria-labelledby="catalogue-title">
       <div class="console-heading">
         <div>
-          <p class="console-label">SFC · GAME SELECT</p>
           <h1 id="catalogue-title">한글패치</h1>
         </div>
         <SfcController />
       </div>
-      <p class="catalogue-intro">게임을 고르면 한글패치를 바로 적용할 수 있습니다.</p>
-      <div class="catalogue-divider" aria-hidden="true"></div>
       <ul class="game-catalogue">
         {KR_PATCHES.map((patch, i) => {
           const href = `${patch.path}/`;
@@ -74,15 +60,10 @@ import '../../../styles/patch-catalogue.css';
                 </div>
                 <div class="game-card-copy">
                   <p class="game-release">
-                    게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}
+                    게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}{' '}
+                    <time datetime="2026-10-18">(2026-10-18)</time>
                   </p>
                   <h2>{patch.title}</h2>
-                  <p class="patch-release">
-                    한글패치 출시일 <time datetime="2026-10-18">2026-10-18</time>
-                  </p>
-                  <span class="game-card-arrow" aria-hidden="true">
-                    ▶
-                  </span>
                 </div>
                 <p class="game-copyright">{patch.copyright}</p>
               </a>
