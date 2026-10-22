@@ -326,7 +326,7 @@
     --frame-width: 40px;
     --frame-height: 40px;
     --frame-count: 10;
-    --frame-duration: 0.3333333333s;
+    --frame-duration: 0.5s;
     --sprite-scale: 2;
     top: 280px;
   }
@@ -336,7 +336,7 @@
     --frame-width: 56px;
     --frame-height: 72px;
     --frame-count: 174;
-    --frame-duration: 5.8s;
+    --frame-duration: 8.7s;
     --sprite-scale: 2;
     top: 880px;
   }
@@ -346,7 +346,7 @@
     --frame-width: 72px;
     --frame-height: 144px;
     --frame-count: 86;
-    --frame-duration: 2.8666666667s;
+    --frame-duration: 4.3s;
     --sprite-scale: 1;
     top: 450px;
   }
