@@ -11,9 +11,22 @@ import { totsugekiGroups, totsugekiVersions } from '../../../../lib/totsugeki-sh
 
 const patch = TOTSUGEKI_PATCH;
 const base = patch.path;
-const releaseGroups = totsugekiGroups.map(group => ({
+const releaseGroups = [
+  ...totsugekiGroups.filter(group => group.id === 'names'),
+  ...totsugekiGroups.filter(group => group.id !== 'names'),
+].map(group => ({
   ...group,
-  pairs: group.pairs.filter(pair => ['tone_goku', 'title', 'layout_wrap_1'].includes(pair.id)),
+  pairs: group.pairs.filter(pair =>
+    [
+      'restore_goku_fish',
+      'tone_goku',
+      'joke_tao',
+      'title',
+      'ui_title_menu',
+      'layout_wrap_1',
+      'bugfix_event_list',
+    ].includes(pair.id),
+  ),
 }));
 
 const play = [

@@ -659,6 +659,61 @@ const PATCH_GUIDES = [
   'otogirisou',
 ];
 
+const PATCH_SCREEN_COVERAGE: Record<string, { version: string; images: string[] }[]> = {
+  'super-mario-rpg': [
+    {
+      version: 'release-1-1',
+      images: [
+        'names-shop',
+        'names-battle',
+        'specials',
+        'particles-levelup',
+        'result-jp',
+        'special-hint',
+        'banner',
+        'mistranslation',
+        'restored',
+      ],
+    },
+    { version: 'release-1-0', images: ['title.webp'] },
+  ],
+  'dragon-ball-z-super-gokuden-totsugeki': [
+    {
+      version: 'release-1-1',
+      images: [
+        'title_v11',
+        'ui_title_menu_v11',
+        'restore_goku_fish_v11',
+        'tone_goku_v11',
+        'layout_wrap_1_v11',
+        'bugfix_event_list_v11_3',
+      ],
+    },
+  ],
+  'dragon-ball-z-super-gokuden-kakusei': [
+    {
+      version: 'release-1-2',
+      images: [
+        'title_v12',
+        'restore_goku_v12',
+        'restore_match_v12',
+        'tone_frieza_1_v12',
+        'spell_kami_v12',
+        'bugfix_vegeta_pod_v12_5',
+        'bugfix_bulma_ship_v12_5',
+      ],
+    },
+  ],
+  otogirisou: [
+    {
+      version: 'release-1-2',
+      images: ['flow-open', 'flow-jump', 'menu-all', 'flow-endings', 'shiori', 'backlog-yellow'],
+    },
+    { version: 'release-1-1', images: ['freeze-lap2', 'a-wait', 'overflow', 'fix-sign', 'wordwrap'] },
+    { version: 'release-1-0', images: ['title.webp'] },
+  ],
+};
+
 for (const game of PATCH_GUIDES) {
   const path = `/games/kr-patches/sfc/${game}/`;
 
@@ -730,6 +785,23 @@ for (const game of PATCH_GUIDES) {
     }
   });
 
+  test(`${game} patch notes illustrate the main changes in each release`, async ({ page }) => {
+    await page.goto(path);
+    for (const { version, images } of PATCH_SCREEN_COVERAGE[game] ?? []) {
+      const release = page.locator(`#patch-notes article[aria-labelledby="${version}"]`);
+      await release.locator('summary').click();
+      if (game.startsWith('dragon-ball'))
+        await expect(release.locator('img').first()).toHaveAttribute('src', /\/title_v/);
+      for (const name of images) {
+        const image = release.locator(`img[src*="/${name}"]`).first();
+        await image.locator('..').scrollIntoViewIfNeeded();
+        await expect(image).toBeVisible();
+        await expect(image).toHaveAttribute('alt', /.+/);
+        await expect.poll(() => image.evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+      }
+    }
+  });
+
   test(`${game} patch screenshots preview in place and keep highlights`, async ({ page, isMobile }) => {
     await page.setViewportSize({ width: isMobile ? 390 : 1280, height: 900 });
     await page.goto(path);
@@ -744,7 +816,8 @@ for (const game of PATCH_GUIDES) {
     triggers.push(notes.locator('.patch-image-trigger:has(.patch-highlights)').first());
     const panels = notes.locator('.release-panels');
     for (const pair of await panels.all()) {
-      await expect(pair.locator('.panel-label')).toHaveText(['v1.0', 'v1.1']);
+      await expect(pair.locator('.panel-label').first()).toHaveText(/^(v1\.0|일본판)$/);
+      await expect(pair.locator('.panel-label').last()).toHaveText('v1.1');
       await expect(pair.locator('.patch-picture')).toHaveCount(2);
       for (const panel of await pair.locator('.patch-picture').all()) {
         await panel.scrollIntoViewIfNeeded();

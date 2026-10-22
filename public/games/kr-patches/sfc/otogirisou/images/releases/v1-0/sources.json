@@ -2,6 +2,12 @@
   "version": "1.0",
   "images": [
     {
+      "file": "title.webp",
+      "source": "jhejheolcho/build/v1.0.sfc",
+      "frame": 1200,
+      "input": "None"
+    },
+    {
       "file": "mountain-flowers.webp",
       "source": "jhejheolcho/work/cap/jump/j11_10/p2ED9ED.png"
     },

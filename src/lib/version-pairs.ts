@@ -6,6 +6,8 @@ export interface VersionPair {
   id: string;
   /** How many screens the scene spans, shown one after another; one when omitted. */
   frames?: number;
+  /** Representative frame numbers; file names and highlight keys retain the original numbering. */
+  selectedFrames?: number[];
   caption: string;
   alt: string;
   /** Screens one version does not have, keyed like `v10:2`, with the note shown in their place. */

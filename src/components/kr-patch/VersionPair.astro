@@ -14,13 +14,14 @@ interface Props {
 
 const { pair, base, versions, speaker } = Astro.props;
 const frames = pair.frames ?? 1;
+const selectedFrames = pair.selectedFrames ?? Array.from({ length: frames }, (_, i) => i + 1);
 const height = pair.height ?? 224;
 const latest = versions.at(-1)?.key;
-const order = (frame: number) => (frames > 1 ? ` (${frame}/${frames})` : '');
+const order = (frame: number) => (selectedFrames.length > 1 ? ` (${frame}/${frames})` : '');
 ---
 
 <figure class="compare version-pair">
-  {Array.from({ length: frames }, (_, i) => i + 1).map(frame => (
+  {selectedFrames.map(frame => (
     <div class="compare-shots">
       {versions.map(version => {
         const gap = pair.gaps?.[`${version.key}:${frame}`];

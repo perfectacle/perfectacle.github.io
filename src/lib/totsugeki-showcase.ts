@@ -14,6 +14,7 @@ export const totsugekiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'restore_goku_fish',
+        selectedFrames: [2],
         frames: 2,
         caption:
           '물고기를 잡으러 간 오공. 원문에 없던 "저 녀석으로 정했다!"를 "잡아먹는 건 내 쪽이라고!"로 고쳤습니다.',
@@ -83,9 +84,9 @@ export const totsugekiGroups: VersionGroup[] = [
   },
   {
     id: 'names',
-    title: '이름과 타이틀 화면',
+    title: '타이틀·메뉴·이름',
     summary:
-      '고유명사는 국내 정식 발매판과 초오공전 각성편 한글판 v1.2에 맞췄습니다. 엔딩 크레딧의 이름도 같은 기준으로 맞췄습니다.',
+      '타이틀과 메뉴를 한국어로 바꿨습니다. 고유명사는 국내 정식 발매판과 초오공전 각성편 한글판 v1.2에 맞췄습니다. 엔딩 크레딧의 이름도 같은 기준으로 맞췄습니다.',
     pairs: [
       {
         id: 'title',
@@ -101,6 +102,16 @@ export const totsugekiGroups: VersionGroup[] = [
       },
       {
         id: 'ui_title_menu',
+        highlights: {
+          'v10:1': [
+            [45, 39, 76, 18],
+            [145, 39, 53, 18],
+          ],
+          'v11:1': [
+            [60, 39, 50, 18],
+            [160, 39, 28, 18],
+          ],
+        },
         height: 80,
         caption: '타이틀 메뉴도 한국어입니다.',
         alt: '새 게임과 옵션을 고르는 타이틀 메뉴',
@@ -149,9 +160,10 @@ export const totsugekiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'bugfix_event_list',
+        selectedFrames: [3],
         frames: 3,
         caption:
-          'v1.0은 이벤트 표를 맨 아래(203번)까지 내리면 B 버튼으로 닫히지 않고, A 버튼을 누르면 기술 설정 화면으로 넘어갔습니다. 이제 B 버튼으로 바로 게임에 돌아옵니다.',
+          '이벤트 표 맨 아래에서 B 버튼을 두 번 누른 뒤 A 버튼을 누른 같은 시점입니다. v1.0은 기술 설정으로 넘어가지만, v1.1은 B 버튼으로 게임에 돌아온 뒤 대사가 이어집니다.',
         alt: '이벤트 표 맨 아래에서 B 버튼을 두 번, A 버튼을 한 번 누른 화면',
       },
     ],
