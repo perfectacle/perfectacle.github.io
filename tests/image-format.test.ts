@@ -20,16 +20,20 @@ afterEach(async () => {
 describe('image format selection', () => {
   it('chooses AVIF only when it beats both the equivalent WebP and the original by 10%', async () => {
     const cache = await workspace();
-    const source = join(cache, 'gradient.webp');
-    const width = 640;
-    const height = 480;
+    const source = join(cache, 'texture.webp');
+    const width = 480;
+    const height = 320;
     const pixels = Buffer.alloc(width * height * 3);
+    let seed = 99;
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const offset = (y * width + x) * 3;
-        pixels[offset] = (x + y) % 256;
-        pixels[offset + 1] = (x + y) % 256;
-        pixels[offset + 2] = (x + y) % 256;
+        seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+        const noise = (seed >>> 24) / 255;
+        const value = Math.max(0, Math.min(255, 128 + 65 * Math.sin(x / 20) + 35 * Math.cos(y / 13) + noise * 32));
+        pixels[offset] = value;
+        pixels[offset + 1] = value;
+        pixels[offset + 2] = value;
       }
     }
     const input = await sharp(pixels, { raw: { width, height, channels: 3 } })

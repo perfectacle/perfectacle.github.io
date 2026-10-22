@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import { fileURLToPath } from 'node:url';
 import { unified } from '@astrojs/markdown-remark';
 import remarkBreaks from 'remark-breaks';
 import rehypeExternalLinks from 'rehype-external-links';
@@ -8,8 +9,38 @@ import { rehypeYoutubeFacade } from './src/lib/rehype-youtube-facade.ts';
 import { rehypePostImages } from './src/lib/rehype-post-images.ts';
 import { rehypeCodeBlocks } from './src/lib/rehype-code-blocks.ts';
 import { AVIF_OPTIONS } from './src/lib/image-format.ts';
+import { prepareImageCache } from './src/lib/image-cache.ts';
+
+function markdownProcessor(optimize: boolean) {
+  return unified({
+    // Posts were written against Hexo's marked renderer, where a single newline is a line break.
+    remarkPlugins: [remarkBreaks, remarkPostLinks],
+    rehypePlugins: [
+      rehypeHexoHeadingIds,
+      rehypeYoutubeFacade,
+      [rehypePostImages, { optimize }],
+      rehypeCodeBlocks,
+      [rehypeExternalLinks, { target: '_blank', rel: ['external', 'nofollow', 'noopener', 'noreferrer'] }],
+    ],
+    // marked (Hexo) made `--` an en dash; heading anchors include it.
+    smartypants: { dashes: 'oldschool' },
+  });
+}
 
 export default defineConfig({
+  integrations: [
+    {
+      name: 'post-image-rendering',
+      hooks: {
+        'astro:config:setup': async ({ command, config, updateConfig }) => {
+          if (command === 'preview') return;
+          const optimize = command !== 'sync';
+          updateConfig({ markdown: { processor: markdownProcessor(optimize) } });
+          await prepareImageCache(fileURLToPath(config.root), optimize ? 'optimized' : 'metadata');
+        },
+      },
+    },
+  ],
   vite: {
     build: {
       // Mermaid splits layout engines (elk ~1.4MB, cytoscape) into chunks fetched only for diagrams that need them;
@@ -31,19 +62,6 @@ export default defineConfig({
     service: { entrypoint: 'astro/assets/services/sharp', config: { avif: AVIF_OPTIONS } },
   },
   markdown: {
-    processor: unified({
-      // Posts were written against Hexo's marked renderer, where a single newline is a line break.
-      remarkPlugins: [remarkBreaks, remarkPostLinks],
-      rehypePlugins: [
-        rehypeHexoHeadingIds,
-        rehypeYoutubeFacade,
-        rehypePostImages,
-        rehypeCodeBlocks,
-        [rehypeExternalLinks, { target: '_blank', rel: ['external', 'nofollow', 'noopener', 'noreferrer'] }],
-      ],
-      // marked (Hexo) made `--` an en dash; heading anchors include it.
-      smartypants: { dashes: 'oldschool' },
-    }),
     syntaxHighlight: { type: 'shiki', excludeLangs: ['mermaid'] },
     shikiConfig: {
       themes: { light: 'github-light', dark: 'github-dark' },

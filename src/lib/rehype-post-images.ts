@@ -1,4 +1,5 @@
 import type { Element, Root } from 'hast';
+import sharp from 'sharp';
 import { visit } from 'unist-util-visit';
 import type { VFile } from 'vfile';
 import { AVIF_OPTIONS, imageFormat, localPostImage, originalImageUrl } from './image-format.ts';
@@ -27,7 +28,7 @@ export function postImageSizes(hasSidebar: boolean, W = POST_IMAGE_WIDTH): strin
   return [`(min-width: ${capAt(-316)}px) ${W}px`, `(min-width: 1101px) ${frame(-316)}`, ...narrow].join(', ');
 }
 
-export function rehypePostImages() {
+export function rehypePostImages({ optimize = true }: { optimize?: boolean } = {}) {
   return async (tree: Root, file: VFile) => {
     const images: Element[] = [];
     visit(tree, 'element', (node: Element) => {
@@ -41,12 +42,16 @@ export function rehypePostImages() {
         let own: number | undefined;
         if (source) {
           try {
-            const choice = await imageFormat(source, { width: POST_IMAGE_WIDTH });
-            own = choice.width;
-            if (choice.format === 'avif') {
-              node.properties['format'] = 'avif';
-              node.properties['quality'] = AVIF_OPTIONS.quality;
-              node.properties['data-webp-src'] = originalImageUrl(source);
+            if (optimize) {
+              const choice = await imageFormat(source, { width: POST_IMAGE_WIDTH });
+              own = choice.width;
+              if (choice.format === 'avif') {
+                node.properties['format'] = 'avif';
+                node.properties['quality'] = AVIF_OPTIONS.quality;
+                node.properties['data-webp-src'] = originalImageUrl(source);
+              }
+            } else {
+              own = (await sharp(source).metadata()).width;
             }
           } catch (error) {
             if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;

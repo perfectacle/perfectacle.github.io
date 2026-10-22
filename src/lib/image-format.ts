@@ -4,7 +4,7 @@ import { dirname, join, relative, resolve, sep } from 'node:path';
 import sharp from 'sharp';
 import { POSTS_ROOT, postUrlOf } from './post-files.ts';
 
-export const AVIF_OPTIONS = { quality: 60, effort: 4, chromaSubsampling: '4:4:4' } as const;
+export const AVIF_OPTIONS = { quality: 60, effort: 2, chromaSubsampling: '4:4:4' } as const;
 const choices = new Map<string, Promise<ImageChoice>>();
 const waiting: (() => void)[] = [];
 let active = 0;
