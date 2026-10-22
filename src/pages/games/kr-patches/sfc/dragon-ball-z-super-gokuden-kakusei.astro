@@ -38,42 +38,52 @@ const play = [
   },
 ];
 
-const cast = [
+const castGroups = [
   {
-    id: 'goku',
-    name: '손오공',
-    role: '계왕권 · 원기옥',
-    text: '어른이 되어 오반의 아버지가 된 오공. 계왕에게 배운 기술로 사이어인과 프리더에 맞섭니다.',
+    label: '주인공과 동료',
+    members: [
+      {
+        id: 'goku',
+        name: '손오공',
+        role: '계왕권 · 원기옥',
+        text: '어른이 되어 오반의 아버지가 된 오공. 계왕에게 배운 기술로 사이어인과 프리더에 맞섭니다.',
+      },
+      {
+        id: 'gohan',
+        name: '손오반',
+        role: '오공의 아들',
+        text: '오공의 아들. 피콜로에게 수련을 받고, 동료들을 되살리기 위해 나메크성으로 향합니다.',
+      },
+      {
+        id: 'piccolo',
+        name: '피콜로',
+        role: '오반의 스승',
+        text: '무술대회 결승에서 마주니어로 오공과 싸운 숙적. 사이어인이 온다는 걸 알고 오반을 단련시킵니다.',
+      },
+    ],
   },
   {
-    id: 'piccolo',
-    name: '피콜로',
-    role: '오반의 스승',
-    text: '무술대회 결승에서 마주니어로 오공과 싸운 숙적. 사이어인이 온다는 걸 알고 오반을 단련시킵니다.',
-  },
-  {
-    id: 'vegeta',
-    name: '베지터',
-    role: '사이어인',
-    text: '내퍼와 함께 지구를 찾아온 사이어인. 영원한 생명을 노리고 나메크성의 드래곤볼을 쫓습니다.',
-  },
-  {
-    id: 'krillin',
-    name: '크리링',
-    role: '오공의 친구',
-    text: '무천도사 밑에서 함께 수행한 오공의 단짝. 오반과 함께 나메크성으로 건너갑니다.',
-  },
-  {
-    id: 'frieza',
-    name: '프리더',
-    role: '나메크성의 적',
-    text: '영원한 생명을 얻으려 나메크성의 드래곤볼을 노리는 우주의 지배자. 누구에게나 존댓말을 씁니다.',
-  },
-  {
-    id: 'kaio',
-    name: '계왕',
-    role: '오공의 스승',
-    text: '계왕별에 사는 신. 오공에게 계왕권과 원기옥을 가르칩니다. 말장난을 좋아합니다.',
+    label: '주요 적',
+    members: [
+      {
+        id: 'raditz',
+        name: '라데츠',
+        role: '오공의 형',
+        text: '오공을 찾아 지구로 온 사이어인. 오반을 데려가며 오공과 피콜로를 위협합니다.',
+      },
+      {
+        id: 'vegeta',
+        name: '베지터',
+        role: '사이어인',
+        text: '내퍼와 함께 지구를 찾아온 사이어인. 영원한 생명을 노리고 나메크성의 드래곤볼을 쫓습니다.',
+      },
+      {
+        id: 'frieza',
+        name: '프리더',
+        role: '나메크성의 적',
+        text: '영원한 생명을 얻으려 나메크성의 드래곤볼을 노리는 우주의 지배자. 누구에게나 존댓말을 씁니다.',
+      },
+    ],
   },
 ];
 ---
@@ -180,26 +190,30 @@ const cast = [
     <h2 id="cast-title" class="pixel">
       등장인물
     </h2>
-    <ul class="cast-list">
-      {cast.map(member => (
-        <li class="member frame">
-          <img
-            class="portrait"
-            src={`${base}/images/cast/${member.id}.webp`}
-            width="38"
-            height="48"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
-          <div>
-            <h3 class="pixel">{member.name}</h3>
-            <p class="label">{member.role}</p>
-            <p>{member.text}</p>
-          </div>
-        </li>
+    <div class="cast-groups">
+      {castGroups.map(group => (
+        <ul class="cast-list" aria-label={group.label}>
+          {group.members.map(member => (
+            <li class="member frame">
+              <img
+                class="portrait"
+                src={`${base}/images/cast/${member.id}.webp`}
+                width="38"
+                height="48"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+              <div>
+                <h3 class="pixel">{member.name}</h3>
+                <p class="label">{member.role}</p>
+                <p>{member.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       ))}
-    </ul>
+    </div>
   </section>
 
   <section id="play" class="section page-width" aria-labelledby="play-title">

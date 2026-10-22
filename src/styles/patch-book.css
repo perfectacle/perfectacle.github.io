@@ -630,6 +630,17 @@ h3.pixel {
   list-style: none;
 }
 
+.cast-groups {
+  display: grid;
+  gap: 20px;
+}
+
+@media (min-width: 960px) {
+  .cast-groups .cast-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .member {
   display: flex;
   gap: 16px;
@@ -1065,7 +1076,8 @@ h3.pixel {
 
 [data-theme='otogirisou'] body::before {
   background-image:
-    linear-gradient(rgb(0 0 0 / 45%), rgb(0 0 0 / 65%)), url('/games/kr-patches/sfc/otogirisou/images/background.webp');
+    linear-gradient(rgb(0 0 0 / 20%), rgb(0 0 0 / 40%)),
+    url('/games/kr-patches/sfc/otogirisou/images/mansion-room.webp');
 }
 
 [data-theme='otogirisou'] .frame {
