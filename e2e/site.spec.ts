@@ -806,12 +806,12 @@ for (const game of PATCH_GUIDES) {
     const versions =
       game === 'dragon-ball-z-super-gokuden-kakusei'
         ? ['v1.3 · 최신 버전', 'v1.2', 'v1.1', 'v1.0']
-        : game === 'otogirisou'
+        : ['otogirisou', 'super-mario-rpg'].includes(game)
           ? ['v1.2 · 최신 버전', 'v1.1', 'v1.0']
           : ['v1.1 · 최신 버전', 'v1.0'];
     await expect(notes.locator('.patch-release > h3')).toHaveText(versions);
     const releaseDates: Record<string, Record<string, string>> = {
-      'super-mario-rpg': { '1-0': '2015-03-12', '1-1': '2026-10-18' },
+      'super-mario-rpg': { '1-0': '2015-03-12', '1-1': '2026-10-18', '1-2': '2026-10-23' },
       'dragon-ball-z-super-gokuden-totsugeki': { '1-0': '2012-12-12', '1-1': '2026-10-18' },
       'dragon-ball-z-super-gokuden-kakusei': {
         '1-0': '2011-12-30',
@@ -907,8 +907,8 @@ for (const game of PATCH_GUIDES) {
     triggers.push(notes.locator('.patch-image-trigger:has(.patch-highlights)').first());
     const panels = notes.locator('.release-panels');
     for (const pair of await panels.all()) {
-      await expect(pair.locator('.panel-label').first()).toHaveText(/^(v1\.0|일본판)$/);
-      await expect(pair.locator('.panel-label').last()).toHaveText('v1.1');
+      await expect(pair.locator('.panel-label').first()).toHaveText(/^(v1\.[01]|일본판)$/);
+      await expect(pair.locator('.panel-label').last()).toHaveText(/^v1\.[12]$/);
       await expect(pair.locator('.patch-picture')).toHaveCount(2);
       for (const panel of await pair.locator('.patch-picture').all()) {
         await panel.scrollIntoViewIfNeeded();
