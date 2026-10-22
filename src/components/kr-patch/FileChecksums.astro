@@ -1,0 +1,56 @@
+---
+import { formatBytes } from '../../lib/kr-patches';
+import { patchedSize, type RomSpec } from '../../lib/rom-patch';
+
+interface Props {
+  spec: RomSpec;
+  version: string;
+}
+
+const { spec, version } = Astro.props;
+const files = [
+  { name: '일본판 원본', size: spec.size, fingerprint: spec.original },
+  { name: `한글판 v${version}`, size: patchedSize(spec), fingerprint: spec.patched },
+];
+---
+
+<details class="file-checksums">
+  <summary>
+    <span>일본어 원본</span> · 대상 파일·해시 확인
+  </summary>
+  <div class="file-checksums-body">
+    <p>패치 전 언어는 일본어, 패치 후 언어는 한국어입니다.</p>
+    <p class="file-checksums-note">
+      크기와 해시는 헤더 없는 롬파일 기준입니다. 512바이트 헤더가 붙은 파일도 이 페이지에서는 자동으로 처리합니다.
+    </p>
+    <div class="file-checksums-files">
+      {files.map(file => (
+        <section class="file-checksums-file" aria-label={file.name}>
+          <h3>{file.name}</h3>
+          <dl>
+            <div>
+              <dt>크기</dt>
+              <dd>{formatBytes(file.size)}</dd>
+            </div>
+            <div>
+              <dt>CRC32</dt>
+              <dd>
+                <code>{file.fingerprint.crc32}</code>
+              </dd>
+            </div>
+            <div>
+              <dt>MD5</dt>
+              <dd>
+                <code>
+                  {file.fingerprint.md5.slice(0, 16)}
+                  <wbr />
+                  {file.fingerprint.md5.slice(16)}
+                </code>
+              </dd>
+            </div>
+          </dl>
+        </section>
+      ))}
+    </div>
+  </div>
+</details>

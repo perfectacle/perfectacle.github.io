@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator } from '@playwright/test';
+import { KR_PATCHES, formatBytes } from '../src/lib/kr-patches.ts';
 import {
   GOKUDEN_KAKUSEI,
   GOKUDEN_TOTSUGEKI,
@@ -58,6 +59,55 @@ for (const path of ['/games/kr-patches/', '/games/kr-patches/sfc/super-mario-rpg
 }
 
 const GAME = '/games/kr-patches/sfc/super-mario-rpg/';
+
+for (const patch of KR_PATCHES) {
+  test(`${patch.title} exposes the original and latest Korean file checksums without crowding the patch box`, async ({
+    page,
+  }) => {
+    await page.goto(`${patch.path}/`);
+    const details = page.locator('.patch-box .file-checksums');
+    const summary = details.locator('summary');
+    await expect(details).not.toHaveAttribute('open');
+    await expect(summary).toContainText('일본어 원본');
+    await expect(summary).toContainText('대상 파일·해시 확인');
+    await expect(details.getByRole('heading', { name: '일본판 원본', exact: true })).toBeHidden();
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    await expect(details).toHaveAttribute('open', '');
+    await expect(details).toContainText('패치 전 언어는 일본어, 패치 후 언어는 한국어입니다.');
+    await expect(details).toContainText('헤더 없는 롬파일 기준');
+    await expect(details).toContainText('512바이트 헤더');
+    for (const file of [
+      { name: '일본판 원본', size: patch.spec.size, fingerprint: patch.spec.original },
+      { name: `한글판 v${patch.version}`, size: patchedSize(patch.spec), fingerprint: patch.spec.patched },
+    ]) {
+      const region = details.getByRole('region', { name: file.name, exact: true });
+      await expect(region.getByRole('heading', { name: file.name, exact: true })).toBeVisible();
+      await expect(region.locator('dd')).toHaveText([
+        formatBytes(file.size),
+        file.fingerprint.crc32,
+        file.fingerprint.md5,
+      ]);
+    }
+    await expect(page.locator('.manual table')).toHaveCount(0);
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      await details.scrollIntoViewIfNeeded();
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth),
+      ).toBe(0);
+      for (const hash of await details.locator('code').all()) {
+        const bounds = await hash.boundingBox();
+        if (!bounds) throw new Error('The file checksum must be visible');
+        expect(bounds.x).toBeGreaterThanOrEqual(0);
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+      }
+    }
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    await expect(details).not.toHaveAttribute('open');
+  });
+}
 
 test('catalogue opens the game page, which leads with the patch box and plays no media', async ({ page }) => {
   await page.goto('/games/kr-patches/');

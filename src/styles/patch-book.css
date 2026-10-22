@@ -396,6 +396,78 @@ h1.pixel {
   font-size: 0.875rem;
 }
 
+.file-checksums {
+  min-width: 0;
+  border-top: 1px solid var(--muted);
+  font-size: 0.8125rem;
+}
+
+.file-checksums summary {
+  padding-block: 10px 2px;
+  color: var(--link);
+  cursor: pointer;
+}
+
+.file-checksums summary span {
+  color: var(--ink);
+}
+
+.file-checksums-body {
+  display: grid;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.file-checksums-note {
+  color: var(--muted);
+}
+
+.file-checksums-files {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+}
+
+.file-checksums-file {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--muted);
+  border-radius: 4px;
+}
+
+.file-checksums-file h3 {
+  color: var(--ink);
+  font-size: inherit;
+}
+
+.file-checksums-file dl {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+}
+
+.file-checksums-file dl > div {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 6px;
+}
+
+.file-checksums-file dt {
+  color: var(--muted);
+}
+
+.file-checksums-file dd {
+  min-width: 0;
+  margin: 0;
+}
+
+.file-checksums-file code {
+  color: inherit;
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+
 @media (max-width: 559px) {
   .hero {
     padding-top: 12px;
@@ -470,27 +542,6 @@ h1.pixel {
   gap: 12px;
   margin-top: 12px;
   font-size: 0.9375rem;
-}
-
-.manual table {
-  display: block;
-  overflow-x: auto;
-  border-collapse: collapse;
-  font-size: 0.8125rem;
-}
-
-.manual caption {
-  padding-bottom: 6px;
-  color: var(--muted);
-  text-align: left;
-}
-
-.manual th,
-.manual td {
-  padding: 6px 10px;
-  border: 1px solid rgb(255 255 255 / 25%);
-  text-align: left;
-  white-space: nowrap;
 }
 
 /* Sections */
@@ -846,17 +897,6 @@ h3.pixel {
   background-clip: padding-box;
   font-size: 1.5rem;
   text-shadow: none;
-}
-
-[data-theme='smrpg'] .manual th,
-[data-theme='smrpg'] .manual td {
-  padding: 2px 20px 2px 0;
-  border: 0;
-}
-
-[data-theme='smrpg'] .manual :is(thead th, tbody th) {
-  color: var(--accent);
-  font-family: var(--pixel);
 }
 
 [data-theme='smrpg'] .masthead nav {
