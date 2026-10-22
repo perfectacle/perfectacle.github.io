@@ -283,7 +283,7 @@ test('catalogue cards show the patch release date and their own game credits', a
   await page.goto('/games/kr-patches/');
   for (const [path, version, released, copyright] of [
     [GAME, '1.2', '2026-10-23', '게임 © 1995 Nintendo / SQUARE · 캐릭터 © Nintendo, © SQUARE'],
-    [GOKUDEN, '1.1', '2026-10-18', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
+    [GOKUDEN, '1.2', '2026-10-23', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
     [KAKUSEI, '1.3', '2026-10-22', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
     [OTOGIRI, '1.2', '2026-10-22', '게임 © 1992 CHUNSOFT'],
   ] as const) {
@@ -630,7 +630,7 @@ const gameRom = (spec: RomSpec) => {
 
 for (const [spec, path] of [
   [SMRPG, `${GAME}downloads/Super_Mario_RPG_K_v1_2.ips`],
-  [GOKUDEN_TOTSUGEKI, `${GOKUDEN}downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1.ips`],
+  [GOKUDEN_TOTSUGEKI, `${GOKUDEN}downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_2.ips`],
   [GOKUDEN_KAKUSEI, `${KAKUSEI}downloads/Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_3.ips`],
   [OTOGIRISOU, `${OTOGIRI}downloads/Otogirisou_K_v1_2.ips`],
 ] as const) {
