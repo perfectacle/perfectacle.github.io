@@ -155,8 +155,11 @@
 
 .game-card-copy {
   position: relative;
-  min-height: 146px;
-  padding: 18px 12px 16px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px 12px;
 }
 
 .game-release {
@@ -180,7 +183,7 @@
 }
 
 .game-copyright {
-  margin: auto 8px 0;
+  margin: 0 8px;
   border-top: 1px solid #a39caa;
   padding: 12px 4px 10px;
   color: #494352;

@@ -10,12 +10,12 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
 <nav class="patch-section-nav" aria-label="페이지 내 이동">
   <details class="section-nav-menu frame">
     <summary class="pixel">
-      <span class="section-nav-current">맨 위로</span>
+      <span class="section-nav-current">한글패치 하기</span>
     </summary>
     <ul>
       {items.map(({ id, label }) => (
         <li>
-          <a class="pointer" href={`#${id}`} aria-current={id === 'main' ? 'location' : undefined}>
+          <a class="pointer" href={`#${id}`} aria-current={id === 'patch' ? 'location' : undefined}>
             {label}
           </a>
         </li>
@@ -34,6 +34,7 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
     const wide = window.matchMedia('(min-width: 1200px)');
     const links = [...nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
     const targets = links.flatMap(link => {
+      if (link.hash === '#main') return [];
       const target = document.getElementById(link.hash.slice(1));
       return target ? [{ link, target }] : [];
     });
@@ -51,7 +52,7 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
         if (link === active?.link) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
       }
-      current.textContent = active?.link.textContent?.trim() ?? '맨 위로';
+      current.textContent = active?.link.textContent?.trim() ?? '한글패치 하기';
     };
     let scheduled = false;
     const schedule = () => {

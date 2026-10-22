@@ -249,6 +249,25 @@ test('catalogue cards show the patch release date and their own game credits', a
   await expect(page.locator('footer')).not.toContainText('CHUNSOFT');
 });
 
+for (const width of [390, 1280]) {
+  test(`catalogue card titles have balanced vertical spacing at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/games/kr-patches/');
+    await page.evaluate(() => document.fonts.ready);
+    for (const card of await page.locator('main a.game-card').all()) {
+      const spacing = await card.evaluate(element => {
+        const copy = element.querySelector('.game-card-copy')?.getBoundingClientRect();
+        const release = element.querySelector('.game-release')?.getBoundingClientRect();
+        const title = element.querySelector('h2')?.getBoundingClientRect();
+        if (!copy || !release || !title) throw new Error('Catalogue card has no title bounds');
+        return { above: release.top - copy.top, below: copy.bottom - title.bottom };
+      });
+      expect(spacing.above).toBeGreaterThanOrEqual(18);
+      expect(Math.abs(spacing.above - spacing.below)).toBeLessThanOrEqual(1);
+    }
+  });
+}
+
 test('catalogue characters stay on the original forest ground through scrolling and resizing', async ({ page }) => {
   await page.goto('/games/kr-patches/');
   await expect(page.locator('svg.sfc-controller[aria-hidden="true"]')).toBeVisible();
