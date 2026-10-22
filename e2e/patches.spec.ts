@@ -358,6 +358,44 @@ test('catalogue characters stay on the original forest ground through scrolling 
   }
 });
 
+test('Diddy keeps his ground contact fixed across every animation frame', async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.goto('/games/kr-patches/');
+  const contacts = await page.locator('.sprite-diddy-kong').evaluate(async element => {
+    const style = getComputedStyle(element);
+    const url = style.backgroundImage.match(/^url\(["']?(.+?)["']?\)$/)?.[1];
+    if (!url) throw new Error('Diddy must have a sprite sheet');
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    const frameWidth = parseFloat(style.getPropertyValue('--frame-width'));
+    const frameHeight = parseFloat(style.getPropertyValue('--frame-height'));
+    const frameCount = Number(style.getPropertyValue('--frame-count'));
+    const canvas = document.createElement('canvas');
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Sprite pixels must be readable');
+    context.drawImage(image, 0, 0);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    return Array.from({ length: frameCount }, (_, frame) => {
+      let left = frameWidth;
+      let bottom = -1;
+      for (let y = 0; y < frameHeight; y++) {
+        for (let x = 0; x < frameWidth; x++) {
+          if (!pixels[(y * canvas.width + frame * frameWidth + x) * 4 + 3]) continue;
+          bottom = Math.max(bottom, y);
+          if (y >= frameHeight - 5) left = Math.min(left, x);
+        }
+      }
+      return { left, bottom };
+    });
+  });
+  expect(contacts).toHaveLength(256);
+  expect(contacts[0]).toEqual({ left: 22, bottom: 69 });
+  for (const contact of contacts) expect(contact).toEqual(contacts[0]);
+});
+
 test('catalogue characters change pose in place and return to their initial frame', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
