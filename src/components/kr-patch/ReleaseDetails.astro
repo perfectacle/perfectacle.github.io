@@ -36,7 +36,7 @@
 
   .release-body :global(.version-pair) {
     width: 100%;
-    max-width: 660px;
+    max-width: 800px;
   }
 
   .release-body :global(.compare-shots) {
@@ -45,5 +45,15 @@
 
   .release-body :global(.screen .patch-image-trigger) {
     margin-inline: auto;
+  }
+
+  .release-body :global(.version-pair .patch-image-trigger) {
+    width: min(100%, 512px);
+  }
+
+  @media (max-width: 599px) {
+    .release-body :global(.compare-shots) {
+      grid-template-columns: 1fr;
+    }
   }
 </style>

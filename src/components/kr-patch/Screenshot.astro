@@ -1,5 +1,5 @@
 ---
-import type { ScreenshotHighlight } from '../../lib/version-pairs';
+import type { ScreenshotCrop, ScreenshotHighlight } from '../../lib/version-pairs';
 
 interface Props {
   src: string;
@@ -7,17 +7,19 @@ interface Props {
   height: number;
   alt: string;
   highlights?: ScreenshotHighlight[] | undefined;
+  crop?: ScreenshotCrop | undefined;
 }
 
-const { src, width, height, alt, highlights = [] } = Astro.props;
-const dimensions = `--patch-image-width: ${width}px; --patch-image-ratio: ${width / height}`;
+const { src, width, height, alt, highlights = [], crop = [0, 0, width, height] } = Astro.props;
+const [cropX, cropY, cropWidth, cropHeight] = crop;
+const dimensions = `--patch-image-width: ${cropWidth}px; --patch-image-ratio: ${cropWidth / cropHeight}; --patch-source-width: ${(width / cropWidth) * 100}%; --patch-source-height: ${(height / cropHeight) * 100}%; --patch-source-left: ${(-cropX / cropWidth) * 100}%; --patch-source-top: ${(-cropY / cropHeight) * 100}%`;
 ---
 
 <button class="patch-image-trigger" type="button" data-patch-preview aria-label={`${alt} 크게 보기`} style={dimensions}>
   <span class="patch-picture" style={dimensions}>
     <img src={src} width={width} height={height} alt={alt} loading="lazy" decoding="async" />
     {highlights.length > 0 && (
-      <svg class="patch-highlights" viewBox={`0 0 ${width} ${height}`} aria-hidden="true" focusable="false">
+      <svg class="patch-highlights" viewBox={crop.join(' ')} aria-hidden="true" focusable="false">
         {highlights.map(([x, y, rectWidth, rectHeight]) => (
           <rect x={x} y={y} width={rectWidth} height={rectHeight} vector-effect="non-scaling-stroke" />
         ))}
@@ -29,7 +31,7 @@ const dimensions = `--patch-image-width: ${width}px; --patch-image-ratio: ${widt
 <style>
   .patch-image-trigger {
     display: block;
-    width: min(100%, var(--patch-image-width), calc(min(38svh, 280px) * var(--patch-image-ratio)));
+    width: min(100%, calc(var(--patch-image-width) * 2));
     min-width: 0;
     padding: 0;
     border: 0;
@@ -47,13 +49,17 @@ const dimensions = `--patch-image-width: ${width}px; --patch-image-ratio: ${widt
     display: block;
     width: 100%;
     aspect-ratio: var(--patch-image-ratio);
+    overflow: clip;
   }
 
   .patch-picture img {
     display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    position: absolute;
+    left: var(--patch-source-left);
+    top: var(--patch-source-top);
+    width: var(--patch-source-width);
+    height: var(--patch-source-height);
+    max-width: none;
     image-rendering: pixelated;
   }
 
