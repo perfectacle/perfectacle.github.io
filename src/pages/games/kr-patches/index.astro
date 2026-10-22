@@ -61,7 +61,7 @@ import '../../../styles/patch-catalogue.css';
                 <div class="game-card-copy">
                   <p class="game-release">
                     게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}{' '}
-                    <time datetime="2026-10-18">(2026-10-18)</time>
+                    <time datetime={patch.released}>({patch.released})</time>
                   </p>
                   <h2>{patch.title}</h2>
                 </div>
