@@ -173,3 +173,69 @@ export const kakuseiGroups: VersionGroup[] = [
     ],
   },
 ];
+
+export const kakuseiV13Versions = [
+  { key: 'v12', label: 'v1.2' },
+  { key: 'v13', label: 'v1.3' },
+];
+
+/** Same scene, same input on v1.2 and v1.3 in Mesen 2: debug-menu scenes, and the password screen from a new game. */
+export const kakuseiV13Groups: VersionGroup[] = [
+  {
+    id: 'wrap',
+    title: '나레이션 줄바꿈',
+    summary:
+      '나레이션 창 한 줄에는 14자까지 들어갑니다. v1.2는 15자로 알고 줄을 나눠 마지막 글자가 혼자 다음 줄로 떨어졌습니다. 대사 8개를 14자 안으로 다시 나눴습니다.',
+    pairs: [
+      {
+        id: 'wrap_600',
+        caption: '사이어인이 지구에 도착하는 장면. 「이」가 혼자 떨어지지 않습니다.',
+        alt: '도시가 보이는 지도 위에 뜬 나레이션 창',
+      },
+      {
+        id: 'wrap_f87',
+        caption: '오공을 기다리는 장면. 「채」가 혼자 떨어지지 않습니다.',
+        alt: '바위산이 보이는 지도 위에 뜬 나레이션 창',
+      },
+    ],
+  },
+  {
+    id: 'password',
+    title: '돌격편 암호',
+    summary:
+      '돌격편 한글판 엔딩에 나오는 암호를 화면 그대로 따라 치면 각성편으로 이어집니다. 입력 칸의 글자를 돌격편 화면 글자와 맞추고, 한글판에서는 어떤 암호도 통과하지 못하던 검사 표를 고쳤습니다.',
+    pairs: [
+      {
+        id: 'password',
+        frames: 2,
+        caption:
+          '돌격편 엔딩의 암호를 화면 글자 그대로 입력한 결과. v1.2는 「건」 칸이 없고 틀린 암호가 되며, v1.3은 이름 화면으로 넘어갑니다.',
+        alt: '각성편의 암호 입력 화면과 입력을 마친 뒤의 화면',
+      },
+    ],
+  },
+  {
+    id: 'bubble',
+    title: '전투 말풍선',
+    summary:
+      '전투 중에 뜨는 말풍선 대사 898개를 일본어 원문과 다시 대조했습니다. 뜻이 달랐던 대사를 고치고, 말풍선 밖으로 넘치던 줄을 창에 맞게 나눴습니다.',
+    pairs: [
+      {
+        id: 'bubble_chichi',
+        caption: '천하제일 무술대회의 치치. 「이제 정말 화났어!!」라는 원문의 뜻대로 고쳤습니다.',
+        alt: '무술대회 대결장에서 말풍선으로 말하는 치치',
+      },
+      {
+        id: 'bubble_gravity',
+        caption: '계왕의 중력 수련. 넘쳐서 혼자 떨어지던 「다!」가 사라졌습니다.',
+        alt: '계왕별 길 위에서 말풍선으로 말하는 계왕',
+      },
+      {
+        id: 'bubble_kaio',
+        frames: 3,
+        caption: '계왕권 설명. 빠졌던 원문을 채우고 줄을 다시 나눴습니다.',
+        alt: '계왕별에서 계왕권 쓰는 법을 설명하는 계왕',
+      },
+    ],
+  },
+];
