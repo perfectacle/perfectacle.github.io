@@ -4,6 +4,7 @@ import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import Speech from '../../../../components/kr-patch/Speech.astro';
 import MakingOf from '../../../../components/smrpg/MakingOf.astro';
+import Secrets from '../../../../components/smrpg/Secrets.astro';
 import SpeechChain from '../../../../components/smrpg/SpeechChain.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import { SMRPG_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
@@ -120,6 +121,7 @@ const story = [
     { id: 'story', label: '이야기' },
     { id: 'play', label: '진행 방식' },
     { id: 'cast', label: '주인공과 동료' },
+    { id: 'secrets', label: '놓치기 쉬운 즐길 거리' },
     { id: 'patch-notes', label: '패치 노트' },
     { id: 'making', label: '롬 분석 노트' },
   ]}
@@ -268,6 +270,8 @@ const story = [
       ))}
     </ul>
   </section>
+
+  <Secrets />
 
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
     <h2 id="patch-notes-title" class="pixel">
