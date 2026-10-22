@@ -132,7 +132,7 @@ jobs:
           persist-credentials: false
 
       # Workflow security audit (token leaks, injection, unpinned actions). Online audits use the read-only token.
-      - run: pipx run 'zizmor==1.30.1' --format github .github
+      - run: pipx run 'zizmor==1.31.0' --format github .github
         env:
           GH_TOKEN: ${{ github.token }}
 
