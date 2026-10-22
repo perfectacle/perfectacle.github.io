@@ -2,6 +2,8 @@
 import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
+import BattleSystem from '../../../../components/kakusei/BattleSystem.astro';
+import Endings from '../../../../components/kakusei/Endings.astro';
 import MakingOf from '../../../../components/kakusei/MakingOf.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import { KAKUSEI_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
@@ -97,6 +99,8 @@ const castGroups = [
     { id: 'story', label: '이야기' },
     { id: 'cast', label: '등장인물' },
     { id: 'play', label: '진행 방식' },
+    { id: 'battle-system', label: '전투 시스템' },
+    { id: 'endings', label: '엔딩과 특별 장면' },
     { id: 'patch-notes', label: '패치 노트' },
     { id: 'making', label: '롬 분석 노트' },
   ]}
@@ -239,6 +243,9 @@ const castGroups = [
       ))}
     </div>
   </section>
+
+  <BattleSystem />
+  <Endings />
 
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
     <h2 id="patch-notes-title" class="pixel">
