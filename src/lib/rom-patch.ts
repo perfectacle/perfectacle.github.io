@@ -25,7 +25,7 @@ export const SMRPG: RomSpec = {
   size: 4194304,
   header: { title: 'SUPER MARIO RPG', mapMode: 0x23, cartType: 0x35, romSize: 0x0c },
   original: { crc32: '5527071E', md5: '59483FEB9EB20207E3241E005FBDDE7E' },
-  patched: { crc32: 'F9958CEE', md5: 'B7F2367BA37474AD3EE39F6E631CC26A' },
+  patched: { crc32: '05DBCBE6', md5: 'B7F488D4F448304890A4BCE8000248E2' },
   previous: [
     { version: 'v1.1', crc32: 'ABD8AC13', md5: '8E5320631EDCF274BF5C7A62C0417C55' },
     { version: 'v1.0', crc32: 'F4305A06', md5: 'AF6534D26150F9AB7A3765A9C7AF758D' },
