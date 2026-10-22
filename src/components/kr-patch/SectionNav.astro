@@ -10,12 +10,8 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
 <nav class="patch-section-nav" aria-label="페이지 내 이동">
   <details class="section-nav-menu frame">
     <summary class="pixel">
-      <span class="section-nav-caption">이 페이지 차례</span>
       <span class="section-nav-current">맨 위로</span>
     </summary>
-    <p class="section-nav-heading pixel" aria-hidden="true">
-      이 페이지 차례
-    </p>
     <ul>
       {items.map(({ id, label }) => (
         <li>
@@ -134,17 +130,8 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
     content: '−' / '';
   }
 
-  .section-nav-caption {
-    color: var(--muted);
-    font-size: 0.75rem;
-  }
-
   .section-nav-current {
     color: var(--accent);
-  }
-
-  .section-nav-heading {
-    display: none;
   }
 
   .section-nav-menu ul {
@@ -207,12 +194,6 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
 
     .patch-section-nav[data-enhanced] .section-nav-menu summary {
       display: none;
-    }
-
-    .section-nav-heading {
-      display: block;
-      padding: 0 4px 8px;
-      color: var(--muted);
     }
 
     .section-nav-menu ul {
