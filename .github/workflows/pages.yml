@@ -153,6 +153,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
   build:
+    outputs:
+      pages-artifact: ${{ steps.pages.outputs.name }}
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
     env:
@@ -213,8 +215,15 @@ jobs:
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
       - if: github.event_name != 'pull_request'
+        id: pages
+        env:
+          ARTIFACT_NAME: github-pages-${{ github.run_attempt }}
+        run: echo "name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
+
+      - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
+          name: ${{ steps.pages.outputs.name }}
           path: ./dist
 
   e2e:
@@ -425,7 +434,7 @@ jobs:
   deploy:
     # success() would also require the skipped bot-only jobs upstream, so check ci-ok's own result.
     if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.ci-ok.result == 'success' }}
-    needs: ci-ok
+    needs: [ci-ok, build]
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 10
     permissions:
@@ -437,3 +446,5 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+        with:
+          artifact_name: ${{ needs.build.outputs.pages-artifact }}
