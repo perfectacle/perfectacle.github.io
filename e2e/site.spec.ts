@@ -615,6 +615,7 @@ for (const game of PATCH_GUIDES) {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(path);
     const nav = page.getByRole('navigation', { name: '페이지 내 이동', exact: true });
+    await expect(nav).not.toContainText('이 페이지 차례');
     const menu = nav.locator('details');
     const summary = menu.locator('summary');
     const links = nav.locator('a');
