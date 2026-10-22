@@ -767,7 +767,8 @@ for (const game of PATCH_GUIDES) {
     }
   });
 
-  test(`${game} patch notes reveal each version with keyboard controls`, async ({ page }) => {
+  test(`${game} patch notes reveal each version with keyboard controls`, async ({ page, isMobile }) => {
+    await page.setViewportSize({ width: isMobile ? 390 : 1280, height: 900 });
     await page.goto(path);
     const releases = page.locator('#patch-notes .patch-release');
     for (const release of await releases.all()) {
@@ -785,7 +786,9 @@ for (const game of PATCH_GUIDES) {
       await expect(detail.locator('.release-body')).toBeVisible();
       expect(await detail.locator('img').count()).toBeGreaterThan(0);
       for (const image of await detail.locator('img').all()) {
-        await image.scrollIntoViewIfNeeded();
+        const frame = image.locator('..');
+        await frame.scrollIntoViewIfNeeded();
+        expect((await frame.boundingBox())?.width).toBeGreaterThanOrEqual(256);
         await expect(image).toBeVisible();
         await expect.poll(() => image.evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
         await expect(image).toHaveAttribute('alt', /.+/);
@@ -810,11 +813,42 @@ for (const game of PATCH_GUIDES) {
       triggers.push(notes.locator('.version-pair .patch-image-trigger').first());
     }
     triggers.push(notes.locator('.patch-image-trigger:has(.patch-highlights)').first());
+    const panels = notes.locator('.release-panels');
+    for (const pair of await panels.all()) {
+      await expect(pair.locator('.panel-label')).toHaveText(['v1.0', 'v1.1']);
+      await expect(pair.locator('.patch-picture')).toHaveCount(2);
+      for (const panel of await pair.locator('.patch-picture').all()) {
+        await panel.scrollIntoViewIfNeeded();
+        await expect(panel).toHaveCSS('overflow', 'clip');
+        const cropBefore = await panel.locator('img').evaluate(node => ({
+          left: getComputedStyle(node).left,
+          top: getComputedStyle(node).top,
+        }));
+        await panel.locator('img').evaluate(node => node.scrollIntoView({ block: 'center', inline: 'center' }));
+        expect(await panel.evaluate(node => [node.scrollLeft, node.scrollTop])).toEqual([0, 0]);
+        expect(
+          await panel.locator('img').evaluate(node => ({
+            left: getComputedStyle(node).left,
+            top: getComputedStyle(node).top,
+          })),
+        ).toEqual(cropBefore);
+        const frame = await panel.boundingBox();
+        if (!frame) throw new Error('Missing comparison panel');
+        expect(frame.width).toBeGreaterThanOrEqual(256);
+        expect(frame.width / frame.height).toBeCloseTo(512 / 448, 2);
+      }
+      const [before, after] = await pair.locator('.patch-picture').all();
+      if (!before || !after) throw new Error('Missing before/after panels');
+      const first = await before.boundingBox();
+      const second = await after.boundingBox();
+      if (isMobile && first && second) expect(second.y).toBeGreaterThanOrEqual(first.y + first.height);
+    }
     const preview = page.getByRole('dialog', { name: '스크린샷 미리 보기' });
     for (const [index, trigger] of triggers.entries()) {
       await trigger.scrollIntoViewIfNeeded();
-      const thumbnail = await trigger.locator('img').boundingBox();
-      expect(thumbnail?.height).toBeLessThanOrEqual(281);
+      const thumbnail = await trigger.locator('.patch-picture').boundingBox();
+      expect(thumbnail?.width).toBeGreaterThanOrEqual(256);
+      const cropStyle = await trigger.locator('.patch-picture').getAttribute('style');
       const rectangles = await trigger
         .locator('rect')
         .evaluateAll(nodes =>
@@ -834,7 +868,9 @@ for (const game of PATCH_GUIDES) {
             nodes.map(node => ['x', 'y', 'width', 'height'].map(attribute => node.getAttribute(attribute))),
           ),
       ).toEqual(rectangles);
-      const image = await preview.locator('img').boundingBox();
+      await expect(preview.locator('.patch-picture')).toHaveAttribute('style', cropStyle ?? '');
+      await expect(preview.locator('.patch-picture')).toHaveCSS('overflow', 'clip');
+      const image = await preview.locator('.patch-picture').boundingBox();
       const viewport = page.viewportSize();
       if (!image || !viewport) throw new Error('Missing preview dimensions');
       if (!isMobile && thumbnail) expect(image.width).toBeGreaterThan(thumbnail.width);
