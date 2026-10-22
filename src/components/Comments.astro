@@ -94,6 +94,11 @@ const { path } = Astro.props;
     --waline-dark-grey: var(--fg-muted);
     --waline-white: var(--accent-fg);
     --waline-badge-color: var(--accent);
+    --waline-avatar-size: 40px;
+    --waline-m-avatar-size: 28px;
+    --waline-avatar-radius: 50%;
+    --waline-box-shadow: none;
+    --waline-info-font-size: 0.75rem;
   }
   .load {
     font: inherit;
@@ -120,5 +125,230 @@ const { path } = Astro.props;
     flex-direction: row-reverse;
     justify-content: flex-end;
     gap: 0.3em;
+  }
+  .comments :global(.wl-comment) {
+    margin-bottom: 32px;
+  }
+  .comments :global(.wl-panel) {
+    margin: 0;
+    border-radius: var(--radius);
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+  }
+  .comments :global(.wl-panel:focus-within) {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .comments :global(.wl-header) {
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .comments :global(.wl-header-item + .wl-header-item) {
+    border-inline-start: 1px solid var(--border);
+  }
+  .comments :global(.wl-header label) {
+    min-width: 0;
+    padding: 10px 0 10px 14px;
+    text-align: start;
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+  .comments :global(.wl-header input) {
+    padding: 10px 14px 10px 10px;
+    font-size: 0.875rem;
+  }
+  .comments :global(.wl-editor) {
+    width: 100%;
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 0;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+  .comments :global(.wl-editor:focus),
+  .comments :global(.wl-input:focus) {
+    background: transparent;
+  }
+  .comments :global(.wl-footer) {
+    align-items: center;
+    margin: 0;
+    padding: 8px 10px 10px 14px;
+  }
+  .comments :global(.wl-text-number) {
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  .comments :global(.wl-btn) {
+    min-height: 34px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .comments :global(.wl-btn.primary) {
+    color: var(--accent-fg);
+  }
+
+  .comments :global(.wl-meta-head) {
+    margin-bottom: 4px;
+    padding: 0 0 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .comments :global(.wl-count) {
+    font-size: 1rem;
+  }
+  .comments :global(.wl-num) {
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+  .comments :global(.wl-sort) {
+    display: flex;
+    gap: 2px;
+    padding: 0;
+  }
+  .comments :global(.wl-sort li) {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+  }
+  .comments :global(.wl-sort li + li) {
+    margin: 0;
+  }
+  .comments :global(.wl-sort li:hover) {
+    color: var(--fg);
+  }
+  .comments :global(.wl-sort li.active) {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .comments :global(.wl-cards > .wl-card-item) {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .comments :global(.wl-card-item .wl-card-item) {
+    padding: 16px 0 0;
+  }
+  .comments :global(.wl-card) {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+  .comments :global(.wl-card:first-child) {
+    margin-inline-start: 0;
+  }
+  .comments :global(.wl-cards .wl-user) {
+    margin-inline-end: 12px;
+  }
+  .comments :global(.wl-cards .wl-user .wl-user-avatar) {
+    background: var(--bg-soft);
+  }
+  .comments :global(.wl-card .wl-head) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 8px;
+    line-height: 1.5;
+  }
+  .comments :global(.wl-card .wl-head .wl-nick) {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .comments :global(.wl-card span.wl-nick) {
+    color: var(--fg);
+  }
+  .comments :global(.wl-card .wl-time) {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  .comments :global(.wl-card .wl-comment-actions) {
+    display: flex;
+    gap: 4px;
+    margin-inline-start: auto;
+  }
+  .comments :global(.wl-card .wl-like),
+  .comments :global(.wl-card .wl-reply),
+  .comments :global(.wl-card .wl-edit),
+  .comments :global(.wl-card .wl-delete) {
+    gap: 4px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  .comments :global(.wl-card .wl-like:hover),
+  .comments :global(.wl-card .wl-reply:hover) {
+    background: var(--bg-soft);
+  }
+  .comments :global(.wl-card .wl-content) {
+    margin-bottom: 0;
+    padding-top: 4px;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+  }
+  .comments :global(.wl-card .wl-content p) {
+    margin: 0 0 0.5em;
+  }
+  .comments :global(.wl-card .wl-content p:last-child) {
+    margin-bottom: 0;
+  }
+  /* Waline floats the "@nick:" mention beside the first paragraph, so only that line gets indented and the
+     rest wraps under it. Putting it on its own line keeps the reply body aligned. */
+  .comments :global(.wl-card .wl-content .wl-reply-to) {
+    float: none;
+    margin: 0 0 4px;
+    font-size: 0.8125rem;
+  }
+  .comments :global(.wl-card .wl-content .wl-reply-to a) {
+    color: var(--fg-muted);
+    text-decoration: none;
+  }
+  .comments :global(.wl-card .wl-content .wl-reply-to a:hover) {
+    color: var(--accent);
+  }
+  .comments :global(.wl-card .wl-content .wl-reply-to span) {
+    display: none;
+  }
+  .comments :global(.wl-card .wl-quote) {
+    margin-top: 4px;
+    padding-inline-start: 16px;
+    border-inline-start: 2px solid var(--border);
+  }
+
+  .comments :global(.wl-meta-foot) {
+    margin-top: 12px;
+  }
+
+  @media (max-width: 720px) {
+    .comments {
+      --waline-m-avatar-size: 32px;
+    }
+    .comments :global(.wl-card .wl-quote) {
+      padding-inline-start: 12px;
+    }
+    .comments :global(.wl-card .wl-quote .wl-user) {
+      --avatar-size: 24px;
+      margin-inline-end: 8px;
+    }
+  }
+  /* Waline stacks the name/email/site inputs at this width and separates them with dashed rules. */
+  @media (max-width: 580px) {
+    .comments :global(.wl-header-item:not(:last-child)) {
+      border-bottom: 1px solid var(--border);
+    }
+    .comments :global(.wl-header-item + .wl-header-item) {
+      border-inline-start: none;
+    }
+    .comments :global(.wl-header label) {
+      width: 6.5em;
+    }
   }
 </style>
