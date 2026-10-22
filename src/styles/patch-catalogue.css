@@ -326,27 +326,27 @@
     --frame-width: 40px;
     --frame-height: 40px;
     --frame-count: 10;
-    --frame-duration: 0.8s;
+    --frame-duration: 0.3333333333s;
     --sprite-scale: 2;
     top: 280px;
   }
 
   .sprite-diddy-kong {
-    --sprite-image: url('/games/kr-patches/catalogue/sprites/diddy-kong-idle.webp');
+    --sprite-image: url('/games/kr-patches/catalogue/sprites/diddy-kong-juggle.webp');
     --frame-width: 56px;
-    --frame-height: 48px;
-    --frame-count: 28;
-    --frame-duration: 2.8s;
+    --frame-height: 72px;
+    --frame-count: 174;
+    --frame-duration: 5.8s;
     --sprite-scale: 2;
     top: 880px;
   }
 
   .sprite-ryu {
-    --sprite-image: url('/games/kr-patches/catalogue/sprites/ryu-cycle.webp');
+    --sprite-image: url('/games/kr-patches/catalogue/sprites/ryu-shoryuken.webp');
     --frame-width: 72px;
     --frame-height: 144px;
-    --frame-count: 64;
-    --frame-duration: 6s;
+    --frame-count: 86;
+    --frame-duration: 2.8666666667s;
     --sprite-scale: 1;
     top: 450px;
   }
