@@ -88,6 +88,17 @@ const regression = [
   '패치 노트의 비교 화면도 이 방법으로 찍었습니다. 3프레임마다 화면을 저장하고, 아래 절반의 흰 글자가 지워지기 직전 화면을 그 페이지의 완성 화면으로 골랐습니다.',
 ];
 
+const emulators = [
+  { name: 'Mesen 2', result: '정상. 이어하기에서 나온 대사 ID 순서가 일본판·v1.0·v1.1(헤더 있음/없음) 모두 같음' },
+  { name: 'bsnes, bsnes-hd beta', result: '정상' },
+  { name: 'snes9x, snes9x2010', result: '정상. snes9x2010도 이어하기 대사 ID 순서가 네 롬 모두 같음' },
+  {
+    name: 'Beetle Supafaust',
+    result: '정상. 새 게임은 다른 코어와 몇 프레임 어긋나 필드에서 다른 길로 감(일본판도 코어마다 같은 정도로 갈라짐)',
+  },
+  { name: 'Mesen-S 코어', result: '판정 불가 (일본판 원본도 테스트 프로그램에서 바로 종료)' },
+];
+
 const toolFiles = [
   { name: 'tools/build.sh', text: '전체 빌드 순서. 일본판 + v1.0 IPS → 타이틀 → 텍스트 → 체크섬', section: 'tools' },
   { name: 'tools/dialogue1.py', text: '대사 포인터 표 읽기', section: 'dialogue' },
@@ -117,6 +128,11 @@ const toolFiles = [
     section: 'testing',
   },
   { name: 'lua/eventlist.lua', text: 'Mesen 2용. 이벤트 표 문제 재현', section: 'event-list' },
+  { name: 'tools/wintest1.py', text: '첫 나레이션을 줄 폭 시험 줄로 바꾼 롬 만들기', section: 'dialogue' },
+  { name: 'lua/wintest.lua', text: 'Mesen 2용. 새 게임에서 창 크기·줄 넘김 기록', section: 'dialogue' },
+  { name: 'compat/lr.py', text: 'libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램', section: 'testing' },
+  { name: 'compat/run_all.sh', text: '코어마다 새 게임·이어하기 비교', section: 'testing' },
+  { name: 'compat/mesen.lua', text: 'Mesen 2에서 같은 입력 재생', section: 'testing' },
   {
     name: 'tables/',
     text: 'v1.1 텍스트, 메뉴 문자열, 일본어 원문과 v1.0 대조 덤프, 글자 코드표',
@@ -140,12 +156,27 @@ const sectionTitles: Record<string, string> = {
 
 const sectionTools: Record<string, string[]> = {
   basics: ['tools/dis65816.py', 'lua/scenario.lua'],
-  dialogue: ['tools/dialogue1.py', 'tools/text_patch1.py', 'tools/layout1.py', 'tools/width1.py', 'tools/lint1.py'],
+  dialogue: [
+    'tools/dialogue1.py',
+    'tools/text_patch1.py',
+    'tools/layout1.py',
+    'tools/width1.py',
+    'tools/lint1.py',
+    'tools/wintest1.py',
+    'lua/wintest.lua',
+  ],
   font: ['tools/font1.py', 'tables/'],
   'font-ext': ['tools/fontext1.py', 'tools/text_patch1.py'],
   'title-gfx': ['tools/title.py', 'tools/lz.py'],
   'event-list': ['lua/eventlist.lua'],
-  testing: ['lua/scenario.lua', 'tools/pages1.py', 'tools/rgcmp1.py'],
+  testing: [
+    'lua/scenario.lua',
+    'tools/pages1.py',
+    'tools/rgcmp1.py',
+    'compat/lr.py',
+    'compat/run_all.sh',
+    'compat/mesen.lua',
+  ],
   etc: ['tools/credits1.py', 'tools/fixsum.py'],
   next: ['ANALYSIS.txt'],
 };
@@ -352,9 +383,11 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
       </p>
       <h4>창 폭과 페이지</h4>
       <p>
-        얼굴이 나오는 창은 폭 128px, 나레이션 창은 176px이고 한 페이지는 3줄입니다. 줄이 폭을 넘으면 엔진이 알아서 줄을
-        바꾸는데, 그러면 한 줄이 밀려 페이지가 엉뚱한 곳에서 넘어갑니다. v1.0 롬의 대사를 창마다 실제 폭으로 재 보니
-        이렇게 넘치는 줄이 13줄 있었습니다.
+        창 크기는 대사를 띄울 때 <code>$81:AD51</code>부터의 코드가 창 정보 첫 바이트를 보고 정합니다. FF면 나레이션
+        창으로 폭 22칸(<code>$020E</code> = 0x16), 그 밖이면 얼굴 창으로 16칸(0x10)이고, 높이는 둘 다 <code>$0210</code>{' '}
+        = 6(8px 줄 6개), 곧 글자 3줄입니다. 한 칸이 8px이라 폭은 나레이션 176px, 얼굴 창 128px입니다. 줄이 폭을 넘으면
+        엔진이 알아서 줄을 바꾸는데, 그러면 한 줄이 밀려 페이지가 엉뚱한 곳에서 넘어갑니다. v1.0 롬의 대사를 창마다 실제
+        폭으로 재 보니 이렇게 넘치는 줄이 13줄 있었습니다.
       </p>
       <figure class="paper">
         <img
@@ -370,6 +403,31 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
         글자 폭은 표가 아니라 글자를 그리는 코드 안의 비교문(<code>$B7:97DC</code>부터)이 정합니다. 코드 0x500 이상인
         한자 자리는 모두 13px이고, 빈칸(0x2C5)과 「！」(0x16C) 같은 가나 자리 글자는 대부분 9px입니다. 위 대사는 셋째
         줄이 122px까지 차 있어서 「！」를 더하면 넘쳤고, 「！」만 다음 페이지에 혼자 나왔습니다.
+      </p>
+      <p>
+        넘침을 판정하는 곳은 <code>$B7:984A</code>입니다. 이번 글자의 폭을 지금 x 위치(<code>$0208</code>)에 더해 창 폭{' '}
+        <code>$020A</code>(칸 수 × 8)와 비교하고, 같거나 작으면 그대로 그립니다. 크면 줄 위치(<code>$32</code>)를 2 늘려
+        다음 줄로 가고, 그 값이 <code>$0210</code>에 닿으면 버튼을 기다렸다가 새 페이지를 엽니다. 그래서 글자 폭 합이 창
+        폭과 같은 줄까지는 한 줄에 들어갑니다. v1.1 롬의 첫 나레이션(대사 0x000)을 시험 줄로 바꿔 Mesen 2에서 띄워
+        확인했습니다. 176px 줄은 한 줄에 다 나왔고, 177px 줄은 마지막 「！」가 셋째 줄로 넘어갔습니다. 같은 대사를 얼굴
+        창으로 바꾸면 128px까지 들어가고 129px에서 넘어갔습니다.
+      </p>
+      <figure class="paper">
+        <img
+          src={img('narration-wrap.webp')}
+          width="448"
+          height="392"
+          alt="나레이션 창의 시험 화면. 첫 줄 176px은 한 줄에 다 나오고, 둘째 줄 177px은 마지막 느낌표 하나가 셋째 줄로 넘어간다"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>
+          위: 첫 줄 176px, 둘째 줄은 「！」 10개(168px)까지. 아래: 11번째 「！」(177px)가 셋째 줄로 넘어감
+        </figcaption>
+      </figure>
+      <p>
+        v1.1 롬에서 가장 긴 줄은 나레이션 174px, 얼굴 창 128px이라 모두 한계 안에 있습니다. 일본판은 첫 나레이션 첫 줄이
+        딱 176px입니다. 같은 엔진인 각성편은 나레이션 창이 21칸(168px)이라 돌격편보다 한 칸 좁습니다.
       </p>
       <p>
         v1.1은 이 규칙대로 글자마다 폭을 더해 모든 줄을 검사했고, 넘치는 줄이 0이 될 때까지 고쳤습니다. 줄을 나눌 때는
@@ -546,6 +604,13 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         그림 배치가 각성편과 같아서 각성편 v1.2를 만들 때 쓴 도구를 주소만 바꿔 썼습니다.
       </p>
       <p>
+        푸는 루틴은 <code>$81:DF4F</code>입니다. A에 주소, X에 뱅크를 받아 WRAM <code>$7E:8000</code>에 풉니다. 타일은
+        <code>$81:A703</code>이 표 <code>$81:A743</code>의 3번 항목(0부터 셈)을 읽어 이 루틴을 부르고, 푼 뒤 타일마다 두
+        플레인을 번갈아 놓도록 순서를 바꿉니다. 배치표는 <code>$81:A8B0</code>이 표 <code>$81:A8EC</code>의 39번
+        항목으로 부릅니다. Mesen 2로 부팅 뒤를 기록해 보니 일본판과 v1.1 모두 126프레임째에 타일, 536프레임째에 배치표를
+        풀었습니다. 작업 노트와 <code>lz.py</code>에 적힌 <code>$80:9CFA</code>는 각성편의 주소였습니다.
+      </p>
+      <p>
         두 자료의 위치는 5바이트 항목(주소 2바이트, 뱅크 1바이트, 크기 2바이트)에 적혀 있습니다. 타일은 파일{' '}
         <code>0xA752</code>의 항목이 <code>$B7:9EB1</code>을, 배치표는 <code>0xA9AF</code>의 항목이{' '}
         <code>$B7:BE7F</code>를 가리킵니다. 새로 그린 그림을 다시 압축하니 타일은 3,613바이트에서 3,237바이트로,
@@ -607,7 +672,35 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
           A 버튼을 여러 프레임 누르고 있으면 글자 출력 완료와 페이지 넘김이 한꺼번에 일어나 페이지가 화면에 다 나오지
           않습니다. 촬영할 때는 1프레임만 눌렀습니다.
         </li>
+        <li>
+          libretro 코어를 직접 불러 쓰는 작은 프로그램으로 같은 입력을 여러 에뮬레이터에 넣었습니다. 새 게임은 이름
+          입력부터 첫 장면과 필드까지 1만 6천 프레임, 이어하기는 v1.0에서 만든 세이브를 불러 대사가 이어지는 데까지
+          봤습니다. 롬은 일본판, v1.0, v1.1, 헤더 붙은 v1.1 네 가지입니다.
+        </li>
       </ul>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">에뮬레이터</th>
+              <th scope="col">결과</th>
+            </tr>
+          </thead>
+          <tbody>
+            {emulators.map(e => (
+              <tr>
+                <th scope="row">{e.name}</th>
+                <td class="wrap">{e.result}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Mesen-S를 뺀 여섯 개 모두 멈추거나 화면이 깨진 곳은 없었습니다. 헤더 있는 롬과 없는 롬은 libretro 코어 다섯
+        개에서 찍은 화면이 픽셀까지 같았습니다. 이어하기는 대사가 끝나면 검은 화면이 이어지는데, 일본판도 모든
+        에뮬레이터에서 같은 곳에서 같은 화면이 나와 패치와는 관계없습니다. 실제 슈퍼 패미컴에서는 돌려 보지 않았습니다.
+      </p>
 
       <ToolFiles items={toolsFor('testing')} />
 
@@ -627,6 +720,32 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
           <code>0x7FDC–0x7FDF</code>).
         </li>
       </ul>
+      <h4>각성편으로 넘기는 암호</h4>
+      <p>
+        돌격편 엔딩의 마지막 화면(TO BE CONTINUED)에는 가나 50자 암호가 나옵니다. 각성편은 새 게임에서
+        「突激編のつづき」를 고르면 이 암호를 넣는 화면이 열립니다. 히라가나와 가타카나는 X로 바꿔 고릅니다.
+      </p>
+      <ul class="notes">
+        <li>
+          암호는 WRAM <code>$7E:0A00</code>에 작은 가나 코드(0x8000이 켜진 코드)로 만들어집니다. 디버그 메뉴의 엔딩으로
+          일본판과 v1.1을 각각 돌려 보니 같은 코드 50개가 나왔습니다. 패치는 암호 내용을 바꾸지 않습니다.
+        </li>
+        <li>
+          다른 것은 보이는 글자입니다. v1.0이 이 가나 자리에 한글을 그려 넣어서, 한글판 돌격편은 암호를 「가녕가녕가」
+          같은 한글로 보여 줍니다. 각성편 v1.2의 입력 화면도 가나 칸에 한글을 붙였지만 붙인 순서가 달라서, 히라가나 화면
+          81칸 가운데 같은 한글이 붙은 칸은 25칸뿐입니다. 위 암호에 나온 글자로는 ぺ가 돌격편 「성」·각성편 「손」, れ가
+          「똑」·「로」, ば가 「브」·「상」, リ가 「잘」·「지」, タ가 「알」·「엑」입니다. 돌격편 화면의 한글을 보고
+          각성편에서 같은 한글을 고르면 다른 가나가 들어갑니다.
+        </li>
+        <li>
+          위 암호를 가나 그대로 일본판 각성편에 넣어도 「パスワードが まちがってます!!」가 나왔습니다. 디버그 메뉴로
+          바로 본 엔딩의 암호라서인지, 정상으로 끝까지 플레이한 암호는 받아 주는지는 확인하지 못했습니다.
+        </li>
+        <li>
+          돌격편 안에도 가나 입력 화면 코드(<code>$80:99D6</code>, <code>$82:9D7C</code>에서 부름)가 있습니다. 부팅 직후
+          이곳으로 가게 고친 롬에서는 글자판이 반쯤 깨진 채 열렸습니다. 정상 플레이에서 열리는 길은 찾지 못했습니다.
+        </li>
+      </ul>
 
       <ToolFiles items={toolsFor('etc')} />
 
@@ -638,21 +757,27 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         확인한 것은 [실측], 짐작한 것은 [추정]으로 표시했습니다.
       </p>
       <ul class="notes">
-        <li>나레이션 창 폭 176px은 롬 코드에서 확인한 값이 아닙니다. 창 폭을 정하는 자리는 찾지 않았습니다.</li>
         <li>
-          글자를 그리는 코드는 폭을 더한 뒤 <code>$B7:984A</code>에서 WRAM <code>$020A</code>와 비교합니다. 이것이 자동
-          줄바꿈이고 <code>$0208</code>이 지금 줄의 x 위치, <code>$020A</code>가 창 폭이라는 것은 코드 모양으로 짐작한
-          것입니다.
+          줄 폭 한계는 나레이션 176px, 얼굴 창 128px이고 같은 값까지 들어갑니다(2절). 창 정보 첫 바이트가 FE인 대사
+          347줄은 얼굴 창과 같은 128px로 잡히지만, 얼굴 그림을 부르는 루틴을 건너뛴다는 것만 코드로 봤고 화면은 보지
+          않았습니다.
         </li>
         <li>
-          작업 노트와 <code>lz.py</code>에는 LZSS를 푸는 루틴이 <code>$80:9CFA</code>로 적혀 있지만, 다시 보니 그 주소는
-          루틴 중간으로 보여 확인하지 못했습니다.
+          <code>lz.py</code> 머리말의 해제 루틴 주소(<code>$80:9CFA</code>, <code>$80:9DA7</code>)는 각성편 것입니다.
+          돌격편은 <code>$81:DF4F</code>와 <code>$81:DFE7</code>입니다(5절). 묶음 안의 파일은 배포 때와 같게 두고
+          ANALYSIS.txt에 바로잡아 적었습니다.
         </li>
-        <li>각성편과의 암호 연동은 v1.0 공지에 안 된다고 나와 있었지만, 원인을 조사한 기록은 없습니다.</li>
+        <li>
+          각성편 암호: 돌격편과 각성편 한글판이 같은 가나에 다른 한글을 보여 줘서, 화면의 한글을 옮겨 적으면 다른 암호가
+          됩니다(8절). 정상으로 끝까지 플레이한 엔딩의 암호를 일본판 각성편이 받아 주는지, 암호를 만드는 루틴이
+          어디인지는 확인하지 못했습니다.
+        </li>
+        <li>
+          WRAM <code>$4D</code>는 대사 ID 자리이지만 그래픽 읽기 루틴(<code>$81:A703</code>, <code>$81:A8B0</code>)도
+          잠깐 씁니다. 이 값을 감시해 대사를 기록할 때는 창 정보 표를 읽는 순간만 보세요.
+        </li>
         <li>새 글자 블록 5곳(320자)이 통째로 비어 있습니다. 글자를 더 넣을 때 주소 표를 고치지 않고 쓸 수 있습니다.</li>
-        <li>
-          확인은 롬 바이트와 Mesen 2로만 했습니다. 실제 슈퍼 패미컴이나 다른 에뮬레이터에서 돌려 본 기록은 없습니다.
-        </li>
+        <li>실제 슈퍼 패미컴과 플래시 카트리지에서 돌려 본 기록은 없습니다. 에뮬레이터 결과는 7절에 있습니다.</li>
         <li>
           쓴 도구: Python 3.9.6(Pillow 11.3.0, numpy 2.0.2), Mesen 2.1.1, 새 글자 폰트 Galmuri11 2.404. 이 환경에서
           묶음과 일본판 원본만으로 빌드해 배포판과 같은 CRC32가 나오는 것을 확인했습니다.
