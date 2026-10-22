@@ -177,10 +177,10 @@ const { path } = Astro.props;
     margin: 0;
     padding: 8px 10px 10px 14px;
   }
+  /* Waline counts Latin text by words and CJK ideographs by character but skips Hangul, so Korean comments
+     always read 0. No word limit is set, so the counter has nothing to enforce. */
   .comments :global(.wl-text-number) {
-    color: var(--fg-muted);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
+    display: none;
   }
   .comments :global(.wl-btn) {
     min-height: 34px;
