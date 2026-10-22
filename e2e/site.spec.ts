@@ -593,10 +593,19 @@ test('SMRPG secrets keep spoilers folded and support independent keyboard disclo
 
   const first = details.nth(0);
   const second = details.nth(1);
+  const preview = secrets.locator('.secret').first().locator(':scope > figure img');
+  await expect(preview).toBeVisible();
+  await preview.scrollIntoViewIfNeeded();
+  await expect.poll(() => preview.evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  const detailImage = first.locator('.secret-body img').first();
+  await expect(detailImage).toBeHidden();
   await expect(first.locator('.secret-body')).toBeHidden();
   await first.locator('summary').focus();
   await page.keyboard.press('Enter');
   await expect(first.locator('.secret-body')).toBeVisible();
+  await expect(detailImage).toBeVisible();
+  await detailImage.scrollIntoViewIfNeeded();
+  await expect.poll(() => detailImage.evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await expect(second.locator('.secret-body')).toBeHidden();
 
   await second.locator('summary').focus();
