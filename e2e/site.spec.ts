@@ -999,8 +999,13 @@ for (const game of PATCH_GUIDES) {
   test(`${game} mobile navigation does not shift content when scripts load`, async ({ page, isMobile }) => {
     test.skip(!isMobile);
     const resume: (() => Promise<void>)[] = [];
+    let held = true;
+    // Only the scripts requested before the measurement are held. Modules they import are requested after the
+    // release, and holding those too would leave them pending for good.
     await page.route('**/_astro/*.js', route => {
+      if (!held) return route.continue();
       resume.push(() => route.continue());
+      return undefined;
     });
     await page.goto(path, { waitUntil: 'commit' });
     const patch = page.locator('#patch');
@@ -1015,6 +1020,7 @@ for (const game of PATCH_GUIDES) {
       return document.fonts.ready;
     });
     const before = await patch.boundingBox();
+    held = false;
     await Promise.all(resume.map(run => run()));
     await expect(page.locator('.patch-section-nav')).toHaveAttribute('data-enhanced', 'true');
     expect((await patch.boundingBox())?.y).toBe(before?.y);
