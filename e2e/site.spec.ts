@@ -824,6 +824,10 @@ for (const game of PATCH_GUIDES) {
     const menu = nav.locator('details');
     const summary = menu.locator('summary');
     const links = nav.locator('a');
+    const current = nav.locator('[aria-current="location"]');
+    await expect(current).toHaveCount(1);
+    await expect(current).toHaveAttribute('href', '#patch');
+    await expect(summary).toContainText('한글패치 하기');
     const hrefs = await links.evaluateAll(items => items.map(item => item.getAttribute('href')));
     expect(hrefs[0]).toBe('#patch');
     expect(hrefs.at(-1)).toBe('#main');
@@ -874,6 +878,14 @@ for (const game of PATCH_GUIDES) {
           .toBe(true);
       }
     }
+    if (isMobile) await summary.click();
+    const top = nav.locator('a[href="#main"]');
+    await top.click();
+    await expect(page).toHaveURL(/#main$/);
+    await expect(current).toHaveAttribute('href', '#patch');
+    await expect(top).not.toHaveAttribute('aria-current');
+    await expect(summary).toContainText('한글패치 하기');
+    if (isMobile) await expect(menu).not.toHaveAttribute('open', '');
     await noHorizontalOverflow(page);
   });
 
@@ -884,6 +896,13 @@ for (const game of PATCH_GUIDES) {
     const nav = page.getByRole('navigation', { name: '페이지 내 이동', exact: true });
     const current = nav.locator('[aria-current="location"]');
     await expect(current).toHaveCount(1);
+    await expect(current).toHaveAttribute('href', '#story');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(current).toHaveAttribute('href', '#patch');
+    await page.goto(`${path}#main`);
+    await expect(current).toHaveAttribute('href', '#patch');
+    await expect(nav.locator('a[href="#main"]')).not.toHaveAttribute('aria-current');
+    await page.goto(`${path}#story`);
     await expect(current).toHaveAttribute('href', '#story');
 
     await page.locator('#play').evaluate(element => {
