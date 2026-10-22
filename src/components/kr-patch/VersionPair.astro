@@ -1,6 +1,7 @@
 ---
 import type { Version, VersionPair } from '../../lib/version-pairs';
 import Speech from './Speech.astro';
+import Screenshot from './Screenshot.astro';
 
 interface Props {
   pair: VersionPair;
@@ -35,13 +36,12 @@ const order = (frame: number) => (frames > 1 ? ` (${frame}/${frames})` : '');
                   {gap}
                 </p>
               ) : (
-                <img
+                <Screenshot
                   src={`${base}/images/patch/${pair.id}_${version.key}_${frame}.webp`}
-                  width="256"
+                  width={256}
                   height={height}
                   alt={`${version.label}: ${pair.alt}${order(frame)}`}
-                  loading="lazy"
-                  decoding="async"
+                  highlights={pair.highlights?.[`${version.key}:${frame}`]}
                 />
               )}
             </div>

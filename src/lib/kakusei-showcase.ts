@@ -37,6 +37,12 @@ export const kakuseiGroups: VersionGroup[] = [
       },
       {
         id: 'restore_match',
+        highlights: {
+          'v11:1': [[86, 143, 54, 18]],
+          'v12:1': [[86, 159, 120, 18]],
+          'v11:2': [[86, 143, 126, 34]],
+          'v12:2': [[86, 143, 126, 50]],
+        },
         frames: 2,
         caption: '천하제일 무술대회 예선에서 크리링이 하는 말도 원문대로 고쳤습니다.',
         alt: '예선 회장에서 상대를 보고 웃는 크리링',
@@ -56,6 +62,12 @@ export const kakuseiGroups: VersionGroup[] = [
       },
       {
         id: 'tone_frieza_1',
+        highlights: {
+          'v11:1': [[86, 159, 100, 34]],
+          'v12:1': [[86, 159, 150, 34]],
+          'v11:2': [[86, 143, 150, 34]],
+          'v12:2': [[86, 143, 150, 50]],
+        },
         frames: 2,
         caption: '프리더는 베지터에게도 존댓말을 씁니다.',
         alt: '나메크성에서 베지터와 마주한 프리더',
@@ -89,6 +101,7 @@ export const kakuseiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'title',
+        highlights: { 'v11:1': [[14, 54, 100, 44]], 'v12:1': [[14, 54, 100, 44]] },
         caption: '타이틀 로고를 "초오공전 각성편"으로 바꾸고 로고 아래 가타카나는 지웠습니다.',
         alt: '드래곤볼 Z 로고와 오공·오반이 있는 타이틀 화면',
       },

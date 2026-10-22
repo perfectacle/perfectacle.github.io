@@ -2,6 +2,7 @@
 import '../styles/patch-book.css';
 import Analytics from '../components/Analytics.astro';
 import SectionNav from '../components/kr-patch/SectionNav.astro';
+import ImagePreview from '../components/kr-patch/ImagePreview.astro';
 import { SITE } from '../lib/posts.ts';
 import { KR_PATCH_LIST_PATH, KR_PATCH_SITE_TITLE, KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
 import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
@@ -76,6 +77,7 @@ const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH
     <main id="main" tabindex="-1">
       <slot />
     </main>
+    {theme !== 'sfc' && <ImagePreview />}
     <footer class="page-footer page-width">
       {copyright.map(line => (
         <p>{line}</p>
