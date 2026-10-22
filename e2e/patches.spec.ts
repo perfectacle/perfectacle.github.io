@@ -274,7 +274,7 @@ test('catalogue characters change pose in place and return to their initial fram
   for (const { name, expectedFrames, poseFrames } of [
     { name: 'mega-man-x', expectedFrames: 10, poseFrames: [1, 3, 6, 8] },
     { name: 'ryu', expectedFrames: 86, poseFrames: [5, 65, 70, 75, 82] },
-    { name: 'diddy-kong', expectedFrames: 174, poseFrames: [60, 69, 80, 150, 165] },
+    { name: 'diddy-kong', expectedFrames: 256, poseFrames: [136, 158, 159, 250, 254] },
   ]) {
     const sprite = page.locator(`.world-rail .sprite-${name}`);
     await sprite.scrollIntoViewIfNeeded();
@@ -327,6 +327,23 @@ test('catalogue characters change pose in place and return to their initial fram
       if (!sitting || !jugglingStart || !jugglingNext) throw new Error('Diddy must have sitting and juggling poses');
       expect(sitting.equals(initial)).toBe(false);
       expect(jugglingStart.equals(jugglingNext)).toBe(false);
+      const frameImage = async (frame: number) => {
+        await sprite.evaluate(
+          (element, time) => {
+            const animation = element.getAnimations()[0];
+            if (!animation) throw new Error('The character animation must exist');
+            animation.currentTime = time;
+          },
+          (duration / frameCount) * (frame + 0.1),
+        );
+        return sprite.screenshot();
+      };
+      for (const frame of [0, 112, 138, 156, 250, 254]) {
+        expect((await frameImage(frame)).equals(await frameImage(frame + 1))).toBe(true);
+      }
+      expect((await frameImage(112)).equals(await frameImage(114))).toBe(false);
+      expect((await frameImage(134)).equals(await frameImage(138))).toBe(true);
+      expect((await frameImage(116)).equals(await frameImage(156))).toBe(true);
     }
     await sprite.evaluate((element, time) => {
       const animation = element.getAnimations()[0];
