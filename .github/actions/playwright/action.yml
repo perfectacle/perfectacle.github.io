@@ -8,7 +8,10 @@ runs:
       shell: bash
       run: |
         . /etc/os-release
+        install -d -m 0755 /tmp/playwright-apt
         echo "os=$ID-$VERSION_ID" >> "$GITHUB_OUTPUT"
+        echo "image=${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
+        echo "apt=/tmp/playwright-apt" >> "$GITHUB_OUTPUT"
         echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
 
     - id: cache
@@ -17,10 +20,20 @@ runs:
         path: ~/.cache/ms-playwright
         key: playwright-${{ runner.os }}-${{ steps.browser.outputs.os }}-${{ runner.arch }}-${{ steps.browser.outputs.version }}
 
-    # Bound mirror stalls without changing package signature verification.
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.browser.outputs.apt }}/*.deb
+        key: playwright-apt-${{ runner.os }}-${{ steps.browser.outputs.os }}-${{ runner.arch }}-${{ steps.browser.outputs.image }}-${{ steps.browser.outputs.version }}
+
+    # Keep package downloads across runners; apt still refreshes and verifies repository metadata.
     - shell: bash
       run: |
-        printf '%s\n' 'Acquire::Retries "2";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";' | sudo tee /etc/apt/apt.conf.d/99-ci-timeouts > /dev/null
+        sudo install -d -o _apt -g root -m 0700 /tmp/playwright-apt/partial
+        {
+          printf '%s\n' 'Acquire::Retries "2";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";'
+          printf '%s\n' 'Dir::Cache::archives "/tmp/playwright-apt";'
+          printf '%s\n' 'APT::Keep-Downloaded-Packages "true";'
+        } | sudo tee /etc/apt/apt.conf.d/99-ci-timeouts > /dev/null
 
     - if: steps.cache.outputs.cache-hit == 'true'
       shell: bash
