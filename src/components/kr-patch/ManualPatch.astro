@@ -4,18 +4,12 @@ import { megabytes, patchedSize } from '../../lib/rom-patch';
 
 interface Props {
   patch: KrPatch;
-  /** Draw the checksum table in the game's window frame. */
-  framed?: boolean;
 }
 
-const { patch, framed = false } = Astro.props;
+const { patch } = Astro.props;
 const { spec } = patch;
 const { ips, headeredIps } = downloads(patch);
 const korean = patchedSize(spec);
-const rows = [
-  { name: '일본판 원본', size: spec.size, rom: spec.original },
-  { name: `한글판 v${patch.version}`, size: korean, rom: spec.patched },
-];
 ---
 
 <details class="manual">
@@ -56,31 +50,6 @@ const rows = [
         파일({megabytes(spec)}+512바이트)은 이 페이지의 패치 상자를 쓰면 알아서 처리합니다.
       </p>
     )}
-    <table class:list={{ frame: framed }}>
-      <caption>헤더 없는 파일 기준</caption>
-      <thead>
-        <tr>
-          <th scope="col">구분</th>
-          <th scope="col">크기</th>
-          <th scope="col">CRC32</th>
-          <th scope="col">MD5</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map(row => (
-          <tr>
-            <th scope="row">{row.name}</th>
-            <td>{formatBytes(row.size)}</td>
-            <td>
-              <code>{row.rom.crc32}</code>
-            </td>
-            <td>
-              <code>{row.rom.md5}</code>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
     <slot />
   </div>
 </details>

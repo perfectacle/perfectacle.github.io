@@ -143,8 +143,14 @@ const story = [
       <h1 id="title" class="pixel">
         {patch.title} 한글판
       </h1>
-      <PatchBox ips={downloads(patch).ips} spec={patch.spec} output={patch.stem} speaker={GUIDE} />
-      <ManualPatch patch={patch} framed>
+      <PatchBox
+        ips={downloads(patch).ips}
+        spec={patch.spec}
+        version={patch.version}
+        output={patch.stem}
+        speaker={GUIDE}
+      />
+      <ManualPatch patch={patch}>
         <p>세이브 구조는 바꾸지 않아 v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
       </ManualPatch>
     </div>

@@ -1,16 +1,18 @@
 ---
 import type { RomSpec } from '../../lib/rom-patch';
+import FileChecksums from './FileChecksums.astro';
 
 interface Props {
   ips: string;
   spec: RomSpec;
+  version: string;
   /** File name of the saved Korean ROM, without the extension. */
   output: string;
   /** Character who speaks the box's messages, shown as the game's `<name>` tag. */
   speaker?: string;
 }
 
-const { ips, spec, output, speaker } = Astro.props;
+const { ips, spec, version, output, speaker } = Astro.props;
 ---
 
 <div id="patch" class="patch-box frame" data-ips={ips} data-spec={JSON.stringify(spec)} data-output={output}>
@@ -62,6 +64,7 @@ const { ips, spec, output, speaker } = Astro.props;
     <div class="status-actions"></div>
   </div>
   <p class="privacy">파일은 이 기기 안에서만 바꾸고 어디에도 보내지 않습니다.</p>
+  <FileChecksums spec={spec} version={version} />
 </div>
 
 <script>
