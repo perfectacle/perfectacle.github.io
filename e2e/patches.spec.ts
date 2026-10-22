@@ -231,17 +231,17 @@ for (const width of [390, 768, 1280]) {
 
 test('catalogue cards show the patch release date and their own game credits', async ({ page }) => {
   await page.goto('/games/kr-patches/');
-  for (const [path, version, copyright] of [
-    [GAME, '1.1', '게임 © 1995 Nintendo / SQUARE · 캐릭터 © Nintendo, © SQUARE'],
-    [GOKUDEN, '1.1', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
-    [KAKUSEI, '1.2', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
-    [OTOGIRI, '1.2', '게임 © 1992 CHUNSOFT'],
+  for (const [path, version, released, copyright] of [
+    [GAME, '1.1', '2026-10-18', '게임 © 1995 Nintendo / SQUARE · 캐릭터 © Nintendo, © SQUARE'],
+    [GOKUDEN, '1.1', '2026-10-18', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
+    [KAKUSEI, '1.2', '2026-10-18', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
+    [OTOGIRI, '1.2', '2026-10-22', '게임 © 1992 CHUNSOFT'],
   ] as const) {
     const card = page.locator(`main a[href="${path}"]`);
     await expect(card).not.toContainText('한글패치 출시일');
-    await expect(card.locator('.game-release')).toContainText(`한글패치 v${version} (2026-10-18)`);
-    await expect(card.locator('time')).toHaveAttribute('datetime', '2026-10-18');
-    await expect(card.locator('time')).toHaveText('(2026-10-18)');
+    await expect(card.locator('.game-release')).toContainText(`한글패치 v${version} (${released})`);
+    await expect(card.locator('time')).toHaveAttribute('datetime', released);
+    await expect(card.locator('time')).toHaveText(`(${released})`);
     await expect(card).toContainText(copyright);
   }
   await expect(page.locator('footer')).not.toContainText('Nintendo');

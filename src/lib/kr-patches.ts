@@ -8,6 +8,8 @@ export interface KrPatch {
   /** Japanese release year. */
   year: number;
   version: string;
+  /** Release date of `version` (YYYY-MM-DD), shown on the catalogue card. */
+  released: string;
   /** Download names: `${stem}.ips`, `${stem}_Headered.ips`, `${stem}_tools.zip`, and the saved ROM. */
   stem: string;
   /** Whether a separate IPS for copier-headered files is published. */
@@ -30,6 +32,7 @@ export const SMRPG_PATCH: KrPatch = {
   path: '/games/kr-patches/sfc/super-mario-rpg',
   year: 1996,
   version: '1.1',
+  released: '2026-10-18',
   stem: 'Super_Mario_RPG_K_v1_1',
   headeredIps: false,
   spec: SMRPG,
@@ -47,6 +50,7 @@ export const TOTSUGEKI_PATCH: KrPatch = {
   path: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki',
   year: 1995,
   version: '1.1',
+  released: '2026-10-18',
   stem: 'Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_1',
   headeredIps: true,
   spec: GOKUDEN_TOTSUGEKI,
@@ -65,6 +69,7 @@ export const KAKUSEI_PATCH: KrPatch = {
   path: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei',
   year: 1995,
   version: '1.2',
+  released: '2026-10-18',
   stem: 'Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_2',
   headeredIps: true,
   spec: GOKUDEN_KAKUSEI,
@@ -83,6 +88,7 @@ export const OTOGIRISOU_PATCH: KrPatch = {
   path: '/games/kr-patches/sfc/otogirisou',
   year: 1992,
   version: '1.2',
+  released: '2026-10-22',
   stem: 'Otogirisou_K_v1_2',
   headeredIps: true,
   spec: OTOGIRISOU,
