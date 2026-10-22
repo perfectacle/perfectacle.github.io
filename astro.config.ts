@@ -7,6 +7,7 @@ import { remarkPostLinks } from './src/lib/remark-post-links.ts';
 import { rehypeYoutubeFacade } from './src/lib/rehype-youtube-facade.ts';
 import { rehypePostImages } from './src/lib/rehype-post-images.ts';
 import { rehypeCodeBlocks } from './src/lib/rehype-code-blocks.ts';
+import { AVIF_OPTIONS } from './src/lib/image-format.ts';
 
 export default defineConfig({
   vite: {
@@ -23,7 +24,12 @@ export default defineConfig({
   // Astro adds each image's own width (POST_IMAGE_WIDTH) and its 2x to these, dropping any wider than the original,
   // so an image gets at most four variants. Astro's default breakpoint list made ~6 variants per image,
   // pushing the Pages artifact past 700MB (limit 1GB).
-  image: { layout: 'constrained', responsiveStyles: true, breakpoints: [720, 1440] },
+  image: {
+    layout: 'constrained',
+    responsiveStyles: true,
+    breakpoints: [720, 1440],
+    service: { entrypoint: 'astro/assets/services/sharp', config: { avif: AVIF_OPTIONS } },
+  },
   markdown: {
     processor: unified({
       // Posts were written against Hexo's marked renderer, where a single newline is a line break.

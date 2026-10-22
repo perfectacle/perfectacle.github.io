@@ -5,25 +5,43 @@
 
   const zoomable = (img: HTMLImageElement) => !img.closest('a, .yt-facade');
 
-  /** Largest srcset candidate; Astro's responsive images go up to 2x the post column. */
-  function fullSize(img: HTMLImageElement) {
-    const candidates = (img.srcset || '')
+  function currentSource(img: HTMLImageElement) {
+    if (!img.currentSrc) return undefined;
+    return [...(img.closest('picture')?.querySelectorAll('source') ?? [])].find(node =>
+      node.srcset
+        .split(',')
+        .some(candidate => new URL(candidate.trim().split(/\s+/)[0] ?? '', location.href).href === img.currentSrc),
+    );
+  }
+
+  /** Largest supported candidate, including gallery images the browser has not lazy-loaded yet. */
+  function fullSize(img: HTMLImageElement, canUseAvif: boolean) {
+    const source =
+      currentSource(img) ??
+      (canUseAvif ? img.closest('picture')?.querySelector<HTMLSourceElement>('source[type="image/avif"]') : undefined);
+    const candidates = (source?.srcset || img.srcset || '')
       .split(',')
       .map(s => s.trim().split(/\s+/))
       .map(([url, w]) => ({ url: url ?? '', w: Number.parseInt(w ?? '', 10) }))
       .filter(c => c.url && c.w);
     const best = candidates.sort((a, b) => b.w - a.w)[0];
     const ratio = img.naturalHeight / img.naturalWidth || img.height / img.width || 1;
-    const width = best?.w ?? img.naturalWidth;
-    return { src: best?.url ?? img.currentSrc ?? img.src, width, height: Math.round(width * ratio), alt: img.alt };
+    const width = best?.w || img.naturalWidth || img.width || 1;
+    return {
+      src: best?.url || img.currentSrc || img.src,
+      width,
+      height: Math.max(1, Math.round(width * ratio)),
+      alt: img.alt,
+    };
   }
 
   const images = [...document.querySelectorAll<HTMLImageElement>('.prose img')].filter(zoomable);
 
   async function open(index: number) {
     const { default: PhotoSwipe } = await import('photoswipe');
+    const canUseAvif = images.some(img => img.naturalWidth > 0 && currentSource(img)?.type === 'image/avif');
     const pswp = new PhotoSwipe({
-      dataSource: images.map(fullSize),
+      dataSource: images.map(img => fullSize(img, canUseAvif)),
       index,
       bgOpacity: 0.92,
       showHideAnimationType: 'fade',
