@@ -8,7 +8,7 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
 ---
 
 <nav class="patch-section-nav" aria-label="페이지 내 이동">
-  <details class="section-nav-menu frame" open>
+  <details class="section-nav-menu frame">
     <summary class="pixel">
       <span class="section-nav-caption">이 페이지 차례</span>
       <span class="section-nav-current">맨 위로</span>
@@ -205,7 +205,7 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
       padding: 12px 8px;
     }
 
-    .section-nav-menu summary {
+    .patch-section-nav[data-enhanced] .section-nav-menu summary {
       display: none;
     }
 

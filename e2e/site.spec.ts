@@ -594,6 +594,23 @@ const PATCH_GUIDES = [
 for (const game of PATCH_GUIDES) {
   const path = `/games/kr-patches/sfc/${game}/`;
 
+  test(`${game} mobile navigation does not shift content when scripts load`, async ({ page, isMobile }) => {
+    test.skip(!isMobile);
+    const resume: (() => Promise<void>)[] = [];
+    await page.route('**/_astro/*.js', route => {
+      resume.push(() => route.continue());
+    });
+    await page.goto(path, { waitUntil: 'commit' });
+    const patch = page.locator('#patch');
+    await expect(patch).toBeVisible();
+    await expect.poll(() => resume.length).toBeGreaterThan(0);
+    await page.evaluate(() => document.fonts.ready);
+    const before = await patch.boundingBox();
+    await Promise.all(resume.map(run => run()));
+    await expect(page.locator('.patch-section-nav')).toHaveAttribute('data-enhanced', 'true');
+    expect((await patch.boundingBox())?.y).toBe(before?.y);
+  });
+
   test(`${game} section navigation moves between the story, play and patch`, async ({ page, isMobile }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(path);
