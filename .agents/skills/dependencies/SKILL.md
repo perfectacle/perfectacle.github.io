@@ -25,7 +25,7 @@ description: npm 의존성·pnpm·Node·GitHub Actions 버전을 추가하거나
 - 이유: 공급망 공격은 대개 배포 직후 며칠 안에 발견·회수된다.
 - 예외는 보안 수정 하나다. Renovate 는 취약점 PR 에 쿨다운을 적용하지 않는다(`vulnerabilityAlerts`). pnpm 쪽은 그 버전을 `pnpm-workspace.yaml` 의 `minimumReleaseAgeExclude` 에 넣어야 설치되고, `minimumReleaseAgeExcludePrune` 이 lockfile 이 더 쓰지 않는 항목을 지운다. 예외는 취약점 수정 버전에만, 근거(advisory 링크)를 PR 에 적고 넣는다.
 - `audit` 잡이 새 advisory 로 실패했는데 수정 버전이 쿨다운 안이면 위 예외로 넣는다. 수정 버전이 없으면 PR 에 advisory 와 영향 여부를 적고 저장소 주인에게 넘긴다.
-- GitHub Actions 도 같은 기준이다. 액션은 커밋 SHA 로 고정하고 `# vX.Y.Z` 주석을 단다(Renovate 가 둘 다 올린다). docker 이미지(actionlint)는 digest 로, pipx 로 도는 zizmor 는 `==` 버전으로 고정하고 `renovate.json` 의 customManager 가 올린다.
+- GitHub Actions 도 같은 기준이다. 액션은 커밋 SHA 로 고정하고 `# vX.Y.Z` 주석을 단다(Renovate 가 둘 다 올린다). docker 이미지(actionlint)는 digest 로, pipx 로 도는 zizmor 는 잡 env 의 `ZIZMOR` 한 곳에 `==` 버전으로 두고 `renovate.json` 의 customManager 가 올린다(캐시 키와 실행이 같은 값을 읽는다).
 
 ### DEP-02 — lockfile
 

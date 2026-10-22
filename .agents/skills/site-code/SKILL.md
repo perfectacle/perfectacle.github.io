@@ -51,6 +51,7 @@ description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, s
 - 이유: 경로가 바뀌면 그 글의 댓글 스레드가 통째로 안 보인다.
 - `path` 를 `location.pathname` 같은 런타임 값으로 바꾸지 않는다. 쿼리나 끝 슬래시 차이로 스레드가 갈라진다.
 - 확인: `pnpm test:e2e` 의 댓글 테스트가 서버에 보낸 `path` 를 검사한다.
+- 서버는 [perfectacle/blog-comments](https://github.com/perfectacle/blog-comments) 저장소다. 서버도 이 경로를 가공하지 않는다(그 저장소의 SRV-01).
 
 ## 참고
 
