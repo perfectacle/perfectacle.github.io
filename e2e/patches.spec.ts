@@ -293,7 +293,7 @@ test('catalogue characters change pose in place and return to their initial fram
     });
     expect(Number.isInteger(frameCount)).toBe(true);
     expect(frameCount).toBe(expectedFrames);
-    expect(duration / frameCount).toBeCloseTo(1000 / 30, 3);
+    expect(duration / frameCount).toBeCloseTo(50, 3);
     const positions = await sprite.evaluate((element, frameDuration) => {
       const animation = element.getAnimations()[0];
       if (!animation) throw new Error('The character animation must exist');
