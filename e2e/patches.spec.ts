@@ -253,9 +253,6 @@ for (const width of [1280, 1920]) {
     await expect(page.locator('svg.sfc-controller[aria-hidden="true"]')).toBeVisible();
     await expect(page.locator('.world-rail[aria-hidden="true"]')).toHaveCount(2);
     await expect(page.locator('.world-sprite')).toHaveCount(3);
-    await expect(
-      page.locator('.world-platform, .world-stars, .world-canopy, .world-sun, .sprite-dixie-kong'),
-    ).toHaveCount(0);
     for (const name of ['mega-man-x', 'diddy-kong', 'ryu']) {
       const sprite = page.locator(`.world-rail .sprite-${name}`);
       await expect(sprite).toBeVisible();
@@ -264,6 +261,62 @@ for (const width of [1280, 1920]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
       0,
     );
+  });
+}
+
+for (const width of [390, 1280, 1920]) {
+  test(`catalogue scenery stays decorative and supports characters away from cards at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1080 });
+    await page.goto('/games/kr-patches/');
+    const scenery = page.locator('.forest-scenery');
+    await expect(scenery).toHaveAttribute('aria-hidden', 'true');
+    await expect(scenery).toHaveCSS('pointer-events', 'none');
+    await expect(scenery.locator('a, button, input, select, textarea, [tabindex]')).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+      0,
+    );
+    for (const sprite of await page.locator('.world-sprite').all()) {
+      if (width === 390) {
+        await expect(sprite).toBeHidden();
+        continue;
+      }
+      const bounds = await sprite.evaluate(element => {
+        const rect = element.getBoundingClientRect();
+        const platform = getComputedStyle(element, '::after');
+        const left = rect.left + parseFloat(platform.left);
+        const top = rect.top + parseFloat(platform.top);
+        return {
+          feetBaseline: rect.bottom - 2 * Number(getComputedStyle(element).getPropertyValue('--sprite-scale')),
+          platformContent: platform.content,
+          platform: {
+            left,
+            top,
+            right: left + parseFloat(platform.width),
+            bottom: top + parseFloat(platform.height),
+          },
+          sprite: { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom },
+          cards: [...document.querySelectorAll('.game-card')].map(card => {
+            const box = card.getBoundingClientRect();
+            return { left: box.left, top: box.top, right: box.right, bottom: box.bottom };
+          }),
+        };
+      });
+      expect(bounds.platformContent).not.toBe('none');
+      expect(bounds.platform.top).toBeCloseTo(bounds.feetBaseline, 0);
+      expect(bounds.platform.bottom).toBeGreaterThan(bounds.platform.top);
+      expect(bounds.platform.left).toBeGreaterThanOrEqual(0);
+      expect(bounds.platform.right).toBeLessThanOrEqual(width);
+      for (const decoration of [bounds.sprite, bounds.platform]) {
+        for (const card of bounds.cards) {
+          expect(
+            decoration.right <= card.left ||
+              decoration.left >= card.right ||
+              decoration.bottom <= card.top ||
+              decoration.top >= card.bottom,
+          ).toBe(true);
+        }
+      }
+    }
   });
 }
 

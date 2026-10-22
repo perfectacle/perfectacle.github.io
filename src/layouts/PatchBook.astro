@@ -24,7 +24,7 @@ const { title, description, trail, theme, image, copyright, links = [], sections
 const patch = KR_PATCHES.find(p => p.theme === theme);
 if (!patch && theme !== 'sfc') throw new Error(`Unknown theme ${theme}`);
 const assets = patch?.path;
-const color = patch?.color ?? '#080e23';
+const color = patch?.color ?? '#182b22';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const imageUrl = new URL(image.src, Astro.site).href;
 const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH_SITE_TITLE}`;
