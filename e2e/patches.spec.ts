@@ -155,6 +155,76 @@ test('catalogue lists every game page', async ({ page }) => {
   }
 });
 
+test('catalogue uses the Super Mario RPG title screen', async ({ page }) => {
+  await page.goto('/games/kr-patches/');
+  const screen = page.locator(`main a[href="${GAME}"] img`);
+  await expect(screen).toHaveAttribute('src', '/games/kr-patches/catalogue/super-mario-rpg-title.webp');
+  await expect
+    .poll(() => screen.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0))
+    .toBe(true);
+});
+
+test('catalogue cards show the patch release date and their own game credits', async ({ page }) => {
+  await page.goto('/games/kr-patches/');
+  for (const [path, copyright] of [
+    [GAME, '게임 © 1995 Nintendo / SQUARE · 캐릭터 © Nintendo, © SQUARE'],
+    [GOKUDEN, '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
+    [KAKUSEI, '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
+    [OTOGIRI, '게임 © 1992 CHUNSOFT'],
+  ] as const) {
+    const card = page.locator(`main a[href="${path}"]`);
+    await expect(card).toContainText('한글패치 출시일');
+    await expect(card.locator('time')).toHaveAttribute('datetime', '2026-10-18');
+    await expect(card.locator('time')).toHaveText('2026-10-18');
+    await expect(card).toContainText(copyright);
+  }
+  await expect(page.locator('footer')).not.toContainText('Nintendo');
+  await expect(page.locator('footer')).not.toContainText('BANDAI');
+  await expect(page.locator('footer')).not.toContainText('CHUNSOFT');
+});
+
+for (const width of [1280, 1920]) {
+  test(`catalogue loads the SFC controller and local game sprites at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1080 });
+    await page.goto('/games/kr-patches/');
+    await expect(page.locator('svg.sfc-controller[aria-hidden="true"]')).toBeVisible();
+    await expect(page.locator('.world-rail[aria-hidden="true"]')).toHaveCount(2);
+    const sprites = page.locator('.world-rail img.world-sprite');
+    for (const name of ['mega-man-x', 'diddy-kong', 'ryu']) {
+      await expect(page.locator(`.world-rail img.world-sprite[src$="/${name}.webp"]`)).toHaveCount(1);
+    }
+    for (const sprite of await sprites.all()) {
+      await expect(sprite).toBeVisible();
+      await sprite.scrollIntoViewIfNeeded();
+      expect(await sprite.getAttribute('src')).toMatch(/^\/games\/kr-patches\/catalogue\//);
+      await expect
+        .poll(() => sprite.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0))
+        .toBe(true);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+      0,
+    );
+  });
+}
+
+for (const width of [320, 390]) {
+  test(`catalogue cards fit a ${width}px phone without horizontal scrolling`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto('/games/kr-patches/');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+      0,
+    );
+    for (const card of await page.locator('main a.game-card').all()) {
+      await card.scrollIntoViewIfNeeded();
+      await expect(card.locator('time')).toBeVisible();
+      const bounds = await card.boundingBox();
+      if (!bounds) throw new Error('Catalogue card has no visible bounds');
+      expect(bounds.x).toBeGreaterThanOrEqual(0);
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    }
+  });
+}
+
 for (const path of [GAME, GOKUDEN, KAKUSEI, OTOGIRI]) {
   test(`${path} leads with patch instructions and supports choosing a file from the keyboard`, async ({ page }) => {
     await page.goto(path);
