@@ -1,3 +1,5 @@
+export type ScreenshotHighlight = readonly [x: number, y: number, width: number, height: number];
+
 export interface VersionPair {
   /** File stem under images/patch; frame n of version key `vNN` loads `${id}_vNN_${n}.webp`. */
   id: string;
@@ -9,6 +11,8 @@ export interface VersionPair {
   gaps?: Record<string, string>;
   /** Screen height when the capture is a strip rather than the full 224-line screen. */
   height?: number;
+  /** Changed regions in native image coordinates, keyed like `v10:1`. */
+  highlights?: Record<string, ScreenshotHighlight[]>;
 }
 
 export interface VersionGroup {

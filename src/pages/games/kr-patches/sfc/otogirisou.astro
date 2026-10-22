@@ -320,6 +320,10 @@ const chapter = (id: string) => {
         </ul>
         <ReleaseScreenshot
           src={`${base}/images/making/a-wait.webp`}
+          highlights={[
+            [646, 86, 116, 32],
+            [646, 542, 116, 32],
+          ]}
           width={1150}
           height={970}
           alt="위 v1.0은 버튼을 누르지 않아도 넘어가고, 아래 v1.1은 입력을 기다립니다."
@@ -331,6 +335,11 @@ const chapter = (id: string) => {
         </ul>
         <ReleaseScreenshot
           src={`${base}/images/making/wordwrap.webp`}
+          highlights={[
+            [436, 570, 60, 32],
+            [38, 616, 84, 32],
+            [572, 616, 140, 32],
+          ]}
           width={1064}
           height={940}
           alt="왼쪽 v1.0은 단어 중간에서 끊기고, 오른쪽 v1.1은 단어 단위로 줄이 바뀝니다."

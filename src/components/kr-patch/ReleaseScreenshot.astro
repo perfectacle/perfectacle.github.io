@@ -1,23 +1,22 @@
 ---
+import type { ScreenshotHighlight } from '../../lib/version-pairs';
+import Screenshot from './Screenshot.astro';
+
 interface Props {
   src: string;
   width: number;
   height: number;
   alt: string;
   caption: string;
+  highlights?: ScreenshotHighlight[];
 }
 
-const { src, width, height, alt, caption } = Astro.props;
+const { src, width, height, alt, caption, highlights } = Astro.props;
 ---
 
 <figure class="release-screenshot">
-  <a href={src} aria-label={`${caption} 크게 보기`}>
-    <img src={src} width={width} height={height} alt={alt} loading="lazy" decoding="async" />
-  </a>
-  <figcaption>
-    {caption}
-    <span class="image-hint">사진을 눌러 크게 보기</span>
-  </figcaption>
+  <Screenshot src={src} width={width} height={height} alt={alt} highlights={highlights} />
+  <figcaption>{caption}</figcaption>
 </figure>
 
 <style>
@@ -27,24 +26,6 @@ const { src, width, height, alt, caption } = Astro.props;
     gap: 8px;
     min-width: 0;
     margin: 0;
-  }
-
-  img {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    image-rendering: pixelated;
-  }
-
-  a {
-    display: block;
-    max-width: 100%;
-  }
-
-  .image-hint {
-    display: block;
-    font-size: 0.8rem;
   }
 
   figcaption {

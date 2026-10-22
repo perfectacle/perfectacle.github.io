@@ -41,6 +41,7 @@ export const totsugekiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'tone_goku',
+        highlights: { 'v10:1': [[123, 185, 48, 16]], 'v11:1': [[180, 161, 26, 16]] },
         caption: '오공은 할아버지에게도 반말을 씁니다.',
         alt: '할아버지에게 먹을 것을 잡아 오겠다는 오공',
       },
@@ -88,6 +89,7 @@ export const totsugekiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'title',
+        highlights: { 'v10:1': [[14, 54, 100, 44]], 'v11:1': [[14, 54, 100, 44]] },
         caption: '타이틀 로고를 "초오공전 돌격편"으로 바꾸고 로고 아래 가타카나는 지웠습니다.',
         alt: '드래곤볼 Z 로고와 여의봉을 든 오공이 있는 타이틀 화면',
       },
@@ -113,6 +115,16 @@ export const totsugekiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'layout_wrap_1',
+        highlights: {
+          'v10:1': [
+            [171, 137, 27, 16],
+            [88, 161, 35, 16],
+          ],
+          'v11:1': [
+            [145, 137, 61, 16],
+            [88, 161, 93, 16],
+          ],
+        },
         caption: '줄 끝이 밀려나 세 줄이 된 브리프 박사의 대사.',
         alt: '캡슐 코퍼레이션에서 오공에게 말하는 브리프 박사',
       },

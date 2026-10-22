@@ -1,0 +1,73 @@
+---
+import type { ScreenshotHighlight } from '../../lib/version-pairs';
+
+interface Props {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  highlights?: ScreenshotHighlight[] | undefined;
+}
+
+const { src, width, height, alt, highlights = [] } = Astro.props;
+const dimensions = `--patch-image-width: ${width}px; --patch-image-ratio: ${width / height}`;
+---
+
+<button class="patch-image-trigger" type="button" data-patch-preview aria-label={`${alt} 크게 보기`} style={dimensions}>
+  <span class="patch-picture" style={dimensions}>
+    <img src={src} width={width} height={height} alt={alt} loading="lazy" decoding="async" />
+    {highlights.length > 0 && (
+      <svg class="patch-highlights" viewBox={`0 0 ${width} ${height}`} aria-hidden="true" focusable="false">
+        {highlights.map(([x, y, rectWidth, rectHeight]) => (
+          <rect x={x} y={y} width={rectWidth} height={rectHeight} vector-effect="non-scaling-stroke" />
+        ))}
+      </svg>
+    )}
+  </span>
+</button>
+
+<style>
+  .patch-image-trigger {
+    display: block;
+    width: min(100%, var(--patch-image-width), calc(min(38svh, 280px) * var(--patch-image-ratio)));
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: zoom-in;
+  }
+
+  .patch-image-trigger:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .patch-picture {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--patch-image-ratio);
+  }
+
+  .patch-picture img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+
+  .patch-highlights {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  rect {
+    fill: none;
+    stroke: #ff3333;
+    stroke-width: 2px;
+  }
+</style>

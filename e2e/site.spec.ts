@@ -695,6 +695,75 @@ for (const game of PATCH_GUIDES) {
     }
   });
 
+  test(`${game} patch screenshots preview in place and keep highlights`, async ({ page, isMobile }) => {
+    await page.setViewportSize({ width: isMobile ? 390 : 1280, height: 900 });
+    await page.goto(path);
+    const url = page.url();
+    const notes = page.locator('#patch-notes');
+    await expect(notes).not.toContainText('사진을 눌러 크게 보기');
+    for (const summary of await notes.locator('.release-details > summary').all()) await summary.click();
+    const triggers = [notes.locator('.release-screenshot .patch-image-trigger').first()];
+    if (await notes.locator('.version-pair .patch-image-trigger').count()) {
+      triggers.push(notes.locator('.version-pair .patch-image-trigger').first());
+    }
+    triggers.push(notes.locator('.patch-image-trigger:has(.patch-highlights)').first());
+    const preview = page.getByRole('dialog', { name: '스크린샷 미리 보기' });
+    for (const [index, trigger] of triggers.entries()) {
+      await trigger.scrollIntoViewIfNeeded();
+      const thumbnail = await trigger.locator('img').boundingBox();
+      expect(thumbnail?.height).toBeLessThanOrEqual(281);
+      const rectangles = await trigger
+        .locator('rect')
+        .evaluateAll(nodes =>
+          nodes.map(node => ['x', 'y', 'width', 'height'].map(attribute => node.getAttribute(attribute))),
+        );
+      await trigger.focus();
+      await page.keyboard.press(index % 2 ? 'Space' : 'Enter');
+      await expect(preview).toBeVisible();
+      await expect(page).toHaveURL(url);
+      await expect
+        .poll(() => preview.locator('img').evaluate(node => (node as HTMLImageElement).naturalWidth))
+        .toBeGreaterThan(0);
+      expect(
+        await preview
+          .locator('rect')
+          .evaluateAll(nodes =>
+            nodes.map(node => ['x', 'y', 'width', 'height'].map(attribute => node.getAttribute(attribute))),
+          ),
+      ).toEqual(rectangles);
+      const image = await preview.locator('img').boundingBox();
+      const viewport = page.viewportSize();
+      if (!image || !viewport) throw new Error('Missing preview dimensions');
+      if (!isMobile && thumbnail) expect(image.width).toBeGreaterThan(thumbnail.width);
+      expect(image.x).toBeGreaterThanOrEqual(0);
+      expect(image.y).toBeGreaterThanOrEqual(0);
+      expect(image.x + image.width).toBeLessThanOrEqual(viewport.width);
+      expect(image.y + image.height).toBeLessThanOrEqual(viewport.height);
+      expect(await preview.evaluate(node => node.scrollHeight - node.clientHeight)).toBe(0);
+      expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('hidden');
+      await noHorizontalOverflow(page);
+      const close = preview.getByRole('button', { name: '미리 보기 닫기' });
+      await expect(close).toBeFocused();
+      await page.keyboard.press('Tab');
+      await expect(close).toBeFocused();
+      await page.keyboard.press('Shift+Tab');
+      await expect(close).toBeFocused();
+      if (index === 0) {
+        const { violations } = await new AxeBuilder({ page }).include('#patch-image-preview').analyze();
+        expect(violations.filter(v => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);
+      }
+      await page.keyboard.press('Escape');
+      await expect(preview).not.toBeVisible();
+      await expect(trigger).toBeFocused();
+      expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('');
+      await trigger.click();
+      await expect(preview).toBeVisible();
+      await close.click();
+      await expect(preview).not.toBeVisible();
+      await expect(trigger).toBeFocused();
+    }
+  });
+
   test(`${game} mobile navigation does not shift content when scripts load`, async ({ page, isMobile }) => {
     test.skip(!isMobile);
     const resume: (() => Promise<void>)[] = [];

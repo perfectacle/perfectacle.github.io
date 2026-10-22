@@ -1,0 +1,117 @@
+<dialog id="patch-image-preview" aria-labelledby="patch-image-preview-title">
+  <div class="preview-header">
+    <h2 id="patch-image-preview-title">스크린샷 미리 보기</h2>
+    <button type="button" autofocus aria-label="미리 보기 닫기">
+      닫기
+    </button>
+  </div>
+  <div class="preview-content"></div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#patch-image-preview');
+  const content = dialog?.querySelector('.preview-content');
+  const close = dialog?.querySelector('button');
+  let trigger: HTMLButtonElement | null = null;
+  let overflow = '';
+
+  if (dialog && content && close) {
+    const finishClose = () => {
+      if (dialog.open || !trigger) return;
+      document.documentElement.style.overflow = overflow;
+      content.replaceChildren();
+      const previous = trigger;
+      trigger = null;
+      previous.focus({ preventScroll: true });
+    };
+    const closePreview = () => {
+      dialog.close();
+      finishClose();
+    };
+    document.addEventListener('click', event => {
+      const button =
+        event.target instanceof Element ? event.target.closest<HTMLButtonElement>('[data-patch-preview]') : null;
+      const picture = button?.querySelector('.patch-picture');
+      if (!button || !picture || dialog.open) return;
+      trigger = button;
+      content.replaceChildren(picture.cloneNode(true));
+      dialog.showModal();
+      overflow = document.documentElement.style.overflow;
+      document.documentElement.style.overflow = 'hidden';
+    });
+    close.addEventListener('click', closePreview);
+    dialog.addEventListener('cancel', event => {
+      event.preventDefault();
+      closePreview();
+    });
+    dialog.addEventListener('keydown', event => {
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        close.focus();
+      }
+    });
+    dialog.addEventListener('click', event => {
+      if (event.target === dialog) closePreview();
+    });
+    dialog.addEventListener('close', finishClose);
+  }
+</script>
+
+<style>
+  dialog {
+    width: fit-content;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+    margin: auto;
+    padding: 12px;
+    overflow: hidden;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    background: #17191e;
+    color: #fff;
+  }
+
+  dialog::backdrop {
+    background: rgb(0 0 0 / 85%);
+  }
+
+  .preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  button {
+    flex-shrink: 0;
+    min-height: 44px;
+    padding: 8px 12px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .preview-content :global(.patch-picture) {
+    width: min(
+      calc(var(--patch-image-width) * 3),
+      1100px,
+      calc(100vw - 50px),
+      calc((100dvh - 120px) * var(--patch-image-ratio))
+    );
+    margin-inline: auto;
+  }
+</style>
