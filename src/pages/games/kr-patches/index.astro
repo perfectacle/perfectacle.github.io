@@ -24,6 +24,18 @@ import '../../../styles/patch-catalogue.css';
   ]}
 >
   <div class="catalogue-world">
+    <div class="forest-scenery" aria-hidden="true">
+      <div class="forest-sky"></div>
+      <div class="forest-sun"></div>
+      <div class="forest-clouds"></div>
+      <div class="forest-mountains"></div>
+      <div class="forest-trees">
+        {Array.from({ length: 12 }, (_, i) => (
+          <i class="forest-tree" style={`--tree: ${i}`}></i>
+        ))}
+      </div>
+      <div class="forest-floor"></div>
+    </div>
     <div class="world-rail world-rail-left" aria-hidden="true">
       <div class="world-sprite sprite-mega-man-x"></div>
       <div class="world-sprite sprite-diddy-kong"></div>
