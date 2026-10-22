@@ -45,5 +45,11 @@ const ko = {
     for (const tpl of templates)
       tpl.content.querySelectorAll('pagefind-modal-trigger').forEach(el => el.setAttribute('hide-shortcut', ''));
   for (const tpl of templates) tpl.replaceWith(tpl.content.cloneNode(true));
+  // The trigger shows the shortcut ("⌘K") but is named only by its placeholder. Voice-control users speak what
+  // they see, so the visible keys have to be part of the name too (WCAG 2.5.3, Label in Name).
+  for (const button of document.querySelectorAll('.pf-trigger-btn')) {
+    const keys = button.querySelector('.pf-trigger-shortcut')?.textContent;
+    if (keys) button.setAttribute('aria-label', `${button.getAttribute('aria-label')} ${keys}`);
+  }
   document.dispatchEvent(new Event('pagefind:ready'));
 </script>
