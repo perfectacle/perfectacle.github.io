@@ -151,7 +151,7 @@ const story = [
         speaker={GUIDE}
       />
       <ManualPatch patch={patch}>
-        <p>세이브 구조는 바꾸지 않아 v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
+        <p>세이브 구조는 바꾸지 않아 v1.1·v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
       </ManualPatch>
     </div>
     <figure class="hero-shot screen">
@@ -285,9 +285,136 @@ const story = [
     <h2 id="patch-notes-title" class="pixel">
       패치 노트
     </h2>
+    <article class="patch-release" aria-labelledby="release-1-2">
+      <h3 id="release-1-2" class="pixel">
+        v1.2 · 최신 버전
+      </h3>
+      <p class="section-note">
+        <time datetime="2026-10-23">2026년 10월 23일</time>
+      </p>
+      <p class="release-overview">
+        전투 메시지와 이름 띠의 영문 이름, 잘못 나오던 글자 두 개를 고치고 셸·쉘 표기를 통일했습니다.
+      </p>
+      <ReleaseDetails>
+        <ul>
+          <li>
+            요시쿠키로 몬스터가 아이템으로 바뀔 때 「몬스터는 MUSHROOM 모습이 됐다!」처럼 영문 이름이 나오던 것을
+            「버섯」 같은 한글 이름으로 고쳤습니다. v1.0부터 있던 문제입니다.
+          </li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-2/yoshi-cookie.webp`}
+          highlights={[
+            [222, 40, 328, 46],
+            [222, 496, 328, 46],
+          ]}
+          width={630}
+          height={920}
+          panels={[
+            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 요시쿠키 메시지의 영문 MUSHROOM' },
+            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 요시쿠키 메시지의 한글 버섯' },
+          ]}
+          alt="요시쿠키 메시지의 아이템 이름 전후 비교"
+          caption="요시쿠키 메시지"
+        />
+        <ul>
+          <li>
+            화면 위 이름 띠가 아이템과 아군 필살기 이름을 영문으로 읽던 것을 한글로 고쳤습니다. 평소 플레이에서는 적
+            마법 이름만 띠에 나와 보이지 않던 부분입니다.
+          </li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-2/banner-item.webp`}
+          highlights={[
+            [118, 36, 496, 44],
+            [118, 492, 496, 44],
+          ]}
+          width={630}
+          height={920}
+          panels={[
+            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 이름 띠의 영문 YOSICOOKIE' },
+            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 이름 띠의 한글 요시쿠키' },
+          ]}
+          alt="이름 띠의 아이템 이름 전후 비교"
+          caption="이름 띠의 아이템 이름 (띠를 띄우려고 적의 행동을 바꾼 테스트 롬)"
+        />
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-2/banner-special.webp`}
+          highlights={[
+            [118, 36, 496, 44],
+            [118, 492, 496, 44],
+          ]}
+          width={630}
+          height={920}
+          panels={[
+            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 이름 띠의 영문 CRUSH' },
+            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 이름 띠의 한글 솟아나라쑤욱' },
+          ]}
+          alt="이름 띠의 필살기 이름 전후 비교"
+          caption="이름 띠의 필살기 이름 (같은 테스트 롬)"
+        />
+        <ul>
+          <li>
+            대사 폰트로 그리는 화면에서 아이템 「힐셸」이 「캡셸」로, 필살기 「천둥콰르릉」이 「천둥잣르릉」으로 나오던
+            것을 고쳤습니다. v1.1이 대사 폰트에 새 글자를 넣으며 다른 글자의 자리를 덮어서 생긴 문제입니다.
+          </li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-2/glyph-result.webp`}
+          highlights={[
+            [424, 184, 48, 38],
+            [424, 640, 48, 38],
+          ]}
+          width={630}
+          height={920}
+          panels={[
+            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 전투 결과 창의 캡셸' },
+            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 전투 결과 창의 힐쉘' },
+          ]}
+          alt="전투 결과 창의 힐쉘 전후 비교"
+          caption="전투 결과 창의 아이템 이름"
+        />
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-2/glyph-levelup.webp`}
+          highlights={[
+            [298, 210, 128, 48],
+            [298, 666, 128, 48],
+          ]}
+          width={630}
+          height={920}
+          panels={[
+            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 레벨업 화면의 천둥잣르릉' },
+            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 레벨업 화면의 천둥콰르릉' },
+          ]}
+          alt="레벨업 화면의 천둥콰르릉 전후 비교"
+          caption="레벨업 화면에서 배운 필살기"
+        />
+        <ul>
+          <li>셸 → 쉘 표기 통일: 해피쉘·파이어쉘·힐쉘. 이미 쓰던 「레이지쉘」과 맞췄습니다.</li>
+        </ul>
+        <ReleaseScreenshot
+          src={`${base}/images/releases/v1-2/shell-names.webp`}
+          highlights={[
+            [372, 16, 96, 88],
+            [372, 472, 96, 88],
+          ]}
+          width={630}
+          height={920}
+          panels={[
+            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 장비 목록의 해피셸, 파이어셸, 힐셸' },
+            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 장비 목록의 해피쉘, 파이어쉘, 힐쉘' },
+          ]}
+          alt="장비 목록의 셸·쉘 표기 통일 전후 비교"
+          caption="장비 목록의 이름 표기"
+        />
+        <ul>
+          <li>v1.1·v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+        </ul>
+      </ReleaseDetails>
+    </article>
     <article class="patch-release" aria-labelledby="release-1-1">
       <h3 id="release-1-1" class="pixel">
-        v1.1 · 최신 버전
+        v1.1
       </h3>
       <p class="section-note">
         <time datetime="2026-10-18">2026년 10월 18일</time>
