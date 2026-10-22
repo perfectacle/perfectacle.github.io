@@ -83,10 +83,11 @@ const cast = [
   trail={trail(patch)}
   description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
   sections={[
-    { id: 'changes', label: `v${patch.version}에서 달라진 것` },
+    { id: 'changes', label: '한국어로 바뀐 것' },
     { id: 'story', label: '이야기' },
     { id: 'cast', label: '등장인물' },
     { id: 'play', label: '진행 방식' },
+    { id: 'patch-notes', label: '패치 노트' },
     { id: 'making', label: '롬 분석 노트' },
   ]}
   theme={patch.theme}
@@ -117,22 +118,18 @@ const cast = [
 
   <section id="changes" class="section page-width" aria-labelledby="changes-title">
     <h2 id="changes-title" class="pixel">
-      v{patch.version}에서 달라진 것
+      한국어로 바뀐 것
     </h2>
     <p>
-      2012년에 낸 v1.0 이후 약 14년 만의 업데이트입니다. 대사 5,370줄을 일본어 원문과 한 줄씩 대조해 4,483줄을
-      고쳤습니다.
+      소년 오공의 모험을 대사와 선택지부터 타이틀·메뉴까지 한국어로 즐길 수 있습니다. 전투 대사와 적 이름도 한국어로
+      표시합니다.
     </p>
     <ul class="checklist frame">
-      <li>타이틀 화면과 메뉴 한글화</li>
-      <li>이벤트 표에서 빠져나오지 못하던 버그 수정</li>
-      <li>전투 대사·선택지·적 이름까지 다시 검수</li>
-      <li>폰트에 없던 글자 213자(꽃·쫓·흙 등) 추가</li>
+      <li>이야기 대사와 선택지</li>
+      <li>타이틀 화면과 메뉴</li>
+      <li>전투 대사·기술 이름·적 이름</li>
+      <li>이벤트 표와 캐릭터별 말투</li>
     </ul>
-    <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.0과 v1.1을 나란히 놓았습니다.</p>
-    {totsugekiGroups.map(group => (
-      <CompareGroup group={group} base={base} versions={totsugekiVersions} visible={VISIBLE_PER_GROUP} />
-    ))}
   </section>
 
   <section id="story" class="section page-width" aria-labelledby="story-title">
@@ -228,6 +225,43 @@ const cast = [
         </article>
       ))}
     </div>
+  </section>
+
+  <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
+    <h2 id="patch-notes-title" class="pixel">
+      패치 노트
+    </h2>
+    <article class="patch-release" aria-labelledby="release-1-1">
+      <h3 id="release-1-1" class="pixel">
+        v1.1 · 최신 버전
+      </h3>
+      <p class="section-note">
+        <time datetime="2026-10-18">2026년 10월 18일</time>
+      </p>
+      <ul>
+        <li>대사 5,370줄을 일본어 원문과 대조해 4,483줄을 수정했습니다.</li>
+        <li>타이틀 화면과 메뉴를 한국어로 옮겼습니다.</li>
+        <li>캐릭터 말투·고유명사·맞춤법·줄바꿈을 다듬었습니다.</li>
+        <li>폰트에 없던 글자 213자(꽃·쫓·흙 등)를 추가했습니다.</li>
+        <li>이벤트 표 203번 부근에서 화면을 닫지 못하던 문제를 수정했습니다.</li>
+        <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+      </ul>
+      <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.0과 v1.1을 나란히 놓았습니다.</p>
+      {totsugekiGroups.map(group => (
+        <CompareGroup group={group} base={base} versions={totsugekiVersions} visible={VISIBLE_PER_GROUP} />
+      ))}
+    </article>
+    <article class="patch-release" aria-labelledby="release-1-0">
+      <h3 id="release-1-0" class="pixel">
+        v1.0
+      </h3>
+      <p class="section-note">
+        <time datetime="2012-12-12">2012년 12월 12일</time>
+      </p>
+      <ul>
+        <li>최초 한글패치입니다.</li>
+      </ul>
+    </article>
   </section>
 
   <MakingOf patch={patch} />

@@ -511,6 +511,16 @@ h3.pixel {
   font-size: 1.25rem;
 }
 
+.patch-release {
+  display: grid;
+  gap: 16px;
+}
+
+.patch-release > ul {
+  padding-left: 1.5em;
+  list-style: disc;
+}
+
 .checklist {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));

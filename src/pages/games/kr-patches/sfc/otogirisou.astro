@@ -86,6 +86,7 @@ const chapters = [
   { id: 'features', label: '편의 기능', mark: '제2장' },
   { id: 'story', label: '이야기', mark: '제3장' },
   { id: 'play', label: '진행 방식', mark: '제4장' },
+  { id: 'patch-notes', label: '패치 노트', mark: '제5장' },
   { id: 'making', label: '롬 분석 노트', mark: '숨겨진 장' },
 ];
 const chapter = (id: string) => {
@@ -105,6 +106,7 @@ const chapter = (id: string) => {
     { id: 'features', label: '편의 기능' },
     { id: 'story', label: '이야기' },
     { id: 'play', label: '진행 방식' },
+    { id: 'patch-notes', label: '패치 노트' },
     { id: 'making', label: '롬 분석 노트' },
   ]}
   theme={patch.theme}
@@ -249,6 +251,55 @@ const chapter = (id: string) => {
       ))}
     </div>
     <ChapterChoices next={chapter('play').next} />
+  </section>
+
+  <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
+    <p class="label chapter-mark">{chapter('patch-notes').mark}</p>
+    <h2 id="patch-notes-title" class="pixel">
+      패치 노트
+    </h2>
+    <article class="patch-release" aria-labelledby="release-1-2">
+      <h3 id="release-1-2" class="pixel">
+        v1.2 · 최신 버전
+      </h3>
+      <p class="section-note">
+        <time datetime="2026-10-22">2026년 10월 22일</time>
+      </p>
+      <ul>
+        <li>플로차트와 선택지 이동 기능을 추가했습니다.</li>
+        <li>장 목록 30장과 엔딩 목록 18개를 추가했습니다.</li>
+        <li>책갈피에 마지막으로 읽은 장을 표시합니다.</li>
+        <li>되감기로 돌아온 부분을 노란 글씨로 표시합니다.</li>
+        <li>기존 세이브 파일을 그대로 사용할 수 있습니다.</li>
+      </ul>
+    </article>
+    <article class="patch-release" aria-labelledby="release-1-1">
+      <h3 id="release-1-1" class="pixel">
+        v1.1
+      </h3>
+      <p class="section-note">
+        <time datetime="2026-10-18">2026년 10월 18일</time>
+      </p>
+      <ul>
+        <li>2회차 시나리오에서 진행이 멈추던 문제를 수정했습니다.</li>
+        <li>자동 넘김·입력 대기·화면 밖으로 나가던 텍스트 문제를 수정했습니다.</li>
+        <li>일본어 원문과 대조해 번역을 검수했습니다.</li>
+        <li>단어 단위 줄바꿈을 적용하고 폰트를 재구성했습니다.</li>
+        <li>기존 세이브 파일의 읽던 위치를 변환해 이어서 할 수 있도록 했습니다.</li>
+      </ul>
+    </article>
+    <article class="patch-release" aria-labelledby="release-1-0">
+      <h3 id="release-1-0" class="pixel">
+        v1.0
+      </h3>
+      <p class="section-note">
+        <time datetime="2016-09-29">2016년 9월 29일</time>
+      </p>
+      <ul>
+        <li>최초 한글패치입니다.</li>
+      </ul>
+    </article>
+    <ChapterChoices next={chapter('patch-notes').next} />
   </section>
 
   <MakingOf patch={patch} mark={chapter('making').mark} />
