@@ -35,7 +35,7 @@
       "customType": "regex",
       "description": "zizmor runs via pipx in the workflow",
       "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"],
-      "matchStrings": ["pipx run 'zizmor==(?<currentValue>[^']+)'"],
+      "matchStrings": ["ZIZMOR: zizmor==(?<currentValue>\\S+)"],
       "depNameTemplate": "zizmor",
       "datasourceTemplate": "pypi"
     }

@@ -127,6 +127,9 @@ jobs:
     if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 5
+    env:
+      # One place for the version: the cache key and the run both read it, and Renovate updates it.
+      ZIZMOR: zizmor==1.31.0
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -146,10 +149,10 @@ jobs:
           path: |
             ${{ steps.python.outputs.venvs }}
             ${{ steps.python.outputs.pip }}
-          key: zizmor-${{ runner.os }}-${{ runner.arch }}-python-${{ steps.python.outputs.version }}-pipx-${{ steps.python.outputs.pipx }}-1.31.0
+          key: zizmor-${{ runner.os }}-${{ runner.arch }}-python-${{ steps.python.outputs.version }}-pipx-${{ steps.python.outputs.pipx }}-${{ env.ZIZMOR }}
 
       # Pin the interpreter too: pipx's run cache includes its Python path.
-      - run: pipx run --python "$(command -v python3)" 'zizmor==1.31.0' --format github .github
+      - run: pipx run --python "$(command -v python3)" "$ZIZMOR" --format github .github
         env:
           GH_TOKEN: ${{ github.token }}
 
