@@ -9,7 +9,7 @@ import Endings from '../../../../components/kakusei/Endings.astro';
 import MakingOf from '../../../../components/kakusei/MakingOf.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import { KAKUSEI_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
-import { kakuseiGroups, kakuseiVersions } from '../../../../lib/kakusei-showcase';
+import { kakuseiGroups, kakuseiV13Groups, kakuseiV13Versions, kakuseiVersions } from '../../../../lib/kakusei-showcase';
 
 const patch = KAKUSEI_PATCH;
 const base = patch.path;
@@ -135,7 +135,7 @@ const castGroups = [
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem} />
       <ManualPatch patch={patch}>
-        <p>세이브 구조는 바꾸지 않아 v1.1 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
+        <p>세이브 구조는 바꾸지 않아 v1.2·v1.1 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
       </ManualPatch>
     </div>
     <figure class="hero-shot screen">
@@ -270,9 +270,33 @@ const castGroups = [
     <h2 id="patch-notes-title" class="pixel">
       패치 노트
     </h2>
+    <article class="patch-release" aria-labelledby="release-1-3">
+      <h3 id="release-1-3" class="pixel">
+        v1.3 · 최신 버전
+      </h3>
+      <p class="section-note">
+        <time datetime="2026-10-22">2026년 10월 22일</time>
+      </p>
+      <p class="release-overview">
+        나레이션 줄바꿈을 바로잡고, 전투 말풍선을 원문과 다시 대조하고, 돌격편 암호가 이어지도록 고쳤습니다.
+      </p>
+      <ReleaseDetails>
+        <ul>
+          <li>나레이션 대사 8개에서 마지막 글자가 혼자 다음 줄로 떨어지던 문제를 고쳤습니다.</li>
+          <li>전투 말풍선 문자열 443개(대사 ID 719개)를 원문에 맞게 고쳤습니다.</li>
+          <li>말풍선 밖으로 넘치던 줄을 창 크기에 맞게 나눴습니다.</li>
+          <li>돌격편 한글판의 엔딩 암호를 화면에 보이는 글자 그대로 입력하면 이어지도록 고쳤습니다.</li>
+          <li>v1.2·v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+        </ul>
+        <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.2와 v1.3을 나란히 놓았습니다.</p>
+        {kakuseiV13Groups.map(group => (
+          <CompareGroup group={group} base={base} versions={kakuseiV13Versions} visible={group.pairs.length} />
+        ))}
+      </ReleaseDetails>
+    </article>
     <article class="patch-release" aria-labelledby="release-1-2">
       <h3 id="release-1-2" class="pixel">
-        v1.2 · 최신 버전
+        v1.2
       </h3>
       <p class="section-note">
         <time datetime="2026-10-18">2026년 10월 18일</time>

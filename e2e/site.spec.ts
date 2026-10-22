@@ -720,14 +720,22 @@ for (const game of PATCH_GUIDES) {
   test(`${game} presents the current translation separately from version history`, async ({ page }) => {
     await page.goto(path);
     const notes = page.locator('#patch-notes');
-    const versions = ['otogirisou', 'dragon-ball-z-super-gokuden-kakusei'].includes(game)
-      ? ['v1.2 · 최신 버전', 'v1.1', 'v1.0']
-      : ['v1.1 · 최신 버전', 'v1.0'];
+    const versions =
+      game === 'dragon-ball-z-super-gokuden-kakusei'
+        ? ['v1.3 · 최신 버전', 'v1.2', 'v1.1', 'v1.0']
+        : game === 'otogirisou'
+          ? ['v1.2 · 최신 버전', 'v1.1', 'v1.0']
+          : ['v1.1 · 최신 버전', 'v1.0'];
     await expect(notes.locator('.patch-release > h3')).toHaveText(versions);
     const releaseDates: Record<string, Record<string, string>> = {
       'super-mario-rpg': { '1-0': '2015-03-12', '1-1': '2026-10-18' },
       'dragon-ball-z-super-gokuden-totsugeki': { '1-0': '2012-12-12', '1-1': '2026-10-18' },
-      'dragon-ball-z-super-gokuden-kakusei': { '1-0': '2011-12-30', '1-1': '2016-01-04', '1-2': '2026-10-18' },
+      'dragon-ball-z-super-gokuden-kakusei': {
+        '1-0': '2011-12-30',
+        '1-1': '2016-01-04',
+        '1-2': '2026-10-18',
+        '1-3': '2026-10-22',
+      },
       otogirisou: { '1-0': '2016-09-29', '1-1': '2026-10-18', '1-2': '2026-10-22' },
     };
     const dates = releaseDates[game];
