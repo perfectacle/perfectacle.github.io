@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 import {
   GOKUDEN_KAKUSEI,
   GOKUDEN_TOTSUGEKI,
@@ -14,6 +14,18 @@ import {
 const GOKUDEN = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/';
 const KAKUSEI = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/';
 const OTOGIRI = '/games/kr-patches/sfc/otogirisou/';
+
+async function loadSpriteImage(sprite: Locator) {
+  return sprite.evaluate(async element => {
+    const background = getComputedStyle(element).backgroundImage;
+    const url = background.match(/^url\(["']?(.+?)["']?\)$/)?.[1];
+    if (!url || !new URL(url).pathname.startsWith('/games/kr-patches/catalogue/')) return false;
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    return image.naturalWidth > image.naturalHeight;
+  });
+}
 
 for (const path of ['/games/kr-patches/', '/games/kr-patches/sfc/super-mario-rpg/', GOKUDEN, KAKUSEI, OTOGIRI]) {
   for (const colorScheme of ['light', 'dark'] as const) {
@@ -235,28 +247,79 @@ test('catalogue cards show the patch release date and their own game credits', a
 });
 
 for (const width of [1280, 1920]) {
-  test(`catalogue loads the SFC controller and local game sprites at ${width}px`, async ({ page }) => {
+  test(`catalogue loads three transparent animated characters at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1080 });
     await page.goto('/games/kr-patches/');
     await expect(page.locator('svg.sfc-controller[aria-hidden="true"]')).toBeVisible();
     await expect(page.locator('.world-rail[aria-hidden="true"]')).toHaveCount(2);
-    const sprites = page.locator('.world-rail img.world-sprite');
+    await expect(page.locator('.world-sprite')).toHaveCount(3);
+    await expect(
+      page.locator('.world-platform, .world-stars, .world-canopy, .world-sun, .sprite-dixie-kong'),
+    ).toHaveCount(0);
     for (const name of ['mega-man-x', 'diddy-kong', 'ryu']) {
-      await expect(page.locator(`.world-rail img.world-sprite[src$="/${name}.webp"]`)).toHaveCount(1);
-    }
-    for (const sprite of await sprites.all()) {
+      const sprite = page.locator(`.world-rail .sprite-${name}`);
       await expect(sprite).toBeVisible();
-      await sprite.scrollIntoViewIfNeeded();
-      expect(await sprite.getAttribute('src')).toMatch(/^\/games\/kr-patches\/catalogue\//);
-      await expect
-        .poll(() => sprite.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0))
-        .toBe(true);
+      expect(await loadSpriteImage(sprite)).toBe(true);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
       0,
     );
   });
 }
+
+test('catalogue characters change pose in place and return to their initial frame', async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/games/kr-patches/');
+  for (const name of ['mega-man-x', 'ryu', 'diddy-kong']) {
+    const sprite = page.locator(`.world-rail .sprite-${name}`);
+    await sprite.scrollIntoViewIfNeeded();
+    expect(await loadSpriteImage(sprite)).toBe(true);
+    const duration = await sprite.evaluate(element => {
+      const animations = element.getAnimations();
+      if (animations.length !== 1) throw new Error('A character must have one CSS animation');
+      const animation = animations[0];
+      if (!animation || !animation.effect) throw new Error('The character animation must have an effect');
+      animation.pause();
+      animation.currentTime = 0;
+      return Number(animation.effect.getTiming().duration);
+    });
+    expect(duration).toBeGreaterThan(0);
+    const initialBounds = await sprite.boundingBox();
+    const initial = await sprite.screenshot();
+    const poses = [];
+    for (const fraction of [0.05, 0.25, 0.5, 0.75]) {
+      await sprite.evaluate((element, time) => {
+        const animation = element.getAnimations()[0];
+        if (!animation) throw new Error('The character animation must exist');
+        animation.currentTime = time;
+      }, duration * fraction);
+      poses.push(await sprite.screenshot());
+      expect(await sprite.boundingBox()).toEqual(initialBounds);
+    }
+    expect(poses.some(pose => !pose.equals(initial))).toBe(true);
+    await sprite.evaluate((element, time) => {
+      const animation = element.getAnimations()[0];
+      if (!animation) throw new Error('The character animation must exist');
+      animation.currentTime = time;
+    }, duration);
+    expect((await sprite.screenshot()).equals(initial)).toBe(true);
+  }
+});
+
+test('catalogue respects reduced motion by keeping all characters still', async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/games/kr-patches/');
+  for (const sprite of await page.locator('.world-sprite').all()) {
+    await sprite.scrollIntoViewIfNeeded();
+    expect(await loadSpriteImage(sprite)).toBe(true);
+    expect(await sprite.evaluate(element => element.getAnimations().length)).toBe(0);
+    const still = await sprite.screenshot();
+    await page.waitForTimeout(150);
+    expect((await sprite.screenshot()).equals(still)).toBe(true);
+  }
+});
 
 for (const width of [320, 390]) {
   test(`catalogue cards fit a ${width}px phone without horizontal scrolling`, async ({ page }) => {
@@ -265,6 +328,7 @@ for (const width of [320, 390]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
       0,
     );
+    for (const sprite of await page.locator('.world-sprite').all()) await expect(sprite).toBeHidden();
     for (const card of await page.locator('main a.game-card').all()) {
       await card.scrollIntoViewIfNeeded();
       await expect(card.locator('time')).toBeVisible();
