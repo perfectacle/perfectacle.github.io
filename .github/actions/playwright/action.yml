@@ -8,10 +8,10 @@ runs:
       shell: bash
       run: |
         . /etc/os-release
-        mkdir -p "$RUNNER_TEMP/playwright-apt"
+        install -d -m 0755 /tmp/playwright-apt
         echo "os=$ID-$VERSION_ID" >> "$GITHUB_OUTPUT"
         echo "image=${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
-        echo "apt=$RUNNER_TEMP/playwright-apt" >> "$GITHUB_OUTPUT"
+        echo "apt=/tmp/playwright-apt" >> "$GITHUB_OUTPUT"
         echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
 
     - id: cache
@@ -28,9 +28,10 @@ runs:
     # Keep package downloads across runners; apt still refreshes and verifies repository metadata.
     - shell: bash
       run: |
+        sudo install -d -o _apt -g root -m 0700 /tmp/playwright-apt/partial
         {
           printf '%s\n' 'Acquire::Retries "2";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";'
-          printf 'Dir::Cache::archives "%s/playwright-apt";\n' "$RUNNER_TEMP"
+          printf '%s\n' 'Dir::Cache::archives "/tmp/playwright-apt";'
           printf '%s\n' 'APT::Keep-Downloaded-Packages "true";'
         } | sudo tee /etc/apt/apt.conf.d/99-ci-timeouts > /dev/null
 
