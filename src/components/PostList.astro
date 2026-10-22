@@ -1,5 +1,7 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage, Image } from 'astro:assets';
+import { posix } from 'node:path';
+import { AVIF_OPTIONS, imageFormat, localPostImage, originalImageUrl } from '../lib/image-format.ts';
 import type { ImageMetadata } from 'astro';
 import { cardSpans, thumbSizes } from '../lib/card-grid.ts';
 import PostCover from './PostCover.astro';
@@ -33,12 +35,30 @@ const safeDecode = (s: string) => {
     return s;
   }
 };
-async function thumbnail(post: Post): Promise<ImageMetadata | undefined> {
+async function thumbnail(post: Post, sizes: string) {
   const file = coverImage(post);
   const dir = post.filePath?.replace(/^src\//, '../').replace(/index\.md$/, '');
   if (!file || !dir) return undefined;
-  const load = postImages[`${dir}${file}`] ?? postImages[`${dir}${safeDecode(file)}`];
-  return (await load?.())?.default;
+  const load = postImages[posix.normalize(`${dir}${file}`)] ?? postImages[posix.normalize(`${dir}${safeDecode(file)}`)];
+  const image = (await load?.())?.default;
+  const source = localPostImage(file, post.filePath);
+  if (!image || !source) return undefined;
+  const choice = await imageFormat(source, { width: 720, height: 405, fit: 'cover' });
+  const avif =
+    choice.format === 'avif'
+      ? await getImage({
+          src: image,
+          width: 1280,
+          height: 720,
+          widths: [176, 352, 480, 720, 960, 1280],
+          sizes,
+          fit: 'cover',
+          format: 'avif',
+          quality: AVIF_OPTIONS.quality,
+          layout: 'constrained',
+        })
+      : undefined;
+  return { image, avif, original: originalImageUrl(source) };
 }
 // Each card's span in the 12-track grid at 2, 3 and 4 columns, worked out here so no row is left with one card.
 const spans = { 2: cardSpans(posts.length, 2), 3: cardSpans(posts.length, 3), 4: cardSpans(posts.length, 4) };
@@ -52,7 +72,7 @@ const layoutOf = (i: number) => {
   };
 };
 const items = await Promise.all(
-  posts.map(async post => ({ post, thumb: summary ? await thumbnail(post) : undefined })),
+  posts.map(async (post, i) => ({ post, thumb: summary ? await thumbnail(post, layoutOf(i).sizes) : undefined })),
 );
 ---
 
@@ -100,18 +120,33 @@ const items = await Promise.all(
             )}
           </div>
           {thumb ? (
-            <Image
-              class="thumb"
-              src={thumb}
-              alt=""
-              width={1280}
-              height={720}
-              widths={[176, 352, 480, 720, 960, 1280]}
-              sizes={layout.sizes}
-              fit="cover"
-              loading={i < 3 ? 'eager' : 'lazy'}
-              fetchpriority={i === 0 ? 'high' : undefined}
-            />
+            thumb.avif ? (
+              <picture class="thumb-picture">
+                <source type="image/avif" srcset={thumb.avif.srcSet.attribute || thumb.avif.src} sizes={layout.sizes} />
+                <img
+                  {...thumb.avif.attributes}
+                  class="thumb"
+                  src={thumb.original}
+                  alt=""
+                  sizes={layout.sizes}
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                  fetchpriority={i === 0 ? 'high' : undefined}
+                />
+              </picture>
+            ) : (
+              <Image
+                class="thumb"
+                src={thumb.image}
+                alt=""
+                width={1280}
+                height={720}
+                widths={[176, 352, 480, 720, 960, 1280]}
+                sizes={layout.sizes}
+                fit="cover"
+                loading={i < 3 ? 'eager' : 'lazy'}
+                fetchpriority={i === 0 ? 'high' : undefined}
+              />
+            )
           ) : (
             summary && (
               <div class="thumb thumb-cover">
@@ -187,6 +222,9 @@ const items = await Promise.all(
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  .thumb-picture {
+    display: contents;
   }
   .thumb {
     flex: none;

@@ -57,6 +57,23 @@ test('post images load', async ({ page }) => {
   }
 });
 
+test('AVIF post images retain working original WebP fallbacks', async ({ page }) => {
+  await page.goto('/2025/12/02/travel-001-kenya-01/');
+  const picture = page.locator('.prose picture:has(source[type="image/avif"])').first();
+  await expect(picture).toBeVisible();
+  const original = await picture.locator('img').getAttribute('src');
+  expect(original).toMatch(/^\/2025\/12\/02\/travel-001-kenya-01\/.+\.webp$/);
+  const image = page.locator(`.prose img[src="${original}"]`).first();
+  await image.scrollIntoViewIfNeeded();
+  await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.currentSrc)).toMatch(/\.avif$/);
+  await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+  await picture.locator('source').evaluate(source => source.remove());
+  await expect
+    .poll(() => image.evaluate((el: HTMLImageElement) => (el.currentSrc ? new URL(el.currentSrc).pathname : '')))
+    .toBe(original);
+  await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+});
+
 test('table of contents links point at headings', async ({ page }) => {
   await page.goto(POST);
   const hrefs = await page.locator('.toc a').evaluateAll(as => as.map(a => (a as HTMLAnchorElement).hash));
@@ -149,18 +166,84 @@ test('post images open full screen and close with Escape', async ({ page }) => {
   await page.goto('/2025/12/02/travel-001-kenya-01/');
   const img = page.locator('.prose img.zoomable').nth(1);
   await img.scrollIntoViewIfNeeded();
+  const fullSize = await img.evaluate((el: HTMLImageElement) => {
+    const srcset = el.closest('picture')?.querySelector('source')?.srcset || el.srcset;
+    return srcset
+      .split(',')
+      .map(candidate => candidate.trim().split(/\s+/))
+      .at(-1)?.[0];
+  });
   await img.click();
   const viewer = page.locator('.pswp');
   await expect(viewer).toBeVisible();
   await expect(page.locator('.pswp__counter')).toContainText('2 / ');
   // Keys are ignored while the opening transition runs; it ends once the full-size image is shown.
-  await expect(page.locator('.pswp__img').first()).toBeVisible();
+  const currentImage = page.locator('.pswp__item[aria-hidden="false"] img.pswp__img');
+  await expect(currentImage).toBeInViewport();
+  if (fullSize) await expect(currentImage).toHaveAttribute('src', fullSize);
+  await expect
+    .poll(() =>
+      currentImage.evaluate(
+        (el: HTMLImageElement) => el.complete && el.naturalWidth > 0 && el.width > 0 && el.height > 0,
+      ),
+    )
+    .toBe(true);
   await page.waitForFunction(() => {
     const viewerEl = document.querySelector('.pswp');
     return !!viewerEl && getComputedStyle(viewerEl).opacity === '1';
   });
   await page.keyboard.press('Escape');
   await expect(viewer).toHaveCount(0);
+});
+
+test('image gallery opens below-fold lazy AVIF images with valid geometry', async ({ page }) => {
+  await page.goto('/2025/12/02/travel-001-kenya-01/');
+  const images = page.locator('.prose img.zoomable');
+  await expect
+    .poll(() => images.first().evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0))
+    .toBe(true);
+  const loadedAvif = page.locator('.prose picture:has(source[type="image/avif"]) img.zoomable').first();
+  await loadedAvif.scrollIntoViewIfNeeded();
+  await expect.poll(() => loadedAvif.evaluate((img: HTMLImageElement) => img.currentSrc)).toMatch(/\.avif$/);
+  await expect.poll(() => loadedAvif.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
+  await images.first().scrollIntoViewIfNeeded();
+  const target = await images.evaluateAll(elements => {
+    const index = elements.findIndex(element => {
+      const img = element as HTMLImageElement;
+      return (
+        img.loading === 'lazy' &&
+        !img.currentSrc &&
+        img.naturalWidth === 0 &&
+        !!img.closest('picture')?.querySelector('source[type="image/avif"]')
+      );
+    });
+    const source = elements[index]?.closest('picture')?.querySelector<HTMLSourceElement>('source[type="image/avif"]');
+    const candidate = source?.srcset.split(',').at(-1)?.trim().split(/\s+/);
+    return { index, url: candidate?.[0] ?? '' };
+  });
+  expect(target.index).toBeGreaterThan(0);
+  expect(target.url).toMatch(/\.avif$/);
+  await images.first().click();
+  await expect(page.locator('.pswp')).toBeVisible();
+  await expect
+    .poll(
+      async () => {
+        const current = Number.parseInt(await page.locator('.pswp__counter').innerText(), 10);
+        if (current < target.index + 1) await page.keyboard.press('ArrowRight');
+        return current;
+      },
+      { intervals: [100, 100, 200], timeout: 20000 },
+    )
+    .toBe(target.index + 1);
+  const fullImage = page.locator(`.pswp__img[src="${target.url}"]`).first();
+  await expect(fullImage).toBeInViewport();
+  await expect
+    .poll(() =>
+      fullImage.evaluate(
+        (img: HTMLImageElement) => img.complete && img.naturalWidth > 0 && img.width > 0 && img.height > 0,
+      ),
+    )
+    .toBe(true);
 });
 
 test('images inside links keep the link instead of zooming', async ({ page }) => {
@@ -180,7 +263,7 @@ test('home shows post thumbnails at list size', async ({ page, isMobile }) => {
   if (isMobile) {
     const picked = await first.evaluate((el: HTMLImageElement) => {
       const current = new URL(el.currentSrc).pathname;
-      const hit = el.srcset
+      const hit = (el.closest('picture')?.querySelector('source')?.srcset || el.srcset)
         .split(',')
         .map(c => c.trim().split(/\s+/))
         .find(([url]) => url === current);
