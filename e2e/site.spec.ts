@@ -1006,7 +1006,14 @@ for (const game of PATCH_GUIDES) {
     const patch = page.locator('#patch');
     await expect(patch).toBeVisible();
     await expect.poll(() => resume.length).toBeGreaterThan(0);
-    await page.evaluate(() => document.fonts.ready);
+    await page.waitForFunction(() =>
+      [...document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')].every(link => link.sheet),
+    );
+    await page.evaluate(() => {
+      // Discover CSS font requests before waiting for their completion.
+      document.body.getBoundingClientRect();
+      return document.fonts.ready;
+    });
     const before = await patch.boundingBox();
     await Promise.all(resume.map(run => run()));
     await expect(page.locator('.patch-section-nav')).toHaveAttribute('data-enhanced', 'true');

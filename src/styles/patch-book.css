@@ -1,58 +1,17 @@
 /* Game-styled pages for the Korean patches. Window frame, dialog box and hand cursor come from the original menus. */
 
 @font-face {
-  font-family: 'Galmuri11';
-  src: url('/games/kr-patches/sfc/super-mario-rpg/fonts/guide.woff2') format('woff2');
+  font-family: 'PatchGalmuri11';
+  src: url('/games/kr-patches/fonts/guide.woff2') format('woff2');
+  font-style: normal;
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Galmuri11';
-  src: url('/games/kr-patches/sfc/super-mario-rpg/fonts/guide-bold.woff2') format('woff2');
-  font-weight: 700;
-  font-display: swap;
-}
-
-/* Each game page ships its own subset, so the faces are named per theme. */
-@font-face {
-  font-family: 'Galmuri11 Gokuden';
-  src: url('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/fonts/guide.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Galmuri11 Gokuden';
-  src: url('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/fonts/guide-bold.woff2') format('woff2');
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Galmuri11 Kakusei';
-  src: url('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/fonts/guide.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Galmuri11 Kakusei';
-  src: url('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/fonts/guide-bold.woff2') format('woff2');
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Galmuri11 Otogirisou';
-  src: url('/games/kr-patches/sfc/otogirisou/fonts/guide.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Galmuri11 Otogirisou';
-  src: url('/games/kr-patches/sfc/otogirisou/fonts/guide-bold.woff2') format('woff2');
+  font-family: 'PatchGalmuri11';
+  src: url('/games/kr-patches/fonts/guide-bold.woff2') format('woff2');
+  font-style: normal;
   font-weight: 700;
   font-display: swap;
 }
@@ -64,7 +23,9 @@
   --link: #ffe27a;
   --panel: rgb(20 22 30 / 82%);
   --dialog-ink: #2e1f0b;
-  --pixel: 'Galmuri11', ui-monospace, monospace;
+  --body: system-ui, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --pixel: 'PatchGalmuri11', ui-monospace, monospace;
   color-scheme: dark;
 }
 
@@ -90,12 +51,7 @@ body {
   background-size: 512px;
   image-rendering: pixelated;
   color: var(--ink);
-  font:
-    16px/1.7 system-ui,
-    -apple-system,
-    'Apple SD Gothic Neo',
-    'Malgun Gothic',
-    sans-serif;
+  font: 16px/1.75 var(--body);
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
@@ -119,22 +75,45 @@ ul {
 }
 
 .pixel,
-.label,
 .tag,
-.pointer,
-.wordmark,
-.drop-title {
+.drop-title,
+.patch-heading,
+.pad-key {
   font-family: var(--pixel);
+  font-synthesis: none;
   letter-spacing: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--mono);
 }
 
 .label {
   color: var(--accent);
   font-size: 0.875rem;
+  line-height: 1.75;
 }
 
 .lead {
   font-size: 1.125rem;
+}
+
+.hero-copy > .lead,
+.section > p:not(.chapter-mark),
+.story-copy > p,
+.making-body > :is(p, ul, ol),
+.manual-body > :is(p, ul, ol) {
+  max-inline-size: 42rem;
 }
 
 .sr-only {
@@ -192,7 +171,7 @@ main:focus {
     0 0 0 2px #3a2a10,
     0 4px 0 rgb(0 0 0 / 35%);
   color: var(--dialog-ink);
-  font-family: var(--pixel);
+  font-family: var(--body);
 }
 
 .screen {
@@ -283,8 +262,15 @@ summary.pointer:focus-visible::before {
 }
 
 h1.pixel {
-  font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.75rem);
-  line-height: 1.25;
+  font-size: 24px;
+  line-height: 1.5;
+  text-wrap: balance;
+}
+
+@media (min-width: 900px) {
+  h1.pixel {
+    font-size: 36px;
+  }
 }
 
 .hero-shot {
@@ -303,13 +289,13 @@ h1.pixel {
 
 .patch-heading {
   color: var(--ink);
-  font-size: 1.25rem;
-  line-height: 1.4;
+  font-size: 24px;
+  line-height: 1.5;
 }
 
 .patch-intro p,
 .patch-steps {
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .patch-intro p {
@@ -383,7 +369,7 @@ h1.pixel {
   border-radius: 4px;
   background: var(--accent);
   color: #161616;
-  font-size: 1rem;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.5;
   box-shadow: 0 3px 0 rgb(0 0 0 / 45%);
@@ -477,10 +463,6 @@ h1.pixel {
     gap: 12px;
   }
 
-  h1.pixel {
-    font-size: 1.75rem;
-  }
-
   .patch-box.frame {
     padding: 12px;
   }
@@ -521,8 +503,8 @@ h1.pixel {
   border: 0;
   background: none;
   color: var(--dialog-ink);
-  font: inherit;
-  font-weight: 700;
+  font: 700 24px/1.5 var(--pixel);
+  font-synthesis: none;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -541,7 +523,7 @@ h1.pixel {
   display: grid;
   gap: 12px;
   margin-top: 12px;
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 /* Sections */
@@ -554,12 +536,16 @@ h1.pixel {
 
 h2.pixel {
   color: var(--accent);
-  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  font-size: 24px;
+  line-height: 1.5;
+  text-wrap: balance;
   text-shadow: 2px 2px 0 #000;
 }
 
 h3.pixel {
-  font-size: 1.25rem;
+  font-size: 24px;
+  line-height: 1.5;
+  text-wrap: balance;
 }
 
 .patch-release {
@@ -578,7 +564,6 @@ h3.pixel {
   gap: 6px 24px;
   padding: 10px 16px;
   list-style: none;
-  font-family: var(--pixel);
 }
 
 .checklist li::before {
@@ -624,7 +609,7 @@ h3.pixel {
   padding: 0 6px;
   background: rgb(0 0 0 / 75%);
   color: var(--ink);
-  font-size: 0.75rem;
+  font-size: 12px;
 }
 
 .tag-ko {
@@ -680,7 +665,7 @@ h3.pixel {
 .play p,
 .member p:not(.label) {
   color: var(--muted);
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 .cast-list {
@@ -940,10 +925,6 @@ h3.pixel {
   gap: 8px;
 }
 
-[data-theme='smrpg'] .member p:not(.label) {
-  font-family: var(--pixel);
-}
-
 [data-theme='smrpg'] .portrait {
   width: 144px;
   height: 144px;
@@ -952,7 +933,7 @@ h3.pixel {
 [data-theme='smrpg'] .section > h2.pixel {
   padding-bottom: 12px;
   border-bottom: 1px solid var(--divider);
-  font-size: 1.5rem;
+  font-size: 24px;
   text-shadow: none;
 }
 
@@ -963,8 +944,7 @@ h3.pixel {
 /* Like the copyright line under the title screen. */
 [data-theme='smrpg'] .page-footer {
   justify-items: center;
-  font-family: var(--pixel);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   text-align: center;
 }
 
@@ -974,7 +954,6 @@ h3.pixel {
   gap: 8px 16px;
   padding: 0;
   list-style: none;
-  font-family: var(--pixel);
 }
 
 .pad-buttons li {
@@ -993,6 +972,7 @@ h3.pixel {
   box-shadow:
     inset -2px -2px 0 rgb(0 0 0 / 30%),
     0 0 0 2px #000;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -1024,7 +1004,6 @@ h3.pixel {
   --muted: #c3cbe6;
   --panel: rgb(0 0 140 / 88%);
   --dialog-ink: #fff;
-  --pixel: 'Galmuri11 Gokuden', ui-monospace, monospace;
 }
 
 :is([data-theme='gokuden'], [data-theme='kakusei'], [data-theme='otogirisou']) body {
@@ -1113,7 +1092,6 @@ h3.pixel {
   --muted: #c4cbd8;
   --panel: rgb(41 49 66 / 92%);
   --dialog-ink: #fff;
-  --pixel: 'Galmuri11 Kakusei', ui-monospace, monospace;
 }
 
 [data-theme='kakusei'] body::before {
@@ -1170,7 +1148,6 @@ h3.pixel {
   --link: #eea3bc;
   --panel: rgb(0 0 0 / 80%);
   --dialog-ink: #deded6;
-  --pixel: 'Galmuri11 Otogirisou', ui-monospace, monospace;
 }
 
 [data-theme='otogirisou'] body {
@@ -1238,7 +1215,7 @@ h3.pixel {
   margin-top: 8px;
   padding-left: 20px;
   color: var(--muted);
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 
 /* Each section is a chapter: its chapter title sits above the heading like the game's chapter title card. */
@@ -1315,7 +1292,7 @@ h3.pixel {
 .paper figcaption {
   padding-top: 6px;
   color: #333;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   text-align: center;
 }
 
@@ -1342,7 +1319,7 @@ h3.pixel {
 }
 
 .making-body code {
-  font-family: ui-monospace, Menlo, monospace;
+  font-family: var(--mono);
   font-size: 0.875em;
 }
 
