@@ -1,6 +1,7 @@
 ---
 import '../styles/patch-book.css';
 import Analytics from '../components/Analytics.astro';
+import SectionNav from '../components/kr-patch/SectionNav.astro';
 import { SITE } from '../lib/posts.ts';
 import { KR_PATCH_LIST_PATH, KR_PATCH_SITE_TITLE, KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
 import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
@@ -16,9 +17,10 @@ interface Props {
   image: { src: string; alt: string; width?: number; height?: number };
   copyright: string[];
   links?: { href: string; label: string }[];
+  sections?: { id: string; label: string }[];
 }
 
-const { title, description, trail, theme, image, copyright, links = [] } = Astro.props;
+const { title, description, trail, theme, image, copyright, links = [], sections = [] } = Astro.props;
 const patch = KR_PATCHES.find(p => p.theme === theme);
 if (!patch && theme !== 'sfc') throw new Error(`Unknown theme ${theme}`);
 const assets = patch?.path;
@@ -57,7 +59,7 @@ const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH
     <script is:inline type="application/ld+json" set:html={serializeJsonLd(breadcrumbs(SITE, trail, null))} />
     <Analytics />
   </head>
-  <body>
+  <body class:list={{ 'has-section-nav': sections.length > 0 }}>
     <a class="skip-link" href="#main">
       본문으로 건너뛰기
     </a>
@@ -70,6 +72,7 @@ const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH
         </nav>
       </header>
     )}
+    {sections.length > 0 && <SectionNav sections={sections} />}
     <main id="main" tabindex="-1">
       <slot />
     </main>

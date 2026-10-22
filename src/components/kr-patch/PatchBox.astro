@@ -13,7 +13,7 @@ interface Props {
 const { ips, spec, output, speaker } = Astro.props;
 ---
 
-<div class="patch-box frame" data-ips={ips} data-spec={JSON.stringify(spec)} data-output={output}>
+<div id="patch" class="patch-box frame" data-ips={ips} data-spec={JSON.stringify(spec)} data-output={output}>
   <div class="patch-intro">
     <h2 class="patch-heading">여기서 바로 한글패치</h2>
     <p>따로 프로그램을 설치하지 않아도 됩니다.</p>
