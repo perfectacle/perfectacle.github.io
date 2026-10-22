@@ -1,5 +1,5 @@
 name: Setup
-description: Node from .node-version, pnpm from packageManager, frozen install
+description: Node from .node-version, cached pnpm from packageManager, offline-first frozen install
 
 inputs:
   working-directory:
@@ -9,17 +9,46 @@ inputs:
 runs:
   using: composite
   steps:
-    # setup-node's pnpm cache needs pnpm on PATH; corepack provides the version pinned in packageManager.
-    # pnpm only: shimming npm too makes corepack warn whenever setup-node calls npm.
-    - shell: bash
-      run: corepack enable pnpm
-
     - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version-file: .node-version
-        cache: pnpm
-        cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+    - id: runtime
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo "node=$(node --version)" >> "$GITHUB_OUTPUT"
+        echo "manager=$(node -p "require('node:crypto').createHash('sha256').update(require('./package.json').packageManager).digest('hex')")" >> "$GITHUB_OUTPUT"
+        echo "corepack=${COREPACK_HOME:-${XDG_CACHE_HOME:-$HOME/.cache}/node/corepack}" >> "$GITHUB_OUTPUT"
+        echo "metadata=${XDG_CACHE_HOME:-$HOME/.cache}/pnpm" >> "$GITHUB_OUTPUT"
+
+    # Restore pnpm itself before any pnpm command can trigger a registry download.
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ${{ steps.runtime.outputs.corepack }}
+        key: corepack-${{ runner.os }}-${{ runner.arch }}-${{ steps.runtime.outputs.node }}-${{ steps.runtime.outputs.manager }}
+
+    - shell: bash
+      run: corepack enable pnpm
+
+    - id: store
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: |
+          ${{ steps.store.outputs.path }}
+          ${{ steps.runtime.outputs.metadata }}
+        key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ steps.runtime.outputs.node }}-${{ steps.runtime.outputs.manager }}-${{ hashFiles(format('{0}/pnpm-lock.yaml', inputs.working-directory)) }}
+        restore-keys: |
+          pnpm-${{ runner.os }}-${{ runner.arch }}-${{ steps.runtime.outputs.node }}-${{ steps.runtime.outputs.manager }}-
 
     - shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: pnpm install --frozen-lockfile
+      run: |
+        if ! pnpm install --offline --frozen-lockfile; then
+          echo 'Offline install could not finish; fetching missing packages and metadata.'
+          pnpm install --frozen-lockfile
+        fi

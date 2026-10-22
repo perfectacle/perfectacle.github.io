@@ -131,8 +131,24 @@ jobs:
         with:
           persist-credentials: false
 
-      # Workflow security audit (token leaks, injection, unpinned actions). Online audits use the read-only token.
-      - run: pipx run 'zizmor==1.31.0' --format github .github
+      - id: python
+        run: |
+          {
+            echo "version=$(python3 --version | cut -d ' ' -f 2)"
+            echo "pipx=$(pipx --version)"
+            echo "venvs=$(pipx environment --value PIPX_VENV_CACHEDIR)"
+            echo "pip=$(python3 -m pip cache dir)"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ${{ steps.python.outputs.venvs }}
+            ${{ steps.python.outputs.pip }}
+          key: zizmor-${{ runner.os }}-${{ runner.arch }}-python-${{ steps.python.outputs.version }}-pipx-${{ steps.python.outputs.pipx }}-1.31.0
+
+      # Pin the interpreter too: pipx's run cache includes its Python path.
+      - run: pipx run --python "$(command -v python3)" 'zizmor==1.31.0' --format github .github
         env:
           GH_TOKEN: ${{ github.token }}
 
@@ -206,6 +222,10 @@ jobs:
     if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -213,7 +233,7 @@ jobs:
 
       # Pages depend on posts too, so every tracked file is an input.
       - id: fingerprint
-        run: echo "key=verified-e2e-${{ runner.arch }}-${{ hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
+        run: echo "key=verified-e2e-${{ matrix.shard }}-of-4-${{ runner.arch }}-${{ hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
 
       - id: verified
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -233,30 +253,15 @@ jobs:
         run: pnpm build
 
       - if: steps.verified.outputs.cache-hit != 'true'
-        id: playwright
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+        uses: ./.github/actions/playwright
 
       - if: steps.verified.outputs.cache-hit != 'true'
-        id: browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
-
-      # Browsers come from the cache when it hits; only the OS libraries still need installing.
-      - if: steps.verified.outputs.cache-hit != 'true' && steps.browsers.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps chromium
-
-      - if: steps.verified.outputs.cache-hit != 'true' && steps.browsers.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps chromium
-
-      - if: steps.verified.outputs.cache-hit != 'true'
-        run: pnpm test:e2e
+        run: pnpm test:e2e --shard ${{ matrix.shard }}/4
 
       - if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: playwright-traces
+          name: playwright-traces-${{ matrix.shard }}-of-4
           path: test-results/
           retention-days: 7
 
@@ -306,22 +311,7 @@ jobs:
         run: pnpm build
 
       - if: steps.verified.outputs.cache-hit != 'true'
-        id: playwright
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-
-      - if: steps.verified.outputs.cache-hit != 'true'
-        id: browsers
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
-
-      # Browsers come from the cache when it hits; only the OS libraries still need installing.
-      - if: steps.verified.outputs.cache-hit != 'true' && steps.browsers.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps chromium
-
-      - if: steps.verified.outputs.cache-hit != 'true' && steps.browsers.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps chromium
+        uses: ./.github/actions/playwright
 
       - if: steps.verified.outputs.cache-hit != 'true'
         run: pnpm test:lighthouse --shard ${{ matrix.shard }}/5

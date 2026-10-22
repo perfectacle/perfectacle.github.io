@@ -1,0 +1,31 @@
+name: Playwright Chromium
+description: Cache Chromium and install its system libraries with bounded apt retries
+
+runs:
+  using: composite
+  steps:
+    - id: browser
+      shell: bash
+      run: |
+        . /etc/os-release
+        echo "os=$ID-$VERSION_ID" >> "$GITHUB_OUTPUT"
+        echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+    - id: cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-${{ runner.os }}-${{ steps.browser.outputs.os }}-${{ runner.arch }}-${{ steps.browser.outputs.version }}
+
+    # Bound mirror stalls without changing package signature verification.
+    - shell: bash
+      run: |
+        printf '%s\n' 'Acquire::Retries "2";' 'Acquire::http::Timeout "30";' 'Acquire::https::Timeout "30";' | sudo tee /etc/apt/apt.conf.d/99-ci-timeouts > /dev/null
+
+    - if: steps.cache.outputs.cache-hit == 'true'
+      shell: bash
+      run: pnpm exec playwright install-deps chromium
+
+    - if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: pnpm exec playwright install --with-deps chromium
