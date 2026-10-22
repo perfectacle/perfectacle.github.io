@@ -1,4 +1,6 @@
 ---
+import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
+import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
@@ -9,7 +11,10 @@ import { totsugekiGroups, totsugekiVersions } from '../../../../lib/totsugeki-sh
 
 const patch = TOTSUGEKI_PATCH;
 const base = patch.path;
-const VISIBLE_PER_GROUP = 2;
+const releaseGroups = totsugekiGroups.map(group => ({
+  ...group,
+  pairs: group.pairs.filter(pair => ['tone_goku', 'title', 'layout_wrap_1'].includes(pair.id)),
+}));
 
 const play = [
   {
@@ -238,18 +243,21 @@ const cast = [
       <p class="section-note">
         <time datetime="2026-10-18">2026년 10월 18일</time>
       </p>
-      <ul>
-        <li>대사 5,370줄을 일본어 원문과 대조해 4,483줄을 수정했습니다.</li>
-        <li>타이틀 화면과 메뉴를 한국어로 옮겼습니다.</li>
-        <li>캐릭터 말투·고유명사·맞춤법·줄바꿈을 다듬었습니다.</li>
-        <li>폰트에 없던 글자 213자(꽃·쫓·흙 등)를 추가했습니다.</li>
-        <li>이벤트 표 203번 부근에서 화면을 닫지 못하던 문제를 수정했습니다.</li>
-        <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
-      </ul>
-      <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.0과 v1.1을 나란히 놓았습니다.</p>
-      {totsugekiGroups.map(group => (
-        <CompareGroup group={group} base={base} versions={totsugekiVersions} visible={VISIBLE_PER_GROUP} />
-      ))}
+      <p class="release-overview">대사를 원문과 대조하고, 타이틀·메뉴와 진행 오류를 고쳤습니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>대사 5,370줄을 일본어 원문과 대조해 4,483줄을 수정했습니다.</li>
+          <li>타이틀 화면과 메뉴를 한국어로 옮겼습니다.</li>
+          <li>캐릭터 말투·고유명사·맞춤법·줄바꿈을 다듬었습니다.</li>
+          <li>폰트에 없던 글자 213자(꽃·쫓·흙 등)를 추가했습니다.</li>
+          <li>이벤트 표 203번 부근에서 화면을 닫지 못하던 문제를 수정했습니다.</li>
+          <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+        </ul>
+        <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.0과 v1.1을 나란히 놓았습니다.</p>
+        {releaseGroups.map(group => (
+          <CompareGroup group={group} base={base} versions={totsugekiVersions} visible={group.pairs.length} />
+        ))}
+      </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-0">
       <h3 id="release-1-0" class="pixel">
@@ -258,9 +266,28 @@ const cast = [
       <p class="section-note">
         <time datetime="2012-12-12">2012년 12월 12일</time>
       </p>
-      <ul>
-        <li>최초 한글패치입니다.</li>
-      </ul>
+      <p class="release-overview">드래곤볼 Z 초오공전 돌격편의 첫 한글판입니다.</p>
+      <ReleaseDetails>
+        <ul>
+          <li>최초 한글패치입니다.</li>
+        </ul>
+
+        <ReleaseScreenshot
+          src={`${base}/images/patch/title_v10_1.webp`}
+          width={256}
+          height={224}
+          alt="드래곤볼 Z 초오공전 돌격편 v1.0 타이틀 화면"
+          caption="v1.0 타이틀 화면"
+        />
+
+        <ReleaseScreenshot
+          src={`${base}/images/patch/restore_goku_fish_v10_1.webp`}
+          width={256}
+          height={224}
+          alt="드래곤볼 Z 초오공전 돌격편 v1.0에서 물고기를 잡으려는 오공"
+          caption="v1.0의 오공 대사"
+        />
+      </ReleaseDetails>
     </article>
   </section>
 
