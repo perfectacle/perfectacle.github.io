@@ -933,10 +933,30 @@ h3.pixel {
   --pixel: 'Galmuri11 Gokuden', ui-monospace, monospace;
 }
 
-[data-theme='gokuden'] body {
-  background:
-    radial-gradient(circle at 50% -400px, rgb(0 49 255 / 45%), transparent 900px),
-    linear-gradient(#0b1a4a, #050a24 1200px) #050a24;
+:is([data-theme='gokuden'], [data-theme='kakusei'], [data-theme='otogirisou']) body {
+  isolation: isolate;
+  background: #050a24;
+}
+
+:is([data-theme='gokuden'], [data-theme='kakusei'], [data-theme='otogirisou']) body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+[data-theme='gokuden'] body::before {
+  /* Keep the map's message window above the viewport. */
+  inset-block-start: -30vh;
+  background-image:
+    linear-gradient(rgb(5 10 36 / 60%), rgb(5 10 36 / 76%)),
+    url('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/images/scenes/map.webp');
+  background-position: center bottom;
 }
 
 :is([data-theme='gokuden'], [data-theme='kakusei']) .frame {
@@ -1002,10 +1022,10 @@ h3.pixel {
   --pixel: 'Galmuri11 Kakusei', ui-monospace, monospace;
 }
 
-[data-theme='kakusei'] body {
-  background:
-    radial-gradient(circle at 50% -400px, rgb(74 82 99 / 70%), transparent 900px),
-    linear-gradient(#18202f, #0a0f18 1200px) #0a0f18;
+[data-theme='kakusei'] body::before {
+  background-image:
+    linear-gradient(rgb(10 15 24 / 58%), rgb(10 15 24 / 76%)),
+    url('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/images/background.webp');
 }
 
 [data-theme='kakusei'] .frame {
@@ -1059,9 +1079,13 @@ h3.pixel {
   --pixel: 'Galmuri11 Otogirisou', ui-monospace, monospace;
 }
 
-/* The game's horror sits on pitch black: no glow, just the next picture cutting in. */
 [data-theme='otogirisou'] body {
   background: #000;
+}
+
+[data-theme='otogirisou'] body::before {
+  background-image:
+    linear-gradient(rgb(0 0 0 / 45%), rgb(0 0 0 / 65%)), url('/games/kr-patches/sfc/otogirisou/images/background.webp');
 }
 
 [data-theme='otogirisou'] .frame {
