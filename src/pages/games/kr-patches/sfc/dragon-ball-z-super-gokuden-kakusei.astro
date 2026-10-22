@@ -13,9 +13,23 @@ import { kakuseiGroups, kakuseiVersions } from '../../../../lib/kakusei-showcase
 
 const patch = KAKUSEI_PATCH;
 const base = patch.path;
-const releaseGroups = kakuseiGroups.map(group => ({
+const releaseGroups = [
+  ...kakuseiGroups.filter(group => group.id === 'names'),
+  ...kakuseiGroups.filter(group => group.id !== 'names'),
+].map(group => ({
   ...group,
-  pairs: group.pairs.filter(pair => ['restore_match', 'tone_frieza_1', 'title'].includes(pair.id)),
+  pairs: group.pairs.filter(pair =>
+    [
+      'restore_goku',
+      'restore_match',
+      'tone_frieza_1',
+      'title',
+      'spell_kami',
+      'credits_popo',
+      'bugfix_vegeta_pod',
+      'bugfix_bulma_ship',
+    ].includes(pair.id),
+  ),
 }));
 
 const play = [

@@ -16,6 +16,7 @@ export const kakuseiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'restore_goku',
+        selectedFrames: [3],
         frames: 4,
         caption: '대원숭이가 된 베지터에게 진 오공의 독백. 잘려 나갔던 뒷부분을 되살렸습니다.',
         alt: '바위밭에 쓰러져 혼잣말하는 오공',
@@ -37,6 +38,7 @@ export const kakuseiGroups: VersionGroup[] = [
       },
       {
         id: 'restore_match',
+        selectedFrames: [1],
         highlights: {
           'v11:1': [[86, 143, 54, 18]],
           'v12:1': [[86, 159, 120, 18]],
@@ -62,6 +64,7 @@ export const kakuseiGroups: VersionGroup[] = [
       },
       {
         id: 'tone_frieza_1',
+        selectedFrames: [1],
         highlights: {
           'v11:1': [[86, 159, 100, 34]],
           'v12:1': [[86, 159, 150, 34]],
@@ -95,9 +98,9 @@ export const kakuseiGroups: VersionGroup[] = [
   },
   {
     id: 'names',
-    title: '이름·별명·맞춤법',
+    title: '타이틀·이름·맞춤법',
     summary:
-      '고유명사는 국내 정식 발매판에 맞추고(슈퍼 도돈파, 미스터 포포 등), 원문에 없던 별명(빠박이, SKIN HEAD 등)은 정리했습니다. 맞춤법과 띄어쓰기, 줄바꿈도 바로잡았습니다.',
+      '타이틀을 한국어로 바꾸고, 고유명사는 엔딩 크레딧까지 국내 정식 발매판에 맞췄습니다(슈퍼 도돈파, 미스터 포포 등). 원문에 없던 별명(빠박이, SKIN HEAD 등)은 정리했습니다. 맞춤법과 띄어쓰기, 줄바꿈도 바로잡았습니다.',
     pairs: [
       {
         id: 'title',
@@ -107,12 +110,21 @@ export const kakuseiGroups: VersionGroup[] = [
       },
       {
         id: 'spell_kami',
+        selectedFrames: [1],
+        highlights: {
+          'v11:1': [[86, 146, 132, 32]],
+          'v12:1': [[86, 146, 132, 32]],
+        },
         frames: 2,
-        caption: '센으로 변장한 신의 대사. MR. 포포는 미스터 포포로 부릅니다.',
+        caption: '센으로 변장한 신의 대사를 원문에 맞춰 다시 옮겼습니다.',
         alt: '천하제일 무술대회 예선 회장에서 오공에게 말하는 신',
       },
       {
         id: 'credits_popo',
+        highlights: {
+          'v11:1': [[176, 81, 68, 17]],
+          'v12:1': [[176, 81, 78, 17]],
+        },
         height: 100,
         caption: '엔딩 크레딧도 미스터 포포입니다.',
         alt: '엔딩 크레딧의 야지로베·카린·신·미스터 포포',
@@ -144,14 +156,18 @@ export const kakuseiGroups: VersionGroup[] = [
     pairs: [
       {
         id: 'bugfix_vegeta_pod',
+        selectedFrames: [5],
         frames: 5,
-        caption: '패배한 베지터가 우주선을 부르는 장면. 같은 시점(0·8·16·23·24초)에 찍었습니다.',
+        caption:
+          '베지터가 우주선을 부른 뒤 24초가 지난 같은 시점입니다. v1.1은 같은 대사에 머무르지만, v1.2는 다음 대사로 진행됩니다.',
         alt: '바위밭에서 우주선을 부르는 베지터',
       },
       {
         id: 'bugfix_bulma_ship',
+        selectedFrames: [5],
         frames: 5,
-        caption: '부르마 일행이 나메크성으로 출발하는 장면. 같은 시점(0·5·11·22·28초)에 찍었습니다.',
+        caption:
+          '부르마 일행이 나메크성으로 출발한 뒤 28초가 지난 같은 시점입니다. v1.1은 거북 하우스에 머무르지만, v1.2는 우주선 안으로 진행됩니다.',
         alt: '우주선을 타고 나메크성으로 출발하는 부르마 일행',
       },
     ],

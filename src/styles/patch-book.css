@@ -756,7 +756,69 @@ h3.pixel {
   margin-left: 30px;
 }
 
-/* Super Mario RPG: the page speaks to the player through the game's own windows, as if the guide were part of the game. */
+/* Super Mario RPG */
+
+[data-theme='smrpg'] {
+  --dialog-ink: var(--ink);
+  --divider: rgb(244 241 234 / 18%);
+}
+
+[data-theme='smrpg'] body {
+  background: #24262b;
+}
+
+[data-theme='smrpg'] .frame {
+  border: 0;
+  border-image: none;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+[data-theme='smrpg'] .dialog {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--ink);
+  font-family: inherit;
+}
+
+[data-theme='smrpg'] :is(.screen, .portrait) {
+  background: none;
+  box-shadow: none;
+}
+
+[data-theme='smrpg'] .patch-box.frame {
+  padding-block: 16px;
+  border-bottom: 1px solid var(--divider);
+}
+
+[data-theme='smrpg'] :is(.play, .member, .secret).frame {
+  padding: 24px 0 0;
+  border-top: 1px solid var(--divider);
+}
+
+[data-theme='smrpg'] .section-nav-menu.frame {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--divider);
+  background: #24262b;
+}
+
+[data-theme='smrpg'] #patch-notes .release-details {
+  border: 0;
+  border-top: 1px solid var(--divider);
+  border-radius: 0;
+}
+
+[data-theme='smrpg'] #patch-notes .release-details > summary {
+  padding-inline: 0;
+}
+
+[data-theme='smrpg'] #patch-notes .release-body {
+  padding-inline: 0;
+}
 
 .speech {
   line-height: 1.75;
@@ -887,24 +949,15 @@ h3.pixel {
   height: 144px;
 }
 
-/* Section titles are window name tabs, not web headings. */
 [data-theme='smrpg'] .section > h2.pixel {
-  justify-self: start;
-  border: 16px solid transparent;
-  border-image: url('/games/kr-patches/sfc/super-mario-rpg/images/ui/frame.webp') 16 fill / 16px stretch;
-  padding: 0 12px;
-  background: var(--panel);
-  background-clip: padding-box;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--divider);
   font-size: 1.5rem;
   text-shadow: none;
 }
 
 [data-theme='smrpg'] .masthead nav {
-  border: 16px solid transparent;
-  border-image: url('/games/kr-patches/sfc/super-mario-rpg/images/ui/frame.webp') 16 fill / 16px stretch;
-  padding: 0 8px 0 30px;
-  background: var(--panel);
-  background-clip: padding-box;
+  padding-block: 8px;
 }
 
 /* Like the copyright line under the title screen. */
@@ -1343,4 +1396,40 @@ h3.pixel {
   display: grid;
   gap: 8px;
   padding-left: 20px;
+}
+
+[data-theme='smrpg'] .paper {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+[data-theme='smrpg'] .paper figcaption {
+  color: var(--muted);
+  text-align: left;
+}
+
+[data-theme='smrpg'] .making-body pre {
+  border-left: 1px solid var(--divider);
+  border-radius: 0;
+  background: none;
+}
+
+[data-theme='smrpg'] .making-body table {
+  background: none;
+}
+
+[data-theme='smrpg'] .making-body :is(th, td) {
+  border: 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+[data-theme='smrpg'] .flow {
+  border-left: 1px solid var(--divider);
+  background: none;
+}
+
+[data-theme='smrpg'] .secret .secret-body {
+  border-color: var(--divider);
 }
