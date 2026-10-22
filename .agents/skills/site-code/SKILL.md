@@ -13,7 +13,7 @@ description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, s
    완료: 해당 규칙을 읽었거나, 해당 없음을 확인했다.
 2. **바꾼다** — 렌더 결과가 바뀌는 순수 함수(`src/lib`)는 `tests/` 에 단위 테스트를 함께 쓴다. 화면 동작은 `e2e/site.spec.ts` 에 Playwright 테스트를 쓴다.
    완료: 새 동작에 테스트가 있다.
-3. **rehype/remark 플러그인을 고쳤다면 콘텐츠 캐시를 지운다** — `rm node_modules/.astro/data-store.json` 후 빌드. Astro 콘텐츠 캐시는 플러그인 파일만 바뀌면 무효화되지 않아 옛 렌더가 남는다(CI 는 매번 새로 설치해서 무관).
+3. **콘텐츠 캐시가 바뀐 입력을 반영하는지 본다** — `astro:config:setup` 에서 `prepareImageCache` 가 원본 이미지 내용·렌더 모드·`src/lib/image-cache.ts` 의 `CODE` 파일들을 해시해, 입력이 바뀌면 `node_modules/.astro/data-store.json` 만 지운다. `sync`(typecheck·check)는 크기만 읽고, build·dev 는 이미지 형식을 선택한다. 두 모드 사이 전환도 자동 무효화한다. 이미지 선택 코드를 옮기면 `CODE` 와 [CI 이미지 캐시 키](../ci/SKILL.md#참고)를 함께 고친다. 해시 대상에 없는 rehype/remark 플러그인을 고쳤다면 `rm -f node_modules/.astro/data-store.json` 후 빌드한다.
    완료: 빌드 결과에 바뀐 렌더가 보인다.
 4. **검증한다** — CI 와 같은 명령을 로컬에서 돌린다.
    - 정적 검사: `pnpm lint && pnpm lint:images && pnpm format:check && pnpm typecheck && pnpm test && pnpm check && pnpm run audit`. `pnpm audit` 이 아니라 `pnpm run audit` 이다. 앞의 것은 pnpm 내장 명령이라 개발용 의존성까지 검사해 CI 와 결과가 다르다.
