@@ -1,0 +1,33 @@
+---
+interface Props {
+  index: number;
+  alt: string;
+  caption: string;
+}
+
+const { index, alt, caption } = Astro.props;
+const src = `/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/images/battle/shot-${String(index).padStart(2, '0')}.webp`;
+---
+
+<figure class="battle-shot">
+  <div class="screen">
+    <img src={src} alt={alt} width="256" height="239" loading="lazy" decoding="async" />
+  </div>
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+  .battle-shot {
+    width: 100%;
+    max-width: 512px;
+    margin: 1.5rem auto;
+  }
+
+  figcaption {
+    margin-top: 0.8rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+</style>

@@ -620,6 +620,38 @@ test('SMRPG secrets keep spoilers folded and support independent keyboard disclo
   await noHorizontalOverflow(page);
 });
 
+test('Kakusei ending videos stay local until the chosen player is activated', async ({ page }) => {
+  const videoRequests: string[] = [];
+  page.on('request', request => {
+    if (/youtube(?:-nocookie)?\.com|ytimg\.com/.test(request.url())) videoRequests.push(request.url());
+  });
+  await page.route('https://www.youtube-nocookie.com/embed/**', route =>
+    route.fulfill({ contentType: 'text/html', body: '<html lang="ko"><title>동영상</title></html>' }),
+  );
+  await page.goto('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/#endings');
+  const endings = page.locator('#endings');
+  const buttons = endings.locator('.yt-facade');
+  await expect(buttons).toHaveCount(16);
+  const ids = await buttons.evaluateAll(items => items.map(item => (item as HTMLElement).dataset['yt']));
+  expect(new Set(ids).size).toBe(16);
+  expect(ids[0]).toBe('YE8lXY8IUN8');
+  expect(ids.at(-1)).toBe('I0drihp8GS0');
+  await expect(endings.locator('iframe')).toHaveCount(0);
+  expect(videoRequests).toEqual([]);
+
+  const first = buttons.first();
+  const title = await first.getAttribute('data-title');
+  expect(title).toBeTruthy();
+  await first.focus();
+  await page.keyboard.press('Enter');
+  const player = endings.locator('iframe');
+  await expect(player).toHaveCount(1);
+  await expect(player).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/YE8lXY8IUN8?autoplay=1');
+  await expect(player).toHaveAttribute('title', title ?? '');
+  await expect(buttons).toHaveCount(15);
+  await noHorizontalOverflow(page);
+});
+
 const PATCH_GUIDES = [
   'super-mario-rpg',
   'dragon-ball-z-super-gokuden-totsugeki',
@@ -739,6 +771,7 @@ for (const game of PATCH_GUIDES) {
       '#story',
       '#play',
       ...(game === 'super-mario-rpg' ? ['#secrets'] : []),
+      ...(game === 'dragon-ball-z-super-gokuden-kakusei' ? ['#battle-system', '#endings'] : []),
       '#patch-notes',
       '#patch',
     ];

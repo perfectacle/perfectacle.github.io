@@ -1,0 +1,160 @@
+---
+import YoutubeFacade from '../YoutubeFacade.astro';
+import endings from './endings.json';
+
+const base = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei';
+const playlist = 'PLI1EOGS3LxJElISvlsBMN_Lg7nFEpveRc';
+---
+
+<section id="endings" class="section page-width" aria-labelledby="endings-title">
+  <h2 id="endings-title" class="pixel">
+    엔딩과 특별 장면
+  </h2>
+  <p class="endings-intro">
+    같은 이야기에서도 선택에 따라 뜻밖의 결말과 특별 장면을 만날 수 있습니다. 원작의 흐름을 따르는 노멀 엔딩을 본 뒤에는
+    2회차에서 다른 선택도 해 보세요.
+  </p>
+  <p class="endings-spoiler">아래 영상의 제목과 설명에는 이야기의 결말과 분기 조건이 포함되어 있습니다.</p>
+  <p class="endings-playlist">
+    <a href={`https://www.youtube.com/playlist?list=${playlist}`} target="_blank" rel="noopener noreferrer">
+      YouTube에서 전체 재생목록 열기 ↗
+    </a>
+  </p>
+  <ol class="endings-list" role="list">
+    {endings.map(ending => (
+      <li class="ending frame" aria-labelledby={`ending-${ending.id}`}>
+        <div class="ending-video yt-frame">
+          <button
+            type="button"
+            class="yt-facade"
+            data-yt={ending.id}
+            data-title={ending.title}
+            aria-label={`${ending.title} 재생`}
+          >
+            <img
+              src={`${base}/images/endings/${ending.id}.webp`}
+              alt=""
+              width="480"
+              height="360"
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+        </div>
+        <div class="ending-copy">
+          <p class="ending-meta">
+            <span class="ending-number" aria-hidden="true">
+              {String(ending.index).padStart(2, '0')}
+            </span>
+            <span>재생 시간 {ending.duration}</span>
+            {ending.secondPlaythrough && <span class="ending-round">2회차부터</span>}
+          </p>
+          <h3 id={`ending-${ending.id}`} class="pixel">
+            {ending.title}
+          </h3>
+          <p>{ending.description}</p>
+          <a
+            class="ending-link"
+            href={`https://www.youtube.com/watch?v=${ending.id}&list=${playlist}&index=${ending.index}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${ending.title} YouTube에서 열기`}
+          >
+            YouTube에서 열기 ↗
+          </a>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<YoutubeFacade />
+
+<style>
+  .endings-intro {
+    margin-top: 1rem;
+  }
+
+  .endings-spoiler {
+    margin-top: 0.75rem;
+    padding-left: 0.85rem;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+  }
+
+  .endings-playlist {
+    margin-top: 0.75rem;
+  }
+
+  .endings-list {
+    display: grid;
+    gap: 1.5rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ending {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+    padding: 1.25rem;
+  }
+
+  .ending-video {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .ending-video img {
+    image-rendering: auto;
+    object-fit: contain;
+  }
+
+  .ending-copy {
+    min-width: 0;
+  }
+
+  .ending-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .ending-number {
+    color: var(--accent);
+    font-family: var(--pixel);
+    font-size: 1rem;
+  }
+
+  .ending-round {
+    border: 1px solid currentcolor;
+    border-radius: 3px;
+    padding: 0.05rem 0.4rem;
+  }
+
+  .ending-copy h3 {
+    margin: 0.5rem 0 0.75rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .ending-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.25rem 0;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 720px) {
+    .ending {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+      padding: 1rem;
+    }
+  }
+</style>

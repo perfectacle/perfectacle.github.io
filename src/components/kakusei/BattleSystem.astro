@@ -1,0 +1,357 @@
+---
+import BattleShot from './BattleShot.astro';
+
+const counters = [
+  { opponent: '파워', theirs: 'X', own: '기공', mine: 'A' },
+  { opponent: '기공', theirs: 'A', own: '스피드', mine: 'B' },
+  { opponent: '스피드', theirs: 'B', own: '반격', mine: 'Y' },
+  { opponent: '반격', theirs: 'Y', own: '파워', mine: 'X' },
+];
+
+const results = [
+  {
+    index: 3,
+    title: '승리 · 파랑',
+    alt: '피콜로의 연속 에너지탄에 대응해 아래쪽 잔상권 칸이 파란색으로 표시된 전투 화면',
+    caption: '자신의 기술 칸이 파랑이면 승리입니다. 이 화면에서는 아래쪽 「잔상권」 칸을 봅니다.',
+  },
+  {
+    index: 0,
+    title: '무승부 · 초록',
+    alt: '천진반과 싸우는 오공의 아래쪽 거북선인류최종오의 칸이 초록색으로 표시된 전투 화면',
+    caption: '자신의 기술 칸이 초록이면 무승부입니다. 양쪽 기술이 맞붙은 뒤의 결과를 확인해 보세요.',
+  },
+  {
+    index: 4,
+    title: '패배 · 빨강',
+    alt: '피콜로의 전력투구에 대응한 아래쪽 카운터 칸이 빨간색으로 표시된 전투 화면',
+    caption: '자신의 기술 칸이 빨강이면 패배입니다. 이 화면에서는 「카운터」가 상대의 파워 기술에 밀렸습니다.',
+  },
+];
+---
+
+<section id="battle-system" class="section page-width" aria-labelledby="battle-system-title">
+  <h2 id="battle-system-title" class="pixel">
+    전투 시스템
+  </h2>
+  <p class="lead">
+    각성편의 전투는 상대의 기술을 보고 유리한 계열로 받아치는 가위바위보입니다. 버튼부터 연달아 누르기보다, 기를
+    모으면서 상대의 움직임을 기다려 보세요. 상성에 전투력과 기술의 성장이 더해져 싸움의 결과가 달라집니다.
+  </p>
+
+  <article class="battle-part frame" aria-labelledby="battle-flow-title">
+    <h3 id="battle-flow-title" class="pixel">
+      상대의 공격을 보고 받아칩니다
+    </h3>
+    <ol class="battle-flow">
+      <li>
+        <strong>기를 모읍니다.</strong> 상대가 공격하기 전까지 <kbd>L</kbd> + <kbd>R</kbd>로 기를 채웁니다.
+      </li>
+      <li>
+        <strong>상대의 기술을 봅니다.</strong> 화면 위쪽에 뜨는 기술 이름을 확인합니다.
+      </li>
+      <li>
+        <strong>유리한 계열로 대응합니다.</strong> 아래 상성표를 보고 그 계열의 버튼을 누릅니다.
+      </li>
+      <li>
+        <strong>결과를 확인합니다.</strong> 체력 옆 자신의 기술 칸에 나타나는 색으로 승리·무승부·패배를 구분합니다.
+      </li>
+    </ol>
+    <BattleShot
+      index={5}
+      alt="마주니어가 대쉬 어택을 쓰며 위쪽에 기술 이름이 표시되는 무술대회 전투 화면"
+      caption="상대가 먼저 기술을 꺼내면 화면 위쪽에서 이름을 확인하고 대응합니다."
+    />
+
+    <h4>기본 조작</h4>
+    <p>버튼 표기는 슈퍼 패미컴 패드 기준입니다. 두 버튼을 함께 적은 조작은 동시에 누릅니다.</p>
+    <table>
+      <caption>전투 중 사용하는 버튼</caption>
+      <thead>
+        <tr>
+          <th scope="col">버튼</th>
+          <th scope="col">기능</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">
+            <kbd>Start</kbd>
+          </th>
+          <td>상태창 열기</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>A</kbd>
+          </th>
+          <td>기공 계열 기술</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>B</kbd>
+          </th>
+          <td>스피드 계열 기술</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>X</kbd>
+          </th>
+          <td>파워 계열 기술</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>Y</kbd>
+          </th>
+          <td>반격 계열 기술</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>A</kbd> + <kbd>X</kbd>
+          </th>
+          <td>에네르기파 또는 마섬광</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>B</kbd> + <kbd>Y</kbd>
+          </th>
+          <td>태양권 또는 분노의 파워</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>L</kbd> + <kbd>R</kbd>
+          </th>
+          <td>기 모으기</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="battle-note">
+      계왕권을 배운 뒤에는 기가 가득 찼을 때의 <kbd>L</kbd> + <kbd>R</kbd> 조작이 달라집니다. 조건은 아래에서
+      설명합니다.
+    </p>
+  </article>
+
+  <article class="battle-part frame" aria-labelledby="battle-matchups-title">
+    <h3 id="battle-matchups-title" class="pixel">
+      어떤 기술로 받아치면 될까요?
+    </h3>
+    <p>
+      기본 네 계열은 기공이 파워를, 스피드가 기공을, 반격이 스피드를, 파워가 반격을 이기는 순환 관계입니다. 상대가 쓴
+      계열을 왼쪽에서 찾고, 오른쪽의 기술로 대응해 보세요.
+    </p>
+    <table>
+      <caption>기본 네 계열의 상성</caption>
+      <thead>
+        <tr>
+          <th scope="col">상대의 기술</th>
+          <th scope="col">내가 고를 유리한 기술</th>
+        </tr>
+      </thead>
+      <tbody>
+        {counters.map(counter => (
+          <tr>
+            <th scope="row">
+              {counter.opponent} <kbd>{counter.theirs}</kbd>
+            </th>
+            <td>
+              {counter.own} <kbd>{counter.mine}</kbd>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <h4>두 버튼 기술에도 상성이 있습니다</h4>
+    <ul>
+      <li>
+        <strong>기본 네 계열</strong>에는 에네르기파·마섬광이 유리합니다.
+      </li>
+      <li>
+        <strong>에네르기파·마섬광</strong>에는 태양권·분노의 파워가 유리합니다.
+      </li>
+      <li>
+        <strong>태양권·분노의 파워</strong>에는 다시 기본 네 계열이 유리합니다.
+      </li>
+    </ul>
+    <p>강해 보이는 기술만 반복하면 되지는 않습니다. 상성이 유리해도 전투력 차이가 크면 결과가 달라질 수 있습니다.</p>
+
+    <h4>결과는 체력 옆의 기술 칸에서 확인합니다</h4>
+    <p>상대 쪽에도 색이 표시되므로, 화면 아래쪽에 있는 자신의 기술 칸을 기준으로 읽습니다.</p>
+    <div class="battle-results">
+      {results.map(result => (
+        <div class="battle-result">
+          <h5>{result.title}</h5>
+          <BattleShot index={result.index} alt={result.alt} caption={result.caption} />
+        </div>
+      ))}
+    </div>
+  </article>
+
+  <article class="battle-part frame" aria-labelledby="battle-skills-title">
+    <h3 id="battle-skills-title" class="pixel">
+      쓰는 기술이 늘어나고, 버튼 배치도 바꿉니다
+    </h3>
+    <p>
+      오공과 오반은 기술과 숙련도가 따로 자랍니다. 기술을 사용하면 해당 계열의 경험치가 쌓이고 새로운 기술을 배웁니다.
+      한쪽이 익힌 기술을 다른 쪽도 곧바로 쓸 수 있는 것은 아닙니다.
+    </p>
+    <p>
+      <kbd>Start</kbd>로 상태창을 열고 기술설정에서 배운 기술을 배치해 보세요. 방향키와 계열 버튼을 조합해 서로 다른
+      기술을 꺼내 쓸 수 있습니다.
+    </p>
+    <div class="battle-pair">
+      <BattleShot
+        index={7}
+        alt="손오공의 기공기술 리스트에서 배치할 기술을 고르는 기술설정 화면"
+        caption="먼저 기술 목록에서 쓸 기술을 고릅니다. 화면은 오공의 기공 계열 기술 목록입니다."
+      />
+      <BattleShot
+        index={8}
+        alt="A 버튼과 방향키 조합별로 기공기술이 배치되어 있는 손오공의 기술설정 화면"
+        caption="기공 계열은 A 버튼과 방향키 조합에 기술을 배치합니다. 조합마다 설정한 기술이 표시됩니다."
+      />
+    </div>
+    <p class="battle-note">
+      기술 옆의 <strong>%는 전투력 사용 비율</strong>입니다. 명중률이나 기술의 성공 확률을 나타내는 숫자가 아닙니다.
+    </p>
+  </article>
+
+  <article class="battle-part frame" aria-labelledby="battle-power-title">
+    <h3 id="battle-power-title" class="pixel">
+      상성만큼 전투력도 중요합니다
+    </h3>
+    <p>
+      상대보다 전투력이 낮으면 같은 에네르기파 계열끼리 맞붙어도 질 수 있습니다. 전투력이 높을수록 상대에게 주는 피해가
+      커지고, 공격을 받았을 때 잃는 체력과 전투력은 줄어듭니다.
+    </p>
+    <div class="battle-pair">
+      <BattleShot
+        index={9}
+        alt="피콜로의 폭렬마파와 오반의 마섬광이 맞붙어 아래쪽 마섬광 칸이 빨간색으로 표시된 전투 화면"
+        caption="같은 에네르기파 계열로 대응해도 전투력 차이가 있으면 패배할 수 있습니다."
+      />
+      <BattleShot
+        index={12}
+        alt="피콜로와 싸우는 오반의 체력 1630과 전투력 2058이 아래쪽에 표시된 화면"
+        caption="화면 아래의 체력과 전투력을 함께 확인하며 싸워 보세요."
+      />
+    </div>
+  </article>
+
+  <article class="battle-part frame" aria-labelledby="battle-special-title">
+    <h3 id="battle-special-title" class="pixel">
+      상대의 특수 기술도 살펴보세요
+    </h3>
+    <p>
+      태양권 계열의 기술은 오공과 오반만 쓰는 것이 아닙니다. 상대도 이 계열의 기술을 쓸 수 있으니, 익숙한 에네르기파나
+      마섬광만 고집하지 말고 상대의 기술에 맞춰 대응합니다.
+    </p>
+    <div class="battle-pair">
+      <BattleShot
+        index={10}
+        alt="계왕님의 에너지파에 오공이 태양권으로 대응해 아래쪽 태양권 칸이 파란색으로 표시된 화면"
+        caption="에너지파를 태양권으로 받아친 장면입니다. 태양권 계열은 에네르기파 계열에 유리합니다."
+      />
+      <BattleShot
+        index={11}
+        alt="피콜로의 미스틱스에 오반이 마섬광으로 대응해 아래쪽 마섬광 칸이 빨간색으로 표시된 화면"
+        caption="상대도 태양권 계열을 씁니다. 피콜로의 「미스틱스」에 마섬광으로 대응했다가 패배한 장면입니다."
+      />
+    </div>
+
+    <h4>계왕권은 기가 가득 찼을 때</h4>
+    <p>
+      계왕권을 배운 뒤, <strong>초사이어인이 아닌 오공</strong>은 기가 가득 찬 상태에서 <kbd>L</kbd> + <kbd>R</kbd>을 한
+      번 눌러 계왕권을 씁니다. 한 번 사용할 때마다 <strong>체력 100을 소모</strong>합니다. 평소 기를 모을 때와 같은
+      버튼이므로 남은 체력도 확인해 주세요.
+    </p>
+  </article>
+</section>
+
+<style>
+  .battle-part {
+    margin-top: 1.5rem;
+    padding: clamp(1rem, 3vw, 2rem);
+  }
+
+  .battle-part h3 {
+    margin-top: 0;
+    line-height: 1.6;
+  }
+
+  h4 {
+    margin: 2rem 0 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  h5 {
+    margin: 1.5rem 0 0;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  p,
+  li {
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+  }
+
+  li + li {
+    margin-top: 0.65rem;
+  }
+
+  .battle-flow {
+    padding-inline-start: 1.5rem;
+  }
+
+  kbd {
+    display: inline-block;
+    min-width: 1.5em;
+    padding: 0.05em 0.35em;
+    border: 1px solid var(--muted);
+    border-radius: 3px;
+    font: inherit;
+    font-size: 0.9em;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+    line-height: 1.7;
+    table-layout: fixed;
+  }
+
+  caption {
+    margin-bottom: 0.65rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+    text-align: start;
+  }
+
+  th,
+  td {
+    padding: 0.65rem 0.4rem;
+    border-bottom: 1px solid var(--muted);
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+
+  .battle-note {
+    padding-inline-start: 1rem;
+    border-inline-start: 3px solid var(--accent);
+  }
+
+  .battle-pair {
+    display: grid;
+    gap: 0 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 1100px) {
+    .battle-pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
