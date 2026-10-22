@@ -271,33 +271,63 @@ test('catalogue characters change pose in place and return to their initial fram
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/games/kr-patches/');
-  for (const name of ['mega-man-x', 'ryu', 'diddy-kong']) {
+  for (const { name, expectedFrames, poseFrames } of [
+    { name: 'mega-man-x', expectedFrames: 10, poseFrames: [1, 3, 6, 8] },
+    { name: 'ryu', expectedFrames: 86, poseFrames: [5, 65, 70, 75, 82] },
+    { name: 'diddy-kong', expectedFrames: 174, poseFrames: [60, 69, 80, 150, 165] },
+  ]) {
     const sprite = page.locator(`.world-rail .sprite-${name}`);
     await sprite.scrollIntoViewIfNeeded();
     expect(await loadSpriteImage(sprite)).toBe(true);
-    const duration = await sprite.evaluate(element => {
+    const { duration, frameCount } = await sprite.evaluate(element => {
       const animations = element.getAnimations();
       if (animations.length !== 1) throw new Error('A character must have one CSS animation');
       const animation = animations[0];
       if (!animation || !animation.effect) throw new Error('The character animation must have an effect');
       animation.pause();
       animation.currentTime = 0;
-      return Number(animation.effect.getTiming().duration);
+      return {
+        duration: Number(animation.effect.getTiming().duration),
+        frameCount: Number(getComputedStyle(element).getPropertyValue('--frame-count')),
+      };
     });
-    expect(duration).toBeGreaterThan(0);
+    expect(Number.isInteger(frameCount)).toBe(true);
+    expect(frameCount).toBe(expectedFrames);
+    expect(duration / frameCount).toBeCloseTo(1000 / 30, 3);
+    const positions = await sprite.evaluate((element, frameDuration) => {
+      const animation = element.getAnimations()[0];
+      if (!animation) throw new Error('The character animation must exist');
+      const positions = [0, frameDuration - 0.01, frameDuration + 0.01].map(time => {
+        animation.currentTime = time;
+        return getComputedStyle(element).backgroundPositionX;
+      });
+      animation.currentTime = 0;
+      return positions;
+    }, duration / frameCount);
+    expect(positions[0]).toBe(positions[1]);
+    expect(positions[2]).not.toBe(positions[0]);
     const initialBounds = await sprite.boundingBox();
     const initial = await sprite.screenshot();
     const poses = [];
-    for (const fraction of [0.05, 0.25, 0.5, 0.75]) {
-      await sprite.evaluate((element, time) => {
-        const animation = element.getAnimations()[0];
-        if (!animation) throw new Error('The character animation must exist');
-        animation.currentTime = time;
-      }, duration * fraction);
+    for (const frame of poseFrames) {
+      await sprite.evaluate(
+        (element, time) => {
+          const animation = element.getAnimations()[0];
+          if (!animation) throw new Error('The character animation must exist');
+          animation.currentTime = time;
+        },
+        (duration / frameCount) * (frame + 0.1),
+      );
       poses.push(await sprite.screenshot());
       expect(await sprite.boundingBox()).toEqual(initialBounds);
     }
     expect(poses.some(pose => !pose.equals(initial))).toBe(true);
+    if (name === 'diddy-kong') {
+      const [sitting, jugglingStart, jugglingNext] = poses;
+      if (!sitting || !jugglingStart || !jugglingNext) throw new Error('Diddy must have sitting and juggling poses');
+      expect(sitting.equals(initial)).toBe(false);
+      expect(jugglingStart.equals(jugglingNext)).toBe(false);
+    }
     await sprite.evaluate((element, time) => {
       const animation = element.getAnimations()[0];
       if (!animation) throw new Error('The character animation must exist');
