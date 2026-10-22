@@ -1,0 +1,29 @@
+{
+  "directories": [
+    "src/pages/games/kr-patches",
+    "src/components/kr-patch",
+    "src/components/smrpg",
+    "src/components/totsugeki",
+    "src/components/kakusei",
+    "src/components/otogirisou",
+    "src/lib"
+  ],
+  "files": ["src/layouts/PatchBook.astro", "src/styles/patch-book.css", "src/styles/patch-catalogue.css"],
+  "extensions": [".astro", ".ts", ".json"],
+  "requiredCharacters": "←→–—·©★▶",
+  "tools": { "fonttools": "4.67.0", "brotli": "1.2.0" },
+  "fonts": [
+    {
+      "source": "Galmuri11.ttf",
+      "sourceSha256": "e24256f42e43713d2ea086a1e1669d78b968f5b3cc547e5c157f0606ffa5def1",
+      "output": "guide.woff2",
+      "weight": 400
+    },
+    {
+      "source": "Galmuri11-Bold.ttf",
+      "sourceSha256": "45d901e379138dd91873af157640f60aa4cf6beaa885c3efd2a8c279e039a237",
+      "output": "guide-bold.woff2",
+      "weight": 700
+    }
+  ]
+}

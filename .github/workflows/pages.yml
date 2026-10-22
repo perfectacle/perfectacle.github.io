@@ -58,7 +58,7 @@ jobs:
       matrix:
         task: [lint, 'lint:images', 'format:check', typecheck, test, check, audit]
     env:
-      # code: posts and static files are irrelevant, so they are neither checked out nor part of the fingerprint.
+      # code: omit posts and static files, except the patch fonts whose bytes the unit tests verify.
       # lint:images reads images under src/content, and typecheck/check run astro sync over the posts collection.
       SCOPE: ${{ contains(fromJSON('["lint", "format:check", "test", "audit"]'), matrix.task) && 'code' || 'all' }}
       # Skip the job when a run with identical inputs already passed (audit is time-dependent, so never).
@@ -75,6 +75,7 @@ jobs:
             !/src/content/
             !/public/
             !/drafts/
+            ${{ matrix.task == 'test' && '/public/games/kr-patches/fonts/' || '' }}
 
       - if: env.SCOPE == 'all'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -82,7 +83,7 @@ jobs:
           persist-credentials: false
 
       - id: fingerprint
-        run: echo "key=verified-${{ matrix.task }}-${{ runner.arch }}-${{ env.SCOPE == 'code' && hashFiles('**', '!src/content/**', '!public/**', '!drafts/**', '!.git/**') || hashFiles('**', '!.git/**') }}" >> "$GITHUB_OUTPUT"
+        run: echo "key=verified-${{ matrix.task }}-${{ runner.arch }}-${{ env.SCOPE == 'code' && hashFiles('**', '!src/content/**', '!public/**', '!drafts/**', '!.git/**') || hashFiles('**', '!.git/**') }}${{ matrix.task == 'test' && format('-{0}', hashFiles('public/games/kr-patches/fonts/**')) || '' }}" >> "$GITHUB_OUTPUT"
 
       - if: env.REUSE == 'true'
         id: verified

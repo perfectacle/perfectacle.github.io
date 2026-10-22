@@ -24,7 +24,6 @@ interface Props {
 const { title, description, trail, theme, image, copyright, links = [], sections = [] } = Astro.props;
 const patch = KR_PATCHES.find(p => p.theme === theme);
 if (!patch && theme !== 'sfc') throw new Error(`Unknown theme ${theme}`);
-const assets = patch?.path;
 const color = patch?.color ?? '#182b22';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const imageUrl = new URL(image.src, Astro.site).href;
@@ -45,7 +44,8 @@ const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH
     <link rel="icon" href="/images/favicon/favicon-32x32.png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/images/favicon/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap.xml" />
-    {assets && <link rel="preload" href={`${assets}/fonts/guide.woff2`} as="font" type="font/woff2" crossorigin />}
+    <link rel="preload" href="/games/kr-patches/fonts/guide.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/games/kr-patches/fonts/guide-bold.woff2" as="font" type="font/woff2" crossorigin />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
