@@ -6,6 +6,8 @@
   --ink: var(--fg);
   --link: var(--accent);
   --mono: var(--font-mono);
+  /* Notes chain identifiers like KoBtlItem·KoBtlSkill with no space; keep-all alone would push them off a phone. */
+  overflow-wrap: anywhere;
 }
 
 .note-body .lead {

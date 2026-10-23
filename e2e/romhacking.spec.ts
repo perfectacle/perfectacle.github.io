@@ -498,6 +498,16 @@ for (const patch of KR_PATCHES) {
   });
 }
 
+for (const patch of KR_PATCHES) {
+  test(`${patch.title} ROM analysis note fits a 320px phone`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 });
+    await page.goto(notePath(patch));
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+      0,
+    );
+  });
+}
+
 test('the guide index lists the four ROM analysis notes', async ({ page }) => {
   await page.goto(GUIDE_PATH);
   const notes = page.locator('.note-map');
