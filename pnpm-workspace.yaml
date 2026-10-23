@@ -7,4 +7,5 @@ allowBuilds: {}
 
 overrides:
   # test only: reproduces the advisory
-  dompurify@3: 3.4.16
+  # GHSA-cg2g-xh64-v4q7, GHSA-mrv2-3pqr-j5jr; pinned by the audit workflow.
+  dompurify@3: 3.4.17
