@@ -1,20 +1,20 @@
 ---
 interface Props {
-  title: string;
-  image: string;
-  /** Label background behind the title. */
-  color: string;
+  /** Label art: the original label with its title swapped for the patched ROM's Korean logo. */
+  label: string;
+  /** Title screen the boot scene shows on the CRT. */
+  screen: string;
   eager?: boolean;
 }
 
-const { title, image, color, eager = false } = Astro.props;
+const { label, screen, eager = false } = Astro.props;
 const ridges = [0, 1, 2, 3, 4];
 // Front of a Super Famicom cartridge, traced from the real shell: landscape body with a raised top lip,
 // five grip ridges on each shoulder, the label recess, the lower grip groove and the two screws.
 // Its gradients are defined once by SfcCartridgeDefs, which the page must render.
 ---
 
-<div class="cartridge" style={`--label: ${color}`}>
+<div class="cartridge" data-screen={screen}>
   <svg class="cartridge-shell" viewBox="0 0 400 250" aria-hidden="true">
     <path
       d="M0 26C0 18 3 14 9 12L31 3C35 1 39 0 44 0H356C361 0 365 1 369 3L391 12C397 14 400 18 400 26V237C400 244 395 250 388 250H12C5 250 0 244 0 237Z"
@@ -55,19 +55,10 @@ const ridges = [0, 1, 2, 3, 4];
     <path d="M12 249H388" stroke="#8c8c90" stroke-width="2"></path>
   </svg>
   <div class="cartridge-label">
-    <div class="cartridge-label-copy" aria-hidden="true">
-      <span class="cartridge-mark">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-      <span class="cartridge-title">{title}</span>
-    </div>
     {eager ? (
-      <img src={image} width="256" height="224" alt="" fetchpriority="high" />
+      <img src={label} width="1464" height="450" alt="" fetchpriority="high" />
     ) : (
-      <img src={image} width="256" height="224" alt="" loading="lazy" decoding="async" />
+      <img src={label} width="1464" height="450" alt="" loading="lazy" decoding="async" />
     )}
   </div>
 </div>

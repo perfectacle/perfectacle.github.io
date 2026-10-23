@@ -60,7 +60,11 @@ import '../../../../styles/patch-catalogue.css';
           return (
             <li>
               <a class="game-card" href={href}>
-                <SfcCartridge title={patch.title} image={image} color={patch.color} eager={i === 0} />
+                <SfcCartridge
+                  label={`/games/kr-patches/catalogue/labels/${patch.theme}.webp`}
+                  screen={image}
+                  eager={i === 0}
+                />
                 <div class="game-card-copy">
                   <p class="game-release">
                     게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}{' '}

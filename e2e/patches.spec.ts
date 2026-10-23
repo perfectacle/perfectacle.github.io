@@ -325,13 +325,21 @@ test('catalogue lists every game page', async ({ page }) => {
   }
 });
 
-test('catalogue uses the Super Mario RPG title screen', async ({ page }) => {
+test('catalogue cartridges wear their label art and boot the title screen', async ({ page }) => {
   await page.goto(CATALOGUE);
-  const screen = page.locator(`main a[href="${GAME}"] img`);
-  await expect(screen).toHaveAttribute('src', '/games/kr-patches/catalogue/super-mario-rpg-title.webp');
-  await expect
-    .poll(() => screen.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth > 0))
-    .toBe(true);
+  for (const patch of KR_PATCHES) {
+    const cartridge = page.locator(`main a[href="${patch.path}/"] .cartridge`);
+    const label = cartridge.locator('img');
+    await label.scrollIntoViewIfNeeded();
+    await expect(label).toHaveAttribute('src', `/games/kr-patches/catalogue/labels/${patch.theme}.webp`);
+    await expect
+      .poll(() => label.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth === 1464))
+      .toBe(true);
+  }
+  await expect(page.locator(`main a[href="${GAME}"] .cartridge`)).toHaveAttribute(
+    'data-screen',
+    '/games/kr-patches/catalogue/super-mario-rpg-title.webp',
+  );
 });
 
 test('Super Mario RPG guide leads with its title screen', async ({ page }) => {
