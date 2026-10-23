@@ -14,7 +14,7 @@ import Speech from '../../../../components/kr-patch/Speech.astro';
 import MakingOf from '../../../../components/smrpg/MakingOf.astro';
 import Secrets from '../../../../components/smrpg/Secrets.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
-import { SMRPG_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
+import { SMRPG_PATCH, downloads, patchDescription, releaseLabel, trail } from '../../../../lib/kr-patches';
 import { compareGroups } from '../../../../lib/smrpg-showcase';
 import { JAPANESE_AND_KOREAN } from '../../../../lib/version-pairs';
 
@@ -137,15 +137,9 @@ const latestOverview =
 <PatchBook
   title={`${patch.title} 한글판`}
   trail={trail(patch)}
-  description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
+  description={patchDescription(patch)}
   sections={sectionsOf(['korean', 'story', 'play', 'secrets', 'patch-notes', 'making'])}
   theme={patch.theme}
-  image={{
-    src: `${base}/images/world-map-4x.webp`,
-    alt: '슈퍼 마리오 RPG의 월드맵',
-    width: 1024,
-    height: 896,
-  }}
   copyright={[patch.copyright]}
   links={[{ href: 'https://www.nintendo.co.jp/clvs/manuals/ja/pdf/CLV-P-VABQJ.pdf', label: '원작 공식 설명서' }]}
 >

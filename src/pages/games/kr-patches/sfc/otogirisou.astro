@@ -13,7 +13,7 @@ import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import MakingOf from '../../../../components/otogirisou/MakingOf.astro';
 import SoundNovel from '../../../../components/otogirisou/SoundNovel.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
-import { OTOGIRISOU_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
+import { OTOGIRISOU_PATCH, downloads, patchDescription, releaseLabel, trail } from '../../../../lib/kr-patches';
 import { otogirisouPairs } from '../../../../lib/otogirisou-showcase';
 import { JAPANESE_AND_KOREAN } from '../../../../lib/version-pairs';
 
@@ -114,10 +114,9 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
 <PatchBook
   title={`${patch.title} 한글판`}
   trail={trail(patch)}
-  description={`${patch.year}년 슈퍼 패미컴 사운드 노벨 ${patch.title}(弟切草) 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
+  description={patchDescription(patch)}
   sections={sectionsOf(['korean', 'features', 'story', 'play', 'patch-notes', 'making'])}
   theme={patch.theme}
-  image={{ src: `${base}/images/scenes/title.webp`, alt: '제절초 타이틀 화면' }}
   copyright={[patch.copyright]}
 >
   <section class="hero page-width" aria-labelledby="title">

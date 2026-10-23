@@ -14,7 +14,15 @@ import BattleSystem from '../../../../components/totsugeki/BattleSystem.astro';
 import TrainingScenes from '../../../../components/totsugeki/TrainingScenes.astro';
 import MakingOf from '../../../../components/totsugeki/MakingOf.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
-import { KAKUSEI_PATCH, TOTSUGEKI_PATCH, downloads, releaseLabel, releaseOf, trail } from '../../../../lib/kr-patches';
+import {
+  KAKUSEI_PATCH,
+  TOTSUGEKI_PATCH,
+  downloads,
+  patchDescription,
+  releaseLabel,
+  releaseOf,
+  trail,
+} from '../../../../lib/kr-patches';
 import { totsugekiGroups, totsugekiVersions } from '../../../../lib/totsugeki-showcase';
 
 const patch = TOTSUGEKI_PATCH;
@@ -178,10 +186,9 @@ const latestOverview =
 <PatchBook
   title={`${patch.title} 한글판`}
   trail={trail(patch)}
-  description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
+  description={patchDescription(patch)}
   sections={sectionsOf(['changes', 'story', 'cast', 'play', 'battle-system', 'scenes', 'patch-notes', 'making'])}
   theme={patch.theme}
-  image={{ src: `${base}/images/title.webp`, alt: '드래곤볼 Z 초오공전 돌격편 한글판 타이틀 화면' }}
   copyright={[patch.copyright]}
 >
   <section class="hero page-width" aria-labelledby="title">

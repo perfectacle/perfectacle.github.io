@@ -933,3 +933,25 @@ for (const patch of KR_PATCHES) {
     }
   });
 }
+
+for (const path of [HUB, CATALOGUE, ...KR_PATCHES.map(patch => `${patch.path}/`)]) {
+  test(`${path} previews as its title screens in a large PNG`, async ({ page, request }) => {
+    await page.goto(path);
+    const meta = (property: string) => page.locator(`meta[property="${property}"]`).getAttribute('content');
+    const image = new URL((await meta('og:image')) ?? '');
+    expect(image.pathname).toBe(`${path}og.png`);
+    const response = await request.get(image.pathname);
+    expect(response.headers()['content-type']).toBe('image/png');
+    const png = await response.body();
+    // The IHDR chunk right after the PNG signature holds the width and height.
+    const size = { width: png.readUInt32BE(16), height: png.readUInt32BE(20) };
+    expect(size).toEqual({
+      width: Number(await meta('og:image:width')),
+      height: Number(await meta('og:image:height')),
+    });
+    // Link-preview cards crop to about 1.91:1, so a wider or taller image would lose part of the title screen.
+    expect(Math.abs(size.width / size.height - 1.91)).toBeLessThan(0.01);
+    const patch = KR_PATCHES.find(p => `${p.path}/` === path);
+    if (patch) expect(await meta('og:description')).toContain(patch.card.summary);
+  });
+}

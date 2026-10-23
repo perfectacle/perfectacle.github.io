@@ -7,6 +7,7 @@ import Bgm from '../components/kr-patch/Bgm.astro';
 import { SITE } from '../lib/posts.ts';
 import { KR_PATCH_SFC_PATH, KR_PATCH_SITE_TITLE, KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
 import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
+import { OG_SIZE } from '../lib/kr-patch-og.ts';
 
 interface Props {
   title: string;
@@ -15,19 +16,23 @@ interface Props {
   trail: { name: string; path: string }[];
   /** Which game's look the page takes. */
   theme: KrPatchTheme | 'sfc';
-  /** Social preview: a game screen, 256×224 unless a size is given. */
-  image: { src: string; alt: string; width?: number; height?: number };
   copyright: string[];
   links?: { href: string; label: string }[];
   sections?: { id: string; label: string }[];
 }
 
-const { title, description, trail, theme, image, copyright, links = [], sections = [] } = Astro.props;
+const { title, description, trail, theme, copyright, links = [], sections = [] } = Astro.props;
 const patch = KR_PATCHES.find(p => p.theme === theme);
 if (!patch && theme !== 'sfc') throw new Error(`Unknown theme ${theme}`);
 const color = patch?.color ?? '#182b22';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const imageUrl = new URL(image.src, Astro.site).href;
+// Every page has an og.png beside it, drawn from the title screens at build time.
+const preview = {
+  src: `${Astro.url.pathname}og.png`,
+  alt: patch ? `${patch.title} 타이틀 화면` : '한글패치로 즐기는 슈퍼 패미컴 게임들의 타이틀 화면',
+  ...(patch ? OG_SIZE.game : OG_SIZE.catalogue),
+};
+const imageUrl = new URL(preview.src, Astro.site).href;
 const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH_SITE_TITLE}`;
 ---
 
@@ -52,9 +57,10 @@ const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={imageUrl} />
-    <meta property="og:image:width" content={String(image.width ?? 256)} />
-    <meta property="og:image:height" content={String(image.height ?? 224)} />
-    <meta property="og:image:alt" content={image.alt} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content={String(preview.width)} />
+    <meta property="og:image:height" content={String(preview.height)} />
+    <meta property="og:image:alt" content={preview.alt} />
     <meta property="og:locale" content="ko_KR" />
     <meta property="og:site_name" content={KR_PATCH_SITE_TITLE} />
     <meta name="twitter:card" content="summary_large_image" />
