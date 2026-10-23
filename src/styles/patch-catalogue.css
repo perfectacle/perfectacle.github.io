@@ -254,10 +254,10 @@
 
 [data-theme='sfc'] .page-footer {
   margin-top: 32px;
-  border-top: 2px solid #53634a;
   color: #cbc7ae;
   font-size: 0.875rem;
   background: rgb(16 24 24 / 85%);
+  box-shadow: 0 0 0 100vmax rgb(16 24 24 / 85%);
   padding-block: 24px;
 }
 

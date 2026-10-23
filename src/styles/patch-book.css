@@ -295,13 +295,15 @@ details[open]:not(.section-nav-menu) > summary::after {
   text-decoration: none;
 }
 
+/* The panel runs edge to edge so the floating music button sits inside it; the text keeps the page width. */
 .page-footer {
   display: grid;
   gap: 6px;
   margin-top: 48px;
-  border-top: 2px solid rgb(255 255 255 / 16%);
   padding-block: 24px;
   background: rgb(10 12 18 / 82%);
+  box-shadow: 0 0 0 100vmax rgb(10 12 18 / 82%);
+  clip-path: inset(0 -100vmax);
   color: var(--muted);
   font-size: 0.875rem;
 }

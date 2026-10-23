@@ -278,6 +278,8 @@
 [data-theme='sfc'] .page-footer {
   margin-top: 32px;
   border-top: 1px solid #23302a;
+  background: none;
+  box-shadow: none;
   color: #9fb3a6;
   font-size: 0.875rem;
 }
