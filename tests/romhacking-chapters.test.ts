@@ -41,7 +41,8 @@ test('previous and next skip unwritten chapters', () => {
 
 test('note and toolkit links point at real anchors', () => {
   for (const c of readyChapters()) {
-    for (const n of c.notes) expect(noteHref(n)).toMatch(/^\/games\/kr-patches\/sfc\/[a-z-]+\/#making(-[a-z-]+)?$/);
+    for (const n of c.notes)
+      expect(noteHref(n)).toMatch(/^\/games\/romhacking\/snes\/notes\/[a-z-]+\/(#making-[a-z0-9-]+)?$/);
     for (const t of c.tools) {
       expect(toolHref(t)).toContain('README.ko.md#');
       expect(decodeURIComponent(toolHref(t).split('#')[1] ?? '')).toBe(t.anchor);

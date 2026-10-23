@@ -1,0 +1,30 @@
+---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
+import type { KrPatch } from '../../lib/kr-patches';
+
+interface Props {
+  patch: KrPatch;
+}
+
+const { patch } = Astro.props;
+const img = (name: string) => `${patch.path}/images/making/${name}`;
+---
+
+<p class="lead">
+  이 롬을 다시 분석하거나 패치를 이어 고칠 사람을 위해, 확인한 주소와 형식을 적어 둔 기록입니다. v1.0은 한자와 가나가
+  있던 폰트 자리 1,010칸에 한글을 다시 그려 썼고, 그 칸은 거의 다 차 있었습니다. 대사를 원문에 맞춰 다시 옮기니
+  꽃·쫓·흙처럼 그 칸에 없는 글자가 필요해졌습니다. v1.1은 게임이 글자 그림을 찾는 코드에 새 길을 하나 끼워 넣어 512자를
+  더 넣을 수 있게 했습니다. 아래는 v1.1에서 새로 그린 213자를 롬에서 꺼낸 것입니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('new-glyphs.webp')}
+    width="978"
+    height="654"
+    alt="v1.1에서 새로 그린 한글 213자. 남색 칸에 흰 글자와 짙은 그림자로 그려져 있다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>v1.1 롬에서 꺼낸 새 글자 213자</figcaption>
+</figure>

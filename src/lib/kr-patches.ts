@@ -122,11 +122,10 @@ export const downloads = (patch: KrPatch) => {
   };
 };
 
-/**
- * Korean README of the shared tools (`krpatch`) that the game folders in kr-patches build with. Release tags
- * predate the Korean docs, so this points at main.
- */
-export const KR_PATCH_TOOLKIT_URL = 'https://github.com/perfectacle/kr-patch-toolkit/blob/main/README.ko.md';
+/** The toolkit release the notes and the guide were checked against. */
+export const KR_PATCH_TOOLKIT_VERSION = 'v0.2.0';
+/** Korean README of the toolkit (`krpatch`) at that release. It is the first release that has the Korean docs. */
+export const KR_PATCH_TOOLKIT_URL = `https://github.com/perfectacle/kr-patch-toolkit/blob/${KR_PATCH_TOOLKIT_VERSION}/README.ko.md`;
 
 /**
  * Korean README of the patch source on GitHub. The kr-patches folders are named after the last segment of
@@ -136,6 +135,12 @@ export const sourceUrl = (patch: KrPatch) => {
   const dir = patch.path.slice(patch.path.lastIndexOf('/') + 1);
   return `https://github.com/perfectacle/kr-patches/blob/main/snes/${dir}/README.ko.md`;
 };
+
+const releaseTag = (patch: KrPatch) => `${patch.path.slice(patch.path.lastIndexOf('/') + 1)}-v${patch.version}`;
+
+/** Korean ROM analysis document at the release tag of `version`, so its addresses match the IPS served here. */
+export const analysisUrl = (patch: KrPatch) =>
+  `https://github.com/perfectacle/kr-patches/blob/${releaseTag(patch)}/snes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/docs/ANALYSIS.md`;
 
 /** e.g. `슈퍼 패미컴 · 1996 · 한글패치 v1.1`. */
 export const releaseLabel = (patch: KrPatch, prefix = '한글패치 ') =>

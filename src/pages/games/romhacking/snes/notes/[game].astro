@@ -1,0 +1,30 @@
+---
+import GuideNote from '../../../../../layouts/GuideNote.astro';
+import SmrpgNote from '../../../../../components/smrpg/MakingNote.astro';
+import TotsugekiNote from '../../../../../components/totsugeki/MakingNote.astro';
+import KakuseiNote from '../../../../../components/kakusei/MakingNote.astro';
+import OtogirisouNote from '../../../../../components/otogirisou/MakingNote.astro';
+import { chapters as smrpgChapters } from '../../../../../components/smrpg/note-chapters.ts';
+import { chapters as totsugekiChapters } from '../../../../../components/totsugeki/note-chapters.ts';
+import { chapters as kakuseiChapters } from '../../../../../components/kakusei/note-chapters.ts';
+import { chapters as otogirisouChapters } from '../../../../../components/otogirisou/note-chapters.ts';
+import { KR_PATCHES, type KrPatch } from '../../../../../lib/kr-patches.ts';
+import { noteSlug } from '../../../../../components/romhacking/chapters.ts';
+
+export function getStaticPaths() {
+  return KR_PATCHES.map(patch => ({ params: { game: noteSlug(patch) }, props: { patch } }));
+}
+
+const { patch } = Astro.props as { patch: KrPatch };
+const notes = {
+  smrpg: { Note: SmrpgNote, sections: smrpgChapters },
+  gokuden: { Note: TotsugekiNote, sections: totsugekiChapters },
+  kakusei: { Note: KakuseiNote, sections: kakuseiChapters },
+  otogirisou: { Note: OtogirisouNote, sections: otogirisouChapters },
+};
+const { Note, sections } = notes[patch.theme];
+---
+
+<GuideNote patch={patch} sections={sections}>
+  <Note patch={patch} />
+</GuideNote>

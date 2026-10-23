@@ -1,0 +1,30 @@
+---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
+import type { KrPatch } from '../../lib/kr-patches';
+
+interface Props {
+  patch: KrPatch;
+}
+
+const { patch } = Astro.props;
+const img = (name: string) => `${patch.path}/images/making/${name}`;
+---
+
+<p class="lead">
+  이 롬을 다시 분석하거나 패치를 고칠 사람을 위해 남기는 기록입니다. v1.2는 2016년에 낸 v1.1 패치를 일본판에 적용한
+  롬에서 출발했습니다. 그 위에 v1.1이 만든 진행 버그를 고치고, 압축된 타이틀 그림을 풀어 한글로 다시 그리고, 대사
+  782줄을 고쳐 넣었습니다. v1.3은 나레이션 줄바꿈을 바로잡고 전투 말풍선을 원문과 다시 대조했습니다. 롬 크기는 원본과
+  같은 2MB입니다. 장면 확인은 일본판 롬 안에 남아 있던 개발자용 디버그 메뉴로 했습니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('debug-menu.webp')}
+    width="1040"
+    height="448"
+    alt="일본판 롬에 남아 있는 디버그 메뉴. 왼쪽은 ADVENTURE·BATTLE·SOUND 첫 화면과 95/08/03 빌드 날짜, 오른쪽은 시나리오·플래그·메시지 번호를 고르는 ADVENTURE 화면"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>일본판 롬에 남아 있는 디버그 메뉴</figcaption>
+</figure>

@@ -1,0 +1,30 @@
+---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
+import type { KrPatch } from '../../lib/kr-patches';
+
+interface Props {
+  patch: KrPatch;
+}
+
+const { patch } = Astro.props;
+const img = (name: string) => `${patch.path}/images/making/${name}`;
+---
+
+<p class="lead">
+  이 롬을 다시 분석하거나 패치를 이어 고칠 사람을 위해 남기는 기록입니다. v1.0은 대사와 메뉴는 한글이었지만
+  아이템·필살기·적 이름은 MUSHROOM, HAMMER 같은 영문이었습니다. 롬 용량이 모자라서가 아니라 메뉴 화면에 한 번에 올려 둘
+  수 있는 글자가 256개뿐이었기 때문입니다. v1.1은 필요한 글자만 그때그때 빈 칸에 올리는 코드를 게임에 끼워 넣어 이
+  문제를 풀었습니다. 롬 크기는 원본과 같은 4MB입니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('names-shop.webp')}
+    width="1150"
+    height="920"
+    alt="위는 v1.0, 아래는 v1.1 상점 화면. 영문 아이템 이름이 한글로 바뀌었다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>위 v1.0, 아래 v1.1</figcaption>
+</figure>

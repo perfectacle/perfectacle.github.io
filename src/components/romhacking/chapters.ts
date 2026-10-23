@@ -1,4 +1,12 @@
-import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH, type KrPatch } from '../../lib/kr-patches.ts';
+import {
+  KAKUSEI_PATCH,
+  KR_PATCH_TOOLKIT_VERSION,
+  KR_PATCHES,
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  TOTSUGEKI_PATCH,
+  type KrPatch,
+} from '../../lib/kr-patches.ts';
 
 /**
  * Chapters of the ROM hacking guide. Pages, the index map, previous/next links and the sitemap all read this list, so a
@@ -7,7 +15,7 @@ import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH, type KrP
 
 export const GUIDE_PATH = '/games/romhacking/';
 export const GUIDE_TITLE = '롬 해킹 기초';
-export const TOOLKIT_README_KO = 'https://github.com/perfectacle/kr-patch-toolkit/blob/main/README.ko.md';
+export const TOOLKIT_README_KO = `https://github.com/perfectacle/kr-patch-toolkit/blob/${KR_PATCH_TOOLKIT_VERSION}/README.ko.md`;
 
 /** `common` chapters apply to any console; the rest live under `/games/romhacking/<platform>/`. */
 export type GuidePlatform = 'common' | 'snes' | 'nds';
@@ -16,7 +24,7 @@ export const PLATFORM_LABEL: Record<GuidePlatform, string> = { common: '공통',
 
 export interface NoteLink {
   patch: KrPatch;
-  /** An id that exists on the patch page: `making` or one of its section headings. */
+  /** `making` for the whole note, or one of the note's section headings. */
   id: string;
   label: string;
 }
@@ -245,7 +253,17 @@ export const neighbours = (chapter: GuideChapter) => {
   return { prev: ready[i - 1], next: ready[i + 1] };
 };
 
-export const noteHref = (n: NoteLink) => `${n.patch.path}/#${n.id}`;
+/** Each game's ROM analysis note lives in the guide, next to the chapters that explain its ideas. */
+export const NOTES_PATH = `${GUIDE_PATH}snes/notes/`;
+export const noteSlug = (patch: KrPatch) => patch.path.slice(patch.path.lastIndexOf('/') + 1);
+export const notePath = (patch: KrPatch) => `${NOTES_PATH}${noteSlug(patch)}/`;
+export const NOTE_PATCHES = KR_PATCHES;
+
+export const noteHref = (n: NoteLink) => (n.id === 'making' ? notePath(n.patch) : `${notePath(n.patch)}#${n.id}`);
+
+/** Written chapters whose ideas a note section uses: the reverse of each chapter's `notes`. */
+export const chaptersForNote = (patch: KrPatch, id?: string) =>
+  readyChapters().filter(c => c.notes.some(n => n.patch === patch && (id === undefined || n.id === id)));
 
 export const toolHref = (t: ToolLink) => `${TOOLKIT_README_KO}#${encodeURIComponent(t.anchor)}`;
 

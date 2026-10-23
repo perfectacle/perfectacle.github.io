@@ -1,0 +1,27 @@
+---
+import type { KrPatch } from '../../lib/kr-patches.ts';
+import { chapterLabel, chapterPath, chaptersForNote } from './chapters.ts';
+
+interface Props {
+  patch: KrPatch;
+  /** `making` for the whole note, or the id of the section this follows. */
+  id: string;
+}
+
+const { patch, id } = Astro.props;
+const chapters = chaptersForNote(patch, id);
+---
+
+{chapters.length > 0 && (
+  <p class="note-related" data-pagefind-ignore>
+    <span class="note-related-label">가이드에서 설명</span>
+    {chapters.map((c, i) => (
+      <>
+        {i > 0 && <span aria-hidden="true"> · </span>}
+        <a href={chapterPath(c)}>
+          {chapterLabel(c)} {c.title}
+        </a>
+      </>
+    ))}
+  </p>
+)}
