@@ -7,6 +7,8 @@ import ReleasePairs from '../../../../components/kr-patch/ReleasePairs.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import SaveNote from '../../../../components/kr-patch/SaveNote.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
+import BattleSystem from '../../../../components/totsugeki/BattleSystem.astro';
+import TrainingScenes from '../../../../components/totsugeki/TrainingScenes.astro';
 import MakingOf from '../../../../components/totsugeki/MakingOf.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import { TOTSUGEKI_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
@@ -49,7 +51,7 @@ const play = [
     image: 'battle',
     alt: '프테라노돈이 발톱 공격을 쓰는 순간의 전투 화면',
     title: '전투',
-    text: '상대가 기술을 쓰면 화면 위에 기술 이름이 뜹니다. 그 순간 맞는 버튼을 눌러 받아칩니다. 기술을 쓸수록 전투력이 줄어듭니다.',
+    text: '오공이 빛나면 공격하고, 상대가 빛나면 화면 위에 뜬 기술 이름을 보고 막습니다. 자세한 조작은 아래 전투 시스템에서 설명합니다.',
   },
   {
     image: 'event-list',
@@ -59,42 +61,110 @@ const play = [
   },
 ];
 
-const cast = [
+const castGroups = [
   {
-    id: 'goku',
-    name: '손오공',
-    role: '여의봉 · 근두운 · 에네르기파',
-    text: '산속에서 할아버지의 유품인 사성구를 지키며 사는 꼬리 달린 소년. 부르마를 만나 처음으로 산을 나섭니다.',
+    label: '주인공과 동료',
+    members: [
+      {
+        id: 'goku',
+        name: '손오공',
+        role: '여의봉 · 근두운 · 에네르기파',
+        text: '산속에서 할아버지의 유품인 사성구를 지키며 사는 꼬리 달린 소년. 부르마를 만나 처음으로 산을 나섭니다.',
+      },
+      {
+        id: 'bulma',
+        name: '부르마',
+        role: '드래곤 레이더',
+        text: '캡슐 코퍼레이션의 딸. 직접 만든 드래곤 레이더를 들고 드래곤볼을 찾아다닙니다.',
+      },
+      {
+        id: 'roshi',
+        name: '무천도사',
+        role: '에네르기파',
+        text: '무술의 달인. 오공과 크리링을 제자로 받아 우유 배달과 밭일, 공사 알바로 수련시킵니다.',
+      },
+      {
+        id: 'krillin',
+        name: '크리링',
+        role: '오공의 동문',
+        text: '동쪽 마을의 절에서 8년을 수련하고 무천도사를 찾아온 소년. 오공과 함께 수련하고 무술대회에 나갑니다.',
+      },
+      {
+        id: 'yamcha',
+        name: '야무치',
+        role: '낭아풍풍권',
+        text: '황야를 근거지로 삼던 도적. 여자 앞에서는 얼어붙고 맙니다. 뒤에는 천하제일 무술대회에도 나섭니다.',
+      },
+      {
+        id: 'tien',
+        name: '천진반',
+        role: '기공포',
+        text: '학선인의 제자. 제22회 천하제일 무술대회 결승에서 오공을 꺾고 우승한 뒤 학선인을 등집니다.',
+      },
+    ],
   },
   {
-    id: 'bulma',
-    name: '부르마',
-    role: '드래곤 레이더',
-    text: '캡슐 코퍼레이션의 딸. 직접 만든 드래곤 레이더를 들고 드래곤볼을 찾아다닙니다.',
+    label: '주요 적',
+    members: [
+      {
+        id: 'pilaf',
+        name: '피라후',
+        role: '세계 정복을 노리는 대왕',
+        text: '슈와 마이를 거느리고 드래곤볼을 모아 세계를 손에 넣으려 합니다.',
+      },
+      {
+        id: 'red',
+        name: '레드 총수',
+        role: '레드 리본군',
+        text: '드래곤볼을 노리는 레드 리본군의 우두머리. 오공을 발견하는 즉시 죽이라고 명령합니다.',
+      },
+      {
+        id: 'tao',
+        name: '타오파이파이',
+        role: '도돈파',
+        text: '레드 리본군이 고용한 세계 최고의 킬러. 학선인의 동생입니다.',
+      },
+      {
+        id: 'piccolo-daimao',
+        name: '피콜로 대마왕',
+        role: '세계를 위협하는 마왕',
+        text: '드래곤볼로 젊음을 되찾고 세계를 지배하려는 마왕. 오공이 맞서 싸웁니다.',
+      },
+    ],
+  },
+];
+
+// The story in the order of the game's own event list, ending where the sequel picks up.
+const arcs = [
+  {
+    image: 'story-pilaf',
+    alt: '피라후 성 안에서 일곱 번째 구슬도 제 발로 오는군이라고 말하는 피라후와 슈·마이',
+    title: '부르마와 드래곤볼 찾기',
+    text: '뒷강에서 물고기를 잡던 오공이 부르마를 만나 드래곤볼을 찾아 나섭니다. 오룡·야무치·우마왕과 치치를 만나고, 피라후 성에 숨어든 밤 보름달을 보고 거대 원숭이가 됩니다.',
   },
   {
-    id: 'roshi',
-    name: '무천도사',
-    role: '에네르기파',
-    text: '거북선인이라고도 불리는 무술의 달인. 오공과 크리링을 제자로 받아 수행시킵니다.',
+    image: 'story-tournament',
+    alt: '여기가 천하제일 무술대회장이다라고 말하는 무천도사',
+    title: '수련과 제21회 무술대회',
+    text: '크리링과 함께 무천도사의 제자가 되어 우유 배달과 밭일, 공사 알바로 수련합니다. 첫 천하제일 무술대회 결승에서 잭키 춘과 맞붙습니다.',
   },
   {
-    id: 'tao',
-    name: '타오파이파이',
-    role: '도돈파',
-    text: '레드 리본군이 고용한 세계 최고의 킬러. 학선인의 동생입니다.',
+    image: 'story-red-ribbon',
+    alt: '레드 리본군 사령실에서 화이트 장군이 보낸 영상으로 적을 파악했다고 보고하는 장면',
+    title: '레드 리본군',
+    text: '할아버지의 유품인 사성구를 찾아 나선 오공 앞에 레드 리본군이 나타납니다. 머슬 타워와 블루 장군, 카린 탑을 거쳐 타오파이파이를 꺾고 본부로 쳐들어갑니다.',
   },
   {
-    id: 'tien',
-    name: '천진반',
-    role: '기공포',
-    text: '학선인의 제자. 천하제일 무술대회에서 오공과 맞붙은 뒤 동료가 됩니다.',
+    image: 'story-piccolo',
+    alt: '피라후의 비행선에서 돌아왔느냐 탬버린이라고 말하는 피콜로 대마왕',
+    title: '제22회 무술대회와 피콜로 대마왕',
+    text: '제22회 대회 결승에서 천진반과 싸운 뒤 크리링이 쓰러지고 피콜로 대마왕이 나타납니다. 초신수를 마신 오공은 피콜로 킹 캐슬에서 결전을 벌입니다.',
   },
   {
-    id: 'piccolo-daimao',
-    name: '피콜로 대마왕',
-    role: '세계를 위협하는 마왕',
-    text: '드래곤볼로 젊음을 되찾고 세계를 지배하려는 마왕. 오공이 맞서 싸웁니다.',
+    image: 'story-ending-popo',
+    alt: '천계에서 미스터 포포가 너 인간인데 용케 피콜로 대마왕 쓰러뜨렸다고 말하는 장면',
+    title: '천계에서 3년',
+    text: '피콜로 대마왕을 쓰러뜨린 오공은 천계에 올라 미스터 포포와 신님을 만나 신룡을 되살리고 3년 수련을 시작합니다. 이야기는 2편 각성편의 제23회 천하제일 무술대회로 이어집니다.',
   },
 ];
 ---
@@ -108,6 +178,8 @@ const cast = [
     { id: 'story', label: '이야기' },
     { id: 'cast', label: '등장인물' },
     { id: 'play', label: '진행 방식' },
+    { id: 'battle-system', label: '전투 시스템' },
+    { id: 'scenes', label: '수련과 선택 장면' },
     { id: 'patch-notes', label: '패치 노트' },
     { id: 'making', label: '롬 분석 노트' },
   ]}
@@ -168,9 +240,9 @@ const cast = [
           대마왕과의 결전까지, 원작 만화 《드래곤볼》의 소년 오공 시절을 따라갑니다.
         </p>
         <p>
-          반다이가 1995년 3월 24일에 낸 슈퍼 패미컴 게임으로, 개발은 TOSE가 맡았습니다. 같은 해 9월에 나온{' '}
-          <a href="/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/">초오공전 각성편</a>이 그 뒤 이야기를
-          다룹니다.
+          반다이가 1995년 3월 24일에 낸 슈퍼 패미컴 게임으로, 개발은 TOSE가 맡았습니다. 초오공전 시리즈의 1편이고, 같은
+          해 9월에 나온 2편 <a href="/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/">초오공전 각성편</a>이
+          그 뒤 이야기를 다룹니다.
         </p>
       </div>
       <div class="story-shots">
@@ -196,32 +268,55 @@ const cast = [
         </figure>
       </div>
     </div>
+    <h3 class="pixel story-arcs-title">이야기의 흐름</h3>
+    <ol class="play-list story-arcs">
+      {arcs.map(arc => (
+        <li class="play frame">
+          <figure class="screen">
+            <ZoomImage
+              src={`${base}/images/scenes/${arc.image}.webp`}
+              width="256"
+              height="224"
+              alt={arc.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <h4 class="pixel">{arc.title}</h4>
+          <p>{arc.text}</p>
+        </li>
+      ))}
+    </ol>
   </section>
 
   <section id="cast" class="section page-width" aria-labelledby="cast-title">
     <h2 id="cast-title" class="pixel">
       등장인물
     </h2>
-    <ul class="cast-list">
-      {cast.map(member => (
-        <li class="member frame">
-          <img
-            class="portrait"
-            src={`${base}/images/cast/${member.id}.webp`}
-            width="38"
-            height="48"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
-          <div>
-            <h3 class="pixel">{member.name}</h3>
-            <p class="label">{member.role}</p>
-            <p>{member.text}</p>
-          </div>
-        </li>
+    <div class="cast-groups">
+      {castGroups.map(group => (
+        <ul class="cast-list" aria-label={group.label}>
+          {group.members.map(member => (
+            <li class="member frame">
+              <img
+                class="portrait"
+                src={`${base}/images/cast/${member.id}.webp`}
+                width="38"
+                height="48"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+              <div>
+                <h3 class="pixel">{member.name}</h3>
+                <p class="label">{member.role}</p>
+                <p>{member.text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       ))}
-    </ul>
+    </div>
   </section>
 
   <section id="play" class="section page-width" aria-labelledby="play-title">
@@ -247,6 +342,9 @@ const cast = [
       ))}
     </div>
   </section>
+
+  <BattleSystem />
+  <TrainingScenes />
 
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
     <h2 id="patch-notes-title" class="pixel">

@@ -1,5 +1,8 @@
 ---
-import BattleShot from './BattleShot.astro';
+import BattleShot from '../kr-patch/BattleShot.astro';
+
+const shot = (index: number) =>
+  `/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/images/battle/shot-${String(index).padStart(2, '0')}.webp`;
 
 const counters = [
   { opponent: '파워', theirs: 'X', own: '기공', mine: 'A' },
@@ -30,7 +33,7 @@ const results = [
 ];
 ---
 
-<section id="battle-system" class="section page-width" aria-labelledby="battle-system-title">
+<section id="battle-system" class="section page-width battle-system" aria-labelledby="battle-system-title">
   <h2 id="battle-system-title" class="pixel">
     전투 시스템
   </h2>
@@ -58,7 +61,8 @@ const results = [
       </li>
     </ol>
     <BattleShot
-      index={5}
+      src={shot(5)}
+      height={239}
       alt="마주니어가 대쉬 어택을 쓰며 위쪽에 기술 이름이 표시되는 무술대회 전투 화면"
       caption="상대가 먼저 기술을 꺼내면 화면 위쪽에서 이름을 확인하고 대응합니다."
     />
@@ -180,7 +184,7 @@ const results = [
       {results.map(result => (
         <div class="battle-result">
           <h5>{result.title}</h5>
-          <BattleShot index={result.index} alt={result.alt} caption={result.caption} />
+          <BattleShot src={shot(result.index)} height={239} alt={result.alt} caption={result.caption} />
         </div>
       ))}
     </div>
@@ -200,12 +204,14 @@ const results = [
     </p>
     <div class="battle-pair">
       <BattleShot
-        index={7}
+        src={shot(7)}
+        height={239}
         alt="손오공의 기공기술 리스트에서 배치할 기술을 고르는 기술설정 화면"
         caption="먼저 기술 목록에서 쓸 기술을 고릅니다. 화면은 오공의 기공 계열 기술 목록입니다."
       />
       <BattleShot
-        index={8}
+        src={shot(8)}
+        height={239}
         alt="A 버튼과 방향키 조합별로 기공기술이 배치되어 있는 손오공의 기술설정 화면"
         caption="기공 계열은 A 버튼과 방향키 조합에 기술을 배치합니다. 조합마다 설정한 기술이 표시됩니다."
       />
@@ -225,12 +231,14 @@ const results = [
     </p>
     <div class="battle-pair">
       <BattleShot
-        index={9}
+        src={shot(9)}
+        height={239}
         alt="피콜로의 폭렬마파와 오반의 마섬광이 맞붙어 아래쪽 마섬광 칸이 빨간색으로 표시된 전투 화면"
         caption="같은 에네르기파 계열로 대응해도 전투력 차이가 있으면 패배할 수 있습니다."
       />
       <BattleShot
-        index={12}
+        src={shot(12)}
+        height={239}
         alt="피콜로와 싸우는 오반의 체력 1630과 전투력 2058이 아래쪽에 표시된 화면"
         caption="화면 아래의 체력과 전투력을 함께 확인하며 싸워 보세요."
       />
@@ -247,12 +255,14 @@ const results = [
     </p>
     <div class="battle-pair">
       <BattleShot
-        index={10}
+        src={shot(10)}
+        height={239}
         alt="계왕님의 에너지파에 오공이 태양권으로 대응해 아래쪽 태양권 칸이 파란색으로 표시된 화면"
         caption="에너지파를 태양권으로 받아친 장면입니다. 태양권 계열은 에네르기파 계열에 유리합니다."
       />
       <BattleShot
-        index={11}
+        src={shot(11)}
+        height={239}
         alt="피콜로의 미스틱스에 오반이 마섬광으로 대응해 아래쪽 마섬광 칸이 빨간색으로 표시된 화면"
         caption="상대도 태양권 계열을 씁니다. 피콜로의 「미스틱스」에 마섬광으로 대응했다가 패배한 장면입니다."
       />
@@ -266,92 +276,3 @@ const results = [
     </p>
   </article>
 </section>
-
-<style>
-  .battle-part {
-    margin-top: 1.5rem;
-    padding: clamp(1rem, 3vw, 2rem);
-  }
-
-  .battle-part h3 {
-    margin-top: 0;
-    line-height: 1.6;
-  }
-
-  h4 {
-    margin: 2rem 0 0.75rem;
-    font-size: 1.1rem;
-  }
-
-  h5 {
-    margin: 1.5rem 0 0;
-    font-size: 1rem;
-    text-align: center;
-  }
-
-  p,
-  li {
-    line-height: 1.9;
-    overflow-wrap: anywhere;
-  }
-
-  li + li {
-    margin-top: 0.65rem;
-  }
-
-  .battle-flow {
-    padding-inline-start: 1.5rem;
-  }
-
-  kbd {
-    display: inline-block;
-    min-width: 1.5em;
-    padding: 0.05em 0.35em;
-    border: 1px solid var(--muted);
-    border-radius: 3px;
-    font: inherit;
-    font-size: 0.9em;
-    line-height: 1.5;
-    text-align: center;
-  }
-
-  table {
-    width: 100%;
-    margin: 1rem 0;
-    border-collapse: collapse;
-    line-height: 1.7;
-    table-layout: fixed;
-  }
-
-  caption {
-    margin-bottom: 0.65rem;
-    color: var(--muted);
-    font-size: 0.875rem;
-    text-align: start;
-  }
-
-  th,
-  td {
-    padding: 0.65rem 0.4rem;
-    border-bottom: 1px solid var(--muted);
-    text-align: start;
-    overflow-wrap: anywhere;
-  }
-
-  .battle-note {
-    padding-inline-start: 1rem;
-    border-inline-start: 3px solid var(--accent);
-  }
-
-  .battle-pair {
-    display: grid;
-    gap: 0 2rem;
-    align-items: start;
-  }
-
-  @media (min-width: 1100px) {
-    .battle-pair {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-</style>

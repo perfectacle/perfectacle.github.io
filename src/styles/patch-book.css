@@ -634,7 +634,8 @@ h2.pixel {
   text-shadow: 2px 2px 0 #000;
 }
 
-h3.pixel {
+h3.pixel,
+h4.pixel {
   font-size: 24px;
   line-height: 1.5;
   text-wrap: balance;
@@ -828,6 +829,17 @@ h3.pixel {
   display: grid;
   gap: 10px;
   align-content: start;
+}
+
+/* Story chapters reuse the play cards, read top to bottom in the order the game tells them. */
+.story-arcs-title {
+  margin-top: 32px;
+}
+
+.story-arcs {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
 }
 
 .play p,
@@ -1484,5 +1496,94 @@ h3.pixel {
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 0.45s;
+  }
+}
+
+/* Battle-system sections shared by the Super Gokuden pages, so both games explain battles in one layout. */
+
+.battle-system .battle-part {
+  margin-top: 1.5rem;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.battle-system .battle-part h3 {
+  margin-top: 0;
+  line-height: 1.6;
+}
+
+.battle-system h4 {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.battle-system h5 {
+  margin: 1.5rem 0 0;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.battle-system p,
+.battle-system li {
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.battle-system li + li {
+  margin-top: 0.65rem;
+}
+
+.battle-system .battle-flow {
+  padding-inline-start: 1.5rem;
+}
+
+.battle-system kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0.05em 0.35em;
+  border: 1px solid var(--muted);
+  border-radius: 3px;
+  font: inherit;
+  font-size: 0.9em;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.battle-system table {
+  width: 100%;
+  margin: 1rem 0;
+  border-collapse: collapse;
+  line-height: 1.7;
+  table-layout: fixed;
+}
+
+.battle-system caption {
+  margin-bottom: 0.65rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-align: start;
+}
+
+.battle-system th,
+.battle-system td {
+  padding: 0.65rem 0.4rem;
+  border-bottom: 1px solid var(--muted);
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+.battle-system .battle-note {
+  padding-inline-start: 1rem;
+  border-inline-start: 3px solid var(--accent);
+}
+
+.battle-system .battle-pair {
+  display: grid;
+  gap: 0 2rem;
+  align-items: start;
+}
+
+@media (min-width: 1100px) {
+  .battle-system .battle-pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
