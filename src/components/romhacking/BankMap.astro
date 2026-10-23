@@ -1,0 +1,431 @@
+---
+import { MAPPERS, formatCpu, hex, type MapperName } from '../../lib/snes-mapper.ts';
+import { MAPPER_LABEL, bankShape, explain, regionLabel } from './bank-map.ts';
+
+const mapper: MapperName = 'lorom';
+const addr = 0xa8800c;
+const { steps, offset } = explain(mapper, addr);
+const mappers = Object.keys(MAPPERS) as MapperName[];
+const examples = [
+  { label: '돌격편 대사 포인터', mapper: 'lorom', addr: '$A8:800C' },
+  { label: '제절초 대본 시작', mapper: 'lorom', addr: '$15:E401' },
+  { label: '마리오 RPG 이름 표', mapper: 'sa1', addr: '$E2:B400' },
+  { label: '같은 이름 표를 LoROM식 창으로', mapper: 'sa1', addr: '$85:B400' },
+  { label: 'WRAM 거울', mapper: 'lorom', addr: '$80:0A00' },
+];
+const banks = Array.from({ length: 256 }, (_, i) => i);
+---
+
+<section class="widget bank-map" data-bank-map data-mapper={mapper} data-addr={addr} aria-labelledby="bank-map-title">
+  <h3 class="widget-title" id="bank-map-title">
+    <span class="mono">WIDGET</span> 뱅크 지도
+  </h3>
+  <p class="widget-help">
+    CPU 주소 <code>$뱅크:주소</code>를 롬 파일 오프셋으로 바꿉니다. 계산은 kr-patch-toolkit의{' '}
+    <code>krpatch snes dis</code>와 같은 공식입니다.{' '}
+    <span class='\"live-only\"'>매핑을 고르고 주소나 오프셋 중 하나를 고쳐 보세요.</span>
+  </p>
+
+  <fieldset class="bm-mappers live-only">
+    <legend>매핑</legend>
+    {mappers.map(m => (
+      <label>
+        <input type="radio" name="bank-map-mapper" value={m} checked={m === mapper} /> {MAPPER_LABEL[m]}
+      </label>
+    ))}
+  </fieldset>
+
+  <div class="bm-inputs live-only">
+    <label>
+      CPU 주소
+      <input type="text" value={formatCpu(addr)} maxlength="10" data-cpu aria-describedby="bank-map-error" />
+    </label>
+    <span class="bm-swap" aria-hidden="true">
+      ⇄
+    </span>
+    <label>
+      파일 오프셋
+      <input type="text" value={`0x${hex(offset, 6)}`} maxlength="9" data-off aria-describedby="bank-map-error" />
+    </label>
+  </div>
+  <p class="widget-error live-only" id="bank-map-error" data-error hidden></p>
+
+  <div class="bm-examples live-only" role="group" aria-label="예시 주소">
+    {examples.map(e => (
+      <button type="button" class="widget-btn" data-example-mapper={e.mapper} data-example-addr={e.addr}>
+        {e.label} <span class="mono">{e.addr}</span>
+      </button>
+    ))}
+  </div>
+
+  <div class="bm-split" aria-hidden="true">
+    <span class="bm-part tone-warm">
+      <small>뱅크</small>
+      <code data-bank>${hex(addr >>> 16, 2)}</code>
+    </span>
+    <span class="bm-colon">:</span>
+    <span class="bm-part tone-cool">
+      <small>뱅크 안 주소</small>
+      <code data-lo>{hex(addr & 0xffff, 4)}</code>
+    </span>
+    <span class="bm-arrow">→</span>
+    <span class="bm-part tone-accent">
+      <small>파일 오프셋</small>
+      <code data-offset>0x{hex(offset, 6)}</code>
+    </span>
+  </div>
+
+  <p class="bm-summary">
+    <span data-mapper-name>{MAPPER_LABEL[mapper]}</span>
+    {' 롬에서 '}
+    <code data-summary-cpu>{formatCpu(addr)}</code>
+    {'는 '}
+    <span data-region>{regionLabel(mapper, addr)}</span>
+    {'이고, 공식으로 계산한 파일 위치는 '}
+    <code data-summary-off>0x{hex(offset, 6)}</code>입니다.
+  </p>
+  <p class="bm-warning" data-warning hidden></p>
+  <ol class="bm-steps" data-steps>
+    {steps.map(s => (
+      <li>{s}</li>
+    ))}
+  </ol>
+
+  <div class="bm-grid-wrap">
+    <p class="bm-grid-title">
+      뱅크 256개 한눈에 보기 <span class="muted">(한 칸 = 뱅크 하나, 왼쪽 반 $0000-$7FFF · 오른쪽 반 $8000-$FFFF)</span>
+    </p>
+    <div class="bm-grid" data-grid aria-hidden="true">
+      <span class="bm-corner"></span>
+      {Array.from({ length: 16 }, (_, c) => (
+        <span class="bm-head mono">{hex(c, 1)}</span>
+      ))}
+      {banks.map(bank => (
+        <>
+          {bank % 16 === 0 && <span class="bm-head mono">{hex(bank >> 4, 1)}0</span>}
+          <span
+            class:list={['bm-bank', `shape-${bankShape(mapper, bank)}`, { 'is-current': bank === addr >>> 16 }]}
+            data-b={bank}
+          />
+        </>
+      ))}
+    </div>
+    <ul class="bm-legend">
+      <li>
+        <span class="swatch shape-full"></span> 뱅크 전체가 롬
+      </li>
+      <li>
+        <span class="swatch shape-upper"></span> 오른쪽 반(위쪽 32KB)만 롬
+      </li>
+      <li>
+        <span class="swatch shape-wram"></span> WRAM($7E·$7F)
+      </li>
+      <li>
+        <span class="swatch shape-ram"></span> SA-1 BW-RAM
+      </li>
+      <li>
+        <span class="swatch shape-none"></span> 롬이 아님
+      </li>
+      <li>
+        <span class="swatch is-current"></span> 지금 고른 뱅크
+      </li>
+    </ul>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { MAPPERS, formatCpu, hex, parseCpu, parseOffset, region, type MapperName } from '../../lib/snes-mapper.ts';
+  import { MAPPER_LABEL, bankShape, explain, regionLabel } from './bank-map.ts';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-bank-map]')) {
+    let mapper = (root.dataset['mapper'] ?? 'lorom') as MapperName;
+    let addr = Number(root.dataset['addr'] ?? 0);
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel);
+    const cpuInput = q<HTMLInputElement>('[data-cpu]');
+    const offInput = q<HTMLInputElement>('[data-off]');
+    const error = q<HTMLElement>('[data-error]');
+    const warning = q<HTMLElement>('[data-warning]');
+    const live = q<HTMLElement>('[data-live]');
+    const cells = [...root.querySelectorAll<HTMLElement>('[data-b]')];
+    const text = (sel: string, value: string) => {
+      const el = q<HTMLElement>(sel);
+      if (el) el.textContent = value;
+    };
+
+    const showError = (input: HTMLInputElement | null, message: string) => {
+      for (const i of [cpuInput, offInput]) i?.setAttribute('aria-invalid', i === input && message ? 'true' : 'false');
+      if (error) {
+        error.hidden = !message;
+        error.textContent = message;
+      }
+    };
+
+    const render = (from: 'cpu' | 'off' | 'all') => {
+      const { steps, offset } = explain(mapper, addr);
+      const r = region(mapper, addr);
+      text('[data-bank]', `$${hex(addr >>> 16, 2)}`);
+      text('[data-lo]', hex(addr & 0xffff, 4));
+      text('[data-offset]', `0x${hex(offset, 6)}`);
+      text('[data-mapper-name]', MAPPER_LABEL[mapper]);
+      text('[data-summary-cpu]', formatCpu(addr));
+      text('[data-region]', regionLabel(mapper, addr));
+      text('[data-summary-off]', `0x${hex(offset, 6)}`);
+      q('[data-steps]')?.replaceChildren(
+        ...steps.map(s => {
+          const li = document.createElement('li');
+          li.textContent = s;
+          return li;
+        }),
+      );
+      if (warning) {
+        const outside = r.kind !== 'rom';
+        const tooBig = offset >= MAPPERS[mapper].maxSize;
+        warning.hidden = !outside && !tooBig;
+        warning.textContent = outside
+          ? '롬이 아닌 자리입니다. 툴킷 공식은 숫자를 계산하지만, 실제 게임기에서 이 주소를 읽으면 롬 파일의 그 위치가 아니라 위에 적은 장치가 응답합니다.'
+          : tooBig
+            ? `이 매핑에서 다룰 수 있는 롬 크기(0x${hex(MAPPERS[mapper].maxSize, 6)}바이트)를 넘는 위치입니다.`
+            : '';
+      }
+      if (from !== 'cpu' && cpuInput) cpuInput.value = formatCpu(addr);
+      if (from !== 'off' && offInput) offInput.value = `0x${hex(offset, 6)}`;
+      for (const cell of cells) {
+        const bank = Number(cell.dataset['b']);
+        cell.className = `bm-bank shape-${bankShape(mapper, bank)}${bank === addr >>> 16 ? ' is-current' : ''}`;
+      }
+      if (live) {
+        live.textContent = `${MAPPER_LABEL[mapper]}, ${formatCpu(addr)}는 ${regionLabel(mapper, addr)}, 파일 오프셋 0x${hex(offset, 6)}`;
+      }
+    };
+
+    cpuInput?.addEventListener('input', () => {
+      const parsed = parseCpu(cpuInput.value);
+      if (parsed === null) {
+        showError(cpuInput, 'CPU 주소는 $뱅크:주소 꼴로 적어 주세요. 예: $80:8000');
+        return;
+      }
+      showError(null, '');
+      addr = parsed;
+      render('cpu');
+    });
+    offInput?.addEventListener('input', () => {
+      const parsed = parseOffset(offInput.value);
+      const max = MAPPERS[mapper].maxSize;
+      if (parsed === null || parsed >= max) {
+        showError(
+          offInput,
+          parsed === null
+            ? '파일 오프셋은 16진수로 적어 주세요. 예: 0x7FC0'
+            : `${MAPPER_LABEL[mapper]}에서는 0x${hex(max - 1, 6)}까지 적을 수 있습니다.`,
+        );
+        return;
+      }
+      showError(null, '');
+      addr = MAPPERS[mapper].toCpu(parsed);
+      render('off');
+    });
+    for (const radio of root.querySelectorAll<HTMLInputElement>('input[name="bank-map-mapper"]')) {
+      radio.addEventListener('change', () => {
+        if (!radio.checked) return;
+        mapper = radio.value as MapperName;
+        showError(null, '');
+        render('all');
+      });
+    }
+    for (const button of root.querySelectorAll<HTMLButtonElement>('[data-example-addr]')) {
+      button.addEventListener('click', () => {
+        mapper = (button.dataset['exampleMapper'] ?? 'lorom') as MapperName;
+        addr = parseCpu(button.dataset['exampleAddr'] ?? '') ?? addr;
+        for (const radio of root.querySelectorAll<HTMLInputElement>('input[name="bank-map-mapper"]')) {
+          radio.checked = radio.value === mapper;
+        }
+        showError(null, '');
+        render('all');
+      });
+    }
+    root.classList.add('is-live');
+    render('all');
+  }
+</script>
+
+<style>
+  .bm-mappers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 16px;
+    margin: 0 0 10px;
+    padding: 0;
+    border: 0;
+  }
+  .bm-mappers legend {
+    float: left;
+    margin-right: 12px;
+    line-height: 44px;
+    color: var(--fg-muted);
+  }
+  .bm-mappers label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    min-height: 44px;
+  }
+  .bm-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: end;
+  }
+  .bm-inputs label {
+    display: grid;
+    gap: 4px;
+    color: var(--fg-muted);
+    font-size: 0.875rem;
+  }
+  .bm-inputs input {
+    width: 9.5em;
+    font-size: 1rem;
+  }
+  .bm-swap {
+    padding-bottom: 10px;
+    color: var(--fg-muted);
+  }
+  .bm-examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0 4px;
+  }
+  .bm-examples .widget-btn {
+    font-size: 0.85rem;
+  }
+  .bm-split {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin: 16px 0 8px;
+  }
+  .bm-part {
+    display: grid;
+    padding: 6px 12px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .bm-part small {
+    color: var(--fg-muted);
+    font-size: 0.72rem;
+  }
+  .bm-part code {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .tone-warm {
+    border-color: var(--dg-warm);
+    background: var(--dg-warm-soft);
+  }
+  .tone-cool {
+    border-color: var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .tone-accent {
+    border-color: var(--dg-accent);
+    background: var(--dg-accent-soft);
+  }
+  .bm-colon,
+  .bm-arrow {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    color: var(--fg-muted);
+  }
+  .bm-summary {
+    margin: 4px 0;
+  }
+  .bm-summary code,
+  .bm-steps {
+    font-family: var(--font-mono);
+  }
+  .bm-steps {
+    margin: 8px 0 0;
+    padding-left: 1.4em;
+    font-family: inherit;
+    font-size: 0.92rem;
+  }
+  .bm-warning {
+    margin: 8px 0;
+    padding: 8px 12px;
+    border-left: 4px solid var(--dg-warm);
+    background: var(--dg-warm-soft);
+    font-size: 0.9rem;
+  }
+  .bm-grid-wrap {
+    margin-top: 18px;
+  }
+  .bm-grid-title {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+  }
+  .bm-grid {
+    display: grid;
+    grid-template-columns: 2.2em repeat(16, minmax(0, 1fr));
+    gap: 2px;
+    max-width: 420px;
+  }
+  .bm-head {
+    display: grid;
+    place-items: center;
+    color: var(--fg-muted);
+    font-size: 0.65rem;
+  }
+  .bm-bank,
+  .swatch {
+    display: block;
+    aspect-ratio: 1;
+    min-width: 0;
+    border: 1px solid var(--dg-line);
+    border-radius: 2px;
+    background: var(--dg-paper);
+  }
+  .shape-full {
+    background: var(--dg-accent);
+    border-color: var(--dg-accent);
+  }
+  .shape-upper {
+    background: linear-gradient(to right, var(--dg-paper) 50%, var(--dg-accent) 50%);
+  }
+  .shape-wram {
+    background: var(--dg-cool);
+    border-color: var(--dg-cool);
+  }
+  .shape-ram {
+    background: var(--dg-warm);
+    border-color: var(--dg-warm);
+  }
+  .bm-bank.is-current,
+  .swatch.is-current {
+    outline: 3px solid var(--dg-ink);
+    outline-offset: 1px;
+    position: relative;
+    z-index: 1;
+  }
+  .bm-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.8rem;
+  }
+  .bm-legend li {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .bm-legend .swatch {
+    width: 16px;
+  }
+</style>

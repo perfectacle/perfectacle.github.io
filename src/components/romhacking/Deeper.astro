@@ -1,0 +1,17 @@
+---
+interface Props {
+  title: string;
+  id?: string;
+}
+const { title, id } = Astro.props;
+---
+
+<details class="deeper" id={id}>
+  <summary>
+    <span class="layer-badge layer-deep">더 깊이</span>
+    <span>{title}</span>
+  </summary>
+  <div class="deeper-body">
+    <slot />
+  </div>
+</details>

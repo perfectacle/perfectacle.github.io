@@ -1,0 +1,209 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Comments from '../../../components/Comments.astro';
+import Figure from '../../../components/romhacking/Figure.astro';
+import '../../../styles/romhacking.css';
+import { SITE } from '../../../lib/posts.ts';
+import { breadcrumbs } from '../../../lib/structured-data.ts';
+import { KR_PATCH_LIST_PATH, KR_PATCH_TOOLKIT_URL, KR_PATCHES } from '../../../lib/kr-patches.ts';
+import {
+  GUIDE_CHAPTERS,
+  GUIDE_PATH,
+  GUIDE_TITLE,
+  PLATFORM_LABEL,
+  chapterLabel,
+  chapterPath,
+} from '../../../components/romhacking/chapters.ts';
+
+const description =
+  '한글패치를 만들며 쓴 롬 해킹 지식을 처음부터 풀어 쓴 가이드입니다. 16진수와 엔디안부터 65c816 어셈블리, 뱅크와 매핑까지 그림과 직접 만져 보는 위젯으로 배웁니다.';
+const first = GUIDE_CHAPTERS.find(c => c.ready);
+---
+
+<Base
+  title={GUIDE_TITLE}
+  description={description}
+  jsonLd={[breadcrumbs(SITE, [{ name: GUIDE_TITLE, path: GUIDE_PATH }])]}
+>
+  <div class="container guide">
+    <article data-pagefind-body>
+      <header class="guide-head">
+        <p class="guide-kicker" data-pagefind-ignore>
+          <span class="mono">ROM HACKING 101</span>
+        </p>
+        <h1 data-pagefind-meta="title">{GUIDE_TITLE}</h1>
+        <p class="guide-summary">
+          이 블로그의 <a href={KR_PATCH_LIST_PATH}>한글패치</a>({KR_PATCHES.map(p => p.title).join(', ')})를 만들면서 쓴
+          지식을 처음부터 풀어 쓴 가이드입니다. 16진수를 몰라도 그림으로 시작할 수 있고, 접어 둔 「더 깊이」를 펼치면
+          실제로 롬을 고칠 수 있는 데까지 들어갑니다.
+        </p>
+      </header>
+
+      <div class="prose">
+        <h2 id="who">누구를 위한 가이드인가요</h2>
+        <ul>
+          <li>롬 해킹이 궁금하지만 "16진수", "뱅크", "어셈블리" 같은 말에서 막힌 사람</li>
+          <li>한글패치 페이지의 「롬 분석 노트」를 읽다가 개념을 처음부터 알고 싶어진 사람</li>
+          <li>직접 번역 패치를 만들어 보고 싶은 사람</li>
+        </ul>
+        <p>
+          컴퓨터 구조를 미리 알 필요는 없습니다. 장마다 앞 장에서 배운 것만 씁니다. 처음이라면{' '}
+          <a href={first ? chapterPath(first) : GUIDE_PATH}>0장</a>부터 차례로 읽어 주세요.
+        </p>
+
+        <h2 id="layers">한 장은 네 겹으로 되어 있습니다</h2>
+        <p>
+          같은 장 안에서 읽는 깊이를 고를 수 있습니다. 처음에는 「쉽게」만 읽고 넘어가도 다음 장을 따라오는 데 문제가
+          없습니다.
+        </p>
+        <Figure caption="한 장을 이루는 네 겹. 위에서 아래로 갈수록 깊어집니다." max={520}>
+          <svg viewBox="0 0 360 236" role="img" aria-labelledby="layers-t layers-d">
+            <title id="layers-t">한 장의 네 겹</title>
+            <desc id="layers-d">
+              쉽게, 더 깊이, 실제 패치에서, 직접 해 보기 네 칸이 위에서 아래로 쌓여 있다. 쉽게는 늘 펼쳐져 있고 더
+              깊이는 접혀 있다.
+            </desc>
+            <g>
+              <rect class="dg-accent" x="8" y="8" width="344" height="50" rx="10"></rect>
+              <text class="dg-text dg-bold" x="24" y="30">
+                1 쉽게
+              </text>
+              <text class="dg-small" x="24" y="48">
+                그림과 비유. 늘 펼쳐져 있습니다
+              </text>
+              <rect class="dg-cell" x="8" y="66" width="344" height="50" rx="10" stroke-dasharray="6 4"></rect>
+              <text class="dg-text dg-bold" x="24" y="88">
+                2 더 깊이
+              </text>
+              <text class="dg-small" x="24" y="106">
+                접혀 있습니다. 공식·형식·예외까지
+              </text>
+              <rect class="dg-warm" x="8" y="124" width="344" height="50" rx="10"></rect>
+              <text class="dg-text dg-bold" x="24" y="146">
+                3 실제 패치에서
+              </text>
+              <text class="dg-small" x="24" y="164">
+                한글패치 롬 분석 노트의 실제 주소·바이트
+              </text>
+              <rect class="dg-cool" x="8" y="182" width="344" height="50" rx="10"></rect>
+              <text class="dg-text dg-bold" x="24" y="204">
+                4 직접 해 보기
+              </text>
+              <text class="dg-small" x="24" y="222">
+                krpatch 명령과 위젯으로 손을 움직입니다
+              </text>
+            </g>
+          </svg>
+        </Figure>
+        <ul>
+          <li>
+            <span class="layer-badge layer-easy">쉽게</span> 그림과 비유로 개념을 잡습니다. 늘 펼쳐져 있습니다.
+          </li>
+          <li>
+            <span class="layer-badge layer-deep">더 깊이</span> 접혀 있습니다. 펼치면 공식, 데이터 형식, 예외 상황까지
+            다룹니다.
+          </li>
+          <li>
+            <span class="layer-badge layer-patch">실제 패치에서</span> 한글패치를 만들며 실제로 만난 주소와 바이트로
+            같은 개념을 다시 봅니다.
+          </li>
+          <li>
+            <span class="layer-badge layer-try">직접 해 보기</span> 페이지 안의 위젯을 만져 보거나,{' '}
+            <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 <code>krpatch</code> 명령으로 따라 합니다.
+          </li>
+        </ul>
+
+        <h2 id="chapters">차례</h2>
+        <p>
+          공통 장은 어느 게임기에나 해당하고, 슈퍼 패미컴 장은 그 게임기에 맞춘 내용입니다. 닌텐도 DS 장은 나중에
+          붙입니다.
+        </p>
+        <ol class="chapter-map" start="0">
+          {GUIDE_CHAPTERS.map(c => (
+            <li class:list={{ 'is-ready': c.ready }}>
+              <p class="chapter-meta">
+                <span class="mono">{chapterLabel(c)}</span>
+                <span class="chapter-platform">{PLATFORM_LABEL[c.platform]}</span>
+                {!c.ready && <span class="chapter-soon">준비 중</span>}
+              </p>
+              <h3>{c.ready ? <a href={chapterPath(c)}>{c.title}</a> : c.title}</h3>
+              <p class="chapter-summary">{c.summary}</p>
+            </li>
+          ))}
+        </ol>
+
+        <h2 id="tools">준비물</h2>
+        <ul>
+          <li>
+            <strong>헥스 에디터</strong>: 파일을 바이트 단위로 보여 주는 프로그램입니다. 아무것이나 괜찮고,
+            macOS·Linux라면 터미널의 <code>xxd</code>로도 충분합니다.
+          </li>
+          <li>
+            <strong>kr-patch-toolkit</strong>: 이 패치들을 만들 때 쓴 명령 모음입니다. Python 3.15 이상에서{' '}
+            <code>pip install git+https://github.com/perfectacle/kr-patch-toolkit@v0.1.0</code>으로 설치합니다.
+          </li>
+          <li>
+            <strong>에뮬레이터</strong>: 디버거가 있는 Mesen 2를 썼습니다. 12장에서 자세히 다룹니다.
+          </li>
+          <li>
+            <strong>롬 파일</strong>: 이 가이드와 툴킷에는 롬이 들어 있지 않습니다. 직접 가진 카트리지에서 뽑은 롬으로
+            따라 해 주세요.
+          </li>
+        </ul>
+      </div>
+    </article>
+    <Comments path={GUIDE_PATH} />
+  </div>
+</Base>
+
+<style>
+  .chapter-map {
+    display: grid;
+    gap: 10px;
+    max-width: var(--measure);
+    margin: 0 0 1.5em;
+    padding: 0;
+    list-style: none;
+  }
+  .chapter-map li {
+    margin: 0;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .chapter-map li.is-ready {
+    border-left: 4px solid var(--accent);
+  }
+  .chapter-map li:not(.is-ready) {
+    background: var(--bg-soft);
+  }
+  .chapter-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--fg-muted);
+  }
+  .chapter-meta .mono {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .chapter-soon {
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+  .chapter-map h3 {
+    margin: 2px 0 2px;
+    font-size: 1.1rem;
+  }
+  .chapter-map li:not(.is-ready) h3 {
+    color: var(--fg-muted);
+  }
+  .chapter-summary {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.92rem;
+  }
+</style>

@@ -1,0 +1,590 @@
+/* ROM hacking guide: the blog's light/dark tokens plus a small diagram palette shared by every chapter.
+   Diagram color carries one meaning across the guide, and every colored part also has a text label:
+   green = the thing being looked at / the answer, amber = the high side (bank, high byte), blue = the low side
+   (offset, low byte). */
+:root {
+  --dg-paper: #f3f5f4;
+  --dg-cell: #ffffff;
+  --dg-line: #8d9893;
+  --dg-ink: #16191d;
+  --dg-muted: #545c65;
+  --dg-accent: #0b7a57;
+  --dg-accent-soft: #dcf1e5;
+  --dg-warm: #9a4700;
+  --dg-warm-soft: #fcebd7;
+  --dg-cool: #1f52bd;
+  --dg-cool-soft: #e1e9fb;
+  --guide-easy: #0b7a57;
+  --guide-deep: #6b45b8;
+  --guide-patch: #9a4700;
+  --guide-try: #1f52bd;
+}
+
+:root[data-theme='dark'] {
+  --dg-paper: #161a1e;
+  --dg-cell: #0e1114;
+  --dg-line: #5d6872;
+  --dg-ink: #e4e7ea;
+  --dg-muted: #a7b0b9;
+  --dg-accent: #4cc995;
+  --dg-accent-soft: #143024;
+  --dg-warm: #f2ad5f;
+  --dg-warm-soft: #35260f;
+  --dg-cool: #95b5ff;
+  --dg-cool-soft: #18233c;
+  --guide-easy: #4cc995;
+  --guide-deep: #b79cff;
+  --guide-patch: #f2ad5f;
+  --guide-try: #95b5ff;
+}
+
+.guide {
+  max-width: calc(var(--content) + 2 * var(--gutter));
+}
+
+.guide-crumbs {
+  margin: 0 0 20px;
+  font-size: 0.875rem;
+  color: var(--fg-muted);
+}
+.guide-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.guide-crumbs li + li::before {
+  content: '›' / '';
+  margin: 0 8px;
+  color: var(--fg-muted);
+}
+.guide-crumbs a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+}
+
+.guide-head {
+  margin-bottom: 28px;
+}
+.guide-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  margin: 0 0 6px;
+  color: var(--fg-muted);
+  font-size: 0.875rem;
+}
+.guide-kicker .mono {
+  color: var(--accent);
+  font-weight: 600;
+}
+.guide-head h1 {
+  margin: 0 0 12px;
+  font-size: clamp(1.7rem, 4.5vw, 2.3rem);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.guide-summary {
+  max-width: var(--measure);
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 1.0625rem;
+}
+
+/* "이 장에서" contents list */
+.guide-toc {
+  margin: 0 0 32px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  max-width: var(--measure);
+}
+.guide-toc h2 {
+  margin: 0 0 6px;
+  font-size: 0.875rem;
+  color: var(--fg-muted);
+}
+.guide-toc ol {
+  margin: 0;
+  padding-left: 1.3em;
+}
+.guide-toc a {
+  color: var(--fg);
+}
+
+/* Layer badges: text plus color, so the meaning never relies on color alone. */
+.layer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 9px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  vertical-align: 0.15em;
+  white-space: nowrap;
+}
+.layer-badge::before {
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+.layer-easy {
+  color: var(--guide-easy);
+}
+.layer-easy::before {
+  content: '1' / '';
+}
+.layer-deep {
+  color: var(--guide-deep);
+}
+.layer-deep::before {
+  content: '2' / '';
+}
+.layer-patch {
+  color: var(--guide-patch);
+}
+.layer-patch::before {
+  content: '3' / '';
+}
+.layer-try {
+  color: var(--guide-try);
+}
+.layer-try::before {
+  content: '4' / '';
+}
+
+.guide .prose h2 .layer-badge {
+  margin-left: 10px;
+}
+
+/* "더 깊이" folds */
+.deeper {
+  max-width: var(--measure);
+  margin: 1.5em 0;
+  border: 1px solid color-mix(in srgb, var(--guide-deep) 45%, var(--border));
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--guide-deep) 5%, var(--bg));
+}
+.deeper > summary {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 48px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+.deeper > summary::-webkit-details-marker {
+  display: none;
+}
+.deeper > summary::after {
+  content: '+' / '';
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  color: var(--guide-deep);
+}
+.deeper[open] > summary::after {
+  content: '−' / '';
+}
+.deeper > summary .layer-badge {
+  flex: none;
+}
+.deeper-body {
+  padding: 4px 18px 6px;
+  border-top: 1px solid var(--border);
+}
+.prose .deeper-body > :where(p, ul, ol, h3, h4) {
+  max-width: none;
+}
+.deeper-body > :first-child {
+  margin-top: 1em;
+}
+
+/* Diagrams */
+.diagram {
+  margin: 1.6em 0;
+  max-width: var(--measure);
+}
+.diagram svg {
+  display: block;
+  width: 100%;
+  max-width: var(--dg-max, 560px);
+  height: auto;
+  overflow: visible;
+}
+.diagram figcaption {
+  margin-top: 8px;
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+.diagram figcaption::before {
+  content: '그림 ' / '';
+  font-weight: 700;
+  color: var(--fg);
+}
+.dg-text {
+  fill: var(--dg-ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+.dg-small {
+  fill: var(--dg-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+.dg-mono {
+  fill: var(--dg-ink);
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+.dg-bold {
+  font-weight: 700;
+}
+.dg-paper {
+  fill: var(--dg-paper);
+}
+.dg-cell {
+  fill: var(--dg-cell);
+  stroke: var(--dg-line);
+  stroke-width: 1.5;
+}
+.dg-line {
+  fill: none;
+  stroke: var(--dg-line);
+  stroke-width: 1.5;
+}
+.dg-arrow {
+  fill: none;
+  stroke: var(--dg-ink);
+  stroke-width: 1.6;
+}
+.dg-accent {
+  fill: var(--dg-accent-soft);
+  stroke: var(--dg-accent);
+  stroke-width: 1.8;
+}
+.dg-warm {
+  fill: var(--dg-warm-soft);
+  stroke: var(--dg-warm);
+  stroke-width: 1.8;
+}
+.dg-cool {
+  fill: var(--dg-cool-soft);
+  stroke: var(--dg-cool);
+  stroke-width: 1.8;
+}
+.dg-ink-accent {
+  fill: var(--dg-accent);
+}
+.dg-ink-warm {
+  fill: var(--dg-warm);
+}
+.dg-ink-cool {
+  fill: var(--dg-cool);
+}
+.dg-stroke-accent {
+  stroke: var(--dg-accent);
+}
+.dg-stroke-warm {
+  stroke: var(--dg-warm);
+}
+.dg-stroke-cool {
+  stroke: var(--dg-cool);
+}
+.dg-dash {
+  stroke-dasharray: 4 4;
+}
+.dg-head {
+  fill: var(--dg-ink);
+}
+
+/* Byte strips drawn with HTML so they wrap on phones. */
+.byte-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 1.2em 0;
+  padding: 0;
+  list-style: none;
+}
+.byte-strip li {
+  display: grid;
+  min-width: 52px;
+  padding: 6px 8px;
+  border: 1.5px solid var(--dg-line);
+  border-radius: 8px;
+  background: var(--dg-cell);
+  text-align: center;
+  line-height: 1.35;
+}
+.byte-strip code {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.byte-strip small {
+  color: var(--fg-muted);
+  font-size: 0.75rem;
+}
+.byte-strip .is-warm {
+  border-color: var(--dg-warm);
+  background: var(--dg-warm-soft);
+}
+.byte-strip .is-cool {
+  border-color: var(--dg-cool);
+  background: var(--dg-cool-soft);
+}
+.byte-strip .is-accent {
+  border-color: var(--dg-accent);
+  background: var(--dg-accent-soft);
+}
+
+/* Widgets */
+.widget {
+  max-width: var(--measure);
+  margin: 1.8em 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-soft);
+}
+.widget-title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  align-items: baseline;
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+}
+.widget-title .mono {
+  color: var(--accent);
+}
+.widget-help {
+  margin: 0 0 14px;
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+.widget:not(.is-live) .live-only {
+  display: none !important;
+}
+.widget.is-live .static-only {
+  display: none !important;
+}
+.widget button,
+.widget input,
+.widget select {
+  font: inherit;
+  color: var(--fg);
+}
+.widget input[type='text'] {
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 1.5px solid var(--dg-line);
+  border-radius: 8px;
+  background: var(--bg);
+  font-family: var(--font-mono);
+}
+.widget input[type='text']:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.widget input[aria-invalid='true'] {
+  border-color: #c0392b;
+}
+.widget-btn {
+  min-height: 44px;
+  padding: 6px 14px;
+  border: 1.5px solid var(--dg-line);
+  border-radius: 8px;
+  background: var(--bg);
+  cursor: pointer;
+}
+.widget-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.widget-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.widget-btn.is-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.widget-error {
+  margin: 6px 0 0;
+  color: #c0392b;
+  font-size: 0.875rem;
+}
+:root[data-theme='dark'] .widget-error {
+  color: #ff8f80;
+}
+:root[data-theme='dark'] .widget input[aria-invalid='true'] {
+  border-color: #ff8f80;
+}
+.widget dl.readout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin: 14px 0 0;
+}
+.widget dl.readout div {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+.widget dl.readout dt {
+  color: var(--fg-muted);
+  font-size: 0.78rem;
+}
+.widget dl.readout dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* Chapter footer blocks */
+.guide-links {
+  display: grid;
+  gap: 16px;
+  margin: 40px 0 0;
+}
+.guide-box {
+  max-width: var(--measure);
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.guide-box h2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+.guide-box ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+.guide-box li + li {
+  margin-top: 4px;
+}
+.guide-box a {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 3px;
+}
+.guide-box .muted {
+  font-size: 0.875rem;
+}
+
+.chapter-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 40px 0 0;
+}
+.chapter-pager a,
+.chapter-pager span {
+  display: grid;
+  gap: 2px;
+  min-height: 72px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--fg);
+}
+.chapter-pager a:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+.chapter-pager small {
+  color: var(--fg-muted);
+  font-size: 0.8rem;
+}
+.chapter-pager .next {
+  grid-column: 2;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .chapter-pager {
+    grid-template-columns: 1fr;
+  }
+  .chapter-pager .next {
+    grid-column: 1;
+  }
+  .widget {
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 16px var(--gutter);
+    border-radius: 0;
+    border-inline: 0;
+  }
+  .deeper-body {
+    padding: 2px 14px 4px;
+  }
+}
+
+.dg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Byte cells show bare values; the prose inline-code chip would draw a box inside each box. */
+.prose .byte-strip,
+.prose .widget ol,
+.prose .widget ul {
+  padding-left: 0;
+}
+.prose .byte-strip li + li,
+.prose .widget li + li {
+  margin-top: 0;
+}
+.prose .byte-strip code,
+.prose .widget :is(.nb, .cell, .bm-part, .cpu-mem li, .cpu-static-mem li, .readout dd) code {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: inherit;
+  word-break: normal;
+}
+.prose .byte-strip code {
+  font-size: 1rem;
+}
+.prose .widget ol.bm-steps {
+  padding-left: 1.4em;
+}
+.guide-summary a {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 3px;
+}
+/* The wrapper scrolls (and takes focus), so the table inside keeps normal table layout. */
+.table-scroll {
+  max-width: 100%;
+  margin: 0 0 1.25em;
+  overflow-x: auto;
+}
+.prose .table-scroll table {
+  display: table;
+  margin: 0;
+}

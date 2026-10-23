@@ -1,0 +1,13 @@
+---
+interface Props {
+  caption: string;
+  /** Widest the drawing gets, in CSS px; diagrams are drawn about phone width and scale up to this. */
+  max?: number;
+}
+const { caption, max = 560 } = Astro.props;
+---
+
+<figure class="diagram" style={`--dg-max: ${max}px`}>
+  <slot />
+  <figcaption>{caption}</figcaption>
+</figure>
