@@ -19,6 +19,7 @@ export async function GET() {
     ['/tags/'],
     ['/categories/'],
     ['/games/kr-patches/'],
+    ['/games/kr-patches/sfc/'],
     ['/games/kr-patches/sfc/super-mario-rpg/'],
     ['/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/'],
     ['/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/'],

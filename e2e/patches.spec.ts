@@ -19,6 +19,8 @@ import {
   type RomSpec,
 } from '../src/lib/rom-patch.ts';
 
+const HUB = '/games/kr-patches/';
+const CATALOGUE = '/games/kr-patches/sfc/';
 const GOKUDEN = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/';
 const KAKUSEI = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/';
 const OTOGIRI = '/games/kr-patches/sfc/otogirisou/';
@@ -35,7 +37,7 @@ async function loadSpriteImage(sprite: Locator) {
   });
 }
 
-for (const path of ['/games/kr-patches/', '/games/kr-patches/sfc/super-mario-rpg/', GOKUDEN, KAKUSEI, OTOGIRI]) {
+for (const path of [HUB, CATALOGUE, '/games/kr-patches/sfc/super-mario-rpg/', GOKUDEN, KAKUSEI, OTOGIRI]) {
   for (const colorScheme of ['light', 'dark'] as const) {
     test(`${path} guide works in ${colorScheme}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme });
@@ -119,8 +121,58 @@ for (const patch of KR_PATCHES) {
   });
 }
 
+test('the patch hub boots once per session and then opens the menu at once', async ({ page }) => {
+  await page.goto(HUB);
+  const crt = page.locator('[data-crt]');
+  await expect(crt).toHaveAttribute('data-state', 'booting');
+  await expect(crt).toHaveAttribute('data-state', 'ready');
+  await page.reload();
+  await expect(crt).toHaveAttribute('data-state', 'ready');
+});
+
+test('the patch hub boot text can be skipped', async ({ page }) => {
+  await page.goto(HUB);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('[data-crt]')).toHaveAttribute('data-state', 'ready');
+});
+
+test('the patch hub lets you pick Super Famicom and keeps Nintendo DS locked', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(HUB);
+  const menu = page.getByRole('navigation', { name: '기종 고르기' });
+  const sfc = menu.getByRole('link', { name: /슈퍼 패미컴/ });
+  await expect(sfc).toHaveAttribute('href', CATALOGUE);
+  const nds = menu.locator('[aria-disabled="true"]');
+  await expect(nds).toContainText('닌텐도 DS');
+  await expect(nds).toContainText('준비 중');
+  await expect(menu.locator('a')).toHaveCount(1);
+  await sfc.focus();
+  await page.keyboard.press('ArrowDown');
+  await expect(nds).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('status')).toHaveText('닌텐도 DS는 아직 준비 중입니다');
+  await expect(page).toHaveURL(HUB);
+  await page.keyboard.press('ArrowUp');
+  await expect(sfc).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(CATALOGUE);
+  await page.getByRole('link', { name: '기종 고르기' }).click();
+  await expect(page).toHaveURL(HUB);
+});
+
+test('choosing Super Famicom switches the monitor off before opening its list', async ({ page }) => {
+  await page.goto(HUB);
+  await page.keyboard.press('Escape');
+  await page
+    .getByRole('navigation', { name: '기종 고르기' })
+    .getByRole('link', { name: /슈퍼 패미컴/ })
+    .click();
+  await expect(page.locator('.system.is-chosen')).toHaveCount(1);
+  await expect(page).toHaveURL(CATALOGUE);
+});
+
 test('catalogue opens the game page, which leads with the patch box and plays no media', async ({ page }) => {
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'sfc');
   await page.locator(`main a[href="${GAME}"]`).first().click();
   await expect(page).toHaveURL(/\/games\/kr-patches\/sfc\/super-mario-rpg\/$/);
@@ -133,7 +185,7 @@ test('catalogue opens the game page, which leads with the patch box and plays no
 });
 
 test('choosing a cartridge boots it in the console before opening the game page', async ({ page }) => {
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   const card = page.locator(`main a[href="${GOKUDEN}"]`);
   await card.click();
   const stage = page.locator('.boot-stage[aria-hidden="true"]');
@@ -148,13 +200,13 @@ test('choosing a cartridge boots it in the console before opening the game page'
   );
   await expect(page).toHaveURL(GOKUDEN);
   await page.goBack();
-  await expect(page).toHaveURL('/games/kr-patches/');
+  await expect(page).toHaveURL(CATALOGUE);
   await expect(page.locator('.boot-stage')).toHaveCount(0);
   await expect(card.locator('.cartridge')).toBeVisible();
 });
 
 test('the boot scene can be skipped from the keyboard', async ({ page }) => {
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   await page.locator(`main a[href="${OTOGIRI}"]`).click();
   await expect(page.locator('.boot-stage')).toBeVisible();
   await page.keyboard.press('Escape');
@@ -163,7 +215,7 @@ test('the boot scene can be skipped from the keyboard', async ({ page }) => {
 
 test('choosing a cartridge opens the game page at once when motion is reduced', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   await page.evaluate(() =>
     new MutationObserver(() => {
       if (document.querySelector('.boot-stage')) sessionStorage.setItem('booted', 'yes');
@@ -233,7 +285,7 @@ test('patch pages describe where they sit and keep analytics off outside the pub
   const [block] = await page.locator('script[type="application/ld+json"]').allTextContents();
   const crumbs = JSON.parse(block ?? '{}') as { '@type': string; itemListElement: { item: string }[] };
   expect(crumbs['@type']).toBe('BreadcrumbList');
-  expect(crumbs.itemListElement.map(i => new URL(i.item).pathname)).toEqual(['/games/kr-patches/', GAME]);
+  expect(crumbs.itemListElement.map(i => new URL(i.item).pathname)).toEqual([HUB, CATALOGUE, GAME]);
   await page.waitForTimeout(3500);
   expect(gtag).toEqual([]);
 });
@@ -249,7 +301,7 @@ test('llms.txt points AI assistants to the patch pages', async ({ request }) => 
 test('catalogue lists every game page', async ({ page }) => {
   // The boot scene has its own test; here only the links matter.
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   await expect(page.locator('header')).toHaveCount(0);
   await expect(page.getByText('한글판 만들기', { exact: true })).toHaveCount(0);
   for (const text of [
@@ -269,12 +321,12 @@ test('catalogue lists every game page', async ({ page }) => {
     await card.focus();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(path);
-    await page.goto('/games/kr-patches/');
+    await page.goto(CATALOGUE);
   }
 });
 
 test('catalogue uses the Super Mario RPG title screen', async ({ page }) => {
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   const screen = page.locator(`main a[href="${GAME}"] img`);
   await expect(screen).toHaveAttribute('src', '/games/kr-patches/catalogue/super-mario-rpg-title.webp');
   await expect
@@ -334,7 +386,7 @@ for (const width of [390, 768, 1280]) {
 }
 
 test('catalogue cards show the patch release date and their own game credits', async ({ page }) => {
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   for (const [path, version, released, copyright] of [
     [GAME, '1.2', '2026-10-23', '게임 © 1995 Nintendo / SQUARE · 캐릭터 © Nintendo, © SQUARE'],
     [GOKUDEN, '1.2', '2026-10-23', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
@@ -356,7 +408,7 @@ test('catalogue cards show the patch release date and their own game credits', a
 for (const width of [390, 1280]) {
   test(`catalogue card titles have balanced vertical spacing at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto('/games/kr-patches/');
+    await page.goto(CATALOGUE);
     await page.evaluate(() => document.fonts.ready);
     for (const card of await page.locator('main a.game-card').all()) {
       const spacing = await card.evaluate(element => {
@@ -373,7 +425,7 @@ for (const width of [390, 1280]) {
 }
 
 test('catalogue characters stay on the original forest ground through scrolling and resizing', async ({ page }) => {
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   await expect(page.locator('svg.sfc-controller[aria-hidden="true"]')).toBeVisible();
   await expect(page.locator('.world-rail[aria-hidden="true"]')).toHaveCount(2);
   await expect(page.locator('.world-sprite')).toHaveCount(3);
@@ -464,7 +516,7 @@ test('catalogue characters stay on the original forest ground through scrolling 
 
 test('Diddy keeps his ground contact fixed across every animation frame', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   const contacts = await page.locator('.sprite-diddy-kong').evaluate(async element => {
     const style = getComputedStyle(element);
     const url = style.backgroundImage.match(/^url\(["']?(.+?)["']?\)$/)?.[1];
@@ -503,7 +555,7 @@ test('Diddy keeps his ground contact fixed across every animation frame', async 
 test('catalogue characters change pose in place and return to their initial frame', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   for (const { name, expectedFrames, poseFrames } of [
     { name: 'mega-man-x', expectedFrames: 10, poseFrames: [1, 3, 6, 8] },
     { name: 'ryu', expectedFrames: 86, poseFrames: [5, 65, 70, 75, 82] },
@@ -590,7 +642,7 @@ test('catalogue characters change pose in place and return to their initial fram
 test('catalogue respects reduced motion by keeping all characters still', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/games/kr-patches/');
+  await page.goto(CATALOGUE);
   for (const sprite of await page.locator('.world-sprite').all()) {
     await sprite.scrollIntoViewIfNeeded();
     expect(await loadSpriteImage(sprite)).toBe(true);
@@ -604,7 +656,7 @@ test('catalogue respects reduced motion by keeping all characters still', async 
 for (const width of [320, 390]) {
   test(`catalogue cards fit a ${width}px phone without horizontal scrolling`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
-    await page.goto('/games/kr-patches/');
+    await page.goto(CATALOGUE);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
       0,
     );
@@ -625,7 +677,7 @@ for (const path of [GAME, GOKUDEN, KAKUSEI, OTOGIRI]) {
     await page.goto(path);
     const back = page.locator('header').getByRole('link', { name: '한글패치 목록', exact: true });
     await expect(back).toBeInViewport();
-    await expect(back).toHaveAttribute('href', '/games/kr-patches/');
+    await expect(back).toHaveAttribute('href', CATALOGUE);
     const box = page.locator('.patch-box');
     await expect(box.getByRole('heading', { name: '여기서 바로 한글패치' })).toBeInViewport();
     const steps = box.getByRole('list', { name: '한글패치 방법' });
@@ -648,7 +700,7 @@ for (const path of [GAME, GOKUDEN, KAKUSEI, OTOGIRI]) {
     });
     await expect(box.locator('.patch-status')).toContainText('너무 작습니다');
     await back.click();
-    await expect(page).toHaveURL('/games/kr-patches/');
+    await expect(page).toHaveURL(CATALOGUE);
   });
 }
 

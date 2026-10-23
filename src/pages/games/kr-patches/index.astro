@@ -1,17 +1,41 @@
 ---
 import PatchBook from '../../../layouts/PatchBook.astro';
-import SfcController from '../../../components/kr-patch/SfcController.astro';
-import CartridgeBoot from '../../../components/kr-patch/CartridgeBoot.astro';
-import SfcCartridge from '../../../components/kr-patch/SfcCartridge.astro';
-import SfcCartridgeDefs from '../../../components/kr-patch/SfcCartridgeDefs.astro';
 import { KR_PATCH_LIST_PATH, KR_PATCHES } from '../../../lib/kr-patches';
-import '../../../styles/patch-catalogue.css';
+import '../../../styles/kr-patch-hub.css';
+
+const systems = [
+  {
+    id: 'sfc',
+    name: '슈퍼 패미컴',
+    code: 'SFC',
+    meta: `${KR_PATCHES.length}종`,
+    href: '/games/kr-patches/sfc/',
+    photo: '/games/kr-patches/catalogue/super-famicom.webp',
+    year: 1990,
+  },
+  {
+    id: 'nds',
+    name: '닌텐도 DS',
+    code: 'NDS',
+    meta: '준비 중',
+    href: undefined,
+    photo: '/games/kr-patches/catalogue/nintendo-ds-lite.webp',
+    year: 2004,
+  },
+];
+const lines = [
+  'PERFECTACLE 한글패치 BIOS',
+  '메모리 검사 .......... 4096K OK',
+  '한글 글꼴 불러오기 ... OK',
+  `패치 목록 읽기 ...... SFC ${KR_PATCHES.length}종`,
+  'NDS 슬롯 ............ 비어 있음',
+];
 ---
 
 <PatchBook
   title="한글패치"
   trail={[{ name: '한글패치', path: KR_PATCH_LIST_PATH }]}
-  description="한국어로 즐기는 슈퍼 패미컴 게임. 게임을 고르고 일본판 롬파일에 한글패치를 바로 적용합니다."
+  description="한국어로 즐기는 고전 게임. 기종을 고르고 일본판 롬파일에 한글패치를 바로 적용합니다."
   theme="sfc"
   image={{
     src: '/images/favicon/apple-touch-icon.png',
@@ -21,57 +45,284 @@ import '../../../styles/patch-catalogue.css';
   }}
   copyright={[]}
   links={[
-    { href: 'https://www.fantasyanime.com/mana/som2maps.htm', label: '성검전설 3 배경 © 1995 SQUARE · FantasyAnime' },
-    { href: 'https://spritedatabase.net/file/8203', label: '록맨 X3 스프라이트' },
-    { href: 'https://spritedatabase.net/file/7653', label: '동키콩 컨트리 2 스프라이트' },
-    { href: 'https://spritedatabase.net/file/31727', label: '스트리트 파이터 II 스프라이트' },
     {
       href: 'https://commons.wikimedia.org/wiki/File:Nintendo-Super-Famicom-Set-FL.png',
       label: '슈퍼 패미컴 사진 Evan-Amos(퍼블릭 도메인)',
     },
+    {
+      href: 'https://commons.wikimedia.org/wiki/File:Nintendo-DS-Lite-Black-Open.png',
+      label: '닌텐도 DS Lite 사진 Evan-Amos(퍼블릭 도메인)',
+    },
   ]}
 >
-  <div class="catalogue-world">
-    <div class="world-rail world-rail-left" aria-hidden="true">
-      <div class="world-sprite sprite-mega-man-x"></div>
-      <div class="world-sprite sprite-diddy-kong"></div>
-    </div>
-    <section class="patch-catalogue page-width" aria-labelledby="catalogue-title">
-      <div class="console-heading">
-        <div>
-          <h1 id="catalogue-title">한글패치</h1>
+  <section class="boot-hub" aria-labelledby="hub-title">
+    <div class="crt" data-crt>
+      <div class="crt-screen" data-screen>
+        <ol class="boot-log" aria-hidden="true" data-log>
+          {lines.map(line => (
+            <li>{line}</li>
+          ))}
+        </ol>
+        <div class="hub-menu" data-menu>
+          <header class="hub-head">
+            <p class="hub-kicker">SELECT SYSTEM</p>
+            <h1 id="hub-title">한글패치</h1>
+          </header>
+          <div class="hub-body">
+            <nav aria-label="기종 고르기">
+              <ul class="system-list">
+                {systems.map((system, i) => (
+                  <li>
+                    {system.href ? (
+                      <a
+                        class="system"
+                        href={system.href}
+                        data-system={system.id}
+                        data-photo={system.photo}
+                        data-caption={`${system.code} · ${system.year}`}
+                        data-active={i === 0 ? '' : undefined}
+                      >
+                        <span class="system-cursor" aria-hidden="true">
+                          ▶
+                        </span>
+                        <span class="system-name">{system.name}</span>
+                        <span class="system-meta">
+                          {system.code} · {system.meta}
+                        </span>
+                      </a>
+                    ) : (
+                      <span
+                        class="system is-locked"
+                        role="link"
+                        aria-disabled="true"
+                        tabindex="0"
+                        data-system={system.id}
+                        data-photo={system.photo}
+                        data-caption={`${system.code} · ${system.year}`}
+                      >
+                        <span class="system-cursor" aria-hidden="true">
+                          ▶
+                        </span>
+                        <span class="system-name">{system.name}</span>
+                        <span class="system-meta">
+                          {system.code} · {system.meta}
+                        </span>
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <figure class="system-preview" aria-hidden="true">
+              <canvas data-preview width="160" height="72"></canvas>
+              <figcaption data-preview-caption>SFC · 1990</figcaption>
+            </figure>
+          </div>
+          <p class="hub-hint" aria-hidden="true">
+            <span>
+              <kbd>↑</kbd>
+              <kbd>↓</kbd> 고르기
+            </span>
+            <span>
+              <kbd>Enter</kbd> 시작
+            </span>
+          </p>
+          <p class="sr-only" role="status" data-status></p>
         </div>
-        <SfcController />
       </div>
-      <SfcCartridgeDefs />
-      <ul class="game-catalogue">
-        {KR_PATCHES.map((patch, i) => {
-          const href = `${patch.path}/`;
-          const image =
-            patch.theme === 'smrpg'
-              ? '/games/kr-patches/catalogue/super-mario-rpg-title.webp'
-              : href + patch.card.image;
-          return (
-            <li>
-              <a class="game-card" href={href}>
-                <SfcCartridge title={patch.title} image={image} color={patch.color} eager={i === 0} />
-                <div class="game-card-copy">
-                  <p class="game-release">
-                    게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}{' '}
-                    <time datetime={patch.released}>({patch.released})</time>
-                  </p>
-                  <h2>{patch.title}</h2>
-                </div>
-                <p class="game-copyright">{patch.copyright}</p>
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-    <div class="world-rail world-rail-right" aria-hidden="true">
-      <div class="world-sprite sprite-ryu"></div>
+      <div class="crt-glass" aria-hidden="true"></div>
     </div>
-  </div>
-  <CartridgeBoot />
+    <p class="crt-brand" aria-hidden="true">
+      KR-PATCH <span>MONITOR</span>
+    </p>
+  </section>
 </PatchBook>
+
+<script>
+  const crt = document.querySelector<HTMLElement>('[data-crt]');
+  const screen = document.querySelector<HTMLElement>('[data-screen]');
+  const log = document.querySelector<HTMLElement>('[data-log]');
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-preview]');
+  const caption = document.querySelector<HTMLElement>('[data-preview-caption]');
+  const status = document.querySelector<HTMLElement>('[data-status]');
+  const items = [...document.querySelectorAll<HTMLElement>('.system')];
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const BOOTED = 'kr-patch-hub-booted';
+
+  if (crt && screen && log && canvas && caption && status) {
+    const remember = (key: string) => {
+      try {
+        return sessionStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    };
+    const store = (key: string) => {
+      try {
+        sessionStorage.setItem(key, '1');
+      } catch {
+        // Private mode: the boot text simply plays again next time.
+      }
+    };
+
+    // Boot text types in once per session; any key or click skips it.
+    const finishBoot = () => {
+      crt.dataset['state'] = 'ready';
+      store(BOOTED);
+    };
+    if (reducedMotion.matches || remember(BOOTED)) {
+      finishBoot();
+    } else {
+      crt.dataset['state'] = 'booting';
+      const lines = [...log.children] as HTMLElement[];
+      lines.forEach((line, i) => line.style.setProperty('--delay', `${0.15 + i * 0.28}s`));
+      const timer = window.setTimeout(finishBoot, 0.15 * 1000 + lines.length * 280 + 450);
+      const skip = () => {
+        window.clearTimeout(timer);
+        finishBoot();
+      };
+      window.addEventListener('keydown', skip, { once: true });
+      crt.addEventListener('pointerdown', skip, { once: true });
+    }
+
+    // The console photo is redrawn as a four-tone phosphor picture with ordered dithering.
+    const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+    const PALETTE = [
+      [10, 34, 18],
+      [30, 104, 54],
+      [96, 210, 122],
+      [210, 255, 220],
+    ] as const;
+    const pictures = new Map<string, ImageData>();
+    const draw = async (src: string) => {
+      const context = canvas.getContext('2d', { willReadFrequently: true });
+      if (!context) return;
+      let picture = pictures.get(src);
+      if (!picture) {
+        const image = new Image();
+        image.src = src;
+        await image.decode().catch(() => undefined);
+        if (!image.naturalWidth) return;
+        const width = 160;
+        const height = Math.round((width * image.naturalHeight) / image.naturalWidth);
+        canvas.width = width;
+        canvas.height = height;
+        context.clearRect(0, 0, width, height);
+        context.drawImage(image, 0, 0, width, height);
+        picture = context.getImageData(0, 0, width, height);
+        const { data } = picture;
+        let low = 255;
+        let high = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          if ((data[i + 3] ?? 0) < 128) continue;
+          const lum = 0.299 * (data[i] ?? 0) + 0.587 * (data[i + 1] ?? 0) + 0.114 * (data[i + 2] ?? 0);
+          low = Math.min(low, lum);
+          high = Math.max(high, lum);
+        }
+        const range = Math.max(1, high - low);
+        for (let i = 0; i < data.length; i += 4) {
+          const pixel = i / 4;
+          const x = pixel % width;
+          const y = Math.floor(pixel / width);
+          if ((data[i + 3] ?? 0) < 128) {
+            data[i + 3] = 0;
+            continue;
+          }
+          const lum = 0.299 * (data[i] ?? 0) + 0.587 * (data[i + 1] ?? 0) + 0.114 * (data[i + 2] ?? 0);
+          const threshold = ((BAYER[(y % 4) * 4 + (x % 4)] ?? 0) + 0.5) / 16 - 0.5;
+          const level = Math.max(0, Math.min(3, Math.round(((lum - low) / range) * 3 + threshold * 0.9)));
+          const [r, g, b] = PALETTE[level] ?? PALETTE[0];
+          data[i] = r;
+          data[i + 1] = g;
+          data[i + 2] = b;
+          data[i + 3] = 255;
+        }
+        pictures.set(src, picture);
+      }
+      canvas.width = picture.width;
+      canvas.height = picture.height;
+      context.putImageData(picture, 0, 0);
+    };
+
+    const activate = (item: HTMLElement) => {
+      for (const other of items) other.toggleAttribute('data-active', other === item);
+      caption.textContent = item.dataset['caption'] ?? '';
+      canvas.parentElement?.classList.remove('is-tuning');
+      void canvas.offsetWidth;
+      canvas.parentElement?.classList.add('is-tuning');
+      if (item.dataset['photo']) void draw(item.dataset['photo']);
+    };
+    const first = items[0];
+    if (first) activate(first);
+
+    for (const item of items) {
+      item.addEventListener('pointerenter', () => activate(item));
+      item.addEventListener('focus', () => activate(item));
+    }
+    document.addEventListener('keydown', event => {
+      if (crt.dataset['state'] !== 'ready') return;
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      const current = items.findIndex(item => item.hasAttribute('data-active'));
+      const next = items[(current + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length];
+      if (!next) return;
+      event.preventDefault();
+      next.focus();
+    });
+
+    for (const locked of items.filter(item => item.classList.contains('is-locked'))) {
+      const refuse = () => {
+        status.textContent = `${locked.querySelector('.system-name')?.textContent ?? ''}는 아직 준비 중입니다`;
+        locked.classList.remove('is-refused');
+        void locked.offsetWidth;
+        locked.classList.add('is-refused');
+      };
+      locked.addEventListener('click', refuse);
+      locked.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          refuse();
+        }
+      });
+    }
+
+    // Choosing a system blinks the line, then the picture collapses like a CRT switching off.
+    for (const link of items.filter((item): item is HTMLAnchorElement => item instanceof HTMLAnchorElement)) {
+      link.addEventListener('click', async event => {
+        if (
+          reducedMotion.matches ||
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey ||
+          typeof Element.prototype.animate !== 'function'
+        )
+          return;
+        event.preventDefault();
+        activate(link);
+        link.classList.add('is-chosen');
+        await new Promise(resolve => setTimeout(resolve, 540));
+        await screen
+          .animate(
+            [
+              { transform: 'scale(1, 1)', filter: 'brightness(1)' },
+              { transform: 'scale(1, 0.006)', filter: 'brightness(3)', offset: 0.55 },
+              { transform: 'scale(0.002, 0.006)', filter: 'brightness(4)' },
+            ],
+            { duration: 420, easing: 'cubic-bezier(.6,0,.8,.4)', fill: 'forwards' },
+          )
+          .finished.catch(() => undefined);
+        crt.dataset['state'] = 'off';
+        await new Promise(resolve => setTimeout(resolve, 260));
+        window.location.assign(link.href);
+      });
+    }
+
+    window.addEventListener('pageshow', event => {
+      if (!event.persisted) return;
+      crt.dataset['state'] = 'ready';
+      screen.getAnimations().forEach(animation => animation.cancel());
+      for (const item of items) item.classList.remove('is-chosen');
+    });
+  }
+</script>
