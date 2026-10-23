@@ -1,0 +1,793 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import Figure from '../../../../components/romhacking/Figure.astro';
+import RunScript from '../../../../components/romhacking/RunScript.astro';
+import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import { TOOLKIT_README_KO, chapterBySlug, chapterPath } from '../../../../components/romhacking/chapters.ts';
+
+const sections = [
+  { id: 'why', label: '왜 에뮬레이터로 확인하나' },
+  { id: 'breakpoints', label: '중단점으로 "어디서 읽나" 잡기' },
+  { id: 'viewers', label: '메모리·그림 보기와 추적 기록' },
+  { id: 'lua', label: 'Lua로 확인을 자동으로' },
+  { id: 'headless', label: '화면 없이 돌리기: 입력 스크립트' },
+  { id: 'cores', label: '여러 에뮬레이터에서 같은 입력 돌리기' },
+  { id: 'hardware', label: '실기에서만 알 수 있는 것' },
+  { id: 'in-patch', label: '실제 패치에서' },
+  { id: 'try', label: '직접 해 보기' },
+];
+const MESEN = 'https://github.com/SourMesen/Mesen2/blob/master';
+const TOOLKIT = 'https://github.com/perfectacle/kr-patch-toolkit/blob/main';
+const PATCHES = 'https://github.com/perfectacle/kr-patches/blob/main/snes';
+const references = [
+  {
+    href: `${MESEN}/Core/Debugger/LuaApi.cpp`,
+    label: 'Mesen 2 소스, LuaApi.cpp',
+    note: 'Lua 함수 목록(addMemoryCallback, addEventCallback, read, write, takeScreenshot, createSavestate, stop)과, 세이브스테이트는 주 CPU 실행 콜백 안에서만 만들 수 있다는 검사',
+  },
+  {
+    href: `${MESEN}/UI/Utilities/TestRunner.cs`,
+    label: 'Mesen 2 소스, TestRunner.cs와 CommandLineHelper.cs',
+    note: '--testrunner가 롬 하나와 Lua 스크립트를 최고 속도로 돌리고 emu.stop의 값을 종료 코드로 돌려준다는 것, 기본 제한 시간 100초와 --timeout=',
+  },
+  {
+    href: `${MESEN}/UI/Debugger/Windows/BreakpointEditWindow.axaml`,
+    label: 'Mesen 2 소스, BreakpointEditWindow',
+    note: '중단점의 메모리 종류·주소 범위·실행/읽기/쓰기·조건식·이벤트 뷰어 표시 항목',
+  },
+  {
+    href: `${MESEN}/UI/Config/SnesConfig.cs`,
+    label: 'Mesen 2 소스, SnesConfig.cs',
+    note: '켤 때 RAM 값(RamPowerOnState)의 기본값이 무작위(Random)라는 것',
+  },
+  {
+    href: `${MESEN}/Core/SNES/InternalRegisters.cpp`,
+    label: 'Mesen 2 소스, InternalRegisters.cpp',
+    note: '자동 컨트롤러 읽기가 수직 귀선 첫 줄의 점 32.5 뒤 256마스터 클록 경계에서 시작해 레지스터를 0으로 지우고 한 비트씩 채운다는 구현',
+  },
+  {
+    href: 'https://problemkaputt.de/fullsnes.htm#snescontrollersioportsautomaticreading',
+    label: 'fullsnes, SNES Controllers I/O Ports - Automatic Reading',
+    note: '$4218–$421F의 비트 순서(A는 9번째), 읽기는 H=32.5–95.5 사이에 시작해 4224마스터 사이클 걸리고 그동안 $4212 비트 0이 1이며 이때 읽은 값은 틀린다는 설명',
+  },
+  {
+    href: 'https://snes.nesdev.org/wiki/Controller_reading',
+    label: 'SNESdev Wiki, Controller reading',
+    note: '수직 귀선이 시작됐지만 자동 읽기가 아직 시작되지 않은 짧은 틈이 있다는 경고',
+  },
+  {
+    href: 'https://problemkaputt.de/fullsnes.htm#snesunpredictablethings',
+    label: 'fullsnes, SNES Unpredictable Things',
+    note: '쓰지 않는 주소와 비트를 읽으면 직전 버스 값이 나오는 오픈 버스',
+  },
+  {
+    href: 'https://docs.libretro.com/library/bsnes/',
+    label: 'libretro 문서, bsnes',
+    note: '정확한 에뮬레이션을 목표로 하는 코어라는 설명, 치트 지원과 메모리 감시 미지원 표',
+  },
+  {
+    href: 'https://docs.libretro.com/library/snes9x/',
+    label: 'libretro 문서, Snes9x',
+    note: 'Snes9x 본가를 옮긴 코어라는 설명과 치트·메모리 감시 지원 표',
+  },
+  {
+    href: 'https://github.com/libretro/libretro-common/blob/master/include/libretro.h',
+    label: 'libretro-common, include/libretro.h',
+    note: 'retro_run(한 프레임 실행), retro_get_memory_data(WRAM 내주기), retro_cheat_set',
+  },
+  {
+    href: `${TOOLKIT}/src/kr_patch/snes/script.py`,
+    label: 'kr-patch-toolkit, snes/script.py와 libretro.py',
+    note: '입력 스크립트 규칙, 프레임을 세는 방법, WRAM 포인터가 없는 코어에서 poke를 Pro Action Replay 치트로 거는 방법. 이 장의 도구는 script.py의 결과로 만든 사례 80개로 같은 결과를 내는지 시험합니다',
+  },
+  {
+    href: `${TOOLKIT}/src/kr_patch/snes/lua/lib.lua`,
+    label: 'kr-patch-toolkit, snes/lua/',
+    note: 'lib.lua(입력은 inputPolled에서, 세이브스테이트는 실행 콜백으로 미룸), script.lua, probe/*.lua',
+  },
+  {
+    href: `${PATCHES}/dragon-ball-z-super-gokuden-kakusei/compat/run_all.sh`,
+    label: 'kr-patches, 각성편 compat/run_all.sh',
+    note: 'Mesen 2와 libretro 코어 여섯에 같은 입력 스크립트를 넣는 실제 스크립트',
+  },
+  {
+    href: `${PATCHES}/otogirisou/docs/ANALYSIS.ko.md`,
+    label: 'kr-patches, 제절초 docs/ANALYSIS.ko.md 2장·8장·9장',
+    note: '멈춤 찾기 순서, 쓰기 감시로 WRAM 빈 곳 확인, 코어별 결과와 확인하지 않은 것',
+  },
+  {
+    href: `${PATCHES}/dragon-ball-z-super-gokuden-totsugeki/docs/ANALYSIS.ko.md`,
+    label: 'kr-patches, 돌격편 docs/ANALYSIS.ko.md 8장',
+    note: '대사 ID 읽기 감시로 하는 회귀 시험, 창 폭 시험(lua/wintest.lua), 코어별 결과',
+  },
+  {
+    href: `${PATCHES}/super-mario-rpg/docs/ANALYSIS.ko.md`,
+    label: 'kr-patches, 슈퍼 마리오 RPG docs/ANALYSIS.ko.md 7장·8장',
+    note: '쓰기 콜백으로 값 바꿔치기, 시험용 롬, 코어별 결과',
+  },
+  {
+    href: `${PATCHES}/dragon-ball-z-super-gokuden-kakusei/docs/ANALYSIS.ko.md`,
+    label: 'kr-patches, 각성편 docs/ANALYSIS.ko.md 9장·10장',
+    note: '디버그 메뉴로 장면 띄우기, 장면 376개 회귀, 코어별 결과',
+  },
+];
+const ASSEMBLY = chapterPath(chapterBySlug('snes', 'assembly'));
+const BANKS = chapterPath(chapterBySlug('snes', 'banks'));
+const GRAPHICS = chapterPath(chapterBySlug('snes', 'graphics'));
+const TEXT = chapterPath(chapterBySlug('snes', 'text'));
+const HOOKING = chapterPath(chapterBySlug('snes', 'hooking'));
+const LZSS = chapterPath(chapterBySlug('common', 'lzss'));
+const EXPANSION = chapterPath(chapterBySlug('snes', 'expansion'));
+
+const viewers = [
+  {
+    name: '메모리 보기(Memory Tools)',
+    text: '롬·WRAM·VRAM·CGRAM·세이브 RAM을 헥스 에디터처럼 봅니다. 방금 읽거나 쓴 바이트가 잠깐 색으로 표시되어, 대사를 띄우는 순간 어느 WRAM이 바뀌는지 바로 보입니다.',
+  },
+  {
+    name: '타일·타일맵·팔레트 보기',
+    text: 'VRAM의 타일을 bpp와 팔레트를 골라 그림으로 보고, BG 타일맵이 어느 타일을 쓰는지, CGRAM의 색이 무엇인지 봅니다(7장).',
+  },
+  {
+    name: '추적 기록(Trace Logger)',
+    text: '실행한 명령을 한 줄씩, 그때의 레지스터와 함께 남깁니다. 중단점에서 멈춘 곳까지 어떤 길로 왔는지 거꾸로 따라갈 때 씁니다.',
+  },
+  {
+    name: '이벤트 뷰어(Event Viewer)',
+    text: '한 프레임을 줄(스캔라인)과 시간으로 펼친 판 위에 레지스터 읽기·쓰기, NMI, DMA가 일어난 자리를 찍습니다. 화면 밖에서 VRAM에 쓰는지, NMI가 늦게 끝나는지가 한눈에 보입니다.',
+  },
+  {
+    name: '감시(Watch)',
+    text: '주소나 식을 적어 두면 멈출 때마다 값을 보여 줍니다. 회차 수, 대사 번호처럼 계속 볼 값을 올려 둡니다.',
+  },
+];
+
+const probes = [
+  { file: 'lib.lua', text: '스크린샷, 세이브스테이트 저장·불러오기, 메모리 덤프, 버튼 입력을 돕는 공통 함수' },
+  { file: 'script.lua', text: 'krpatch snes run과 같은 입력 스크립트를 같은 규칙으로 Mesen 2에서 재생' },
+  { file: 'boot.lua', text: '전원을 켜고 정한 간격으로 버튼을 누르며 일정 프레임마다 스크린샷' },
+  { file: 'probe/trace.lua', text: '정한 주소가 실행될 때마다 횟수와 레지스터, 원하는 메모리 값을 기록' },
+  { file: 'probe/wtrace.lua', text: '정한 WRAM 주소에 쓰는 순간의 프레임, 쓴 코드 주소(PC), 값을 기록' },
+  { file: 'probe/wrange.lua', text: '한 번이라도 쓰인 WRAM 256바이트 단위 영역을 모아 빈 곳 찾기를 도움' },
+  { file: 'probe/cgram.lua', text: '정한 프레임의 CGRAM 512바이트와 화면을 저장' },
+];
+
+const cores = [
+  {
+    name: 'snes9x',
+    result: '정상. WRAM을 내주므로 wram.log와 덤프가 남습니다.',
+  },
+  { name: 'snes9x2010', result: 'snes9x와 같은 화면, 같은 wram.log.' },
+  {
+    name: 'bsnes',
+    result: '같은 화면. WRAM을 내주지 않아 wram.log가 비고 덤프가 없습니다. poke는 치트로 들어가 빨강이 나옵니다.',
+  },
+  {
+    name: 'bsnes-hd beta',
+    result: '화면이 224줄이 아니라 216줄이라 크기부터 다릅니다. 치트도 먹지 않아 202프레임에도 파랑입니다.',
+  },
+  {
+    name: 'Beetle Supafaust',
+    result: 'poke 치트를 Game Genie 코드로 읽다가 「incorrect length」 오류로 코어가 종료합니다(종료 코드 134).',
+  },
+  { name: 'Mesen-S 코어', result: '켜자마자 종료합니다(종료 코드 139). 네 패치의 일본판 원본에서도 같았습니다.' },
+  {
+    name: 'Mesen 2(script.lua)',
+    result: '같은 결과지만 A와 poke가 화면에 2–3프레임 늦게 나와 202프레임 화면만 다릅니다.',
+  },
+];
+---
+
+<GuideChapter platform="snes" slug="emulator" sections={sections} references={references}>
+  <h2 id="why">
+    왜 에뮬레이터로 확인하나 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    지금까지는 롬 파일을 읽어서 알아냈습니다. 하지만 롬만 봐서는 "이 바이트를 언제, 어느 코드가 읽는가"를 알기
+    어렵습니다. 같은 바이트가 대사일 수도, 그림일 수도, 쓰지 않는 자리일 수도 있습니다. 에뮬레이터는 게임을 실제로
+    돌리면서 CPU가 읽고 쓰는 모든 순간을 보여 줄 수 있어서, 롬 해킹의 절반은 에뮬레이터 안에서 일어납니다.
+  </p>
+  <p>에뮬레이터를 쓰는 일은 크게 세 가지입니다.</p>
+  <ul>
+    <li>
+      <strong>찾기</strong>: 디버거로 "이 글자를 그리는 코드는 어디인가", "이 값을 바꾸는 코드는 누구인가"를 잡습니다.
+    </li>
+    <li>
+      <strong>되풀이해서 확인하기</strong>: 버튼 입력과 스크린샷을 스크립트로 적어 두고, 패치를 고칠 때마다 같은 장면을
+      다시 찍어 비교합니다. 대사 수천 줄을 사람이 다 띄워 볼 수는 없기 때문입니다.
+    </li>
+    <li>
+      <strong>여러 에뮬레이터에서 돌려 보기</strong>: 에뮬레이터마다 실제 기계를 흉내 내는 정확도가 달라서, 한
+      에뮬레이터에서 되는 패치가 다른 데서 멈추기도 합니다.
+    </li>
+  </ul>
+  <p>
+    이 장은 네 한글패치에서 주로 쓴 Mesen 2를 예로 듭니다. 디버거와 Lua 스크립트가 함께 들어 있는 에뮬레이터입니다. 원래
+    저장소는 2025년 중반의 2.1.1을 마지막으로 보관 상태가 되었고, 지금은 MesenCE라는 이름으로 이어서 개발되고 있습니다.
+    이 장의 메뉴 이름과 Lua 함수는 패치를 만들 때 쓴 2.1.1 기준입니다.
+  </p>
+
+  <h2 id="breakpoints">
+    중단점으로 "어디서 읽나" 잡기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    <strong>중단점</strong>(breakpoint)은 "이 주소에 이런 일이 생기면 게임을 멈춰라"라는 표시입니다. 멈추면 디버거가 그
+    순간 실행 중인 명령과 레지스터를 보여 줍니다. 중단점이 걸리는 일은 세 가지입니다.
+  </p>
+  <ul>
+    <li>
+      <strong>실행</strong>: CPU가 그 주소의 명령을 실행하려 할 때. "이 코드가 정말 불리나", "언제 불리나"를 볼 때
+      씁니다.
+    </li>
+    <li>
+      <strong>읽기</strong>: 그 주소의 값을 읽을 때. 대사나 그림이 롬의 어디에 있는지 알 때 "이걸 읽는 코드"를 찾습니다.
+    </li>
+    <li>
+      <strong>쓰기</strong>: 그 주소에 값을 쓸 때. 화면이나 WRAM의 값이 엉뚱하게 바뀔 때 "누가 바꿨나"를 찾습니다.
+    </li>
+  </ul>
+  <p>
+    Mesen 2에서는 주소 하나뿐 아니라 범위를 걸 수 있고, CPU 주소 말고도 롬(파일 오프셋), WRAM, VRAM, CGRAM처럼 메모리
+    종류를 골라 걸 수 있습니다. 예를 들어 "VRAM의 이 글자 칸에 쓸 때"에 거는 것이 가능합니다. 이 기능 덕분에 화면에
+    보이는 것에서 시작해 롬까지 거꾸로 따라갈 수 있습니다.
+  </p>
+  <Figure caption="화면의 글자에서 롬의 대사까지 거꾸로 따라가는 순서. 단계마다 쓰는 중단점이 다릅니다." max={600}>
+    <svg viewBox="0 0 360 300" role="img" aria-labelledby="trace-t trace-d">
+      <title id="trace-t">화면에서 롬까지 거꾸로 따라가기</title>
+      <desc id="trace-d">
+        1. 타일 보기로 화면의 글자가 VRAM의 어느 칸인지 찾는다. 2. 그 VRAM 칸에 쓰기 중단점을 건다. 멈춘 곳은 보통 DMA를
+        시작하는 코드이고, DMA 설정에서 보내는 쪽 주소를 읽는다. 3. 그 주소, 흔히 WRAM의 글자 버퍼에 쓰기 중단점을 건다.
+        멈춘 곳이 글자를 그리는 코드다. 4. 그 코드가 읽는 롬의 대사 바이트에 읽기 중단점을 걸어 대사를 읽는 코드와
+        포인터 표를 찾는다.
+      </desc>
+      <rect class="dg-accent" x="8" y="8" width="344" height="56" rx="8"></rect>
+      <text class="dg-text dg-bold" x="20" y="30">
+        1 화면의 글자
+      </text>
+      <text class="dg-small" x="20" y="50">
+        타일 보기: 이 글자는 VRAM 몇 번 칸인가
+      </text>
+      <rect class="dg-cell" x="8" y="80" width="344" height="56" rx="8"></rect>
+      <text class="dg-text dg-bold" x="20" y="102">
+        2 VRAM 그 칸에 쓰기 중단점
+      </text>
+      <text class="dg-small" x="20" y="122">
+        멈춘 곳 = DMA. 보내는 쪽 주소를 읽는다
+      </text>
+      <rect class="dg-warm" x="8" y="152" width="344" height="56" rx="8"></rect>
+      <text class="dg-text dg-bold" x="20" y="174">
+        3 WRAM 글자 버퍼에 쓰기 중단점
+      </text>
+      <text class="dg-small" x="20" y="194">
+        멈춘 곳 = 글자를 그리는 코드
+      </text>
+      <rect class="dg-cool" x="8" y="224" width="344" height="56" rx="8"></rect>
+      <text class="dg-text dg-bold" x="20" y="246">
+        4 롬의 대사 바이트에 읽기 중단점
+      </text>
+      <text class="dg-small" x="20" y="266">
+        멈춘 곳 = 대사를 읽는 코드, 포인터 표
+      </text>
+      <path class="dg-arrow" d="M330 64V78" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M330 136V150" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M330 208V222" marker-end="url(#dg-arrowhead)"></path>
+    </svg>
+  </Figure>
+  <p>
+    글자를 그대로 VRAM에 올리는 게임이라면 3단계가 없고, 대사가 압축되어 있다면 4단계에서 압축을 푸는 코드를 먼저 만나게
+    됩니다(<a href={`${LZSS}#find`}>9장</a>). 어느 경우든 "결과에서 한 단계씩 원인으로" 거슬러 오른다는 점은 같습니다.
+    단계마다 찾은 주소는 <a href={BANKS}>4장</a>의 방법으로 파일 오프셋으로 바꾸고, <a href={ASSEMBLY}>5장</a>처럼
+    역어셈블해 읽습니다.
+  </p>
+
+  <Deeper title="조건식, 이벤트 뷰어 표시, DMA로 쓴 값 따라가기">
+    <p>
+      중단점에는 조건식을 붙일 수 있습니다. "A 레지스터가 이 대사 번호일 때만", "이 값을 쓸 때만"처럼 좁히면 같은 코드가
+      프레임마다 수십 번 불려도 원하는 한 번에서만 멈춥니다. 조건식이 없으면 대사를 그리는 코드처럼 자주 도는 곳에 건
+      중단점은 매번 멈춰서 쓸 수가 없습니다.
+    </p>
+    <p>
+      멈추지 않고 표시만 하고 싶을 때는 중단점에 「이벤트 뷰어에 표시」를 켭니다. 그러면 게임은 그대로 돌고, 걸린 순간이
+      아래에서 볼 이벤트 뷰어의 그 프레임 위치에 찍힙니다. 한 프레임 안에서 몇 번, 언제 걸리는지 볼 때 편합니다.
+    </p>
+    <p>
+      쓰기 중단점은 CPU의 쓰기만 잡는다는 점도 기억해 둡니다. DMA로 VRAM에 쓰는 것은 VRAM 중단점에 잡히지만, 그때 멈춘
+      위치는 DMA를 시작한 명령(보통 <code>$420B</code>에 쓰는 명령) 근처입니다. 무엇을 보냈는지는 그 직전에 설정한 DMA
+      레지스터(<code>$43x2</code>–<code>$43x4</code>의 보내는 쪽 주소)에서 읽습니다.
+    </p>
+  </Deeper>
+
+  <h2 id="viewers">
+    메모리·그림 보기와 추적 기록 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>중단점 말고도 디버거에는 게임 안을 들여다보는 창이 여럿 있습니다. 롬 해킹에서 자주 쓰는 것만 추립니다.</p>
+  <ul class="strategy-cards">
+    {viewers.map(v => (
+      <li>
+        <p class="strategy-name">{v.name}</p>
+        <p class="strategy-text">{v.text}</p>
+      </li>
+    ))}
+  </ul>
+  <p>
+    VRAM 보기에서 주소를 읽을 때는 <a href={`${GRAPHICS}#vram`}>7장</a>에서 본 것처럼 VRAM 주소가 워드 단위인지 바이트
+    단위인지 먼저 확인합니다. 게임이 레지스터에 적는 값은 워드 주소이고, 메모리 보기는 보통 바이트 위치로 보여 줍니다.
+  </p>
+
+  <h2 id="lua">
+    Lua로 확인을 자동으로 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    디버거는 사람이 한 장면씩 볼 때 좋지만, 같은 확인을 패치를 고칠 때마다 되풀이하려면 자동으로 돌려야 합니다. Mesen
+    2는 작은 프로그래밍 언어 Lua로 쓴 스크립트를 게임과 함께 돌릴 수 있습니다. 스크립트는 "이런 일이 생기면 이 함수를
+    불러 달라"고 등록해 두는 방식으로 씁니다. 이렇게 등록한 함수를 <strong>콜백</strong>이라고 합니다.
+  </p>
+  <ul>
+    <li>
+      <strong>이벤트 콜백</strong>(<code>emu.addEventCallback</code>): 프레임이 끝날 때(<code>endFrame</code>), NMI가 올
+      때, 게임이 버튼을 읽을 때(<code>inputPolled</code>) 같은 순간에 불립니다. 프레임을 세고, 버튼을 누르고, 스크린샷을
+      찍는 일은 여기서 합니다.
+    </li>
+    <li>
+      <strong>메모리 콜백</strong>(<code>emu.addMemoryCallback</code>): 주소 범위를 실행·읽기·쓰기할 때 불립니다.
+      중단점을 멈추지 않고 기록만 하는 판이라고 보면 됩니다. 쓰기 콜백에서 값을 돌려주면 그 값이 대신 기록됩니다.
+    </li>
+  </ul>
+  <p>
+    여기에 메모리 읽기·쓰기(<code>emu.read</code>, <code>emu.write</code>), 스크린샷(<code>emu.takeScreenshot</code>),
+    세이브스테이트(<code>emu.createSavestate</code>, <code>emu.loadSavestate</code>), 레지스터 읽기(
+    <code>emu.getState</code>
+    ), 끝내기(<code>emu.stop</code>)를 엮으면 "세이브스테이트에서 시작해 버튼을 이렇게 누르고, 이 주소를 읽을 때마다
+    기록하고, 이 프레임에서 화면을 찍는다"가 스크립트 하나가 됩니다.
+  </p>
+  <p>
+    Mesen 2를 <code>--testrunner</code>로 실행하면 창 없이 최고 속도로 롬과 스크립트를 돌리고, 스크립트가{' '}
+    <code>emu.stop(코드)</code>를 부르면 그 값을 종료 코드로 남기고 끝납니다. 기본 제한 시간은 100초이고{' '}
+    <code>--timeout=초</code>로 바꿉니다. 스크립트가 파일을 쓰려면 Mesen 2 설정에서 Lua의 파일 접근(AllowIoOsAccess)을
+    켜 두어야 합니다.
+  </p>
+  <p>
+    kr-patch-toolkit에는 네 패치에서 공통으로 쓴 Lua 스크립트가 들어 있습니다. <code>krpatch snes lua</code>가 그 폴더를
+    알려 주고, 스크립트는 환경 변수로 설정을 받습니다.
+  </p>
+  <div class="table-scroll" tabindex="0" role="region" aria-labelledby="probe-caption">
+    <table>
+      <caption id="probe-caption">툴킷의 Mesen 2 스크립트(일부)</caption>
+      <thead>
+        <tr>
+          <th scope="col">파일</th>
+          <th scope="col">하는 일</th>
+        </tr>
+      </thead>
+      <tbody>
+        {probes.map(p => (
+          <tr>
+            <td>
+              <code>{p.file}</code>
+            </td>
+            <td>{p.text}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <Deeper title="Mesen 2 Lua에서 걸려 넘어지기 쉬운 곳">
+    <ul>
+      <li>
+        <strong>버튼은 inputPolled에서 넣습니다.</strong> 프레임 끝에서 <code>emu.setInput</code>을 불러도 게임이 읽는
+        순간과 어긋나면 입력이 들어가지 않습니다. 툴킷의 <code>lib.lua</code>는 누를 버튼을 기억해 두었다가 게임이
+        버튼을 읽는 이벤트에서 넣습니다.
+      </li>
+      <li>
+        <strong>세이브스테이트는 실행 콜백 안에서만 됩니다.</strong> 다른 곳에서 <code>emu.createSavestate</code>를
+        부르면 "주 CPU의 실행 콜백 안에서 불러야 한다"는 오류가 납니다. <code>lib.lua</code>는 할 일을 줄 세워 두고,
+        다음 명령이 실행될 때 한 번만 불리는 실행 콜백을 걸어 처리합니다.
+      </li>
+      <li>
+        <strong>콜백 안의 오류는 조용히 지나갈 수 있습니다.</strong> 각성편 분석 문서는 <code>pcall</code>로 감싸고
+        메모리 종류(<code>emu.memType</code>) 인자를 빠뜨리지 말라고 적어 두었습니다.
+      </li>
+      <li>
+        <strong>Lua로 쓴 세이브 RAM은 저장되지 않습니다.</strong> 이어하기 시험은 세이브 파일을 Mesen 2의 Saves 폴더에
+        직접 복사해 두고 시작했습니다.
+      </li>
+      <li>
+        <strong>
+          zsh에서 <code>WATCH</code>라는 환경 변수는 피합니다.
+        </strong>{' '}
+        zsh가 같은 이름의 셸 변수를 따로 써서, <code>script.lua</code>는 <code>WATCH_WRAM</code>을 씁니다.
+      </li>
+    </ul>
+  </Deeper>
+
+  <h2 id="headless">
+    화면 없이 돌리기: 입력 스크립트 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    Lua 스크립트는 Mesen 2에서만 돕니다. 같은 확인을 다른 에뮬레이터에서도 하려고 툴킷에는 <code>krpatch snes run</code>
+    을 두었습니다. libretro는 여러 에뮬레이터를 같은 함수 모양(한 프레임 돌리기, 메모리 내주기, 치트 넣기 등)으로 감싼
+    규격이고, 그 규격으로 만든 에뮬레이터 파일을 <strong>코어</strong>라고 합니다. <code>krpatch snes run</code>은 코어
+    파일을 직접 불러 화면 없이 한 프레임씩 돌리면서, 입력 스크립트대로 버튼을 누르고 스크린샷과 메모리 덤프를 남깁니다.
+  </p>
+  <p>
+    입력 스크립트는 한 줄에 명령 하나이고, 맨 앞 숫자는 전원을 켠 뒤 몇 번째 프레임인지입니다. 슈퍼 패미컴은 1초에 약
+    60프레임을 그리므로 600은 약 10초 뒤입니다. 툴킷의 Lua 스크립트 <code>script.lua</code>도 같은 파일을 같은 규칙으로
+    읽기 때문에, 스크립트 하나로 모든 에뮬레이터에 같은 입력을 넣을 수 있습니다.
+  </p>
+  <div class="table-scroll" tabindex="0" role="region" aria-labelledby="script-caption">
+    <table class="script-table">
+      <caption id="script-caption">입력 스크립트의 명령</caption>
+      <thead>
+        <tr>
+          <th scope="col">줄</th>
+          <th scope="col">하는 일</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <code>100 a 30</code>
+          </td>
+          <td>
+            100프레임부터 A를 30프레임 동안 누릅니다. 버튼 여럿은 <code>a+b</code>처럼 잇습니다.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>900 tap a 40 2000</code>
+          </td>
+          <td>2000프레임 전까지 40프레임마다 A를 4프레임씩 누릅니다. 대사를 계속 넘길 때 씁니다.</td>
+        </tr>
+        <tr>
+          <td>
+            <code>110 shot</code>
+          </td>
+          <td>
+            110프레임을 마친 화면을 <code>f00110.png</code>로 저장합니다.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>240 dump</code>
+          </td>
+          <td>
+            WRAM과 세이브 RAM을 <code>wram_240.bin</code>, <code>sram_240.bin</code>으로 저장합니다.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>200 poke 0012 001F</code>
+          </td>
+          <td>
+            200프레임 뒤 WRAM <code>$7E:0012</code>부터 2바이트에 16진수 값을 씁니다(리틀 엔디안).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <code>300 end</code>
+          </td>
+          <td>
+            300프레임을 마치면 멈추고 <code>end.png</code>를 남깁니다. 꼭 있어야 합니다.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    <code>#</code>으로 시작하는 줄은 주석이고, 버튼 이름은 대소문자를 가리지 않습니다. end보다 뒤의 프레임에 둔 명령은
+    실행될 수 없으므로 오류입니다. 아래 도구는 툴킷과 같은 규칙으로 스크립트를 읽어 시간표로 펼칩니다.
+  </p>
+
+  <RunScript />
+
+  <p>
+    <code>--watch 7E0010:2</code>를 주면 그 주소의 값이 바뀔 때마다 <code>wram.log</code>에 "프레임 값" 한 줄을
+    남깁니다. 대사 번호나 장면 번호를 감시해 두면 화면을 일일이 보지 않고도 "어느 프레임에 어떤 대사가 떴나"를 글로
+    비교할 수 있습니다. 찍은 스크린샷은 <code>krpatch shotcmp</code>로 비교합니다. 두 폴더를 주면 같은 이름의 PNG끼리
+    짝지어 <code>same</code>이나 다른 픽셀 수와 범위를 출력하고, 하나라도 다르면 1로 끝납니다.
+  </p>
+
+  <Deeper title="프레임을 세는 방법과 WRAM을 내주지 않는 코어">
+    <p>
+      <code>krpatch snes run</code>은 프레임 0에서 시작해 "그 프레임에 누를 버튼을 정하고, 한 프레임 돌리고, 프레임 수를
+      1 올린 뒤, 그 프레임 번호의 poke·덤프·스크린샷을 처리"하기를 end까지 되풀이합니다. 그래서 <code>100 a 30</code>의
+      A는 101번째로 돌리는 프레임부터 게임에 보이고, <code>shot</code>·<code>dump</code>·<code>poke</code>를 0이나 음수
+      프레임에 두면 실행되지 않습니다.
+    </p>
+    <p>
+      poke는 코어가 WRAM 포인터(<code>retro_get_memory_data</code>)를 내주면 그 자리에 바로 씁니다. bsnes와 Supafaust
+      코어는 WRAM을 내주지 않으므로, 툴킷은 같은 값을 Pro Action Replay 치트 코드(예: <code>7E00121F</code>,{' '}
+      <code>7E001300</code>)로 바꿔 <code>--cheat-hold</code> 프레임(기본 40) 동안 걸어 둡니다. 치트는 그 주소를 읽을 때
+      값을 바꿔치기하는 방식이라, 게임이 그동안 그 값을 읽어야 효과가 있습니다. WRAM을 내주지 않는 코어에서는{' '}
+      <code>--watch</code>와 덤프도 남지 않습니다.
+    </p>
+    <p>
+      코어는 프로세스 안에 전역 상태를 갖고 있어서 한 프로세스에서 스크립트 하나만 돌립니다. 여러 시나리오는 셸
+      스크립트로 하나씩 돌리고, 실행마다 결과를 한 줄씩 모읍니다. 툴킷의 <code>examples/snes/run_all.sh</code>와 각
+      패치의 <code>compat/run_all.sh</code>가 그 모양입니다.
+    </p>
+  </Deeper>
+
+  <h2 id="cores">
+    여러 에뮬레이터에서 같은 입력 돌리기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    에뮬레이터는 실제 기계를 얼마나 꼼꼼히 흉내 내느냐가 저마다 다릅니다. bsnes는 libretro 문서가 "정확하고 충실한
+    에뮬레이션"을 목표로 한다고 소개하는 에뮬레이터이고, Snes9x는 오래전부터 많은 기기와 프런트엔드에 들어가 널리 쓰이는
+    에뮬레이터입니다. Mesen 2는 정확도와 함께 디버거가 강점입니다. 네 패치는 이 셋에 bsnes-hd beta, snes9x2010, Beetle
+    Supafaust 코어를 더해 같은 입력을 넣었습니다. 사람들이 실제로 패치를 돌릴 에뮬레이터를 고루 덮으려는 것입니다.
+  </p>
+  <p>
+    정확도 차이가 실제로 어떻게 드러나는지는 이 장을 쓰며 만든 작은 시험 롬에서 바로 나왔습니다. 이 롬은 NMI에서
+    컨트롤러 값을 읽어, A가 눌렸으면 배경을 초록으로, 아니면 WRAM <code>$7E:0012</code>의 색으로 칠합니다. 처음 만든
+    판은 snes9x와 bsnes 코어에서 A를 누르는 동안 초록이 나왔지만, Mesen 2에서는 끝까지 파랑이었습니다.
+  </p>
+  <p>
+    원인은 롬 쪽에 있었습니다. 슈퍼 패미컴은 화면을 다 그리고 수직 귀선 기간이 시작되면 컨트롤러 16비트를 하드웨어가
+    자동으로 읽어 <code>$4218</code>에 넣는데, 이 읽기는 수직 귀선이 시작되고 조금 뒤에 시작해 4224마스터 사이클 동안
+    이어집니다. 읽는 동안은 <code>$4212</code>의 비트 0이 1입니다. 시험 롬은 NMI 첫머리에서 "비트 0이 0이 될 때까지"만
+    기다렸는데, NMI가 너무 일러서 자동 읽기가 아직 시작도 안 한 순간이었습니다. 그래서 곧바로 <code>$4218</code>을
+    읽었고, 그때는 하드웨어가 레지스터를 막 비우고 B 버튼부터 한 비트씩 채우는 중이라 아홉째로 들어오는 A는 아직
+    없었습니다. Mesen 2는 이 과정을 실제 기계처럼 흉내 내고, 두 코어는 값을 한순간에 채워 넣어 문제가 드러나지
+    않았습니다. "비트 0이 1이 될 때까지 기다렸다가, 다시 0이 될 때까지 기다린다"로 고치자 Mesen 2에서도 초록이
+    나왔습니다.
+  </p>
+  <p>
+    이렇게 덜 정확한 에뮬레이터에서만 시험하면 실제 기계에서 생길 버그를 놓칩니다. 반대로 정확한 에뮬레이터 하나만 보면
+    많은 사람이 쓰는 에뮬레이터에서만 생기는 문제를 놓칩니다. 그래서 정확도가 다른 여러 에뮬레이터에 같은 입력을 넣고
+    결과를 나란히 놓습니다. 고친 시험 롬에 같은 스크립트를 넣은 결과입니다.
+  </p>
+  <div class="table-scroll" tabindex="0" role="region" aria-labelledby="cores-caption">
+    <table>
+      <caption id="cores-caption">고친 시험 롬, 같은 입력 스크립트</caption>
+      <thead>
+        <tr>
+          <th scope="col">에뮬레이터</th>
+          <th scope="col">결과</th>
+        </tr>
+      </thead>
+      <tbody>
+        {cores.map(c => (
+          <tr>
+            <th scope="row">{c.name}</th>
+            <td>{c.result}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    표의 차이는 대부분 롬과 상관없는 에뮬레이터 쪽 사정입니다. 이런 결과를 롬의 문제와 가르려면{' '}
+    <strong>원본 롬도 같은 입력으로 돌려 보는 것</strong>이 가장 확실합니다. 네 패치의 분석 문서가 "일본판 원본도
+    같음"을 꼭 적어 둔 이유입니다. 또 에뮬레이터마다 같은 일이 몇 프레임씩 어긋나므로, 프레임 번호까지 맞추기보다 나온
+    장면과 대사의 순서를 비교합니다.
+  </p>
+
+  <h2 id="hardware">
+    실기에서만 알 수 있는 것 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    에뮬레이터를 여럿 돌려도 실제 슈퍼 패미컴(실기)과 같다는 보장은 없습니다. 특히 아래는 에뮬레이터마다 다르게
+    처리하거나 실기에서도 정해지지 않은 부분입니다.
+  </p>
+  <ul>
+    <li>
+      <strong>켤 때 RAM 값</strong>: 실기의 WRAM은 켤 때 정해진 값이 없습니다. 시험 롬의 덤프를 보면 snes9x는 쓰지 않은
+      자리가 모두 <code>55</code>였고, Mesen 2는 무작위 값이었습니다(Mesen 2의 기본 설정이 무작위입니다). 초기화하지
+      않은 WRAM을 읽는 코드는 에뮬레이터에 따라 다르게 돌 수 있습니다. Mesen 2 디버거는 초기화하지 않은 메모리를 읽으면
+      로그에 경고를 남기고, 그런 읽기에서 멈추게 할 수도 있습니다.
+    </li>
+    <li>
+      <strong>오픈 버스</strong>: 아무것도 연결되지 않은 주소를 읽으면 실기에서는 직전에 버스에 실렸던 값이 나옵니다.
+      에뮬레이터가 이것까지 흉내 내는지는 저마다 다릅니다.
+    </li>
+    <li>
+      <strong>타이밍</strong>: 수직 귀선 안에 VRAM 쓰기가 끝나는지, 자동 컨트롤러 읽기와 겹치지 않는지는 사이클 단위의
+      문제입니다. 위 시험 롬처럼 정확한 에뮬레이터는 잡아 주지만, 모든 경우를 실기와 똑같이 맞춘다는 보장은 없습니다.
+    </li>
+    <li>
+      <strong>플래시 카트리지</strong>: 롬 파일을 SD 카드에서 읽어 실기에서 돌리는 카트리지는 헤더와 파일 크기로 매핑과
+      세이브 RAM 크기를 정합니다(<a href={`${EXPANSION}#compat`}>11장</a>). 늘린 롬이나 세이브 크기를 바꾼 패치는 여기서
+      따로 확인해야 합니다.
+    </li>
+  </ul>
+  <p>
+    네 패치는 모두 실기에서 시험하지 않았고, 분석 문서에 그렇게 적어 두었습니다. 확인한 범위와 확인하지 못한 범위를
+    나란히 적어 두면, 실기를 가진 사람이 무엇을 보면 되는지 알 수 있습니다.
+  </p>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>제절초: 2회차에서 멈추는 버그를 다시 일으키기</h3>
+  <p>
+    <a href={`${OTOGIRISOU_PATCH.path}/#making-lap2`}>제절초</a> v1.0은 2회차부터 뽑힐 수 있는 2번 시나리오에서 화면이
+    글자로 가득 찬 채 멈췄습니다. 2회차까지 직접 플레이하지 않고 버그를 다시 일으키려고, 시나리오를 고르는 코드(
+    <code>$02:A569</code>)가 실행되는 순간 세 세이브 슬롯의 회차 수를 원하는 값으로 바꿔 쓰는 Lua 스크립트(
+    <code>lua/lap.lua</code>)를 만들었습니다. 같은 스크립트가 <code>$02:A5EF</code>에서 A 레지스터를 읽어 어느
+    시나리오가 뽑혔는지 기록합니다. 회차를 1, 2, 3으로 바꿔 가며 세 시나리오가 모두 정상으로 시작하는 것을 확인했습니다.
+  </p>
+  <p>
+    멈춘 원인을 찾는 순서도 분석 문서에 남아 있습니다. 프레임마다 CPU가 실행 중인 주소(PC)를 기록해 어디서 멈췄는지
+    찾고, 멈춘 코드가 기다리는 메모리 값에 쓰기 감시를 걸어 누가 그 값을 바꾸는지 보고, 정상으로 진행하는 경우의 같은
+    기록과 나란히 비교합니다. v1.2에서는 쓰기 감시를 51번, 12,000프레임씩 돌려 패치가 새로 쓰는 WRAM 자리를 게임이 쓰지
+    않는지도 확인했습니다. 감시에 걸리지 않은 장면이 그 자리를 쓸 가능성은 남아 있다고 함께 적어 두었습니다.
+  </p>
+  <h3>슈퍼 마리오 RPG: 보고 싶은 화면을 바로 만들기</h3>
+  <p>
+    <a href={`${SMRPG_PATCH.path}/#making-testing`}>슈퍼 마리오 RPG</a>는 바뀐 아이템 이름과 메뉴를 확인하려면 그
+    장면까지 가야 합니다. 그래서 인벤토리(<code>$7F:F882</code>)에 아이템을 직접 넣고, 경험치를 레벨업 직전으로 바꾸고,
+    방 번호(
+    <code>$00:3030</code>)와 전투 편성(<code>$7E:FA0E</code>)은 게임이 쓰려는 순간 Mesen 2의 쓰기 콜백에서 값을
+    바꿔치기했습니다. 미리 써 두면 게임이 덮어쓰기 때문입니다. 원하는 대사를 상점 주인 자리에 띄우는 시험용 롬도 따로
+    만들었습니다. 이름 표기를 「셸」에서 「쉘」로, 메뉴 글자 「힐」·「휠」을 고친 뒤에는 bsnes와 Snes9x에서 새 게임과
+    이어하기를 다시 돌려 화면 84장이 앞선 결과와 같은 것을 확인했습니다.
+  </p>
+  <h3>돌격편: 대사 번호를 읽는 순간을 감시하기, 창 폭 시험</h3>
+  <p>
+    <a href={`${TOTSUGEKI_PATCH.path}/#making-testing`}>돌격편</a>은 대사를 띄울 때마다 대사 번호로 창 정보(
+    <code>$8E:C9BA</code> + 번호×2)를 읽습니다. 이 범위에 읽기 콜백을 걸면 어떤 대사가 몇 번째로 나왔는지 기록됩니다.
+    시나리오 256개를 8000프레임씩 돌려 일본판과 한글판의 대사 번호 순서를 비교했고, 순서가 다르거나 먼저 멈춘 시나리오는
+    없었습니다. 한 줄에 들어가는 글자 수는 <code>lua/wintest.lua</code>로 시험했습니다. 시험용 줄을 넣은 롬을 돌리면서,
+    창 크기를 정하는 코드(<code>$81:ADDD</code>), 글자 오른쪽 끝을 비교하는 코드(<code>$B7:984A</code>), 줄을 넘기는
+    코드(<code>$B7:9851</code>)가 실행될 때마다 값을 기록해 어느 글자에서 줄이 넘어가는지 봅니다.
+  </p>
+  <h3>각성편: 디버그 메뉴로 장면 376개 돌리기</h3>
+  <p>
+    <a href={`${KAKUSEI_PATCH.path}/#making-testing`}>각성편</a>은 숨겨진 디버그 메뉴를 켠 롬에서 430프레임째 장면 번호
+    칸 <code>$7E:029C</code>에 번호를 써 넣어 원하는 장면을 바로 시작했습니다. 위 도구의 「각성편 나레이션 장면」이 그
+    스크립트입니다. 장면 376개를 12,000프레임씩 돌려 대사 번호가 뜬 순서 전체를 일본판·이전 판과 비교했고, 달라진 장면은
+    하나하나 원인을 적었습니다. 대부분 대사 길이가 달라 버튼이 눌리는 순간이 바뀌고, 그 때문에 전투 결과가 갈린
+    경우였습니다. 같은 입력 스크립트를 Mesen 2와 libretro 코어 다섯에 넣었을 때, WRAM을 내주지 않는 bsnes는 치트로 장면
+    번호를 넣어 판정했고, 치트도 먹지 않는 bsnes-hd beta와 치트를 넣으면 종료하는 Beetle Supafaust는 디버그 장면을
+    판정하지 못했다고 적었습니다. 위 시험 롬에서 본 것과 같은 현상입니다.
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    롬 파일 없이 따라 할 수 있도록, 위에서 쓴 시험 롬을 만드는 Python 스크립트를 그대로 싣습니다. 128KB LoROM이고,
+    코드는 <a href={ASSEMBLY}>5장</a>의 명령만 씁니다. 리셋에서 화면을 켜고 NMI와 자동 컨트롤러 읽기를 켠 뒤 기다리고,
+    NMI마다 <code>$7E:0010</code>의 프레임 수를 1 올리고 배경색을 칠합니다.
+  </p>
+  <pre tabindex="0"><code>{`# mkrom.py: 128KB LoROM 시험 롬. 배경색은 $7E:0012, A를 누르는 동안은 초록, $7E:0010은 NMI 수
+import sys
+
+rom = bytearray(b"\\xff" * 0x20000)
+reset = bytes.fromhex(
+    "78 18 FB"          # SEI / CLC / XCE (네이티브 모드)
+    "C2 30"             # REP #$30
+    "A2 FF 1F 9A"       # LDX #$1FFF / TXS
+    "64 10"             # STZ $10
+    "A9 00 7C 85 12"    # LDA #$7C00 / STA $12 (파랑)
+    "E2 20"             # SEP #$20
+    "A9 80 8D 00 21"    # LDA #$80 / STA $2100 (화면 끄기)
+    "9C 21 21"          # STZ $2121
+    "A9 00 8D 22 21"    # LDA #$00 / STA $2122
+    "A9 7C 8D 22 21"    # LDA #$7C / STA $2122
+    "A9 0F 8D 00 21"    # LDA #$0F / STA $2100 (화면 켜기)
+    "A9 81 8D 00 42"    # LDA #$81 / STA $4200 (NMI, 자동 컨트롤러 읽기)
+    "CB 80 FD"          # loop: WAI / BRA loop
+)
+nmi = bytes.fromhex(
+    "C2 30 48"          # REP #$30 / PHA
+    "E6 10"             # INC $10
+    "E2 20"             # SEP #$20
+    "AD 12 42 29 01 F0 F9"  # 자동 읽기가 시작될 때까지 기다림
+    "AD 12 42 29 01 D0 F9"  # 자동 읽기가 끝날 때까지 기다림
+    "C2 20"             # REP #$20
+    "AD 18 42 29 80 00" # LDA $4218 / AND #$0080 (A 버튼)
+    "F0 05"             # BEQ noA
+    "A9 E0 03 80 02"    # LDA #$03E0 (초록) / BRA set
+    "A5 12"             # noA: LDA $12
+    "E2 20"             # set: SEP #$20
+    "9C 21 21 8D 22 21 EB 8D 22 21"  # STZ $2121 / STA $2122 / XBA / STA $2122
+    "AD 10 42"          # LDA $4210
+    "C2 20 68 40"       # REP #$20 / PLA / RTI
+)
+rom[0:len(reset)] = reset
+rom[0x40:0x40 + len(nmi)] = nmi
+rom[0x7F] = 0x40        # 쓰지 않는 벡터가 가리킬 RTI
+rom[0x7FC0:0x7FD5] = b"KRPATCH GUIDE TEST   "
+rom[0x7FD5:0x7FE0] = bytes([0x20, 0x00, 0x07, 0x00, 0x00, 0x33, 0x00, 0xFF, 0xFF, 0x00, 0x00])
+w = lambda off, v: rom.__setitem__(slice(off, off + 2), v.to_bytes(2, "little"))
+for off in (0x7FE4, 0x7FE6, 0x7FE8, 0x7FEE, 0x7FF4, 0x7FF8, 0x7FFA, 0x7FFE):
+    w(off, 0x807F)
+w(0x7FEA, 0x8040)       # 네이티브 모드 NMI
+w(0x7FFC, 0x8000)       # 리셋
+open(sys.argv[1], "wb").write(rom)`}</code></pre>
+  <p>
+    롬을 만들고 체크섬을 맞춘 뒤, 위 도구의 「이 장의 시험 롬」 스크립트를 <code>demo.txt</code>로 저장해 snes9x
+    코어에서 돌립니다. 코어 파일은 RetroArch 등에서 받은 libretro 코어입니다(macOS는 <code>.dylib</code>, Linux는{' '}
+    <code>.so</code>, Windows는 <code>.dll</code>).
+  </p>
+  <pre tabindex="0"><code>$ python3 mkrom.py test.sfc
+$ krpatch snes checksum test.sfc --fix
+checksum 9D17
+$ krpatch snes run cores/snes9x_libretro.dylib test.sfc out/snes9x demo.txt --watch 7E0010:2
+OK 300
+Map_LoROMMap
+$ ls out/snes9x
+end.png  f00060.png  f00110.png  f00202.png  sram_240.bin  wram_240.bin  wram.log
+$ head -3 out/snes9x/wram.log
+1 0000
+2 0001
+3 0002
+$ tail -1 out/snes9x/wram.log
+300 012B</code></pre>
+  <p>
+    <code>Map_LoROMMap</code>은 snes9x 코어가 스스로 찍는 줄입니다. <code>wram.log</code>는 NMI 수가 프레임마다 1씩
+    늘어나는 것을 보여 줍니다. 같은 스크립트를 bsnes 코어와 Mesen 2에도 넣고 스크린샷을 비교합니다. Mesen 2에는 툴킷의{' '}
+    <code>script.lua</code>를 씁니다. 경로는 절대 경로로 줍니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch snes run cores/bsnes_libretro.dylib test.sfc out/bsnes demo.txt --watch 7E0010:2
+OK 300
+$ krpatch shotcmp out/snes9x out/bsnes
+end.png: same
+f00060.png: same
+f00110.png: same
+f00202.png: same
+$ mkdir -p out/mesen2
+$ LIBDIR=$(krpatch snes lua) SCRIPT=$PWD/demo.txt SHOT_DIR=$PWD/out/mesen2 WATCH_WRAM=7E0010:2 \
+    Mesen --testrunner $PWD/test.sfc $(krpatch snes lua)/script.lua
+$ krpatch shotcmp out/snes9x out/mesen2
+end.png: same
+f00060.png: same
+f00110.png: same
+f00202.png: diff px=57344 bbox=0,0,256,224</code></pre>
+  <p>
+    bsnes 코어의 <code>wram.log</code>는 비어 있고 덤프도 없지만, poke는 치트로 들어가 화면은 snes9x와 같습니다. Mesen
+    2에서는 202프레임 화면 전체(256×224 = 57,344픽셀)가 다릅니다. 앞에서 본 대로 poke가 화면에 늦게 나와 아직 파랑이기
+    때문이고, 끝 화면은 같습니다. 화면 높이가 다른 bsnes-hd beta는 <code>--box</code>로 같은 범위만 비교합니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch snes run cores/bsnes_hd_beta_libretro.dylib test.sfc out/bsnes-hd demo.txt
+OK 300
+$ krpatch shotcmp out/snes9x out/bsnes-hd
+end.png: size (256, 224) != (256, 216)
+f00060.png: size (256, 224) != (256, 216)
+f00110.png: size (256, 224) != (256, 216)
+f00202.png: size (256, 224) != (256, 216)
+$ krpatch shotcmp out/snes9x/f00110.png out/bsnes-hd/f00110.png --box 0,0,256,216
+f00110.png: same
+$ krpatch shotcmp out/snes9x/f00202.png out/bsnes-hd/f00202.png --box 0,0,256,216
+f00202.png: diff px=55296 bbox=0,0,256,216</code></pre>
+  <p>
+    A를 누른 110프레임은 같고, poke가 들어가야 할 202프레임만 다릅니다. bsnes-hd beta가 치트를 받지 않아 파랑으로 남은
+    것입니다. 덤프끼리는 <code>krpatch diff</code>로 비교합니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch diff out/snes9x/wram_240.bin out/mesen2/wram_240.bin
+000000-01FFFF 131072
+$ xxd -s 0x10 -l 4 out/snes9x/wram_240.bin
+00000010: ef00 1f00                                ....
+$ xxd -s 0x10 -l 4 out/mesen2/wram_240.bin
+00000010: ef00 1f00                                ....</code></pre>
+  <p>
+    다른 범위가 WRAM 128KB 전체로 나오지만, 롬이 쓰는 4바이트(<code>$0010</code>–<code>$0013</code>)는 둘 다{' '}
+    <code>EF 00 1F 00</code>(NMI 239번, 색 <code>$001F</code>)으로 같습니다. 나머지는 켤 때의 RAM 값 차이입니다.
+    스크립트를 틀리게 적으면 툴킷은 실행 전에 거부하고 2로 끝납니다. 위 도구의 「틀린 예: end 뒤의 명령」을{' '}
+    <code>bad.txt</code>로 저장해 넣은 결과입니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch snes run cores/snes9x_libretro.dylib test.sfc out/x bad.txt
+krpatch: error: line 2: frame is after 'end' at frame 300</code></pre>
+  <p>
+    명령마다 자세한 설명은 툴킷 README의{' '}
+    <a href={`${TOOLKIT_README_KO}#${encodeURIComponent('snes-run-헤드리스-libretro-실행기')}`}>snes run</a> 절에
+    있습니다. 여기서 만든 롬에 일부러 버그를 다시 넣어 보는 것도 좋은 연습입니다. 첫째 대기 줄(<code>F0 F9</code>로
+    끝나는 줄)을 지우고 다시 만들면, snes9x에서는 초록이 나오고 Mesen 2에서는 나오지 않는 것을 직접 볼 수 있습니다.
+    디버거의 이벤트 뷰어에서 <code>$4218</code>을 읽는 순간과 자동 읽기 구간을 견주어 보세요.
+  </p>
+  <p class="muted">
+    이 장의 출력은 kr-patch-toolkit 0.1.0, Mesen 2.1.1, 네 패치의 <code>compat/cores/</code>에 있던 libretro 코어로
+    macOS에서 돌린 결과입니다. 끝으로 되돌아보면 <a href={TEXT}>8장</a>의 대사 구조도, <a href={HOOKING}>6장</a>의
+    후킹도 이 장의 도구로 확인한 것입니다.
+  </p>
+</GuideChapter>
+
+<style>
+  .script-table td:first-child code {
+    white-space: nowrap;
+  }
+</style>

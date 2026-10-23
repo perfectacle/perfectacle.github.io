@@ -1,0 +1,536 @@
+---
+import {
+  DEFAULT_SAMPLE,
+  KIND_LABEL,
+  LANES,
+  MAX_SCRIPT,
+  SCRIPT_SAMPLES,
+  describeCommand,
+  markStyle,
+  marks,
+  staticRead,
+  summary,
+} from './run-script-view.ts';
+
+// Without scripts the widget shows the first sample already read: summary, timeline and one line per command.
+const script = staticRead();
+const list = marks(script);
+const lines = DEFAULT_SAMPLE.text.split('\n');
+const textOf = (line: number) => (lines[line - 1] ?? '').trim();
+---
+
+<section class="widget run-script" data-run-script aria-labelledby="rs-title">
+  <h3 class="widget-title" id="rs-title">
+    입력 스크립트 읽어 보기
+  </h3>
+  <p class="widget-help" id="rs-help">
+    <code>krpatch snes run</code>이 읽는 입력 스크립트를 툴킷과 같은 규칙으로 읽어, 어느 프레임에 무엇을 하는지 보여
+    줍니다.{' '}
+    <span class="live-only">
+      예를 고르거나 스크립트를 직접 고쳐 보세요. 틀린 줄이 있으면 툴킷이 내는 오류를 그대로 보여 줍니다. 아래 슬라이더로
+      프레임을 옮기면 그 프레임에 눌린 버튼이 나옵니다.
+    </span>
+  </p>
+
+  <div class="rs-controls live-only">
+    <fieldset>
+      <legend>예</legend>
+      {SCRIPT_SAMPLES.map((s, i) => (
+        <label>
+          <input type="radio" name="rs-sample" value={s.id} checked={i === 0} /> {s.label}
+        </label>
+      ))}
+    </fieldset>
+    <label for="rs-text" class="rs-label">
+      스크립트
+    </label>
+    <textarea
+      id="rs-text"
+      rows="9"
+      spellcheck="false"
+      autocomplete="off"
+      autocapitalize="off"
+      maxlength={MAX_SCRIPT}
+      aria-describedby="rs-help rs-error"
+      data-text
+    >{DEFAULT_SAMPLE.text}</textarea>
+  </div>
+
+  <p class="rs-note" data-note>
+    {DEFAULT_SAMPLE.note}
+  </p>
+  <pre class="static-only rs-static-text"><code>{DEFAULT_SAMPLE.text}</code></pre>
+
+  <div class="rs-error" id="rs-error" role="alert" data-error hidden></div>
+
+  <div data-result>
+    <p class="rs-summary" data-summary>
+      {summary(script)}
+    </p>
+
+    <div class="rs-timeline" data-timeline role="img" aria-label={`프레임 시간표. ${summary(script)}`}>
+      <p class="rs-axis" aria-hidden="true">
+        <span>0</span>
+        <span data-axis-mid>{Math.round(script.end / 2).toLocaleString('ko-KR')}</span>
+        <span data-axis-end>{script.end.toLocaleString('ko-KR')}프레임 end</span>
+      </p>
+      {LANES.map(lane => (
+        <div class={`rs-lane is-${lane.id}`} data-lane={lane.id}>
+          <p class="rs-lane-title">{lane.label}</p>
+          <div class="rs-track">
+            {list
+              .filter(m => lane.kinds.includes(m.kind))
+              .map(m => (
+                <span class={`rs-mark is-${m.kind}`} style={markStyle(m)} title={m.label} data-line={m.line} />
+              ))}
+            <span class="rs-cursor live-only" data-cursor />
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="rs-frame live-only">
+      <label for="rs-frame">프레임</label>
+      <input id="rs-frame" type="range" min="0" max={script.end} value="110" step="1" data-frame />
+      <output for="rs-frame" class="rs-frame-out" data-frame-out></output>
+    </div>
+
+    <p class="rs-sub" id="rs-lines-title">
+      줄마다 하는 일
+    </p>
+    <div class="rs-lines-wrap" tabindex="0" role="region" aria-labelledby="rs-lines-title">
+      <ol class="rs-lines" data-lines>
+        {script.commands.map(c => (
+          <li class={`is-${c.kind}`}>
+            <span class="rs-ln">{c.line}줄</span>
+            <code>{textOf(c.line)}</code>
+            <span class="rs-kind">{KIND_LABEL[c.kind]}</span>
+            <span class="rs-desc">{describeCommand(c, script)}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { heldAt } from '../../lib/run-script.ts';
+  import {
+    KIND_LABEL,
+    LANES,
+    MAX_SCRIPT,
+    SCRIPT_SAMPLES,
+    describeCommand,
+    explainError,
+    frameReport,
+    markStyle,
+    marks,
+    readScript,
+    summary,
+  } from './run-script-view.ts';
+  import type { RunScript } from '../../lib/run-script.ts';
+
+  const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-run-script]')) {
+    const $ = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel);
+    const text = $<HTMLTextAreaElement>('[data-text]');
+    const note = $('[data-note]');
+    const error = $('[data-error]');
+    const result = $('[data-result]');
+    const linesList = $('[data-lines]');
+    const frame = $<HTMLInputElement>('[data-frame]');
+    const frameOut = $('[data-frame-out]');
+    const live = $('[data-live]');
+    let current: RunScript | undefined;
+    let announce: ReturnType<typeof setTimeout> | undefined;
+
+    const say = (msg: string, delay = 0) => {
+      clearTimeout(announce);
+      announce = setTimeout(() => {
+        if (live) live.textContent = msg;
+      }, delay);
+    };
+
+    const showFrame = (speak: boolean) => {
+      if (!current || !frame) return;
+      const f = Number(frame.value);
+      const report = frameReport(current, f, heldAt(current, f));
+      if (frameOut) frameOut.textContent = report;
+      const pct = current.end > 0 ? Math.min(100, (f / current.end) * 100) : 0;
+      root.querySelectorAll<HTMLElement>('[data-cursor]').forEach(c => (c.style.left = `${pct}%`));
+      if (speak) say(report, 400);
+    };
+
+    const render = (source: string) => {
+      const raw = source.split(/\r\n|\r|\n/);
+      if (source.length > MAX_SCRIPT) {
+        current = undefined;
+        if (error) {
+          error.hidden = false;
+          error.replaceChildren(el('p', '', `이 페이지는 ${MAX_SCRIPT.toLocaleString('ko-KR')}자까지 읽습니다.`));
+        }
+        if (result) result.hidden = true;
+        return;
+      }
+      const r = readScript(source);
+      text?.setAttribute('aria-invalid', r.ok ? 'false' : 'true');
+      if (!r.ok) {
+        current = undefined;
+        if (result) result.hidden = true;
+        if (error) {
+          error.hidden = false;
+          const shown = r.error.line ? raw[r.error.line - 1] : undefined;
+          const parts = [el('p', 'rs-error-ko', explainError(r.error))];
+          if (shown !== undefined) {
+            const p = el('p', 'rs-error-line');
+            p.append(el('span', 'rs-ln', `${r.error.line}줄`), el('code', '', shown.trim() || '(빈 줄)'));
+            parts.push(p);
+          }
+          const tool = el('p', 'rs-error-tool');
+          tool.append(el('span', '', '툴킷의 오류: '), el('code', '', `krpatch: error: ${r.error.message}`));
+          parts.push(tool);
+          error.replaceChildren(...parts);
+        }
+        say(explainError(r.error), 600);
+        return;
+      }
+      const sc = r.script;
+      current = sc;
+      if (error) {
+        error.hidden = true;
+        error.replaceChildren();
+      }
+      if (result) result.hidden = false;
+      const sum = summary(sc);
+      const summaryEl = $('[data-summary]');
+      if (summaryEl) summaryEl.textContent = sum;
+      $('[data-timeline]')?.setAttribute('aria-label', `프레임 시간표. ${sum}`);
+      const mid = $('[data-axis-mid]');
+      if (mid) mid.textContent = Math.round(sc.end / 2).toLocaleString('ko-KR');
+      const endLabel = $('[data-axis-end]');
+      if (endLabel) endLabel.textContent = `${sc.end.toLocaleString('ko-KR')}프레임 end`;
+
+      const list = marks(sc);
+      for (const lane of LANES) {
+        const track = $(`[data-lane="${lane.id}"] .rs-track`);
+        if (!track) continue;
+        const cursor = track.querySelector('[data-cursor]');
+        track.replaceChildren(
+          ...list
+            .filter(m => lane.kinds.includes(m.kind))
+            .map(m => {
+              const s = el('span', `rs-mark is-${m.kind}`);
+              s.setAttribute('style', markStyle(m));
+              s.title = m.label;
+              s.dataset['line'] = String(m.line);
+              return s;
+            }),
+          ...(cursor ? [cursor] : []),
+        );
+      }
+
+      linesList?.replaceChildren(
+        ...sc.commands.map(c => {
+          const li = el('li', `is-${c.kind}`);
+          li.append(
+            el('span', 'rs-ln', `${c.line}줄`),
+            el('code', '', (raw[c.line - 1] ?? '').trim()),
+            el('span', 'rs-kind', KIND_LABEL[c.kind]),
+            el('span', 'rs-desc', describeCommand(c, sc)),
+          );
+          return li;
+        }),
+      );
+      if (frame) {
+        frame.max = String(sc.end);
+        if (Number(frame.value) > sc.end) frame.value = String(sc.end);
+      }
+      showFrame(false);
+      say(sum, 600);
+    };
+
+    let typing: ReturnType<typeof setTimeout> | undefined;
+    text?.addEventListener('input', () => {
+      root.querySelectorAll<HTMLInputElement>('input[name="rs-sample"]').forEach(r => (r.checked = false));
+      if (note) note.textContent = '직접 고친 스크립트입니다.';
+      clearTimeout(typing);
+      typing = setTimeout(() => render(text.value), 150);
+    });
+    root.querySelectorAll<HTMLInputElement>('input[name="rs-sample"]').forEach(radio =>
+      radio.addEventListener('change', () => {
+        const s = SCRIPT_SAMPLES.find(x => x.id === radio.value);
+        if (!s || !text) return;
+        text.value = s.text;
+        if (note) note.textContent = s.note;
+        render(s.text);
+      }),
+    );
+    frame?.addEventListener('input', () => showFrame(true));
+
+    if (text) render(text.value);
+    root.classList.add('is-live');
+  }
+</script>
+
+<style>
+  .rs-controls {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .rs-controls fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 14px;
+    align-items: center;
+    margin: 0 0 4px;
+    padding: 0;
+    border: 0;
+  }
+  .rs-controls legend {
+    float: left;
+    margin-right: 10px;
+    color: var(--fg-muted);
+  }
+  .rs-controls fieldset label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    min-height: 44px;
+  }
+  .rs-label {
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .rs-controls textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 10em;
+    padding: 8px 10px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--fg);
+    font: 0.9rem/1.5 var(--font-mono);
+    resize: vertical;
+  }
+  .rs-controls textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .rs-controls textarea[aria-invalid='true'] {
+    border-color: #c0392b;
+  }
+  :root[data-theme='dark'] .rs-controls textarea[aria-invalid='true'] {
+    border-color: #ff8f80;
+  }
+  .rs-note {
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+  }
+  .rs-static-text {
+    margin: 0 0 12px;
+  }
+  .rs-error {
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    border: 1.5px solid #c0392b;
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 0.92rem;
+  }
+  :root[data-theme='dark'] .rs-error {
+    border-color: #ff8f80;
+  }
+  .rs-error :global(p) {
+    margin: 0;
+  }
+  .rs-error :global(p + p) {
+    margin-top: 6px;
+  }
+  .rs-error :global(code) {
+    overflow-wrap: anywhere;
+  }
+  .rs-summary {
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  .rs-timeline {
+    padding: 8px 0 4px;
+  }
+  .rs-axis {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 4px;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+  .rs-lane + .rs-lane {
+    margin-top: 6px;
+  }
+  .rs-lane-title {
+    margin: 0 0 2px;
+    color: var(--fg-muted);
+    font-size: 0.78rem;
+  }
+  .rs-track {
+    position: relative;
+    height: 22px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .rs-track :global(.rs-mark) {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    min-width: 3px;
+    margin-left: -1px;
+    border-radius: 2px;
+  }
+  .is-input .rs-track :global(.rs-mark) {
+    border: 1.5px solid var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .is-input .rs-track :global(.rs-mark.is-tap) {
+    border-style: dashed;
+    background: linear-gradient(to right, var(--dg-cool) 0 max(1.5px, var(--tick, 10%)), transparent 0) 0 0 /
+      var(--pitch, 4%) 100% repeat-x;
+  }
+  .is-output .rs-track :global(.rs-mark) {
+    width: 3px !important;
+    background: var(--dg-accent);
+  }
+  .is-output .rs-track :global(.rs-mark.is-dump) {
+    width: 7px !important;
+    margin-left: -3px;
+    border: 2px solid var(--dg-accent);
+    background: var(--dg-accent-soft);
+  }
+  .is-poke .rs-track :global(.rs-mark) {
+    width: 9px !important;
+    margin-left: -4px;
+    border: 2px solid var(--dg-warm);
+    background: var(--dg-warm-soft);
+    transform: scaleY(0.8) rotate(45deg);
+  }
+  .rs-track :global(.rs-cursor) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--dg-ink);
+    pointer-events: none;
+  }
+  .rs-frame {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 10px;
+    align-items: center;
+    margin-top: 12px;
+  }
+  .rs-frame label {
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .rs-frame input {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    accent-color: var(--accent);
+  }
+  .rs-frame-out {
+    grid-column: 1 / -1;
+    min-height: 1.6em;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 0.92rem;
+  }
+  .rs-sub {
+    margin: 14px 0 6px;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .rs-lines-wrap {
+    max-height: 30rem;
+    overflow-y: auto;
+    border-radius: 8px;
+  }
+  .rs-lines-wrap:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .rs-lines {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    list-style: none;
+  }
+  .rs-lines :global(li) {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 2px 8px;
+    align-items: baseline;
+    margin: 0 !important;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 0.88rem;
+  }
+  .rs-lines :global(li.is-press),
+  .rs-lines :global(li.is-tap) {
+    border-left-color: var(--dg-cool);
+  }
+  .rs-lines :global(li.is-shot),
+  .rs-lines :global(li.is-dump) {
+    border-left-color: var(--dg-accent);
+  }
+  .rs-lines :global(li.is-poke) {
+    border-left-color: var(--dg-warm);
+  }
+  .rs-lines :global(li.is-end) {
+    border-left-color: var(--dg-ink);
+  }
+  .rs-lines :global(code) {
+    overflow-wrap: anywhere;
+  }
+  .rs-lines :global(.rs-kind) {
+    justify-self: end;
+    color: var(--fg-muted);
+    font-size: 0.78rem;
+  }
+  .rs-lines :global(.rs-desc) {
+    grid-column: 1 / -1;
+  }
+  .run-script :global(.rs-ln) {
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+  .rs-error :global(.rs-error-line) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    align-items: baseline;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .rs-track :global(.rs-cursor) {
+      transition: left 0.12s ease-out;
+    }
+  }
+</style>
