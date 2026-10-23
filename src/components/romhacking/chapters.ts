@@ -251,19 +251,26 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: '소리 ① 슈퍼 패미컴 사운드 구조',
     summary:
       '본체 CPU와 따로 도는 소리 전용 CPU(SPC700)와 음원 칩(S-DSP), 둘이 값을 주고받는 포트 $2140–$2143을 봅니다.',
-    ready: false,
-    notes: [],
-    tools: [],
+    ready: true,
+    notes: [
+      note(OTOGIRISOU_PATCH, 'making-scene-music', '제절초: 장으로 옮길 때 배경과 음악'),
+      note(OTOGIRISOU_PATCH, 'making-readers', '제절초: 대본을 읽는 손이 셋'),
+      note(SMRPG_PATCH, 'making-slots', '슈퍼 마리오 RPG: 필요한 글자만 올리는 임시 칸'),
+    ],
+    tools: [{ command: 'krpatch snes lua', anchor: 'snes-lua-mesen-2-스크립트' }],
   },
   {
     order: 14,
     slug: 'music-loop',
-    platform: 'snes',
+    platform: 'common',
     title: '소리 ② 게임 음악 뽑아 끊김 없이 반복하기',
     summary: '곡 하나만 나오게 해서 녹음하고, 반복 구간을 찾아 이음매를 다듬어 웹에서 끊김 없이 반복 재생합니다.',
-    ready: false,
-    notes: [],
-    tools: [],
+    ready: true,
+    notes: [note(OTOGIRISOU_PATCH, 'making-scene-music', '제절초: 장으로 옮길 때 배경과 음악')],
+    tools: [
+      { command: 'krpatch audio', anchor: 'audio-녹음에서-반복-재생용-파일-만들기' },
+      { command: 'krpatch snes run --wav', anchor: 'snes-run-헤드리스-libretro-실행기' },
+    ],
   },
 ];
 

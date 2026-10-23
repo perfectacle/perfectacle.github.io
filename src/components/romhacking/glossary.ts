@@ -20,7 +20,9 @@ type Where =
   | 'snes/graphics'
   | 'snes/text'
   | 'snes/expansion'
-  | 'snes/emulator';
+  | 'snes/emulator'
+  | 'snes/sound'
+  | 'music-loop';
 
 export interface GlossaryEntry {
   term: string;
@@ -416,6 +418,150 @@ const RAW: [string, string, Where, string, string][] = [
     'hardware',
     '아무것도 연결되지 않은 주소를 읽으면 직전에 버스에 실린 값이 나오는 현상',
   ],
+  [
+    'APU',
+    'audio processing unit',
+    'snes/sound',
+    'two-cpus',
+    '슈퍼 패미컴에서 소리를 맡는 부분. SPC700, ARAM 64KB, S-DSP로 이루어짐',
+  ],
+  ['SPC700', 'S-SMP', 'snes/sound', 'two-cpus', '소리 쪽 CPU. 칩 이름은 S-SMP이고 1.024MHz로 돎'],
+  [
+    'ARAM',
+    'audio RAM',
+    'snes/sound',
+    'two-cpus',
+    'SPC700의 메모리 64KB. 사운드 드라이버, 곡 데이터, 샘플, 에코 버퍼가 모두 여기 들어감',
+  ],
+  [
+    'S-DSP',
+    'S-DSP',
+    'snes/sound',
+    'two-cpus',
+    '샘플을 읽어 음성 여덟 개를 섞고 에코를 더해 32,000Hz 스테레오 소리를 내는 음원 칩',
+  ],
+  [
+    '사운드 드라이버',
+    'sound driver',
+    'snes/sound',
+    'two-cpus',
+    'SPC700에서 돌며 곡 데이터를 읽어 S-DSP 레지스터를 바꾸는 게임의 프로그램',
+  ],
+  [
+    '포트(APU)',
+    'APU I/O ports',
+    'snes/sound',
+    'ports',
+    'S-CPU의 $2140–$2143과 SPC700의 $F4–$F7을 잇는 1바이트 칸 네 개. 쓰는 방향과 읽는 방향이 따로 있음',
+  ],
+  [
+    '핸드셰이크',
+    'handshake',
+    'snes/sound',
+    'ports',
+    '상대가 값을 받았는지 알려고, 같은 값이 되돌아올 때까지 기다리며 주고받는 방식',
+  ],
+  [
+    'IPL 롬',
+    'IPL boot ROM',
+    'snes/sound',
+    'upload',
+    '전원을 켜면 SPC700이 실행하는 64바이트 프로그램. 포트로 데이터를 받아 ARAM에 올림',
+  ],
+  ['음성(S-DSP)', 'voice', 'snes/sound', 'dsp', 'S-DSP가 동시에 내는 소리 여덟 개 가운데 하나'],
+  [
+    '샘플(소리)',
+    'sample',
+    'snes/sound',
+    'dsp',
+    'ARAM에 넣어 둔 악기 소리 한 토막. 소리 파일에서는 한 순간의 값 하나를 뜻하기도 함',
+  ],
+  ['피치', 'pitch', 'snes/sound', 'dsp', '샘플을 읽는 빠르기. $1000이면 1초에 32,000샘플'],
+  ['엔벨로프', 'envelope', 'snes/sound', 'dsp', '소리가 시작해서 사라질 때까지의 크기 변화'],
+  [
+    'ADSR',
+    'attack, decay, sustain, release',
+    'snes/sound',
+    'dsp',
+    '어택·디케이·서스테인·릴리스 네 단계로 엔벨로프를 정하는 방식',
+  ],
+  ['에코', 'echo', 'snes/sound', 'dsp', '소리를 ARAM의 에코 버퍼에 적어 두었다가 늦게 다시 섞어 만드는 울림'],
+  ['에코 버퍼', 'echo buffer', 'snes/sound', 'aram', '에코를 위해 잡아 두는 ARAM 자리. 최대 30KB'],
+  ['BRR', 'bit rate reduction', 'snes/sound', 'aram', '16샘플을 9바이트에 담는 S-DSP의 손실 압축 형식'],
+  [
+    'SPC 파일',
+    'SPC file',
+    'snes/sound',
+    'spc',
+    '곡이 연주되는 한순간의 ARAM, DSP 레지스터, SPC700 레지스터를 그대로 떠 둔 파일',
+  ],
+  ['반복 구간', 'loop', 'music-loop', 'goal', '인트로 뒤에 끝없이 되풀이되는 부분. loopStart부터 loopEnd 앞까지'],
+  ['이음매', 'seam', 'music-loop', 'goal', '반복 재생에서 loopEnd에 닿아 되돌아가는 곳 T. loopStart와 같음'],
+  ['주기(반복)', 'period', 'music-loop', 'period', '곡이 같은 자리로 돌아오기까지의 길이. 샘플 수로 셈'],
+  ['스펙트럼', 'spectrum', 'music-loop', 'period', '소리를 높이(주파수)마다의 크기로 나눠 본 것'],
+  [
+    '정규화 상호상관',
+    'normalized cross-correlation (NCC)',
+    'music-loop',
+    'period',
+    '두 구간의 모양이 얼마나 같은지 잰 값. 크기가 달라도 모양이 같으면 1',
+  ],
+  ['이음매 점수', 'seamScore', 'music-loop', 'seam', '이음매 T 앞뒤와 한 주기 뒤의 같은 구간을 견준 정규화 상호상관'],
+  [
+    '스펙트럼 플럭스',
+    'spectral flux',
+    'music-loop',
+    'seam',
+    '주파수마다 소리가 직전보다 커진 만큼을 더한 값. 소리가 갑자기 커지면 큼',
+  ],
+  ['크로스페이드', 'crossfade', 'music-loop', 'crossfade', '한 소리를 줄이며 다른 소리를 키워 섞는 것'],
+  [
+    'equal-gain·equal-power',
+    '',
+    'music-loop',
+    'crossfade',
+    '크로스페이드 비율. 같은 소리를 섞으면 equal-gain(sin²)은 크기를 지키고 equal-power(sin·cos)는 가운데가 3dB 커짐',
+  ],
+  ['꼬리', 'tail', 'music-loop', 'tail', '반복 재생 파일에서 loopEnd 뒤에 붙여 두는 0.5초. 재생되지 않음'],
+  ['AAC', 'Advanced Audio Coding', 'music-loop', 'tail', '웹에서 흔히 쓰는 손실 압축 소리 형식'],
+  [
+    '앞 여백(AAC)',
+    'priming',
+    'music-loop',
+    'tail',
+    'AAC 파일 맨 앞에 들어가는 2,112샘플. 디코더가 잘라 내야 원래 길이가 됨',
+  ],
+  [
+    'RMS',
+    'root mean square',
+    'music-loop',
+    'segments',
+    '값을 제곱해 평균 낸 뒤 제곱근을 구한 것. 소리의 평균 크기를 잴 때 씀',
+  ],
+  [
+    'LUFS',
+    'loudness units relative to full scale',
+    'music-loop',
+    'loudness',
+    'BS.1770으로 잰 음량의 단위. 1 LU는 1dB 간격',
+  ],
+  [
+    'K 가중',
+    'K-weighting',
+    'music-loop',
+    'loudness',
+    '음량을 잴 때 귀에 맞춰 아주 낮은 소리를 줄이고 높은 소리를 조금 키우는 필터',
+  ],
+  ['트루 피크', 'true peak', 'music-loop', 'loudness', '샘플 사이에서 파형이 올라가는 것까지 계산한 최댓값'],
+  [
+    'Web Audio',
+    'Web Audio API',
+    'music-loop',
+    'web',
+    '브라우저에서 소리를 메모리에 풀어 두고 다루는 API. 반복 구간을 정할 수 있음',
+  ],
+  ['자동재생', 'autoplay', 'music-loop', 'web', '사용자가 누르기 전에 소리를 내는 재생. 브라우저가 막을 수 있음'],
+  ['LCP', 'Largest Contentful Paint', 'music-loop', 'web', '첫 화면에서 가장 큰 요소가 그려지기까지의 시간'],
 ];
 
 const collator = new Intl.Collator('ko');

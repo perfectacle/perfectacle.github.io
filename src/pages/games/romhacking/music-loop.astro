@@ -1,0 +1,684 @@
+---
+import GuideChapter from '../../../layouts/GuideChapter.astro';
+import Deeper from '../../../components/romhacking/Deeper.astro';
+import Figure from '../../../components/romhacking/Figure.astro';
+import SeamLab from '../../../components/romhacking/SeamLab.astro';
+import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
+import { TOOLKIT_README_KO, chapterBySlug, chapterPath } from '../../../components/romhacking/chapters.ts';
+
+const sections = [
+  { id: 'goal', label: '무엇을 만드나: 인트로 한 번, 반복 구간 영원히' },
+  { id: 'one-song', label: '원하는 곡만 나오게 하기' },
+  { id: 'record', label: '에뮬레이터 소리 녹음하기' },
+  { id: 'segments', label: '무음으로 곡 경계 찾기' },
+  { id: 'period', label: '반복 주기 찾기' },
+  { id: 'seam', label: '이음매 고르기' },
+  { id: 'crossfade', label: '크로스페이드 모양' },
+  { id: 'tail', label: '파일 끝 꼬리와 AAC 앞 여백' },
+  { id: 'loudness', label: '네 곡의 음량 맞추기' },
+  { id: 'web', label: '웹에서 끊김 없이 반복 재생하기' },
+  { id: 'in-patch', label: '실제 패치에서' },
+  { id: 'try', label: '직접 해 보기' },
+];
+const TOOLKIT = 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0';
+const BLOG = 'https://github.com/perfectacle/perfectacle.github.io/blob/main';
+const references = [
+  {
+    href: `${TOOLKIT}/src/kr_patch/audio/loop.py`,
+    label: 'kr-patch-toolkit 0.2.0, audio의 loop.py, analysis.py, loudness.py',
+    note: '이음매 점수(모든 채널을 한 신호로 본 정규화 상호상관), 가장 이른 이음매와 최고 점수 이음매, equal-gain(sin²)과 equal-power(sin·cos) 크로스페이드, 꼬리, 스펙트럼 플럭스로 하는 이음매 검사, 로그 스펙트럼 자기 유사도로 주기 찾기, BS.1770 통합 음량',
+  },
+  {
+    href: `${TOOLKIT_README_KO}#${encodeURIComponent('audio-녹음에서-반복-재생용-파일-만들기')}`,
+    label: 'kr-patch-toolkit README, audio 절',
+    note: '명령마다의 기본값(50ms 창·30·0.3초 무음, 2048점 FFT·512샘플 홉, 0.5초 창, 60ms 페이드, 0.5초 꼬리, 0.003, 1.25배)',
+  },
+  {
+    href: 'https://developer.apple.com/library/archive/technotes/tn2258/_index.html',
+    label: 'Apple Technical Note TN2258, AAC Audio - Encoder Delay and Synchronization',
+    note: 'AAC 앞 여백(priming) 2112샘플과 끝을 채우는 remainder, 재생할 때 둘을 잘라 내야 원래 길이가 된다는 설명',
+  },
+  {
+    href: 'https://www.itu.int/rec/R-REC-BS.1770',
+    label: 'ITU-R BS.1770, Algorithms to measure audio programme loudness and true-peak audio level',
+    note: 'K 가중, 400ms 블록, −70 LUFS 절대 게이트와 −10 LU 상대 게이트로 재는 통합 음량',
+  },
+  {
+    href: 'https://webaudio.github.io/web-audio-api/#AudioBufferSourceNode',
+    label: 'Web Audio API, AudioBufferSourceNode',
+    note: 'loop·loopStart·loopEnd, 반복 구간에 loopEnd는 들어가지 않는다는 것, 반복 지점은 샘플보다 잘게 지정된다는 것, start(when, offset)',
+  },
+  {
+    href: 'https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay',
+    label: 'MDN, Autoplay guide for media and Web Audio APIs',
+    note: '사용자 입력 전에는 소리 나는 자동재생이 막힐 수 있고, AudioContext는 막힌 동안 suspended로 남는다는 설명',
+  },
+  {
+    href: 'https://web.dev/articles/lcp',
+    label: 'web.dev, Largest Contentful Paint (LCP)',
+    note: '첫 화면에서 가장 큰 요소가 그려지기까지의 시간과 좋은 기준(2.5초)',
+  },
+  {
+    href: `${BLOG}/src/components/kr-patch/Bgm.astro`,
+    label: '이 블로그, src/components/kr-patch/Bgm.astro',
+    note: '패치 페이지의 배경음악 플레이어: 로드 2.5초 뒤 받기, 첫 클릭·키에서 resume, Firefox 앞 여백 보정, 다른 탭과 동영상에 자리 비켜 주기',
+  },
+];
+const SOUND = chapterPath(chapterBySlug('snes', 'sound'));
+const HOOKING = chapterPath(chapterBySlug('snes', 'hooking'));
+const EMULATOR = chapterPath(chapterBySlug('snes', 'emulator'));
+const NUMBERS = chapterPath(chapterBySlug('common', 'numbers'));
+
+const lags = [
+  { s: '42.613', sim: 0.8567, note: '주기의 1/3' },
+  { s: '85.227', sim: 0.8158, note: '주기의 2/3' },
+  { s: '127.840', sim: 0.7593, note: '진짜 주기', answer: true },
+  { s: '5.323', sim: 0.7065, note: '' },
+  { s: '37.291', sim: 0.6913, note: '' },
+  { s: '47.936', sim: 0.6869, note: '' },
+];
+
+const tracks = [
+  {
+    name: '각성편',
+    patch: KAKUSEI_PATCH,
+    start: '3.15',
+    period: '2,194,325 (45.715초)',
+    range: '24–44초',
+    pick: 'B',
+    loop: '31.059604–76.774708',
+    score: '0.999',
+    ratio: '1.012',
+    fade: '1690 / 426 → 100 / 14',
+  },
+  {
+    name: '슈퍼 마리오 RPG',
+    patch: SMRPG_PATCH,
+    start: '36.4',
+    period: '5,136,108 (107.002초)',
+    range: '40–70초',
+    pick: 'B',
+    loop: '26.103562–133.105813',
+    score: '0.9999',
+    ratio: '1.000',
+    fade: '1151 / 323 → 54 / 11',
+  },
+  {
+    name: '돌격편',
+    patch: TOTSUGEKI_PATCH,
+    start: '12.5',
+    period: '2,480,666 (51.681초)',
+    range: '18.2–25.6초',
+    pick: 'B(= N)',
+    loop: '9.289438–60.969979',
+    score: '0.8821',
+    ratio: '1.122',
+    fade: '2191 / 524 → 1067 / 215',
+  },
+  {
+    name: '제절초',
+    patch: OTOGIRISOU_PATCH,
+    start: '57.6',
+    period: '6,136,330 (127.840초)',
+    range: '168.5–176초',
+    pick: 'B',
+    loop: '117.140542–244.98075',
+    score: '0.9985',
+    ratio: '1.012',
+    fade: '955 / 265 → 194 / 27',
+  },
+];
+
+const loud = [
+  { name: '각성편', before: '−23.5', gain: '+3.5', after: '−20.0', peak: '−5.3' },
+  { name: '슈퍼 마리오 RPG', before: '−18.55', gain: '−1.4', after: '−19.95', peak: '−6.4' },
+  { name: '돌격편', before: '−26.78', gain: '+6.8', after: '−19.98', peak: '−5.0' },
+  { name: '제절초', before: '−29.12', gain: '+9.1', after: '−20.02', peak: '−5.2' },
+];
+
+const peaks = [
+  { name: '각성편', legacy: '6734', now: '5072', rec: '5070' },
+  { name: '슈퍼 마리오 RPG', legacy: '4721', now: '4205', rec: '4205' },
+  { name: '제절초', legacy: '3359', now: '2426', rec: '2432' },
+];
+---
+
+<GuideChapter platform="common" slug="music-loop" sections={sections} references={references}>
+  <h2 id="goal">
+    무엇을 만드나: 인트로 한 번, 반복 구간 영원히 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    이 블로그의 한글패치 페이지에서는 그 게임의 음악이 끝없이 흘러나옵니다. 게임 음악은 대개 앞부분(인트로)을 한 번
+    연주하고, 그 뒤 한 구간을 끝없이 되풀이합니다. 게임기에서는 사운드 드라이버가 악보의 "여기로 돌아가라" 표시를 따라
+    되풀이하지만(<a href={SOUND}>13장</a>), 웹 페이지에는 그 드라이버가 없습니다. 그래서 녹음한 소리 파일 하나로 같은
+    일을 합니다.
+  </p>
+  <p>
+    파일에는 곡의 처음부터 반복 구간 한 바퀴까지만 넣고, 플레이어에게 "loopEnd에 닿으면 loopStart로 돌아가라"고 알려
+    줍니다. 돌아가는 곳을 <strong>이음매</strong>라고 부르겠습니다. 이음매에서 소리가 툭 끊기거나 튀지 않게 하는 것이 이
+    장의 거의 전부입니다.
+  </p>
+  <Figure caption="반복 재생용 파일. 플레이어는 loopEnd에서 loopStart로 돌아가므로 꼬리는 들리지 않습니다." max={560}>
+    <svg viewBox="0 0 360 150" role="img" aria-labelledby="loop-t loop-d">
+      <title id="loop-t">반복 재생용 파일의 구성</title>
+      <desc id="loop-d">
+        파일은 곡 시작부터 loopStart까지의 인트로, loopStart부터 loopEnd까지의 반복 구간 한 바퀴, loopEnd 뒤 0.5초의
+        꼬리로 되어 있다. loopEnd에서 loopStart로 되돌아가는 화살표가 있다.
+      </desc>
+      <path class="dg-arrow" d="M300 60C300 18 120 18 120 60" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="210" y="22" text-anchor="middle">
+        loopEnd에 닿으면 되돌아감
+      </text>
+      <rect class="dg-cell" x="8" y="64" width="112" height="40" rx="6"></rect>
+      <text class="dg-text" x="64" y="89" text-anchor="middle">
+        인트로
+      </text>
+      <rect class="dg-accent" x="120" y="64" width="180" height="40" rx="6"></rect>
+      <text class="dg-text dg-bold" x="210" y="89" text-anchor="middle">
+        반복 구간 한 바퀴
+      </text>
+      <rect class="dg-cell" x="300" y="64" width="52" height="40" rx="6" stroke-dasharray="4 3"></rect>
+      <text class="dg-small" x="326" y="89" text-anchor="middle">
+        꼬리
+      </text>
+      <text class="dg-small" x="8" y="124">
+        곡 시작
+      </text>
+      <text class="dg-small" x="120" y="124" text-anchor="middle">
+        loopStart
+      </text>
+      <text class="dg-small" x="120" y="140" text-anchor="middle">
+        = 이음매 T
+      </text>
+      <text class="dg-small" x="300" y="124" text-anchor="middle">
+        loopEnd
+      </text>
+      <text class="dg-small" x="300" y="140" text-anchor="middle">
+        = T + 주기
+      </text>
+      <text class="dg-small" x="352" y="124" text-anchor="end">
+        0.5초
+      </text>
+    </svg>
+  </Figure>
+  <p>순서는 이렇습니다. 장마다 한 절씩 다룹니다.</p>
+  <ol>
+    <li>롬을 고쳐 원하는 곡만, 효과음 없이 나오게 합니다.</li>
+    <li>에뮬레이터가 내는 소리를 그대로 녹음합니다.</li>
+    <li>무음을 찾아 곡의 처음과 끝을 가립니다.</li>
+    <li>곡이 몇 초마다 되풀이되는지(주기) 찾고, 샘플 하나 단위로 맞춥니다.</li>
+    <li>반복 구간 안에서 이음매를 고르고, 이음매 앞을 살짝 섞어 매끄럽게 합니다.</li>
+    <li>꼬리를 붙여 압축하고, 네 곡의 음량을 맞춥니다.</li>
+    <li>웹 페이지에서 그 구간만 반복해 틉니다.</li>
+  </ol>
+  <p>예는 모두 슈퍼 패미컴 게임이지만, 2단계부터는 소리 파일만 다루므로 어느 게임기의 음악이든 같습니다.</p>
+
+  <h2 id="one-song">
+    원하는 곡만 나오게 하기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    게임을 그냥 켜 두고 녹음하면 원하는 곡이 언제 나올지 모르고, 효과음이 섞입니다. 이야기를 한참 진행해야 나오는 곡도
+    있습니다. 그래서 롬을 몇 바이트 고쳐 "켜자마자 그 곡이 나오는 롬"을 녹음용으로 따로 만듭니다. 13장에서 찾은 곡
+    번호를 넘기는 곳을 고치는 것입니다.
+  </p>
+  <ul>
+    <li>
+      <strong>곡 번호를 고정하기</strong>: 각성편의 곡 재생 함수는 <code>$83:8203</code>에서 넘겨받은 곡 번호의 위
+      바이트를 지웁니다(<code>29 FF 00</code>, <code>AND #$00FF</code>). 이 3바이트를 <code>A9 07 00</code>(
+      <code>LDA #$0007</code>)으로 바꾸면 게임이 어떤 곡을 부르든 7번 곡이 나옵니다. 번호를 0–19로 바꾼 롬 20개를 만들어
+      곡마다 3,900프레임(약 65초)씩 녹음해 들어 보고, 「플레이어 체인지」가 7번인 것을 찾았습니다.
+    </li>
+    <li>
+      <strong>효과음 막기</strong>: 첫 녹음에는 효과음이 섞여 있었습니다. 효과음 함수 <code>$83:8023</code>은{' '}
+      <code>JSL</code>로 불리므로, 첫 바이트 <code>85</code>(<code>STA $B3</code>의 첫 바이트)를 <code>6B</code>(
+      <code>RTL</code>)로 바꾸면 아무것도 보내지 않고 바로 돌아옵니다(<a href={`${HOOKING}#jump`}>6장</a>). 효과음을
+      막은 녹음은 27초부터 첫 녹음과 달라졌습니다.
+    </li>
+    <li>
+      <strong>장면 속 곡만 남기기</strong>: 제절초의 「The Legend of Yellow Flower」는 타이틀에서 번호만 바꿔서는 들을
+      수 없고, 새 게임을 시작해 이야기가 나아가야 나옵니다. 대본의 소리 코드 <code>{'{39}'}</code>를 처리하는{' '}
+      <code>$00:A8F4</code>의 <code>JSR $CD60</code>을 <code>JSR $FB00</code>으로 바꾸고, 비어 있던{' '}
+      <code>$00:FB00</code>에 "소리 번호가 2일 때만 <code>$CD60</code>으로 넘기는" 17바이트를 넣었습니다. 다른 소리를
+      켜고 끄는 코드는 아무 일도 하지 않게 해서, 자동차와 천둥 같은 효과음 없이 이 곡만 남았습니다.
+    </li>
+  </ul>
+  <p>
+    슈퍼 마리오 RPG와 돌격편은 원본 롬을 켜 두기만 해도 원하는 곡(오프닝 데모, 오프닝)이 나와 고치지 않았습니다. 녹음용
+    롬은 소리만 얻으려는 것이라 화면이 이상해져도 상관없습니다. 배포할 패치에는 들어가지 않습니다.
+  </p>
+
+  <h2 id="record">
+    에뮬레이터 소리 녹음하기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    스피커에서 나오는 소리를 마이크로 녹음하면 잡음과 방 울림이 들어갑니다. 에뮬레이터는 S-DSP가 만든 소리를 숫자로
+    내주므로, 그 숫자를 그대로 파일에 적는 것이 가장 깨끗합니다. <a href={`${EMULATOR}#headless`}>12장</a>의{' '}
+    <code>krpatch snes run</code>에 <code>--wav</code>를 주면 libretro 코어가 내는 소리를 16비트 스테레오 WAV로 씁니다.
+  </p>
+  <pre tabindex="0"><code>$ cat idle.txt
+600 shot
+1200 shot
+18000 end
+$ krpatch snes run cores/bsnes_libretro.dylib song07.sfc out/k07 idle.txt --wav out/k07/audio.wav</code></pre>
+  <p>
+    18,000프레임은 약 5분입니다. bsnes 코어는 48,000Hz로 소리를 냅니다. snes9x 코어는 32,040.5Hz라고 알려 주는데, WAV
+    머리에는 정수만 적을 수 있어 32,040Hz가 적힙니다. 이 블로그의 녹음은 모두 bsnes 코어로 했고, Mesen-S 코어는 켜자마자
+    종료되었습니다. <code>shot</code> 줄을 600프레임마다 적어 화면도 찍어 두면, 녹음의 몇 초에 어떤 장면이었는지 나중에
+    맞춰 볼 수 있습니다.
+  </p>
+  <p class="muted">
+    이 블로그의 네 곡은 이 명령이 툴킷에 들어가기 전에 같은 방식의 스크립트로 녹음했습니다. 녹음 파일은 48,000Hz 16비트
+    스테레오입니다.
+  </p>
+
+  <h2 id="segments">
+    무음으로 곡 경계 찾기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    녹음에는 여러 곡이 이어져 있기도 합니다. 곡 사이에는 보통 무음이 있으니, 소리 크기를 짧은 창마다 재서 조용한 곳을
+    찾습니다. <code>krpatch audio segments</code>는 50ms마다 RMS(값을 제곱해 평균 낸 뒤 제곱근)를 재고, 16비트 값으로
+    30보다 작은 창이 0.3초 이상 이어지면 곡 사이로 봅니다. 30은 16비트 최댓값 32,767의 1,000분의 1쯤입니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch audio segments out/smrpg/audio.wav
+     8.10     34.80     26.70
+    36.40    250.25    213.85
+   273.60    299.50     25.90</code></pre>
+  <p>
+    세 열은 시작, 끝, 길이(초)입니다. 슈퍼 마리오 RPG는 8.1초부터 오프닝 곡, 36.4초부터 데모 곡이 나옵니다. 데모 곡 시작
+    36.4초를 그대로 씁니다. 다만 곡 안에 쉼표가 있으면 한 곡이 여러 조각으로 나옵니다. 제절초 녹음은 57.8초부터
+    2.25초짜리 조각이 아홉 개 이어진 뒤 81.75초부터 긴 조각이 나왔는데, 들어 보면 모두 같은 곡이었습니다. 그래서 경계는
+    도구의 출력을 출발점으로 삼고, 들어 보고 화면과 맞춰 본 뒤 정합니다.
+  </p>
+
+  <h2 id="period">
+    반복 주기 찾기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    이제 곡이 몇 초마다 되풀이되는지 찾습니다. 반복 구간은 매번 똑같은 악보를 연주하므로, 곡을 주기만큼 밀어서 겹치면
+    거의 같은 소리가 나야 합니다. 그런데 녹음된 파형은 반복할 때마다 조금씩 다릅니다. 에코가 앞 바퀴의 소리를 끌고 오고,
+    악기 소리가 시작되는 순간이 샘플 몇 개씩 어긋나기 때문입니다. 그래서 파형 대신 "어느 높이의 소리가 얼마나 큰가"를
+    비교합니다.
+  </p>
+  <p>
+    <code>krpatch audio period</code>는 녹음을 512샘플(약 11ms)마다 잘라 각 조각의 주파수 성분(스펙트럼)을 구합니다.
+    그리고 5초 이상 모든 지연에 대해 "지금 조각과 그만큼 뒤 조각이 얼마나 닮았나"를 곡 전체에서 평균 냅니다. 가장 닮은
+    지연이 주기 후보입니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch audio period out/oto_legend/audio.wav --start 57.6 --end 300
+resolution 512 samples; a peak may be a multiple or a fraction of the true period, check it by ear or with `krpatch audio loop --period-range`
+    42.613 s    2045440 samples  sim=0.8567
+    85.227 s    4090880 samples  sim=0.8158
+   127.840 s    6136320 samples  sim=0.7593
+     5.323 s     255488 samples  sim=0.7065
+    37.291 s    1789952 samples  sim=0.6913
+    47.936 s    2300928 samples  sim=0.6869</code></pre>
+  <Figure
+    caption="제절초 「The Legend of Yellow Flower」의 주기 후보. 가장 높은 42.6초는 진짜 주기 127.8초의 1/3입니다."
+    max={560}
+  >
+    <svg viewBox="0 0 360 200" role="img" aria-labelledby="lag-t lag-d">
+      <title id="lag-t">주기 후보와 닮은 정도</title>
+      <desc id="lag-d">
+        {lags.map(l => `${l.s}초 ${l.sim}${l.note ? `(${l.note})` : ''}`).join(', ')}. 진짜 주기 127.840초는 세 번째로
+        높다.
+      </desc>
+      {lags.map((l, i) => (
+        <g>
+          <text class="dg-small" x="70" y={24 + i * 30} text-anchor="end">
+            {l.s}초
+          </text>
+          <rect
+            class={l.answer ? 'dg-accent' : 'dg-cell'}
+            x="78"
+            y={10 + i * 30}
+            width={((l.sim - 0.6) / 0.3) * 190}
+            height="20"
+            rx="4"
+          />
+          <text class={l.answer ? 'dg-text dg-bold' : 'dg-small'} x={84 + ((l.sim - 0.6) / 0.3) * 190} y={24 + i * 30}>
+            {l.sim.toFixed(2)} {l.note}
+          </text>
+        </g>
+      ))}
+      <text class="dg-small" x="78" y="194">
+        막대 길이: 닮은 정도 0.6부터
+      </text>
+    </svg>
+  </Figure>
+  <p>
+    가장 높은 후보가 주기가 아닙니다. 이 곡은 반복 구간 안에서 비슷한 악절을 세 번 연주해서, 1/3 지점에서도 소리가 많이
+    닮습니다. 각성편도 1위가 15.243초, 진짜 주기 45.717초의 1/3이었습니다. 반대로 진짜 주기의 두 배, 세 배도 늘 높게
+    나옵니다. 곡이 한 바퀴 돌면 두 바퀴 뒤도 같기 때문입니다. 그래서 후보를 들어 보고 "여기서 처음으로 돌아온다"는 곳을
+    고른 뒤, 그 근처 범위만 다시 찾게 합니다.
+  </p>
+  <p>
+    스펙트럼으로 찾은 주기는 512샘플 단위라 아직 거칩니다. 주기가 최대 256샘플(5ms쯤) 틀릴 수 있고, 그러면 이음매에서
+    그만큼 박자가 어긋나 들립니다. 그래서 <code>krpatch audio loop --period-range</code>는 그 범위에서 후보를 찾은 다음,
+    곡 안 일곱 곳에서 3초짜리 파형을 한 주기 뒤의 파형과 겹쳐 보며 가장 잘 맞는 샘플 하나를 고릅니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch audio loop out/oto_legend/audio.wav try.wav --start 57.6 --period-range 120:135 \
+    --seam-range 168.5:176 --json try.json
+period 6136330 samples (127.84021 s), waveform ncc 0.9956</code></pre>
+  <p>
+    스펙트럼의 6,136,320샘플이 파형으로 맞추자 10샘플 늘어 6,136,330샘플이 되었습니다. <code>waveform ncc</code>는 그
+    일치도로, 1이면 완전히 같습니다. 각성편은 같은 방법으로 2,194,432에서 2,194,325샘플(45.71510초)이 되었고 일치도는
+    0.9207이었습니다. 반복할 때마다 소리가 조금씩 다르다는 뜻입니다.
+  </p>
+  <Deeper title="스펙트럼 자기 유사도와 파형 상호상관">
+    <p>
+      스펙트럼 단계는 한 채널씩 2048점 FFT를 Hann 창으로 512샘플마다 구하고, 크기를 log(1 + 100·|X|)로 줄입니다. 큰
+      소리가 비교를 휩쓸지 않게 하려는 것입니다. 조각마다 평균을 빼고 길이를 1로 맞추면 두 조각의 내적이 코사인 유사도가
+      됩니다. 지연 L마다 "모든 t에서 S[t]·S[t+L]의 평균"을 주파수 칸마다 자기상관으로 한꺼번에 구하고, 채널별 결과를
+      평균합니다.
+    </p>
+    <p>
+      파형 단계는 정규화 상호상관(NCC)입니다. 두 구간 u, v에 대해 Σu·v ÷ √(Σu²·Σv²)이고, 모양이 같으면 크기가 달라도
+      1입니다. 툴킷은 채널을 섞지 않고 왼쪽·오른쪽을 한 신호로 이어 계산합니다. 두 채널을 더해 모노로 만들면, 왼쪽과
+      오른쪽에서 위상이 반대인 음성은 서로 지워져 비교에서 빠지기 때문입니다.
+    </p>
+  </Deeper>
+
+  <h2 id="seam">
+    이음매 고르기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    주기 P를 알면, 반복 구간 안의 어느 점 T에서든 T와 T + P는 같은 악보 위치입니다. 그러니 이음매 T는 반복 구간 안이면
+    어디든 될 것 같습니다. 그런데 실제 녹음은 바퀴마다 조금씩 다르고, 그 차이는 곳에 따라 큽니다. 효과음이나 드럼처럼
+    잡음이 섞인 소리는 매번 다르게 녹음되고, 길게 끄는 소리는 거의 같습니다. 그래서 T 앞뒤의 소리와 T + P 앞뒤의 소리가
+    가장 닮은 곳을 찾습니다. 툴킷은 T 앞뒤 0.5초씩을 견준 정규화 상호상관을 <strong>이음매 점수</strong>라고 부릅니다.
+  </p>
+  <p>
+    점수가 충분히 높은 곳이 여럿이면 툴킷은 기본으로 가장 이른 곳을 고릅니다(최고 점수와 0.003 안으로 차이 나는 곳
+    가운데). 반복 구간 안이면 어디서 이어도 매끄러운데, 이음매가 이를수록 인트로가 짧아져 파일이 작아지기 때문입니다.{' '}
+    <code>--seam-pick best</code>를 주면 최고 점수 위치를 고릅니다. 아래 도구에서 직접 옮겨 보세요.
+  </p>
+
+  <SeamLab />
+
+  <p>
+    점수가 높아도 끝이 아닙니다. 이음매에서 소리가 갑자기 커지면 귀에 띕니다. <code>krpatch audio seamcheck</code>는
+    파일을 플레이어처럼 이어 붙여(인트로 + 반복 세 번) 첫 이음매에서 <strong>스펙트럼 플럭스</strong>, 곧 "주파수마다
+    소리가 직전보다 얼마나 커졌나"의 합을 잽니다. 그리고 원래 녹음에서 곡이 loopEnd를 지나 그대로 이어질 때의 같은 값과
+    견줍니다. 이음매 값이 원래 흐름의 1.25배를 넘으면 실패입니다. 원래 흐름과 견주는 이유는, 반복이 북소리로 시작하면
+    원래 곡에서도 그 순간 플럭스가 크기 때문입니다.
+  </p>
+
+  <h2 id="crossfade">
+    크로스페이드 모양 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    점수가 높은 이음매라도 바퀴마다 녹음이 조금씩 다르니, loopEnd에서 T로 건너뛰는 순간 파형이 똑 끊길 수 있습니다.
+    그래서 loopEnd 앞 60ms를 T 앞 60ms로 조금씩 바꿔 갑니다(<strong>크로스페이드</strong>). 그러면 되돌아가는 순간에는
+    이미 T 바로 앞의 소리가 나고 있어서, T로 건너뛰어도 파형이 이어집니다.
+  </p>
+  <p>
+    섞는 비율에는 두 가지가 널리 쓰입니다. 나가는 소리에 cos, 들어오는 소리에 sin을 곱하는 <strong>equal-power</strong>
+    는 cos² + sin² = 1이라 서로 상관없는 두 소리를 섞을 때 전체 세기(제곱의 합)가 그대로입니다. 하지만 좋은 이음매에서는
+    두 소리가 거의 같습니다. 같은 소리 두 개를 더하면 세기가 아니라 진폭이 더해지므로, 페이드 한가운데서 진폭이 cos 45°
+    + sin 45° = 1.41배, 곧 +3dB 커집니다. 반복할 때마다 짧게 소리가 부푸는 셈입니다. 나가는 쪽 1 − sin², 들어오는 쪽
+    sin²을 곱하는 <strong>equal-gain</strong>은 두 비율의 합이 언제나 1이라 같은 소리를 섞어도 크기가 그대로입니다.
+  </p>
+  <p>
+    이 블로그의 첫 배경음악 파일은 equal-power로 섞었습니다. 툴킷 0.2.0으로 다시 만들며 equal-gain으로 바꾸고, 페이드
+    60ms 안에서 가장 큰 값을 녹음의 같은 자리와 견줬습니다.
+  </p>
+  <div class="table-scroll" tabindex="0" role="region" aria-labelledby="peak-caption">
+    <table>
+      <caption id="peak-caption">페이드 60ms 안의 최댓값(16비트 값)</caption>
+      <thead>
+        <tr>
+          <th scope="col">곡</th>
+          <th scope="col">처음 파일(equal-power)</th>
+          <th scope="col">다시 만든 파일(equal-gain)</th>
+          <th scope="col">녹음의 같은 자리</th>
+        </tr>
+      </thead>
+      <tbody>
+        {peaks.map(p => (
+          <tr>
+            <th scope="row">{p.name}</th>
+            <td>{p.legacy}</td>
+            <td>{p.now}</td>
+            <td>{p.rec}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    각성편은 녹음보다 33%, 제절초는 38% 컸던 것이 녹음과 거의 같아졌습니다. 같은 이음매에서 파일의 페이드를 녹음의 원래
+    흐름과 샘플마다 견준 차이도, 가장 큰 값이 각성편 1690 → 100, 슈퍼 마리오 RPG 1151 → 54, 제절초 955 → 194로
+    줄었습니다.
+  </p>
+  <Deeper title="equal-power가 맞는 경우와 툴킷의 페이드">
+    <p>
+      equal-power는 서로 다른 두 곡을 넘기는 DJ 믹스처럼, 두 소리가 상관없을 때 맞습니다. 상관없는 두 소리의 세기는
+      더해지므로 cos² + sin² = 1이 전체 세기를 지킵니다. 반복 재생의 이음매는 같은 곡의 같은 자리를 겹치는 것이라 정반대
+      경우입니다.
+    </p>
+    <p>
+      툴킷은 파일에서 loopEnd 앞 60ms인 y[E−F..E)를 y·(1 − g²) + x[T−F..T)·g²로 바꿉니다. g는 0에서 1까지
+      sin(0–90°)입니다. 페이드가 끝나는 E 바로 앞의 값은 x[T−1]과 같으므로, 플레이어가 E에서 T로 건너뛰면 x[T−1] 다음에
+      x[T]가 나와 녹음 그대로 이어집니다. 위 도구의 「녹음과 가장 크게 다른 곳」은 페이드 시작부터 되돌아간 뒤 20ms까지
+      재생 소리와 녹음의 차이 중 가장 큰 값입니다. 이 블로그 파일을 고를 때 쓴 페이드 편차(페이드 60ms)와 점프
+      편차(되돌아가기 앞 120ms와 뒤 60ms)도 같은 생각으로 잰 값입니다.
+    </p>
+  </Deeper>
+
+  <h2 id="tail">
+    파일 끝 꼬리와 AAC 앞 여백 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    WAV는 너무 커서(제절초는 47MB) 웹에는 AAC로 압축해 올립니다. 그런데 AAC 같은 손실 압축은 파일 앞뒤에 원래 없던
+    샘플을 붙입니다. AAC는 소리를 1,024샘플 단위로 묶어 압축하는데, 인코더가 시작하는 데 걸리는 지연 때문에 맨 앞에
+    2,112샘플(<strong>priming</strong>)이 들어가고, 끝에는 마지막 묶음을 채우는 샘플(remainder)이 붙습니다. 이 블로그의
+    네 파일도 모두 앞에 2,112샘플, 끝에 28–702샘플이 붙었습니다.
+  </p>
+  <p>
+    그래서 파일을 loopEnd에서 끝내지 않고, 그 뒤에 0.5초 <strong>꼬리</strong>를 붙입니다. 끝에 붙는 여백이나 디코더가
+    마지막 샘플을 다루는 방식이 무엇이든 꼬리 안에서 일어나고, 플레이어는 loopEnd에서 되돌아가므로 꼬리는 들리지
+    않습니다. 툴킷은 꼬리를 이음매 T 뒤의 소리, 곧 플레이어가 되돌아가서 실제로 듣는 소리로 채웁니다. AAC는 이웃한
+    묶음을 겹쳐 가며 압축하므로 loopEnd 바로 앞의 소리도 꼬리의 영향을 조금 받는데, 꼬리가 실제로 이어 들릴 소리이면 그
+    영향도 자연스럽습니다.
+  </p>
+  <p>
+    앞 여백은 브라우저마다 다르게 처리했습니다. Chromium과 WebKit은 2,112샘플을 잘라 원래 길이를 돌려줬고, Firefox는 앞
+    여백과 끝 여백을 남겨 2,140–2,814샘플 긴 데이터를 돌려줬습니다. 앞에 2,112샘플이 남으면 모든 위치가 그만큼 밀리므로,
+    플레이어는 디코딩한 길이가 원래 길이보다 2,112샘플 이상 길면 loopStart, loopEnd, 시작 위치에 2,112샘플을 더합니다.
+    이렇게 맞춘 뒤 세 브라우저에서 디코딩한 소리를 원래 WAV와 견주자, 이음매를 건너뛴 곳의 차이가 이음매가 아닌 곳의 AAC
+    오차와 같은 수준이었습니다.
+  </p>
+
+  <h2 id="loudness">
+    네 곡의 음량 맞추기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    게임마다 녹음 크기가 달라서, 그대로 두면 한 페이지에서는 크고 다른 페이지에서는 작게 들립니다. 파형의 최댓값을
+    맞춰서는 소용이 없습니다. 사람 귀가 느끼는 크기는 순간의 최댓값보다 꽤 긴 시간의 평균에 가깝고, 주파수에 따라서도
+    다르게 들리기 때문입니다.
+  </p>
+  <p>방송과 음원 서비스는 ITU-R BS.1770이라는 표준으로 음량을 잽니다. 쉽게 말하면 이렇습니다.</p>
+  <ol>
+    <li>
+      <strong>K 가중</strong>: 귀가 덜 듣는 아주 낮은 소리는 줄이고, 머리가 소리를 받아들이는 방식에 맞춰 높은 소리는
+      조금 키우는 필터를 거칩니다.
+    </li>
+    <li>
+      <strong>400ms 블록</strong>: 0.4초 창을 0.1초씩 옮기며 창마다 평균 세기를 잽니다.
+    </li>
+    <li>
+      <strong>조용한 곳 빼기</strong>: −70 LUFS보다 조용한 블록을 빼고(절대 게이트), 남은 평균보다 10 LU 이상 조용한
+      블록을 한 번 더 뺍니다(상대 게이트). 곡 사이의 무음이나 아주 조용한 부분이 평균을 끌어내리지 않게 하려는 것입니다.
+    </li>
+    <li>남은 블록의 평균 세기를 로그로 바꾼 값이 통합 음량이고, 단위는 LUFS입니다. 1 LU는 1dB와 같은 간격입니다.</li>
+  </ol>
+  <p>
+    웹 페이지에서 배경으로 깔리는 소리라 −20 LUFS에 맞췄습니다. 반복 재생에서 계속 들리는 것은 반복 구간이므로 음량도 그
+    구간만 쟀고, 0.1dB 단위로 반올림한 이득을 곱했습니다.
+  </p>
+  <div class="table-scroll" tabindex="0" role="region" aria-labelledby="loud-caption">
+    <table>
+      <caption id="loud-caption">반복 구간의 통합 음량</caption>
+      <thead>
+        <tr>
+          <th scope="col">곡</th>
+          <th scope="col">처음(LUFS)</th>
+          <th scope="col">이득(dB)</th>
+          <th scope="col">맞춘 뒤(LUFS)</th>
+          <th scope="col">트루 피크(dBFS)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {loud.map(l => (
+          <tr>
+            <th scope="row">{l.name}</th>
+            <td>{l.before}</td>
+            <td>{l.gain}</td>
+            <td>{l.after}</td>
+            <td>{l.peak}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    처음에는 가장 큰 곡과 가장 작은 곡이 10dB 넘게 차이 났습니다. 제절초는 +9.1dB나 키웠지만 가장 큰 순간(트루 피크)이
+    −5.2dBFS로 0dBFS까지 여유가 있어서, 최댓값을 눌러 주는 리미터 없이 이득만 곱했습니다. 트루 피크는 샘플 사이에서
+    파형이 샘플 값보다 더 높이 올라가는 것까지 계산한 최댓값입니다. 툴킷은 이것을 재지 않으므로 ffmpeg로 쟀습니다.
+  </p>
+
+  <h2 id="web">
+    웹에서 끊김 없이 반복 재생하기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    HTML의 <code>&lt;audio loop&gt;</code>는 파일 전체를 처음부터 다시 틀 뿐이라 반복 구간을 정할 수 없습니다. Web Audio
+    API는 파일을 메모리에 모두 풀어 둔 뒤(<code>decodeAudioData</code>) 재생하는 <code>AudioBufferSourceNode</code>에{' '}
+    <code>loop</code>, <code>loopStart</code>, <code>loopEnd</code>를 줄 수 있습니다. 명세는 loopEnd에 닿으면
+    loopStart로 돌아가며, 반복 지점이 샘플 사이에 있어도 이어진 소리처럼 보간한다고 정합니다. 이 블로그의 플레이어는
+    처음부터 재생해 인트로를 한 번 들려주고, 그다음은 loopStart–loopEnd만 되풀이합니다.
+  </p>
+  <p>
+    브라우저는 사용자가 페이지를 누르거나 키를 치기 전에는 소리 나는 자동재생을 막을 수 있습니다. 막혀 있는 동안
+    AudioContext는 <code>suspended</code> 상태로 남고, 첫 클릭이나 키 입력 안에서 <code>resume()</code>을 불러야 소리가
+    납니다. 자주 찾는 사이트에서는 바로 재생을 허락하는 브라우저도 있어서, 플레이어는 한 번 재생을 시도해 보고 막혔으면
+    "화면을 누르면 배경음악이 나옵니다"를 띄웁니다.
+  </p>
+  <p>
+    파일을 받는 시점도 중요했습니다. 0.7–3MB 음악 파일을 페이지를 열자마자 받았더니, 첫 화면의 큰 이미지와 대역폭을 다퉈
+    CI의 Lighthouse 검사에서 돌격편의 LCP(가장 큰 요소가 그려지는 시간)가 5.3초로 예산 3.5초를 넘었습니다. 그래서 파일
+    요청과 자동재생 시도를 모두 페이지 로드가 끝나고 2.5초 뒤로 미뤘습니다. 다른 탭에서 음악이 나오거나 페이지의
+    동영상이 재생되면 소리를 끄는 것도 같은 플레이어가 합니다.
+  </p>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <p>
+    네 곡 모두 같은 녹음, 같은 주기에서 후보를 셋 만들어 측정으로 골랐습니다. L은 툴킷 이전 스크립트를 그대로 재현한
+    것(equal-power, loopEnd 뒤 녹음으로 채운 꼬리, 최고 점수 이음매)이고, 처음 배포한 파일의 원본 WAV와 바이트까지
+    같습니다. B는 같은 범위에서 최고 점수 이음매에 equal-gain과 이음매 뒤 꼬리를 쓴 것, N은 툴킷 기본값(가장 이른
+    이음매)입니다. 규칙은 "페이드 편차가 L보다 낮고 seamcheck를 통과하면 B, N은 seamcheck 비율이 B 이하일 때만 B
+    대신"이었습니다.
+  </p>
+  <div class="table-scroll" tabindex="0" role="region" aria-labelledby="tracks-caption">
+    <table class="track-table">
+      <caption id="tracks-caption">네 곡의 반복 구간(파일 기준 초)과 고른 후보</caption>
+      <thead>
+        <tr>
+          <th scope="col">곡</th>
+          <th scope="col">곡 시작(녹음 초)</th>
+          <th scope="col">주기(샘플)</th>
+          <th scope="col">이음매를 찾은 범위</th>
+          <th scope="col">고른 후보</th>
+          <th scope="col">loopStart–loopEnd</th>
+          <th scope="col">이음매 점수</th>
+          <th scope="col">seamcheck 비율</th>
+          <th scope="col">페이드 편차 최대 / RMS(L → 고른 후보)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tracks.map(t => (
+          <tr>
+            <th scope="row">
+              <a href={`${t.patch.path}/`}>{t.name}</a> 「{t.patch.bgm.title}」
+            </th>
+            <td>{t.start}</td>
+            <td>{t.period}</td>
+            <td>{t.range}</td>
+            <td>{t.pick}</td>
+            <td>{t.loop}</td>
+            <td>{t.score}</td>
+            <td>{t.ratio}</td>
+            <td>{t.fade}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    각성편·슈퍼 마리오 RPG·제절초는 B가 L과 같은 이음매를 골라, 반복 구간은 그대로 두고 페이드와 꼬리만 바뀌었습니다.
+    N은 셋 모두 더 이른 이음매(각성편 24.05초, 슈퍼 마리오 RPG 6.65초)를 골라 파일이 짧았지만, seamcheck 비율이 B보다
+    높아(1.016, 1.027, 1.069) 규칙대로 B를 썼습니다. 가장 이른 이음매가 기본값인 것은 맞지만, 측정해서 더 나은 쪽이
+    있으면 그쪽을 씁니다.
+  </p>
+  <h3>돌격편: 이음매를 북소리에서 조용한 곳으로 옮긴 이유</h3>
+  <p>
+    돌격편은 바퀴마다 음색이 조금씩 달라 이음매 점수가 0.87–0.91로 네 곡 가운데 가장 낮습니다. 처음 파일의 이음매는 녹음
+    18.63초, 큰 타격음 위였습니다. 원래 녹음에서도 그 순간의 플럭스가 495로 곡의 99번째 백분위수(309)의 1.6배였습니다.
+    같은 이음매를 유지한 채 equal-gain으로 섞은 후보(B0)는 RMS만 조금 낮아지고 페이드 편차의 최댓값은 2191에서 2223으로
+    오히려 커졌습니다.
+  </p>
+  <p>
+    채널을 섞지 않는 새 점수로 범위를 다시 훑자, 가장 높은 곳과 가장 이른 좋은 곳이 모두 녹음 21.79초였습니다. 플럭스가
+    85로 곡의 중앙값(81)에 가까운 조용한 지점입니다. 점수도 0.8672에서 0.8821로 높고, 페이드 편차는 최대 1067, RMS 215로
+    절반 아래로 줄었습니다. 그래서 loopStart를 6.128875초에서 9.289438초로, loopEnd를 57.809417초에서 60.969979초로
+    옮겼습니다. 파일은 3.16초, 39KB 길어졌습니다. 소리가 크게 바뀌는 순간에 이으면 작은 차이도 크게 들리고, 조용히
+    이어지는 곳에서 이으면 차이가 묻힙니다.
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    이 블로그의 파일을 만든 명령 그대로입니다. 녹음 파일 경로만 자기 것으로 바꾸면 됩니다. 주기는 앞에서 찾은 값을{' '}
+    <code>--period</code>로 바로 주고, 이음매 탐색 범위는 들어 보고 정했습니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch audio loop rec/k07clean.wav kakusei-B.wav --start 3.15 --period 2194325 \
+    --seam-range 24:44 --seam-pick best --fade-shape equal-gain --tail-from seam --json kakusei-B.json
+$ krpatch audio loop rec/totsugeki.wav totsugeki-B.wav --start 12.5 --period 2480666 \
+    --seam-range 18.2:25.6 --seam-pick best --fade-shape equal-gain --tail-from seam --json totsugeki-B.json
+$ cat totsugeki-B.json
+&lbrace;"loopStart": 9.289438, "loopEnd": 60.969979, "duration": 61.469979, "loopStartSample": 445893, "loopEndSample": 2926559, "loopLengthSample": 2480666, "durationSamples": 2950559, "sampleRate": 48000, "period": 2480666, "sourceStartSample": 600000, "seamScore": 0.8821&rbrace;</code></pre>
+  <p>
+    <code>--fade-shape equal-gain</code>과 <code>--tail-from seam</code>은 기본값이라 빼도 됩니다. 같은 인자에{' '}
+    <code>--legacy</code>를 주면 L 후보가, <code>--seam-pick best</code>를 빼면 N 후보가 나옵니다. 위치는 모두 새로 쓴
+    파일 기준이고, <code>sourceStartSample</code>은 그 파일이 녹음의 어디서 시작하는지입니다(12.5초 × 48,000 = 600,000).
+    이음매를 검사할 때는 녹음도 함께 줍니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch audio seamcheck totsugeki-B.wav --json totsugeki-B.json --source rec/totsugeki.wav</code></pre>
+  <p>
+    결과의 <code>seamFlux</code>는 94.8, <code>sourceFlux</code>는 84.5, 한도(<code>limit</code>)는 그 1.25배인
+    105.6이라 통과(<code>"ok": true</code>, 종료 코드 0)였습니다. 실패하면 종료 코드 1로 끝나므로 스크립트에서 바로 걸러
+    낼 수 있습니다. 음량은 반복 구간만 재서 이득을 정하고, 곱한 뒤 다시 잽니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch audio loudness totsugeki-B.wav --start 9.289438 --end 60.969979 --target -20
+$ ffmpeg -i totsugeki-norm.wav -af ebur128=peak=true -f null -
+$ afconvert -f m4af -d aac -b 96000 -s 1 -q 127 totsugeki-norm.wav bgm.m4a</code></pre>
+  <p>
+    이득은 정수 샘플에 10<sup>dB/20</sup>을 곱해 반올림하는 짧은 스크립트로 곱했습니다(툴킷에는 이득을 곱하는 명령이
+    없습니다). 마지막 줄은 macOS의 <code>afconvert</code>로 96kbps AAC를 만드는 명령입니다. 다른 AAC 인코더를 써도
+    되지만, 앞 여백 길이가 다를 수 있으니 플레이어의 보정 값을 그 인코더에 맞춰 확인합니다. 명령마다 자세한 설명은 툴킷
+    README의 <a href={`${TOOLKIT_README_KO}#${encodeURIComponent('audio-녹음에서-반복-재생용-파일-만들기')}`}>audio</a>{' '}
+    절에 있습니다.
+  </p>
+  <p class="muted">
+    이 장의 출력은 kr-patch-toolkit 0.2.0(Python 3.15, numpy 2.5)로 macOS에서 돌린 결과입니다. 주기와 이음매는 모두
+    48,000Hz 샘플 단위이고, 16비트 값은 <a href={`${NUMBERS}#bits`}>1장</a>의 부호 있는 수입니다.
+  </p>
+</GuideChapter>
+
+<style>
+  .track-table th[scope='row'] {
+    min-width: 11em;
+  }
+</style>
