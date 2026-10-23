@@ -1,7 +1,9 @@
 ---
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
-import { KR_PATCH_TOOLKIT_URL, sourceUrl, TOTSUGEKI_PATCH, type KrPatch } from '../../lib/kr-patches';
+import MakingSources from '../kr-patch/MakingSources.astro';
+import MakingToc from '../kr-patch/MakingToc.astro';
+import { sourceUrl, TOTSUGEKI_PATCH, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
   patch: KrPatch;
@@ -172,12 +174,27 @@ const buildSteps = [
   '모든 대사와 말풍선이 창 안에 들어가는지 검사하고, 넘치면 빌드를 멈춥니다.',
   '롬 헤더 체크섬을 다시 계산하고 IPS를 만듭니다.',
 ];
+
+const chapters = [
+  { id: 'making-basics', title: '1. 배경지식' },
+  { id: 'making-dialogue', title: '2. 대사가 롬에 들어 있는 모양' },
+  { id: 'making-font', title: '3. 폰트에 없는 글자' },
+  { id: 'making-relocate', title: '4. 늘어난 대사는 같은 뱅크 안으로' },
+  { id: 'making-bugfix', title: '5. 우주선이 맵 밖을 헤매던 이유' },
+  { id: 'making-title-gfx', title: '6. 압축된 타이틀 그림' },
+  { id: 'making-credits', title: '7. 엔딩 크레딧과 세이브' },
+  { id: 'making-password', title: '8. 돌격편에서 넘어오는 암호' },
+  { id: 'making-testing', title: '9. 확인은 에뮬레이터가' },
+  { id: 'making-next', title: '10. 다음 사람에게' },
+  { id: 'making-tools', title: '11. 패치 소스 파일' },
+];
 ---
 
 <section id="making" class="section page-width" aria-labelledby="making-title">
   <h2 id="making-title" class="pixel">
     롬 분석 노트
   </h2>
+  <p class="making-badge">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="lead">
     이 롬을 다시 분석하거나 패치를 고칠 사람을 위해 남기는 기록입니다. v1.2는 2016년에 낸 v1.1 패치를 일본판에 적용한
     롬에서 출발했습니다. 그 위에 v1.1이 만든 진행 버그를 고치고, 압축된 타이틀 그림을 풀어 한글로 다시 그리고, 대사
@@ -196,19 +213,20 @@ const buildSteps = [
     />
     <figcaption>일본판 롬에 남아 있는 디버그 메뉴</figcaption>
   </figure>
-  <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
-  <p class="section-note">
-    빌드 스크립트, 대사·폰트·LZSS 도구, 글자 표, 고친 대사 782줄과 말풍선 443개, Mesen 2용 Lua 스크립트, 에뮬레이터 비교
-    도구와 롬 분석 문서는 <a href={source}>패치 소스(GitHub)</a>에 있습니다. 롬은 들어 있지 않고,
-    IPS·체크섬·LZSS·libretro 실행 같은 공통 도구는 <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의{' '}
-    <code>krpatch</code> 명령과 Lua 스크립트를 씁니다. 롬 분석 문서는 게임 폴더의 docs/ANALYSIS.md, 빌드 방법은
-    README.md에 있습니다. 아래 「자세히 보기」의 항목마다 그 내용을 다루는 파일을 적어 두었고, 전체 목록은 마지막{' '}
-    <a href="#making-tools">패치 소스 파일</a>에 있습니다.
-  </p>
+  <MakingSources
+    source={source}
+    holds="빌드 스크립트, 대사·폰트·LZSS 도구, 글자 표, 고친 대사 782줄과 말풍선 443개, Mesen 2용 Lua 스크립트, 에뮬레이터 비교 도구, 롬 분석 문서"
+    missing="롬"
+    toolkit="IPS·체크섬·LZSS·libretro 실행과 Lua 스크립트"
+  />
 
   <details class="more making">
-    <summary class="pointer">자세히 보기</summary>
+    <summary class="making-open">
+      <span class="pointer">노트 펼치기</span>
+      <span class="making-count">11장</span>
+    </summary>
     <div class="making-body">
+      <MakingToc chapters={chapters} />
       <h3 id="making-basics" class="pixel">
         1. 배경지식
       </h3>

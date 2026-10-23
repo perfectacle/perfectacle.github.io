@@ -1,7 +1,9 @@
 ---
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
-import { KR_PATCH_TOOLKIT_URL, sourceUrl, type KrPatch } from '../../lib/kr-patches';
+import MakingSources from '../kr-patch/MakingSources.astro';
+import MakingToc from '../kr-patch/MakingToc.astro';
+import { sourceUrl, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
   patch: KrPatch;
@@ -200,12 +202,27 @@ const sectionTitles: Record<keyof typeof files, string> = {
 const allFiles = Object.entries(files)
   .flatMap(([section, items]) => items.map(item => ({ ...item, section: section as keyof typeof files })))
   .filter((file, i, list) => list.findIndex(other => other.path === file.path) === i);
+
+const chapters = [
+  { id: 'making-basics', title: '1. 배경지식' },
+  { id: 'making-font', title: '2. 왜 v1.0은 이름을 영문으로 뒀나' },
+  { id: 'making-slots', title: '3. 필요한 글자만 올리는 임시 칸' },
+  { id: 'making-battle', title: '4. 전투 메뉴는 SA-1이 따로 그린다' },
+  { id: 'making-space', title: '5. 롬을 4MB보다 키우지 않은 이유' },
+  { id: 'making-dialogue', title: '6. 대사 속 아이템 이름' },
+  { id: 'making-particles', title: '7. 조사 자동 선택' },
+  { id: 'making-ui', title: '8. 원판부터 어색했던 화면' },
+  { id: 'making-testing', title: '9. 확인은 에뮬레이터가' },
+  { id: 'making-next', title: '10. 다음 사람에게' },
+  { id: 'making-tools', title: '11. 패치 소스 파일' },
+];
 ---
 
 <section id="making" class="section page-width" aria-labelledby="making-title">
   <h2 id="making-title" class="pixel">
     롬 분석 노트
   </h2>
+  <p class="making-badge">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="lead">
     이 롬을 다시 분석하거나 패치를 이어 고칠 사람을 위해 남기는 기록입니다. v1.0은 대사와 메뉴는 한글이었지만
     아이템·필살기·적 이름은 MUSHROOM, HAMMER 같은 영문이었습니다. 롬 용량이 모자라서가 아니라 메뉴 화면에 한 번에 올려
@@ -224,19 +241,20 @@ const allFiles = Object.entries(files)
     />
     <figcaption>위 v1.0, 아래 v1.1</figcaption>
   </figure>
-  <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
-  <p class="section-note">
-    빌드에 쓴 스크립트, 어셈블리 소스, 이름 데이터, v1.0 코드표와 롬 분석 문서는 <a href={source}>패치 소스(GitHub)</a>
-    에 있습니다. 롬, asar, Mesen은 들어 있지 않고, IPS·역어셈블러·타일 그림·libretro 실행 같은 공통 도구는{' '}
-    <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 <code>krpatch</code> 명령을 씁니다. 빌드 순서는 게임 폴더의
-    README.md에 있습니다. 롬 헤더, 메모리, 대사·폰트 형식, 후킹 주소, 쓴 빈 공간, 디버그 기능은 docs/ANALYSIS.md에 직접
-    확인한 것과 추정을 나눠 적었습니다. 아래 「자세히 보기」의 항목마다 그 내용을 다루는 파일을 적어 두었고, 전체 목록은
-    마지막 <a href="#making-tools">패치 소스 파일</a>에 있습니다.
-  </p>
+  <MakingSources
+    source={source}
+    holds="빌드 스크립트, 어셈블리 소스, 이름 데이터, v1.0 코드표, 롬 분석 문서"
+    missing="롬, asar, Mesen"
+    toolkit="IPS·역어셈블러·타일 그림·libretro 실행"
+  />
 
   <details class="more making">
-    <summary class="pointer">자세히 보기</summary>
+    <summary class="making-open">
+      <span class="pointer">노트 펼치기</span>
+      <span class="making-count">11장</span>
+    </summary>
     <div class="making-body">
+      <MakingToc chapters={chapters} />
       <h3 id="making-basics" class="pixel">
         1. 배경지식
       </h3>

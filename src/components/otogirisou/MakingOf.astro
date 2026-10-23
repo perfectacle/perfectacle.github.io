@@ -1,7 +1,9 @@
 ---
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
-import { KR_PATCH_TOOLKIT_URL, sourceUrl, type KrPatch } from '../../lib/kr-patches';
+import MakingSources from '../kr-patch/MakingSources.astro';
+import MakingToc from '../kr-patch/MakingToc.astro';
+import { sourceUrl, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
   patch: KrPatch;
@@ -169,6 +171,28 @@ const toolVersions = [
   { name: 'Mesen 2', version: '2.1.1' },
   { name: 'Python', version: '3.9.6 (Pillow 11.3.0)' },
 ];
+
+const chapters = [
+  { id: 'making-basics', title: '1. 배경지식' },
+  { id: 'making-script', title: '2. 대사가 들어 있는 방식' },
+  { id: 'making-lap2', title: '3. 2회차에 멈추던 이유' },
+  { id: 'making-a-wait', title: '4. A 버튼 없이 넘어가던 화면' },
+  { id: 'making-font', title: '5. 글자표를 눈으로 읽게 하기' },
+  { id: 'making-wordwrap', title: '6. 단어 단위 줄바꿈' },
+  { id: 'making-retranslate', title: '7. 원문 대조 재번역' },
+  { id: 'making-save-compat', title: '8. 옛 세이브로 이어하기' },
+  { id: 'making-select', title: '9. v1.2 편의 기능: 빈 버튼 찾기' },
+  { id: 'making-readers', title: '10. 대본을 읽는 손이 셋' },
+  { id: 'making-menu', title: '11. 메뉴는 그리지 않고 대본으로 쓴다' },
+  { id: 'making-scene-music', title: '12. 장으로 옮길 때 배경과 음악' },
+  { id: 'making-records', title: '13. 읽은 장과 본 엔딩 기록' },
+  { id: 'making-flowchart', title: '14. 플로차트' },
+  { id: 'making-yellow', title: '15. 책갈피와 노란 글씨' },
+  { id: 'making-space', title: '16. 코드를 둔 자리' },
+  { id: 'making-testing', title: '17. 확인은 에뮬레이터가' },
+  { id: 'making-next', title: '18. 다음 사람에게' },
+  { id: 'making-tools', title: '19. 패치 소스 파일' },
+];
 ---
 
 <section id="making" class="section page-width" aria-labelledby="making-title">
@@ -176,6 +200,7 @@ const toolVersions = [
   <h2 id="making-title" class="pixel">
     롬 분석 노트
   </h2>
+  <p class="making-badge">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="lead">
     이 롬을 다시 분석하거나 한글판을 이어서 고칠 사람을 위해 남기는 기록입니다. 2016년에 낸 v1.0은 2회차부터 멈추거나, A
     버튼을 누르지 않았는데 화면이 넘어가거나, 단어 중간에서 줄이 끊기는 문제가 있었습니다. v1.1은 이 문제를 롬에서
@@ -194,19 +219,20 @@ const toolVersions = [
     />
     <figcaption>왼쪽부터 v1.0 2회차 멈춤, v1.1 단어 단위 줄바꿈, v1.2 플로차트</figcaption>
   </figure>
-  <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
-  <p class="section-note">
-    빌드 스크립트, 어셈블리 소스, 대본, 글자표, 테스트 스크립트와 롬 분석 문서는 <a href={source}>패치 소스(GitHub)</a>
-    에 있습니다. 각 단계 끝의 「패치 소스 속 파일」에 그 단계에서 쓴 파일과 하는 일을 적었고, 전체 목록은 마지막{' '}
-    <a href="#making-tools">패치 소스 파일</a>에 있습니다. 롬, asar, Mesen은 들어 있지 않고, 일본어 대본은 빌드할 때
-    가지고 있는 일본판 롬에서 뽑습니다. IPS·체크섬·역어셈블러·문자 인식·libretro 실행 같은 공통 도구는{' '}
-    <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 <code>krpatch</code> 명령과 Lua 스크립트를 씁니다. 빌드 순서는
-    게임 폴더의 README.md에, 롬 주소와 형식 전체는 docs/ANALYSIS.md에 있습니다.
-  </p>
+  <MakingSources
+    source={source}
+    holds="빌드 스크립트, 어셈블리 소스, 대본, 글자표, 테스트 스크립트, 롬 분석 문서"
+    missing="롬, asar, Mesen. 일본어 대본은 빌드할 때 가지고 있는 일본판 롬에서 뽑습니다"
+    toolkit="IPS·체크섬·역어셈블러·문자 인식·libretro 실행과 Lua 스크립트"
+  />
 
   <details class="more making">
-    <summary class="pointer">자세히 보기</summary>
+    <summary class="making-open">
+      <span class="pointer">노트 펼치기</span>
+      <span class="making-count">19장</span>
+    </summary>
     <div class="making-body">
+      <MakingToc chapters={chapters} />
       <h3 id="making-basics" class="pixel">
         1. 배경지식
       </h3>
