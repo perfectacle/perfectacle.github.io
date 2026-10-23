@@ -3,6 +3,7 @@ import '../styles/patch-book.css';
 import Analytics from '../components/Analytics.astro';
 import SectionNav from '../components/kr-patch/SectionNav.astro';
 import ImagePreview from '../components/kr-patch/ImagePreview.astro';
+import Bgm from '../components/kr-patch/Bgm.astro';
 import { SITE } from '../lib/posts.ts';
 import { KR_PATCH_LIST_PATH, KR_PATCH_SITE_TITLE, KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
 import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
@@ -78,11 +79,12 @@ const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH
       <slot />
     </main>
     {theme !== 'sfc' && <ImagePreview />}
+    {patch && <Bgm patch={patch} />}
     <footer class="page-footer page-width">
       {copyright.map(line => (
         <p>{line}</p>
       ))}
-      <p>화면과 그림은 원작 게임에서 가져왔습니다.</p>
+      <p>{patch ? '화면·그림·배경음악은' : '화면과 그림은'} 원작 게임에서 가져왔습니다.</p>
       <p>
         제목·라벨 글꼴은 <a href="https://galmuri.quiple.dev/">Galmuri</a>(SIL Open Font License 1.1)입니다.
       </p>
