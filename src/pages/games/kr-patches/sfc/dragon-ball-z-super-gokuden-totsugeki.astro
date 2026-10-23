@@ -5,6 +5,7 @@ import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro
 import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
 import ReleasePairs from '../../../../components/kr-patch/ReleasePairs.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
+import SaveNote from '../../../../components/kr-patch/SaveNote.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import MakingOf from '../../../../components/totsugeki/MakingOf.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
@@ -120,10 +121,10 @@ const cast = [
       <h1 id="title" class="pixel">
         {patch.title} 한글판
       </h1>
-      <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem} />
-      <ManualPatch patch={patch}>
-        <p>세이브 구조는 바꾸지 않아 v1.0·v1.1 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
-      </ManualPatch>
+      <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
+        <ManualPatch patch={patch} />
+      </PatchBox>
+      <SaveNote />
     </div>
     <figure class="hero-shot screen">
       <ZoomImage
@@ -395,7 +396,7 @@ const cast = [
         </ReleaseItem>
         <ReleaseItem>
           <ul>
-            <li>v1.0·v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+            <li>이전 버전 세이브를 그대로 이어서 할 수 있습니다.</li>
           </ul>
         </ReleaseItem>
       </ReleaseDetails>
@@ -416,7 +417,7 @@ const cast = [
             <li>캐릭터 말투·고유명사·맞춤법·줄바꿈을 다듬었습니다.</li>
             <li>폰트에 없던 글자 213자(꽃·쫓·흙 등)를 추가했습니다.</li>
             <li>이벤트 표 203번 부근에서 화면을 닫지 못하던 문제를 수정했습니다.</li>
-            <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+            <li>이전 버전 세이브를 그대로 이어서 할 수 있습니다.</li>
           </ul>
           <p class="section-note">아래는 같은 장면을 같은 입력으로 찍어 v1.0과 v1.1을 나란히 놓은 것입니다.</p>
         </ReleaseItem>

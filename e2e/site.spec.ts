@@ -848,7 +848,7 @@ for (const game of PATCH_GUIDES) {
       await expect(notes.locator(`[aria-labelledby="release-${version}"] time`)).toHaveAttribute('datetime', date);
     }
     await expect(notes.locator('.patch-release').last()).toContainText('최초 한글패치');
-    await expect(notes.locator('.patch-release').first()).toContainText('세이브 파일');
+    await expect(notes.locator('.patch-release').first()).toContainText('이전 버전 세이브');
     const korean = page.locator(game.startsWith('dragon-ball') ? '#changes' : '#korean');
     await expect(korean.getByRole('heading', { level: 2 })).toHaveText('한국어로 바뀐 것');
     await expect(korean).not.toContainText(/업데이트|v1\.[012]/);

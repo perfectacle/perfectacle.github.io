@@ -251,6 +251,33 @@ summary.pointer:focus-visible::before {
   opacity: 1;
 }
 
+/* Every fold on these pages shows the same arrow after its label, turned down while open. The browser's own marker
+   disappears on summary.pointer (inline-block), so all folds draw this one instead. */
+details:not(.section-nav-menu) > summary {
+  list-style: none;
+}
+
+details:not(.section-nav-menu) > summary::-webkit-details-marker {
+  display: none;
+}
+
+details:not(.section-nav-menu) > summary::after {
+  content: '▸';
+  display: inline-block;
+  margin-left: 0.4em;
+  transition: transform 0.15s;
+}
+
+details[open]:not(.section-nav-menu) > summary::after {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  details:not(.section-nav-menu) > summary::after {
+    transition: none;
+  }
+}
+
 /* Header and footer */
 
 .masthead {
@@ -430,13 +457,20 @@ h1.pixel {
   font-size: 0.875rem;
 }
 
-.file-checksums {
+.file-checksums,
+.manual {
   min-width: 0;
   border-top: 1px solid var(--muted);
   font-size: 0.8125rem;
 }
 
-.file-checksums summary {
+/* The two folds at the foot of the patch box read as one list, so only the first draws the rule. */
+.file-checksums + .manual {
+  border-top: 0;
+}
+
+.file-checksums summary,
+.manual summary {
   padding-block: 10px 2px;
   color: var(--muted);
   cursor: pointer;
@@ -557,17 +591,14 @@ h1.pixel {
   opacity: 1;
 }
 
-.manual summary {
-  margin-left: 30px;
-  color: var(--link);
-  cursor: pointer;
+.manual-note {
+  color: var(--muted);
 }
 
 .manual-body {
   display: grid;
-  gap: 12px;
-  margin-top: 12px;
-  font-size: 1rem;
+  gap: 10px;
+  padding-top: 10px;
 }
 
 /* Sections */
@@ -688,7 +719,7 @@ h3.pixel {
 
 .more summary {
   margin: 0 0 20px 30px;
-  color: var(--link);
+  color: var(--ink);
   cursor: pointer;
 }
 

@@ -21,8 +21,9 @@ const { title } = Astro.props;
 
   /* Items run together inside one details box, so each one after the first starts below a rule. */
   .release-item + .release-item {
-    padding-top: 20px;
-    border-top: 1px dashed color-mix(in srgb, var(--muted) 60%, transparent);
+    margin-top: 12px;
+    padding-top: 28px;
+    border-top: 2px solid color-mix(in srgb, var(--muted) 70%, transparent);
   }
 
   .release-item-title {

@@ -5,6 +5,7 @@ import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
+import SaveNote from '../../../../components/kr-patch/SaveNote.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import Speech from '../../../../components/kr-patch/Speech.astro';
 import MakingOf from '../../../../components/smrpg/MakingOf.astro';
@@ -151,10 +152,10 @@ const story = [
         version={patch.version}
         output={patch.stem}
         speaker={GUIDE}
-      />
-      <ManualPatch patch={patch}>
-        <p>세이브 구조는 바꾸지 않아 v1.1·v1.0 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
-      </ManualPatch>
+      >
+        <ManualPatch patch={patch} />
+      </PatchBox>
+      <SaveNote />
     </div>
     <figure class="hero-shot screen">
       <ZoomImage
@@ -423,7 +424,7 @@ const story = [
         </ReleaseItem>
         <ReleaseItem>
           <ul>
-            <li>v1.1·v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+            <li>이전 버전 세이브를 그대로 이어서 할 수 있습니다.</li>
           </ul>
         </ReleaseItem>
       </ReleaseDetails>
@@ -613,7 +614,7 @@ const story = [
         </ReleaseItem>
         <ReleaseItem>
           <ul>
-            <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+            <li>이전 버전 세이브를 그대로 이어서 할 수 있습니다.</li>
           </ul>
         </ReleaseItem>
       </ReleaseDetails>
