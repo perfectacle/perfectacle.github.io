@@ -129,7 +129,7 @@ jobs:
     timeout-minutes: 5
     env:
       # One place for the version: the cache key and the run both read it, and Renovate updates it.
-      ZIZMOR: zizmor==1.31.0
+      ZIZMOR: zizmor==1.31.1
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
