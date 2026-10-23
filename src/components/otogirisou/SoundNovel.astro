@@ -89,10 +89,12 @@ const title = {
 </div>
 
 <style>
+  /* Whole-number scales of the 256px screen, at most two; a phone narrower than one scale shrinks it. */
   .novel {
     display: grid;
     gap: 12px;
-    max-width: 512px;
+    width: min(100%, 512px);
+    width: min(100%, max(256px, round(down, 100%, 256px)), 512px);
   }
 
   .novel[data-state='reading'] .novel-screen {

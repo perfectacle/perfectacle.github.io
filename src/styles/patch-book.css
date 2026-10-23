@@ -154,6 +154,11 @@ main:focus {
   padding-inline: 16px;
 }
 
+/* Patch pages use wide screens for bigger game screens instead of empty margins. */
+.has-section-nav .page-width {
+  width: min(100%, 1440px);
+}
+
 /* Original menu window: 16px corners with 8px edges, nine-sliced from the game's own tiles. */
 .frame {
   border: 16px solid transparent;
@@ -188,6 +193,37 @@ main:focus {
   width: 100%;
   height: auto;
   image-rendering: pixelated;
+}
+
+/* Pixel art takes the largest whole-number scale of its game pixels that fits, at most two, so every game
+   pixel is the same size. Only a cell narrower than one scale shrinks it. The first width is for browsers
+   without round(). */
+:is(.zoom-image, .patch-image-trigger) > .patch-picture {
+  width: min(100cqw, calc(var(--patch-pixel-unit) * 2));
+  width: min(
+    100cqw,
+    max(var(--patch-pixel-unit), round(down, 100cqw, var(--patch-pixel-unit))),
+    calc(var(--patch-pixel-unit) * 2)
+  );
+  margin-inline: auto;
+}
+
+/* Composites are drawn smoothly and never above their own size, where smoothing would blur them. */
+.zoom-image > .patch-picture.smooth {
+  width: min(100cqw, var(--patch-image-width));
+}
+
+/* The frame hugs the picture, which can be narrower than its cell. */
+.screen:has(.patch-picture) {
+  background: none;
+  box-shadow: none;
+}
+
+.screen .patch-picture {
+  background: #000;
+  box-shadow:
+    0 0 0 3px #000,
+    0 6px 0 rgb(0 0 0 / 35%);
 }
 
 /* The menu's pointing hand appears beside whatever the player is about to choose. */
@@ -253,6 +289,13 @@ summary.pointer:focus-visible::before {
   .hero {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
     gap: 48px;
+  }
+}
+
+/* From here the title screen column holds a 2× screen exactly. */
+@media (min-width: 1104px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr) 512px;
   }
 }
 
@@ -580,19 +623,40 @@ h3.pixel {
 
 .compare-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));
   gap: 32px 28px;
 }
 
 .compare {
   display: grid;
   gap: 14px;
+  container: compare / inline-size;
 }
 
+/* Side by side at twice the game's size where a pair fits, else once; a phone stacks them. */
 .compare-shots {
+  --shot: min(100%, 256px);
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, var(--shot));
+  justify-content: center;
   gap: 10px;
+}
+
+@container compare (width >= 522px) {
+  .compare-shots {
+    --shot: 256px;
+  }
+}
+
+@container compare (width >= 1034px) {
+  .compare-shots {
+    --shot: 512px;
+  }
+
+  /* The caption lines up with a pair of 2× screens instead of running past them. */
+  .compare:has(> .compare-shots > :nth-child(2):last-child) > figcaption {
+    justify-self: center;
+    width: 1034px;
+  }
 }
 
 /* The version tag sits on the screen's corner; the Super Mario RPG theme lifts it above instead. */
@@ -647,13 +711,13 @@ h3.pixel {
 
 .story-shots {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 256px), 1fr));
   gap: 12px;
 }
 
 .play-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 20px;
 }
 
@@ -844,22 +908,9 @@ h3.pixel {
 }
 
 /* Labels sit above each screen so they never cover the game's own name tags. */
-[data-theme='smrpg'] .shot {
-  justify-items: start;
-}
-
 [data-theme='smrpg'] .tag {
+  justify-self: start;
   position: static;
-}
-
-/* Screens stay at whole-number scales so every game pixel is the same size. */
-[data-theme='smrpg'] .compare-shots {
-  grid-template-columns: repeat(auto-fit, 256px);
-  justify-content: center;
-}
-
-[data-theme='smrpg'] .shot .screen {
-  width: 256px;
 }
 
 [data-theme='smrpg'] .hero-shot {
@@ -896,11 +947,6 @@ h3.pixel {
 
 [data-theme='smrpg'] .play-list {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
-}
-
-[data-theme='smrpg'] .play .screen {
-  justify-self: center;
-  width: 256px;
 }
 
 [data-theme='smrpg'] .cast-list {
@@ -1220,7 +1266,7 @@ h3.pixel {
 
 .feature-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 24px;
 }
 
@@ -1246,7 +1292,7 @@ h3.pixel {
 }
 
 [data-theme='otogirisou'] .play-list {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
 }
 
 /* Scenes stay black until they are well into view, then cut in at once, as the game swaps pictures. */

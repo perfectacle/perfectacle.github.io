@@ -1064,6 +1064,8 @@ for (const game of PATCH_GUIDES) {
     page,
     isMobile,
   }) => {
+    // The menu sits beside the page only from 1500px; narrower desktops get the folding bar like phones.
+    if (!isMobile) await page.setViewportSize({ width: 1600, height: 900 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(path);
     const nav = page.getByRole('navigation', { name: '페이지 내 이동', exact: true });
@@ -1137,7 +1139,7 @@ for (const game of PATCH_GUIDES) {
   });
 
   test(`${game} section navigation follows direct links and manual scrolling`, async ({ page, isMobile }) => {
-    if (isMobile) await page.setViewportSize({ width: 390, height: 900 });
+    await page.setViewportSize(isMobile ? { width: 390, height: 900 } : { width: 1600, height: 900 });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(`${path}#story`);
     const nav = page.getByRole('navigation', { name: '페이지 내 이동', exact: true });
