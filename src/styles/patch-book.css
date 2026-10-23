@@ -298,6 +298,7 @@ details[open]:not(.section-nav-menu) > summary::after {
 /* The panel runs edge to edge so the floating music button sits inside it; the text keeps the page width. */
 .page-footer {
   display: grid;
+  justify-items: center;
   gap: 6px;
   margin-top: 48px;
   padding-block: 24px;
@@ -306,6 +307,7 @@ details[open]:not(.section-nav-menu) > summary::after {
   clip-path: inset(0 -100vmax);
   color: var(--muted);
   font-size: 0.875rem;
+  text-align: center;
 }
 
 /* Hero with the patch box */
