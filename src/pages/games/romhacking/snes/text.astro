@@ -5,11 +5,11 @@ import Figure from '../../../../components/romhacking/Figure.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
 
 const sections = [
-  { id: 'table', label: '글자표: 숫자와 글자의 사전' },
+  { id: 'table', label: '글자표: 바이트 값과 글자 대응표' },
   { id: 'width', label: '1바이트 글자, 2바이트 글자' },
   { id: 'control', label: '제어 코드: 글자가 아닌 명령' },
   { id: 'pointers', label: '포인터 표: 대사 번호로 위치 찾기' },
-  { id: 'stream', label: '대본처럼 이어진 대사' },
+  { id: 'stream', label: '번호 없이 한 줄로 이어진 대사' },
   { id: 'grow', label: '번역이 길어지면 어디에 두나' },
   { id: 'in-patch', label: '실제 패치에서' },
   { id: 'try', label: '직접 해 보기' },
@@ -91,7 +91,7 @@ const growth = [
 
 <GuideChapter platform="snes" slug="text" sections={sections} references={references}>
   <h2 id="table">
-    글자표: 숫자와 글자의 사전 <span class="layer-badge layer-easy">쉽게</span>
+    글자표: 바이트 값과 글자 대응표 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
     롬 안의 대사는 글자가 아니라 숫자입니다. 게임은 숫자를 받아 폰트의 그 번호 그림을 화면에 찍을 뿐이고, 어느 번호가
@@ -205,9 +205,9 @@ const growth = [
   </h2>
   <p>
     대사에는 글자만 있지 않습니다. 줄을 바꾸거나, 버튼을 누를 때까지 기다리거나, 주인공 이름을 끼워 넣거나, 음악을 트는
-    명령도 섞여 있습니다. 이런 바이트를 <strong>제어 코드</strong>라고 합니다. 글자표에는 보통 <code>{'{16}'}</code>
-    같은 표시로 적어, 덤프한 대본에서 글자와 구별합니다. 제어 코드 뒤에 인자가 몇 바이트 붙는지도 코드마다 정해져
-    있어서, 이것을 모르면 인자를 글자로 읽어 그 뒤가 전부 어긋납니다.
+    명령도 섞여 있습니다. 이런 바이트를 <strong>제어 코드</strong>라고 합니다. 이 가이드의 도구는 덤프한 대본에 제어
+    코드를 <code>{'{16}'}</code> 같은 중괄호 표시로 적어 글자와 구별합니다. 제어 코드 뒤에 인자가 몇 바이트 붙는지도
+    코드마다 정해져 있어서, 이것을 모르면 인자를 글자로 읽어 그 뒤가 전부 어긋납니다.
   </p>
   <Figure caption="제절초 한글판 대본의 첫머리. 제어 코드 넷 다음에 첫 문장이 나옵니다." max={600}>
     <svg viewBox="0 0 360 250" role="img" aria-labelledby="ctl-t ctl-d">
@@ -349,12 +349,12 @@ const growth = [
   <p>
     포인터 표를 찾는 가장 확실한 방법은 대사를 읽는 코드를 찾는 것입니다. 돌격편은 <code>$81:AC4C</code>가 대사 번호를{' '}
     <code>CMP #$14AD</code>, <code>CMP #$121F</code>… 차례로 비교해 뱅크를 고르고, <code>LDA $A88000,X</code>처럼 그
-    뱅크의 표를 읽습니다. 코드를 모를 때는 문자열 시작 주소들의 리틀 엔디안 값이 일정한 간격으로 늘어선 곳을 롬에서
-    찾아봅니다.
+    뱅크의 표를 읽습니다. 코드를 모를 때는 2바이트마다 점점 커지는 값이 이어진 곳(문자열 시작 주소들을 리틀 엔디안으로
+    적은 표)을 롬에서 찾아봅니다.
   </p>
 
   <h2 id="stream">
-    대본처럼 이어진 대사 <span class="layer-badge layer-easy">쉽게</span>
+    번호 없이 한 줄로 이어진 대사 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
     모든 게임이 대사를 번호로 부르지는 않습니다. 사운드 노벨인 제절초는 게임 전체가 하나로 이어진 <strong>대본</strong>
@@ -506,7 +506,9 @@ const growth = [
     <p>
       슈퍼 마리오 RPG의 포인터는 주소가 아니라 "그룹 시작에서 몇 바이트"입니다. 대사 번호를 512개씩 묶은 그룹이 여덟 개
       있고(번호를 오른쪽으로 9비트 민 값), 그룹 시작 주소는 대사 뱅크 첫머리의 머리말에 적혀 있습니다. 포인터 표는 따로{' '}
-      <code>$F7:E000</code>에 번호마다 2바이트입니다.
+      <code>$F7:E000</code>에 번호마다 2바이트입니다. 머리말은 대사 뱅크마다 있고, 그룹 0–3은 <code>$E2</code>, 4–6은{' '}
+      <code>$E3</code>, 7은 <code>$E4</code>에 있습니다. 한 뱅크의 머리말에 다 들어가지 않는 그룹은 다음 뱅크로
+      넘어갑니다.
     </p>
     <pre tabindex="0"><code>대사 0x204 → 그룹 0x204 &gt;&gt; 9 = 1
 $E2:0000  08 00 F5 03 15 33 6D 67   머리말: 크기 $0008(그룹 4개), 그룹 1 시작 $03F5
@@ -548,9 +550,10 @@ $E2:03F5 + $0025 = $E2:041A         문자열 1B 07 20 1D 07 1D 22 21 00</code><
     <h3>창 폭과 줄 수</h3>
     <p>
       문자열이 들어갈 공간과 별개로, 화면 창에 들어가는지도 따져야 합니다. 돌격편은 대사마다 창 정보 2바이트가{' '}
-      <code>$8E:C9BA + 번호 × 2</code>에 있고, 첫 바이트가 <code>FF</code>면 나레이션 창(176픽셀), 그 밖은 얼굴
-      창(128픽셀) 입니다. 글자 폭의 합이 1픽셀이라도 넘으면 마지막 글자가 다음 줄로 밀립니다. 한글판은 빌드할 때 모든
-      줄의 폭을 계산해 넘치는 줄이 없게 했습니다.
+      <code>$8E:C9BA + 번호 × 2</code>에 있고, 첫 바이트가 <code>FF</code>면 나레이션 창(176픽셀), <code>FE</code>면
+      얼굴 그림 없는 128픽셀 창, <code>FD</code>면 창을 열지 않고, 그 밖은 얼굴 창(128픽셀)입니다(
+      <code>FE</code>는 코드로만 확인했습니다). 글자 폭의 합이 1픽셀이라도 넘으면 마지막 글자가 다음 줄로 밀립니다.
+      한글판은 빌드할 때 모든 줄의 폭을 계산해 넘치는 줄이 없게 했습니다.
     </p>
   </Deeper>
 

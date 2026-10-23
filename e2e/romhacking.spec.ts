@@ -221,9 +221,9 @@ test('instruction stepper copies the string and follows the subroutine', async (
   await expect(loop.locator('[data-addr="8265726"] code')).toHaveText('10');
 });
 
-test('tile widget paints pixels with the keyboard and reads typed bytes', async ({ page }) => {
+test('tile painting widget paints pixels with the keyboard and reads typed bytes', async ({ page }) => {
   await page.goto(GRAPHICS);
-  const widget = page.locator('[data-tile-bytes]');
+  const widget = page.getByRole('region', { name: '타일을 칠하며 바이트 보기' });
   await expect(widget).toHaveClass(/is-live/);
   const hex = widget.getByLabel('바이트(16진수, 메모리 순서)');
   await expect(hex).toHaveValue('00 00 F6 12 F6 D2 37 11 37 13 76 32 E6 62 C6 C6');

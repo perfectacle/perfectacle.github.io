@@ -125,7 +125,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     platform: 'snes',
     title: '후킹',
     summary:
-      '원래 코드 몇 바이트를 점프 명령으로 바꿔 새 코드로 건너갔다 돌아오게 합니다. 덮어쓴 명령 되살리기와 빈 공간 찾기까지 다룹니다.',
+      '원래 코드 몇 바이트를 점프 명령으로 바꿔 새 코드로 건너갔다 돌아오게 합니다. 덮어쓴 명령을 다시 실행하는 법과 빈 공간 찾기까지 다룹니다.',
     ready: true,
     notes: [
       note(OTOGIRISOU_PATCH, 'making-wordwrap', '제절초: 단어 단위 줄바꿈'),

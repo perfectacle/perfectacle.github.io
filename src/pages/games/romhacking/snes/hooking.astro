@@ -6,8 +6,8 @@ import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '.
 
 const sections = [
   { id: 'why', label: '코드 사이에 끼워 넣을 수는 없다' },
-  { id: 'jump', label: '건너갔다 돌아오기: JSL과 RTL' },
-  { id: 'restore', label: '덮어쓴 명령 되살리기' },
+  { id: 'jump', label: '다른 뱅크의 코드를 불렀다 돌아오기: JSL과 RTL' },
+  { id: 'restore', label: '덮어쓴 명령 다시 실행하기' },
   { id: 'preserve', label: '레지스터와 플래그를 그대로 돌려주기' },
   { id: 'space', label: '새 코드를 둘 빈 공간' },
   { id: 'in-patch', label: '실제 패치에서' },
@@ -156,7 +156,7 @@ const references = [
   </Figure>
 
   <h2 id="jump">
-    건너갔다 돌아오기: JSL과 RTL <span class="layer-badge layer-easy">쉽게</span>
+    다른 뱅크의 코드를 불렀다 돌아오기: JSL과 RTL <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
     5장에서 본 <code>JSR</code>·<code>RTS</code>는 같은 뱅크 안의 서브루틴을 다녀오는 쌍입니다. 후킹할 새 코드는 대개
@@ -188,11 +188,11 @@ const references = [
     </li>
     <li>
       <code>83</code>
-      <small>$1A83</small>
+      <small>주소 아래</small>
     </li>
     <li>
       <code>1A</code>
-      <small>(위)</small>
+      <small>주소 위</small>
     </li>
   </ul>
   <p class="muted">바꾼 바이트</p>
@@ -303,7 +303,7 @@ const references = [
   </Figure>
 
   <h2 id="restore">
-    덮어쓴 명령 되살리기 <span class="layer-badge layer-easy">쉽게</span>
+    덮어쓴 명령 다시 실행하기 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
     <code>JSL</code>을 쓰면 그 자리에 있던 명령은 사라집니다. 원래 게임이 하던 일을 빠뜨리지 않으려면, 덮어쓴 명령을 새
@@ -374,9 +374,10 @@ const references = [
     </svg>
   </Figure>
   <p>
-    덮어쓸 자리를 고를 때는 그 안으로 점프해 들어오는 코드가 없는지도 봅니다. 다른 곳에서 <code>$A779</code>로 바로
-    분기하는 명령이 있다면, 그 분기는 이제 <code>JSL</code>의 둘째 바이트로 떨어집니다. 분기 대상이 되는 자리는 피하고,
-    함수 첫머리처럼 늘 위에서부터 들어오는 곳을 고르는 것이 안전합니다.
+    덮어쓸 자리를 고를 때는 그 안으로 점프해 들어오는 코드가 없는지도 봅니다. 다른 곳에서 <code>$A779</code>(원래{' '}
+    <code>CLC</code>)로 바로 분기하는 명령이 있다면, 그 분기는 이제 <code>JSL</code>의 셋째 바이트 <code>80</code>에
+    떨어지고, CPU는 그것을 <code>BRA</code> 명령으로 읽어 엉뚱한 곳으로 갑니다. 분기 대상이 되는 자리는 피하고, 함수
+    첫머리처럼 늘 위에서부터 들어오는 곳을 고르는 것이 안전합니다.
   </p>
 
   <h2 id="preserve">
@@ -408,8 +409,8 @@ const references = [
     <svg viewBox="0 0 360 238" role="img" aria-labelledby="stk-t stk-d">
       <title id="stk-t">후킹 중 스택</title>
       <desc id="stk-d">
-        JSL은 뱅크 00, 주소 위 바이트 A7, 아래 바이트 7A를 차례로 쌓는다. 새 코드가 X와 Y를 2바이트씩 더 쌓는다. 나갈 때
-        PLY, PLX로 Y와 X를 꺼낸 뒤 RTL이 00 A7 7A를 꺼내 1을 더한 $00:A77B로 돌아간다.
+        JSL은 뱅크 00, 주소 위 바이트 A7, 아래 바이트 7A를 차례로 쌓는다. 새 코드가 X와 Y를 쌓는데, 16비트이므로
+        2바이트씩이다. 나갈 때 PLY, PLX로 Y와 X를 꺼낸 뒤 RTL이 00 A7 7A를 꺼내 1을 더한 $00:A77B로 돌아간다.
       </desc>
       <text class="dg-small" x="8" y="16">
         주소가 큰 쪽(먼저 쌓음)
@@ -446,7 +447,7 @@ const references = [
       </text>
       <path class="dg-line" d="M136 122h6v58h-6"></path>
       <text class="dg-small" x="150" y="148">
-        PHX·PHY가 쌓은 값
+        X·Y가 16비트일 때 2바이트씩
       </text>
       <text class="dg-small" x="150" y="164">
         PLY → PLX 순서로 꺼냄
@@ -466,53 +467,56 @@ const references = [
     채워져 있어서, 같은 바이트가 길게 이어진 곳이 후보가 됩니다. 롬을 늘려 새 뱅크를 붙이는 방법도 있습니다(11장).
   </p>
   <p>
-    그러나 <strong>같은 바이트가 이어진다고 빈 곳은 아닙니다.</strong> 각성편 v1.1은 <code>FF</code>가 이어진 곳에 긴
-    지명 문자열을 넣었다가, 바로 앞 이동 경로 데이터의 끝 표시 <code>FF FF</code>까지 덮어썼습니다. 끝 표시를 잃은 이동
-    루틴이 문자열 바이트를 경로로 읽어, 우주선이 맵 밖으로 날아갔습니다.
+    그러나 <strong>같은 바이트가 이어진다고 빈 곳은 아닙니다.</strong> 각성편 v1.1은 <code>FF</code>가 이어진 것처럼
+    보이는 <code>$88:FFAE</code>에 긴 지명 문자열을 넣었습니다. 그런데 그 자리는 앞 이동 경로 레코드의 끝 표시{' '}
+    <code>FF FF</code>였고, 바로 뒤 <code>$88:FFB0</code>에는 레코드 하나가 더 있었습니다. 끝 표시와 다음 레코드를 잃은
+    이동 루틴이 문자열 바이트를 경로로 읽어, 우주선이 맵 밖으로 날아갔습니다. 경로 포인터 표(<code>$88:FC80</code>)를
+    따라가 봤다면 <code>$88:FFB0</code>도 쓰이는 데이터라는 것을 알 수 있었습니다.
   </p>
-  <Figure caption="FF가 이어진 곳의 첫 두 바이트가 앞 데이터의 끝 표시일 수 있습니다." max={600}>
-    <svg viewBox="0 0 360 172" role="img" aria-labelledby="ff-t ff-d">
-      <title id="ff-t">빈 공간처럼 보이는 끝 표시</title>
+  <Figure caption="각성편 $88:FFAA 둘레. FF가 섞여 있어도 끝 표시와 다른 레코드일 수 있습니다." max={600}>
+    <svg viewBox="0 0 360 196" role="img" aria-labelledby="ff-t ff-d">
+      <title id="ff-t">빈 공간처럼 보이는 데이터</title>
       <desc id="ff-d">
-        이동 경로 레코드 뒤에 FF FF 끝 표시가 있고, 그 뒤로 FF가 이어진다. 끝 표시부터 덮어쓰면 경로를 읽는 코드가
-        멈추지 않는다. 끝 표시 뒤에 여유를 두고 쓴다.
+        $88:FFAA에 이동 경로 레코드, $88:FFAE에 끝 표시 FF FF, $88:FFB0에 다른 레코드가 있다. 경로 포인터 표 $88:FC80이
+        두 레코드를 가리킨다. v1.1은 $88:FFAE부터 지명 문자열로 덮어써 끝 표시와 $88:FFB0 레코드를 잃었다.
       </desc>
-      <rect class="dg-cool" x="8" y="20" width="96" height="40" rx="5"></rect>
-      <text class="dg-text" x="56" y="45" text-anchor="middle">
+      <rect class="dg-cell" x="8" y="8" width="344" height="30" rx="5"></rect>
+      <text class="dg-small" x="18" y="28">
+        경로 포인터 표 $88:FC80
+      </text>
+      <path class="dg-arrow" d="M60 38V58" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M240 38V58" marker-end="url(#dg-arrowhead)"></path>
+      <rect class="dg-cool" x="8" y="64" width="104" height="40" rx="5"></rect>
+      <text class="dg-small" x="60" y="80" text-anchor="middle">
+        $88:FFAA
+      </text>
+      <text class="dg-text" x="60" y="97" text-anchor="middle">
         경로 레코드
       </text>
-      <rect class="dg-warm" x="108" y="20" width="64" height="40" rx="5"></rect>
-      <text class="dg-mono dg-bold" x="140" y="45" text-anchor="middle">
+      <rect class="dg-warm" x="116" y="64" width="80" height="40" rx="5"></rect>
+      <text class="dg-small" x="156" y="80" text-anchor="middle">
+        $88:FFAE
+      </text>
+      <text class="dg-mono dg-bold" x="156" y="98" text-anchor="middle">
         FF FF
       </text>
-      {[0, 1, 2, 3].map(i => (
-        <>
-          <rect class="dg-cell" x={176 + i * 44} y="20" width="40" height="40" rx="5" />
-          <text class="dg-mono" x={196 + i * 44} y="45" text-anchor="middle">
-            FF
-          </text>
-        </>
-      ))}
-      <text class="dg-small" x="140" y="76" text-anchor="middle">
+      <rect class="dg-cool" x="200" y="64" width="152" height="40" rx="5"></rect>
+      <text class="dg-small" x="276" y="80" text-anchor="middle">
+        $88:FFB0
+      </text>
+      <text class="dg-text" x="276" y="97" text-anchor="middle">
+        다음 경로 레코드
+      </text>
+      <text class="dg-small" x="156" y="120" text-anchor="middle">
         끝 표시
       </text>
-      <text class="dg-small" x="264" y="12" text-anchor="middle">
-        정말 비어 있는 곳
+      <rect class="dg-paper dg-dash" x="116" y="130" width="236" height="30" rx="5"></rect>
+      <text class="dg-small" x="126" y="150">
+        v1.1이 지명 문자열로 덮어쓴 범위
       </text>
-      <path class="dg-arrow" d="M108 104V66" marker-end="url(#dg-arrowhead)"></path>
-      <text class="dg-small" x="8" y="120">
-        v1.1은 여기부터 덮어씀
-      </text>
-      <text class="dg-small" x="8" y="136">
-        → 경로를 끝없이 읽음
-      </text>
-      <path class="dg-arrow" d="M236 104V66" marker-end="url(#dg-arrowhead)"></path>
-      <text class="dg-small" x="236" y="120" text-anchor="middle">
-        여유를 두고 여기부터
-      </text>
-      <rect class="dg-accent" x="8" y="146" width="344" height="24" rx="6"></rect>
-      <text class="dg-small" x="18" y="163">
-        원본에서도 같은 값인지, 앞 데이터가 끝나는 곳은 어디인지 확인
+      <rect class="dg-accent" x="8" y="168" width="344" height="24" rx="6"></rect>
+      <text class="dg-small" x="18" y="185">
+        데이터가 어디서 끝나는지는 그 데이터를 가리키는 표로 확인
       </text>
     </svg>
   </Figure>
@@ -522,7 +526,9 @@ const references = [
       <strong>원본 롬에서도 같은 값인가</strong>: 다른 패치가 이미 쓴 곳일 수 있으니 일본판 원본과 비교합니다.
     </li>
     <li>
-      <strong>앞 데이터의 끝 표시가 아닌가</strong>: 시작에 몇 바이트 여유를 두고 씁니다.
+      <strong>앞 데이터의 끝 표시가 아닌가</strong>: 바로 앞 데이터의 끝 표시가 <code>FF</code>나 <code>00</code>일 수
+      있습니다. 그 데이터를 가리키는 포인터 표를 따라가 마지막 항목이 어디서 끝나는지 봅니다. 몇 바이트 여유를 두는
+      것만으로는 각성편처럼 뒤에 이어진 레코드를 지키지 못합니다.
     </li>
     <li>
       <strong>읽는 코드가 없는가</strong>: 에뮬레이터 디버거로 그 범위의 읽기를 감시하면서 게임을 돌려 봅니다. 어떤
@@ -534,7 +540,7 @@ const references = [
     </li>
   </ol>
 
-  <Deeper title="JML과 JMP, 뱅크 한계, 표 바꾸기, 빌드에서 확인하기">
+  <Deeper title="JML과 JMP, 폭과 P 지키기, 뱅크 한계, 표 바꾸기, NMI, 빌드에서 확인하기">
     <h3>돌아오지 않는 점프: JML과 JMP</h3>
     <p>
       <code>JSL</code>은 스택에 돌아올 곳을 적고 가지만, <code>JML</code>(<code>5C</code>, 4바이트)과 <code>JMP</code>(
@@ -559,10 +565,33 @@ B7:FA1F  5C D6 97 B7  JML $B797D6    ; 모든 갈래가 만나는 곳으로</cod
       <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a>의 필드 메뉴는 새 코드를 같은 뱅크 <code>$C3</code>의 빈
       곳(원본 <code>$C3:F000</code>–<code>$C3:F3FF</code>, 전부 <code>FF</code>)에 두었습니다. 같은 뱅크라서 3바이트{' '}
       <code>JMP</code>와 <code>JSR</code>로 충분합니다. 아이템 이름을 그리는 <code>$C3:7990</code>은{' '}
-      <code>SEP #$20</code>·<code>PHX</code> 3바이트를 <code>JMP $F007</code>로 바꿨고, 메뉴 NMI의{' '}
-      <code>JSR $013E</code>는 <code>JSR $F169</code>로 바꿨습니다. 새 루틴은 첫 줄에서 덮어쓴 <code>JSR $013E</code>를
-      먼저 실행한 다음 글자를 VRAM에 올립니다.
+      <code>SEP #$20</code>·<code>PHX</code> 3바이트를 <code>JMP $F007</code>로 바꿨습니다. 새 루틴이 원래 루틴을 통째로
+      대신하고 끝의 <code>RTS</code>로 원래 루틴을 부른 곳에 바로 돌아가므로, 덮어쓴 명령을 다시 실행할 필요가 없습니다.
+      메뉴 NMI의 <code>JSR $013E</code>는 <code>JSR $F169</code>로 바꿨습니다. 이쪽 새 루틴은 첫 줄에서 덮어쓴{' '}
+      <code>JSR $013E</code>를 먼저 실행한 다음 글자를 VRAM에 올립니다.
     </p>
+
+    <h3>폭과 P, D 지키기</h3>
+    <p>
+      새 코드는 자기를 부른 코드가 8비트였는지 16비트였는지 모릅니다. 그래서 즉시값을 쓰기 전에 <code>REP</code>·
+      <code>SEP</code>로 폭을 직접 정하고, 어셈블러에도 그 폭을 알려 줍니다. 제절초는 첫 줄에서 <code>REP #$30</code>을
+      실행하고 <code>CMP.w #!MAGIC</code>처럼 <code>.w</code>를 붙여 2바이트 즉시값으로 조립하게 했습니다. 폭이 틀리면
+      CPU와 어셈블러가 명령 길이를 다르게 세어 그다음 바이트부터 엉뚱한 명령이 됩니다.
+    </p>
+    <ul>
+      <li>
+        <code>PHX</code>로 맡길 때와 <code>PLX</code>로 꺼낼 때의 X 폭이 같아야 합니다. 16비트로 2바이트를 쌓고 8비트로
+        1바이트만 꺼내면 스택이 한 바이트 어긋나 <code>RTL</code>이 엉뚱한 곳으로 갑니다.
+      </li>
+      <li>
+        원래 폭과 플래그를 통째로 지키려면 처음에 <code>PHP</code>로 P를 맡기고, 끝에서 <code>PLP</code>로 되찾습니다.
+        제절초처럼 덮어쓴 <code>REP</code>를 다시 실행해 폭을 맞추는 방법도 있습니다.
+      </li>
+      <li>
+        <code>JSL</code>은 D(다이렉트 페이지)도 바꾸지 않습니다. 제절초의 <code>LDA [$52],Y</code>는 원래 코드와 같은
+        D를 쓴다는 것을 믿고 대본 위치를 읽습니다. 새 코드가 D를 바꾸면 끝에서 되돌려야 합니다.
+      </li>
+    </ul>
 
     <h3>뱅크 한계: 2바이트 주소는 뱅크를 넘지 못한다</h3>
     <p>
@@ -637,7 +666,7 @@ B7:FA1F  5C D6 97 B7  JML $B797D6    ; 모든 갈래가 만나는 곳으로</cod
     <h3>코드 대신 표를 바꾸는 후킹</h3>
     <p>
       위의 제어 코드 표처럼, 게임이 주소를 표에서 꺼내 점프한다면 그 칸만 바꿔도 새 코드로 갑니다. 원래 코드를 한
-      바이트도 덮어쓰지 않아 덮어쓴 명령을 되살릴 필요가 없습니다. 슈퍼 마리오 RPG는 쓰이지 않던 대사 제어 코드{' '}
+      바이트도 덮어쓰지 않아 덮어쓴 명령을 다시 실행할 필요가 없습니다. 슈퍼 마리오 RPG는 쓰이지 않던 대사 제어 코드{' '}
       <code>$1B</code>의 처리 주소(<code>$C0:6896</code>, 원래 <code>4E 62</code>)를 아이템 이름 처리 루틴{' '}
       <code>$60A6</code>으로 바꿔, 새 제어 코드를 하나 얻었습니다(8장).
     </p>
@@ -654,8 +683,21 @@ B7:FA1F  5C D6 97 B7  JML $B797D6    ; 모든 갈래가 만나는 곳으로</cod
     <p>
       NMI는 화면을 그리지 않는 짧은 시간에 VRAM을 고칠 수 있는 곳이라(5장), 글자 그림을 올리는 코드를 자주 끼워
       넣습니다. 이 시간은 짧아서, NMI에 더하는 일은 미리 준비해 두고 옮기기만 하게 만듭니다. 슈퍼 마리오 RPG의 필드
-      메뉴는 그릴 글자를 WRAM에 12자까지 모아 두었다가 NMI에서 DMA로 올립니다.
+      메뉴는 그릴 글자를 WRAM에 12자까지 모아 두었다가 NMI에서 DMA(CPU 대신 하드웨어가 메모리 사이에 바이트를 한꺼번에
+      옮기는 기능)로 올립니다.
     </p>
+    <ul>
+      <li>
+        NMI는 메인 루프의 아무 명령 사이에서나 끼어듭니다. NMI 안에 넣은 코드가 바꾼 레지스터·DB·D는, 게임의 NMI 입구가
+        이미 맡겨 두지 않았다면 직접 맡겼다가 되돌려야 합니다.
+      </li>
+      <li>
+        반대로 메인 루프 쪽 후킹은 언제든 NMI에 끊길 수 있습니다. 두 쪽이 같은 WRAM 버퍼를 쓰면 반쯤 채운 데이터를 NMI가
+        올려 버릴 수 있습니다. 슈퍼 마리오 RPG는 버퍼를 채우는 동안 잠금 값(<code>!lock</code>)을 켜 두고, NMI 쪽 코드는
+        잠금이 켜져 있으면 그 프레임을 건너뜁니다.
+      </li>
+      <li>게임의 NMI가 이미 쓰는 DMA 채널을 새 코드가 함께 쓰면 설정이 섞입니다. 비어 있는 채널을 확인하고 씁니다.</li>
+    </ul>
 
     <h3>빌드에서 확인하기</h3>
     <ul>
@@ -664,8 +706,8 @@ B7:FA1F  5C D6 97 B7  JML $B797D6    ; 모든 갈래가 만나는 곳으로</cod
         빌드가 멈춰, 뒤 명령을 몰래 덮어쓰는 일이 없습니다.
       </li>
       <li>
-        분기 명령은 −128–+127바이트까지만 갑니다. 새 코드가 길어져 범위를 넘으면 asar가 빌드를 멈춥니다. 제절초는 이때
-        반대 조건 분기와 <code>JMP</code>로 바꿨습니다.
+        분기 명령은 −128–+127바이트까지만 갑니다(<code>BRL</code>은 2바이트 거리라 ±32KB까지). 새 코드가 길어져 범위를
+        넘으면 asar가 빌드를 멈춥니다. 제절초는 이때 반대 조건 분기와 <code>JMP</code>로 바꿨습니다.
       </li>
       <li>
         빌드한 롬을 원본과 비교해(<code>krpatch diff</code>) 바뀐 범위가 계획한 후킹 지점과 새 코드 자리뿐인지 봅니다.
@@ -702,7 +744,7 @@ WordWrap:
     RTL</code></pre>
   <p class="muted">kr-patches의 asm/wordwrap.asm에서 처음과 끝만 옮겼습니다.</p>
 
-  <h3>돌격편: 폰트 칸을 늘리는 갈림길</h3>
+  <h3>돌격편: 글자 코드에 따라 새 글자 블록으로 보내기</h3>
   <p>
     돌격편 v1.1은 앞의 <code>JML</code> 후킹으로 글자 코드 <code>$0C00</code>–<code>$0FFF</code>를 새로 열었습니다. 새
     코드 120바이트(<code>$B7:FA00</code>–<code>$B7:FA77</code>)와 4KB짜리 글자 블록 여덟 곳은 모두 일본판과 v1.0에서
@@ -717,11 +759,12 @@ WordWrap:
     버퍼였습니다. 그래서 메뉴·전투·대사 어디에서도 쓰지 않는 <code>$7E:0C00</code>–<code>$17FF</code>로 옮겼습니다.
   </p>
 
-  <h3>각성편: FF를 빈 곳으로 믿은 대가</h3>
+  <h3>각성편: FF가 이어진 곳을 빈 곳으로 잘못 본 버그</h3>
   <p>
-    <a href={`${KAKUSEI_PATCH.path}/`}>각성편</a> v1.1의 진행 버그는 위 그림 그대로입니다. <code>$88:FFAE</code>에
-    지명을 넣으면서 <code>$88:FFAA</code> 이동 경로 레코드의 끝 표시와 그 뒤 레코드를 덮었습니다. v1.2는 원본 바이트를
-    되돌리고, 문자열을 뒤로 밀고, 그 문자열을 가리키는 포인터를 같은 만큼 고쳤습니다.
+    <a href={`${KAKUSEI_PATCH.path}/`}>각성편</a> v1.1의 진행 버그는 「새 코드를 둘 빈 공간」 그림의 상황입니다.{' '}
+    <code>$88:FFAE</code>에 지명을 넣으면서 <code>$88:FFAA</code> 이동 경로 레코드의 끝 표시와 <code>$88:FFB0</code>{' '}
+    레코드를 덮었습니다. v1.2는 원본 바이트를 되돌리고, 문자열을 뒤로 밀고, 그 문자열을 가리키는 포인터를 같은 만큼
+    고쳤습니다.
   </p>
 
   <h2 id="try">

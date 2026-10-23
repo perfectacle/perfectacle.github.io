@@ -13,7 +13,7 @@ const sections = [
   { id: 'palette', label: '색은 팔레트 번호로 고른다' },
   { id: 'vram', label: 'VRAM과 타일맵, BG 모드' },
   { id: 'fonts', label: '글꼴: 고정폭과 가변폭' },
-  { id: 'hangul', label: '한글 수천 자를 좁은 칸에 넣기' },
+  { id: 'hangul', label: '한글 수천 자를 제한된 폰트 칸에 넣기' },
   { id: 'in-patch', label: '실제 패치에서' },
   { id: 'try', label: '직접 해 보기' },
 ];
@@ -51,7 +51,7 @@ const references = [
   {
     href: 'https://github.com/perfectacle/kr-patch-toolkit/blob/main/src/kr_patch/snes/tiles.py',
     label: 'kr-patch-toolkit, tiles.py',
-    note: '「타일 바이트 풀어 보기」가 옮겨 온 해독·부호화 코드(같은 테스트 사례로 확인)',
+    note: '「타일을 칠하며 바이트 보기」가 옮겨 온 해독·부호화 코드(같은 테스트 사례로 확인)',
   },
 ];
 
@@ -125,7 +125,7 @@ const strategies = [
   },
   {
     name: '그룹 표 정리하기',
-    who: '제절초',
+    who: '제절초 (크기별로 글자를 묶어 둔 표, 아래 제절초 절)',
     text: '크기가 같은 글자끼리 묶은 그룹 표가 꽉 차 있어, 아무도 쓰지 않는 글자를 정리해 그룹을 합치고 빈 칸에 새 그룹을 더합니다.',
   },
   {
@@ -376,7 +376,14 @@ const strategies = [
   <p>
     화면에 쓰는 타일 그림과 타일맵은 화면 처리 칩(PPU)의 메모리 <strong>VRAM</strong>(64KB)에 있습니다. 롬에 있는 그림은
     게임이 VRAM으로 옮겨야 화면에 나옵니다. 이 옮기는 일은 화면을 그리지 않는 동안(수직 귀선 기간이나 화면을 끈
-    동안)에만 할 수 있어서, 보통 NMI에서 DMA로 한꺼번에 보냅니다(5장).
+    동안)에만 할 수 있어서, 보통 NMI에서 DMA로 한꺼번에 보냅니다(5장). DMA는 CPU가 한 바이트씩 옮기는 대신 하드웨어가
+    메모리 사이에 바이트를 한꺼번에 옮기는 기능입니다.
+  </p>
+  <p>
+    VRAM은 2바이트(워드) 단위로 주소를 매깁니다. 게임이 레지스터 <code>$2116</code>·<code>$2117</code>에 적는 VRAM
+    주소는 워드 주소이고, 바이트 주소의 절반입니다. 이 장에 나오는 VRAM 주소는 모두 바이트 주소입니다. 예를 들어 바이트
+    주소 <code>$6000</code>은 워드 주소 <code>$3000</code>입니다. 에뮬레이터나 문서가 어느 쪽으로 적었는지 먼저 확인해야
+    합니다.
   </p>
   <p>
     타일맵의 한 칸은 2바이트입니다. 아래 10비트가 타일 번호라 한 레이어가 고를 수 있는 타일은 1,024개이고, 위쪽 비트에
@@ -464,7 +471,8 @@ const strategies = [
   <p>
     <strong>가변폭 글꼴</strong>(VWF, variable width font)은 글자마다 폭이 다릅니다. 게임이 빈 타일 여러 개를 이어 붙인
     작업 공간을 두고, 글자 그림을 지금 x 위치에 비트 단위로 밀어 그린 뒤 x를 그 글자 폭만큼 옮깁니다. 글자가 타일 경계에
-    걸쳐도 됩니다. 같은 초오공전이라도 각성편은 모든 글자를 12픽셀씩 옮기고, 돌격편은 글자 코드에 따라 폭을 정합니다.
+    걸쳐도 됩니다. 같은 초오공전의 두 게임도 이렇게 비트맵에 그리는데, 각성편은 어느 글자든 x를 12픽셀씩 옮기고(그래서
+    결과는 고정폭), 돌격편은 글자 코드에 따라 옮기는 폭을 정합니다.
   </p>
   <Figure caption="같은 「잡아 볼까‥」를 12픽셀 고정폭(각성편 방식)과 돌격편의 가변폭으로 놓은 모습" max={600}>
     <svg viewBox="0 0 360 178" role="img" aria-labelledby="vwf-t vwf-d">
@@ -517,7 +525,7 @@ const strategies = [
         });
       })()}
       <text class="dg-small" x="8" y="152">
-        그림은 1px = 4단위로 키웠습니다. 합 70px
+        1픽셀을 4배로 키워 그렸습니다. 합 70px
       </text>
       <text class="dg-small" x="8" y="170">
         한 줄 한계: 돌격편 얼굴 창 128px, 나레이션 창 176px
@@ -531,7 +539,7 @@ const strategies = [
   </p>
 
   <h2 id="hangul">
-    한글 수천 자를 좁은 칸에 넣기 <span class="layer-badge layer-easy">쉽게</span>
+    한글 수천 자를 제한된 폰트 칸에 넣기 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
     현대 한국어로 만들 수 있는 음절은 11,172자이고, 흔히 쓰는 완성형(KS X 1001)만 해도 2,350자입니다. 한 게임의 대본에
@@ -556,9 +564,10 @@ const strategies = [
     <h3>공식</h3>
     <p>
       2bpp 이상의 타일에서 (x, y) 픽셀의 색 번호는 평면 p마다 아래 바이트의 비트 (7 − x)를 꺼내 p번째 비트에 놓은
-      값입니다(fullsnes). 1bpp는 줄마다 1바이트라 바이트 y의 비트 (7 − x)가 곧 색입니다.
+      값입니다(fullsnes). 1bpp는 줄마다 1바이트라 바이트 y의 비트 (7 − x)가 곧 색입니다. 8×8 타일이면 줄 수가 8이라 평면
+      2·3은 16바이트 뒤입니다.
     </p>
-    <pre tabindex="0"><code>바이트 = (p ÷ 2의 몫) × 16 + y × 2 + (p ÷ 2의 나머지)
+    <pre tabindex="0"><code>바이트 = (p ÷ 2의 몫) × 줄 수 × 2 + y × 2 + (p ÷ 2의 나머지)
 색     = 평면 p마다 (바이트의 비트 7 − x) × 2^p를 더한 값</code></pre>
     <p>
       8×12처럼 키가 큰 글리프도 같은 규칙에 줄 수만 다릅니다. 슈퍼 마리오 RPG의 메뉴 폰트는 8×12 2bpp라 글자 하나가
@@ -638,9 +647,10 @@ const strategies = [
   <p>
     <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>의 글자 코드는 범위에 따라 시트가 정해집니다. <code>$100</code>–
     <code>$4FF</code>는 8×16 가나 자리, <code>$500</code>–<code>$BEF</code>는 16×16 한자 자리입니다. v1.0은 한자 850칸과
-    가나 160칸에 한글을 그려 1,010자를 썼고, 재번역한 v1.1에는 213자가 더 필요했습니다. 그래서 6장의 <code>JML</code>{' '}
-    후킹으로 원래 쓰지 않던 <code>$C00</code>–<code>$FFF</code>를 열고, 4KB씩 여덟 곳의 빈 공간을 블록으로 이었습니다.
-    블록 하나가 128코드(글자 64개)라 모두 512자입니다.
+    가나 160칸에 한글을 그려 1,010자를 썼고, 재번역한 v1.1에는 213자를 새로 그려야 했습니다. 그중 37자는 더는 쓰지 않게
+    된 옛 칸에 그리고, 나머지 176자를 위해 6장의 <code>JML</code> 후킹으로 원래 쓰지 않던 <code>$C00</code>–
+    <code>$FFF</code>를 열고, 4KB씩 여덟 곳의 빈 공간을 블록으로 이었습니다. 블록 하나가 128코드(글자 64개)라 모두
+    512자입니다.
   </p>
   <Figure caption="코드 $CE5 「쫓」이 블록 표를 거쳐 롬 위치 $84:FAA0이 되는 과정" max={600}>
     <svg viewBox="0 0 360 214" role="img" aria-labelledby="blk-t blk-d">
@@ -764,8 +774,8 @@ const strategies = [
       <title id="slot-t">필요한 글자만 올리는 임시 칸</title>
       <desc id="slot-d">
         이름의 글자 코드가 $0000-$00FF면 메뉴 폰트에 있는 글자라 원래 타일을 쓴다. $8000 | n이면 롬의 새 글자 n번을
-        외곽선 루틴으로 바꿔 WRAM에 12자까지 모았다가, NMI에서 DMA로 VRAM $6000-$7FFF의 빈 칸 128개 중 하나에 올리고 그
-        칸 번호를 표에 적는다.
+        외곽선 루틴으로 바꿔 WRAM에 12자까지 모았다가, NMI에서 DMA로 VRAM 바이트 주소 $6000-$7FFF(워드 $3000)의 빈 칸
+        128개 중 하나에 올리고 그 칸 번호를 표에 적는다.
       </desc>
       <rect class="dg-cell" x="8" y="10" width="164" height="54" rx="6"></rect>
       <text class="dg-small" x="16" y="30">
@@ -812,20 +822,22 @@ const strategies = [
         <rect class={i < 3 ? 'dg-warm' : 'dg-cell'} x={196 + i * 19} y="180" width="16" height="16" rx="2" />
       ))}
       <text class="dg-small" x="196" y="214">
-        메뉴를 열 때마다 비움
+        바이트 주소, 워드 $3000부터
       </text>
     </svg>
   </Figure>
   <p>
-    한글판은 메뉴 폰트에 없는 글자(v1.2에서 249자)를 롬 빈 곳에 두고, 화면에 나올 때만 필드 메뉴가 쓰지 않는 VRAM{' '}
-    <code>$6000</code>–<code>$7FFF</code>(BG1 타일 <code>$200</code>–<code>$2FF</code>)의 칸 128개 가운데 하나를
-    배정합니다. 이 영역은 메뉴를 열 때 게임이 다시 채우므로, 슬롯 표도 그때 같이 비웁니다.
+    한글판은 메뉴 폰트에 없는 글자(v1.2에서 249자)를 롬 빈 곳에 두고, 화면에 나올 때만 필드 메뉴가 쓰지 않는 VRAM 바이트
+    주소 <code>$6000</code>–<code>$7FFF</code>(워드 주소 <code>$3000</code>부터, BG1 타일 <code>$200</code>–
+    <code>$2FF</code>)의 칸 128개 가운데 하나를 배정합니다. 이 영역은 메뉴를 열 때 게임이 다시 채우므로, 슬롯 표도 그때
+    같이 비웁니다.
   </p>
 
   <h3>각성편: 아무도 쓰지 않는 글자 자리</h3>
   <p>
     <a href={`${KAKUSEI_PATCH.path}/`}>각성편</a> v1.2에 새로 필요한 글자는 11자뿐이었습니다. 어떤 대사에서도 쓰지 않는
-    글리프 자리를 골라 그 위에 그렸습니다. 예를 들어 코드 <code>$123</code>은 원래 「겄」이었는데 「깨」가 되었습니다.
+    글리프 자리를 골라 그 위에 그렸습니다. 예를 들어 코드 <code>$123</code>은 v1.1까지 「겄」이었는데 v1.2부터
+    「깨」입니다.
   </p>
 
   <h2 id="try">
@@ -837,13 +849,15 @@ const strategies = [
   </p>
   <pre tabindex="0"><code>$ krpatch snes tiles totsugeki-k.sfc EF00 1000 block0.png --bpp 2
 block0.png
-$ krpatch snes tiles smrpg-k.sfc 242B00 1800 menu-font.png --bpp 2 --rows 12
+$ krpatch snes tiles smrpg-k.sfc 242800 1800 menu-font.png --bpp 2 --rows 12
 menu-font.png</code></pre>
   <p>
-    첫 명령은 돌격편 한글판의 새 글자 블록 0(4KB)을 그립니다. 둘째는 슈퍼 마리오 RPG 한글판 메뉴 폰트 256글자를 8×12
-    글리프로 그립니다. <code>--bpp</code>를 일부러 틀리게 줘 보면 같은 바이트가 알아볼 수 없는 무늬가 되는 것도 볼 수
-    있습니다. 화면에 나온 그림이 롬 어디에 있는지 모를 때는 에뮬레이터에서 VRAM과 CGRAM을 덤프해{' '}
-    <code>krpatch snes bg</code>로 레이어를 그리고, 거기서 쓰는 타일을 롬에서 찾습니다.
+    첫 명령은 돌격편 한글판의 새 글자 블록 0(4KB)을 그립니다. 둘째는 슈퍼 마리오 RPG 한글판 메뉴 폰트(
+    <code>$E4:2800</code>, 코드 256개 × 24바이트)를 8×12 글리프로 그립니다. 코드 <code>$00</code>–<code>$1F</code>{' '}
+    자리는 비어 있어서 첫 두 줄은 빈칸이고, <code>$20</code>부터 글자가 나옵니다. <code>--bpp</code>를 일부러 틀리게 줘
+    보면 같은 바이트가 알아볼 수 없는 무늬가 되는 것도 볼 수 있습니다. 화면에 나온 그림이 롬 어디에 있는지 모를 때는
+    에뮬레이터에서 VRAM과 CGRAM을 덤프해 <code>krpatch snes bg</code>로 레이어를 그리고, 거기서 쓰는 타일을 롬에서
+    찾습니다.
   </p>
 </GuideChapter>
 

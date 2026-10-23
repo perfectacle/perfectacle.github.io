@@ -17,12 +17,13 @@ const formats = [
 
 <section class="widget tile-bytes" data-tile-bytes aria-labelledby="tile-title">
   <h3 class="widget-title" id="tile-title">
-    타일 바이트 풀어 보기
+    타일을 칠하며 바이트 보기
   </h3>
   <p class="widget-help">
     8×8 타일 하나가 어떤 바이트로 저장되는지 봅니다.{' '}
     <span class="live-only">
-      칸을 눌러 고른 색으로 칠하거나(방향키로 옮기고 Space로 칠합니다), 아래 바이트를 직접 고쳐 보세요.
+      칸을 눌러 고른 색으로 칠하거나(방향키로 옮기고 Space로 칠합니다), 아래 바이트를 직접 고쳐 보세요. 이미 고른 색인
+      칸을 누르면 색 0으로 돌아갑니다.
     </span>
   </p>
   <p class="widget-help static-only">
@@ -69,7 +70,7 @@ const formats = [
         {planes.map(p => (
           <li class={p % 2 ? 'plane-hi' : 'plane-lo'}>
             <span class="plane-name">
-              평면 {p} <small>(색 번호의 {2 ** p} 자리)</small>
+              평면 {p} <small>(색 번호의 {2 ** p}의 자리)</small>
             </span>
             <span class="plane-bits" aria-hidden="true">
               {planeBits(bytes, bpp, p).map(r => r.map(b => <i class={b ? 'on' : ''} />))}
@@ -222,7 +223,7 @@ const formats = [
           ...Array.from({ length: bpp }, (_, p) => {
             const li = el('li', tone(p));
             const name = el('span', 'plane-name', `평면 ${p} `);
-            name.append(el('small', '', `(색 번호의 ${2 ** p} 자리)`));
+            name.append(el('small', '', `(색 번호의 ${2 ** p}의 자리)`));
             const bits = el('span', 'plane-bits');
             bits.setAttribute('aria-hidden', 'true');
             for (const row of planeBits(data, bpp, p)) for (const b of row) bits.append(el('i', b ? 'on' : ''));
