@@ -493,10 +493,16 @@ h1.pixel {
   font-size: 0.8125rem;
 }
 
-/* The folds at the foot of the patch box read as one list, so only the first draws the rule. */
+/* The folds at the foot of the patch box read as one list: only the first draws the rule, and the rest sit close
+   under it instead of a full grid gap apart. */
 .file-checksums + .manual,
 .manual + .manual {
+  margin-top: -12px;
   border-top: 0;
+}
+
+:is(.file-checksums, .manual) + .manual > summary {
+  padding-top: 6px;
 }
 
 .file-checksums summary,
