@@ -19,26 +19,34 @@ const { items } = Astro.props;
 
 <style>
   .tool-files {
-    padding: 10px 14px;
-    border: 1px dashed rgb(255 255 255 / 35%);
-    border-radius: 6px;
-    font-size: 1rem;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: rgb(255 255 255 / 5%);
+    box-shadow: inset 3px 0 0 var(--muted);
+    font-size: 0.9375rem;
+    line-height: 1.7;
   }
 
   .tool-files-title {
-    margin: 0 0 4px;
-    color: var(--accent);
+    margin: 0 0 6px;
+    color: var(--muted);
+    font-size: 0.8125rem;
     font-weight: 700;
+    letter-spacing: 0.04em;
   }
 
   .tool-files ul {
     display: grid;
-    gap: 2px;
+    gap: 4px;
     margin: 0;
     padding-left: 18px;
   }
 
   .tool-files code {
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgb(255 255 255 / 10%);
+    color: var(--link);
     font-family: var(--mono);
     font-size: 0.875em;
     overflow-wrap: anywhere;

@@ -1,0 +1,53 @@
+---
+import { KR_PATCH_TOOLKIT_URL } from '../../lib/kr-patches';
+
+interface Props {
+  /** The game's folder in the patch source repository. */
+  source: string;
+  /** What that folder holds. */
+  holds: string;
+  /** What it leaves out, and where those come from instead. */
+  missing: string;
+  /** Shared commands taken from kr-patch-toolkit. */
+  toolkit: string;
+}
+
+const { source, holds, missing, toolkit } = Astro.props;
+---
+
+<aside class="making-sources" aria-labelledby="making-sources-title">
+  <p id="making-sources-title" class="making-sources-title">
+    패치 소스
+  </p>
+  <dl>
+    <div>
+      <dt>담긴 것</dt>
+      <dd>
+        {holds} — <a href={source}>패치 소스(GitHub)</a>
+      </dd>
+    </div>
+    <div>
+      <dt>공통 도구</dt>
+      <dd>
+        {toolkit} — <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 <code>krpatch</code> 명령
+      </dd>
+    </div>
+    <div>
+      <dt>없는 것</dt>
+      <dd>{missing}</dd>
+    </div>
+    <div>
+      <dt>문서</dt>
+      <dd>
+        빌드 순서는 게임 폴더의 <code>README.md</code>, 롬 주소와 형식은 <code>docs/ANALYSIS.md</code>
+      </dd>
+    </div>
+    <div>
+      <dt>찾는 법</dt>
+      <dd>
+        각 장 끝 「패치 소스 속 파일」에 그 장에서 쓴 파일을 적었고, 전체 목록은{' '}
+        <a href="#making-tools">패치 소스 파일</a>에 있습니다.
+      </dd>
+    </div>
+  </dl>
+</aside>

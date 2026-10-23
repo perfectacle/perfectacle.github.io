@@ -1,0 +1,17 @@
+---
+interface Props {
+  chapters: { id: string; title: string }[];
+}
+
+const { chapters } = Astro.props;
+---
+
+<nav class="making-toc" aria-label="롬 분석 노트 목차">
+  <ol>
+    {chapters.map(chapter => (
+      <li>
+        <a href={`#${chapter.id}`}>{chapter.title}</a>
+      </li>
+    ))}
+  </ol>
+</nav>

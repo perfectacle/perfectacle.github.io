@@ -1,6 +1,8 @@
 ---
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
+import MakingSources from '../kr-patch/MakingSources.astro';
+import MakingToc from '../kr-patch/MakingToc.astro';
 import { KAKUSEI_PATCH, KR_PATCH_TOOLKIT_URL, sourceUrl, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
@@ -213,12 +215,26 @@ const toolsFor = (section: string) =>
     path,
     text: toolFiles.find(file => file.name === path)?.text ?? '',
   }));
+
+const chapters = [
+  { id: 'making-basics', title: '1. 배경지식' },
+  { id: 'making-dialogue', title: '2. 대사는 뱅크 밖으로 못 나간다' },
+  { id: 'making-font', title: '3. 폰트 칸이 모자랐다' },
+  { id: 'making-font-ext', title: '4. 글자 칸을 512개 늘리기' },
+  { id: 'making-title-gfx', title: '5. 타이틀 화면' },
+  { id: 'making-event-list', title: '6. 이벤트 표에서 못 나오던 문제' },
+  { id: 'making-testing', title: '7. 확인은 에뮬레이터가' },
+  { id: 'making-etc', title: '8. 그 밖에' },
+  { id: 'making-next', title: '9. 다음 사람에게' },
+  { id: 'making-tools', title: '10. 패치 소스 파일' },
+];
 ---
 
 <section id="making" class="section page-width" aria-labelledby="making-title">
   <h2 id="making-title" class="pixel">
     롬 분석 노트
   </h2>
+  <p class="making-badge">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="lead">
     이 롬을 다시 분석하거나 패치를 이어 고칠 사람을 위해, 확인한 주소와 형식을 적어 둔 기록입니다. v1.0은 한자와 가나가
     있던 폰트 자리 1,010칸에 한글을 다시 그려 썼고, 그 칸은 거의 다 차 있었습니다. 대사를 원문에 맞춰 다시 옮기니
@@ -237,18 +253,20 @@ const toolsFor = (section: string) =>
     />
     <figcaption>v1.1 롬에서 꺼낸 새 글자 213자</figcaption>
   </figure>
-  <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
-  <p class="section-note">
-    빌드 스크립트, 대사·폰트·타이틀 도구, Mesen 2용 Lua 스크립트, 대조 덤프와 롬 분석 문서(docs/ANALYSIS.md)는{' '}
-    <a href={source}>패치 소스(GitHub)</a>에 있습니다. 롬은 들어 있지 않고, IPS·체크섬·LZSS·역어셈블러·libretro 실행
-    같은 공통 도구는 <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 <code>krpatch</code> 명령을 씁니다. 아래
-    「자세히 보기」의 항목마다 그 내용을 다루는 파일을 적어 두었고, 전체 목록은 마지막{' '}
-    <a href="#making-tools">패치 소스 파일</a>에 있습니다.
-  </p>
+  <MakingSources
+    source={source}
+    holds="빌드 스크립트, 대사·폰트·타이틀 도구, Mesen 2용 Lua 스크립트, 대조 덤프, 롬 분석 문서"
+    missing="롬"
+    toolkit="IPS·체크섬·LZSS·역어셈블러·libretro 실행"
+  />
 
   <details class="more making">
-    <summary class="pointer">자세히 보기</summary>
+    <summary class="making-open">
+      <span class="pointer">노트 펼치기</span>
+      <span class="making-count">10장</span>
+    </summary>
     <div class="making-body">
+      <MakingToc chapters={chapters} />
       <h3 id="making-basics" class="pixel">
         1. 배경지식
       </h3>
