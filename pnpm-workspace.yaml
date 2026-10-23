@@ -4,3 +4,7 @@ minimumReleaseAge: 10080
 minimumReleaseAgeExcludePrune: true
 
 allowBuilds: {}
+
+overrides:
+  # test only: reproduces the advisory
+  dompurify@3: 3.4.16
