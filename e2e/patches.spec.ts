@@ -870,13 +870,9 @@ test('Otogirisou title screen reads the opening page by page from the keyboard',
   await expect(page.locator('.patch-box input[type=file]')).toBeFocused();
 });
 
-test('Otogirisou title menu points at sections on the page', async ({ page }) => {
+test('Otogirisou title menu only starts the novel; the page menu lists the sections', async ({ page }) => {
   await page.goto(OTOGIRI);
-  const hashes = await page
-    .locator('[data-menu="title"] a')
-    .evaluateAll(as => as.map(a => (a as HTMLAnchorElement).hash));
-  expect(hashes.length).toBeGreaterThan(5);
-  for (const hash of new Set(hashes)) await expect(page.locator(hash)).toHaveCount(1);
+  await expect(page.locator('[data-menu="title"] a')).toHaveText(['처음부터 읽기']);
 });
 
 for (const patch of KR_PATCHES) {

@@ -84,14 +84,14 @@ const play = [
   },
 ];
 
-// Each section reads as a chapter of the game; the title menu follows this order.
+// Each section reads as a chapter of the game.
 const chapters = [
-  { id: 'korean', label: '한국어로 바뀐 것', mark: '제1장' },
-  { id: 'features', label: '편의 기능', mark: '제2장' },
-  { id: 'story', label: '이야기', mark: '제3장' },
-  { id: 'play', label: '진행 방식', mark: '제4장' },
-  { id: 'patch-notes', label: '패치 노트', mark: '제5장' },
-  { id: 'making', label: '롬 분석 노트', mark: '숨겨진 장' },
+  { id: 'korean', mark: '제1장' },
+  { id: 'features', mark: '제2장' },
+  { id: 'story', mark: '제3장' },
+  { id: 'play', mark: '제4장' },
+  { id: 'patch-notes', mark: '제5장' },
+  { id: 'making', mark: '숨겨진 장' },
 ];
 const chapter = (id: string) => {
   const found = chapters.find(c => c.id === id);
@@ -129,7 +129,7 @@ const chapter = (id: string) => {
         <p>엔딩에서 「終」이 나온 뒤에는 리셋해 주세요. 원작과 같은 동작입니다.</p>
       </SaveNote>
     </div>
-    <SoundNovel base={base} chapters={chapters.map(c => ({ href: `#${c.id}`, label: c.label }))} />
+    <SoundNovel base={base} />
   </section>
 
   <section id="korean" class="section page-width" aria-labelledby="korean-title">
