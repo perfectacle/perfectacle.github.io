@@ -10,7 +10,7 @@ export interface KrPatch {
   version: string;
   /** Release date of `version` (YYYY-MM-DD), shown on the catalogue card. */
   released: string;
-  /** Download names: `${stem}.ips`, `${stem}_Headered.ips`, `${stem}_tools.zip`, and the saved ROM. */
+  /** Download names: `${stem}.ips`, `${stem}_Headered.ips`, and the saved ROM. */
   stem: string;
   /** Whether a separate IPS for copier-headered files is published. */
   headeredIps: boolean;
@@ -124,8 +124,19 @@ export const downloads = (patch: KrPatch) => {
   return {
     ips: `${root}.ips`,
     headeredIps: patch.headeredIps ? `${root}_Headered.ips` : undefined,
-    tools: `${root}_tools.zip`,
   };
+};
+
+/** Shared tools (`krpatch`) that the game folders in kr-patches build with, at the version they pin. */
+export const KR_PATCH_TOOLKIT_URL = 'https://github.com/perfectacle/kr-patch-toolkit/tree/v0.1.0';
+
+/**
+ * The patch source on GitHub at the tag of `version`. The kr-patches folders and tags are named after the
+ * last segment of `path` (`snes/super-mario-rpg`, `super-mario-rpg-v1.2`).
+ */
+export const sourceUrl = (patch: KrPatch) => {
+  const dir = patch.path.slice(patch.path.lastIndexOf('/') + 1);
+  return `https://github.com/perfectacle/kr-patches/tree/${dir}-v${patch.version}/snes/${dir}`;
 };
 
 /** e.g. `슈퍼 패미컴 · 1996 · 한글패치 v1.1`. */

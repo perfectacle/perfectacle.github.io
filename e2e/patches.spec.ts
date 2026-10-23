@@ -1,6 +1,13 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator } from '@playwright/test';
-import { KR_PATCHES, formatBytes } from '../src/lib/kr-patches.ts';
+import {
+  KAKUSEI_PATCH,
+  KR_PATCHES,
+  KR_PATCH_TOOLKIT_URL,
+  OTOGIRISOU_PATCH,
+  formatBytes,
+  sourceUrl,
+} from '../src/lib/kr-patches.ts';
 import {
   GOKUDEN_KAKUSEI,
   GOKUDEN_TOTSUGEKI,
@@ -718,6 +725,21 @@ test('Super Gokuden: Kakusei-hen patch box tells it apart from Totsugeki-hen', a
   await expect(page.locator('.patch-status')).toContainText('예전에 나온 한글판 롬파일입니다');
 });
 
+for (const patch of KR_PATCHES) {
+  test(`${patch.title} links its patch source on GitHub instead of a zip`, async ({ page }) => {
+    await page.goto(`${patch.path}/`);
+    const making = page.locator('#making');
+    const source = making.getByRole('link', { name: '패치 소스(GitHub)' });
+    await expect(source).toHaveAttribute('href', sourceUrl(patch));
+    await expect(source).not.toHaveAttribute('download');
+    await expect(making.getByRole('link', { name: 'kr-patch-toolkit' }).first()).toHaveAttribute(
+      'href',
+      KR_PATCH_TOOLKIT_URL,
+    );
+    expect(await page.locator('a[href$=".zip"]').count()).toBe(0);
+  });
+}
+
 test('Super Gokuden: Kakusei-hen explains how the patch was made and offers the analysis tools', async ({ page }) => {
   await page.goto(KAKUSEI);
   expect(await page.content()).not.toContain('cafe.naver.com/hansicgu');
@@ -730,9 +752,10 @@ test('Super Gokuden: Kakusei-hen explains how the patch was made and offers the 
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
     0,
   );
-  const tools = making.locator('a[href$="_tools.zip"]');
-  await expect(tools).toHaveAttribute('download', '');
-  expect((await page.request.get((await tools.getAttribute('href')) ?? '')).status()).toBe(200);
+  await expect(making.getByRole('link', { name: '패치 소스(GitHub)' })).toHaveAttribute(
+    'href',
+    sourceUrl(KAKUSEI_PATCH),
+  );
 });
 
 test('Otogirisou explains how the patch was made and offers the build tools', async ({ page }) => {
@@ -747,9 +770,10 @@ test('Otogirisou explains how the patch was made and offers the build tools', as
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
     0,
   );
-  const tools = making.locator('a[href$="_tools.zip"]');
-  await expect(tools).toHaveAttribute('download', '');
-  expect((await page.request.get((await tools.getAttribute('href')) ?? '')).status()).toBe(200);
+  await expect(making.getByRole('link', { name: '패치 소스(GitHub)' })).toHaveAttribute(
+    'href',
+    sourceUrl(OTOGIRISOU_PATCH),
+  );
 });
 
 test('Otogirisou patch box wants the 1 MB original and turns away a 2 MB Korean build', async ({ page }) => {

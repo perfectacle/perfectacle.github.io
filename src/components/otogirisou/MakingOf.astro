@@ -1,7 +1,7 @@
 ---
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
-import { downloads, type KrPatch } from '../../lib/kr-patches';
+import { KR_PATCH_TOOLKIT_URL, sourceUrl, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
   patch: KrPatch;
@@ -12,7 +12,7 @@ interface Props {
 const { patch, mark } = Astro.props;
 const base = patch.path;
 const img = (name: string) => `${base}/images/making/${name}`;
-const { tools } = downloads(patch);
+const source = sourceUrl(patch);
 
 const memories = [
   {
@@ -85,12 +85,12 @@ const toolMap = [
     files: ['tools/script.py', 'tools/dump.py', 'tools/assemble.py'],
     section: 'script',
   },
-  { job: '롬 코드 읽기', files: ['tools/dis65816.py'], section: 'script' },
+  { job: '롬 코드 읽기', files: ['krpatch snes dis'], section: 'script' },
   { job: '2회차 멈춤 수정', files: ['tools/fixes.py', 'lua/lap.lua'], section: 'lap2' },
   { job: 'A 버튼 대기 맞추기', files: ['tools/waits.py', 'tools/fixwaits.py', 'lua/waitdemo.lua'], section: 'a-wait' },
   {
     job: '글자표·새 글자',
-    files: ['tools/font.py', 'tools/ocr/', 'tools/mkfont.py', 'tools/glyph_workbench.py'],
+    files: ['tools/font.py', 'tools/fontjson.py', 'krpatch ocr', 'tools/mkfont.py', 'tools/glyph_workbench.py'],
     section: 'font',
   },
   {
@@ -114,12 +114,17 @@ const toolMap = [
   },
   {
     job: '엔진 추적',
-    files: ['lua/qol/pcs.lua', 'lua/qol/wtrace.lua', 'lua/qol/trace.lua', 'lua/qol/watch.lua'],
+    files: [
+      'lua/qol/pcs.lua',
+      'probe/wtrace.lua (krpatch snes lua)',
+      'probe/trace.lua (krpatch snes lua)',
+      'probe/watch.lua (krpatch snes lua)',
+    ],
     section: 'readers',
   },
   { job: '장 이동 회귀', files: ['lua/qol/menujump.sh', 'lua/qol/chjump.sh'], section: 'scene-music' },
-  { job: '에뮬레이터 호환성', files: ['compat/lr.py', 'compat/run_all.sh'], section: 'testing' },
-  { job: '롬 분석 문서(주소·형식 전체)', files: ['ANALYSIS.txt'], section: 'next' },
+  { job: '에뮬레이터 호환성', files: ['krpatch snes run', 'compat/run_all.sh'], section: 'testing' },
+  { job: '롬 분석 문서(주소·형식 전체)', files: ['docs/ANALYSIS.md'], section: 'next' },
 ];
 
 const sectionTitles: Record<string, string> = {
@@ -191,14 +196,12 @@ const toolVersions = [
   </figure>
   <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="section-note">
-    빌드 스크립트, 어셈블리 소스, 대본, 글자표, 테스트 스크립트와 롬 분석 문서는{' '}
-    <a href={tools} download>
-      패치 소스(zip, 1.8MB)
-    </a>
-    로 받을 수 있습니다. 각 단계 끝의 「패치 소스 속 파일」에 그 단계에서 쓴 파일과 하는 일을 적었고, 전체 목록은 마지막
+    빌드 스크립트, 어셈블리 소스, 대본, 글자표, 테스트 스크립트와 롬 분석 문서는 <a href={source}>패치 소스(GitHub)</a>
+    에 있습니다. 각 단계 끝의 「패치 소스 속 파일」에 그 단계에서 쓴 파일과 하는 일을 적었고, 전체 목록은 마지막{' '}
     <a href="#making-tools">패치 소스 파일</a>에 있습니다. 롬, asar, Mesen은 들어 있지 않고, 일본어 대본은 빌드할 때
-    가지고 있는 일본판 롬에서 뽑습니다. 빌드 순서는 압축 파일 안 tools/README.txt에, 롬 주소와 형식 전체는
-    ANALYSIS.txt에 있습니다.
+    가지고 있는 일본판 롬에서 뽑습니다. IPS·체크섬·역어셈블러·문자 인식·libretro 실행 같은 공통 도구는{' '}
+    <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 <code>krpatch</code> 명령과 Lua 스크립트를 씁니다. 빌드 순서는
+    게임 폴더의 README.md에, 롬 주소와 형식 전체는 docs/ANALYSIS.md에 있습니다.
   </p>
 
   <details class="more making">
@@ -310,7 +313,10 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
           { path: 'tools/script.py', text: '일본판 허프만 비트열과 v1.0 2바이트 대사를 둘 다 읽는 파서' },
           { path: 'tools/dump.py', text: '대사를 줄 단위 텍스트로 꺼내기 (점프 대상은 레이블로)' },
           { path: 'tools/assemble.py', text: '텍스트 대본을 다시 롬으로 조립하고 문장부호를 게임 글자로 바꾸기' },
-          { path: 'tools/dis65816.py', text: '롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러' },
+          {
+            path: 'krpatch snes dis',
+            text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러',
+          },
         ]}
       />
 
@@ -434,7 +440,8 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
       <ToolFiles
         items={[
           { path: 'tools/font.py', text: '뱅크 $1F의 가변 폭 폰트와 그룹 표 읽기' },
-          { path: 'tools/ocr/', text: '글리프를 macOS Vision으로 읽고 ㅁ/ㅇ을 모서리 픽셀로 가리기' },
+          { path: 'tools/fontjson.py', text: '폰트를 krpatch ocr이 읽는 JSON 글리프 묶음으로 꺼내기' },
+          { path: 'krpatch ocr', text: '공통 도구. 글리프를 macOS Vision으로 읽고 ㅁ/ㅇ을 모서리 픽셀로 가리기' },
           { path: 'tools/glyph_workbench.py', text: 'v1.0 글자 보기, 부분을 오려 붙여 새 글자 만들기' },
           { path: 'tools/mkfont.py', text: '새 글자와 글자 폭 표 넣기, 폰트 그룹 합치기' },
           { path: 'tables/newglyphs.json', text: 'v1.1에서 그려 넣은 글자 75자' },
@@ -603,10 +610,16 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
       <ToolFiles
         items={[
           { path: 'lua/qol/pcs.lua', text: '프레임마다 CPU가 실행 중인 주소 기록 (어디서 멈췄나)' },
-          { path: 'lua/qol/wtrace.lua', text: '한 주소에 값을 쓰는 코드의 주소와 값 기록 (누가 바꿨나)' },
-          { path: 'lua/qol/trace.lua', text: '지정한 코드가 몇 번 실행되는지 세기' },
-          { path: 'lua/qol/watch.lua', text: '프레임마다 메모리 값 기록' },
-          { path: 'tools/dis65816.py', text: '롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러' },
+          {
+            path: 'probe/wtrace.lua (krpatch snes lua)',
+            text: '한 주소에 값을 쓰는 코드의 주소와 값 기록 (누가 바꿨나)',
+          },
+          { path: 'probe/trace.lua (krpatch snes lua)', text: '지정한 코드가 몇 번 실행되는지 세기' },
+          { path: 'probe/watch.lua (krpatch snes lua)', text: '프레임마다 메모리 값 기록' },
+          {
+            path: 'krpatch snes dis',
+            text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러',
+          },
         ]}
       />
 
@@ -842,7 +855,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
       <ToolFiles
         items={[
           { path: 'asm/qol.asm', text: '장 목록·엔딩 목록·기록·노란 글씨·책갈피 코드와 후킹' },
-          { path: 'lua/qol/cgram.lua', text: '팔레트(CGRAM)와 화면 저장' },
+          { path: 'probe/cgram.lua (krpatch snes lua)', text: '팔레트(CGRAM)와 화면 저장' },
         ]}
       />
 
@@ -910,8 +923,8 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
       </figure>
       <ToolFiles
         items={[
-          { path: 'lua/qol/wrange.lua', text: '플레이 중 한 번이라도 쓰인 WRAM 영역 기록' },
-          { path: 'lua/qol/wdump.lua', text: 'WRAM 구간을 파일로 덤프' },
+          { path: 'probe/wrange.lua (krpatch snes lua)', text: '플레이 중 한 번이라도 쓰인 WRAM 영역 기록' },
+          { path: 'probe/wdump.lua (krpatch snes lua)', text: 'WRAM 구간을 파일로 덤프' },
         ]}
       />
 
@@ -968,7 +981,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
           { path: 'lua/pages.lua', text: '입력 대기마다 화면을 찍고 대사 위치 기록' },
           { path: 'lua/jumpsave.py', text: '원하는 대사에서 이어지는 세이브 파일 만들기' },
           { path: 'lua/qol/menujump.sh', text: '장마다 메뉴로 옮겨 첫 화면 찍기' },
-          { path: 'compat/lr.py', text: 'libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
+          { path: 'krpatch snes run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
           { path: 'compat/run_all.sh', text: '코어마다 새 게임·이어하기 비교' },
         ]}
       />
@@ -977,9 +990,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         18. 다음 사람에게
       </h3>
       <p>
-        롬 주소와 형식은 패치 소스 압축 파일 맨 위의 ANALYSIS.txt에 모았습니다. 헤더, 메모리 지도, 대본 형식, 제어 코드,
-        폰트 그룹 표, 후킹 지점 전체(원래 바이트와 바꾼 바이트), 세이브 형식, 쓴 공간이 들어 있고, 직접 확인한 것은
-        [실측], 짐작만 한 것은 [추정]으로 나눠 적었습니다. 여기에는 확인하지 못한 것과 남은 자리만 적습니다.
+        롬 주소와 형식은 패치 소스의 docs/ANALYSIS.md에 모았습니다. 헤더, 메모리 지도, 대본 형식, 제어 코드, 폰트 그룹
+        표, 후킹 지점 전체(원래 바이트와 바꾼 바이트), 세이브 형식, 쓴 공간이 들어 있고, 직접 확인한 것은 [실측], 짐작만
+        한 것은 [추정]으로 나눠 적었습니다. 여기에는 확인하지 못한 것과 남은 자리만 적습니다.
       </p>
       <h4>확인하지 못한 것</h4>
       <ul class="notes">
@@ -1019,8 +1032,8 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
           </tbody>
         </table>
       </div>
-      <p>글자표를 읽을 때 쓴 문자 인식은 macOS의 Vision이라, tools/ocr/는 macOS에서만 돌아갑니다.</p>
-      <ToolFiles items={[{ path: 'ANALYSIS.txt', text: '롬 분석 문서. 주소와 형식 전체' }]} />
+      <p>글자표를 읽을 때 쓴 문자 인식은 macOS의 Vision이라, krpatch ocr은 macOS에서만 돌아갑니다.</p>
+      <ToolFiles items={[{ path: 'docs/ANALYSIS.md', text: '롬 분석 문서. 주소와 형식 전체' }]} />
 
       <h3 id="making-tools" class="pixel">
         19. 패치 소스 파일
