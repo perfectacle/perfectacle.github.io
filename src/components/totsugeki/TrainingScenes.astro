@@ -1,0 +1,127 @@
+---
+import ReleaseScreenshot from '../kr-patch/ReleaseScreenshot.astro';
+import ZoomImage from '../kr-patch/ZoomImage.astro';
+
+const base = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/images/scenes';
+
+// Each training game as the event list names it, with the controls the game itself tells the player.
+const games = [
+  {
+    image: 'minigame-plow-rule',
+    alt: '무천도사가 A버튼과 Y버튼을 번갈아 눌러서 밭을 가는 게다!라고 말하는 장면',
+    title: '아침 수련 · 밭일',
+    text: '무천도사의 말대로 A와 Y를 번갈아 눌러 크리링과 함께 밭을 갑니다.',
+  },
+  {
+    image: 'minigame-construction-choice',
+    alt: '오른쪽에서 기다린다, 가운데에서 기다린다, 왼쪽에서 기다린다 중 고르는 선택지',
+    title: '오후 수련 · 공사 알바',
+    text: '떨어지는 흙을 어디서 받을지 고릅니다. 제자리에서 받아 내면 오공이 「좋아 완벽해!!」라고 외칩니다.',
+  },
+  {
+    image: 'minigame-rock',
+    alt: '큰 바위 앞에서 오공이 좋았어라고 말하는 장면',
+    title: '큰 바위를 움직이다',
+    text: 'A를 연타해 큰 바위를 밉니다. 움직이지 못하면 「제‥제길‥ 역시 안 되나‥」 하고 물러납니다.',
+  },
+  {
+    image: 'minigame-stone-choice',
+    alt: '북쪽으로 간다, 동쪽으로 간다, 서쪽으로 간다 중 고르는 선택지',
+    title: '실력시험 · 거북돌 찾기',
+    text: '무천도사의 두 번째 실력시험입니다. 숲속에서 갈 방향을 골라 거북돌을 찾습니다.',
+  },
+  {
+    image: 'minigame-karin-rule',
+    alt: '카린이 한가운데 있는 나를 때맞춰 A버튼으로 잡는 거다라고 말하는 장면',
+    title: '카린 탑 · 초성수 뺏기',
+    text: '좌우로 움직이는 카린이 한가운데 왔을 때 A를 눌러 붙잡습니다.',
+  },
+  {
+    image: 'minigame-radar',
+    alt: '드래곤 레이더 화면과 함께 오공이 구슬은 아직 멀리 있나 보네라고 말하는 장면',
+    title: '드래곤볼 찾기',
+    text: 'X로 드래곤 레이더를 보며 직접 걸어 다니면서 구슬을 찾습니다.',
+  },
+];
+---
+
+<section id="scenes" class="section page-width" aria-labelledby="scenes-title">
+  <h2 id="scenes-title" class="pixel">
+    수련과 선택 장면
+  </h2>
+  <p class="lead">
+    이야기 사이사이에 버튼을 눌러 해내는 수련과, 고른 대로 장면이 바뀌는 선택지가 들어 있습니다. 본 장면은 이벤트 표에
+    하나씩 채워집니다.
+  </p>
+  <h3 class="pixel scenes-subtitle">수련 미니게임</h3>
+  <ul class="play-list scenes-list">
+    {games.map(game => (
+      <li class="play frame">
+        <figure class="screen">
+          <ZoomImage
+            src={`${base}/${game.image}.webp`}
+            width="256"
+            height="224"
+            alt={game.alt}
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+        <h4 class="pixel">{game.title}</h4>
+        <p>{game.text}</p>
+      </li>
+    ))}
+  </ul>
+  <h3 class="pixel scenes-subtitle">고른 대로 달라지는 장면</h3>
+  <p>선택지는 Y 버튼으로 정합니다. 고른 보기에 따라 이어지는 대사와 이벤트 표에 남는 장면이 달라집니다.</p>
+  <div class="scenes-choices">
+    <ReleaseScreenshot
+      panels={[
+        {
+          label: '선택',
+          src: `${base}/branch-butt-choice.webp`,
+          alt: '재밌어 보여 만져 본다와 관심 없어 안 만진다 중 고르는 선택지',
+        },
+        {
+          label: '결과',
+          src: `${base}/branch-butt-ignore.webp`,
+          alt: '오공이 난 딱히 더러운 엉덩이 같은 거 만지고 싶지 않아라고 말하는 장면',
+        },
+      ]}
+      caption="사성구를 달라며 엉덩이를 내미는 부르마. 「안 만진다」를 고르면 이벤트 표에 「부르마 엉덩이 본체만체」가 남습니다."
+    />
+    <ReleaseScreenshot
+      panels={[
+        {
+          label: '선택',
+          src: `${base}/branch-girl-choice.webp`,
+          alt: '걷는 쪽을 고른다, 웃는 쪽을 고른다, 다른 곳으로 간다 중 고르는 선택지',
+        },
+        {
+          label: '결과',
+          src: `${base}/branch-girl-result.webp`,
+          alt: '무천도사가 바보야! 어디가 싱싱한 아가씨냐!! 다시 데려와!!라고 화내는 장면',
+        },
+      ]}
+      caption="무천도사가 데려오라는 「싱싱한 아가씨」 고르기. 걷는 쪽을 데려가면 「어디가 싱싱한 아가씨냐!!」라는 호통을 듣습니다."
+    />
+  </div>
+</section>
+
+<style>
+  .scenes-subtitle {
+    margin-top: 32px;
+  }
+
+  .scenes-list {
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .scenes-choices {
+    display: grid;
+    gap: 20px;
+    margin-top: 16px;
+  }
+</style>

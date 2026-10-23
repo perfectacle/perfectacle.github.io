@@ -329,17 +329,26 @@ test('Super Mario RPG guide leads with its title screen', async ({ page }) => {
   await expect(screen).toHaveAttribute('alt', '슈퍼 마리오 RPG 한글판 타이틀 화면');
 });
 
-test('Totsugeki-hen introduces its cast in story order through Piccolo Daimao', async ({ page }) => {
+test('Totsugeki-hen groups its cast like Kakusei-hen, ending with Piccolo Daimao', async ({ page }) => {
   await page.goto(GOKUDEN);
-  await expect(page.locator('#cast h3')).toHaveText([
+  const cast = page.locator('#cast');
+  await expect(cast.getByRole('list', { name: '주인공과 동료', exact: true }).locator('h3')).toHaveText([
     '손오공',
     '부르마',
     '무천도사',
-    '타오파이파이',
+    '크리링',
+    '야무치',
     '천진반',
+  ]);
+  await expect(cast.getByRole('list', { name: '주요 적', exact: true }).locator('h3')).toHaveText([
+    '피라후',
+    '레드 총수',
+    '타오파이파이',
     '피콜로 대마왕',
   ]);
-  await expect(page.locator('#cast .portrait').last()).toHaveAttribute('src', /\/piccolo-daimao\.webp$/);
+  await expect(cast.locator('.portrait').last()).toHaveAttribute('src', /\/piccolo-daimao\.webp$/);
+  // The last chapter hands the story over to the sequel's opening tournament.
+  await expect(page.locator('.story-arcs > li').last()).toContainText('2편 각성편');
 });
 
 for (const width of [390, 768, 1280]) {

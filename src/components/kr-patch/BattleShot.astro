@@ -1,18 +1,20 @@
 ---
-import ZoomImage from '../kr-patch/ZoomImage.astro';
+import ZoomImage from './ZoomImage.astro';
+
 interface Props {
-  index: number;
+  src: string;
   alt: string;
   caption: string;
+  /** Captures with the overscan line are 239 tall; plain screens are 224. */
+  height?: number;
 }
 
-const { index, alt, caption } = Astro.props;
-const src = `/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/images/battle/shot-${String(index).padStart(2, '0')}.webp`;
+const { src, alt, caption, height = 224 } = Astro.props;
 ---
 
 <figure class="battle-shot">
   <div class="screen">
-    <ZoomImage src={src} alt={alt} width="256" height="239" loading="lazy" decoding="async" />
+    <ZoomImage src={src} alt={alt} width="256" height={height} loading="lazy" decoding="async" />
   </div>
   <figcaption>{caption}</figcaption>
 </figure>

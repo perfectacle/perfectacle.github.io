@@ -1,0 +1,238 @@
+---
+import BattleShot from '../kr-patch/BattleShot.astro';
+
+const shot = (name: string) => `/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/images/battle/${name}.webp`;
+
+// Measured in a debug battle against the bandit, with each defence put on X in turn.
+const defences = [
+  { attack: '대시 베기', damage: 18, dodge: '잔상권 피하기 · 간파 · 여의봉 가드', reduce: '기합 가드(12)' },
+  { attack: '점프 베기', damage: 24, dodge: '재빨리 피하기 · 간파', reduce: '가드 · 기합 가드(16)' },
+  { attack: '칼 공격', damage: 16, dodge: '여의봉 가드', reduce: '기합 가드(11)' },
+];
+---
+
+<section id="battle-system" class="section page-width battle-system" aria-labelledby="battle-system-title">
+  <h2 id="battle-system-title" class="pixel">
+    전투 시스템
+  </h2>
+  <p class="lead">
+    돌격편의 전투는 차례를 주고받으며 버튼을 넣는 타이밍 싸움입니다. 오공이 빛나면 공격하고, 상대가 빛나면 막습니다.
+    <kbd>L</kbd> + <kbd>R</kbd>로 전투력을 모으고 화면 위에 상대 기술 이름이 뜨는 방식은 2편 각성편까지 이어집니다.
+  </p>
+  <article class="battle-part frame" aria-labelledby="battle-flow-title">
+    <h3 id="battle-flow-title" class="pixel">
+      빛나는 쪽을 보고 공격과 방어를 넣습니다
+    </h3>
+    <ol class="battle-flow">
+      <li>
+        <strong>오공이 빛나면 공격합니다.</strong> 이동을 마친 오공이 하얗게 깜빡이는 동안 <kbd>A</kbd>·<kbd>B</kbd>·
+        <kbd>Y</kbd>로 공격 기술을 넣습니다.
+      </li>
+      <li>
+        <strong>상대가 빛나면 방어를 준비합니다.</strong> 빛이 끝나면 화면 위쪽 왼편에 상대 기술 이름이 뜹니다.
+      </li>
+      <li>
+        <strong>기술 이름을 보고 막습니다.</strong> 상대가 달려들기 전에 <kbd>X</kbd>로 방어 기술을 넣습니다.
+      </li>
+      <li>
+        <strong>체력 숫자로 결과를 봅니다.</strong> 승패를 색으로 알려 주지 않고, 상대 체력도 표시되지 않습니다. 연출과
+        화면 아래 오공의 체력 숫자로 판단합니다.
+      </li>
+    </ol>
+    <div class="battle-pair">
+      <BattleShot
+        src={shot('goku-flash')}
+        alt="이동을 마친 오공이 하얗게 빛나고 위쪽에 상대 이름 산적이 보이는 전투 화면"
+        caption="오공이 하얗게 빛나는 동안이 공격을 넣을 때입니다."
+      />
+      <BattleShot
+        src={shot('enemy-tech')}
+        alt="산적의 빛이 끝나고 위쪽 왼편에 대시 베기라는 기술 이름이 뜬 전투 화면"
+        caption="상대의 빛이 끝나면 위쪽 왼편에 기술 이름이 뜹니다. 이때 방어 기술을 넣습니다."
+      />
+    </div>
+    <p>첫 전투인 부르마와의 연습에서도 같은 요령을 알려 줍니다.</p>
+    <div class="battle-pair">
+      <BattleShot
+        src={shot('tutorial-attack')}
+        alt="오공의 이동이 끝나 빛나면 공격 기술을 입력하자!라는 안내문"
+        caption="「오공의 이동이 끝나 빛나면 공격 기술을 입력하자!」"
+      />
+      <BattleShot
+        src={shot('tutorial-defense')}
+        alt="상대가 빛난 직후가 방어 기술을 입력할 타이밍이다!라는 안내문"
+        caption="「상대가 빛난 직후가 방어 기술을 입력할 타이밍이다!」"
+      />
+    </div>
+    <h4>기본 조작</h4>
+    <p>버튼 표기는 슈퍼 패미컴 패드 기준입니다. 계열 이름은 게임 속 표기 그대로입니다.</p>
+    <table>
+      <caption>전투 중 사용하는 버튼</caption>
+      <thead>
+        <tr>
+          <th scope="col">버튼</th>
+          <th scope="col">기능</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">
+            <kbd>A</kbd>
+          </th>
+          <td>필살기술</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>B</kbd>
+          </th>
+          <td>킥기술</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>Y</kbd>
+          </th>
+          <td>펀치기술</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>X</kbd>
+          </th>
+          <td>방어기술</td>
+        </tr>
+        <tr>
+          <th scope="row">방향키 + 위 버튼</th>
+          <td>같은 계열의 다른 기술. 버튼마다 방향 없이·위·오른쪽·왼쪽·아래 다섯 칸이 있습니다.</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <kbd>L</kbd> + <kbd>R</kbd>
+          </th>
+          <td>누르고 있는 동안 전투력 모으기</td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+
+  <article class="battle-part frame" aria-labelledby="battle-defence-title">
+    <h3 id="battle-defence-title" class="pixel">
+      상대의 공격에 맞는 방어를 고릅니다
+    </h3>
+    <p>
+      각성편처럼 계열끼리 물고 물리는 상성은 없습니다. 대신 상대 공격마다 통하는 방어 기술이 다릅니다. 피하기 계열은
+      맞는 공격을 통째로 피하고, 가드 계열은 피해를 줄입니다. 그래서 화면 위에 뜨는 상대 기술 이름이 판단의 근거가
+      됩니다.
+    </p>
+    <table>
+      <caption>산적의 공격을 방어 기술로 받았을 때 (괄호 안은 받은 피해)</caption>
+      <thead>
+        <tr>
+          <th scope="col">상대의 기술</th>
+          <th scope="col">피해 없이 막는 방어</th>
+          <th scope="col">피해를 줄이는 방어</th>
+        </tr>
+      </thead>
+      <tbody>
+        {defences.map(row => (
+          <tr>
+            <th scope="row">
+              {row.attack} ({row.damage})
+            </th>
+            <td>{row.dodge}</td>
+            <td>{row.reduce}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    <p class="battle-note">
+      디버그 전투에서 방어 기술을 하나씩 넣어 받은 피해를 잰 결과입니다. 기술은 진행하면서 익히므로, 실제 게임에서는 그
+      시점에 가진 방어 기술 안에서 고릅니다.
+    </p>
+    <div class="battle-pair">
+      <BattleShot
+        src={shot('hit')}
+        alt="방어하지 않은 오공이 산적의 대시 베기에 맞는 장면"
+        caption="막지 않으면 대시 베기에 그대로 맞아 체력 18을 잃습니다."
+      />
+      <BattleShot
+        src={shot('afterimage')}
+        alt="잔상권 피하기로 칼이 오공의 잔상만 지나가고 체력 100이 그대로인 장면"
+        caption="「잔상권 피하기」로 받으면 칼이 잔상만 지나가고 체력이 그대로입니다."
+      />
+    </div>
+  </article>
+
+  <article class="battle-part frame" aria-labelledby="battle-power-title">
+    <h3 id="battle-power-title" class="pixel">
+      전투력은 모으고, 쓰고, 다시 모읍니다
+    </h3>
+    <p>
+      <kbd>L</kbd> + <kbd>R</kbd>을 누르고 있는 동안 전투력이 올라가고 숫자가 노랗게 바뀝니다. 모은 전투력이 높을수록
+      주는 피해도 커집니다. 같은 킥이라도 전투력 50에서는 7, 100에서는 14의 피해를 줍니다. 다만 모으는 동안에도 상대는
+      공격해 옵니다.
+    </p>
+    <p>
+      기술마다 쓰는 전투력이 다릅니다. 펀치·킥·방어는 전투력을 쓰지 않고, 「가위바위보 주먹」은 20, 대시 공격은 30을
+      씁니다. 「무천류 최종오의」 같은 큰 기술은 남은 전투력을 거의 다 씁니다. 전투력은 12 밑으로 내려가지 않고,
+      낮아지면 숫자가 빨갛게 바뀝니다.
+    </p>
+    <div class="battle-pair">
+      <BattleShot
+        src={shot('charge')}
+        alt="L과 R을 누르는 동안 전투력 85가 노란색으로 표시된 전투 화면"
+        caption="모으는 동안에는 전투력 숫자가 노랗게 바뀝니다."
+      />
+      <BattleShot
+        src={shot('power-low')}
+        alt="큰 기술을 거듭 써서 전투력 12가 빨간색으로 표시된 전투 화면"
+        caption="큰 기술을 거듭 쓰면 전투력이 12까지 떨어지고 숫자가 빨갛게 바뀝니다."
+      />
+    </div>
+    <p class="battle-note">
+      「가위바위보 주먹·가위·보」는 원작에서 오공이 쓰는 필살기에서 온 이름입니다. 가위바위보처럼 물고 물리는 규칙이
+      있는 것은 아닙니다.
+    </p>
+    <h4>에네르기파는 전투력을 가득 모은 뒤에</h4>
+    <p>
+      에네르기파를 배우면 <kbd>L</kbd> + <kbd>R</kbd>로 전투력을 가득 모은 뒤 <kbd>A</kbd>로 쏩니다. 수련 중의 안내대로
+      「전투력이 낮으면 실패」합니다.
+    </p>
+    <div class="battle-pair">
+      <BattleShot
+        src={shot('kamehameha-charge')}
+        alt="에네르기파 수련에서 전투력 100을 모아 오공의 손에 기가 모인 장면"
+        caption="전투력을 가득 모으면 손에 기가 모입니다."
+      />
+      <BattleShot
+        src={shot('kamehameha')}
+        alt="오공이 에네르기파를 쏘아 자동차를 맞히는 장면"
+        caption="그대로 A를 누르면 에네르기파가 나갑니다."
+      />
+    </div>
+  </article>
+
+  <article class="battle-part frame" aria-labelledby="battle-result-title">
+    <h3 id="battle-result-title" class="pixel">
+      싸울수록 기술이 늘고, 지면 게임 오버
+    </h3>
+    <p>
+      싸움이 끝나면 「새 필살기를 익혔어!!」「체력이 올라갔어!」 같은 대사로 새로 익힌 기술이나 오른 능력을 알려 줍니다.
+      오공의 체력이 0이 되면 숫자가 빨갛게 바뀌고 게임 오버가 됩니다.
+    </p>
+    <div class="battle-pair">
+      <BattleShot
+        src={shot('new-tech')}
+        alt="쓰러진 산적 옆에서 오공이 새 필살기를 익혔어!!라고 말하는 장면"
+        caption="산적을 쓰러뜨린 뒤 새 필살기를 익혔다고 알려 주는 장면입니다."
+      />
+      <BattleShot
+        src={shot('game-over')}
+        alt="이대로 끝나는 건가!? 게임 오버라는 글자와 쓰러진 오공 그림"
+        caption="체력이 다하면 「이대로 끝나는 건가!? 게임 오버」 화면이 나옵니다."
+      />
+    </div>
+    <p>
+      상대는 산적과 프테라노돈부터 야무치·잭키 춘·타오파이파이·천진반·피콜로까지 46종입니다. 상대마다 쓰는 기술이 다르니
+      위쪽에 뜨는 이름을 보고 방어를 골라 보세요.
+    </p>
+  </article>
+</section>
