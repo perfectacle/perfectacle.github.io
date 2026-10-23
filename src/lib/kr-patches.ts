@@ -200,4 +200,5 @@ export const trail = (patch: KrPatch) => [
   { name: patch.title, path: `${patch.path}/` },
 ];
 
-export const formatBytes = (n: number) => `${n.toLocaleString('ko-KR')}바이트`;
+// MB here is 1,048,576 bytes (strictly MiB): ROM sizes are powers of two, and players know them as 2MB, 4MB.
+export const formatBytes = (n: number) => `${+(n / 1048576).toFixed(2)}MB(${n.toLocaleString('ko-KR')}바이트)`;

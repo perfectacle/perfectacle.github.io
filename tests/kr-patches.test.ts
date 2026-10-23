@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { KR_PATCHES, downloads, releaseOf, sourceUrl } from '../src/lib/kr-patches.ts';
+import { KR_PATCHES, downloads, formatBytes, releaseOf, sourceUrl } from '../src/lib/kr-patches.ts';
 
 describe('kr-patches', () => {
   it('links each patch source to the Korean README of its game folder in perfectacle/kr-patches', () => {
@@ -49,5 +49,13 @@ describe('patch releases', () => {
     expect(latest.id).toBe(`release-${patch.version.replace('.', '-')}`);
     expect(latest.dateText).toMatch(/^\d{4}년 \d{1,2}월 \d{1,2}일$/);
     expect(() => releaseOf(patch, '9.9')).toThrow();
+  });
+});
+
+describe('formatBytes', () => {
+  it('shows a ROM size in MB, then the exact bytes', () => {
+    expect(formatBytes(2097152)).toBe('2MB(2,097,152바이트)');
+    expect(formatBytes(4194304)).toBe('4MB(4,194,304바이트)');
+    expect(formatBytes(1572864)).toBe('1.5MB(1,572,864바이트)');
   });
 });
