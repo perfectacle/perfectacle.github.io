@@ -1,6 +1,7 @@
 ---
 import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
+import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
@@ -297,124 +298,134 @@ const story = [
         전투 메시지와 이름 띠의 영문 이름, 대사와 메뉴에서 잘못 나오던 글자를 고치고 셸·쉘 표기를 통일했습니다.
       </p>
       <ReleaseDetails>
-        <ul>
-          <li>
-            요시쿠키로 몬스터가 아이템으로 바뀔 때 「몬스터는 MUSHROOM 모습이 됐다!」처럼 영문 이름이 나오던 것을
-            「버섯」 같은 한글 이름으로 고쳤습니다. v1.0부터 있던 문제입니다.
-          </li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-2/yoshi-cookie.webp`}
-          highlights={[
-            [222, 40, 328, 46],
-            [222, 496, 328, 46],
-          ]}
-          width={630}
-          height={920}
-          panels={[
-            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 요시쿠키 메시지의 영문 MUSHROOM' },
-            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 요시쿠키 메시지의 한글 버섯' },
-          ]}
-          alt="요시쿠키 메시지의 아이템 이름 전후 비교"
-          caption="요시쿠키 메시지"
-        />
-        <ul>
-          <li>
-            화면 위 이름 띠가 아이템과 아군 필살기 이름을 영문으로 읽던 것을 한글로 고쳤습니다. 평소 플레이에서는 적
-            마법 이름만 띠에 나와 보이지 않던 부분입니다.
-          </li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-2/banner-item.webp`}
-          highlights={[
-            [118, 36, 496, 44],
-            [118, 492, 496, 44],
-          ]}
-          width={630}
-          height={920}
-          panels={[
-            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 이름 띠의 영문 YOSICOOKIE' },
-            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 이름 띠의 한글 요시쿠키' },
-          ]}
-          alt="이름 띠의 아이템 이름 전후 비교"
-          caption="이름 띠의 아이템 이름 (띠를 띄우려고 적의 행동을 바꾼 테스트 롬)"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-2/banner-special.webp`}
-          highlights={[
-            [118, 36, 496, 44],
-            [118, 492, 496, 44],
-          ]}
-          width={630}
-          height={920}
-          panels={[
-            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 이름 띠의 영문 CRUSH' },
-            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 이름 띠의 한글 솟아나라쑤욱' },
-          ]}
-          alt="이름 띠의 필살기 이름 전후 비교"
-          caption="이름 띠의 필살기 이름 (같은 테스트 롬)"
-        />
-        <ul>
-          <li>
-            대사 폰트로 그리는 화면에서 아이템 「힐셸」이 「캡셸」로, 필살기 「천둥콰르릉」이 「천둥잣르릉」으로 나오던
-            것을 고쳤습니다. v1.1이 대사 폰트에 새 글자를 넣으며 다른 글자의 자리를 덮어서 생긴 문제입니다.
-          </li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-2/glyph-result.webp`}
-          highlights={[
-            [424, 184, 48, 38],
-            [424, 640, 48, 38],
-          ]}
-          width={630}
-          height={920}
-          panels={[
-            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 전투 결과 창의 캡셸' },
-            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 전투 결과 창의 힐쉘' },
-          ]}
-          alt="전투 결과 창의 힐쉘 전후 비교"
-          caption="전투 결과 창의 아이템 이름"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-2/glyph-levelup.webp`}
-          highlights={[
-            [298, 210, 128, 48],
-            [298, 666, 128, 48],
-          ]}
-          width={630}
-          height={920}
-          panels={[
-            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 레벨업 화면의 천둥잣르릉' },
-            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 레벨업 화면의 천둥콰르릉' },
-          ]}
-          alt="레벨업 화면의 천둥콰르릉 전후 비교"
-          caption="레벨업 화면에서 배운 필살기"
-        />
-        <ul>
-          <li>
-            메뉴에서 「힐셸」의 「힐」이 점으로, 「지노휠」의 「휠」이 「빼」로 나오던 문제를 고쳤습니다. v1.0 메뉴 폰트
-            코드표가 그 두 글자를 다른 그림에 연결해 두었던 탓입니다.
-          </li>
-          <li>셸 → 쉘 표기 통일: 해피쉘·파이어쉘·힐쉘. 이미 쓰던 「레이지쉘」과 맞췄습니다.</li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-2/shell-names.webp`}
-          highlights={[
-            [372, 16, 96, 98],
-            [372, 472, 96, 98],
-          ]}
-          width={630}
-          height={920}
-          panels={[
-            { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 장비 목록의 해피셸, 파이어셸, 점으로 나오는 ●셸' },
-            { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 장비 목록의 해피쉘, 파이어쉘, 힐쉘' },
-          ]}
-          alt="장비 목록의 힐 글자와 셸·쉘 표기 전후 비교"
-          caption="장비 목록의 이름 표기와 힐 글자"
-        />
-        <ul>
-          <li>v1.1·v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
-        </ul>
+        <ReleaseItem>
+          <ul>
+            <li>
+              요시쿠키로 몬스터가 아이템으로 바뀔 때 「몬스터는 MUSHROOM 모습이 됐다!」처럼 영문 이름이 나오던 것을
+              「버섯」 같은 한글 이름으로 고쳤습니다. v1.0부터 있던 문제입니다.
+            </li>
+          </ul>
+          <ReleaseScreenshot
+            src={`${base}/images/releases/v1-2/yoshi-cookie.webp`}
+            highlights={[
+              [222, 40, 328, 46],
+              [222, 496, 328, 46],
+            ]}
+            width={630}
+            height={920}
+            panels={[
+              { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 요시쿠키 메시지의 영문 MUSHROOM' },
+              { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 요시쿠키 메시지의 한글 버섯' },
+            ]}
+            alt="요시쿠키 메시지의 아이템 이름 전후 비교"
+            caption="요시쿠키 메시지"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              화면 위 이름 띠가 아이템과 아군 필살기 이름을 영문으로 읽던 것을 한글로 고쳤습니다. 평소 플레이에서는 적
+              마법 이름만 띠에 나와 보이지 않던 부분입니다.
+            </li>
+          </ul>
+          <ReleaseScreenshot
+            src={`${base}/images/releases/v1-2/banner-item.webp`}
+            highlights={[
+              [118, 36, 496, 44],
+              [118, 492, 496, 44],
+            ]}
+            width={630}
+            height={920}
+            panels={[
+              { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 이름 띠의 영문 YOSICOOKIE' },
+              { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 이름 띠의 한글 요시쿠키' },
+            ]}
+            alt="이름 띠의 아이템 이름 전후 비교"
+            caption="이름 띠의 아이템 이름 (띠를 띄우려고 적의 행동을 바꾼 테스트 롬)"
+          />
+          <ReleaseScreenshot
+            src={`${base}/images/releases/v1-2/banner-special.webp`}
+            highlights={[
+              [118, 36, 496, 44],
+              [118, 492, 496, 44],
+            ]}
+            width={630}
+            height={920}
+            panels={[
+              { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 이름 띠의 영문 CRUSH' },
+              { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 이름 띠의 한글 솟아나라쑤욱' },
+            ]}
+            alt="이름 띠의 필살기 이름 전후 비교"
+            caption="이름 띠의 필살기 이름 (같은 테스트 롬)"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              대사 폰트로 그리는 화면에서 아이템 「힐셸」이 「캡셸」로, 필살기 「천둥콰르릉」이 「천둥잣르릉」으로
+              나오던 것을 고쳤습니다. v1.1이 대사 폰트에 새 글자를 넣으며 다른 글자의 자리를 덮어서 생긴 문제입니다.
+            </li>
+          </ul>
+          <ReleaseScreenshot
+            src={`${base}/images/releases/v1-2/glyph-result.webp`}
+            highlights={[
+              [424, 184, 48, 38],
+              [424, 640, 48, 38],
+            ]}
+            width={630}
+            height={920}
+            panels={[
+              { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 전투 결과 창의 캡셸' },
+              { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 전투 결과 창의 힐쉘' },
+            ]}
+            alt="전투 결과 창의 힐쉘 전후 비교"
+            caption="전투 결과 창의 아이템 이름"
+          />
+          <ReleaseScreenshot
+            src={`${base}/images/releases/v1-2/glyph-levelup.webp`}
+            highlights={[
+              [298, 210, 128, 48],
+              [298, 666, 128, 48],
+            ]}
+            width={630}
+            height={920}
+            panels={[
+              { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 레벨업 화면의 천둥잣르릉' },
+              { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 레벨업 화면의 천둥콰르릉' },
+            ]}
+            alt="레벨업 화면의 천둥콰르릉 전후 비교"
+            caption="레벨업 화면에서 배운 필살기"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              메뉴에서 「힐셸」의 「힐」이 점으로, 「지노휠」의 「휠」이 「빼」로 나오던 문제를 고쳤습니다. v1.0 메뉴
+              폰트 코드표가 그 두 글자를 다른 그림에 연결해 두었던 탓입니다.
+            </li>
+            <li>셸 → 쉘 표기 통일: 해피쉘·파이어쉘·힐쉘. 이미 쓰던 「레이지쉘」과 맞췄습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            src={`${base}/images/releases/v1-2/shell-names.webp`}
+            highlights={[
+              [372, 16, 96, 98],
+              [372, 472, 96, 98],
+            ]}
+            width={630}
+            height={920}
+            panels={[
+              { label: 'v1.1', crop: [110, 8, 512, 448], alt: 'v1.1 장비 목록의 해피셸, 파이어셸, 점으로 나오는 ●셸' },
+              { label: 'v1.2', crop: [110, 464, 512, 448], alt: 'v1.2 장비 목록의 해피쉘, 파이어쉘, 힐쉘' },
+            ]}
+            alt="장비 목록의 힐 글자와 셸·쉘 표기 전후 비교"
+            caption="장비 목록의 이름 표기와 힐 글자"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>v1.1·v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+          </ul>
+        </ReleaseItem>
       </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-1">
@@ -426,147 +437,185 @@ const story = [
       </p>
       <p class="release-overview">이름 한글화와 조사 처리를 개선하고, 빠진 대사를 복구했습니다.</p>
       <ReleaseDetails>
-        <ul>
-          <li>아이템·필살기·적 이름을 한국어로 옮겼습니다.</li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/making/names-shop.webp`}
-          highlights={[
-            [378, 20, 216, 208],
-            [898, 20, 240, 136],
-            [378, 476, 216, 208],
-            [898, 476, 240, 136],
-          ]}
-          width={1150}
-          height={920}
-          panels={[
-            { label: 'v1.0', crop: [110, 8, 512, 448], alt: 'v1.0 상점의 영문 아이템 이름' },
-            { label: 'v1.1', crop: [110, 464, 512, 448], alt: 'v1.1 상점의 한글 아이템 이름' },
-          ]}
-          alt="v1.0과 v1.1 상점의 아이템 이름 비교"
-          caption="상점 아이템 이름 한글화"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/making/names-battle.webp`}
-          highlights={[
-            [358, 371, 221, 57],
-            [358, 827, 221, 57],
-          ]}
-          width={1670}
-          height={920}
-          panels={[
-            { label: 'v1.0', crop: [110, 8, 512, 448], alt: 'v1.0 전투에서 GOOMBA와 HAMMER로 표시되던 적 이름' },
-            { label: 'v1.1', crop: [110, 464, 512, 448], alt: 'v1.1 전투에서 한국어로 표시되는 적 이름' },
-          ]}
-          alt="전투 중 적 이름 한글화 전후 비교"
-          caption="전투 중 적 이름 한글화"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/making/specials.webp`}
-          highlights={[
-            [362, 278, 164, 50],
-            [362, 734, 164, 50],
-          ]}
-          width={1150}
-          height={920}
-          panels={[
-            { label: 'v1.0', crop: [110, 8, 512, 448], alt: 'v1.0 전투의 THUNDER와 HP RAIN 필살기 목록' },
-            { label: 'v1.1', crop: [110, 464, 512, 448], alt: 'v1.1 전투의 번개찌리리와 회복샤워 필살기 목록' },
-          ]}
-          alt="필살기 이름 한글화 전후 비교"
-          caption="필살기 이름 한글화"
-        />
-        <ul>
-          <li>대사 속 이름과 조사 처리를 개선했습니다.</li>
-          <li>전투 결과·레벨업·필살기 화면을 개선했습니다.</li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/making/particles-levelup.webp`}
-          width={2190}
-          height={920}
-          panels={[
-            { label: 'v1.0', crop: [110, 8, 512, 448], alt: 'v1.0 레벨업 화면의 레벨3(이)가 표기' },
-            { label: 'v1.1', crop: [110, 464, 512, 448], alt: 'v1.1 레벨업 화면의 레벨3이 표기' },
-          ]}
-          alt="레벨 숫자 뒤의 조사 처리 비교"
-          caption="레벨 숫자에 맞춘 조사 처리"
-        />
-        <p>짧은 아이템 이름은 전투 결과 창을 한 줄로 줄이고, 다음 기술을 배우는 레벨도 읽기 쉽게 표시했습니다.</p>
-        <ReleaseScreenshot
-          src={`${base}/images/making/result-jp.webp`}
-          width={1670}
-          height={920}
-          panels={[
-            { label: '일본판', crop: [110, 8, 512, 448], alt: '일본판 전투 결과 창의 두 줄 아이템 표시' },
-            { label: 'v1.1', crop: [110, 464, 512, 448], alt: 'v1.1 전투 결과 창의 한 줄 아이템 표시' },
-          ]}
-          alt="전투 결과 창의 아이템 이름 정렬과 높이 개선 전후 비교"
-          caption="전투 결과 창의 아이템 이름 정렬과 높이 개선"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/making/special-hint.webp`}
-          width={1150}
-          height={920}
-          panels={[
-            { label: '일본판', crop: [110, 8, 512, 448], alt: '일본판 필살기 화면에서 이름 뒤에 빈칸이 생기는 안내' },
-            {
-              label: 'v1.1',
-              crop: [110, 464, 512, 448],
-              alt: 'v1.1 필살기 화면에서 마로는 레벨 6이 되면 새로운 기술을 배웁니다로 표시하는 안내',
-            },
-          ]}
-          alt="다음 필살기를 배우는 레벨 안내 개선 전후 비교"
-          caption="다음 필살기를 배우는 레벨 안내 개선"
-        />
-        <p>아이템 획득 메시지도 화면 가운데에 맞췄습니다.</p>
-        <ReleaseScreenshot
-          src={`${base}/images/making/banner.webp`}
-          width={1150}
-          height={1376}
-          panels={[
-            {
-              label: 'v1.0',
-              crop: [110, 464, 512, 448],
-              alt: 'v1.0 화면 중앙에서 오른쪽으로 치우친 아이템 획득 메시지',
-            },
-            { label: 'v1.1', crop: [110, 920, 512, 448], alt: 'v1.1 화면 가운데로 맞춘 아이템 획득 메시지' },
-          ]}
-          alt="아이템 획득 메시지 가운데 정렬 전후 비교"
-          caption="아이템 획득 메시지 가운데 정렬"
-        />
-        <p>일본어 원문과 대조해 오역·오타·맞춤법을 고쳤습니다.</p>
-        <ReleaseScreenshot
-          src={`${base}/images/making/mistranslation.webp`}
-          width={630}
-          height={920}
-          panels={[
-            { label: 'v1.0', crop: [110, 8, 512, 448], alt: 'v1.0에서 이가 언덕으로 잘못 번역한 지명' },
-            { label: 'v1.1', crop: [110, 464, 512, 448], alt: 'v1.1에서 이가 계곡으로 바로잡은 지명' },
-          ]}
-          alt="지명 오역 수정: 이가 언덕 → 이가 계곡 전후 비교"
-          caption="지명 오역 수정: 이가 언덕 → 이가 계곡"
-        />
-        <ul>
-          <li>잘리거나 비어 있던 대사를 복구했습니다.</li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/making/restored.webp`}
-          highlights={[
-            [230, 342, 250, 40],
-            [230, 798, 250, 40],
-          ]}
-          width={630}
-          height={920}
-          panels={[
-            { label: 'v1.0', crop: [110, 8, 512, 448], alt: 'v1.0에서 빠졌던 개구리 코인 보상 메시지' },
-            { label: 'v1.1', crop: [110, 464, 512, 448], alt: 'v1.1에서 복구한 개구리 코인 획득 메시지' },
-          ]}
-          alt="개구리 코인 보상 메시지 복구 전후 비교"
-          caption="누락됐던 보상 메시지 복구"
-        />
-        <ul>
-          <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
-        </ul>
+        <ReleaseItem>
+          <ul>
+            <li>아이템·필살기·적 이름을 한국어로 옮겼습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            highlights={[[134, 6, 108, 104]]}
+            panels={[
+              {
+                label: 'v1.0',
+                src: `${base}/images/releases/v1-1/shop-buy-v1-0.webp`,
+                alt: 'v1.0 상점의 영문 아이템 이름',
+              },
+              {
+                label: 'v1.1',
+                src: `${base}/images/releases/v1-1/shop-buy-v1-1.webp`,
+                alt: 'v1.1 상점의 한글 아이템 이름',
+              },
+            ]}
+            caption="상점 아이템 이름"
+          />
+          <ReleaseScreenshot
+            highlights={[[126, 181, 66, 28]]}
+            panels={[
+              {
+                label: 'v1.0',
+                src: `${base}/images/releases/v1-1/battle-weapon-v1-0.webp`,
+                alt: 'v1.0 전투에서 GOOMBA와 HAMMER로 표시되던 적 이름',
+              },
+              {
+                label: 'v1.1',
+                src: `${base}/images/releases/v1-1/battle-weapon-v1-1.webp`,
+                alt: 'v1.1 전투에서 한국어로 표시되는 적 이름',
+              },
+            ]}
+            caption="전투 중 적 이름"
+          />
+          <ReleaseScreenshot
+            highlights={[[135, 133, 66, 28]]}
+            panels={[
+              {
+                label: 'v1.0',
+                src: `${base}/images/releases/v1-1/special-battle-v1-0.webp`,
+                alt: 'v1.0 전투의 THUNDER와 HP RAIN 필살기 목록',
+              },
+              {
+                label: 'v1.1',
+                src: `${base}/images/releases/v1-1/special-battle-v1-1.webp`,
+                alt: 'v1.1 전투의 번개찌리리와 회복샤워 필살기 목록',
+              },
+            ]}
+            caption="필살기 이름"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>대사 속 이름과 조사 처리를 개선했습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            highlights={[[96, 106, 62, 18]]}
+            panels={[
+              {
+                label: 'v1.0',
+                src: `${base}/images/releases/v1-1/levelup-level-v1-0.webp`,
+                alt: 'v1.0 레벨업 화면의 레벨3(이)가 표기',
+              },
+              {
+                label: 'v1.1',
+                src: `${base}/images/releases/v1-1/levelup-level-v1-1.webp`,
+                alt: 'v1.1 레벨업 화면의 레벨3이 표기',
+              },
+            ]}
+            caption="레벨 숫자에 맞춘 조사 처리"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              전투 결과·레벨업·필살기 화면을 개선했습니다. 짧은 아이템 이름은 전투 결과 창을 한 줄로 줄이고, 다음 기술을
+              배우는 레벨도 읽기 쉽게 표시했습니다.
+            </li>
+          </ul>
+          <ReleaseScreenshot
+            panels={[
+              {
+                label: '일본판',
+                src: `${base}/images/releases/v1-1/result-short-jp.webp`,
+                alt: '일본판 전투 결과 창의 두 줄 아이템 표시',
+              },
+              {
+                label: 'v1.1',
+                src: `${base}/images/releases/v1-1/result-short-v1-1.webp`,
+                alt: 'v1.1 전투 결과 창의 한 줄 아이템 표시',
+              },
+            ]}
+            caption="전투 결과 창의 아이템 이름 정렬과 높이"
+          />
+          <ReleaseScreenshot
+            panels={[
+              {
+                label: '일본판',
+                src: `${base}/images/releases/v1-1/special-field-jp.webp`,
+                alt: '일본판 필살기 화면에서 이름 뒤에 빈칸이 생기는 안내',
+              },
+              {
+                label: 'v1.1',
+                src: `${base}/images/releases/v1-1/special-field-v1-1.webp`,
+                alt: 'v1.1 필살기 화면에서 마로는 레벨 6이 되면 새로운 기술을 배웁니다로 표시하는 안내',
+              },
+            ]}
+            caption="다음 필살기를 배우는 레벨 안내"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>아이템 획득 메시지를 화면 가운데에 맞췄습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            panels={[
+              {
+                label: 'v1.0',
+                src: `${base}/images/releases/v1-1/item-banner-static-v1-0.webp`,
+                alt: 'v1.0 화면 중앙에서 오른쪽으로 치우친 아이템 획득 메시지',
+              },
+              {
+                label: 'v1.1',
+                src: `${base}/images/releases/v1-1/item-banner-static-v1-1.webp`,
+                alt: 'v1.1 화면 가운데로 맞춘 아이템 획득 메시지',
+              },
+            ]}
+            caption="아이템 획득 메시지"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>일본어 원문과 대조해 오역·오타·맞춤법을 고쳤습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            highlights={[[44, 32, 23, 17]]}
+            panels={[
+              {
+                label: 'v1.0',
+                src: `${base}/images/releases/v1-1/mistrans-iga-valley-v1-0.webp`,
+                alt: 'v1.0에서 이가 언덕으로 잘못 번역한 지명',
+              },
+              {
+                label: 'v1.1',
+                src: `${base}/images/releases/v1-1/mistrans-iga-valley-v1-1.webp`,
+                alt: 'v1.1에서 이가 계곡으로 바로잡은 지명',
+              },
+            ]}
+            caption="지명 오역: 이가 언덕 → 이가 계곡"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>잘리거나 비어 있던 대사를 복구했습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            highlights={[[72, 158, 106, 20]]}
+            panels={[
+              {
+                label: 'v1.0',
+                src: `${base}/images/releases/v1-1/frog-coin-restore-v1-0.webp`,
+                alt: 'v1.0에서 빠졌던 개구리 코인 보상 메시지',
+              },
+              {
+                label: 'v1.1',
+                src: `${base}/images/releases/v1-1/frog-coin-restore-v1-1.webp`,
+                alt: 'v1.1에서 복구한 개구리 코인 획득 메시지',
+              },
+            ]}
+            caption="누락됐던 보상 메시지"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+          </ul>
+        </ReleaseItem>
       </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-0">
@@ -578,33 +627,32 @@ const story = [
       </p>
       <p class="release-overview">대사와 메뉴를 한국어로 옮긴 첫 버전입니다.</p>
       <ReleaseDetails>
-        <ul>
-          <li>대사와 메뉴를 한국어로 옮긴 최초 한글패치입니다.</li>
-        </ul>
-
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-0/title.webp`}
-          width={256}
-          height={239}
-          alt="슈퍼 마리오 RPG의 한글 로고가 표시된 타이틀 화면"
-          caption="타이틀 로고 한글화"
-        />
-
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-0/castle-dialogue.webp`}
-          width={256}
-          height={224}
-          alt="버섯성에서 키노피오와 나누는 v1.0 대사 화면"
-          caption="v1.0: 버섯성에서 키노피오와 나누는 대사"
-        />
-
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-0/item-tutorial.webp`}
-          width={256}
-          height={224}
-          alt="회복 아이템의 효과를 설명하는 v1.0 화면"
-          caption="v1.0: 회복 아이템의 효과 설명"
-        />
+        <ReleaseItem>
+          <ul>
+            <li>대사와 메뉴를 한국어로 옮긴 최초 한글패치입니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            panels={[
+              {
+                label: '타이틀 로고',
+                src: `${base}/images/releases/v1-0/title.webp`,
+                height: 239,
+                alt: '슈퍼 마리오 RPG의 한글 로고가 표시된 타이틀 화면',
+              },
+              {
+                label: '키노피오와 나누는 대사',
+                src: `${base}/images/releases/v1-0/castle-dialogue.webp`,
+                alt: '버섯성에서 키노피오와 나누는 v1.0 대사 화면',
+              },
+              {
+                label: '회복 아이템 설명',
+                src: `${base}/images/releases/v1-0/item-tutorial.webp`,
+                alt: '회복 아이템의 효과를 설명하는 v1.0 화면',
+              },
+            ]}
+            caption="첫 한글판 화면"
+          />
+        </ReleaseItem>
       </ReleaseDetails>
     </article>
   </section>

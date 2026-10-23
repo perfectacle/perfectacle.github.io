@@ -2,7 +2,8 @@
 import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
-import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
+import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
+import ReleasePairs from '../../../../components/kr-patch/ReleasePairs.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import BattleSystem from '../../../../components/kakusei/BattleSystem.astro';
@@ -282,23 +283,28 @@ const castGroups = [
         나레이션 줄바꿈을 바로잡고, 전투 말풍선을 원문과 다시 대조하고, 돌격편 암호가 이어지도록 고쳤습니다.
       </p>
       <ReleaseDetails>
-        <ul>
-          <li>나레이션 대사 8개에서 마지막 글자가 혼자 다음 줄로 떨어지던 문제를 고쳤습니다.</li>
-          <li>전투 말풍선 문자열 443개(대사 ID 719개)를 원문에 맞게 고쳤습니다.</li>
-          <li>말풍선 밖으로 넘치던 줄을 창 크기에 맞게 나눴습니다.</li>
-          <li>돌격편 엔딩의 암호 「손오공은사이어인」을 입력하면 돌격편을 마친 상태로 시작합니다.</li>
-          <li>돌격편 한글판의 50자 암호도 화면에 보이는 글자 그대로 입력하면 이어지도록 고쳤습니다.</li>
-          <li>
-            돌격편 이름을 각성편 글자로 옮기는 표가 37번째 글자부터 밀려 있어 이름이 다른 글자로 바뀌던 문제를
-            고쳤습니다. v1.2는 데이터 암호를 키로 칠 수 없어서(256가지 바이트 값 중 11가지만 입력 가능), 비교 화면의
-            v1.2 쪽은 같은 암호를 메모리에 직접 써 넣고 찍었습니다.
-          </li>
-          <li>새 게임의 이름 입력 화면도 암호 화면과 같은 글자 판을 써서 글자 배치가 바뀌었습니다.</li>
-          <li>v1.2·v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
-        </ul>
-        <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.2와 v1.3을 나란히 놓았습니다.</p>
+        <ReleaseItem>
+          <ul>
+            <li>나레이션 대사 8개에서 마지막 글자가 혼자 다음 줄로 떨어지던 문제를 고쳤습니다.</li>
+            <li>전투 말풍선 문자열 443개(대사 ID 719개)를 원문에 맞게 고쳤습니다.</li>
+            <li>말풍선 밖으로 넘치던 줄을 창 크기에 맞게 나눴습니다.</li>
+            <li>돌격편 엔딩의 암호 「손오공은사이어인」을 입력하면 돌격편을 마친 상태로 시작합니다.</li>
+            <li>돌격편 한글판의 50자 암호도 화면에 보이는 글자 그대로 입력하면 이어지도록 고쳤습니다.</li>
+            <li>
+              돌격편 이름을 각성편 글자로 옮기는 표가 37번째 글자부터 밀려 있어 이름이 다른 글자로 바뀌던 문제를
+              고쳤습니다. v1.2는 데이터 암호를 키로 칠 수 없어서(256가지 바이트 값 중 11가지만 입력 가능), 비교 화면의
+              v1.2 쪽은 같은 암호를 메모리에 직접 써 넣고 찍었습니다.
+            </li>
+            <li>새 게임의 이름 입력 화면도 암호 화면과 같은 글자 판을 써서 글자 배치가 바뀌었습니다.</li>
+            <li>v1.2·v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+          </ul>
+          <p class="section-note">아래는 같은 장면을 같은 입력으로 찍어 v1.2와 v1.3을 나란히 놓은 것입니다.</p>
+        </ReleaseItem>
         {kakuseiV13Groups.map(group => (
-          <CompareGroup group={group} base={base} versions={kakuseiV13Versions} visible={group.pairs.length} />
+          <ReleaseItem title={group.title}>
+            <p>{group.summary}</p>
+            <ReleasePairs pairs={group.pairs} base={base} versions={kakuseiV13Versions} />
+          </ReleaseItem>
         ))}
       </ReleaseDetails>
     </article>
@@ -311,17 +317,22 @@ const castGroups = [
       </p>
       <p class="release-overview">대사와 타이틀을 다듬고, 우주선 장면의 진행 오류를 고쳤습니다.</p>
       <ReleaseDetails>
-        <ul>
-          <li>대사 782줄을 수정하고 누락된 대사를 복구했습니다.</li>
-          <li>캐릭터 말투·이름·맞춤법·줄바꿈을 다듬었습니다.</li>
-          <li>타이틀 화면을 한국어로 옮겼습니다.</li>
-          <li>폰트에 없던 글자 11자(깨·롭 등)를 추가했습니다.</li>
-          <li>베지터·부르마의 우주선 장면에서 진행이 막히던 문제를 수정했습니다.</li>
-          <li>v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
-        </ul>
-        <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓았습니다.</p>
+        <ReleaseItem>
+          <ul>
+            <li>대사 782줄을 수정하고 누락된 대사를 복구했습니다.</li>
+            <li>캐릭터 말투·이름·맞춤법·줄바꿈을 다듬었습니다.</li>
+            <li>타이틀 화면을 한국어로 옮겼습니다.</li>
+            <li>폰트에 없던 글자 11자(깨·롭 등)를 추가했습니다.</li>
+            <li>베지터·부르마의 우주선 장면에서 진행이 막히던 문제를 수정했습니다.</li>
+            <li>v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+          </ul>
+          <p class="section-note">아래는 같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓은 것입니다.</p>
+        </ReleaseItem>
         {releaseGroups.map(group => (
-          <CompareGroup group={group} base={base} versions={kakuseiVersions} visible={group.pairs.length} />
+          <ReleaseItem title={group.title}>
+            <p>{group.summary}</p>
+            <ReleasePairs pairs={group.pairs} base={base} versions={kakuseiVersions} />
+          </ReleaseItem>
         ))}
       </ReleaseDetails>
     </article>
@@ -334,24 +345,27 @@ const castGroups = [
       </p>
       <p class="release-overview">DBZ 퀴즈 일부의 난이도를 조정했습니다.</p>
       <ReleaseDetails>
-        <ul>
-          <li>DBZ 퀴즈 일부의 난이도를 조정했습니다.</li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-1/quiz-choices.webp`}
-          width={256}
-          height={239}
-          alt="나메크성에서 세 가지 답을 고르는 DBZ 퀴즈 화면"
-          caption="v1.1 공개 글에 실린 DBZ 퀴즈 선택지"
-        />
-
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-1/preliminary-choices.webp`}
-          width={256}
-          height={239}
-          alt="예선 회장에서 두 가지 대답 중 하나를 고르는 화면"
-          caption="v1.1 공개 글에 실린 예선 회장 선택지"
-        />
+        <ReleaseItem>
+          <ul>
+            <li>DBZ 퀴즈 일부의 난이도를 조정했습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            height={239}
+            panels={[
+              {
+                label: 'DBZ 퀴즈',
+                src: `${base}/images/releases/v1-1/quiz-choices.webp`,
+                alt: '나메크성에서 세 가지 답을 고르는 DBZ 퀴즈 화면',
+              },
+              {
+                label: '예선 회장',
+                src: `${base}/images/releases/v1-1/preliminary-choices.webp`,
+                alt: '예선 회장에서 두 가지 대답 중 하나를 고르는 화면',
+              },
+            ]}
+            caption="패치 공개 글에 실린 선택지 화면"
+          />
+        </ReleaseItem>
       </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-0">
@@ -363,25 +377,27 @@ const castGroups = [
       </p>
       <p class="release-overview">드래곤볼 Z 초오공전 각성편의 첫 한글판입니다.</p>
       <ReleaseDetails>
-        <ul>
-          <li>최초 한글패치입니다.</li>
-        </ul>
-
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-0/piccolo-dialogue.webp`}
-          width={256}
-          height={239}
-          alt="피콜로의 전투 대사 화면"
-          caption="v1.0의 피콜로 전투 대사"
-        />
-
-        <ReleaseScreenshot
-          src={`${base}/images/releases/v1-0/training-choices.webp`}
-          width={256}
-          height={239}
-          alt="계왕성에서 전투력과 체력 중 고르는 선택지"
-          caption="v1.0의 계왕성 수련 선택지"
-        />
+        <ReleaseItem>
+          <ul>
+            <li>최초 한글패치입니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            height={239}
+            panels={[
+              {
+                label: '피콜로 전투 대사',
+                src: `${base}/images/releases/v1-0/piccolo-dialogue.webp`,
+                alt: '피콜로의 전투 대사 화면',
+              },
+              {
+                label: '계왕성 수련 선택지',
+                src: `${base}/images/releases/v1-0/training-choices.webp`,
+                alt: '계왕성에서 전투력과 체력 중 고르는 선택지',
+              },
+            ]}
+            caption="첫 한글판 화면"
+          />
+        </ReleaseItem>
       </ReleaseDetails>
     </article>
   </section>

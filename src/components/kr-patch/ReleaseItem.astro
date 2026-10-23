@@ -1,0 +1,42 @@
+---
+interface Props {
+  /** Optional short heading for items that group several screens. */
+  title?: string | undefined;
+}
+
+const { title } = Astro.props;
+---
+
+<section class="release-item">
+  {title && <h4 class="release-item-title">{title}</h4>}
+  <slot />
+</section>
+
+<style>
+  .release-item {
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  /* Items run together inside one details box, so each one after the first starts below a rule. */
+  .release-item + .release-item {
+    padding-top: 20px;
+    border-top: 1px dashed color-mix(in srgb, var(--muted) 60%, transparent);
+  }
+
+  .release-item-title {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .release-item > :global(p),
+  .release-item > :global(ul) {
+    max-inline-size: 42rem;
+  }
+
+  .release-item > :global(ul) {
+    padding-left: 1.5em;
+    list-style: disc;
+  }
+</style>

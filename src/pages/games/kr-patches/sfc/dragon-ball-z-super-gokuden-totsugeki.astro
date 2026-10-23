@@ -2,7 +2,8 @@
 import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
-import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
+import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
+import ReleasePairs from '../../../../components/kr-patch/ReleasePairs.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import MakingOf from '../../../../components/totsugeki/MakingOf.astro';
@@ -259,117 +260,144 @@ const cast = [
       </p>
       <p class="release-overview">엔딩 암호를 각성편에 그대로 칠 수 있게 바꾸고, 잘못 보이던 글자를 바로잡았습니다.</p>
       <ReleaseDetails>
-        <ul>
-          <li>엔딩 암호를 각성편에 그대로 칠 수 있는 「손오공은사이어인」으로 바꿨습니다.</li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/patch/password_v11_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.1 엔딩 화면. 한글 50자로 된 암호와 TO BE CONTINUED"
-          caption="v1.1: 기록을 담은 50자 암호"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/patch/password_v12_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.2 엔딩 화면. 가운데에 손오공은사이어인과 TO BE CONTINUED"
-          caption="v1.2: 「손오공은사이어인」"
-        />
-        <ul>
-          <li>
-            각성편 v1.3의 암호 화면에 이 여덟 글자를 넣으면 통과합니다. 이름은 넘어가지 않고 각성편 기본 이름으로
-            시작합니다.
-          </li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/patch/kakusei_phrase_v12_1.webp`}
-          width={256}
-          height={224}
-          alt="각성편 v1.3 암호 화면에 손오공은사이어인을 넣은 모습"
-          caption="각성편 v1.3에 입력"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/patch/kakusei_phrase_v12_2.webp`}
-          width={256}
-          height={224}
-          alt="암호가 통과해 열린 각성편 v1.3 이름 화면. 기본 이름 엑소버드"
-          caption="통과해 이름 화면으로"
-        />
-        <ul>
-          <li>
-            작은 글자 다섯 개를 다·동·레·렉·저로 다시 그렸습니다. v1.1에서는 나·등·러·러·지와 똑같거나 거의 같게 보여,
-            이 글자로 지은 이름이 다른 이름처럼 보였습니다.
-          </li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/patch/name_v11_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.1 대화창. 이름 다동레렉저가 나등러러지로 보인다"
-          caption="v1.1: 이름 「다동레렉저」가 「나등러러지」로 보임"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/patch/name_v12_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.2 대화창. 이름 다동레렉저가 그대로 보인다"
-          caption="v1.2"
-        />
-        <ul>
-          <li>엔딩 스태프 소개의 「디러터」를 「디렉터」로 고쳤습니다.</li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/patch/credits_v11_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.1 엔딩 스태프 소개. 디러터 신사쿠 시마다"
-          caption="v1.1"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/patch/credits_v12_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.2 엔딩 스태프 소개. 디렉터 신사쿠 시마다"
-          caption="v1.2"
-        />
-        <ul>
-          <li>「저 녀석 떠‥평범한」을 「저 녀석 펴‥평범한」으로 고쳤습니다.</li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/patch/dialogue_pyeo2_v11_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.1 오공의 대화창. 저 녀석 떠‥평범한 꼬마가 아닌 듯한"
-          caption="v1.1: 실험용 롬에서 대사 05D5를 첫 대사 자리에 띄운 화면. 같은 글자 코드와 같은 폭의 창이고, 얼굴만 오공입니다."
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/patch/dialogue_pyeo2_v12_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.2 오공의 대화창. 저 녀석 펴‥평범한 꼬마가 아닌 듯한"
-          caption="v1.2: 실험용 롬에서 대사 05D5를 첫 대사 자리에 띄운 화면. 같은 글자 코드와 같은 폭의 창이고, 얼굴만 오공입니다."
-        />
-        <ul>
-          <li>「누가 있는지 살떠봐!!」를 「누가 있는지 살펴봐!!」로 고쳤습니다.</li>
-        </ul>
-        <ReleaseScreenshot
-          src={`${base}/images/patch/dialogue_pyeo_v11_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.1 카메하우스 상공. 누가 있는지 살떠봐!!"
-          caption="v1.1"
-        />
-        <ReleaseScreenshot
-          src={`${base}/images/patch/dialogue_pyeo_v12_1.webp`}
-          width={256}
-          height={224}
-          alt="v1.2 카메하우스 상공. 누가 있는지 살펴봐!!"
-          caption="v1.2"
-        />
-        <ul>
-          <li>v1.0·v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
-        </ul>
+        <ReleaseItem>
+          <ul>
+            <li>엔딩 암호를 각성편에 그대로 칠 수 있는 「손오공은사이어인」으로 바꿨습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            panels={[
+              {
+                label: 'v1.1',
+                src: `${base}/images/patch/password_v11_1.webp`,
+                alt: 'v1.1 엔딩 화면. 한글 50자로 된 암호와 TO BE CONTINUED',
+              },
+              {
+                label: 'v1.2',
+                src: `${base}/images/patch/password_v12_1.webp`,
+                alt: 'v1.2 엔딩 화면. 가운데에 손오공은사이어인과 TO BE CONTINUED',
+              },
+            ]}
+            caption="엔딩의 암호. 기록을 담은 50자 암호를 여덟 글자로 바꿨습니다."
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              각성편 v1.3의 암호 화면에 이 여덟 글자를 넣으면 통과합니다. 이름은 넘어가지 않고 각성편 기본 이름으로
+              시작합니다.
+            </li>
+          </ul>
+          <ReleaseScreenshot
+            panels={[
+              {
+                label: '암호 입력',
+                src: `${base}/images/patch/kakusei_phrase_v12_1.webp`,
+                alt: '각성편 v1.3 암호 화면에 손오공은사이어인을 넣은 모습',
+              },
+              {
+                label: '통과',
+                src: `${base}/images/patch/kakusei_phrase_v12_2.webp`,
+                alt: '암호가 통과해 열린 각성편 v1.3 이름 화면. 기본 이름 엑소버드',
+              },
+            ]}
+            caption="각성편 v1.3에 입력하면 이름 화면으로 넘어갑니다."
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              작은 글자 다섯 개를 다·동·레·렉·저로 다시 그렸습니다. v1.1에서는 나·등·러·러·지와 똑같거나 거의 같게 보여,
+              이 글자로 지은 이름이 다른 이름처럼 보였습니다.
+            </li>
+          </ul>
+          <ReleaseScreenshot
+            highlights={[
+              [15, 17, 41, 14],
+              [63, 57, 41, 14],
+            ]}
+            panels={[
+              {
+                label: 'v1.1',
+                src: `${base}/images/patch/name_v11_1.webp`,
+                alt: 'v1.1 대화창. 이름 다동레렉저가 나등러러지로 보인다',
+              },
+              {
+                label: 'v1.2',
+                src: `${base}/images/patch/name_v12_1.webp`,
+                alt: 'v1.2 대화창. 이름 다동레렉저가 그대로 보인다',
+              },
+            ]}
+            caption="이름 「다동레렉저」"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>엔딩 스태프 소개의 「디러터」를 「디렉터」로 고쳤습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            highlights={[[119, 89, 15, 13]]}
+            panels={[
+              {
+                label: 'v1.1',
+                src: `${base}/images/patch/credits_v11_1.webp`,
+                alt: 'v1.1 엔딩 스태프 소개. 디러터 신사쿠 시마다',
+              },
+              {
+                label: 'v1.2',
+                src: `${base}/images/patch/credits_v12_1.webp`,
+                alt: 'v1.2 엔딩 스태프 소개. 디렉터 신사쿠 시마다',
+              },
+            ]}
+            caption="엔딩 스태프 소개"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>「저 녀석 떠‥평범한」을 「저 녀석 펴‥평범한」으로 고쳤습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            highlights={[[142, 137, 17, 15]]}
+            panels={[
+              {
+                label: 'v1.1',
+                src: `${base}/images/patch/dialogue_pyeo2_v11_1.webp`,
+                alt: 'v1.1 오공의 대화창. 저 녀석 떠‥평범한 꼬마가 아닌 듯한',
+              },
+              {
+                label: 'v1.2',
+                src: `${base}/images/patch/dialogue_pyeo2_v12_1.webp`,
+                alt: 'v1.2 오공의 대화창. 저 녀석 펴‥평범한 꼬마가 아닌 듯한',
+              },
+            ]}
+            caption="실험용 롬에서 대사 05D5를 첫 대사 자리에 띄운 화면. 같은 글자 코드와 같은 폭의 창이고, 얼굴만 오공입니다."
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>「누가 있는지 살떠봐!!」를 「누가 있는지 살펴봐!!」로 고쳤습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            highlights={[[99, 160, 17, 17]]}
+            panels={[
+              {
+                label: 'v1.1',
+                src: `${base}/images/patch/dialogue_pyeo_v11_1.webp`,
+                alt: 'v1.1 카메하우스 상공. 누가 있는지 살떠봐!!',
+              },
+              {
+                label: 'v1.2',
+                src: `${base}/images/patch/dialogue_pyeo_v12_1.webp`,
+                alt: 'v1.2 카메하우스 상공. 누가 있는지 살펴봐!!',
+              },
+            ]}
+            caption="카메하우스 상공"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>v1.0·v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+          </ul>
+        </ReleaseItem>
       </ReleaseDetails>
     </article>
     <article class="patch-release" aria-labelledby="release-1-1">
@@ -381,17 +409,22 @@ const cast = [
       </p>
       <p class="release-overview">대사를 원문과 대조하고, 타이틀·메뉴와 진행 오류를 고쳤습니다.</p>
       <ReleaseDetails>
-        <ul>
-          <li>대사 5,370줄을 일본어 원문과 대조해 4,483줄을 수정했습니다.</li>
-          <li>타이틀 화면과 메뉴를 한국어로 옮겼습니다.</li>
-          <li>캐릭터 말투·고유명사·맞춤법·줄바꿈을 다듬었습니다.</li>
-          <li>폰트에 없던 글자 213자(꽃·쫓·흙 등)를 추가했습니다.</li>
-          <li>이벤트 표 203번 부근에서 화면을 닫지 못하던 문제를 수정했습니다.</li>
-          <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
-        </ul>
-        <p class="section-note">같은 장면을 같은 입력으로 찍어 v1.0과 v1.1을 나란히 놓았습니다.</p>
+        <ReleaseItem>
+          <ul>
+            <li>대사 5,370줄을 일본어 원문과 대조해 4,483줄을 수정했습니다.</li>
+            <li>타이틀 화면과 메뉴를 한국어로 옮겼습니다.</li>
+            <li>캐릭터 말투·고유명사·맞춤법·줄바꿈을 다듬었습니다.</li>
+            <li>폰트에 없던 글자 213자(꽃·쫓·흙 등)를 추가했습니다.</li>
+            <li>이벤트 표 203번 부근에서 화면을 닫지 못하던 문제를 수정했습니다.</li>
+            <li>v1.0 세이브 파일을 그대로 사용할 수 있습니다.</li>
+          </ul>
+          <p class="section-note">아래는 같은 장면을 같은 입력으로 찍어 v1.0과 v1.1을 나란히 놓은 것입니다.</p>
+        </ReleaseItem>
         {releaseGroups.map(group => (
-          <CompareGroup group={group} base={base} versions={totsugekiVersions} visible={group.pairs.length} />
+          <ReleaseItem title={group.title}>
+            <p>{group.summary}</p>
+            <ReleasePairs pairs={group.pairs} base={base} versions={totsugekiVersions} />
+          </ReleaseItem>
         ))}
       </ReleaseDetails>
     </article>
@@ -404,25 +437,26 @@ const cast = [
       </p>
       <p class="release-overview">드래곤볼 Z 초오공전 돌격편의 첫 한글판입니다.</p>
       <ReleaseDetails>
-        <ul>
-          <li>최초 한글패치입니다.</li>
-        </ul>
-
-        <ReleaseScreenshot
-          src={`${base}/images/patch/title_v10_1.webp`}
-          width={256}
-          height={224}
-          alt="드래곤볼 Z 초오공전 돌격편 v1.0 타이틀 화면"
-          caption="v1.0 타이틀 화면"
-        />
-
-        <ReleaseScreenshot
-          src={`${base}/images/patch/restore_goku_fish_v10_1.webp`}
-          width={256}
-          height={224}
-          alt="드래곤볼 Z 초오공전 돌격편 v1.0에서 물고기를 잡으려는 오공"
-          caption="v1.0의 오공 대사"
-        />
+        <ReleaseItem>
+          <ul>
+            <li>최초 한글패치입니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            panels={[
+              {
+                label: '타이틀 화면',
+                src: `${base}/images/patch/title_v10_1.webp`,
+                alt: '드래곤볼 Z 초오공전 돌격편 v1.0 타이틀 화면',
+              },
+              {
+                label: '오공의 대사',
+                src: `${base}/images/patch/restore_goku_fish_v10_1.webp`,
+                alt: '드래곤볼 Z 초오공전 돌격편 v1.0에서 물고기를 잡으려는 오공',
+              },
+            ]}
+            caption="첫 한글판 화면"
+          />
+        </ReleaseItem>
       </ReleaseDetails>
     </article>
   </section>

@@ -1,0 +1,32 @@
+---
+import type { ReleasePanel, Version, VersionPair } from '../../lib/version-pairs';
+import ReleaseScreenshot from './ReleaseScreenshot.astro';
+
+interface Props {
+  pairs: VersionPair[];
+  base: string;
+  /** Older release first. */
+  versions: Version[];
+}
+
+const { pairs, base, versions } = Astro.props;
+
+const rowsOf = (pair: VersionPair): ReleasePanel[][] => {
+  const frames = pair.selectedFrames ?? Array.from({ length: pair.frames ?? 1 }, (_, i) => i + 1);
+  const order = (frame: number) => (frames.length > 1 ? ` (${frame}/${pair.frames})` : '');
+  return frames.map(frame =>
+    versions.map(version => ({
+      label: version.label,
+      src: `${base}/images/patch/${pair.id}_${version.key}_${frame}.webp`,
+      height: pair.height ?? 224,
+      alt: `${version.label}: ${pair.alt}${order(frame)}`,
+      highlights: pair.highlights?.[`${version.key}:${frame}`] ?? [],
+      note: pair.gaps?.[`${version.key}:${frame}`],
+    })),
+  );
+};
+---
+
+{pairs.map(pair => (
+  <ReleaseScreenshot rows={rowsOf(pair)} caption={pair.caption} />
+))}

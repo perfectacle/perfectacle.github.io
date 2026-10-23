@@ -35,3 +35,18 @@ export const JAPANESE_AND_KOREAN: Version[] = [
   { key: 'jp', label: '일본판' },
   { key: 'ko', label: '한글판' },
 ];
+
+/** One cell of a patch-note figure: a version (or step) label above its screen. */
+export interface ReleasePanel {
+  label?: string | undefined;
+  alt: string;
+  /** Defaults to the figure's image, so several panels can crop one composite capture. */
+  src?: string | undefined;
+  width?: number | undefined;
+  height?: number | undefined;
+  crop?: ScreenshotCrop | undefined;
+  /** Changed letters, boxed in an overlay rather than drawn into the image so the preview keeps them. */
+  highlights?: ScreenshotHighlight[] | undefined;
+  /** Shown instead of a screen when this version has no such screen. */
+  note?: string | undefined;
+}
