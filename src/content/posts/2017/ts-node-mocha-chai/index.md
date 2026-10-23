@@ -7,7 +7,7 @@ tags: [TypeScript, TSLint, Mocha, Chai, ts-node, NYC]
 
 ![](./thumb.webp)  
 
-이 글은 [rollup.js를 통해 모듈 번들링하기](../../2017/bundle-with-rollup/index.md), [travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기](../../2017/travis-ci-coveralls/index.md)을 읽기 전에 읽어야할 포스트이며    
+이 글은 [rollup.js를 통해 모듈 번들링하기](/2017/12/10/bundle-with-rollup/), [travis-ci와 coveralls를 이용하여 좀 더 안전하게 협업하기](/2017/12/10/travis-ci-coveralls/)을 읽기 전에 읽어야할 포스트이며    
 여러 주제를 다루다보니 깊게 다루지는 않고 각각이 무엇을 하는 것인지만 간단하게 설명과 예제를 곁들여 진행하고 있습니다.  
 또한 예제 진행은 [IntelliJ](https://www.jetbrains.com/idea/)를 통해 진행했습니다.  
 [WebStorm](https://www.jetbrains.com/webstorm/)으로 진행해도 상관 없고, [VS Code](https://code.visualstudio.com/)와 진행하면 더 짱짱맨일지도 모르겠습니다.  
@@ -359,4 +359,4 @@ touch .nycrc
 저도 수박 겉핥기로 예제를 따라하며 정리해본 내용이고, 정리해야할 내용이 방대해서 좀 깊이없이 다뤄서 이 부분은 직접 찾아보셔야할 겁니다.  
 이 글의 목적은 그런 것에 대한 디테일 한 설명이 아니라 이런 것도 있다~ 정도의 소개 정도니 자세한 것은 직접 찾아보시길 바랍니다.  
 그리고 지금까지 진행항 내용만으로는 우리가 만든 ts 파일을 외부 사람들이 직접 사용하지 못하니
-다음 시리즈인 [rollup.js를 통해 모듈 번들링하기](../../2017/bundle-with-rollup/index.md)를 통해 실제 사람들이 쓸 수 있는 js 파일 형태로 만들어보도록 하겠습니다.
+다음 시리즈인 [rollup.js를 통해 모듈 번들링하기](/2017/12/10/bundle-with-rollup/)를 통해 실제 사람들이 쓸 수 있는 js 파일 형태로 만들어보도록 하겠습니다.

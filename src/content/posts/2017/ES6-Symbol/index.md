@@ -58,7 +58,7 @@ console.log(Number.isNaN(NaN)); // true
 isNaN은 NaN인지 아닌지 구하기 위한 함수이며, ES6 들어서 Number.isNaN()과 Object.is() 메소드가 생겼다.  
 isNaN과 Number.isNaN의 차이는 후자는 타입 검사(number인지 아닌지)까지 한다는 것이다.  
 아래 링크를 통해 예제로 확인해보자.  
-[Number.prototype.isNaN()](../../2016/ES6-Number-object-and-function/index.md#Number-isNaN)  
+[Number.prototype.isNaN()](/2016/12/24/ES6-Number-object-and-function/#Number-isNaN)  
 
 하지만 typeof null을 개선하면 레거시 코드들이 문제가 있는지 아직도 고쳐지지 않았다.  
 아래 링크를 참조해서 누가 번역을 해주면 고마울 것 같다.  
@@ -363,7 +363,7 @@ console.log(Reflect.ownKeys(obj));  // ['key', 'method', Symbol(symbol), Symbol(
 이 이상 심볼에 대해 더 딥하게 다루기에는 실용성이 떨어질 것 같고 그 때 그 때 찾아보면 될 것 같다.  
 사실 이터레이터 때문에 공부를 했지 실무에서 많이 쓸지는 잘 모르겠다.  
 이 글을 읽고 난 독자는 다음 글을 읽기 바란다.  
-[(ES6) Iterator](../../2017/ES6-Iterator/index.md)
+[(ES6) Iterator](/2017/04/22/ES6-Iterator/)
 
 ## 참조 링크
 * [Symbol - JavaScript | MDN](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Symbol)  

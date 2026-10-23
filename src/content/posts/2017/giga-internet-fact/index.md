@@ -34,7 +34,7 @@ tags: [Internet, Bandwidth, Data Unit]
 생각해보면 참 나쁜 놈들이다.  
 2중 상술을 썼다.  
 위 용량 관련된 글을 아래 링크를 참조하자.  
-[(상식) 컴퓨터 용량 단위에 대한 진실](../../2017/Computer-capacity-fact/index.md)
+[(상식) 컴퓨터 용량 단위에 대한 진실](/2017/01/23/Computer-capacity-fact/)
 
 * b 단위 = bit 단위 = 1kb = 1kilobit = 125byte = 1000bit  
 * B 단위(SI 단위) = Byte 단위(10진 배수) = 1kB = 1kiloByte = 1000Byte = 8000bit  

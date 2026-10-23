@@ -77,7 +77,7 @@ func(a); // caller
 console.log(a); // 1
 ```
 
-기본적으로 자바스크립트는 [원시값](../../2017/js-009-data-type-primitive-value/index.md)을 arguments로 넘겨주면 call by value의 형태로 작동한다.  
+기본적으로 자바스크립트는 [원시값](/2017/07/01/js-009-data-type-primitive-value/)을 arguments로 넘겨주면 call by value의 형태로 작동한다.  
 따라서 caller가 1을 arguments로 넘겨줘도 그 값은 복사되어 넘어오기 때문에 callee 내부에서 지지고 볶고 해도 전혀 영향을 받지 않아서 결과적으로 a 값은 원래 값인 1이 찍히게 된다.
 
 ## [call by reference](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_reference)
@@ -104,7 +104,7 @@ func(a); // caller
 console.log(a.a); // 1
 ```
 
-~~기본적으로 자바스크립트는 [참조 타입](../../2017/js-010-data-type-object/index.md)을 arguments로 넘겨주면 call by reference의 형태로 작동한다.  
+~~기본적으로 자바스크립트는 [참조 타입](/2017/07/01/js-010-data-type-object/)을 arguments로 넘겨주면 call by reference의 형태로 작동한다.  
 따라서 caller가 객체 a를 parameter로 넘겼을 때 실제 arguments로 넘어오는 값은 객체 a에 대한 reference이지 복사된 객체 a가 아니다.  
 따라서 callee 내부에서 지지고 볶고 하면 영향을 받기 때문에 조심해서 사용해야한다.~~라고들 오해하고 있다.  
 

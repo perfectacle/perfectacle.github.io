@@ -7,7 +7,7 @@ categories: [Infra, AWS]
 ![귀염둥이 Certbot](./thumb.webp)
 
 기본적으로 서버와 도메인(SSL 인증서에 넣을)은 확보가 돼있는 상태로 진행을 해야한다.  
-자본이 빵빵하고(?) 좀 더 간단한 걸 원한다면 [AWS ELB로 HTTPS 서버 열기](../../2017/https-with-elb/index.md)를 보자.  
+자본이 빵빵하고(?) 좀 더 간단한 걸 원한다면 [AWS ELB로 HTTPS 서버 열기](/2017/10/05/https-with-elb/)를 보자.  
 해당 포스트는 ELB 말고 인스턴스에 직접 도메인을 달고, 인스턴스에서 직접 HTTPS 서버를 서비스 하고자 하는 포스트이다.
 
 ## HTTPS
@@ -195,4 +195,4 @@ crontab 규칙은 [crontab.guru](https://crontab.guru/)에서 확인할 수 있�
 끝이다.  
 아직 나도 갱신일이 30일 넘게 남아서(사실 오늘 만들어봤지만...) 테스트를 해보지 않았다.  
 나중에 시간이 지나면 잘 되는지 보고 다시 수정해봐야겠다.  
-이 과정이 좀 어렵고 자본이 빵빵하다면(?) [AWS ELB로 HTTPS 서버 열기](../../2017/https-with-elb/index.md)를 보자.
+이 과정이 좀 어렵고 자본이 빵빵하다면(?) [AWS ELB로 HTTPS 서버 열기](/2017/10/05/https-with-elb/)를 보자.

@@ -15,7 +15,7 @@ seriesOrder: 1
 따라서 이번에는 어렵지는 않지만 새로 프로젝트 구성할 때마다 매번 까먹어서 찾아 헤매던 케이스들을 정리해봤다.  
 또한 예제의 설명은 스프링 부트를 기준으로 설명하겠다.  
 
-이 글을 본 다음에는 후속작인 [Serialize](../../2018/jackson-local-date-time-serialize/index.md)를 보도록 하자.  
+이 글을 본 다음에는 후속작인 [Serialize](/2018/01/16/jackson-local-date-time-serialize/)를 보도록 하자.  
 
 ## 3줄 요약
 1. 모든 필드마다 @JsonFormat 어노테이션 달아주기 귀찮으니 LocalDate, LocalTime, LocalDateTime 등등에 대한 기본 Custom Deserializer를 만들어주자.  
@@ -566,4 +566,4 @@ public class DateType {
 
 정상적으로 요청이 들어갔다면 성공한 것이다.
 
-이제는 [Serialize](../../2018/jackson-local-date-time-serialize/index.md)를 보도록 하자.  
+이제는 [Serialize](/2018/01/16/jackson-local-date-time-serialize/)를 보도록 하자.  

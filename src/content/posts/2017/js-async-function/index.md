@@ -10,14 +10,14 @@ tags: [callback, Promise, async]
 setTimeout과 같은 비동기 함수를 처리하려니 또 버퍼링이 걸려서 정리해봤다.  
 너무 사용법 위주로 공부하다보니 나중에 또 정리를 하게 될 것 같다.  
 AJAX를 비동기로 처리하고 싶은 사람은 아래 글을 참조하자.  
-[(ES6) ajax 위주의 promise 실습](../../2017/ES6-Promise-with-ajax/index.md)  
-[(ES6+) ajax를 위한 fetch와 async/await](../../2017/ES6-ajax-with-fetch/index.md)  
+[(ES6) ajax 위주의 promise 실습](/2017/01/21/ES6-Promise-with-ajax/)  
+[(ES6+) ajax를 위한 fetch와 async/await](/2017/01/25/ES6-ajax-with-fetch/)  
 
 ## ~ES5(콜백 함수)
 순서가 보장되지만 피라미드 같이 생겼다.  
 뎁스가 깊어질 수록 컨트롤하기가 어렵다.  
 혹시 cb && cb()의 동작 방식과 원리가 궁금한 사람은 아래 글을 참조하자.  
-[(ES) 똑똑한 논리 연산자](../../2017/es-logical-operator/index.md#원리-파악)  
+[(ES) 똑똑한 논리 연산자](/2017/02/13/es-logical-operator/#원리-파악)  
 ```javascript
 const f1 = cb => setTimeout(() => {
   console.log(1);

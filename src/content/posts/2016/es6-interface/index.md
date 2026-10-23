@@ -7,8 +7,8 @@ tags: [Iterator]
 ![](./thumb.webp)
 
 이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
-[이터레이터 인터페이스와 이터러블 인터페이스](../../2017/ES6-Iterator/index.md)는 다음 포스트에서 정리할 예정이다.  
-이 글을 읽고난 후에 [(ES6) Symbol](../../2017/ES6-Symbol/index.md)에 대한 글부터 읽어보길 바란다.  
+[이터레이터 인터페이스와 이터러블 인터페이스](/2017/04/22/ES6-Iterator/)는 다음 포스트에서 정리할 예정이다.  
+이 글을 읽고난 후에 [(ES6) Symbol](/2017/04/16/ES6-Symbol/)에 대한 글부터 읽어보길 바란다.  
 다소 짧아서 어디 공유하기 부끄럽지만 이렇게 짧은 내용들이 집중해서 읽기에 참 좋은 것 같다.
 
 # Interface

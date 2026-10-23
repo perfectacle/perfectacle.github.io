@@ -248,7 +248,7 @@ static {
 ```
 
 PROPERTIES_RESOURCE_LOCATION 변수에 있는 리소스를 읽어들여서 localProperties에 로딩하는 걸 볼 수 있다.
-PROPERTIES_RESOURCE_LOCATION 변수도 static final 변수이기 때문에 무조건 classpath 내에 존재하는 [spring.properties](../../2020/spring-properties-file/index.md)라는 파일로부터 읽어들인다는 사실을 알 수 있다.
+PROPERTIES_RESOURCE_LOCATION 변수도 static final 변수이기 때문에 무조건 classpath 내에 존재하는 [spring.properties](/2020/12/25/spring-properties-file/)라는 파일로부터 읽어들인다는 사실을 알 수 있다.
 
 [Gradle의 java plugin](https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_project_layout)을 사용하면 기본적으로 src/main/resources나 src/test/resources를 classpath에 등록해준다.
 하지만 spring boot를 사용하기 위해 필수적으로 적용하는 [Spring Boot Gradle Plugin](https://docs.spring.io/spring-boot/docs/2.0.0.RELEASE/gradle-plugin/reference/html)을 사용하면 Spring Boot 2.0.0.RELEASE 이후부터는 기본적으로 java 플러그인이 적용되기 때문에 따로 적용할 필요가 없다.

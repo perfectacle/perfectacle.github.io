@@ -15,8 +15,8 @@ description: 블로그 글을 새로 쓰거나 고칠 때(src/content/posts/**).
    완료: `pnpm check` 가 스키마 오류 없이 끝난다.
 3. **이미지를 같은 폴더에 넣고 상대 경로로 건다** — 원본 확장자 그대로 `![설명](./파일.png)` 로 건 뒤 `pnpm images` 를 돌린다. 파일이 WebP 로 바뀌고 본문의 참조도 같이 고쳐진다(IMG-01).
    완료: `pnpm lint:images` 통과.
-4. **다른 글은 파일 경로로 링크한다** — `[제목](../../2017/ES6-Iterator/index.md#앵커)`(LINK-01). 앵커는 `pnpm build` 후 대상 글의 `dist/<연>/<월>/<일>/<slug>/index.html` 에서 heading 의 `id` 를 복사한다.
-   완료: `pnpm build` 가 끝까지 돈다(못 찾는 글이면 `check-post-links` 가 실패시킨다).
+4. **다른 글은 `/` 로 시작하는 사이트 주소로 링크한다** — `[제목](/2017/04/22/ES6-Iterator/#앵커)`(LINK-01). 날짜는 대상 글 frontmatter 의 `date` 다. 앵커는 `pnpm build` 후 대상 글의 `dist/<연>/<월>/<일>/<slug>/index.html` 에서 heading 의 `id` 를 복사한다.
+   완료: `pnpm build && pnpm verify:dist` 통과(없는 글·앵커면 `verify:dist` 가 실패시킨다).
 5. **확인한다** — `pnpm check && pnpm lint:images && pnpm build && pnpm verify:urls && pnpm verify:dist` 를 돌리고 `pnpm dev` 로 글을 열어 본다. 글도 [git-workflow](../git-workflow/SKILL.md) 대로 PR 로 올린다(main 직접 push 는 막혀 있다).
    완료: 글이 깨짐 없이 보이고 PR 의 `ci-ok` 가 초록.
 
@@ -39,11 +39,11 @@ description: 블로그 글을 새로 쓰거나 고칠 때(src/content/posts/**).
 
 ### LINK-01 — 글 간 링크
 
-다른 글은 사이트 URL 이 아니라 파일 경로로 링크한다: `../../<연도 폴더>/<slug>/index.md#앵커`.
+다른 글과 사이트 안의 다른 페이지는 도메인 없이 `/` 로 시작하는 루트 경로로 링크한다: `/<연>/<월>/<일>/<slug>/#앵커`. `https://perfectacle.github.io/...` 처럼 도메인을 넣지 않고, `../` 를 거슬러 올라가는 상대 경로도 쓰지 않는다. 같은 글 폴더의 이미지(`./파일.webp`, IMG-01)만 예외다.
 
-- 이유: 에디터·GitHub 미리보기에서 그대로 따라갈 수 있고, 빌드 때 `remark-post-links` 가 대상 글의 `date` 로 URL 을 만든다. URL 을 손으로 적으면 날짜를 틀리기 쉽다.
-- 앵커는 사이트의 heading id 규칙(URL-02)을 따른다. 확인은 `pnpm build && pnpm verify:dist`(없는 앵커면 실패).
-- 다른 글의 이미지 파일도 같은 방식(`../../2017/slug/a.webp`)으로 링크할 수 있다.
+- 이유: 도메인이 바뀌어도 링크가 그대로 살고, 원본만 읽어도 어느 글로 가는지 바로 보인다.
+- 날짜를 틀리거나 앵커가 없으면 `pnpm build && pnpm verify:dist` 가 실패한다. 앵커는 사이트의 heading id 규칙(URL-02)을 따른다.
+- 예제 코드 안의 전체 URL(다른 곳에서 돌려 볼 `fetch` 주소 등)은 링크가 아니라 코드라 그대로 둔다.
 
 ## 참고
 

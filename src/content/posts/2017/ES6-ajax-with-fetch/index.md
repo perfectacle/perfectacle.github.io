@@ -5,7 +5,7 @@ categories: [JavaScript, ES2015+]
 tags: [Ajax]
 ---
 ![](./thumb.webp)  
-이 글을 읽기 전에 [(ES6) ajax 위주의 promise 실습](../../2017/ES6-Promise-with-ajax/index.md)를 먼저 읽을 것을 권한다.  
+이 글을 읽기 전에 [(ES6) ajax 위주의 promise 실습](/2017/01/21/ES6-Promise-with-ajax/)를 먼저 읽을 것을 권한다.  
 ajax(XMLHttpRequest)와 promise에 대한 기본적인 이해가 있다면 상관없긴 하다.  
 [조현영](https://www.facebook.com/zerohch0?fref=ufi) 님의 제보에 의하면 ie에서 fetch가 안 되고,  
 async/await 크롬과 오페라에서만 된다고 한다.  

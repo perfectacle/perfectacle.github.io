@@ -6,8 +6,8 @@ tags: [Travis CI, Coveralls]
 ---
 ![](./thumb.webp)  
 
-이 글은 [Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기](../../2017/ts-node-mocha-chai/index.md),
-[rollup.js를 통해 모듈 번들링하기](../../2017/bundle-with-rollup/index.md)에서 이어지는 내용이며,  
+이 글은 [Typescript + TSLint + Mocha + Chai + ts-node + NYC로 모던한 프론트 엔드 테스트 환경 구축하기](/2017/12/10/ts-node-mocha-chai/),
+[rollup.js를 통해 모듈 번들링하기](/2017/12/10/bundle-with-rollup/)에서 이어지는 내용이며,  
 
 여러 주제를 다루다보니 깊게 다루지는 않고 각각이 무엇을 하는 것인지만 간단하게 설명과 예제를 곁들여 진행하고 있습니다.  
 또한 예제 진행은 [IntelliJ](https://www.jetbrains.com/idea/)를 통해 진행했습니다.  

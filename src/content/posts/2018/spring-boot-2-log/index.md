@@ -7,7 +7,7 @@ date: 2018-07-22 20:31:55
 ![](./thumb.webp)
 
 오늘은 서버를 구성할 때 필수적인 로깅에 대해 알아보자!  
-우선 [환경 별로 profile 쪼개기](../../2018/spring-boot-2-env/index.md)가 진행된 상태에서 시작한다.  
+우선 [환경 별로 profile 쪼개기](/2018/07/22/spring-boot-2-env/)가 진행된 상태에서 시작한다.  
 최종 결과물은 [github 저장소](https://github.com/perfectacle/spring-boot-2-logging)에서 확인 가능하다.
 
 ## 로깅 라이브러리
