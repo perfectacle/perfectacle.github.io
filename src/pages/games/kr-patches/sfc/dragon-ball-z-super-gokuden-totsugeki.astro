@@ -357,7 +357,9 @@ const arcs = [
       <p class="section-note">
         <time datetime="2026-10-23">2026년 10월 23일</time>
       </p>
-      <p class="release-overview">엔딩 암호를 각성편에 그대로 칠 수 있게 바꾸고, 잘못 보이던 글자를 바로잡았습니다.</p>
+      <p class="release-overview">
+        엔딩 암호를 각성편에 그대로 칠 수 있게 바꾸고, 잘못 보이거나 한 칸에 두 글자씩 눌려 있던 글자를 바로잡았습니다.
+      </p>
       <ReleaseDetails>
         <ReleaseItem>
           <ul>
@@ -434,20 +436,236 @@ const arcs = [
             <li>엔딩 스태프 소개의 「디러터」를 「디렉터」로 고쳤습니다.</li>
           </ul>
           <ReleaseScreenshot
-            highlights={[[119, 89, 15, 13]]}
             panels={[
               {
                 label: 'v1.1',
                 src: `${base}/images/patch/credits_v11_1.webp`,
                 alt: 'v1.1 엔딩 스태프 소개. 디러터 신사쿠 시마다',
+                highlights: [[119, 89, 15, 13]],
               },
               {
                 label: 'v1.2',
                 src: `${base}/images/patch/credits_v12_1.webp`,
                 alt: 'v1.2 엔딩 스태프 소개. 디렉터 신사쿠 시마다',
+                highlights: [[109, 90, 38, 14]],
               },
             ]}
             caption="엔딩 스태프 소개"
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              메뉴에서 한 칸에 두 글자를 작게 눌러 그렸던 「기술」「클리」를 제 크기 글자로 나눴습니다. 스토리 현황의
+              「기술설정」「클리어표」와 기술설정의 「필살기술」「펀치기술」「방어기술」입니다.
+            </li>
+          </ul>
+          <ReleaseScreenshot
+            rows={[
+              [
+                {
+                  label: 'v1.1',
+                  src: `${base}/images/patch/status_menu_v11_1.webp`,
+                  alt: 'v1.1 스토리 현황. 오른쪽 메뉴의 기술과 클리가 한 칸에 작게 눌려 있다',
+                  highlights: [
+                    [193, 17, 48, 15],
+                    [193, 65, 48, 15],
+                  ],
+                },
+                {
+                  label: 'v1.2',
+                  src: `${base}/images/patch/status_menu_v12_1.webp`,
+                  alt: 'v1.2 스토리 현황. 오른쪽 메뉴 기술설정·달성치·클리어표가 모두 제 크기 글자',
+                  highlights: [
+                    [193, 17, 48, 15],
+                    [193, 65, 48, 15],
+                  ],
+                },
+              ],
+              [
+                {
+                  label: 'v1.1',
+                  src: `${base}/images/patch/techset_category_v11_1.webp`,
+                  alt: 'v1.1 기술설정. 오른쪽 분류 창의 기술이 한 칸에 작게 눌려 있다',
+                  highlights: [
+                    [205, 97, 36, 15],
+                    [205, 121, 36, 15],
+                    [205, 169, 36, 14],
+                  ],
+                },
+                {
+                  label: 'v1.2',
+                  src: `${base}/images/patch/techset_category_v12_1.webp`,
+                  alt: 'v1.2 기술설정. 오른쪽 분류 창 필살기술·펀치기술·킥기술·방어기술',
+                  highlights: [
+                    [205, 97, 36, 15],
+                    [205, 121, 36, 15],
+                    [205, 169, 36, 14],
+                  ],
+                },
+              ],
+            ]}
+            caption="위는 스토리 현황, 아래는 기술설정 화면입니다."
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              기술습득표의 「습득」과 이벤트 표의 「완료」도 한 칸에 두 글자를 눌러 그렸던 것을 두 칸으로 나눴습니다.
+              표시는 번호 쪽으로 붙여, 뒤에 오는 분류·이름과 떨어져 보이게 했습니다.
+            </li>
+          </ul>
+          <ReleaseScreenshot
+            rows={[
+              [
+                {
+                  label: 'v1.1',
+                  src: `${base}/images/patch/techtable_v11_1.webp`,
+                  alt: 'v1.1 기술습득표. 습득과 필살기술의 기술이 한 칸에 작게 눌려 있다',
+                  highlights: [
+                    [45, 49, 73, 15],
+                    [45, 73, 73, 15],
+                    [45, 97, 73, 15],
+                  ],
+                },
+                {
+                  label: 'v1.2',
+                  src: `${base}/images/patch/techtable_v12_1.webp`,
+                  alt: 'v1.2 기술습득표. 000 습득 필살기술 가위바위보 주먹',
+                  highlights: [
+                    [45, 49, 88, 15],
+                    [45, 73, 88, 15],
+                    [45, 97, 88, 15],
+                  ],
+                },
+              ],
+              [
+                {
+                  label: 'v1.1',
+                  src: `${base}/images/patch/eventlist_v11_1.webp`,
+                  alt: 'v1.1 이벤트 표. 완료가 한 칸에 작게 눌려 있다',
+                  highlights: [
+                    [45, 49, 26, 15],
+                    [45, 97, 26, 15],
+                    [45, 145, 25, 15],
+                  ],
+                },
+                {
+                  label: 'v1.2',
+                  src: `${base}/images/patch/eventlist_v12_1.webp`,
+                  alt: 'v1.2 이벤트 표. 000 완료 뒷강에서 물고기를 잡다',
+                  highlights: [
+                    [45, 49, 26, 15],
+                    [45, 97, 26, 15],
+                    [45, 145, 25, 15],
+                  ],
+                },
+              ],
+            ]}
+            caption="위는 기술습득표, 아래는 이벤트 표입니다."
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              「플」「딩」은 이름 입력용 좁은 글자를 빌려 써서 앞뒤 글자의 절반 폭으로 보였습니다. 제 크기 글자를 새로
+              그렸습니다. 엔딩 성적표, 정보통 코멘트, 전투의 「슬라이딩 킥」에 나옵니다.
+            </li>
+          </ul>
+          <ReleaseScreenshot
+            rows={[
+              [
+                {
+                  label: 'v1.1',
+                  src: `${base}/images/patch/ending_report_v11_1.webp`,
+                  alt: 'v1.1 엔딩 성적표. 총 플레이 시간의 플이 좁다',
+                  highlights: [[42, 186, 76, 14]],
+                },
+                {
+                  label: 'v1.2',
+                  src: `${base}/images/patch/ending_report_v12_1.webp`,
+                  alt: 'v1.2 엔딩 성적표. 총 플레이 시간',
+                  highlights: [[42, 186, 76, 14]],
+                },
+              ],
+              [
+                {
+                  label: 'v1.1',
+                  src: `${base}/images/patch/advice_086_v11_1.webp`,
+                  alt: 'v1.1 정보통 코멘트. 제대로 플레이해요의 플이 좁다',
+                  highlights: [[111, 65, 72, 16]],
+                },
+                {
+                  label: 'v1.2',
+                  src: `${base}/images/patch/advice_086_v12_1.webp`,
+                  alt: 'v1.2 정보통 코멘트. 제대로 플레이해요',
+                  highlights: [[111, 65, 72, 16]],
+                },
+              ],
+              [
+                {
+                  label: 'v1.1',
+                  src: `${base}/images/patch/battle_sliding_kick_v11_1.webp`,
+                  alt: 'v1.1 전투 화면 위 띠. 슬라이딩 킥의 딩이 좁다',
+                  highlights: [[61, 18, 12, 14]],
+                },
+                {
+                  label: 'v1.2',
+                  src: `${base}/images/patch/battle_sliding_kick_v12_1.webp`,
+                  alt: 'v1.2 전투 화면 위 띠. 슬라이딩 킥',
+                  highlights: [[61, 18, 17, 14]],
+                },
+              ],
+            ]}
+            caption="위부터 엔딩 성적표, 정보통 코멘트, 전투 화면 위의 상대 기술 이름입니다."
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              스토리 현황 아래 줄을 「플레이 00:00 총 시간 00:00」으로 바꿨습니다. 「PLAY」가 영어로 남아 있었고, 「총
+              플레이 시간」이 길어 뒤의 시간과 붙어 보였습니다.
+            </li>
+            <li>달성치 화면의 「EVENT 달성치」를 성적표와 같은 「이벤트 달성도」로 바꿨습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            rows={[
+              [
+                {
+                  label: 'v1.1',
+                  src: `${base}/images/patch/status_bottom_v11_1.webp`,
+                  alt: 'v1.1 스토리 현황 아래 줄. PLAY 00:00 총 플레이 시간00:00',
+                  highlights: [
+                    [15, 200, 86, 17],
+                    [113, 200, 124, 17],
+                  ],
+                },
+                {
+                  label: 'v1.2',
+                  src: `${base}/images/patch/status_bottom_v12_1.webp`,
+                  alt: 'v1.2 스토리 현황 아래 줄. 플레이 00:00 총 시간 00:00',
+                  highlights: [
+                    [15, 200, 86, 17],
+                    [113, 200, 124, 17],
+                  ],
+                },
+              ],
+              [
+                {
+                  label: 'v1.1',
+                  src: `${base}/images/patch/achieve_v11_1.webp`,
+                  alt: 'v1.1 달성치 화면. EVENT 달성치',
+                  highlights: [[26, 80, 95, 17]],
+                },
+                {
+                  label: 'v1.2',
+                  src: `${base}/images/patch/achieve_v12_1.webp`,
+                  alt: 'v1.2 달성치 화면. 이벤트 달성도',
+                  highlights: [[26, 80, 95, 17]],
+                },
+              ],
+            ]}
+            caption="위는 스토리 현황 아래 줄, 아래는 달성치 화면입니다."
           />
         </ReleaseItem>
         <ReleaseItem>
