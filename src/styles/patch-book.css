@@ -448,11 +448,6 @@ h1.pixel {
   margin: 0;
 }
 
-.file-checksums-alt {
-  display: block;
-  color: var(--muted);
-}
-
 .file-checksums-file code {
   color: inherit;
   font-size: 0.8125rem;

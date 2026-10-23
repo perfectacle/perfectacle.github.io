@@ -74,12 +74,12 @@ for (const patch of KR_PATCHES) {
     await page.keyboard.press('Enter');
     await expect(details).toHaveAttribute('open', '');
     await expect(details).toContainText('일본판 원본 롬파일에만 패치할 수 있습니다.');
-    await expect(details).toContainText('512바이트 헤더가 붙은 파일도 쓸 수 있고');
-    await expect(details).toContainText('헤더가 있든 없든 같습니다');
+    await expect(details).toContainText('파일을 고르면 이 페이지가 아래 값과 맞는지 확인합니다.');
+    await expect(details).not.toContainText('헤더');
     for (const file of [
       {
         name: '일본판 원본',
-        size: `${formatBytes(patch.spec.size)}헤더 포함 ${formatBytes(patch.spec.size + 512)}`,
+        size: formatBytes(patch.spec.size),
         fingerprint: patch.spec.original,
       },
       {
