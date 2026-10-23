@@ -20,7 +20,7 @@ const lines = rows ?? (panels ? [panels] : [[{ alt }]]);
 const columns = Math.max(...lines.map(line => line.length));
 ---
 
-<figure class="release-screenshot" style={`--release-columns: ${columns}`}>
+<figure class={`release-screenshot columns-${columns}`} style={`--release-columns: ${columns}`}>
   {lines.map(line => (
     <div class="release-panels">
       {line.map(panel => (
@@ -58,13 +58,39 @@ const columns = Math.max(...lines.map(line => line.length));
     border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
     border-radius: 6px;
     background: rgb(0 0 0 / 22%);
+    container: release / inline-size;
   }
 
+  /* Cells are exactly one or two screens wide, chosen by the room for the whole row; too narrow, one per row. */
   .release-panels {
     display: grid;
-    grid-template-columns: repeat(var(--release-columns), minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
     width: 100%;
+  }
+
+  @container release (width >= 528px) {
+    .columns-2 .release-panels {
+      grid-template-columns: repeat(2, 256px);
+    }
+  }
+
+  @container release (width >= 1040px) {
+    .columns-2 .release-panels {
+      grid-template-columns: repeat(2, 512px);
+    }
+  }
+
+  @container release (width >= 800px) {
+    .columns-3 .release-panels {
+      grid-template-columns: repeat(3, 256px);
+    }
+  }
+
+  @container release (width >= 1568px) {
+    .columns-3 .release-panels {
+      grid-template-columns: repeat(3, 512px);
+    }
   }
 
   .release-panel {
@@ -90,12 +116,6 @@ const columns = Math.max(...lines.map(line => line.length));
 
   .release-panel :global(.patch-image-trigger) {
     width: 100%;
-  }
-
-  @media (max-width: 599px) {
-    .release-panels {
-      grid-template-columns: 1fr;
-    }
   }
 
   figcaption {

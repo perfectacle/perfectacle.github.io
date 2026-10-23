@@ -195,15 +195,15 @@ main:focus {
   image-rendering: pixelated;
 }
 
-/* Pixel art takes the largest whole-number scale of its game pixels that fits, at most two, so every game
+/* Pixel art takes the largest whole-number scale of its game pixels that fits, at most --pixel-max, so every game
    pixel is the same size. Only a cell narrower than one scale shrinks it. The first width is for browsers
    without round(). */
 :is(.zoom-image, .patch-image-trigger) > .patch-picture {
-  width: min(100cqw, calc(var(--patch-pixel-unit) * 2));
+  width: min(100cqw, calc(var(--patch-pixel-unit) * var(--pixel-max, 2)));
   width: min(
     100cqw,
     max(var(--patch-pixel-unit), round(down, 100cqw, var(--patch-pixel-unit))),
-    calc(var(--patch-pixel-unit) * 2)
+    calc(var(--patch-pixel-unit) * var(--pixel-max, 2))
   );
   margin-inline: auto;
 }
@@ -312,17 +312,26 @@ details[open]:not(.section-nav-menu) > summary::after {
   padding-block: 24px 40px;
 }
 
-@media (min-width: 900px) {
+/* The title screen sits beside the patch box only where it gets a 2× column; narrower, it follows the box. */
+@media (min-width: 1104px) {
   .hero {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    grid-template-columns: minmax(0, 1fr) 512px;
     gap: 48px;
   }
 }
 
-/* From here the title screen column holds a 2× screen exactly. */
-@media (min-width: 1104px) {
+main {
+  container: main / inline-size;
+}
+
+/* A full-width page gives the title screen 3×, so the game's own title leads the page. */
+@container main (width >= 1408px) {
   .hero {
-    grid-template-columns: minmax(0, 1fr) 512px;
+    grid-template-columns: minmax(0, 1fr) 768px;
+  }
+
+  .hero :is(.zoom-image, .patch-image-trigger) > .patch-picture {
+    --pixel-max: 3;
   }
 }
 
@@ -344,7 +353,7 @@ h1.pixel {
 }
 
 .hero-shot {
-  max-width: 512px;
+  width: 100%;
 }
 
 .patch-box {
@@ -723,14 +732,21 @@ h3.pixel {
   cursor: pointer;
 }
 
-.story {
-  display: grid;
-  gap: 28px;
+.section {
+  container: section / inline-size;
 }
 
-@media (min-width: 900px) {
+/* Text beside its screens where both fit, so the section stays short; the screen cells are sized from the
+   screens, so no cell is wider than its picture. */
+.story {
+  display: grid;
+  gap: 20px;
+}
+
+@container section (width >= 900px) {
   .story {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 32px;
     align-items: start;
   }
 }
@@ -741,15 +757,31 @@ h3.pixel {
 }
 
 .story-shots {
+  --shot: min(100%, 256px);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 256px), 1fr));
+  grid-template-columns: repeat(auto-fit, var(--shot));
   gap: 12px;
 }
 
-.play-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+@container section (width >= 524px) {
+  .story-shots {
+    --shot: 256px;
+  }
+}
+
+/* Cards are as wide as their screen plus the theme's own frame, which differs per game. */
+.play-list,
+.feature-list {
+  --shot: 256px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
+}
+
+:is(.play-list > .play, .feature-list > .feature) {
+  box-sizing: content-box;
+  width: var(--shot);
+  max-width: calc(100% - 48px);
 }
 
 .play {
@@ -963,42 +995,6 @@ h3.pixel {
 [data-theme='smrpg'] .tag {
   justify-self: start;
   position: static;
-}
-
-[data-theme='smrpg'] .hero-shot {
-  justify-self: center;
-  width: 256px;
-  max-width: none;
-}
-
-@media (min-width: 560px) {
-  [data-theme='smrpg'] .hero-shot {
-    width: 512px;
-  }
-}
-
-@media (min-width: 900px) {
-  [data-theme='smrpg'] .hero {
-    grid-template-columns: minmax(0, 1fr) 256px;
-  }
-
-  [data-theme='smrpg'] .hero-shot {
-    width: 256px;
-  }
-}
-
-@media (min-width: 1104px) {
-  [data-theme='smrpg'] .hero {
-    grid-template-columns: minmax(0, 1fr) 512px;
-  }
-
-  [data-theme='smrpg'] .hero-shot {
-    width: 512px;
-  }
-}
-
-[data-theme='smrpg'] .play-list {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
 }
 
 /* Section titles are window name tabs, not web headings. */
@@ -1297,12 +1293,6 @@ h3.pixel {
   font-size: 0.75em;
 }
 
-.feature-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-  gap: 24px;
-}
-
 .feature h3 {
   margin-top: 12px;
 }
@@ -1322,10 +1312,6 @@ h3.pixel {
 .chapter-mark {
   margin-bottom: -14px;
   color: var(--muted);
-}
-
-[data-theme='otogirisou'] .play-list {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
 }
 
 /* Scenes stay black until they are well into view, then cut in at once, as the game swaps pictures. */
