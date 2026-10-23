@@ -1154,4 +1154,51 @@ for (const game of PATCH_GUIDES) {
       expect(sectionBox.x + sectionBox.width).toBeLessThanOrEqual(menuBox.x);
     }
   });
+
+  test(`${game} background music starts on the first press, toggles with M and remembers the choice`, async ({
+    page,
+  }) => {
+    const errors = collectErrors(page);
+    await page.goto(path);
+    const bgm = page.locator('.bgm');
+    const toggle = bgm.getByRole('button', { name: '배경음악' });
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    await expect(bgm).toHaveAttribute('data-state', 'waiting');
+    await expect(bgm.locator('.bgm-hint')).toBeVisible();
+
+    await page.locator('h1').first().click();
+    await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
+    await expect(bgm.locator('.bgm-hint')).toBeHidden();
+
+    await page.keyboard.press('m');
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await expect(bgm).toHaveAttribute('data-state', 'off');
+
+    await page.reload();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await expect(bgm.locator('.bgm-hint')).toBeHidden();
+    await toggle.click();
+    await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
+    expect(errors).toEqual([]);
+  });
+
+  test(`${game} background music file covers its loop points`, async ({ page }) => {
+    await page.goto(path);
+    const { duration, loopStart, loopEnd, decoded } = await page.locator('.bgm-toggle').evaluate(async button => {
+      const { src = '', duration = '0', loopStart = '0', loopEnd = '0' } = (button as HTMLElement).dataset;
+      const buffer = await new OfflineAudioContext(2, 1, 48000).decodeAudioData(await (await fetch(src)).arrayBuffer());
+      return {
+        duration: Number(duration),
+        loopStart: Number(loopStart),
+        loopEnd: Number(loopEnd),
+        decoded: buffer.duration,
+      };
+    });
+    expect(loopStart).toBeGreaterThan(0);
+    expect(loopEnd).toBeGreaterThan(loopStart);
+    expect(duration).toBeGreaterThan(loopEnd);
+    // Decoders either trim the AAC priming and padding samples or keep them (at most 2112 + 1023).
+    expect(decoded).toBeGreaterThanOrEqual(duration - 1 / 48000);
+    expect(decoded).toBeLessThan(duration + 3136 / 48000);
+  });
 }

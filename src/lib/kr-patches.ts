@@ -23,6 +23,13 @@ export interface KrPatch {
   copyright: string;
   /** Catalogue card on the patch list. */
   card: { image: string; summary: string };
+  /**
+   * Background music at `${path}/audio/bgm.m4a`, recorded from the game. Playback repeats
+   * loopStart–loopEnd (seconds into the file) after the intro; the file runs past loopEnd so
+   * decoder padding never lands inside the loop. `duration` is the source length, which tells
+   * a decoder that kept the AAC priming samples apart from one that trimmed them.
+   */
+  bgm: { title: string; loopStart: number; loopEnd: number; duration: number };
 }
 
 export type KrPatchTheme = KrPatch['theme'];
@@ -43,6 +50,7 @@ export const SMRPG_PATCH: KrPatch = {
     image: 'images/patch/geno_sky_ko_1.webp',
     summary: '스타 피스를 찾아 떠나는 마리오와 동료들의 모험. 대사·메뉴·전투까지 모두 한국어입니다.',
   },
+  bgm: { title: '오프닝 데모', loopStart: 26.103562, loopEnd: 133.105813, duration: 133.605813 },
 };
 
 export const TOTSUGEKI_PATCH: KrPatch = {
@@ -62,6 +70,7 @@ export const TOTSUGEKI_PATCH: KrPatch = {
     summary:
       '부르마와 만난 날부터 피콜로 대마왕과의 결전까지, 소년 오공의 모험. 대사·선택지·타이틀·메뉴까지 한국어로 즐깁니다.',
   },
+  bgm: { title: '오프닝', loopStart: 6.128875, loopEnd: 57.809417, duration: 58.309417 },
 };
 
 export const KAKUSEI_PATCH: KrPatch = {
@@ -81,6 +90,7 @@ export const KAKUSEI_PATCH: KrPatch = {
     summary:
       '제23회 천하제일 무술대회부터 나메크성에서 프리더와의 결전까지, 어른이 된 오공의 모험. 대사·전투·DBZ 퀴즈를 한국어로 즐깁니다.',
   },
+  bgm: { title: '플레이어 체인지', loopStart: 30.735792, loopEnd: 76.450625, duration: 76.950625 },
 };
 
 export const OTOGIRISOU_PATCH: KrPatch = {
@@ -100,6 +110,7 @@ export const OTOGIRISOU_PATCH: KrPatch = {
     summary:
       '빗속 숲에서 찾아낸 낡은 저택, 고르는 보기마다 달라지는 이야기. 사운드 노벨의 첫 작품을 플로차트와 장 목록을 더해 한국어로 읽습니다.',
   },
+  bgm: { title: 'The Legend of Yellow Flower', loopStart: 29.044625, loopEnd: 168.225646, duration: 168.725646 },
 };
 
 /** In catalogue order. */

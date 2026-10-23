@@ -1,0 +1,300 @@
+---
+import type { KrPatch } from '../../lib/kr-patches.ts';
+
+interface Props {
+  patch: KrPatch;
+}
+
+const { patch } = Astro.props;
+const { title, loopStart, loopEnd, duration } = patch.bgm;
+---
+
+<div class="bgm" hidden>
+  <p class="bgm-hint" aria-hidden="true">
+    화면을 누르면 배경음악이 나옵니다
+  </p>
+  <button
+    type="button"
+    class="bgm-toggle"
+    aria-pressed="true"
+    aria-keyshortcuts="M"
+    title={`${title} · M 키로 켜고 끄기`}
+    data-src={`${patch.path}/audio/bgm.m4a`}
+    data-loop-start={loopStart}
+    data-loop-end={loopEnd}
+    data-duration={duration}
+  >
+    <span class="bgm-bars" aria-hidden="true">
+      <i></i>
+      <i></i>
+      <i></i>
+    </span>
+    배경음악
+    <span class="bgm-state" aria-hidden="true">
+      켜짐
+    </span>
+    <kbd aria-hidden="true">M</kbd>
+  </button>
+</div>
+
+<script>
+  const KEY = 'kr-patch-bgm';
+  const VOLUME = 0.5;
+  const root = document.querySelector<HTMLElement>('.bgm');
+  const button = root?.querySelector<HTMLButtonElement>('.bgm-toggle');
+  const label = root?.querySelector('.bgm-state');
+
+  if (root && button && label && 'AudioContext' in window) {
+    const { src = '', loopStart = '0', loopEnd = '0', duration = '0' } = button.dataset;
+    let on = true;
+    try {
+      on = localStorage.getItem(KEY) !== 'off';
+    } catch {
+      // Storage blocked: keep the default.
+    }
+    let ctx: AudioContext | undefined;
+    let gain: GainNode | undefined;
+    let data: Promise<ArrayBuffer> | undefined;
+    let source: AudioBufferSourceNode | undefined;
+    let starting: Promise<void> | undefined;
+
+    const load = () =>
+      (data ??= fetch(src)
+        .then(response => {
+          if (!response.ok) throw new Error(`${response.status} ${src}`);
+          return response.arrayBuffer();
+        })
+        .catch(error => {
+          data = undefined;
+          throw error;
+        }));
+    const playing = () => on && !!source && ctx?.state === 'running';
+    const render = () => {
+      button.setAttribute('aria-pressed', String(on));
+      root.dataset['state'] = !on ? 'off' : playing() ? 'playing' : 'waiting';
+      label.textContent = on ? '켜짐' : '꺼짐';
+    };
+    const startSource = async (audio: AudioContext, out: GainNode) => {
+      const buffer = await audio.decodeAudioData(await load());
+      source = audio.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
+      // Firefox keeps the encoder's 2112 priming samples at the start; everything after them shifts.
+      const lead = buffer.duration - Number(duration) >= 2112 / 48000 ? 2112 / 48000 : 0;
+      source.loopStart = Number(loopStart) + lead;
+      source.loopEnd = Number(loopEnd) + lead;
+      source.connect(out);
+      source.start(0, lead);
+    };
+    // Must run inside a click or key press: browsers keep an AudioContext silent until the visitor interacts.
+    const play = () => {
+      if (!ctx || !gain) {
+        ctx = new AudioContext();
+        gain = ctx.createGain();
+        gain.gain.value = 0;
+        gain.connect(ctx.destination);
+        ctx.addEventListener('statechange', render);
+      }
+      void ctx.resume();
+      gain.gain.cancelScheduledValues(ctx.currentTime);
+      gain.gain.setTargetAtTime(VOLUME, ctx.currentTime, 0.05);
+      if (!source && !starting) {
+        starting = startSource(ctx, gain)
+          .catch(() => undefined)
+          .finally(() => {
+            starting = undefined;
+            render();
+          });
+      }
+      render();
+    };
+    const pause = () => {
+      if (ctx && gain) {
+        const audio = ctx;
+        gain.gain.cancelScheduledValues(audio.currentTime);
+        gain.gain.setTargetAtTime(0, audio.currentTime, 0.05);
+        setTimeout(() => {
+          if (!on) void audio.suspend();
+        }, 300);
+      }
+      render();
+    };
+    const toggle = () => {
+      // On but still waiting for the first interaction: the press means "play now", not "turn off".
+      if (on && !playing()) return play();
+      on = !on;
+      try {
+        localStorage.setItem(KEY, on ? 'on' : 'off');
+      } catch {
+        // Storage blocked: the choice lasts for this page only.
+      }
+      if (on) play();
+      else pause();
+    };
+
+    const unlock = (event: Event) => {
+      if (event.target instanceof Node && button.contains(event.target)) return;
+      if (event instanceof KeyboardEvent && (event.code === 'KeyM' || event.key === 'Escape')) return;
+      window.removeEventListener('click', unlock, true);
+      window.removeEventListener('keydown', unlock, true);
+      if (on) play();
+    };
+    window.addEventListener('click', unlock, true);
+    window.addEventListener('keydown', unlock, true);
+    button.addEventListener('click', toggle);
+    window.addEventListener('keydown', event => {
+      // `code`, not `key`: with a Korean layout the M key types 'ㅡ'.
+      if (event.code !== 'KeyM' || event.ctrlKey || event.metaKey || event.altKey || event.repeat) return;
+      const target = event.target;
+      if (target instanceof HTMLElement && (target.isContentEditable || target.closest('input, textarea, select'))) {
+        return;
+      }
+      toggle();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!ctx || !source) return;
+      if (document.hidden) void ctx.suspend();
+      else if (on) void ctx.resume();
+    });
+
+    // Fetch ahead so the music starts as soon as the visitor interacts, without competing with the page itself.
+    const prefetch = () => {
+      if (on) load().catch(() => undefined);
+    };
+    const idle = () =>
+      'requestIdleCallback' in window ? requestIdleCallback(prefetch, { timeout: 4000 }) : setTimeout(prefetch, 1000);
+    if (document.readyState === 'complete') idle();
+    else window.addEventListener('load', idle, { once: true });
+
+    const policy = (navigator as Navigator & { getAutoplayPolicy?: (type: string) => string }).getAutoplayPolicy;
+    if (on && policy?.call(navigator, 'audiocontext') === 'allowed') play();
+    root.hidden = false;
+    render();
+  }
+</script>
+
+<style>
+  .bgm {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 20;
+    display: grid;
+    justify-items: end;
+    gap: 8px;
+  }
+
+  .bgm[hidden] {
+    display: none;
+  }
+
+  /* Keeps the floating button off the last footer line. */
+  :global(body:has(.bgm:not([hidden])) .page-footer) {
+    padding-bottom: 96px;
+  }
+
+  .bgm-hint {
+    margin: 0;
+    padding: 6px 10px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    background: var(--panel);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 35%);
+    color: var(--ink);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .bgm:not([data-state='waiting']) .bgm-hint {
+    display: none;
+  }
+
+  .bgm-toggle {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 14px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--ink);
+    font: 700 0.875rem/1 var(--body);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 35%);
+  }
+
+  .bgm-toggle:hover {
+    background: color-mix(in srgb, var(--panel), var(--accent) 18%);
+  }
+
+  .bgm-state {
+    color: var(--accent);
+  }
+
+  .bgm[data-state='off'] .bgm-toggle {
+    border-color: var(--muted);
+  }
+
+  .bgm[data-state='off'] .bgm-state {
+    color: var(--muted);
+  }
+
+  kbd {
+    padding: 2px 5px;
+    border: 1px solid var(--muted);
+    border-radius: 3px;
+    color: var(--muted);
+    font: 400 0.75rem/1 var(--mono);
+  }
+
+  @media (hover: none) {
+    kbd {
+      display: none;
+    }
+  }
+
+  /* Three level bars that dance while the music plays and lie flat when it does not. */
+  .bgm-bars {
+    display: inline-flex;
+    gap: 2px;
+    align-items: end;
+    width: 14px;
+    height: 14px;
+  }
+
+  .bgm-bars i {
+    flex: 1;
+    height: 30%;
+    background: var(--accent);
+  }
+
+  .bgm[data-state='off'] .bgm-bars i {
+    background: var(--muted);
+  }
+
+  .bgm[data-state='playing'] .bgm-bars i {
+    animation: bgm-level 0.9s steps(4, jump-none) infinite alternate;
+  }
+
+  .bgm[data-state='playing'] .bgm-bars i:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+
+  .bgm[data-state='playing'] .bgm-bars i:nth-child(3) {
+    animation-delay: -0.6s;
+  }
+
+  @keyframes bgm-level {
+    to {
+      height: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bgm[data-state='playing'] .bgm-bars i {
+      height: 70%;
+      animation: none;
+    }
+  }
+</style>
