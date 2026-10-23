@@ -1,0 +1,217 @@
+<script>
+  // Clicking a cartridge plays a short boot scene before following the link: the cartridge flies into the
+  // slot of a real Super Famicom, the power lamp lights, the whole screen turns on like a CRT showing the
+  // game's title screen, and everything fades to black. The link stays a plain link, so modified clicks,
+  // reduced motion and browsers without Web Animations navigate as usual.
+  const CONSOLE = '/games/kr-patches/catalogue/super-famicom.webp';
+  // Points measured on the console photo (1139×505): the line the cartridge stands on, the front lip of
+  // the slot that hides the inserted part, and the power lamp.
+  const PHOTO = { width: 1139, height: 505 };
+  const SLOT = { from: [649, 119], to: [965, 187] } as const;
+  const LIP = { from: [646, 129], to: [967, 194] } as const;
+  const LAMP = [796, 356] as const;
+
+  const cards = document.querySelectorAll<HTMLAnchorElement>('a.game-card');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let booting = false;
+  let photo: HTMLImageElement | undefined;
+
+  const loadPhoto = () => {
+    if (!photo) {
+      photo = new Image();
+      photo.src = CONSOLE;
+    }
+    return photo;
+  };
+  const wait = (animation: Animation) => animation.finished.catch(() => undefined);
+  const pause = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  const lipAt = (x: number) =>
+    LIP.from[1] + ((x - LIP.from[0]) * (LIP.to[1] - LIP.from[1])) / (LIP.to[0] - LIP.from[0]);
+  const percent = (value: number, total: number) => `${((value / total) * 100).toFixed(3)}%`;
+
+  const buildStage = (title: string, screen: string) => {
+    const stage = document.createElement('div');
+    stage.className = 'boot-stage';
+    stage.setAttribute('aria-hidden', 'true');
+    stage.innerHTML = `
+      <div class="boot-rig">
+        <img class="boot-console" src="${CONSOLE}" width="${PHOTO.width}" height="${PHOTO.height}" alt="" />
+        <img class="boot-console boot-console-front" src="${CONSOLE}" width="${PHOTO.width}" height="${PHOTO.height}" alt="" />
+        <span class="boot-lamp"></span>
+      </div>
+      <div class="boot-crt"><div class="boot-crt-screen"><img alt="" /></div></div>
+      <div class="boot-curtain"></div>`;
+    const front = stage.querySelector<HTMLElement>('.boot-console-front');
+    front?.style.setProperty(
+      'clip-path',
+      `polygon(0 ${percent(lipAt(0), PHOTO.height)}, 100% ${percent(lipAt(PHOTO.width), PHOTO.height)}, 100% 100%, 0 100%)`,
+    );
+    const lamp = stage.querySelector<HTMLElement>('.boot-lamp');
+    lamp?.style.setProperty('left', percent(LAMP[0], PHOTO.width));
+    lamp?.style.setProperty('top', percent(LAMP[1], PHOTO.height));
+    const crt = stage.querySelector<HTMLImageElement>('.boot-crt img');
+    if (crt) crt.src = screen;
+    const status = document.createElement('p');
+    status.className = 'sr-only';
+    status.setAttribute('role', 'status');
+    status.textContent = `${title} 페이지로 이동합니다`;
+    return { stage, status };
+  };
+
+  const boot = async (card: HTMLAnchorElement) => {
+    booting = true;
+    const href = card.href;
+    const go = () => window.location.assign(href);
+    const source = card.querySelector<HTMLElement>('.cartridge');
+    const art = card.querySelector<HTMLImageElement>('.cartridge img');
+    if (!source) return go();
+    const title = card.querySelector('h2')?.textContent?.trim() ?? '';
+    const { stage, status } = buildStage(title, art ? art.currentSrc || art.src : '');
+    const rig = stage.querySelector<HTMLElement>('.boot-rig');
+    const lamp = stage.querySelector<HTMLElement>('.boot-lamp');
+    const crt = stage.querySelector<HTMLElement>('.boot-crt');
+    const screen = stage.querySelector<HTMLElement>('.boot-crt-screen');
+    const curtain = stage.querySelector<HTMLElement>('.boot-curtain');
+    if (!rig || !lamp || !crt || !screen || !curtain) return go();
+    document.body.append(stage, status);
+    stage.addEventListener('click', go, { once: true });
+    document.addEventListener('keydown', event => {
+      if (['Enter', ' ', 'Escape'].includes(event.key)) {
+        event.preventDefault();
+        go();
+      }
+    });
+
+    // The cartridge flies inside the rig so the camera move later carries it along.
+    const from = source.getBoundingClientRect();
+    const box = rig.getBoundingClientRect();
+    const scale = box.width / PHOTO.width;
+    const cart = source.cloneNode(true) as HTMLElement;
+    cart.classList.add('boot-cart');
+    const start = { x: from.left - box.left, y: from.top - box.top };
+    Object.assign(cart.style, {
+      left: `${start.x}px`,
+      top: `${start.y}px`,
+      width: `${from.width}px`,
+      height: `${from.height}px`,
+    });
+
+    // Standing in the slot, the cartridge's width runs along the slot line and its height stays upright.
+    const runX = SLOT.to[0] - SLOT.from[0];
+    const runY = SLOT.to[1] - SLOT.from[1];
+    const angle = Math.atan2(runY, runX);
+    const size = (0.92 * Math.hypot(runX, runY) * scale) / from.width;
+    const a = size * Math.cos(angle);
+    const b = size * Math.sin(angle);
+    const d = size * 0.95;
+    const centreX = ((SLOT.from[0] + SLOT.to[0]) / 2) * scale;
+    const centreY = ((SLOT.from[1] + SLOT.to[1]) / 2) * scale;
+    // Bottom centre on the slot line, pushed `sink` of the cartridge's height below it.
+    const placed = (sink: number) => {
+      const e = centreX - start.x - (a * from.width) / 2;
+      const f = centreY + sink * d * from.height - start.y - ((b * from.width) / 2 + d * from.height);
+      return `matrix(${a}, ${b}, 0, ${d}, ${e}, ${f})`;
+    };
+
+    rig.insertBefore(cart, rig.querySelector('.boot-console-front'));
+    source.style.visibility = 'hidden';
+
+    stage.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 280, easing: 'ease-out' });
+    for (const layer of rig.querySelectorAll('.boot-console')) {
+      layer.animate(
+        [
+          { opacity: 0, transform: 'translateY(32px)' },
+          { opacity: 1, transform: 'none' },
+        ],
+        { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' },
+      );
+    }
+    if (photo && !photo.complete) await Promise.race([photo.decode().catch(() => undefined), pause(800)]);
+
+    await wait(
+      cart.animate(
+        [
+          { transform: 'matrix(1, 0, 0, 1, 0, 0)' },
+          { transform: placed(-0.55), offset: 0.75 },
+          { transform: placed(-0.32) },
+        ],
+        { duration: 820, easing: 'cubic-bezier(.45,.05,.25,1)', fill: 'forwards' },
+      ),
+    );
+    cart.classList.add('is-in-slot');
+    cart.getAnimations().forEach(animation => animation.cancel());
+    cart.style.transform = placed(0.4);
+    // Chrome stops painting a child held by a filling animation once its parent starts animating, so the
+    // insertion ends on a plain style instead.
+    await wait(
+      cart.animate([{ transform: placed(-0.32) }, { transform: placed(0.4) }], {
+        duration: 240,
+        easing: 'cubic-bezier(.6,0,.9,.6)',
+      }),
+    );
+    rig.animate([{ translate: '0 0' }, { translate: '0 3px' }, { translate: '0 0' }], {
+      duration: 150,
+      easing: 'steps(3)',
+    });
+
+    await pause(220);
+    lamp.classList.add('is-on');
+    rig.style.transformOrigin = `${centreX}px ${centreY}px`;
+    await wait(
+      rig.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }], {
+        duration: 620,
+        easing: 'cubic-bezier(.4,0,.2,1)',
+        fill: 'forwards',
+      }),
+    );
+
+    crt.classList.add('is-on');
+    await wait(
+      screen.animate(
+        [
+          { clipPath: 'inset(50% 50% 50% 50%)', filter: 'brightness(5) saturate(0)' },
+          { clipPath: 'inset(49.6% 0 49.6% 0)', filter: 'brightness(5) saturate(0)', offset: 0.3 },
+          { clipPath: 'inset(0 0 0 0)', filter: 'brightness(1.8) saturate(.6)', offset: 0.65 },
+          { clipPath: 'inset(0 0 0 0)', filter: 'brightness(1) saturate(1)' },
+        ],
+        { duration: 560, easing: 'ease-out', fill: 'forwards' },
+      ),
+    );
+    await pause(850);
+    await wait(
+      curtain.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 450, easing: 'ease-in', fill: 'forwards' }),
+    );
+    go();
+  };
+
+  for (const card of cards) {
+    card.addEventListener('pointerenter', loadPhoto, { once: true });
+    card.addEventListener('focus', loadPhoto, { once: true });
+    card.addEventListener('click', event => {
+      if (
+        booting ||
+        reducedMotion.matches ||
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey ||
+        typeof Element.prototype.animate !== 'function'
+      )
+        return;
+      event.preventDefault();
+      loadPhoto();
+      void boot(card);
+    });
+  }
+
+  // Coming back through the back/forward cache restores the page mid-scene; reset it.
+  window.addEventListener('pageshow', event => {
+    if (!event.persisted) return;
+    booting = false;
+    document.querySelectorAll('.boot-stage, .boot-stage + .sr-only').forEach(node => node.remove());
+    for (const cartridge of document.querySelectorAll<HTMLElement>('.game-card .cartridge'))
+      cartridge.style.visibility = '';
+  });
+</script>
