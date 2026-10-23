@@ -65,6 +65,7 @@ const { ips, spec, version, output, speaker } = Astro.props;
   </div>
   <p class="privacy">파일은 이 기기 안에서만 바꾸고 어디에도 보내지 않습니다.</p>
   <FileChecksums spec={spec} version={version} />
+  <slot />
 </div>
 
 <script>

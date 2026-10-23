@@ -152,9 +152,10 @@ const story = [
         version={patch.version}
         output={patch.stem}
         speaker={GUIDE}
-      />
+      >
+        <ManualPatch patch={patch} />
+      </PatchBox>
       <SaveNote />
-      <ManualPatch patch={patch} />
     </div>
     <figure class="hero-shot screen">
       <ZoomImage

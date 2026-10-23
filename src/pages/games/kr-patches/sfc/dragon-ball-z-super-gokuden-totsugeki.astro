@@ -121,9 +121,10 @@ const cast = [
       <h1 id="title" class="pixel">
         {patch.title} 한글판
       </h1>
-      <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem} />
+      <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
+        <ManualPatch patch={patch} />
+      </PatchBox>
       <SaveNote />
-      <ManualPatch patch={patch} />
     </div>
     <figure class="hero-shot screen">
       <ZoomImage

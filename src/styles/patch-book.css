@@ -457,13 +457,20 @@ h1.pixel {
   font-size: 0.875rem;
 }
 
-.file-checksums {
+.file-checksums,
+.manual {
   min-width: 0;
   border-top: 1px solid var(--muted);
   font-size: 0.8125rem;
 }
 
-.file-checksums summary {
+/* The two folds at the foot of the patch box read as one list, so only the first draws the rule. */
+.file-checksums + .manual {
+  border-top: 0;
+}
+
+.file-checksums summary,
+.manual summary {
   padding-block: 10px 2px;
   color: var(--muted);
   cursor: pointer;
@@ -584,21 +591,14 @@ h1.pixel {
   opacity: 1;
 }
 
-.manual summary {
-  margin-left: 30px;
-  color: var(--ink);
-  cursor: pointer;
-}
-
 .manual-note {
   color: var(--muted);
 }
 
 .manual-body {
   display: grid;
-  gap: 12px;
-  margin-top: 12px;
-  font-size: 1rem;
+  gap: 10px;
+  padding-top: 10px;
 }
 
 /* Sections */
