@@ -10,7 +10,7 @@
 
 - **발행된 글의 `date`·폴더명을 바꾸지 않는다** — URL 이 바뀌어 외부 링크와 댓글이 끊긴다. [URL-01](.agents/skills/write-post/SKILL.md#url-01--글-url)
 - **slug·heading id·댓글 경로 규칙을 바꾸지 않는다** — 옛 주소·앵커·댓글 호환 장치다. [site-code](.agents/skills/site-code/SKILL.md#규칙)
-- **글 이미지는 글 폴더 안에 WebP 로, 다른 글 링크는 파일 경로로** — [IMG-01](.agents/skills/write-post/SKILL.md#img-01--이미지), [LINK-01](.agents/skills/write-post/SKILL.md#link-01--글-간-링크)
+- **글 이미지는 글 폴더 안에 WebP 로, 다른 글 링크는 `/` 로 시작하는 루트 경로로** — [IMG-01](.agents/skills/write-post/SKILL.md#img-01--이미지), [LINK-01](.agents/skills/write-post/SKILL.md#link-01--글-간-링크)
 - **릴리스된 지 7일 안 된 의존성을 들이지 않는다** — 보안 수정만 Renovate 가 예외 처리한다. [DEP-01](.agents/skills/dependencies/SKILL.md#dep-01--7일-쿨다운)
 - **작업마다 최신 `origin/main` 에서 워크트리를 파고, 머지·배포가 끝나면 지운다** — 다른 에이전트 세션과 체크아웃을 나눠 쓰지 않는다. [GIT-02](.agents/skills/git-workflow/SKILL.md#git-02--작업마다-워크트리)
 - **코드·설정·문서 변경은 브랜치 → PR, `ci-ok` 를 통과시킨다** — [GIT-01](.agents/skills/git-workflow/SKILL.md#git-01--브랜치와-pr), [CI-01](.agents/skills/ci/SKILL.md#ci-01--ci-ok-와-자동-머지)

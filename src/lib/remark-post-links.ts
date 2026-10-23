@@ -4,8 +4,8 @@ import type { VFile } from 'vfile';
 import { visit } from 'unist-util-visit';
 import { POSTS_ROOT, postUrlOf } from './post-files.ts';
 
-// Posts link to each other by file path (`../../2017/ES6-Iterator/index.md#anchor`) so editors can
-// follow them; the site needs the published URL, which comes from the target's frontmatter date.
+// Posts link to each other by root URL. A file-path link (`../../2017/ES6-Iterator/index.md#anchor`), as a draft
+// may still use, is turned into the published URL from the target's frontmatter date.
 export function toPostUrl(href: string, fromFile: string, root = POSTS_ROOT): string {
   if (/^([a-z]+:|\/|#)/i.test(href)) return href;
   const [path = '', hash] = href.split('#');

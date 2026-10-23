@@ -94,7 +94,7 @@ console.log(under40);
 
 그리고 
 predicate(item) && newList.push(item);
-위 구문이 이해 안 가는 사람은 [똑똑한 논리 연산자](../../2017/es-logical-operator/index.md)와 [값 vs 식 vs 문](../../2017/js-007-value-expression-statement/index.md)을 참고해보자.  
+위 구문이 이해 안 가는 사람은 [똑똑한 논리 연산자](/2017/02/13/es-logical-operator/)와 [값 vs 식 vs 문](/2017/06/02/js-007-value-expression-statement/)을 참고해보자.  
   
 ```javascript
 const nodeList = document.querySelectorAll('*');
@@ -107,4 +107,4 @@ key와 value의 쌍으로 이루어져있는 돌림직한 객체를 필터링하
 필요성을 잘 느끼지 못했기 때문에 정리하지 않도록 하겠다.  
 혹시 관련된 예제나 필요성 등등을 아신다면 댓글을... ^^
 
-그럼 이제 바로 다음 포스트인 [map](../../2017/js-func-03-map/index.md)을 공부해보자!  
+그럼 이제 바로 다음 포스트인 [map](/2017/06/26/js-func-03-map/)을 공부해보자!  

@@ -566,4 +566,4 @@ class Franc(amount: Long): Money(amount) {
 
 ## 마치며
 **하위 클래스에 대한 직접적인 참조를 제거**하면 **외부(클라이언트)에 영향 없이 상속 구조를 마음껏 수정**할 수 있다는 사실에 큰 감명을 받았다.  
-plus 메서드까지 제거하는 방법을 보기 위해서는 [하위 클래스를 제거하기 쉽게 만드는 방법](../../2020/how-to-make-subclasses-easy-to-remove/index.md)을 보자.
+plus 메서드까지 제거하는 방법을 보기 위해서는 [하위 클래스를 제거하기 쉽게 만드는 방법](/2020/06/11/how-to-make-subclasses-easy-to-remove/)을 보자.

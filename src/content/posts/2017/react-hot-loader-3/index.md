@@ -7,13 +7,13 @@ tags: [React Hot Loader]
 ![요놈도 v1이 언제 deprecated 될지 모르니 얼른 마이그레이션 해보자](./thumb.webp)  
 
 ## 들어가기에 앞서
-기본적으로 [웹팩](../../2016/Module-bundling-with-Webpck/index.md), [바벨](../../2016/Babel-ES6-with-IE8/index.md), 리액트 라우터 등등은 안다는 전제 하에 글을 썼다.  
+기본적으로 [웹팩](/2016/11/18/Module-bundling-with-Webpck/), [바벨](/2016/11/11/Babel-ES6-with-IE8/), 리액트 라우터 등등은 안다는 전제 하에 글을 썼다.  
 웹팩 2에 대한 모르는 부분은 아래 글을 조금씩 참조하면 도움이 될 것이다.  
-* [(Webpack 2) 트리 쉐이킹을 해보자!](../../2017/webpack2-tree-shaking/index.md)  
-* [(Webpack 2) 코드를 분할해보자!](../../2017/webpack2-code-splitting/index.md)  
+* [(Webpack 2) 트리 쉐이킹을 해보자!](/2017/03/12/webpack2-tree-shaking/)  
+* [(Webpack 2) 코드를 분할해보자!](/2017/03/13/webpack2-code-splitting/)  
 
 또한 리액트 라우터 v4 예제로 진행할 것이므로 아래 포스트를 참고하고 소스 코드를 클론하자.  
-* [(React Router) v4로 마이그레이션 해보자!](../../2017/react-router-v4/index.md)  
+* [(React Router) v4로 마이그레이션 해보자!](/2017/03/25/react-router-v4/)  
 * [리액트 라우터 v4 소스 코드](https://github.com/perfectacle/react-router-4)
 
 ## 리액트 핫 로더 v1

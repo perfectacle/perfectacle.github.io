@@ -17,14 +17,14 @@ seriesOrder: 1
 
 ## 목차
 포스트와는 무관하며 내가 정리한 함수형 JS의 포스트 목록이다.  
-1. [왜 쓸까?](../../2017/js-func-01-why-make/index.md)  
-2. [filter](../../2017/js-func-02-filter/index.md)  
-3. [map](../../2017/js-func-03-map/index.md)  
-4. [each](../../2017/js-func-04-each/index.md)  
-5. [reduce](../../2017/js-func-05-reduce/index.md)  
-6. [find](../../2017/js-func-06-find/index.md)  
-7. [curry](../../2017/js-func-07-curry/index.md)  
-8. [pipe](../../2017/js-func-08-pipe/index.md)  
+1. [왜 쓸까?](/2017/06/26/js-func-01-why-make/)  
+2. [filter](/2017/06/26/js-func-02-filter/)  
+3. [map](/2017/06/26/js-func-03-map/)  
+4. [each](/2017/06/26/js-func-04-each/)  
+5. [reduce](/2017/06/26/js-func-05-reduce/)  
+6. [find](/2017/06/28/js-func-06-find/)  
+7. [curry](/2017/06/30/js-func-07-curry/)  
+8. [pipe](/2017/06/30/js-func-08-pipe/)  
 
 ## 함수형 JS?  
 간단하게 생긴 모습을 보면 다음과 같다.  

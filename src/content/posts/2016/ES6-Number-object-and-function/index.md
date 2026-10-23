@@ -5,7 +5,7 @@ categories: [JavaScript, ES2015+]
 tags: [Number]
 ---
 ![](./thumb.webp)  
-[(ES6) 숫자형](../../2016/ES6-Number-type/index.md)을 보고 이 글을 보는 걸 추천한다.
+[(ES6) 숫자형](/2016/12/23/ES6-Number-type/)을 보고 이 글을 보는 걸 추천한다.
 
 ## 목차
 * [Number 객체(Global 객체)](#Number-객체-Global-객체)  

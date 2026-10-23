@@ -13,11 +13,11 @@
 
 ## 콘텐츠
 
-| ID      | 요지                                                      | 소유자                                                                   |
-| ------- | --------------------------------------------------------- | ------------------------------------------------------------------------ |
-| IMG-01  | 글 이미지는 글 폴더 안에, WebP 로(SVG 예외)               | [write-post §IMG-01](../skills/write-post/SKILL.md#img-01--이미지)       |
-| LINK-01 | 다른 글 링크는 파일 경로(`../../YYYY/slug/index.md#앵커`) | [write-post §LINK-01](../skills/write-post/SKILL.md#link-01--글-간-링크) |
-| COPY-01 | 사이트 UI 문구는 합니다체·번역투 없이, 용어집을 따른다    | [korean-copy](../skills/korean-copy/SKILL.md)                            |
+| ID      | 요지                                                                  | 소유자                                                                   |
+| ------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| IMG-01  | 글 이미지는 글 폴더 안에, WebP 로(SVG 예외)                           | [write-post §IMG-01](../skills/write-post/SKILL.md#img-01--이미지)       |
+| LINK-01 | 다른 글·페이지 링크는 도메인 없는 루트 경로(`/YYYY/MM/DD/slug/#앵커`) | [write-post §LINK-01](../skills/write-post/SKILL.md#link-01--글-간-링크) |
+| COPY-01 | 사이트 UI 문구는 합니다체·번역투 없이, 용어집을 따른다                | [korean-copy](../skills/korean-copy/SKILL.md)                            |
 
 ## 의존성·CI·git
 

@@ -281,7 +281,7 @@ date: 2019-08-23 08:16:36
 
 1. 프로젝트 세팅(Gradle, JDK, 기술 스택)  
 2. 서버 세팅(AWS의 VPC, Subnet, Routing Table, NAT Gateway, EC2, ELB, EB, Security Group, Route 53, RDS, ElastiCache 등등을 처음부터 끝까지 만들어보았다.)  
-3. [성능 개선](../../2017/map-api-performance-improvement/index.md)(지도보기 API 응답 15MB -> 2MB로 줄임, 응답 속도를 22초에서 0.5초로 단축)  
+3. [성능 개선](/2017/09/28/map-api-performance-improvement/)(지도보기 API 응답 15MB -> 2MB로 줄임, 응답 속도를 22초에서 0.5초로 단축)  
 4. 기존 로직을 수정할 때 먼저 기존 로직을 손대지 않고 성공하는 테스트 코드를 작성한 후에 로직을 개선하면서 테스트가 실패하지 않게 끔 하며 리팩토링
 5. Dogfooding(외부에 제공할 서비스를 사내에서 미리 적용해봄) 용으로 진행한 프로젝트에서 Spring WebMVC를 사용해도 됨에도 불구하고 먼저 Webflux를 제안해주셔서 Webflux에 대한 간단한 이해도 및 장단점
 6. 인프라 경험

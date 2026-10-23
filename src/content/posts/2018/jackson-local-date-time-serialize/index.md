@@ -15,7 +15,7 @@ seriesOrder: 2
 따라서 이번에는 어렵지는 않지만 새로 프로젝트 구성할 때마다 매번 까먹어서 찾아 헤매던 케이스들을 정리해봤다.  
 또한 예제의 설명은 스프링 부트를 기준으로 설명하겠다.  
 
-우선 [Deserialize](../../2018/jackson-local-date-time-deserialize/index.md)를 안 본 사람은 해당 내용에서 이어지는 포스트이기 때문에 보고 오도록 하자.  
+우선 [Deserialize](/2018/01/15/jackson-local-date-time-deserialize/)를 안 본 사람은 해당 내용에서 이어지는 포스트이기 때문에 보고 오도록 하자.  
 
 ## 3줄 요약
 1. Serialize 한 형태가 요상하니 jackson-datatype-jsr310을 Dependency에 추가해두자.  

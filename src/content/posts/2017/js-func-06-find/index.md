@@ -94,7 +94,7 @@ const _findIndex = (list, predicate) => {
 const nums = [1, 3, 100, 2, 7];
 console.log(_findIndex(nums, num => num >= 100)); // 2
 ```
-왜 -1을 리턴하는지 모르겠는 사람은 [~(Tilde) 연산자](../../2017/es-tilt-operator/index.md)를 참고하자. 
+왜 -1을 리턴하는지 모르겠는 사람은 [~(Tilde) 연산자](/2017/02/13/es-tilt-operator/)를 참고하자. 
 
 ## some
 some은 하나라도 조건을 만족하면 true를 반환하는 함수다.  
@@ -212,4 +212,4 @@ nums = [4, 8, 16, 20];
 console.log(_every(nums, num => num % 2 === 0)); // true
 ```
 오늘은 여기까지만 알아보도록 하자.  
-다음 시간에는 함수형의 꽃이라 할 수 있는 [curry](../../2017/js-func-07-curry/index.md)에 대해 알아보도록 하자.  
+다음 시간에는 함수형의 꽃이라 할 수 있는 [curry](/2017/06/30/js-func-07-curry/)에 대해 알아보도록 하자.  
