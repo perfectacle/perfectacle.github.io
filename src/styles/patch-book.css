@@ -1175,20 +1175,6 @@ h3.pixel {
   color: var(--muted);
 }
 
-/* The way out of a chapter is a choice, laid out like the game's choice list. */
-.chapter-choices {
-  display: grid;
-  gap: 6px;
-  justify-items: start;
-  margin-top: 12px;
-  padding: 12px 16px 12px 40px;
-  border-top: 1px solid rgb(222 222 214 / 22%);
-}
-
-.chapter-choices a {
-  color: var(--ink);
-}
-
 [data-theme='otogirisou'] .play-list {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
 }

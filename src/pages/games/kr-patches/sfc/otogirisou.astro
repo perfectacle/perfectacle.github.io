@@ -4,7 +4,6 @@ import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot
 import ComparePairs from '../../../../components/kr-patch/ComparePairs.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
-import ChapterChoices from '../../../../components/otogirisou/ChapterChoices.astro';
 import MakingOf from '../../../../components/otogirisou/MakingOf.astro';
 import SoundNovel from '../../../../components/otogirisou/SoundNovel.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
@@ -82,7 +81,7 @@ const play = [
   },
 ];
 
-// Each section reads as a chapter of the game; the title menu and the choices at each chapter's end follow this order.
+// Each section reads as a chapter of the game; the title menu follows this order.
 const chapters = [
   { id: 'korean', label: '한국어로 바뀐 것', mark: '제1장' },
   { id: 'features', label: '편의 기능', mark: '제2장' },
@@ -92,10 +91,9 @@ const chapters = [
   { id: 'making', label: '롬 분석 노트', mark: '숨겨진 장' },
 ];
 const chapter = (id: string) => {
-  const i = chapters.findIndex(c => c.id === id);
-  const found = chapters[i];
+  const found = chapters.find(c => c.id === id);
   if (!found) throw new Error(`Unknown chapter ${id}`);
-  return { mark: found.mark, next: chapters[i + 1] };
+  return { mark: found.mark };
 };
 ---
 
@@ -145,7 +143,6 @@ const chapter = (id: string) => {
     </ul>
     <p class="section-note">같은 장면을 일본판과 한글판에서 찍어 나란히 놓았습니다.</p>
     <ComparePairs pairs={otogirisouPairs} base={base} versions={JAPANESE_AND_KOREAN} visible={VISIBLE_PAIRS} />
-    <ChapterChoices next={chapter('korean').next} />
   </section>
 
   <section id="features" class="section page-width" aria-labelledby="features-title">
@@ -182,7 +179,6 @@ const chapter = (id: string) => {
         </article>
       ))}
     </div>
-    <ChapterChoices next={chapter('features').next} />
   </section>
 
   <section id="story" class="section page-width" aria-labelledby="story-title">
@@ -226,7 +222,6 @@ const chapter = (id: string) => {
         </figure>
       </div>
     </div>
-    <ChapterChoices next={chapter('story').next} />
   </section>
 
   <section id="play" class="section page-width" aria-labelledby="play-title">
@@ -252,7 +247,6 @@ const chapter = (id: string) => {
         </article>
       ))}
     </div>
-    <ChapterChoices next={chapter('play').next} />
   </section>
 
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
@@ -470,7 +464,6 @@ const chapter = (id: string) => {
         />
       </ReleaseDetails>
     </article>
-    <ChapterChoices next={chapter('patch-notes').next} />
   </section>
 
   <MakingOf patch={patch} mark={chapter('making').mark} />
