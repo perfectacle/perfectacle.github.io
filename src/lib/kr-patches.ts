@@ -90,7 +90,7 @@ export const KAKUSEI_PATCH: KrPatch = {
     summary:
       '제23회 천하제일 무술대회부터 나메크성에서 프리더와의 결전까지, 어른이 된 오공의 모험. 대사·전투·DBZ 퀴즈를 한국어로 즐깁니다.',
   },
-  bgm: { title: '플레이어 체인지', loopStart: 30.735792, loopEnd: 76.450625, duration: 76.950625 },
+  bgm: { title: '플레이어 체인지', loopStart: 31.059604, loopEnd: 76.774708, duration: 77.274708 },
 };
 
 export const OTOGIRISOU_PATCH: KrPatch = {
@@ -110,7 +110,7 @@ export const OTOGIRISOU_PATCH: KrPatch = {
     summary:
       '빗속 숲에서 찾아낸 낡은 저택, 고르는 보기마다 달라지는 이야기. 사운드 노벨의 첫 작품을 플로차트와 장 목록을 더해 한국어로 읽습니다.',
   },
-  bgm: { title: 'The Legend of Yellow Flower', loopStart: 29.044625, loopEnd: 168.225646, duration: 168.725646 },
+  bgm: { title: 'The Legend of Yellow Flower', loopStart: 117.140542, loopEnd: 244.98075, duration: 245.48075 },
 };
 
 /** In catalogue order. */

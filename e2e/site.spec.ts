@@ -1174,16 +1174,12 @@ for (const game of PATCH_GUIDES) {
     }
   });
 
-  test(`${game} background music starts on the first press, toggles with M and remembers the choice`, async ({
-    page,
-  }) => {
+  test(`${game} background music plays, toggles with M and remembers the choice`, async ({ page }) => {
     const errors = collectErrors(page);
     await page.goto(path);
     const bgm = page.locator('.bgm');
     const toggle = bgm.getByRole('button', { name: '배경음악' });
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-    await expect(bgm).toHaveAttribute('data-state', 'waiting');
-    await expect(bgm.locator('.bgm-hint')).toBeVisible();
 
     await page.locator('h1').first().click();
     await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
@@ -1221,3 +1217,22 @@ for (const game of PATCH_GUIDES) {
     expect(decoded).toBeLessThan(duration + 3136 / 48000);
   });
 }
+
+test('where autoplay is blocked, background music waits with a hint and starts on the first press', async ({
+  page,
+}) => {
+  // Like a browser's autoplay policy: the AudioContext stays suspended until the visitor interacts.
+  await page.addInitScript(() => {
+    const resume = AudioContext.prototype.resume;
+    AudioContext.prototype.resume = function () {
+      return navigator.userActivation.hasBeenActive ? resume.call(this) : new Promise<void>(() => undefined);
+    };
+  });
+  await page.goto('/games/kr-patches/sfc/otogirisou/');
+  const bgm = page.locator('.bgm');
+  await expect(bgm).toHaveAttribute('data-state', 'waiting');
+  await expect(bgm.locator('.bgm-hint')).toBeVisible();
+  await page.locator('h1').first().click();
+  await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
+  await expect(bgm.locator('.bgm-hint')).toBeHidden();
+});

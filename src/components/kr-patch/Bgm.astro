@@ -74,6 +74,11 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
       root.dataset['state'] = !on ? 'off' : playing() ? 'playing' : 'waiting';
       label.textContent = on ? '켜짐' : '꺼짐';
     };
+    // Audio waits for the page's own images and fonts, or it slows the first paint on slow connections.
+    const pageLoaded = new Promise<void>(resolve => {
+      if (document.readyState === 'complete') resolve();
+      else window.addEventListener('load', () => resolve(), { once: true });
+    });
     const startSource = async (audio: AudioContext, out: GainNode) => {
       const buffer = await audio.decodeAudioData(await load());
       source = audio.createBufferSource();
@@ -86,7 +91,7 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
       source.connect(out);
       source.start(0, lead);
     };
-    // Must run inside a click or key press: browsers keep an AudioContext silent until the visitor interacts.
+    // Called again from the first click or key press: resume() only takes effect inside one when autoplay is blocked.
     const play = () => {
       if (!ctx || !gain) {
         ctx = new AudioContext();
@@ -151,24 +156,12 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
       }
       toggle();
     });
-    document.addEventListener('visibilitychange', () => {
-      if (!ctx || !source) return;
-      if (document.hidden) void ctx.suspend();
-      else if (on) void ctx.resume();
-    });
-
-    // Fetch ahead so the music starts as soon as the visitor interacts, without competing with the page itself.
-    const prefetch = () => {
-      if (on) load().catch(() => undefined);
-    };
-    const idle = () =>
-      'requestIdleCallback' in window ? requestIdleCallback(prefetch, { timeout: 4000 }) : setTimeout(prefetch, 1000);
-    if (document.readyState === 'complete') idle();
-    else window.addEventListener('load', idle, { once: true });
-
-    const policy = (navigator as Navigator & { getAutoplayPolicy?: (type: string) => string }).getAutoplayPolicy;
-    if (on && policy?.call(navigator, 'audiocontext') === 'allowed') play();
+    // Try once the page has loaded: browsers that allow autoplay on this site (Chrome for sites visited often,
+    // Safari and Firefox when the visitor allows it) start the music then; the rest wait for the first press.
     root.hidden = false;
+    void pageLoaded.then(() => {
+      if (on) play();
+    });
     render();
   }
 </script>
