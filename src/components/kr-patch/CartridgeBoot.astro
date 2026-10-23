@@ -63,10 +63,9 @@
     const href = card.href;
     const go = () => window.location.assign(href);
     const source = card.querySelector<HTMLElement>('.cartridge');
-    const art = card.querySelector<HTMLImageElement>('.cartridge img');
     if (!source) return go();
     const title = card.querySelector('h2')?.textContent?.trim() ?? '';
-    const { stage, status } = buildStage(title, art ? art.currentSrc || art.src : '');
+    const { stage, status } = buildStage(title, source.dataset['screen'] ?? '');
     const rig = stage.querySelector<HTMLElement>('.boot-rig');
     const lamp = stage.querySelector<HTMLElement>('.boot-lamp');
     const crt = stage.querySelector<HTMLElement>('.boot-crt');
