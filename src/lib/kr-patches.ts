@@ -66,7 +66,7 @@ export const TOTSUGEKI_PATCH: KrPatch = {
     summary:
       '부르마와 만난 날부터 피콜로 대마왕과의 결전까지, 소년 오공의 모험. 대사·선택지·타이틀·메뉴까지 한국어로 즐깁니다.',
   },
-  bgm: { title: '오프닝', loopStart: 6.128875, loopEnd: 57.809417, duration: 58.309417 },
+  bgm: { title: '오프닝', loopStart: 9.289438, loopEnd: 60.969979, duration: 61.469979 },
 };
 
 export const KAKUSEI_PATCH: KrPatch = {
