@@ -24,8 +24,10 @@ export interface KrPatch {
   color: string;
   /** As printed on the Japanese release. */
   copyright: string;
-  /** Catalogue card on the patch list. */
-  card: { image: string; summary: string };
+  /** The game's title screen (256×224), shown in the console on the patch list and in link previews. */
+  titleScreen: string;
+  /** Catalogue card on the patch list; it also opens the page's description in link previews. */
+  card: { summary: string };
   /**
    * Background music at `${path}/audio/bgm.m4a`, recorded from the game. Playback repeats
    * loopStart–loopEnd (seconds into the file) after the intro; the file runs past loopEnd so
@@ -54,6 +56,10 @@ const krPatch = (patch: Omit<KrPatch, 'version' | 'released' | 'stem'>): KrPatch
   };
 };
 
+/** Search and link-preview text: what the game is and what reads in Korean, then how to get it. */
+export const patchDescription = (patch: KrPatch) =>
+  `${patch.card.summary} 일본판 롬파일을 고르면 이 페이지에서 바로 한글판(v${patch.version})을 만듭니다.`;
+
 /** One release of a patch; throws for a version the patch never had, so a page cannot show a stray release. */
 export const releaseOf = (patch: KrPatch, version: string) => {
   const release = patch.releases.find(r => r.version === version);
@@ -81,8 +87,8 @@ export const SMRPG_PATCH = krPatch({
   theme: 'smrpg',
   color: '#2b2d31',
   copyright: '게임 © 1995 Nintendo / SQUARE · 캐릭터 © Nintendo, © SQUARE',
+  titleScreen: '/games/kr-patches/catalogue/super-mario-rpg-title.webp',
   card: {
-    image: 'images/patch/geno_sky_ko_1.webp',
     summary: '스타 피스를 찾아 떠나는 마리오와 동료들의 모험. 대사·메뉴·전투까지 모두 한국어입니다.',
   },
   bgm: { title: '오프닝 데모', loopStart: 26.103562, loopEnd: 133.105813, duration: 133.605813 },
@@ -102,8 +108,8 @@ export const TOTSUGEKI_PATCH = krPatch({
   theme: 'gokuden',
   color: '#0b1a4a',
   copyright: '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995',
+  titleScreen: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/images/title.webp',
   card: {
-    image: 'images/title.webp',
     summary:
       '부르마와 만난 날부터 피콜로 대마왕과의 결전까지, 소년 오공의 모험. 대사·선택지·타이틀·메뉴까지 한국어로 즐깁니다.',
   },
@@ -125,8 +131,8 @@ export const KAKUSEI_PATCH = krPatch({
   theme: 'kakusei',
   color: '#101829',
   copyright: '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995',
+  titleScreen: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/images/title.webp',
   card: {
-    image: 'images/title.webp',
     summary:
       '제23회 천하제일 무술대회부터 나메크성에서 프리더와의 결전까지, 어른이 된 오공의 모험. 대사·전투·DBZ 퀴즈를 한국어로 즐깁니다.',
   },
@@ -147,8 +153,8 @@ export const OTOGIRISOU_PATCH = krPatch({
   theme: 'otogirisou',
   color: '#000000',
   copyright: '게임 © 1992 CHUNSOFT',
+  titleScreen: '/games/kr-patches/sfc/otogirisou/images/scenes/title.webp',
   card: {
-    image: 'images/scenes/title.webp',
     summary:
       '빗속 숲에서 찾아낸 낡은 저택, 고르는 보기마다 달라지는 이야기. 사운드 노벨의 첫 작품을 플로차트와 장 목록을 더해 한국어로 읽습니다.',
   },
