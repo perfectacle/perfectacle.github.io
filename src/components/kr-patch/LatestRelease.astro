@@ -1,0 +1,39 @@
+---
+import { releaseOf, type KrPatch } from '../../lib/kr-patches';
+
+interface Props {
+  patch: KrPatch;
+  overview: string;
+}
+
+const { patch, overview } = Astro.props;
+const release = releaseOf(patch, patch.version);
+---
+
+<p class="latest-release">
+  <strong class="latest-release-label">v{release.version}에서 바뀐 것</strong>
+  {overview}
+  <a class="pointer" href={`#${release.id}`}>
+    패치 노트 보기 <span aria-hidden="true">→</span>
+  </a>
+</p>
+
+<style>
+  .latest-release {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .latest-release-label {
+    margin-right: 6px;
+    color: var(--accent);
+  }
+
+  .latest-release a {
+    margin-left: 6px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+</style>

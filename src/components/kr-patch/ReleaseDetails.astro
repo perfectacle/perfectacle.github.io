@@ -3,6 +3,9 @@
   <div class="release-body">
     <slot />
   </div>
+  <a class="release-next pointer" href="#patch">
+    최신 버전으로 한글패치 하기 <span aria-hidden="true">↑</span>
+  </a>
 </details>
 
 <style>
@@ -21,6 +24,15 @@
   summary:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
+  }
+
+  .release-next {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    min-height: 44px;
+    margin: 0 16px 16px;
+    font-weight: 700;
   }
 
   .release-body {

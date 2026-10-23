@@ -19,6 +19,7 @@ const { ips, spec, version, output, speaker } = Astro.props;
   <div class="patch-intro">
     <h2 class="patch-heading">여기서 바로 한글패치</h2>
     <p>따로 프로그램을 설치하지 않아도 됩니다.</p>
+    <slot name="intro" />
   </div>
   <ol class="patch-steps" aria-label="한글패치 방법">
     <li>

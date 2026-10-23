@@ -1,6 +1,7 @@
 ---
 import { SECTION_TITLES, sectionsOf } from '../../../../lib/patch-sections';
 import PatchRelease from '../../../../components/kr-patch/PatchRelease.astro';
+import LatestRelease from '../../../../components/kr-patch/LatestRelease.astro';
 import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
@@ -22,6 +23,7 @@ const VISIBLE_PAIRS = 4;
 
 const features = [
   {
+    id: 'feature-flowchart',
     image: 'flow-open',
     alt: '제1장의 선택지들이 나무 모양으로 이어진 플로차트',
     title: '플로차트',
@@ -34,30 +36,35 @@ const features = [
     ],
   },
   {
+    id: 'feature-flow-jump',
     image: 'flow-jump',
     alt: '선택지로 이동해 차 안 장면에서 보기를 고르는 화면',
     title: '선택지로 이동',
     text: '플로차트에서 상자를 고르면 그 선택지가 나오는 페이지로 바로 갑니다. 그 장면의 배경과 음악도 함께 바뀌니 다른 보기를 골라 다른 결말을 찾아보세요.',
   },
   {
+    id: 'feature-chapter-list',
     image: 'menu-all',
     alt: '제1장부터 제3장까지 장 제목이 나열된 장 목록',
     title: '장 목록',
     text: '플로차트에서 Y를 누르면 읽은 장의 목록이 나오고, 고른 장의 처음부터 다시 읽습니다. 이야기를 세 갈래 30장으로 나누고 장마다 제목을 붙였습니다.',
   },
   {
+    id: 'feature-ending-list',
     image: 'flow-endings',
     alt: '본 엔딩 1개 중 「돌아본 얼굴」이 보이고 나머지는 아직 보지 않음인 엔딩 목록',
     title: '엔딩 목록',
     text: '플로차트에서 X를 누르면 대본에 있는 엔딩 18개 중 본 엔딩의 제목이 나옵니다. 원작에는 엔딩 제목이 없어 한글판에서 붙였고, 아직 못 본 엔딩은 「아직 보지 않음」으로 남습니다.',
   },
   {
+    id: 'feature-bookmark',
     image: 'shiori',
     alt: '첫 슬롯에 「제6장 두 권의 일기」가 적힌 책갈피 화면',
     title: '책갈피에 마지막 장',
     text: '세이브 슬롯인 책갈피에 마지막으로 읽은 장이 나와서 어디까지 읽었는지 바로 알 수 있습니다.',
   },
   {
+    id: 'feature-rewind',
     image: 'backlog-yellow',
     alt: '되감아 본 페이지의 대사가 노란 글씨로 보이는 화면',
     title: '되감은 페이지는 노란 글씨',
@@ -100,6 +107,8 @@ const chapter = (id: string) => {
   if (!found) throw new Error(`Unknown chapter ${id}`);
   return { mark: found.mark };
 };
+
+const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고, 책갈피와 되감기를 개선했습니다.';
 ---
 
 <PatchBook
@@ -118,6 +127,7 @@ const chapter = (id: string) => {
         {patch.title} 한글판
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
+        <LatestRelease slot="intro" patch={patch} overview={latestOverview} />
         <ManualPatch patch={patch} />
         <SaveNote>
           <p>엔딩에서 「終」이 나온 뒤에는 리셋해 주세요. 원작과 같은 동작입니다.</p>
@@ -153,7 +163,7 @@ const chapter = (id: string) => {
     </p>
     <div class="feature-list">
       {features.map(item => (
-        <article class="feature frame">
+        <article id={item.id} class="feature frame">
           <figure class="screen">
             <ZoomImage
               src={`${base}/images/features/${item.image}.webp`}
@@ -252,9 +262,9 @@ const chapter = (id: string) => {
       {SECTION_TITLES['patch-notes']}
     </h2>
     <PatchRelease patch={patch} version="1.2">
-      <p class="release-overview">플로차트·장 목록·엔딩 목록을 추가하고, 책갈피와 되감기를 개선했습니다.</p>
+      <p class="release-overview">{latestOverview}</p>
       <ReleaseDetails>
-        <ReleaseItem>
+        <ReleaseItem more={{ href: '#feature-flowchart', label: '플로차트 사용법 보기' }}>
           <ul>
             <li>플로차트와 선택지 이동 기능을 추가했습니다.</li>
           </ul>
@@ -274,7 +284,7 @@ const chapter = (id: string) => {
             caption="현재 장의 분기를 보고, 선택지를 골라 그 장면으로 바로 갑니다."
           />
         </ReleaseItem>
-        <ReleaseItem>
+        <ReleaseItem more={{ href: '#feature-chapter-list', label: '장 목록·엔딩 목록 여는 법 보기' }}>
           <ul>
             <li>장 목록 30장과 엔딩 목록 18개를 추가했습니다.</li>
           </ul>

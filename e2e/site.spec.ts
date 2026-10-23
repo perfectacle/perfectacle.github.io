@@ -888,6 +888,45 @@ for (const game of PATCH_GUIDES) {
     }
   });
 
+  test(`${game} patch notes open from a shared link and lead to the patch box`, async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: async (text: string) => void ((window as unknown as { copied: string }).copied = text) },
+      });
+    });
+    const releases = page.locator('#patch-notes .patch-release');
+    await page.goto(path);
+    const ids = await releases.evaluateAll(nodes => nodes.map(node => node.querySelector('h3')?.id ?? ''));
+    const older = ids.at(-1) ?? '';
+    const latest = ids[0] ?? '';
+
+    // A shared link lands on that version with its notes already open.
+    await page.goto(`${path}#${older}`);
+    const shared = page.locator(`#patch-notes .patch-release[data-release="${older}"]`);
+    await expect(shared.locator('details')).toHaveAttribute('open', '');
+    await expect(shared.locator('h3')).toBeInViewport();
+    await expect(releases.locator('details[open]')).toHaveCount(1);
+
+    // The summary under the title opens the latest notes; opening and closing keeps the address in step.
+    await page.locator('.latest-release a').click();
+    const current = page.locator(`#patch-notes .patch-release[data-release="${latest}"]`);
+    await expect(current.locator('details')).toHaveAttribute('open', '');
+    await expect(page).toHaveURL(new RegExp(`#${latest}$`));
+    await current.locator('summary').click();
+    await expect(page).toHaveURL(new RegExp(`${path}$`));
+    await current.locator('summary').click();
+    await expect(page).toHaveURL(new RegExp(`#${latest}$`));
+
+    await shared.locator('.release-share').click();
+    await expect(shared.locator('.release-share')).toHaveText('복사했습니다');
+    expect(await page.evaluate(() => (window as unknown as { copied: string }).copied)).toBe(
+      new URL(`${path}#${older}`, page.url()).href,
+    );
+
+    await current.locator('.release-next').click();
+    await expect(page.locator('#patch')).toBeInViewport();
+  });
+
   test(`${game} patch notes illustrate the main changes in each release`, async ({ page }) => {
     await page.goto(path);
     for (const { version, images } of PATCH_SCREEN_COVERAGE[game] ?? []) {
@@ -908,10 +947,12 @@ for (const game of PATCH_GUIDES) {
   test(`${game} patch screenshots preview in place and keep highlights`, async ({ page, isMobile }) => {
     await page.setViewportSize({ width: isMobile ? 390 : 1280, height: 900 });
     await page.goto(path);
-    const url = page.url();
     const notes = page.locator('#patch-notes');
     await expect(notes).not.toContainText('사진을 눌러 크게 보기');
     for (const summary of await notes.locator('.release-details > summary').all()) await summary.click();
+    // Opening each version puts it in the address bar; the oldest is opened last.
+    await expect(page).toHaveURL(/#release-1-0$/);
+    const url = page.url();
     const triggers = [notes.locator('.release-screenshot .patch-image-trigger').first()];
     triggers.push(notes.locator('.patch-image-trigger:has(.patch-highlights)').first());
     const panels = notes.locator('.release-panels');
@@ -1273,6 +1314,20 @@ test('where autoplay is allowed, the hint never shows while the music loads', as
   });
   await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
   expect(await page.evaluate(() => (window as unknown as { hintSeen: boolean }).hintSeen)).toBe(false);
+});
+
+test('otogirisou release notes link each new feature to how it is used', async ({ page }) => {
+  await page.goto('/games/kr-patches/sfc/otogirisou/#release-1-2');
+  const link = page.locator('#patch-notes .release-more a').first();
+  await expect(link).toHaveText(/플로차트 사용법 보기/);
+  await link.click();
+  await expect(page.locator('#feature-flowchart')).toBeInViewport();
+  await expect(page.locator('#feature-flowchart')).toContainText('L / R');
+
+  // Opened straight from a link, the feature is still where the page lands once the folded sections settle.
+  await page.goto('/games/kr-patches/sfc/otogirisou/#feature-flowchart');
+  await page.waitForLoadState('load');
+  await expect(page.locator('#feature-flowchart h3')).toBeInViewport();
 });
 
 for (const width of [390, 1280]) {
