@@ -797,6 +797,51 @@ h3.pixel {
   }
 }
 
+/* Each item gets its own Star Piece, spinning with the game's six frames at 6/60 s each. */
+[data-theme='smrpg'] .checklist li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+[data-theme='smrpg'] .checklist li::before {
+  content: '';
+  flex: none;
+  width: 28px;
+  height: 29px;
+  background: url('/games/kr-patches/sfc/super-mario-rpg/images/ui/star-pieces.webp') 0 var(--piece, 0) no-repeat;
+  image-rendering: pixelated;
+  animation: star-piece-spin 0.6s steps(6) infinite;
+  animation-delay: var(--spin-offset, 0s);
+}
+
+[data-theme='smrpg'] .checklist li:nth-child(4n + 2)::before {
+  --piece: -29px;
+  --spin-offset: -0.1s;
+}
+
+[data-theme='smrpg'] .checklist li:nth-child(4n + 3)::before {
+  --piece: -58px;
+  --spin-offset: -0.2s;
+}
+
+[data-theme='smrpg'] .checklist li:nth-child(4n)::before {
+  --piece: -87px;
+  --spin-offset: -0.3s;
+}
+
+@keyframes star-piece-spin {
+  to {
+    background-position-x: -168px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='smrpg'] .checklist li::before {
+    animation: none;
+  }
+}
+
 /* Labels sit above each screen so they never cover the game's own name tags. */
 [data-theme='smrpg'] .shot {
   justify-items: start;
@@ -1030,9 +1075,33 @@ h3.pixel {
   box-shadow: 3px 3px 0 rgb(0 0 0 / 70%);
 }
 
+/* The one- to four-star balls from Totsugeki-hen's save select; Kakusei-hen has no ball sprite of its own. */
+:is([data-theme='gokuden'], [data-theme='kakusei']) .checklist li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 :is([data-theme='gokuden'], [data-theme='kakusei']) .checklist li::before {
-  content: '● ';
-  color: #ffa31a;
+  content: '';
+  flex: none;
+  width: 32px;
+  height: 32px;
+  background: url('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/images/ui/dragon-balls.webp') 0 0 / 128px
+    32px no-repeat;
+  image-rendering: pixelated;
+}
+
+:is([data-theme='gokuden'], [data-theme='kakusei']) .checklist li:nth-child(4n + 2)::before {
+  background-position-x: -32px;
+}
+
+:is([data-theme='gokuden'], [data-theme='kakusei']) .checklist li:nth-child(4n + 3)::before {
+  background-position-x: -64px;
+}
+
+:is([data-theme='gokuden'], [data-theme='kakusei']) .checklist li:nth-child(4n)::before {
+  background-position-x: -96px;
 }
 
 /* Super Gokuden: Kakusei-hen uses steel-blue gradient windows with a pale cyan rim. */
