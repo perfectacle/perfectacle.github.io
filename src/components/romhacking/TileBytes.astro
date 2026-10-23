@@ -1,0 +1,627 @@
+---
+import { toBinary, toHex } from '../../lib/numbers.ts';
+import { SAMPLE_GLYPH, encode, planeBits, planeByte, previewColor, shadowed } from '../../lib/snes-tiles.ts';
+
+// The page starts on the 2bpp sample glyph; scripts take over from the same numbers.
+const bpp = 2;
+const pixels = shadowed(SAMPLE_GLYPH);
+const bytes = encode(pixels, bpp);
+const planes = Array.from({ length: bpp }, (_, p) => p);
+const ink = (v: number) => (previewColor(v).dark ? 'is-dark' : '');
+const formats = [
+  { bpp: 1, label: '1bpp(2색)' },
+  { bpp: 2, label: '2bpp(4색)' },
+  { bpp: 4, label: '4bpp(16색)' },
+];
+---
+
+<section class="widget tile-bytes" data-tile-bytes aria-labelledby="tile-title">
+  <h3 class="widget-title" id="tile-title">
+    타일을 칠하며 바이트 보기
+  </h3>
+  <p class="widget-help">
+    8×8 타일 하나가 어떤 바이트로 저장되는지 봅니다.{' '}
+    <span class="live-only">
+      칸을 눌러 고른 색으로 칠하거나(방향키로 옮기고 Space로 칠합니다), 아래 바이트를 직접 고쳐 보세요. 이미 고른 색인
+      칸을 누르면 색 0으로 돌아갑니다.
+    </span>
+  </p>
+  <p class="widget-help static-only">
+    지금 그림은 2bpp 타일 16바이트로 그린 「가」입니다. 글자는 색 1, 그림자는 색 3입니다(스크립트가 꺼져 있어 칸을 누를
+    수 없습니다).
+  </p>
+
+  <div class="tile-controls live-only">
+    <fieldset>
+      <legend>형식</legend>
+      {formats.map(f => (
+        <label>
+          <input type="radio" name="tile-bpp" value={f.bpp} checked={f.bpp === bpp} /> {f.label}
+        </label>
+      ))}
+    </fieldset>
+    <fieldset class="tile-inks" data-inks>
+      <legend>칠할 색</legend>
+    </fieldset>
+  </div>
+
+  <div class="tile-stage">
+    <div class="tile-grid" role="group" aria-label="픽셀 8×8, 왼쪽 위가 가로 0·세로 0" data-grid>
+      {pixels.map((row, y) =>
+        row.map((v, x) => (
+          <button
+            type="button"
+            class:list={['px', ink(v)]}
+            style={`--px: ${previewColor(v).color}`}
+            data-x={x}
+            data-y={y}
+            aria-label={`가로 ${x}, 세로 ${y}: 색 ${v}`}
+            tabindex={x === 0 && y === 0 ? 0 : -1}
+            disabled
+          >
+            <span aria-hidden="true">{v}</span>
+          </button>
+        )),
+      )}
+    </div>
+    <div class="tile-planes" data-planes>
+      <p class="planes-title">비트평면으로 나누면</p>
+      <ul>
+        {planes.map(p => (
+          <li class={p % 2 ? 'plane-hi' : 'plane-lo'}>
+            <span class="plane-name">
+              평면 {p} <small>(색 번호의 {2 ** p}의 자리)</small>
+            </span>
+            <span class="plane-bits" aria-hidden="true">
+              {planeBits(bytes, bpp, p).map(r => r.map(b => <i class={b ? 'on' : ''} />))}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="table-scroll" tabindex="0" role="region" aria-labelledby="tile-bytes-caption">
+    <table class="tile-table" data-table>
+      <caption id="tile-bytes-caption">줄마다 바이트 (+위치: 16진수, 아래는 2진수)</caption>
+      <thead>
+        <tr>
+          <th scope="col">줄</th>
+          {planes.map(p => (
+            <th scope="col" class={p % 2 ? 'plane-hi' : 'plane-lo'}>
+              평면 {p}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {pixels.map((_, y) => (
+          <tr data-row={y}>
+            <th scope="row">{y}</th>
+            {planes.map(p => {
+              const i = planeByte(bpp, p, y);
+              return (
+                <td class={p % 2 ? 'plane-hi' : 'plane-lo'}>
+                  <span class="off">+{toHex(i, 2)}</span> <code>{toHex(bytes[i] ?? 0, 2)}</code>
+                  <small>{toBinary(bytes[i] ?? 0).replace(' ', '')}</small>
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tile-hex">
+    <label class="live-only" for="tile-hex-input">
+      바이트(16진수, 메모리 순서)
+    </label>
+    <p class="static-only muted">바이트(16진수, 메모리 순서)</p>
+    <textarea
+      id="tile-hex-input"
+      class="live-only"
+      rows="2"
+      spellcheck="false"
+      autocomplete="off"
+      data-hex
+      aria-describedby="tile-hex-error"
+    >{bytes.map(b => toHex(b, 2)).join(' ')}</textarea>
+    <p class="static-only mono tile-hex-static" data-static-hex>
+      {bytes.map(b => toHex(b, 2)).join(' ')}
+    </p>
+    <p class="widget-error live-only" id="tile-hex-error" data-error role="alert" hidden></p>
+  </div>
+  <div class="tile-actions live-only">
+    <button type="button" class="widget-btn" data-act="clear">
+      모두 지우기
+    </button>
+    <button type="button" class="widget-btn" data-act="reset">
+      처음 그림으로
+    </button>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { toBinary, toHex } from '../../lib/numbers.ts';
+  import {
+    SAMPLE_GLYPH,
+    decode,
+    encode,
+    parseBytes,
+    planeBits,
+    planeByte,
+    previewColor,
+    shadowed,
+    tileSize,
+    type Bpp,
+  } from '../../lib/snes-tiles.ts';
+
+  const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-tile-bytes]')) {
+    let bpp: Bpp = 2;
+    let ink = 1;
+    let pixels = shadowed(SAMPLE_GLYPH);
+    let focusX = 0;
+    let focusY = 0;
+    const cells = [...root.querySelectorAll<HTMLButtonElement>('[data-grid] .px')];
+    const inks = root.querySelector<HTMLElement>('[data-inks]');
+    const planesBox = root.querySelector<HTMLUListElement>('[data-planes] ul');
+    const table = root.querySelector<HTMLTableElement>('[data-table]');
+    const hex = root.querySelector<HTMLTextAreaElement>('[data-hex]');
+    const error = root.querySelector<HTMLElement>('[data-error]');
+    const live = root.querySelector<HTMLElement>('[data-live]');
+    const top = () => (1 << bpp) - 1;
+    const tone = (p: number) => (p % 2 ? 'plane-hi' : 'plane-lo');
+    const bytes = () => encode(pixels, bpp);
+    const hexOf = (list: number[]) => list.map(b => toHex(b, 2)).join(' ');
+
+    const paintCell = (cell: HTMLButtonElement) => {
+      const x = Number(cell.dataset['x']);
+      const y = Number(cell.dataset['y']);
+      const v = pixels[y]?.[x] ?? 0;
+      const { color, dark } = previewColor(v);
+      cell.style.setProperty('--px', color);
+      cell.classList.toggle('is-dark', dark);
+      cell.setAttribute('aria-label', `가로 ${x}, 세로 ${y}: 색 ${v}`);
+      const digit = cell.querySelector('span');
+      if (digit) digit.textContent = String(v);
+    };
+
+    const renderInks = () => {
+      if (!inks) return;
+      inks.querySelectorAll('label').forEach(l => l.remove());
+      for (let v = 0; v <= top(); v++) {
+        const label = el('label', 'ink');
+        const input = el('input');
+        input.type = 'radio';
+        input.name = 'tile-ink';
+        input.value = String(v);
+        input.checked = v === ink;
+        input.addEventListener('change', () => {
+          ink = v;
+        });
+        const swatch = el('span', `swatch${previewColor(v).dark ? ' is-dark' : ''}`, String(v));
+        swatch.style.setProperty('--px', previewColor(v).color);
+        swatch.setAttribute('aria-hidden', 'true');
+        label.append(input, swatch, el('span', 'visually-hidden', `색 ${v}`));
+        inks.append(label);
+      }
+    };
+
+    const renderBytes = (syncHex: boolean) => {
+      const data = bytes();
+      if (planesBox) {
+        planesBox.replaceChildren(
+          ...Array.from({ length: bpp }, (_, p) => {
+            const li = el('li', tone(p));
+            const name = el('span', 'plane-name', `평면 ${p} `);
+            name.append(el('small', '', `(색 번호의 ${2 ** p}의 자리)`));
+            const bits = el('span', 'plane-bits');
+            bits.setAttribute('aria-hidden', 'true');
+            for (const row of planeBits(data, bpp, p)) for (const b of row) bits.append(el('i', b ? 'on' : ''));
+            li.append(name, bits);
+            return li;
+          }),
+        );
+      }
+      if (table) {
+        const headRow = el('tr');
+        headRow.append(Object.assign(el('th', '', '줄'), { scope: 'col' }));
+        for (let p = 0; p < bpp; p++) headRow.append(Object.assign(el('th', tone(p), `평면 ${p}`), { scope: 'col' }));
+        table.tHead?.replaceChildren(headRow);
+        table.tBodies[0]?.replaceChildren(
+          ...pixels.map((_, y) => {
+            const tr = el('tr');
+            tr.dataset['row'] = String(y);
+            tr.classList.toggle('is-current', y === focusY);
+            tr.append(Object.assign(el('th', '', String(y)), { scope: 'row' }));
+            for (let p = 0; p < bpp; p++) {
+              const i = planeByte(bpp, p, y);
+              const td = el('td', tone(p));
+              td.append(el('span', 'off', `+${toHex(i, 2)}`), ' ', el('code', '', toHex(data[i] ?? 0, 2)));
+              td.append(el('small', '', toBinary(data[i] ?? 0).replace(' ', '')));
+              tr.append(td);
+            }
+            return tr;
+          }),
+        );
+      }
+      if (hex && syncHex) hex.value = hexOf(data);
+    };
+
+    const render = (syncHex = true) => {
+      cells.forEach(paintCell);
+      renderBytes(syncHex);
+    };
+
+    const setError = (text: string) => {
+      hex?.setAttribute('aria-invalid', text ? 'true' : 'false');
+      if (error) {
+        error.hidden = !text;
+        error.textContent = text;
+      }
+    };
+
+    const moveFocus = (x: number, y: number) => {
+      focusX = (x + 8) % 8;
+      focusY = (y + 8) % 8;
+      for (const c of cells) {
+        const here = Number(c.dataset['x']) === focusX && Number(c.dataset['y']) === focusY;
+        c.tabIndex = here ? 0 : -1;
+        if (here) c.focus();
+      }
+      table?.querySelectorAll('tbody tr').forEach((tr, i) => tr.classList.toggle('is-current', i === focusY));
+    };
+
+    for (const cell of cells) {
+      cell.disabled = false;
+      cell.addEventListener('click', () => {
+        const x = Number(cell.dataset['x']);
+        const y = Number(cell.dataset['y']);
+        const row = pixels[y];
+        if (!row) return;
+        row[x] = row[x] === ink ? 0 : ink;
+        moveFocus(x, y);
+        render();
+        setError('');
+        const data = bytes();
+        const changed = Array.from({ length: bpp }, (_, p) => planeByte(bpp, p, y))
+          .map(i => `+${toHex(i, 2)} = ${toHex(data[i] ?? 0, 2)}`)
+          .join(', ');
+        if (live) live.textContent = `가로 ${x}, 세로 ${y}: 색 ${row[x]}. 줄 ${y}의 바이트 ${changed}`;
+      });
+      cell.addEventListener('keydown', e => {
+        const x = Number(cell.dataset['x']);
+        const y = Number(cell.dataset['y']);
+        const moves: Record<string, [number, number]> = {
+          ArrowLeft: [x - 1, y],
+          ArrowRight: [x + 1, y],
+          ArrowUp: [x, y - 1],
+          ArrowDown: [x, y + 1],
+          Home: [0, y],
+          End: [7, y],
+        };
+        const to = moves[e.key];
+        if (!to) return;
+        e.preventDefault();
+        moveFocus(...to);
+      });
+      cell.addEventListener('focus', () => {
+        focusX = Number(cell.dataset['x']);
+        focusY = Number(cell.dataset['y']);
+        table?.querySelectorAll('tbody tr').forEach((tr, i) => tr.classList.toggle('is-current', i === focusY));
+      });
+    }
+
+    for (const radio of root.querySelectorAll<HTMLInputElement>('input[name="tile-bpp"]')) {
+      radio.addEventListener('change', () => {
+        bpp = Number(radio.value) as Bpp;
+        pixels = pixels.map(row => row.map(v => Math.min(v, top())));
+        ink = Math.min(ink, top());
+        renderInks();
+        render();
+        setError('');
+        if (live) live.textContent = `${bpp}bpp: 타일 하나가 ${tileSize(bpp)}바이트, 색은 ${top() + 1}가지입니다.`;
+      });
+    }
+
+    hex?.addEventListener('input', () => {
+      const parsed = parseBytes(hex.value);
+      const need = tileSize(bpp);
+      if (!parsed) {
+        setError('바이트는 00-FF를 띄어 써서 적어 주세요.');
+        return;
+      }
+      if (parsed.length !== need) {
+        setError(`${bpp}bpp 타일은 ${need}바이트입니다. 지금 ${parsed.length}바이트입니다.`);
+        return;
+      }
+      setError('');
+      pixels = decode(parsed, 0, bpp);
+      render(false);
+      if (live) live.textContent = '바이트를 읽어 그림을 다시 그렸습니다.';
+    });
+
+    root.querySelector('[data-act="clear"]')?.addEventListener('click', () => {
+      pixels = pixels.map(row => row.map(() => 0));
+      render();
+      setError('');
+      if (live) live.textContent = '모든 칸을 색 0으로 지웠습니다. 바이트가 모두 00입니다.';
+    });
+    root.querySelector('[data-act="reset"]')?.addEventListener('click', () => {
+      pixels = shadowed(SAMPLE_GLYPH).map(row => row.map(v => Math.min(v, top())));
+      render();
+      setError('');
+      if (live) live.textContent = '처음 그림 「가」로 돌아갔습니다.';
+    });
+
+    renderInks();
+    root.classList.add('is-live');
+    render();
+  }
+</script>
+
+<style>
+  .tile-controls {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .tile-controls fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .tile-controls legend {
+    float: left;
+    margin-right: 10px;
+    color: var(--fg-muted);
+  }
+  .tile-controls label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    min-height: 44px;
+  }
+  .tile-inks {
+    gap: 4px 6px !important;
+  }
+  .tile-inks :global(.ink) {
+    position: relative;
+    min-width: 44px;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .tile-inks :global(.ink input) {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .tile-inks :global(.swatch) {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 6px;
+    background: var(--px);
+    color: #111;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .tile-inks :global(.swatch.is-dark) {
+    color: #fff;
+  }
+  .tile-inks :global(input:checked + .swatch) {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .tile-inks :global(input:focus-visible + .swatch) {
+    outline: 3px solid var(--fg);
+    outline-offset: 2px;
+  }
+
+  .tile-stage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    width: min(100%, 304px);
+    border: 2px solid var(--dg-line);
+    background: var(--dg-line);
+    gap: 1px;
+  }
+  .px {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: var(--px);
+    color: #111;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    cursor: pointer;
+  }
+  .px.is-dark {
+    color: #fff;
+  }
+  .px:disabled {
+    cursor: default;
+  }
+  .px:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 3px solid var(--accent);
+    outline-offset: -1px;
+  }
+  .px span {
+    opacity: 0.8;
+  }
+
+  .tile-planes {
+    flex: 1 1 200px;
+    min-width: 0;
+  }
+  .planes-title {
+    margin: 0 0 6px;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .tile-planes ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tile-planes :global(li) {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+  }
+  .tile-planes :global(.plane-name) {
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+  .tile-planes :global(.plane-name small) {
+    color: var(--fg-muted);
+    font-weight: 400;
+  }
+  .tile-planes :global(.plane-bits) {
+    display: grid;
+    grid-template-columns: repeat(8, 11px);
+    gap: 1px;
+    width: max-content;
+    padding: 2px;
+    border: 1.5px solid currentColor;
+    border-radius: 4px;
+  }
+  .tile-planes :global(.plane-bits i) {
+    width: 11px;
+    height: 11px;
+    background: var(--dg-cell);
+  }
+  .tile-planes :global(.plane-lo) {
+    color: var(--dg-cool);
+  }
+  .tile-planes :global(.plane-hi) {
+    color: var(--dg-warm);
+  }
+  .tile-planes :global(.plane-lo .plane-bits i.on) {
+    background: var(--dg-cool);
+  }
+  .tile-planes :global(.plane-hi .plane-bits i.on) {
+    background: var(--dg-warm);
+  }
+
+  .tile-table {
+    margin: 14px 0 0 !important;
+    font-size: 0.85rem;
+  }
+  .tile-table caption {
+    margin-bottom: 4px;
+    color: var(--fg-muted);
+    font-size: 0.8rem;
+    text-align: left;
+  }
+  .tile-table :global(th),
+  .tile-table :global(td) {
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+  .tile-table :global(td code) {
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+  .tile-table :global(td small) {
+    display: block;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+  .tile-table :global(.off) {
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+  .tile-table :global(th.plane-lo) {
+    color: var(--dg-cool);
+  }
+  .tile-table :global(th.plane-hi) {
+    color: var(--dg-warm);
+  }
+  .tile-table :global(tr.is-current) {
+    background: var(--dg-accent-soft);
+  }
+
+  .tile-hex {
+    display: grid;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .tile-hex label,
+  .tile-hex .muted {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .tile-hex textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 6px 10px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+    font-family: var(--font-mono);
+    resize: vertical;
+  }
+  .tile-hex textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .tile-hex textarea[aria-invalid='true'] {
+    border-color: #c0392b;
+  }
+  :root[data-theme='dark'] .tile-hex textarea[aria-invalid='true'] {
+    border-color: #ff8f80;
+  }
+  .tile-hex-static {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .tile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .px {
+      transition: background-color 0.12s;
+    }
+  }
+</style>

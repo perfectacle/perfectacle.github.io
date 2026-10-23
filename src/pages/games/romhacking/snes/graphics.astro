@@ -1,0 +1,888 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import Figure from '../../../../components/romhacking/Figure.astro';
+import TileBytes from '../../../../components/romhacking/TileBytes.astro';
+import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import { toBinary, toHex } from '../../../../lib/numbers.ts';
+import { SAMPLE_GLYPH, decode, encode, shadowed } from '../../../../lib/snes-tiles.ts';
+
+const sections = [
+  { id: 'tiles', label: '화면은 8×8 타일을 이어 붙인 그림' },
+  { id: 'bitplanes', label: '픽셀 하나에 비트 몇 개: 1·2·4bpp' },
+  { id: 'palette', label: '색은 팔레트 번호로 고른다' },
+  { id: 'vram', label: 'VRAM과 타일맵, BG 모드' },
+  { id: 'fonts', label: '글꼴: 고정폭과 가변폭' },
+  { id: 'hangul', label: '한글 수천 자를 제한된 폰트 칸에 넣기' },
+  { id: 'in-patch', label: '실제 패치에서' },
+  { id: 'try', label: '직접 해 보기' },
+];
+const references = [
+  {
+    href: 'https://problemkaputt.de/fullsnes.htm#snesppuvideomemoryvram',
+    label: 'fullsnes, SNES PPU Video Memory (VRAM)',
+    note: '타일 데이터의 비트평면 배치(평면 0·1은 00h-0Fh, 평면 2·3은 10h-1Fh), BG 맵 항목 16비트, 16×16 타일 번호',
+  },
+  {
+    href: 'https://problemkaputt.de/fullsnes.htm#snesppucolorpalettememorycgramanddirectcolors',
+    label: 'fullsnes, SNES PPU Color Palette Memory (CGRAM)',
+    note: '15비트 BGR 색 형식과 CGRAM 안 팔레트 위치',
+  },
+  {
+    href: 'https://problemkaputt.de/fullsnes.htm#snesppubgcontrol',
+    label: 'fullsnes, SNES PPU BG Control',
+    note: 'BG 모드 0-7의 레이어별 색 수, 타일맵 위치 레지스터',
+  },
+  {
+    href: 'https://snes.nesdev.org/wiki/Tiles',
+    label: 'SNESdev Wiki, Tiles',
+    note: '2bpp·4bpp·8bpp 형식 그림 설명',
+  },
+  {
+    href: 'https://snes.nesdev.org/wiki/Background_modes',
+    label: 'SNESdev Wiki, Background modes',
+    note: '모드별 레이어 구성과 우선순위',
+  },
+  {
+    href: 'https://snes.nesdev.org/wiki/Palettes',
+    label: 'SNESdev Wiki, Palettes',
+    note: 'CGRAM과 색 0(투명)',
+  },
+  {
+    href: 'https://github.com/perfectacle/kr-patch-toolkit/blob/main/src/kr_patch/snes/tiles.py',
+    label: 'kr-patch-toolkit, tiles.py',
+    note: '「타일을 칠하며 바이트 보기」가 옮겨 온 해독·부호화 코드(같은 테스트 사례로 확인)',
+  },
+];
+
+// The 2bpp sample tile, drawn in figures with its colour numbers.
+const glyph = shadowed(SAMPLE_GLYPH);
+const glyphBytes = encode(glyph, 2);
+const row1 = glyph[1] ?? [];
+const row1Planes = [0, 1].map(p => row1.map(v => (v >> p) & 1));
+
+// 「쫓」 (code $CE5) from the Super Gokuden Totsugeki K v1.2 ROM, file 0x27AA0: four 2bpp tiles, the lower two 0x100
+// bytes after the upper two because the font sheet is 16 tiles wide.
+const ZZOT_TILES: [number, string][] = [
+  [0x27aa0, '00 00 00 00 00 00 1F 00 1F 1B 0F 05 1F 0F 19 18'],
+  [0x27ab0, '00 00 00 00 00 00 F8 08 F8 B8 F0 50 F8 E8 98 98'],
+  [0x27ba0, '3F 00 3F 3F 01 00 1F 00 1F 19 1F 07 1C 1C 00 00'],
+  [0x27bb0, 'FC 04 FC FC 80 80 F8 08 F8 38 F8 C8 38 38 00 00'],
+];
+const zzot = ZZOT_TILES.map(([off, hex]) => ({
+  off,
+  pix: decode(
+    hex.split(' ').map(h => parseInt(h, 16)),
+    0,
+    2,
+  ),
+}));
+
+const bppRows = [
+  {
+    bpp: '1bpp',
+    colors: '2색',
+    bytes: '8바이트',
+    use: '게임이 롬에 글꼴을 줄여 넣을 때(화면에 쓰기 전에 2bpp 등으로 바꿈)',
+  },
+  { bpp: '2bpp', colors: '4색', bytes: '16바이트', use: '모드 0의 모든 BG, 모드 1의 BG3(대사창에 흔함)' },
+  { bpp: '4bpp', colors: '16색', bytes: '32바이트', use: '모드 1의 BG1·BG2, 모든 스프라이트' },
+  { bpp: '8bpp', colors: '256색', bytes: '64바이트', use: '모드 3·4의 BG1(모드 7은 평면 없이 픽셀마다 1바이트)' },
+];
+const bgModes = [
+  { mode: '0', bg: ['4색', '4색', '4색', '4색'] },
+  { mode: '1', bg: ['16색', '16색', '4색', '—'] },
+  { mode: '2', bg: ['16색', '16색', '(오프셋)', '—'] },
+  { mode: '3', bg: ['256색', '16색', '—', '—'] },
+  { mode: '4', bg: ['256색', '4색', '(오프셋)', '—'] },
+  { mode: '5', bg: ['16색', '4색', '—', '—'] },
+  { mode: '6', bg: ['16색', '—', '(오프셋)', '—'] },
+  { mode: '7', bg: ['256색', '(확장)', '—', '—'] },
+];
+const entryBits = [
+  { label: 'V', name: '세로 뒤집기', bits: 1, cls: 'dg-warm' },
+  { label: 'H', name: '가로 뒤집기', bits: 1, cls: 'dg-warm' },
+  { label: 'O', name: '우선순위', bits: 1, cls: 'dg-warm' },
+  { label: 'P', name: '팔레트', bits: 3, cls: 'dg-warm' },
+  { label: 'C', name: '타일 번호', bits: 10, cls: 'dg-cool' },
+];
+const colorBits = [
+  { label: '-', bits: 1, cls: 'dg-paper' },
+  { label: 'B', bits: 5, cls: 'dg-warm' },
+  { label: 'G', bits: 5, cls: 'dg-cell' },
+  { label: 'R', bits: 5, cls: 'dg-cool' },
+];
+const strategies = [
+  {
+    name: '안 쓰는 글자 자리에 덮어 그리기',
+    who: '돌격편 v1.0, 각성편',
+    text: '한자·가나 자리 가운데 한국어 대본에 필요 없는 칸에 한글을 그립니다. 코드 범위는 그대로라 엔진을 고칠 필요가 없지만, 칸 수가 원래 폰트 크기를 넘지 못합니다.',
+  },
+  {
+    name: '코드 범위를 새로 열기',
+    who: '돌격편 v1.1',
+    text: '엔진이 글자 그림 위치를 고르는 곳을 후킹해 원래 쓰지 않던 코드 범위를 빈 공간의 새 블록으로 보냅니다. 칸을 크게 늘릴 수 있습니다.',
+  },
+  {
+    name: '그룹 표 정리하기',
+    who: '제절초 (크기별로 글자를 묶어 둔 표, 아래 제절초 절)',
+    text: '크기가 같은 글자끼리 묶은 그룹 표가 꽉 차 있어, 아무도 쓰지 않는 글자를 정리해 그룹을 합치고 빈 칸에 새 그룹을 더합니다.',
+  },
+  {
+    name: '필요한 글자만 그때그때 올리기',
+    who: '슈퍼 마리오 RPG',
+    text: '모든 글자를 VRAM에 올려 둘 수 없을 때, 화면에 나올 글자만 비어 있는 VRAM 칸에 올리고 칸 번호를 기억합니다.',
+  },
+];
+---
+
+<GuideChapter platform="snes" slug="graphics" sections={sections} references={references}>
+  <h2 id="tiles">
+    화면은 8×8 타일을 이어 붙인 그림 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    슈퍼 패미컴은 화면을 픽셀 하나하나로 기억하지 않습니다. 가로세로 8픽셀짜리 작은 그림인 <strong>타일</strong>을 미리
+    만들어 두고, "이 칸에는 몇 번 타일"이라고 적은 <strong>타일맵</strong>으로 화면을 채웁니다. 256×224픽셀 화면이라면
+    타일 32×28칸입니다. 같은 타일을 여러 칸에 쓸 수 있어서 메모리가 훨씬 적게 듭니다. 욕실 타일을 붙이는 것과
+    비슷합니다.
+  </p>
+  <Figure caption="타일맵의 한 칸은 타일 번호를 적고, 그 번호의 8×8 그림이 그 칸에 나옵니다." max={600}>
+    <svg viewBox="0 0 360 200" role="img" aria-labelledby="tm-t tm-d">
+      <title id="tm-t">타일맵과 타일</title>
+      <desc id="tm-d">
+        왼쪽은 화면의 일부를 8×8 칸으로 나눈 타일맵이고, 한 칸에 타일 번호 $41이 적혀 있다. 오른쪽은 41번 타일의 8×8
+        픽셀로, 「가」 모양이다. 화면 256×224는 타일 32×28칸이다.
+      </desc>
+      <text class="dg-small" x="8" y="14">
+        타일맵(화면 일부)
+      </text>
+      {Array.from({ length: 6 }, (_, r) =>
+        Array.from({ length: 6 }, (_, c) => (
+          <rect
+            class={r === 2 && c === 3 ? 'dg-accent' : 'dg-cell'}
+            x={8 + c * 24}
+            y={22 + r * 24}
+            width="22"
+            height="22"
+            rx="2"
+          />
+        )),
+      )}
+      <text class="dg-mono dg-bold" x="91" y="88" text-anchor="middle">
+        41
+      </text>
+      <text class="dg-small" x="8" y="182">
+        256×224 화면 = 32×28칸
+      </text>
+      <path class="dg-arrow" d="M104 82C140 82 150 60 176 60" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="186" y="14">
+        41번 타일(8×8픽셀)
+      </text>
+      {glyph.map((row, y) =>
+        row.map((v, x) => <rect class={`pix pix${v}`} x={186 + x * 20} y={22 + y * 20} width="19" height="19" />),
+      )}
+      <rect class="dg-line" x="185" y="21" width="161" height="161"></rect>
+    </svg>
+  </Figure>
+  <p>
+    롬 해킹에서 글자를 바꾼다는 것은 대개 이 타일 그림을 바꾸는 일입니다. 그러려면 타일이 바이트로 어떻게 적혀 있는지
+    알아야 합니다.
+  </p>
+
+  <h2 id="bitplanes">
+    픽셀 하나에 비트 몇 개: 1·2·4bpp <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    타일의 픽셀 하나는 색 번호입니다. 색 번호에 비트를 몇 개 쓰느냐를 <strong>bpp</strong>(bits per pixel)라고 합니다.
+    1비트면 0과 1, 두 가지 색이고, 2비트면 0–3, 네 가지 색입니다. 타일 하나는 64픽셀이라 bpp가 하나 늘 때마다 8바이트씩
+    커집니다.
+  </p>
+  <div class="table-scroll" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">형식</th>
+          <th scope="col">색</th>
+          <th scope="col">8×8 타일 하나</th>
+          <th scope="col">주로 쓰는 곳</th>
+        </tr>
+      </thead>
+      <tbody>
+        {bppRows.map(r => (
+          <tr>
+            <th scope="row">{r.bpp}</th>
+            <td>{r.colors}</td>
+            <td>{r.bytes}</td>
+            <td>{r.use}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    그런데 2bpp 타일은 픽셀 하나의 비트 두 개를 나란히 적지 않습니다. 색 번호의 아래 비트만 모은 판과 위 비트만 모은
+    판을 따로 만들고, 이 판을 <strong>비트평면</strong>(bitplane)이라고 부릅니다. 한 줄(8픽셀)의 평면 0이 1바이트, 평면
+    1이 1바이트이고, 두 바이트가 줄마다 번갈아 놓입니다. 각 바이트의 비트 7이 가장 왼쪽 픽셀입니다.
+  </p>
+  <Figure caption="「가」 타일의 1번 줄. 색 번호를 아래 비트와 위 비트로 나누면 바이트 F6과 12가 됩니다." max={600}>
+    <svg viewBox="0 0 360 236" role="img" aria-labelledby="bp-t bp-d">
+      <title id="bp-t">한 줄을 비트평면으로 나누기</title>
+      <desc id="bp-d">
+        1번 줄의 색 번호는 1 1 1 3 0 1 3 0이다. 각 번호의 아래 비트를 모으면 1111 0110, 곧 바이트 F6(평면 0)이고, 위
+        비트를 모으면 0001 0010, 곧 바이트 12(평면 1)다. 타일 안에서 평면 0은 +02, 평면 1은 +03에 있다.
+      </desc>
+      <text class="dg-small" x="8" y="14">
+        1번 줄의 색 번호(왼쪽이 비트 7)
+      </text>
+      {row1.map((v, x) => (
+        <>
+          <rect class={`pix pix${v}`} x={8 + x * 30} y="22" width="28" height="28" />
+          <text class={`dg-mono dg-bold pix-num pix-num${v}`} x={22 + x * 30} y="42" text-anchor="middle">
+            {v}
+          </text>
+        </>
+      ))}
+      <rect class="dg-line" x="7" y="21" width="239" height="30"></rect>
+      <text class="dg-small" x="256" y="40">
+        색 = 위×2 + 아래
+      </text>
+      {row1Planes.map((bits, p) => (
+        <>
+          <text class="dg-small" x="8" y={80 + p * 56}>
+            {p === 0 ? '평면 0: 아래 비트(1의 자리)' : '평면 1: 위 비트(2의 자리)'}
+          </text>
+          {bits.map((b, x) => (
+            <>
+              <rect
+                class={b ? (p === 0 ? 'dg-cool' : 'dg-warm') : 'dg-cell'}
+                x={8 + x * 30}
+                y={88 + p * 56}
+                width="28"
+                height="26"
+                rx="3"
+              />
+              <text class="dg-mono" x={22 + x * 30} y={106 + p * 56} text-anchor="middle">
+                {b}
+              </text>
+            </>
+          ))}
+          <path class="dg-arrow" d={`M250 ${101 + p * 56}h24`} marker-end="url(#dg-arrowhead)" />
+          <rect class={p === 0 ? 'dg-cool' : 'dg-warm'} x="280" y={86 + p * 56} width="72" height="30" rx="6" />
+          <text class="dg-mono dg-bold" x="316" y={106 + p * 56} text-anchor="middle">
+            {toHex(glyphBytes[2 + p] ?? 0, 2)}
+          </text>
+        </>
+      ))}
+      <rect class="dg-accent" x="8" y="198" width="344" height="32" rx="6"></rect>
+      <text class="dg-text" x="18" y="219">
+        메모리에는 줄마다 평면 0, 평면 1 순서: +02 F6, +03 12
+      </text>
+    </svg>
+  </Figure>
+  <p>
+    그래서 2bpp 타일 16바이트는 "0번 줄 평면 0, 0번 줄 평면 1, 1번 줄 평면 0, …" 순서입니다. 4bpp는 이렇게 만든
+    16바이트(평면 0·1) 뒤에 평면 2·3이 같은 모양으로 16바이트 더 붙습니다. 아래에서 칸을 눌러 칠해 보면 어느 바이트의
+    어느 비트가 바뀌는지 바로 보입니다. 툴킷 <code>tiles.py</code>를 옮긴 코드라 툴킷과 같은 바이트가 나옵니다.
+  </p>
+  <TileBytes />
+  <p>
+    1bpp로 바꾸면 평면이 하나뿐이라 줄마다 1바이트, 모두 8바이트입니다. 4bpp로 바꾸면 그림은 같은데 평면 2·3이 모두 0인
+    16바이트가 뒤에 붙습니다. 같은 바이트를 다른 형식으로 읽으면 그림이 엉망으로 나오므로, 타일을 찾을 때는 형식부터
+    맞혀야 합니다.
+  </p>
+
+  <h2 id="palette">
+    색은 팔레트 번호로 고른다 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    타일에 적힌 것은 색 그 자체가 아니라 <strong>팔레트</strong> 안의 번호입니다. 실제 색은 CGRAM이라는 512바이트짜리 색
+    메모리에 256색이 들어 있고, 2bpp 타일이라면 그중 네 색 묶음 하나를 골라 씁니다. 같은 타일도 팔레트만 바꾸면 다른
+    색으로 나옵니다. 배경 타일에서 색 0은 투명이라 뒤 레이어가 비쳐 보입니다.
+  </p>
+  <Figure caption="색 번호 3은 고른 팔레트의 넷째 칸을 가리키고, CGRAM의 2바이트가 실제 색입니다." max={600}>
+    <svg viewBox="0 0 360 236" role="img" aria-labelledby="pal-t pal-d">
+      <title id="pal-t">팔레트와 15비트 색</title>
+      <desc id="pal-d">
+        타일의 색 번호 3이 4색 팔레트의 3번 칸을 가리킨다. 0번 칸은 투명이다. 3번 칸의 CGRAM 바이트 A5 14는 리틀 엔디안
+        값 $14A5이고, 비트로 나누면 맨 위 0, 파랑 00101, 초록 00101, 빨강 00101로 세 색이 모두 5인 어두운 회색이다.
+      </desc>
+      <rect class="pix pix3" x="8" y="24" width="40" height="40"></rect>
+      <text class="dg-mono dg-bold pix-num pix-num3" x="28" y="50" text-anchor="middle">
+        3
+      </text>
+      <text class="dg-small" x="8" y="16">
+        타일 픽셀
+      </text>
+      <path class="dg-arrow" d="M52 44H86" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="94" y="16">
+        4색 팔레트(CGRAM 네 칸)
+      </text>
+      <rect class="dg-cell dg-dash" x="94" y="24" width="56" height="40" rx="4"></rect>
+      <rect x="152" y="24" width="56" height="40" rx="4" fill="#f8f8f8" stroke="#8d9893" stroke-width="1.5"></rect>
+      <rect x="210" y="24" width="56" height="40" rx="4" fill="#6888c8" stroke="#8d9893" stroke-width="1.5"></rect>
+      <rect class="dg-accent" x="268" y="22" width="60" height="44" rx="5"></rect>
+      <rect x="272" y="26" width="52" height="36" rx="3" fill="#282828"></rect>
+      <text class="dg-small" x="122" y="80" text-anchor="middle">
+        0 투명
+      </text>
+      <text class="dg-small" x="180" y="80" text-anchor="middle">
+        1
+      </text>
+      <text class="dg-small" x="238" y="80" text-anchor="middle">
+        2
+      </text>
+      <text class="dg-small" x="298" y="80" text-anchor="middle">
+        3
+      </text>
+      <path class="dg-arrow" d="M298 84V100" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="8" y="118">
+        CGRAM의 3번 칸: 바이트 A5 14 → 값 $14A5(작은 자리 먼저)
+      </text>
+      {colorBits.map((part, i) => {
+        const start = colorBits.slice(0, i).reduce((n, c) => n + c.bits, 0);
+        const bits = toBinary(0x14a5, 16)
+          .replace(/ /g, '')
+          .slice(start, start + part.bits);
+        const x = 8 + start * 21.5;
+        const w = part.bits * 21.5 - 2;
+        return (
+          <>
+            <rect class={part.cls} x={x} y="128" width={w} height="34" rx="4" />
+            <text class="dg-mono" x={x + w / 2} y="150" text-anchor="middle">
+              {bits}
+            </text>
+            <text class="dg-small" x={x + w / 2} y="180" text-anchor="middle">
+              {part.label === '-' ? '0' : `${part.label} ${parseInt(bits, 2)}`}
+            </text>
+          </>
+        );
+      })}
+      <text class="dg-small" x="8" y="206">
+        파랑·초록·빨강 5비트씩(0-31). 셋 다 5라 어두운 회색
+      </text>
+      <text class="dg-small" x="8" y="224">
+        맨 위 비트는 쓰지 않습니다.
+      </text>
+    </svg>
+  </Figure>
+  <p>
+    색 하나가 2바이트라 롬이나 CGRAM 덤프에서 색을 찾을 때도 2장의 리틀 엔디안으로 읽습니다. 빨강·초록·파랑이
+    5비트씩이라 0–31 단계이고, 순서가 흔히 쓰는 RGB와 반대로 파랑이 위쪽 비트에 있습니다.
+  </p>
+
+  <h2 id="vram">
+    VRAM과 타일맵, BG 모드 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    화면에 쓰는 타일 그림과 타일맵은 화면 처리 칩(PPU)의 메모리 <strong>VRAM</strong>(64KB)에 있습니다. 롬에 있는 그림은
+    게임이 VRAM으로 옮겨야 화면에 나옵니다. 이 옮기는 일은 화면을 그리지 않는 동안(수직 귀선 기간이나 화면을 끈
+    동안)에만 할 수 있어서, 보통 NMI에서 DMA로 한꺼번에 보냅니다(5장). DMA는 CPU가 한 바이트씩 옮기는 대신 하드웨어가
+    메모리 사이에 바이트를 한꺼번에 옮기는 기능입니다.
+  </p>
+  <p>
+    VRAM은 2바이트(워드) 단위로 주소를 매깁니다. 게임이 레지스터 <code>$2116</code>·<code>$2117</code>에 적는 VRAM
+    주소는 워드 주소이고, 바이트 주소의 절반입니다. 이 장에 나오는 VRAM 주소는 모두 바이트 주소입니다. 예를 들어 바이트
+    주소 <code>$6000</code>은 워드 주소 <code>$3000</code>입니다. 에뮬레이터나 문서가 어느 쪽으로 적었는지 먼저 확인해야
+    합니다.
+  </p>
+  <p>
+    타일맵의 한 칸은 2바이트입니다. 아래 10비트가 타일 번호라 한 레이어가 고를 수 있는 타일은 1,024개이고, 위쪽 비트에
+    팔레트 번호와 뒤집기가 들어 있습니다. 같은 타일을 뒤집어 쓰면 좌우 대칭인 그림을 반만 저장해도 됩니다.
+  </p>
+  <Figure caption="타일맵 한 칸 05 84 = $8405: 세로로 뒤집은 5번 타일을 팔레트 1로" max={600}>
+    <svg viewBox="0 0 360 150" role="img" aria-labelledby="ent-t ent-d">
+      <title id="ent-t">타일맵 항목 16비트</title>
+      <desc id="ent-d">
+        바이트 05 84는 값 $8405다. 비트 15는 세로 뒤집기 1, 비트 14는 가로 뒤집기 0, 비트 13은 우선순위 0, 비트 10-12는
+        팔레트 001, 비트 0-9는 타일 번호 0000000101, 곧 5다.
+      </desc>
+      {entryBits.map((part, i) => {
+        const start = entryBits.slice(0, i).reduce((n, c) => n + c.bits, 0);
+        const bits = toBinary(0x8405, 16)
+          .replace(/ /g, '')
+          .slice(start, start + part.bits);
+        const x = 8 + start * 21.5;
+        const w = part.bits * 21.5 - 2;
+        return (
+          <>
+            <text class="dg-small" x={x + w / 2} y="16" text-anchor="middle">
+              {part.label}
+            </text>
+            <rect class={part.cls} x={x} y="24" width={w} height="34" rx="4" />
+            <text class="dg-mono" x={x + w / 2} y="46" text-anchor="middle">
+              {bits}
+            </text>
+          </>
+        );
+      })}
+      <text class="dg-small" x="8" y="80">
+        V 세로 뒤집기 1 · H 가로 뒤집기 0 · O 우선순위 0
+      </text>
+      <text class="dg-small" x="8" y="98">
+        P 팔레트 1 · C 타일 번호 5
+      </text>
+      <rect class="dg-accent" x="8" y="112" width="344" height="30" rx="6"></rect>
+      <text class="dg-text" x="18" y="132">
+        메모리에는 작은 자리 먼저: 05 84
+      </text>
+    </svg>
+  </Figure>
+  <p>
+    화면의 배경 레이어(BG)는 최대 넷이고, 레이어마다 몇 색 타일을 쓸지는 <strong>BG 모드</strong>가 정합니다. 롬
+    해킹에서 가장 자주 만나는 것은 모드 1입니다. BG1·BG2가 16색, BG3이 4색이라, 배경은 BG1·BG2에 그리고 대사는 BG3의
+    2bpp 타일로 띄우는 게임이 많습니다. 제절초의 글자 레이어도 모드 1의 BG3입니다.
+  </p>
+  <div class="table-scroll" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">모드</th>
+          <th scope="col">BG1</th>
+          <th scope="col">BG2</th>
+          <th scope="col">BG3</th>
+          <th scope="col">BG4</th>
+        </tr>
+      </thead>
+      <tbody>
+        {bgModes.map(m => (
+          <tr>
+            <th scope="row">{m.mode}</th>
+            {m.bg.map(c => (
+              <td>{c}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted">
+    "(오프셋)"은 그 레이어가 그림 대신 다른 레이어의 칸별 스크롤 값을 담는다는 뜻이고, 모드 7의 "(확장)"은 BG1과 같은
+    그림을 128색과 픽셀별 우선순위로 한 번 더 쓰는 레이어입니다.
+  </p>
+
+  <h2 id="fonts">
+    글꼴: 고정폭과 가변폭 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    게임의 글꼴도 타일입니다. 가장 쉬운 방법은 글자 하나를 타일 한 칸(또는 2×2칸)에 그리고 타일맵에 글자 번호를 적는
+    것입니다. 모든 글자가 같은 폭을 차지해서 <strong>고정폭</strong>이라고 합니다. 일본어는 대부분 정사각형 글자라
+    이것으로 충분했습니다.
+  </p>
+  <p>
+    <strong>가변폭 글꼴</strong>(VWF, variable width font)은 글자마다 폭이 다릅니다. 게임이 빈 타일 여러 개를 이어 붙인
+    작업 공간을 두고, 글자 그림을 지금 x 위치에 비트 단위로 밀어 그린 뒤 x를 그 글자 폭만큼 옮깁니다. 글자가 타일 경계에
+    걸쳐도 됩니다. 같은 초오공전의 두 게임도 이렇게 비트맵에 그리는데, 각성편은 어느 글자든 x를 12픽셀씩 옮기고(그래서
+    결과는 고정폭), 돌격편은 글자 코드에 따라 옮기는 폭을 정합니다.
+  </p>
+  <Figure caption="같은 「잡아 볼까‥」를 12픽셀 고정폭(각성편 방식)과 돌격편의 가변폭으로 놓은 모습" max={600}>
+    <svg viewBox="0 0 360 178" role="img" aria-labelledby="vwf-t vwf-d">
+      <title id="vwf-t">고정폭과 가변폭</title>
+      <desc id="vwf-d">
+        고정폭은 잡, 아, 빈칸, 볼, 까, ‥ 여섯 글자가 12픽셀씩 72픽셀을 차지한다. 돌격편 가변폭은 한글 13픽셀, 빈칸과 ‥는
+        9픽셀이라 70픽셀이다. 돌격편 대사의 한 줄 한계는 얼굴 창 128픽셀이다.
+      </desc>
+      <text class="dg-small" x="8" y="14">
+        고정폭: 모든 글자 12px
+      </text>
+      {['잡', '아', ' ', '볼', '까', '‥'].map((ch, i) => (
+        <>
+          <rect class="dg-cell" x={8 + i * 48} y="22" width="46" height="36" rx="3" />
+          <text class="dg-text" x={31 + i * 48} y="46" text-anchor="middle">
+            {ch === ' ' ? '빈칸' : ch}
+          </text>
+        </>
+      ))}
+      <text class="dg-small" x="300" y="46">
+        = 72px
+      </text>
+      <text class="dg-small" x="8" y="84">
+        가변폭(돌격편): 한글 13px, 빈칸·‥ 9px
+      </text>
+      {(() => {
+        let x = 8;
+        return [
+          ['잡', 13],
+          ['아', 13],
+          [' ', 9],
+          ['볼', 13],
+          ['까', 13],
+          ['‥', 9],
+        ].map(([ch, w]) => {
+          const left = x;
+          const width = (w as number) * 4 - 2;
+          x += (w as number) * 4;
+          return (
+            <>
+              <rect class={w === 13 ? 'dg-cool' : 'dg-warm'} x={left} y="92" width={width} height="36" rx="3" />
+              <text class="dg-text" x={left + width / 2} y="110" text-anchor="middle">
+                {ch === ' ' ? '빈칸' : ch}
+              </text>
+              <text class="dg-small" x={left + width / 2} y="124" text-anchor="middle">
+                {w}
+              </text>
+            </>
+          );
+        });
+      })()}
+      <text class="dg-small" x="8" y="152">
+        1픽셀을 4배로 키워 그렸습니다. 합 70px
+      </text>
+      <text class="dg-small" x="8" y="170">
+        한 줄 한계: 돌격편 얼굴 창 128px, 나레이션 창 176px
+      </text>
+    </svg>
+  </Figure>
+  <p>
+    한국어 번역에서 가변폭이 반가운 이유는 두 가지입니다. 같은 창에 더 많은 글자가 들어가고, 띄어쓰기 빈칸을 좁게 만들
+    수 있습니다. 대신 줄바꿈 위치가 글자 폭의 합으로 정해져, 번역문을 넣을 때마다 줄 폭을 계산해야 합니다(6장의 단어
+    단위 줄바꿈).
+  </p>
+
+  <h2 id="hangul">
+    한글 수천 자를 제한된 폰트 칸에 넣기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    현대 한국어로 만들 수 있는 음절은 11,172자이고, 흔히 쓰는 완성형(KS X 1001)만 해도 2,350자입니다. 한 게임의 대본에
+    실제로 나오는 음절은 대개 1,000자 안팎이지만, 일본판 폰트가 그만큼의 빈칸을 갖고 있는 경우는 드뭅니다. 네 패치는
+    저마다 다른 방법으로 자리를 만들었습니다.
+  </p>
+  <ul class="strategy-cards">
+    {strategies.map(s => (
+      <li>
+        <p class="strategy-name">{s.name}</p>
+        <p class="strategy-who">{s.who}</p>
+        <p class="strategy-text">{s.text}</p>
+      </li>
+    ))}
+  </ul>
+  <p>
+    어느 방법이든 "이 글자 코드가 어떤 그림인가"를 적은 글자표가 함께 바뀝니다(8장). 그리고 원래 글자 칸을 덮어쓸 때는
+    그 글자를 쓰는 곳이 정말 없는지, 대사뿐 아니라 메뉴·이름 입력 화면·전투 메시지까지 모두 확인해야 합니다.
+  </p>
+
+  <Deeper title="비트평면 공식, 16×16 글자의 타일 배치, 1bpp 글꼴과 그림자">
+    <h3>공식</h3>
+    <p>
+      2bpp 이상의 타일에서 (x, y) 픽셀의 색 번호는 평면 p마다 아래 바이트의 비트 (7 − x)를 꺼내 p번째 비트에 놓은
+      값입니다(fullsnes). 1bpp는 줄마다 1바이트라 바이트 y의 비트 (7 − x)가 곧 색입니다. 8×8 타일이면 줄 수가 8이라 평면
+      2·3은 16바이트 뒤입니다.
+    </p>
+    <pre tabindex="0"><code>바이트 = (p ÷ 2의 몫) × 줄 수 × 2 + y × 2 + (p ÷ 2의 나머지)
+색     = 평면 p마다 (바이트의 비트 7 − x) × 2^p를 더한 값</code></pre>
+    <p>
+      8×12처럼 키가 큰 글리프도 같은 규칙에 줄 수만 다릅니다. 슈퍼 마리오 RPG의 메뉴 폰트는 8×12 2bpp라 글자 하나가
+      24바이트입니다.
+    </p>
+
+    <h3>16×16 글자는 타일 네 개</h3>
+    <p>
+      VRAM은 타일을 한 줄에 16개씩 놓은 표처럼 다룹니다. 16×16 그림은 왼쪽 위 타일 N, 오른쪽 N+1, 아래 줄 N+16, N+17로
+      이루어집니다. 2bpp 타일은 16바이트라 아래 줄은 위 줄보다 0x100바이트 뒤입니다. 돌격편 폰트도 이 배치로 롬에 들어
+      있어서, 한글판 v1.1이 새로 그린 「쫓」(코드 $CE5)은 아래 네 곳의 16바이트입니다.
+    </p>
+    <Figure caption="돌격편 한글판 v1.2 롬 0x27AA0의 「쫓」. 숫자는 각 타일의 파일 오프셋입니다." max={480}>
+      <svg viewBox="0 0 360 344" role="img" aria-labelledby="zz-t zz-d">
+        <title id="zz-t">16×16 글자를 이루는 타일 네 개</title>
+        <desc id="zz-d">
+          「쫓」 16×16 픽셀이 8×8 타일 넷으로 나뉜다. 왼쪽 위는 파일 0x27AA0, 오른쪽 위는 0x27AB0, 왼쪽 아래는 0x27BA0,
+          오른쪽 아래는 0x27BB0이다. 글자 픽셀은 색 1, 오른쪽 아래로 붙은 그림자는 색 3이다.
+        </desc>
+        {zzot.map((t, i) =>
+          t.pix.map((row, y) =>
+            row.map((v, x) => (
+              <rect
+                class={`pix pix${v}`}
+                x={44 + (i % 2) * 136 + x * 17}
+                y={24 + Math.floor(i / 2) * 136 + y * 17}
+                width="16"
+                height="16"
+              />
+            )),
+          ),
+        )}
+        {zzot.map((_, i) => (
+          <rect class="dg-line" x={43 + (i % 2) * 136} y={23 + Math.floor(i / 2) * 136} width="137" height="137" />
+        ))}
+        {zzot.map((t, i) => (
+          <text class="dg-mono dg-bold" x={112 + (i % 2) * 136} y={i < 2 ? 16 : 314} text-anchor="middle">
+            {`0x${t.off.toString(16).toUpperCase()}`}
+          </text>
+        ))}
+        <text class="dg-small" x="44" y="338">
+          위 두 타일 +0·+0x10, 아래 두 타일 +0x100·+0x110
+        </text>
+      </svg>
+    </Figure>
+    <p>
+      폰트 시트 한 줄이 0x100바이트에 위쪽 반 8글자, 다음 0x100바이트가 그 아래쪽 반이므로, 코드 번호를 8씩 묶었을 때
+      짝수 번째 묶음만 글자의 시작입니다. 홀수 번째 묶음은 아래쪽 반이라 글자 코드로 쓰지 않습니다. 돌격편과 각성편 분석
+      노트에 같은 설명이 있습니다.
+    </p>
+
+    <h3>1bpp 글꼴과 그림자</h3>
+    <p>
+      롬 공간을 아끼려고 글꼴을 1bpp로 넣는 게임이 많습니다. 제절초는 크기가 다른 1bpp 글자를 뱅크 <code>$1F</code>에
+      모아 두고, 글자를 그릴 때 WRAM <code>$7F:0010</code>부터의 2bpp 타일 작업 공간에 OR로 겹쳐 그립니다. 평면 0이
+      글자(색 1), 평면 1이 그림자(색 2)입니다. 돌격편은 2bpp 글꼴에 그림자까지 그려 두었는데, 글자 픽셀은 평면 0만 1(색
+      1), 그림자는 두 평면 모두 1(색 3)입니다. 그림자는 글자 픽셀의 오른쪽·아래·오른쪽 아래 칸 가운데 글자가 아닌
+      칸입니다. 이 장의 「가」 타일도 같은 규칙으로 그렸습니다.
+    </p>
+    <p>
+      슈퍼 마리오 RPG의 메뉴 폰트는 롬에 8×12 2bpp로 있고, 메뉴를 열 때 게임이 외곽선과 그림자를 붙여 8×16 4bpp로 바꿔
+      VRAM에 올립니다(<code>$C3:6D74</code>, 외곽선 루틴 <code>$C3:6869</code>).
+    </p>
+
+    <h3>평면을 반씩 묶어 두는 경우</h3>
+    <p>
+      어떤 게임은 2bpp 타일을 "평면 0의 8줄, 그다음 평면 1의 8줄"로 묶어 압축해 둡니다. 돌격편 타이틀 그림이 이런
+      경우로, 압축을 푼 뒤 <code>$81:DFEB</code>가 타일마다 줄 순서를 SNES 형식으로 되돌립니다. 툴킷의{' '}
+      <code>planar_to_snes</code>·<code>snes_to_planar</code>가 같은 변환입니다.
+    </p>
+  </Deeper>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>돌격편: 쓰지 않던 코드 범위에 512칸</h3>
+  <p>
+    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>의 글자 코드는 범위에 따라 시트가 정해집니다. <code>$100</code>–
+    <code>$4FF</code>는 8×16 가나 자리, <code>$500</code>–<code>$BEF</code>는 16×16 한자 자리입니다. v1.0은 한자 850칸과
+    가나 160칸에 한글을 그려 1,010자를 썼고, 재번역한 v1.1에는 213자를 새로 그려야 했습니다. 그중 37자는 더는 쓰지 않게
+    된 옛 칸에 그리고, 나머지 176자를 위해 6장의 <code>JML</code> 후킹으로 원래 쓰지 않던 <code>$C00</code>–
+    <code>$FFF</code>를 열고, 4KB씩 여덟 곳의 빈 공간을 블록으로 이었습니다. 블록 하나가 128코드(글자 64개)라 모두
+    512자입니다.
+  </p>
+  <Figure caption="코드 $CE5 「쫓」이 블록 표를 거쳐 롬 위치 $84:FAA0이 되는 과정" max={600}>
+    <svg viewBox="0 0 360 214" role="img" aria-labelledby="blk-t blk-d">
+      <title id="blk-t">새 글자 블록 찾기</title>
+      <desc id="blk-d">
+        코드 $CE5에서 $C00을 빼면 $E5. $80으로 나누면 몫 1이 블록 번호, 나머지 $65가 블록 안 위치다. 블록 표에서 1번은
+        $84:EE00이다. $84:EE00 + $65 × 32 = $84:FAA0, 파일 0x27AA0이다.
+      </desc>
+      <rect class="dg-cell" x="8" y="10" width="96" height="40" rx="6"></rect>
+      <text class="dg-mono dg-bold" x="56" y="36" text-anchor="middle">
+        $CE5
+      </text>
+      <path class="dg-arrow" d="M104 30H128" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="138" y="24">
+        − $C00 = $E5
+      </text>
+      <text class="dg-small" x="138" y="42">
+        $E5 = $80 × 1 + $65
+      </text>
+      <rect class="dg-warm" x="8" y="66" width="168" height="40" rx="6"></rect>
+      <text class="dg-text" x="18" y="91">
+        블록 번호 1
+      </text>
+      <rect class="dg-cool" x="184" y="66" width="168" height="40" rx="6"></rect>
+      <text class="dg-text" x="194" y="91">
+        블록 안 위치 $65
+      </text>
+      <text class="dg-small" x="8" y="130">
+        블록 표($B7:FA60 주소, $B7:FA70 뱅크)
+      </text>
+      {['$81:EF00', '$84:EE00', '$86:E000', '…'].map((a, i) => (
+        <>
+          <rect class={i === 1 ? 'dg-warm' : 'dg-cell'} x={8 + i * 86} y="138" width="82" height="30" rx="4" />
+          <text class="dg-small" x={49 + i * 86} y="158" text-anchor="middle">
+            {i < 3 ? `${i}: ${a}` : a}
+          </text>
+        </>
+      ))}
+      <rect class="dg-accent" x="8" y="178" width="344" height="32" rx="6"></rect>
+      <text class="dg-text" x="18" y="199">
+        $84:EE00 + $65 × 32 = $84:FAA0 (파일 0x27AA0)
+      </text>
+    </svg>
+  </Figure>
+
+  <h3>제절초: 그룹 표가 꽉 차 있었다</h3>
+  <p>
+    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a> 글꼴은 크기가 같은 글자끼리 묶은 그룹 표(<code>$00:F4AC</code>)로
+    찾습니다. 한 칸이 5바이트이고, 표 바로 뒤에 다른 데이터가 있어 58칸이 한계인데 일본판과 v1.0이 58칸을 다 썼습니다.
+    v1.1은 아무 데서도 쓰지 않는 168자를 이웃 그룹과 같은 크기의 빈 글자로 바꿔 45칸으로 합치고, 새 글자 75자를 3칸으로
+    더해 48칸으로 맞췄습니다.
+  </p>
+  <Figure caption="그룹 표 첫 칸 05 92 00 80 2C 읽기" max={600}>
+    <svg viewBox="0 0 360 200" role="img" aria-labelledby="grp-t grp-d">
+      <title id="grp-t">폰트 그룹 표 한 칸</title>
+      <desc id="grp-d">
+        첫 두 바이트 05 92는 값 $9205다. 위 4비트 9가 글자 폭, 아래 12비트 $205가 글자 수 517이다. 다음 두 바이트 00
+        80은 뱅크 $1F 안 시작 주소 $8000, 마지막 2C를 4로 나눈 11이 높이다.
+      </desc>
+      {[
+        ['05', 'dg-cool'],
+        ['92', 'dg-warm'],
+        ['00', 'dg-cell'],
+        ['80', 'dg-cell'],
+        ['2C', 'dg-cell'],
+      ].map(([b, c], i) => (
+        <>
+          <rect class={c} x={8 + i * 58} y="10" width="54" height="36" rx="5" />
+          <text class="dg-mono dg-bold" x={35 + i * 58} y="34" text-anchor="middle">
+            {b}
+          </text>
+        </>
+      ))}
+      <text class="dg-small" x="66" y="64" text-anchor="middle">
+        $9205
+      </text>
+      <text class="dg-small" x="182" y="64" text-anchor="middle">
+        $8000
+      </text>
+      <text class="dg-small" x="269" y="64" text-anchor="middle">
+        $2C
+      </text>
+      <rect class="dg-warm" x="8" y="76" width="64" height="34" rx="4"></rect>
+      <text class="dg-mono" x="40" y="98" text-anchor="middle">
+        1001
+      </text>
+      <rect class="dg-cool" x="76" y="76" width="134" height="34" rx="4"></rect>
+      <text class="dg-mono" x="143" y="98" text-anchor="middle">
+        0010 0000 0101
+      </text>
+      <text class="dg-small" x="40" y="128" text-anchor="middle">
+        폭 9
+      </text>
+      <text class="dg-small" x="143" y="128" text-anchor="middle">
+        글자 수 $205 = 517
+      </text>
+      <text class="dg-small" x="226" y="98">
+        시작 $1F:8000
+      </text>
+      <text class="dg-small" x="226" y="116">
+        높이 $2C ÷ 4 = 11
+      </text>
+      <rect class="dg-accent" x="8" y="148" width="344" height="44" rx="6"></rect>
+      <text class="dg-text" x="18" y="168">
+        9×11 글자 517개가 $1F:8000부터
+      </text>
+      <text class="dg-small" x="18" y="185">
+        n번째 글자 = 시작 + n × 폭 × 높이 비트
+      </text>
+    </svg>
+  </Figure>
+
+  <h3>슈퍼 마리오 RPG: VRAM 256칸에 다 못 넣는 이름</h3>
+  <p>
+    <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a>의 메뉴 글자는 1바이트 코드이고, 메뉴를 열면 256글자 전부가
+    VRAM에 올라가 있습니다. v1.0이 0x20–0xFF를 빈칸 없이 다 써서 아이템 이름에 필요한 한글을 더 넣을 수 없었습니다. 롬
+    용량이 아니라 "1바이트 코드 = VRAM에 늘 올라가 있는 256칸" 구조가 막고 있었던 것입니다.
+  </p>
+  <Figure caption="메뉴 폰트에 없는 글자는 VRAM의 임시 칸 128개 가운데 하나를 받아 그때그때 올립니다." max={600}>
+    <svg viewBox="0 0 360 230" role="img" aria-labelledby="slot-t slot-d">
+      <title id="slot-t">필요한 글자만 올리는 임시 칸</title>
+      <desc id="slot-d">
+        이름의 글자 코드가 $0000-$00FF면 메뉴 폰트에 있는 글자라 원래 타일을 쓴다. $8000 | n이면 롬의 새 글자 n번을
+        외곽선 루틴으로 바꿔 WRAM에 12자까지 모았다가, NMI에서 DMA로 VRAM 바이트 주소 $6000-$7FFF(워드 $3000)의 빈 칸
+        128개 중 하나에 올리고 그 칸 번호를 표에 적는다.
+      </desc>
+      <rect class="dg-cell" x="8" y="10" width="164" height="54" rx="6"></rect>
+      <text class="dg-small" x="16" y="30">
+        이름 글자 $00xx
+      </text>
+      <text class="dg-text" x="16" y="52">
+        메뉴 폰트에 있음
+      </text>
+      <rect class="dg-warm" x="188" y="10" width="164" height="54" rx="6"></rect>
+      <text class="dg-small" x="196" y="30">
+        이름 글자 $8000 | n
+      </text>
+      <text class="dg-text" x="196" y="52">
+        새 글자 n번
+      </text>
+      <path class="dg-arrow" d="M90 64V176" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M270 64V82" marker-end="url(#dg-arrowhead)"></path>
+      <rect class="dg-cell" x="188" y="88" width="164" height="40" rx="6"></rect>
+      <text class="dg-small" x="196" y="104">
+        외곽선을 붙여 WRAM에
+      </text>
+      <text class="dg-small" x="196" y="120">
+        (12자까지 모아 둠)
+      </text>
+      <path class="dg-arrow" d="M270 128V146" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="278" y="142">
+        NMI에서 DMA
+      </text>
+      <text class="dg-small" x="8" y="166">
+        VRAM
+      </text>
+      <rect class="dg-cool" x="8" y="182" width="164" height="40" rx="6"></rect>
+      <text class="dg-small" x="16" y="198">
+        늘 올라가 있는 256글자
+      </text>
+      <text class="dg-small" x="16" y="214">
+        타일 (코드 − $20) × 2
+      </text>
+      <rect class="dg-accent" x="188" y="152" width="164" height="70" rx="6"></rect>
+      <text class="dg-small" x="196" y="170">
+        $6000-$7FFF 임시 칸 128개
+      </text>
+      {Array.from({ length: 8 }, (_, i) => (
+        <rect class={i < 3 ? 'dg-warm' : 'dg-cell'} x={196 + i * 19} y="180" width="16" height="16" rx="2" />
+      ))}
+      <text class="dg-small" x="196" y="214">
+        바이트 주소, 워드 $3000부터
+      </text>
+    </svg>
+  </Figure>
+  <p>
+    한글판은 메뉴 폰트에 없는 글자(v1.2에서 249자)를 롬 빈 곳에 두고, 화면에 나올 때만 필드 메뉴가 쓰지 않는 VRAM 바이트
+    주소 <code>$6000</code>–<code>$7FFF</code>(워드 주소 <code>$3000</code>부터, BG1 타일 <code>$200</code>–
+    <code>$2FF</code>)의 칸 128개 가운데 하나를 배정합니다. 이 영역은 메뉴를 열 때 게임이 다시 채우므로, 슬롯 표도 그때
+    같이 비웁니다.
+  </p>
+
+  <h3>각성편: 아무도 쓰지 않는 글자 자리</h3>
+  <p>
+    <a href={`${KAKUSEI_PATCH.path}/`}>각성편</a> v1.2에 새로 필요한 글자는 11자뿐이었습니다. 어떤 대사에서도 쓰지 않는
+    글리프 자리를 골라 그 위에 그렸습니다. 예를 들어 코드 <code>$123</code>은 v1.1까지 「겄」이었는데 v1.2부터
+    「깨」입니다.
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    툴킷의 <code>krpatch snes tiles</code>는 파일의 어느 바이트 범위든 타일로 그려 PNG로 저장합니다. 롬, VRAM 덤프,
+    압축을 푼 데이터 모두 됩니다. 한 줄에 16타일씩 그려서 위의 16×16 글자 배치가 그대로 제 모양으로 보입니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch snes tiles totsugeki-k.sfc EF00 1000 block0.png --bpp 2
+block0.png
+$ krpatch snes tiles smrpg-k.sfc 242800 1800 menu-font.png --bpp 2 --rows 12
+menu-font.png</code></pre>
+  <p>
+    첫 명령은 돌격편 한글판의 새 글자 블록 0(4KB)을 그립니다. 둘째는 슈퍼 마리오 RPG 한글판 메뉴 폰트(
+    <code>$E4:2800</code>, 코드 256개 × 24바이트)를 8×12 글리프로 그립니다. 코드 <code>$00</code>–<code>$1F</code>{' '}
+    자리는 비어 있어서 첫 두 줄은 빈칸이고, <code>$20</code>부터 글자가 나옵니다. <code>--bpp</code>를 일부러 틀리게 줘
+    보면 같은 바이트가 알아볼 수 없는 무늬가 되는 것도 볼 수 있습니다. 화면에 나온 그림이 롬 어디에 있는지 모를 때는
+    에뮬레이터에서 VRAM과 CGRAM을 덤프해 <code>krpatch snes bg</code>로 레이어를 그리고, 거기서 쓰는 타일을 롬에서
+    찾습니다.
+  </p>
+</GuideChapter>
+
+<style>
+  .pix {
+    stroke: none;
+  }
+  .pix0 {
+    fill: var(--dg-cell);
+  }
+  .pix1 {
+    fill: var(--dg-ink);
+  }
+  .pix2 {
+    fill: var(--dg-cool);
+  }
+  .pix3 {
+    fill: var(--dg-muted);
+  }
+  .pix-num0,
+  .pix-num2 {
+    fill: var(--dg-ink);
+  }
+  .pix-num1,
+  .pix-num3 {
+    fill: var(--dg-cell);
+  }
+</style>

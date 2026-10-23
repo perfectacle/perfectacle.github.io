@@ -560,7 +560,7 @@
   margin-top: 0;
 }
 .prose .byte-strip code,
-.prose .widget :is(.nb, .cell, .bm-part, .cpu-mem li, .cpu-static-mem li, .readout dd) code {
+.prose .widget :is(.nb, .cell, .bm-part, .cpu-mem li, .cpu-static-mem li, .readout dd, .tile-table td) code {
   padding: 0;
   border: 0;
   background: none;
@@ -587,4 +587,44 @@
 .prose .table-scroll table {
   display: table;
   margin: 0;
+}
+
+/* Cards comparing the approaches the patches took. */
+.strategy-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 10px;
+  max-width: var(--measure);
+  padding: 0 !important;
+  list-style: none;
+}
+.strategy-cards li {
+  margin: 0 !important;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-top: 4px solid var(--accent);
+  border-radius: 10px;
+  background: var(--bg-soft);
+}
+.strategy-cards p {
+  margin: 0;
+}
+.strategy-name {
+  font-weight: 700;
+}
+.strategy-who {
+  margin: 2px 0 6px !important;
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+}
+.strategy-text {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Short inline code such as JSL or $81:DFEB moves to the next line whole instead of splitting; only code wider than the
+   line breaks. */
+.guide .prose :not(pre) > code {
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
