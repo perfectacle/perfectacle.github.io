@@ -1,11 +1,9 @@
 ---
 interface Props {
   base: string;
-  /** Title-menu entries after 「처음부터 읽기」; each points at a section of the page. */
-  chapters: { href: string; label: string }[];
 }
 
-const { base, chapters } = Astro.props;
+const { base } = Astro.props;
 
 /** The opening of a new game on the Korean version, one screen per page, with the default name 코헤이. */
 const pages = [
@@ -55,16 +53,11 @@ const title = {
   </figure>
   <p class="sr-only" aria-live="polite" data-live></p>
 
-  <nav class="novel-menu" data-menu="title" aria-label="이 페이지 차례">
+  <div class="novel-menu" data-menu="title">
     <a class="pointer" href="#korean" data-start>
       처음부터 읽기
     </a>
-    {chapters.map(chapter => (
-      <a class="pointer" href={chapter.href}>
-        {chapter.label}
-      </a>
-    ))}
-  </nav>
+  </div>
 
   <div class="novel-menu" data-menu="end" hidden>
     <a class="pointer" href="#title" data-enter>
