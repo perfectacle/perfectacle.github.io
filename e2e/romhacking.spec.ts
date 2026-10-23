@@ -13,6 +13,8 @@ const ENDIAN = '/games/romhacking/endian/';
 const BANKS = '/games/romhacking/snes/banks/';
 const CPU = '/games/romhacking/snes/cpu/';
 const ASSEMBLY = '/games/romhacking/snes/assembly/';
+const HOOKING = '/games/romhacking/snes/hooking/';
+const GRAPHICS = '/games/romhacking/snes/graphics/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -219,6 +221,49 @@ test('instruction stepper copies the string and follows the subroutine', async (
   await expect(loop.locator('[data-addr="8265726"] code')).toHaveText('10');
 });
 
+test('tile widget paints pixels with the keyboard and reads typed bytes', async ({ page }) => {
+  await page.goto(GRAPHICS);
+  const widget = page.locator('[data-tile-bytes]');
+  await expect(widget).toHaveClass(/is-live/);
+  const hex = widget.getByLabel('바이트(16진수, 메모리 순서)');
+  await expect(hex).toHaveValue('00 00 F6 12 F6 D2 37 11 37 13 76 32 E6 62 C6 C6');
+  await widget.getByRole('button', { name: '가로 0, 세로 0: 색 0' }).focus();
+  await page.keyboard.press('ArrowRight');
+  const cell = widget.getByRole('button', { name: /^가로 1, 세로 0:/ });
+  await expect(cell).toBeFocused();
+  await page.keyboard.press('Space');
+  await expect(cell).toHaveAccessibleName('가로 1, 세로 0: 색 1');
+  await expect(hex).toHaveValue(/^40 00 F6 12/);
+  await expect(widget.locator('[data-live]')).toContainText('+00 = 40');
+  await expect(widget.locator('tbody tr[data-row="0"]')).toHaveClass(/is-current/);
+  await page.keyboard.press('Space');
+  await expect(cell).toHaveAccessibleName('가로 1, 세로 0: 색 0');
+
+  await hex.fill('80 80' + ' 00'.repeat(14));
+  await expect(widget.getByRole('button', { name: '가로 0, 세로 0: 색 3' })).toBeVisible();
+  await hex.fill('00 11');
+  await expect(hex).toHaveAttribute('aria-invalid', 'true');
+  await expect(widget.getByRole('alert')).toContainText('16바이트');
+
+  await widget.getByLabel('4bpp(16색)').check();
+  await expect(hex).toHaveValue(/^(?:[0-9A-F]{2} ){31}[0-9A-F]{2}$/);
+  await expect(widget.locator('input[name="tile-ink"]')).toHaveCount(16);
+  await expect(widget.locator('thead th')).toHaveCount(5);
+  await widget.getByLabel('1bpp(2색)').check();
+  await expect(hex).toHaveValue('80 00 00 00 00 00 00 00');
+  await widget.getByRole('button', { name: '처음 그림으로' }).click();
+  await expect(hex).toHaveValue('00 F6 F6 37 37 76 E6 C6');
+  await noHorizontalOverflow(page);
+});
+
+test('the hooking chapter links the word-wrap note and the toolkit', async ({ page }) => {
+  await page.goto(HOOKING);
+  await expect(page.locator('a[href="/games/kr-patches/sfc/otogirisou/#making-wordwrap"]')).toHaveCount(1);
+  await expect(
+    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/main/README.ko.md#snes-dis"]'),
+  ).toHaveCount(1);
+});
+
 test('widgets read as static pictures without scripts', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
@@ -227,7 +272,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(page.getByRole('button', { name: '한 줄 실행' }).first()).toBeHidden();
   await page.goto(BANKS);
   await expect(page.locator('[data-bank-map] [data-summary-off]')).toHaveText('0x14000C');
-  for (const path of [ENDIAN, BANKS, CPU]) {
+  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
     expect(await help.count()).toBeGreaterThan(0);
@@ -235,5 +280,11 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   }
   await page.goto(NUMBERS);
   await expect(page.locator('[data-bulb-byte] [data-out="hex"]')).toHaveText('$30');
+  await page.goto(GRAPHICS);
+  const tile = page.locator('[data-tile-bytes]');
+  await expect(tile.locator('[data-static-hex]')).toHaveText('00 00 F6 12 F6 D2 37 11 37 13 76 32 E6 62 C6 C6');
+  await expect(tile.locator('textarea')).toBeHidden();
+  await expect(tile.locator('.widget-help .live-only')).toBeHidden();
+  await expect(tile.getByRole('button', { name: '가로 0, 세로 1: 색 1' })).toBeDisabled();
   await context.close();
 });
