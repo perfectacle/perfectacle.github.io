@@ -184,9 +184,16 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
     display: none;
   }
 
-  /* Keeps the floating button off the last footer line. */
+  /* Keeps the floating button and its hint off the footer text: beside it on wide screens, below it on phones. */
   :global(body:has(.bgm:not([hidden])) .page-footer) {
-    padding-bottom: 96px;
+    padding-right: 220px;
+  }
+
+  @media (max-width: 639px) {
+    :global(body:has(.bgm:not([hidden])) .page-footer) {
+      padding-right: 16px;
+      padding-bottom: 128px;
+    }
   }
 
   .bgm-hint {
