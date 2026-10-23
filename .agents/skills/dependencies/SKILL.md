@@ -18,14 +18,14 @@ description: npm 의존성·pnpm·Node·GitHub Actions 버전을 추가하거나
 
 ## 절차 — `audit` 이 새 advisory 로 실패했을 때
 
-`audit` 은 파일이 그대로여도 새 advisory 가 나오면 실패해서, 같은 시점의 모든 PR 이 함께 깨진다. 여러 세션이 각자 고치면 같은 PR 이 여러 개 생기므로 손으로 고치기 전에 아래 순서를 지킨다.
+`audit` 은 파일이 그대로여도 새 advisory 가 나오면 실패한다. 그래서 PR 에서는 의존성 파일(`package.json`·`pnpm-lock.yaml`·`pnpm-workspace.yaml`)을 바꾼 PR 에서만 돌고, 나머지는 매일 06:00 KST 의 `audit.yml` 이 자동으로 고친다. 사람·에이전트는 아래 경우에만 손댄다.
 
-1. **이미 고치고 있는 PR 이 있는지 본다** — `gh pr list --state open --search "<패키지>"` 와 Renovate PR(`--author app/renovate`)을 본다.
-   완료: 같은 패키지를 올리는 열린 PR 이 없다. 있으면 그 PR 이 머지되기를 기다린다. 깨진 다른 PR 은 main 에 수정이 들어간 뒤 다시 돌린다(Renovate PR 은 본문의 rebase 체크박스).
-2. **수정 버전이 쿨다운을 지났으면 Renovate 에 맡긴다** — 직접 의존성은 Renovate 취약점 PR 이 쿨다운 없이 올라온다. 간접 의존성은 매일 도는 lockfile maintenance 가 올리지만, 기다릴 수 없으면 Renovate 대시보드 이슈(`Dependency Dashboard`)의 lock file maintenance 체크박스를 켜서 바로 PR 을 만들게 한다.
-   완료: Renovate PR 이 열렸다.
-3. **Renovate 가 못 고치는 경우만 손으로 고친다** — 수정 버전이 쿨다운 안이면 [DEP-01](#dep-01--7일-쿨다운) 예외로 넣는다. 범위 밖이라 lockfile 갱신으로 안 올라가면 `overrides` 를 쓴다. 브랜치는 [git-workflow](../git-workflow/SKILL.md) 절차 0 부터 따른다.
-   완료: 새 커밋의 `audit` 이 통과한다.
+1. **자동 수정을 먼저 본다** — 열린 `automation/audit-fix` PR 이 있으면 그 PR 이 머지되기를 기다린다. 없고 기다릴 수 없으면 `gh workflow run audit.yml` 로 바로 돌린다.
+   완료: `automation/audit-fix` PR 이 열렸거나, `audit` 라벨 이슈가 열렸다.
+2. **이슈가 열렸을 때만 손으로 고친다** — 이슈는 같은 메이저 안에 수정 버전이 없거나 설치가 안 될 때만 열린다. 메이저를 올리거나, 실행되지 않는 코드면 예외로 둔다. 브랜치는 [git-workflow](../git-workflow/SKILL.md) 절차 0 부터 따른다.
+   완료: 새 커밋의 `audit` 이 통과하고, 다음 `audit.yml` 실행이 이슈를 닫는다.
+
+자동 수정(`.github/scripts/audit-fix.mjs`)이 하는 일: 쿨다운 안에서 lockfile 을 갱신하고, 안 되면 같은 메이저의 수정 버전을 `overrides` 로 고정한다. 그 버전이 쿨다운 안이면 advisory 를 달아 `minimumReleaseAgeExclude` 에 넣고([DEP-01](#dep-01--7일-쿨다운) 예외), 쿨다운이 지난 예외는 지운다. 커밋은 GitHub API 로 만들어 GitHub 이 서명한다. `GITHUB_TOKEN` 으로 연 PR 은 워크플로를 트리거하지 않으므로 CI 는 `workflow_dispatch` 로 돌린다.
 
 ## 규칙
 

@@ -1,0 +1,103 @@
+name: Audit
+
+# New advisories arrive without any file changing, so PRs only run audit when they touch dependencies (pages.yml).
+# This daily run catches the rest: it lifts vulnerable packages to a patched release in the same major and opens a
+# PR that merges itself once CI passes. Only what that cannot fix is left to a person, as an issue.
+on:
+  schedule:
+    - cron: '0 21 * * *' # 06:00 KST, after Renovate's lockfile maintenance window
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: audit
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    runs-on: ubuntu-26.04-arm
+    timeout-minutes: 70
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: write
+    env:
+      BRANCH: automation/audit-fix
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - run: echo "REPORT=$RUNNER_TEMP/audit-report.md" >> "$GITHUB_ENV"
+
+      - uses: ./.github/actions/setup
+
+      - id: fix
+        run: node .github/scripts/audit-fix.mjs
+
+      - id: changes
+        run: |
+          if git diff --quiet -- pnpm-workspace.yaml pnpm-lock.yaml; then changed=false; else changed=true; fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+
+      # A PR or push made with GITHUB_TOKEN triggers no workflows, so CI is dispatched on the branch instead. Its
+      # ci-ok check lands on the same commit, which is what the ruleset and auto-merge look at.
+      - if: steps.changes.outputs.changed == 'true'
+        id: pr
+        env:
+          TITLE: 보안 권고가 나온 의존성을 수정 버전으로 올린다
+        run: |
+          node .github/scripts/commit-branch.mjs "$BRANCH" "$GITHUB_SHA" "$TITLE" "$REPORT"
+          number=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --body-file "$REPORT"
+          else
+            gh pr create --head "$BRANCH" --base "$GITHUB_REF_NAME" --title "$TITLE" --body-file "$REPORT"
+            number=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number')
+          fi
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+          gh workflow run pages.yml --ref "$BRANCH"
+          gh pr merge "$number" --auto --merge
+
+      # Waiting for the merge turns a fix that CI rejected into an issue instead of a PR nobody looks at.
+      - if: steps.pr.outputs.number != ''
+        id: merged
+        env:
+          NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          for _ in $(seq 100); do
+            state=$(gh pr view "$NUMBER" --json state --jq .state)
+            [ "$state" != OPEN ] && break
+            sleep 30
+          done
+          echo "state=$state" >> "$GITHUB_OUTPUT"
+          if [ "$state" != MERGED ]; then
+            printf '\n## Needs a person\n\n- #%s did not merge: its CI failed or is still running.\n' "$NUMBER" >> "$REPORT"
+          fi
+
+      # A merge done by auto-merge on GITHUB_TOKEN's behalf triggers no push workflow, so the deploy is dispatched.
+      - if: steps.merged.outputs.state == 'MERGED'
+        run: gh workflow run pages.yml --ref main
+
+      - name: Open or update the issue for what needs a person
+        if: steps.fix.outputs.unresolved == 'true' || (steps.merged.outcome == 'success' && steps.merged.outputs.state != 'MERGED')
+        env:
+          TITLE: 의존성 보안 권고 자동 수정 실패
+        run: |
+          number=$(gh issue list --state open --label audit --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file "$REPORT"
+          else
+            gh label create audit --color B60205 --force
+            gh issue create --title "$TITLE" --label audit --body-file "$REPORT"
+          fi
+
+      - name: Close the issue once nothing needs a person
+        if: steps.fix.outputs.unresolved == 'false' && (steps.merged.outcome == 'skipped' || steps.merged.outputs.state == 'MERGED')
+        run: |
+          number=$(gh issue list --state open --label audit --json number --jq '.[0].number')
+          if [ -n "$number" ]; then gh issue close "$number" --comment "자동 수정으로 남은 권고가 없습니다."; fi

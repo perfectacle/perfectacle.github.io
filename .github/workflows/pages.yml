@@ -11,9 +11,10 @@ permissions:
   contents: read
 
 concurrency:
-  # PR runs are superseded by newer pushes; main deploys always run to completion.
-  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  # PR runs (and runs dispatched on a branch, like the audit workflow's) are superseded by newer ones; main deploys
+  # always run to completion.
+  group: ${{ (github.event_name == 'pull_request' || github.ref != 'refs/heads/main') && format('pr-{0}', github.ref) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
 
 env:
   # Dependency PRs auto-merge on green, so they also have to prove the rendered site did not change.
@@ -82,6 +83,19 @@ jobs:
         with:
           persist-credentials: false
 
+      # A new advisory fails audit without any file changing. PRs that leave dependencies alone skip it rather than
+      # all failing at once; the daily audit workflow fixes such advisories, and main, dispatch and dependency PRs
+      # still run it.
+      - if: matrix.task == 'audit' && github.event_name == 'pull_request'
+        id: deps
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE"
+          if git diff --quiet "$BASE" HEAD -- package.json pnpm-lock.yaml pnpm-workspace.yaml; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - id: fingerprint
         run: echo "key=verified-${{ matrix.task }}-${{ runner.arch }}-${{ env.SCOPE == 'code' && hashFiles('**', '!src/content/**', '!public/**', '!drafts/**', '!.git/**') || hashFiles('**', '!.git/**') }}${{ matrix.task == 'test' && format('-{0}', hashFiles('public/games/kr-patches/fonts/**')) || '' }}" >> "$GITHUB_OUTPUT"
 
@@ -93,10 +107,10 @@ jobs:
           key: ${{ steps.fingerprint.outputs.key }}
           lookup-only: true
 
-      - if: steps.verified.outputs.cache-hit != 'true'
+      - if: steps.verified.outputs.cache-hit != 'true' && steps.deps.outputs.skip != 'true'
         uses: ./.github/actions/setup
 
-      - if: steps.verified.outputs.cache-hit != 'true'
+      - if: steps.verified.outputs.cache-hit != 'true' && steps.deps.outputs.skip != 'true'
         run: pnpm run ${{ matrix.task }}
 
       - if: env.REUSE == 'true' && steps.verified.outputs.cache-hit != 'true'
@@ -215,16 +229,16 @@ jobs:
           path: .verified
           key: ${{ steps.fingerprint.outputs.key }}
 
-      - if: github.event_name != 'pull_request'
+      - if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
-      - if: github.event_name != 'pull_request'
+      - if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         id: pages
         env:
           ARTIFACT_NAME: github-pages-${{ github.run_attempt }}
         run: echo "name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
 
-      - if: github.event_name != 'pull_request'
+      - if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           name: ${{ steps.pages.outputs.name }}
@@ -437,7 +451,8 @@ jobs:
 
   deploy:
     # success() would also require the skipped bot-only jobs upstream, so check ci-ok's own result.
-    if: ${{ !cancelled() && github.event_name != 'pull_request' && needs.ci-ok.result == 'success' }}
+    # Only main deploys: CI dispatched on another branch (the audit workflow's) must not publish that branch.
+    if: ${{ !cancelled() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.ci-ok.result == 'success' }}
     needs: [ci-ok, build]
     runs-on: ubuntu-26.04-arm
     timeout-minutes: 10
