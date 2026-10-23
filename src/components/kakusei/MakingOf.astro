@@ -1,4 +1,5 @@
 ---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import { downloads, TOTSUGEKI_PATCH, type KrPatch } from '../../lib/kr-patches';
 
@@ -179,13 +180,14 @@ const buildSteps = [
     같은 2MB입니다. 장면 확인은 일본판 롬 안에 남아 있던 개발자용 디버그 메뉴로 했습니다.
   </p>
   <figure class="paper">
-    <img
+    <ZoomImage
       src={img('debug-menu.webp')}
       width="1040"
       height="448"
       alt="일본판 롬에 남아 있는 디버그 메뉴. 왼쪽은 ADVENTURE·BATTLE·SOUND 첫 화면과 95/08/03 빌드 날짜, 오른쪽은 시나리오·플래그·메시지 번호를 고르는 ADVENTURE 화면"
       loading="lazy"
       decoding="async"
+      smooth
     />
     <figcaption>일본판 롬에 남아 있는 디버그 메뉴</figcaption>
   </figure>
@@ -321,13 +323,14 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
         이렇게 넘치는 줄이 2개(ID 0x7C0, 0xE59) 있어 「‥!」과 「‥」가 혼자 다음 줄에 찍힙니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('wrap.webp')}
           width="848"
           height="400"
           alt="대사 창 네 장. 위는 시험용 줄로 나레이션 창은 15번째 글자 「거」, 얼굴 창은 11번째 글자 「카」가 다음 줄로 넘어가는 모습이고, 아래는 v1.2의 실제 나레이션 대사에서 「이」와 「을」이 혼자 다음 줄로 떨어진 모습"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>위는 시험용 줄(왼쪽 나레이션, 오른쪽 얼굴 창), 아래는 v1.2의 실제 대사</figcaption>
       </figure>
@@ -438,13 +441,14 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
         쓰지 않습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('font-sheet.svg')}
           width="620"
           height="356"
           alt="롬의 폰트 시트 네 줄. 파란 줄은 글자 8개의 위 절반, 빨간 줄은 아래 절반이고, 이어 붙이면 슈·가·각·간 같은 글자가 된다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -452,13 +456,14 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
         Galmuri11 폰트로 깨·꽉·꾼·닿·렁·롭·벅·빡·뻐·셋·씻 11자를 그려 넣었습니다. 아래는 그렇게 넣은 「깨」입니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('glyph-kkae.svg')}
           width="520"
           height="412"
           alt="대사 폰트 코드 0x123에 그려 넣은 「깨」를 16×16 픽셀 격자와 줄마다의 바이트 값으로 나타낸 그림"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -515,13 +520,14 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
         4자($B7), 헤더 체크섬이 바뀌었습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('rom-map.svg')}
           width="860"
           height="432"
           alt="2MB 롬을 뱅크 64칸으로 그린 지도. $98–$9F가 대사, $B6–$B7이 폰트, $89가 타이틀 그림이고, v1.1이 메뉴·지명·크레딧·전투 말풍선을 바꾼 $80–$84·$88·$B4가 초록, v1.2가 되살린 $83:F3AF와 $88:FFAE가 빨간 줄로 표시돼 있다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
 
@@ -549,13 +555,14 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
         </li>
       </ul>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('overwrite.svg')}
           width="812"
           height="252"
           alt="파일 0x47FA8부터 16바이트. 일본판은 경로 레코드와 끝 표시 FFFF 뒤가 비어 있고, v1.1은 끝 표시부터 한글 지명으로 덮였고, v1.2는 원래 바이트를 되살리고 지명을 뒤로 밀었다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -587,13 +594,14 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
         왼쪽처럼 줄무늬가 지고, 순서를 바꿔야 오른쪽처럼 제대로 보입니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('title-lzss.webp')}
           width="1040"
           height="912"
           alt="타이틀 그림을 롬에서 꺼낸 결과. 위는 일본판, 아래는 v1.2이고 왼쪽은 압축만 푼 줄무늬 상태, 오른쪽은 바이트 순서를 바꿔 超悟空伝 覚醒編과 초오공전 각성편 로고가 보이는 상태"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>위 일본판, 아래 v1.2. 왼쪽은 압축만 푼 상태, 오른쪽은 순서를 바꾼 상태</figcaption>
       </figure>
@@ -654,13 +662,14 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
         그려 넣었습니다. 새 게임의 이름 입력 화면도 같은 칸과 격자를 써서, 이름 입력 글자판의 배치도 함께 바뀌었습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('password-grid.webp')}
           width="1556"
           height="224"
           alt="암호 입력 화면 여섯 장. 왼쪽부터 일본판의 히라가나·가타카나 격자, v1.2의 한글 격자 두 장, v1.3의 한글 격자 두 장"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>왼쪽부터 일본판, v1.2, v1.3의 입력 격자(히라가나 칸, 가타카나 칸)</figcaption>
       </figure>

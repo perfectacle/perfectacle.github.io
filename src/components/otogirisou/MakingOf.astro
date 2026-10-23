@@ -1,4 +1,5 @@
 ---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import { downloads, type KrPatch } from '../../lib/kr-patches';
 
@@ -177,13 +178,14 @@ const toolVersions = [
     엔딩 목록을 넣었습니다. 게임 엔진에 새 화면과 새 동작을 끼워 넣은 것이라 번역 패치라기보다 개조 롬에 가깝습니다.
   </p>
   <figure class="paper">
-    <img
+    <ZoomImage
       src={img('versions.webp')}
       width="1568"
       height="448"
       alt="세 화면을 나란히 놓은 그림. 왼쪽은 v1.0 2회차에서 w로 가득 차 멈춘 화면, 가운데는 v1.1에서 단어 단위로 줄이 바뀐 산길 장면, 오른쪽은 v1.2 플로차트의 제1장 강낚시 귀갓길"
       loading="lazy"
       decoding="async"
+      smooth
     />
     <figcaption>왼쪽부터 v1.0 2회차 멈춤, v1.1 단어 단위 줄바꿈, v1.2 플로차트</figcaption>
   </figure>
@@ -282,13 +284,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         18바이트입니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('script-bits.svg')}
           width="860"
           height="490"
           alt="일본판 첫 문장 夏の夕暮。는 글자마다 5~16비트로 이어 붙은 61비트이고, v1.0의 여름의 해질녘.은 글자마다 2바이트씩 18바이트다. 아래는 の의 비트 01001을 따라 노드 0B6C에서 잎 862E까지 내려가는 길"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -320,13 +323,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         2번은 일본판 값을 그대로 둬서, 2번이 뽑히면 엉뚱한 데이터를 대사로 읽었습니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('freeze-lap2.webp')}
           width="630"
           height="920"
           alt="위는 v1.0 2회차에서 화면이 w로 가득 차 멈춘 모습, 아래는 v1.1에서 정상으로 시작한 2번 시나리오"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -350,13 +354,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         두 번 눌러야 넘어갔습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('a-wait.webp')}
           width="1150"
           height="970"
           alt="v1.0은 버튼을 누르지 않고 2초 뒤 다음 화면으로 넘어가 있고, v1.1은 같은 자리에서 기다린다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -385,13 +390,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         문맥과 맞춰 검수했습니다. 잋→잊, 꿀→훌, 뒸→뒀처럼 30자를 바로잡았습니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('glyph-mieum.svg')}
           width="560"
           height="330"
           alt="v1.0 폰트의 「마」와 「아」를 픽셀 격자로 그린 그림. 네 모서리 픽셀 하나씩만 다르다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -405,13 +411,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         남았습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('font-groups.svg')}
           width="860"
           height="380"
           alt="폰트 그룹 표를 칸으로 그린 그림. v1.0은 58칸이 꽉 차서 바로 뒤 $00:F5CE의 줄 끝 문자 목록에 닿아 있고, v1.1과 v1.2는 합친 45칸과 새 글자 3칸을 쓰고 10칸이 빈다. 아래는 첫 칸 05 92 00 80 2C를 517자, 폭 9, $1F:8000, 높이 11로 읽는 법"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -442,13 +449,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         중간에서 끊기고, 줄 끝 공백이 다음 줄 첫머리로 넘어가 한 칸 들여 쓴 것처럼 보였습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('wordwrap.webp')}
           width="1064"
           height="940"
           alt="왼쪽 v1.0은 단어 중간에서 줄이 끊기고, 오른쪽 v1.1은 단어 단위로 줄이 바뀐다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -547,13 +555,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         것입니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('three-readers.svg')}
           width="860"
           height="430"
           alt="대본을 본문, 배치 미리 읽기, 장면 미리 읽기 셋이 각자 다른 위치에서 읽는 도식"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <ul class="notes">
@@ -610,23 +619,25 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         것이 나옵니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('menu-script.svg')}
           width="860"
           height="470"
           alt="Select를 누르면 WRAM에 메뉴 대본을 쓰고 대본 위치를 그쪽으로 옮기면, 게임의 선택지 코드가 메뉴를 보여 주고 고른 보기의 새 명령이 장으로 점프하는 흐름"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('menu-page.webp')}
           width="512"
           height="448"
           alt="어디부터 다시 읽을까요 아래 제3장, 지금까지 읽은 모든 장, 엔딩 목록, 돌아가기 보기가 나열된 화면"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>게임의 선택지 화면이 그대로 메뉴가 됩니다</figcaption>
       </figure>
@@ -687,13 +698,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         할 것은 끄고 켜야 할 것은 페이드 인하는 명령을 점프 앞에 넣습니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={`${base}/images/features/jump-ch8.webp`}
           width="256"
           height="224"
           alt="배경 명령이 없는 8장으로 옮겨도 원래 장면인 차고에서 시작한다"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>첫 페이지에 배경 명령이 없는 8장도 차고 장면에서 시작합니다</figcaption>
       </figure>
@@ -759,13 +771,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         때의 지도로, 흰 상자가 한 화면에 들어가는 양입니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('flow-map.webp')}
           width="860"
           height="1496"
           alt="파란 선택지 노드와 빨간 엔딩 노드가 41줄로 늘어선 전체 지도. 왼쪽 위 흰 상자가 한 화면 크기다"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>파랑은 선택지, 빨강은 엔딩</figcaption>
       </figure>
@@ -885,13 +898,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         정하는 쓰기도 없었고, 51번 모두 $00:0000–$00:08FF로 뛰는 폭주가 없었습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('rom-map.svg')}
           width="860"
           height="420"
           alt="2MB 롬을 뱅크 64칸으로 그린 지도. 일본판 대사가 있던 $15–$1F 자리에 v1.1과 v1.2 코드가 들어가고, 늘린 1MB에 한글 대사가 있다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <ToolFiles

@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'img'>, 'width' | 'height' | 'alt'> & {
+  width: number | string;
+  height: number | string;
+  alt: string;
+  /** Draws the image smoothly on the page, for large composites shown below their own size. */
+  smooth?: boolean;
+};
+
+const { width, height, alt, smooth = false, loading = 'lazy', decoding = 'async', ...rest } = Astro.props;
+const dimensions = `--patch-image-width: ${Number(width)}px; --patch-image-ratio: ${Number(width) / Number(height)}`;
+---
+
+<button class="zoom-image" type="button" data-patch-preview aria-label={`${alt} 크게 보기`}>
+  <span class:list={['patch-picture', { smooth }]} style={dimensions}>
+    <img {...rest} width={width} height={height} alt={alt} loading={loading} decoding={decoding} />
+  </span>
+</button>
+
+<style>
+  .zoom-image {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: zoom-in;
+  }
+
+  .zoom-image:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .patch-picture {
+    display: block;
+  }
+
+  .patch-picture img {
+    display: block;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+  }
+
+  .patch-picture.smooth img {
+    image-rendering: auto;
+  }
+
+  /* Enlarged, every raster capture is a game screen at heart, so it keeps hard pixels. Must follow the rule above. */
+  :global(.preview-content) .patch-picture img {
+    image-rendering: pixelated;
+  }
+</style>

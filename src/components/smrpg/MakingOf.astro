@@ -1,4 +1,5 @@
 ---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import { downloads, type KrPatch } from '../../lib/kr-patches';
 
@@ -209,13 +210,14 @@ const allFiles = Object.entries(files)
     문제를 풀었습니다. 롬 크기는 원본과 같은 4MB입니다.
   </p>
   <figure class="paper">
-    <img
+    <ZoomImage
       src={img('names-shop.webp')}
       width="1150"
       height="920"
       alt="위는 v1.0, 아래는 v1.1 상점 화면. 영문 아이템 이름이 한글로 바뀌었다"
       loading="lazy"
       decoding="async"
+      smooth
     />
     <figcaption>위 v1.0, 아래 v1.1</figcaption>
   </figure>
@@ -343,13 +345,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         꺼낸 「마」입니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('glyph-ma.svg')}
           width="436"
           height="354"
           alt="메뉴 폰트의 「마」 글자를 8×12 픽셀 격자와 줄마다의 바이트 값으로 나타낸 그림"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -359,13 +362,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         v1.0이 넣은 한글 165자입니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('menu-font-v1.webp')}
           width="696"
           height="938"
           alt="v1.0 메뉴 폰트 256칸. 0x20부터 0xFF까지 빈칸 없이 아이콘·영숫자·한글로 차 있다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -401,13 +405,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         들어갑니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('vram-slots.svg')}
           width="860"
           height="250"
           alt="필드 메뉴 VRAM. 타일 $000–$1FF는 상주 폰트, $200–$2FF는 128칸짜리 임시 글자 칸"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -449,13 +454,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         새 글자는 거기서 64KB 안에만 둘 수 있어서, 그 범위의 빈 구간 네 곳에 나눠 넣었습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('names-battle.webp')}
           width="1670"
           height="920"
           alt="위는 v1.0, 아래는 v1.1 전투 화면. 적 이름, 아이템 목록, 사용 메시지가 한글이 됐다"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>위 v1.0, 아래 v1.1</figcaption>
       </figure>
@@ -495,13 +501,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         평소에는 나오지 않는 것으로 보고, 바로잡는 김에 함께 고쳤습니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={`${base}/images/releases/v1-2/banner-special.webp`}
           width="630"
           height="920"
           alt="위는 v1.1, 아래는 v1.2 전투 이름 띠. CRUSH가 확장 글자가 든 솟아나라쑤욱으로 바뀌었다"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>위 v1.1, 아래 v1.2. 띠를 띄우려고 적의 행동을 바꾼 테스트 롬에서 찍었습니다.</figcaption>
       </figure>
@@ -517,13 +524,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         두었습니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={`${base}/images/releases/v1-2/yoshi-cookie.webp`}
           width="630"
           height="920"
           alt="위는 v1.1, 아래는 v1.2 전투 화면. 요시쿠키 메시지의 MUSHROOM이 버섯으로 바뀌었다"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>위 v1.1, 아래 v1.2</figcaption>
       </figure>
@@ -539,24 +547,26 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         받습니다. 책 한 권을 둘이 같이 읽는데 한 사람이 말없이 페이지를 넘기는 상황입니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('sa1-windows.svg')}
           width="860"
           height="400"
           alt="S-CPU와 SA-1이 $C0, $D0, $E0, $F0 창 4개로 롬 블록 0–3을 읽는다. 창을 블록 4로 돌리면 다른 CPU가 잘못 읽는다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>그래서 롬을 늘리지 않고, 일본판 원본에서도 0이나 0xFF로 비어 있던 공간만 찾아 썼습니다.</p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('rom-free-space.svg')}
           width="860"
           height="458"
           alt="4MB 롬 지도. v1.1은 원본의 빈 공간 몇 곳에만 코드와 데이터를 넣었다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
 
@@ -633,13 +643,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         </table>
       </div>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('banner.webp')}
           width="1150"
           height="1376"
           alt="획득 메시지. 위부터 일본판, v1.0, v1.1이고 노란 선이 화면 가운데다"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>노란 선이 화면 가운데. 위부터 일본판, v1.0, v1.1</figcaption>
       </figure>
@@ -662,13 +673,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         없어진 음절이 생겨도 다른 음절의 코드가 밀리지 않게 했습니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={`${base}/images/releases/v1-2/glyph-result.webp`}
           width="630"
           height="920"
           alt="위는 v1.1, 아래는 v1.2 전투 결과 창. 캡셸로 나오던 아이템 이름이 힐쉘로 나온다"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>위 v1.1, 아래 v1.2</figcaption>
       </figure>
@@ -677,13 +689,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         들어가 비어 버린 대사도 있었습니다. 일본판과 대조해 복구했습니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('restored.webp')}
           width="630"
           height="920"
           alt="두더지 마을 양동이 소녀에게 카보쿠키를 주면 v1.0에서 빠졌던 개구리 코인 획득 메시지가 나온다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
 
@@ -701,13 +714,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
 회복샤워 → 「워」 받침 없음 → 회복샤워를</code></pre>
       <p>숫자는 읽는 소리로 정했습니다. 마지막 자리가 2, 4, 5, 9면 「가」, 나머지는 「이」입니다.</p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('particles-levelup.webp')}
           width="2190"
           height="920"
           alt="레벨업 화면에서 필살기 이름과 레벨 숫자 뒤의 조사가 받침에 맞게 나온다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
 
@@ -722,24 +736,26 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
         당겼습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('result-jp.webp')}
           width="1670"
           height="920"
           alt="위는 일본판, 아래는 v1.1 전투 결과 창"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>위 일본판, 아래 v1.1</figcaption>
       </figure>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('special-hint.webp')}
           width="1150"
           height="920"
           alt="위는 일본판, 아래는 v1.1 필살기 화면의 다음 기술 안내"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>위 일본판, 아래 v1.1</figcaption>
       </figure>
@@ -787,13 +803,14 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
       </p>
       <h4>개발자 디버그 메뉴</h4>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('debug-menus.webp')}
           width="1040"
           height="448"
           alt="왼쪽은 전투 중 Start로 연 전투 디버그 메뉴, 오른쪽은 마리오 집에서 연 필드 디버그 메뉴"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>왼쪽 전투 디버그 메뉴, 오른쪽 필드 디버그 메뉴</figcaption>
       </figure>

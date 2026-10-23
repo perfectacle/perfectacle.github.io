@@ -1,4 +1,5 @@
 ---
+import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import ComparePairs from '../../../../components/kr-patch/ComparePairs.astro';
@@ -158,7 +159,7 @@ const chapter = (id: string) => {
       {features.map(item => (
         <article class="feature frame">
           <figure class="screen">
-            <img
+            <ZoomImage
               src={`${base}/images/features/${item.image}.webp`}
               width="256"
               height="224"
@@ -201,7 +202,7 @@ const chapter = (id: string) => {
       </div>
       <div class="story-shots">
         <figure class="screen">
-          <img
+          <ZoomImage
             src={`${base}/images/scenes/road.webp`}
             width="256"
             height="224"
@@ -211,7 +212,7 @@ const chapter = (id: string) => {
           />
         </figure>
         <figure class="screen">
-          <img
+          <ZoomImage
             src={`${base}/images/scenes/mansion.webp`}
             width="256"
             height="224"
@@ -233,7 +234,7 @@ const chapter = (id: string) => {
       {play.map(item => (
         <article class="play frame">
           <figure class="screen">
-            <img
+            <ZoomImage
               src={`${base}/images/${item.image}.webp`}
               width="256"
               height="224"

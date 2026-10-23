@@ -1,4 +1,5 @@
 ---
+import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import CompareGroup from '../../../../components/kr-patch/CompareGroup.astro';
@@ -124,7 +125,7 @@ const cast = [
       </ManualPatch>
     </div>
     <figure class="hero-shot screen">
-      <img
+      <ZoomImage
         src={`${base}/images/title.webp`}
         width="256"
         height="224"
@@ -172,7 +173,7 @@ const cast = [
       </div>
       <div class="story-shots">
         <figure class="screen">
-          <img
+          <ZoomImage
             src={`${base}/images/scenes/bulma.webp`}
             width="256"
             height="224"
@@ -182,7 +183,7 @@ const cast = [
           />
         </figure>
         <figure class="screen">
-          <img
+          <ZoomImage
             src={`${base}/images/scenes/dragon-balls.webp`}
             width="256"
             height="224"
@@ -229,7 +230,7 @@ const cast = [
       {play.map(item => (
         <article class="play frame">
           <figure class="screen">
-            <img
+            <ZoomImage
               src={`${base}/images/scenes/${item.image}.webp`}
               width="256"
               height="224"

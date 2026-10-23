@@ -1,4 +1,5 @@
 ---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
 interface Props {
   index: number;
   alt: string;
@@ -11,7 +12,7 @@ const src = `/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/images/ba
 
 <figure class="battle-shot">
   <div class="screen">
-    <img src={src} alt={alt} width="256" height="239" loading="lazy" decoding="async" />
+    <ZoomImage src={src} alt={alt} width="256" height="239" loading="lazy" decoding="async" />
   </div>
   <figcaption>{caption}</figcaption>
 </figure>

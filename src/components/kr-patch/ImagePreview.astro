@@ -64,7 +64,7 @@
     max-height: calc(100dvh - 24px);
     margin: auto;
     padding: 12px;
-    overflow: hidden;
+    overflow: auto;
     border: 1px solid var(--accent);
     border-radius: 6px;
     background: #17191e;
@@ -76,6 +76,12 @@
   }
 
   .preview-header {
+    position: sticky;
+    top: -12px;
+    z-index: 1;
+    margin-top: -12px;
+    padding-top: 12px;
+    background: #17191e;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -106,12 +112,17 @@
   }
 
   .preview-content :global(.patch-picture) {
+    /* Small game screens grow up to 3x; large diagrams open at least at their own size. */
     width: min(
-      calc(var(--patch-image-width) * 3),
-      1100px,
+      max(min(calc(var(--patch-image-width) * 3), 1100px), var(--patch-image-width)),
       calc(100vw - 50px),
       calc((100dvh - 120px) * var(--patch-image-ratio))
     );
     margin-inline: auto;
+  }
+
+  /* Large diagrams would shrink below their page size if fitted to the height, so they scroll instead. */
+  .preview-content :global(.patch-picture.smooth) {
+    width: min(max(min(calc(var(--patch-image-width) * 3), 1100px), var(--patch-image-width)), calc(100vw - 50px));
   }
 </style>
