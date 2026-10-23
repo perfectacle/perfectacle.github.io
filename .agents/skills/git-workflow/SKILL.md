@@ -9,6 +9,13 @@ description: 코드·설정을 바꾸기 전에(워크트리·브랜치), 커밋
 
 ## 절차
 
+0. **같은 일을 하는 열린 PR 이 없는지 본다** — 여러 세션과 Renovate 가 같은 저장소에서 동시에 일해서, 같은 수정이 PR 두 개로 올라가곤 한다(예: 새 advisory 로 `audit` 이 깨지면 여러 세션이 각자 같은 버전을 올린다).
+   ```sh
+   gh pr list --state open --json number,title,headRefName,author --jq '.[] | "#\(.number) \(.author.login) \(.headRefName): \(.title)"'
+   gh pr list --state open --search "<패키지·파일·키워드>"
+   ```
+   겹치는 PR 이 있으면 새로 만들지 않는다. 그 PR 이 자동 머지를 기다리는 중이면 끝나기를 기다리고, 막혀 있으면 그 브랜치에서 고친다. Renovate PR 이면 [dependencies](../dependencies/SKILL.md) 를 따른다.
+   완료: 겹치는 열린 PR 이 없거나, 있는 PR 을 따르기로 했다.
 1. **최신 main 에서 워크트리를 판다** — 기존 체크아웃에서 `git switch` 하지 않는다. 다른 에이전트 세션이 같은 체크아웃에서 일하고 있을 수 있어서, 브랜치를 바꾸면 그 세션의 작업 트리가 통째로 바뀐다. [GIT-02](#git-02--작업마다-워크트리)
    ```sh
    git fetch origin main
