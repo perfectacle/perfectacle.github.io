@@ -747,15 +747,16 @@ const PATCH_SCREEN_COVERAGE: Record<string, { version: string; images: string[] 
     {
       version: 'release-1-1',
       images: [
-        'names-shop',
-        'names-battle',
-        'specials',
-        'particles-levelup',
-        'result-jp',
-        'special-hint',
-        'banner',
-        'mistranslation',
-        'restored',
+        'shop-buy-v1-0',
+        'shop-buy-v1-1',
+        'battle-weapon-v1-1',
+        'special-battle-v1-1',
+        'levelup-level-v1-1',
+        'result-short-jp',
+        'special-field-v1-1',
+        'item-banner-static-v1-1',
+        'mistrans-iga-valley-v1-1',
+        'frog-coin-restore-v1-1',
       ],
     },
     { version: 'release-1-0', images: ['title.webp'] },
@@ -851,9 +852,15 @@ for (const game of PATCH_GUIDES) {
     const korean = page.locator(game.startsWith('dragon-ball') ? '#changes' : '#korean');
     await expect(korean.getByRole('heading', { level: 2 })).toHaveText('한국어로 바뀐 것');
     await expect(korean).not.toContainText(/업데이트|v1\.[012]/);
-    if (game.startsWith('dragon-ball')) {
-      await expect(korean.locator('.compare-group')).toHaveCount(0);
-      expect(await notes.locator('.compare-group').count()).toBeGreaterThan(0);
+    if (game.startsWith('dragon-ball')) await expect(korean.locator('.compare-group')).toHaveCount(0);
+    // Every page lays its notes out the same way: items of text and side-by-side panels, never the showcase groups.
+    await expect(notes.locator('.compare-group, .version-pair')).toHaveCount(0);
+    for (const body of await notes.locator('.release-body').all()) {
+      expect(await body.evaluate(node => [...node.children].every(child => child.matches('.release-item')))).toBe(true);
+    }
+    expect(await notes.locator('.release-item + .release-item').count()).toBeGreaterThan(0);
+    for (const caption of await notes.locator('.release-screenshot figcaption').allTextContents()) {
+      expect(caption).not.toMatch(/^v\d/);
     }
   });
 
@@ -916,15 +923,17 @@ for (const game of PATCH_GUIDES) {
     await expect(notes).not.toContainText('사진을 눌러 크게 보기');
     for (const summary of await notes.locator('.release-details > summary').all()) await summary.click();
     const triggers = [notes.locator('.release-screenshot .patch-image-trigger').first()];
-    if (await notes.locator('.version-pair .patch-image-trigger').count()) {
-      triggers.push(notes.locator('.version-pair .patch-image-trigger').first());
-    }
     triggers.push(notes.locator('.patch-image-trigger:has(.patch-highlights)').first());
     const panels = notes.locator('.release-panels');
     for (const pair of await panels.all()) {
-      await expect(pair.locator('.panel-label').first()).toHaveText(/^(v1\.[01]|일본판)$/);
-      await expect(pair.locator('.panel-label').last()).toHaveText(/^v1\.[12]$/);
-      await expect(pair.locator('.patch-picture')).toHaveCount(2);
+      const labels = await pair.locator('.panel-label').allTextContents();
+      if (labels.length > 1 && /^(v1\.\d|일본판)$/.test(labels[0] ?? '')) {
+        expect(labels[0]).toMatch(/^(v1\.[012]|일본판)$/);
+        expect(labels.at(-1)).toMatch(/^v1\.[123]$/);
+      }
+      expect((await pair.locator('.patch-picture').count()) + (await pair.locator('.panel-note').count())).toBe(
+        Math.max(labels.length, 1),
+      );
       for (const panel of await pair.locator('.patch-picture').all()) {
         await panel.scrollIntoViewIfNeeded();
         await expect(panel).toHaveCSS('overflow', 'clip');
@@ -943,13 +952,23 @@ for (const game of PATCH_GUIDES) {
         const frame = await panel.boundingBox();
         if (!frame) throw new Error('Missing comparison panel');
         expect(frame.width).toBeGreaterThanOrEqual(256);
-        expect(frame.width / frame.height).toBeCloseTo(512 / 448, 2);
+        const ratio = await panel.evaluate(node =>
+          Number(getComputedStyle(node).getPropertyValue('--patch-image-ratio')),
+        );
+        expect(frame.width / frame.height).toBeCloseTo(ratio, 2);
       }
-      const [before, after] = await pair.locator('.patch-picture').all();
-      if (!before || !after) throw new Error('Missing before/after panels');
-      const first = await before.boundingBox();
-      const second = await after.boundingBox();
-      if (isMobile && first && second) expect(second.y).toBeGreaterThanOrEqual(first.y + first.height);
+      // Read every cell in one pass: smooth scrolling can move the page between two separate measurements.
+      const cells = await pair.locator('.release-panel').evaluateAll(nodes =>
+        nodes.map(node => {
+          const box = node.getBoundingClientRect();
+          return { top: box.top, bottom: box.bottom };
+        }),
+      );
+      if (isMobile) {
+        for (const [index, cell] of cells.slice(1).entries()) {
+          expect(cell.top).toBeGreaterThanOrEqual(cells[index]?.bottom ?? 0);
+        }
+      }
     }
     const preview = page.getByRole('dialog', { name: '스크린샷 미리 보기' });
     for (const [index, trigger] of triggers.entries()) {

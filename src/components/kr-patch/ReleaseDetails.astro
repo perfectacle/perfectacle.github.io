@@ -29,38 +29,4 @@
     min-width: 0;
     padding: 4px 16px 20px;
   }
-
-  .release-body > :global(p),
-  .release-body > :global(ul),
-  .release-body > :global(ol) {
-    max-inline-size: 42rem;
-  }
-
-  .release-body :global(ul) {
-    padding-left: 1.5em;
-    list-style: disc;
-  }
-
-  .release-body :global(.version-pair) {
-    width: 100%;
-    max-width: 800px;
-  }
-
-  .release-body :global(.compare-shots) {
-    gap: 12px;
-  }
-
-  .release-body :global(.screen .patch-image-trigger) {
-    margin-inline: auto;
-  }
-
-  .release-body :global(.version-pair .patch-image-trigger) {
-    width: min(100%, 512px);
-  }
-
-  @media (max-width: 599px) {
-    .release-body :global(.compare-shots) {
-      grid-template-columns: 1fr;
-    }
-  }
 </style>

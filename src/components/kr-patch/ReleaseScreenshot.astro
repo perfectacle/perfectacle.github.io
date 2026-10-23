@@ -1,57 +1,63 @@
 ---
-import type { ScreenshotCrop, ScreenshotHighlight } from '../../lib/version-pairs';
+import type { ReleasePanel, ScreenshotHighlight } from '../../lib/version-pairs';
 import Screenshot from './Screenshot.astro';
 
 interface Props {
-  src: string;
-  width: number;
-  height: number;
-  alt: string;
-  caption: string;
+  src?: string;
+  width?: number;
+  height?: number;
+  alt?: string;
+  caption?: string | undefined;
   highlights?: ScreenshotHighlight[];
-  panels?: { label: string; crop: ScreenshotCrop; alt: string }[];
+  /** Side-by-side cells, older version first. */
+  panels?: ReleasePanel[];
+  /** Several rows of cells for scenes that span more than one screen. */
+  rows?: ReleasePanel[][];
 }
 
-const { src, width, height, alt, caption, highlights, panels } = Astro.props;
+const { src, width = 256, height = 224, alt = '', caption, highlights, panels, rows } = Astro.props;
+const lines = rows ?? (panels ? [panels] : [[{ alt }]]);
+const columns = Math.max(...lines.map(line => line.length));
 ---
 
-<figure class="release-screenshot">
-  {panels?.length ? (
+<figure class="release-screenshot" style={`--release-columns: ${columns}`}>
+  {lines.map(line => (
     <div class="release-panels">
-      {panels.map(panel => (
+      {line.map(panel => (
         <div class="release-panel">
-          <p class="panel-label">{panel.label}</p>
-          <Screenshot
-            src={src}
-            width={width}
-            height={height}
-            alt={panel.alt}
-            crop={panel.crop}
-            highlights={highlights}
-          />
+          {panel.label && <p class="panel-label">{panel.label}</p>}
+          {panel.note ? (
+            <p class="panel-note">{panel.note}</p>
+          ) : (
+            <Screenshot
+              src={panel.src ?? src ?? ''}
+              width={panel.width ?? width}
+              height={panel.height ?? height}
+              alt={panel.alt}
+              crop={panel.crop}
+              highlights={panel.highlights ?? highlights}
+            />
+          )}
         </div>
       ))}
     </div>
-  ) : (
-    <Screenshot src={src} width={width} height={height} alt={alt} highlights={highlights} />
-  )}
-  <figcaption>{caption}</figcaption>
+  ))}
+  {caption && <figcaption>{caption}</figcaption>}
 </figure>
 
 <style>
   .release-screenshot {
     display: grid;
-    justify-items: start;
-    gap: 8px;
+    gap: 12px;
     min-width: 0;
     width: 100%;
-    max-width: 1040px;
+    max-width: calc(var(--release-columns) * 512px + (var(--release-columns) - 1) * 16px);
     margin: 0;
   }
 
   .release-panels {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--release-columns), minmax(0, 1fr));
     gap: 16px;
     width: 100%;
   }
@@ -65,6 +71,20 @@ const { src, width, height, alt, caption, highlights, panels } = Astro.props;
 
   .panel-label {
     font-weight: bold;
+  }
+
+  .panel-note {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 256 / 224;
+    padding: 12px;
+    border: 1px dashed var(--muted);
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .release-panel :global(.patch-image-trigger) {
+    width: 100%;
   }
 
   @media (max-width: 599px) {
