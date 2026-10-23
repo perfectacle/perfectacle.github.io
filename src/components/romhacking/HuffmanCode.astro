@@ -1,0 +1,542 @@
+---
+import { build, encode, symbolsOf } from '../../lib/huffman.ts';
+import { MAX_DISTINCT, MAX_SYMBOLS, SAMPLE_TEXT, shown, spoken, treeSvg, treeText } from './huffman-view.ts';
+
+// Without scripts the widget shows the sample sentence with the finished tree, codes and bits.
+const tree = build(SAMPLE_TEXT);
+const symbols = symbolsOf(SAMPLE_TEXT);
+const bits = encode(tree, SAMPLE_TEXT);
+const all = tree.merges.length;
+---
+
+<section class="widget huffman" data-huffman aria-labelledby="huff-title">
+  <h3 class="widget-title" id="huff-title">
+    허프만 부호 만들어 보기
+  </h3>
+  <p class="widget-help">
+    문장의 글자 수를 세고, 가장 적게 나온 둘을 묶기를 되풀이해 나무를 만든 뒤, 나무에서 글자마다 부호를 읽어 냅니다.{' '}
+    <span class="live-only">
+      문장을 바꿔 보세요. 한글·영문·기호 모두 한 글자로 셉니다({MAX_SYMBOLS}글자, 서로 다른 글자 {MAX_DISTINCT}개까지).
+      횟수가 같으면 먼저 나온 글자, 먼저 만든 묶음을 먼저 고릅니다.
+    </span>
+  </p>
+
+  <div class="hf-input live-only">
+    <label for="huff-text">문장</label>
+    <input
+      id="huff-text"
+      type="text"
+      value={SAMPLE_TEXT}
+      maxlength={MAX_SYMBOLS * 2}
+      spellcheck="false"
+      autocomplete="off"
+      aria-describedby="huff-error"
+      data-text
+    />
+    <p class="widget-error" id="huff-error" role="alert" data-error hidden></p>
+  </div>
+  <p class="static-only hf-static-text">문장: 「{SAMPLE_TEXT}」</p>
+
+  <h4 class="hf-step-title">① 글자 세기와 부호</h4>
+  <div class="table-scroll" tabindex="0" role="region" aria-labelledby="huff-table-caption">
+    <table class="hf-table" data-table>
+      <caption id="huff-table-caption">글자마다 나온 횟수와 부호</caption>
+      <thead>
+        <tr>
+          <th scope="col">글자</th>
+          <th scope="col">횟수</th>
+          <th scope="col">부호</th>
+          <th scope="col">비트 수</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tree.leaves.map(l => (
+          <tr>
+            <th scope="row" aria-label={spoken(l.symbol)}>
+              {shown(l.symbol)}
+            </th>
+            <td>{l.weight}</td>
+            <td>
+              <code>{tree.codes.get(l.symbol)}</code>
+            </td>
+            <td>
+              {l.weight} × {tree.codes.get(l.symbol)?.length} = {l.weight * (tree.codes.get(l.symbol)?.length ?? 0)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h4 class="hf-step-title">② 가장 가벼운 둘을 묶어 나무 만들기</h4>
+  <div class="hf-buttons live-only">
+    <button type="button" class="widget-btn is-primary" data-act="merge">
+      한 번 묶기
+    </button>
+    <button type="button" class="widget-btn" data-act="merge-all">
+      끝까지 묶기
+    </button>
+    <button type="button" class="widget-btn" data-act="unmerge">
+      처음부터
+    </button>
+  </div>
+  <p class="hf-msg live-only" data-merge-msg></p>
+  <ol class="hf-queue live-only" aria-label="묶기를 기다리는 것, 가벼운 순" data-queue></ol>
+  <div class="hf-tree" data-tree>
+    <Fragment set:html={treeSvg(tree, all)} />
+  </div>
+  <p class="visually-hidden" data-tree-text>
+    {treeText(tree, all)}
+  </p>
+  <p class="hf-hint">
+    위에서 내려가며 왼쪽 가지는 0, 오른쪽 가지는 1입니다. 뿌리에서 글자까지 지나는 숫자를 이으면 그 글자의 부호입니다.
+  </p>
+
+  <h4 class="hf-step-title">③ 부호를 이어 붙인 비트열</h4>
+  <p class="hf-bits" data-bits aria-label={`비트열 ${bits}`}>
+    {symbols.map(s => (
+      <span class="hf-group">
+        <code>{tree.codes.get(s)}</code>
+        <small>{shown(s)}</small>
+      </span>
+    ))}
+  </p>
+  <p class="hf-sum" data-sum>
+    {symbols.length}글자가 {bits.length}비트입니다. 글자마다 2바이트(16비트)로 적으면 {symbols.length * 16}비트입니다.
+  </p>
+
+  <div class="live-only" data-decode-box>
+    <h4 class="hf-step-title">④ 비트열을 한 비트씩 읽어 되돌리기</h4>
+    <p class="hf-msg" data-decode-wait hidden>
+      나무를 끝까지 묶으면 풀어 볼 수 있습니다.
+    </p>
+    <div class="hf-buttons" data-decode-controls>
+      <button type="button" class="widget-btn is-primary" data-act="bit">
+        한 비트 읽기
+      </button>
+      <button type="button" class="widget-btn" data-act="bits-all">
+        끝까지 읽기
+      </button>
+      <button type="button" class="widget-btn" data-act="unbit">
+        처음부터
+      </button>
+    </div>
+    <p class="hf-msg" data-decode-msg></p>
+    <p class="hf-out">
+      풀어 낸 글: <strong data-decoded></strong>
+    </p>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { build, decodeSteps, encode, isLeaf, symbolsOf, type HuffTree } from '../../lib/huffman.ts';
+  import { SAMPLE_TEXT, checkText, shown, spoken, treeSvg, treeText } from './huffman-view.ts';
+
+  const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-huffman]')) {
+    const $ = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel);
+    const input = $<HTMLInputElement>('[data-text]');
+    const error = $('[data-error]');
+    const live = $('[data-live]');
+    const say = (text: string) => {
+      if (live) live.textContent = text;
+    };
+    const btn = (act: string) => $<HTMLButtonElement>(`[data-act="${act}"]`);
+
+    let text = SAMPLE_TEXT;
+    let tree: HuffTree = build(text);
+    let merged = 0;
+    let read = 0;
+
+    const nodeName = (id: number) => {
+      const n = tree.nodes[id];
+      if (!n) return '';
+      return isLeaf(n) ? `「${shown(n.symbol)}」(${n.weight})` : `묶음(${n.weight})`;
+    };
+
+    const render = () => {
+      const all = tree.merges.length;
+      const built = merged === all;
+      const bits = encode(tree, text);
+      const steps = decodeSteps(tree, bits);
+      const done = steps.slice(0, read);
+      const cur = done.at(-1);
+
+      // ① table: codes only once the tree is finished.
+      const body = $<HTMLTableElement>('[data-table]')?.tBodies[0];
+      body?.replaceChildren(
+        ...tree.leaves.map(l => {
+          const tr = el('tr');
+          const th = el('th', '', shown(l.symbol));
+          th.scope = 'row';
+          th.setAttribute('aria-label', spoken(l.symbol));
+          const code = tree.codes.get(l.symbol) ?? '';
+          const codeCell = el('td');
+          codeCell.append(el('code', '', built ? code : '—'));
+          tr.append(
+            th,
+            el('td', '', String(l.weight)),
+            codeCell,
+            el('td', '', built ? `${l.weight} × ${code.length} = ${l.weight * code.length}` : '—'),
+          );
+          return tr;
+        }),
+      );
+
+      // ② queue and tree.
+      const queue = merged < all ? (tree.merges[merged]?.queue ?? []) : [tree.root];
+      const next = merged < all ? queue.slice(0, 2) : [];
+      $('[data-queue]')?.replaceChildren(
+        ...queue.map((id, i) => {
+          const li = el('li', next.includes(id) ? 'is-next' : '', nodeName(id));
+          if (i < 2 && merged < all) li.append(el('small', '', i === 0 ? ' → 0' : ' → 1'));
+          return li;
+        }),
+      );
+      const last = tree.merges[merged - 1];
+      const mergeMsg = $('[data-merge-msg]');
+      if (mergeMsg) {
+        mergeMsg.textContent =
+          merged === 0
+            ? all === 0
+              ? '글자가 한 가지뿐이라 묶을 것이 없습니다. 그 글자에 부호 0을 줍니다.'
+              : `가벼운 순으로 줄을 세웠습니다. 맨 앞 둘(${next.map(nodeName).join(', ')})을 묶을 차례입니다.`
+            : `${nodeName(last?.zero ?? 0)} + ${nodeName(last?.one ?? 0)} → 무게 ${tree.nodes[last?.made ?? 0]?.weight ?? 0}인 새 마디. 먼저 고른 쪽이 0, 다음이 1 가지입니다.${built ? ' 하나만 남아 나무가 완성됐습니다.' : ''}`;
+      }
+      const path: number[] = [];
+      if (built && cur && !cur.symbol) {
+        let at = tree.root;
+        path.push(at);
+        const start = done.findLastIndex(s => s.symbol !== undefined) + 1;
+        for (const s of done.slice(start)) {
+          at = s.node;
+          path.push(at);
+        }
+      } else if (built && cur?.symbol) {
+        // Highlight the whole walk to the leaf just reached.
+        const prev = done.slice(0, -1).findLastIndex(s => s.symbol !== undefined) + 1;
+        path.push(tree.root, ...done.slice(prev).map(s => s.node));
+      }
+      const treeBox = $('[data-tree]');
+      if (treeBox) treeBox.innerHTML = treeSvg(tree, merged, path, next);
+      const treeTextEl = $('[data-tree-text]');
+      if (treeTextEl) treeTextEl.textContent = treeText(tree, merged);
+
+      // ③ bits, grouped by symbol, marking what the decoder has read.
+      const bitsBox = $('[data-bits]');
+      if (bitsBox) {
+        bitsBox.setAttribute('aria-label', built ? `비트열 ${bits}` : '나무를 다 만들면 비트열이 나옵니다');
+        if (!built) bitsBox.replaceChildren(el('span', 'hf-wait', '나무를 다 만들면 비트열이 나옵니다.'));
+        else {
+          let i = 0;
+          bitsBox.replaceChildren(
+            ...symbolsOf(text).map(s => {
+              const g = el('span', 'hf-group');
+              const code = el('code');
+              for (const b of tree.codes.get(s) ?? '') {
+                const bit = el('b', i < read ? (i === read - 1 ? 'is-current' : 'is-read') : '', b);
+                code.append(bit);
+                i++;
+              }
+              g.append(code, el('small', '', shown(s)));
+              return g;
+            }),
+          );
+        }
+      }
+      const sum = $('[data-sum]');
+      if (sum) {
+        const n = symbolsOf(text).length;
+        sum.textContent = built
+          ? `${n}글자가 ${bits.length}비트입니다. 글자마다 2바이트(16비트)로 적으면 ${n * 16}비트입니다.`
+          : '';
+      }
+
+      // ④ decode.
+      const wait = $('[data-decode-wait]');
+      const controls = $('[data-decode-controls]');
+      if (wait) wait.hidden = built;
+      if (controls) controls.hidden = !built;
+      const decodeMsg = $('[data-decode-msg]');
+      if (decodeMsg) {
+        decodeMsg.hidden = !built;
+        decodeMsg.textContent = !cur
+          ? '뿌리에서 시작합니다. 비트 하나를 읽을 때마다 0이면 왼쪽, 1이면 오른쪽 가지로 내려갑니다.'
+          : cur.symbol !== undefined
+            ? `${cur.bit + 1}번째 비트 ${bits[cur.bit]} → 「${shown(cur.symbol)}」에 닿았습니다. 이 글자를 적고 다시 뿌리로 돌아갑니다.`
+            : `${cur.bit + 1}번째 비트 ${bits[cur.bit]} → ${bits[cur.bit] === '1' ? '오른쪽' : '왼쪽'} 가지로 내려갔습니다. 아직 글자가 아닙니다.`;
+      }
+      const decoded = $('[data-decoded]');
+      if (decoded) decoded.textContent = done.map(s => s.symbol ?? '').join('');
+      const allBits = bits.length;
+      const set = (act: string, disabled: boolean) => {
+        const b = btn(act);
+        if (b) b.disabled = disabled;
+      };
+      set('merge', built);
+      set('merge-all', built);
+      set('unmerge', merged === 0);
+      set('bit', !built || read >= allBits);
+      set('bits-all', !built || read >= allBits);
+      set('unbit', read === 0);
+    };
+
+    const announce = () => {
+      const msg = read > 0 ? $('[data-decode-msg]')?.textContent : $('[data-merge-msg]')?.textContent;
+      say(msg ?? '');
+    };
+
+    input?.addEventListener('input', () => {
+      const problem = checkText(input.value);
+      input.setAttribute('aria-invalid', problem ? 'true' : 'false');
+      if (error) {
+        error.hidden = !problem;
+        error.textContent = problem ?? '';
+      }
+      if (problem) return;
+      text = input.value;
+      tree = build(text);
+      merged = 0;
+      read = 0;
+      render();
+      say(`글자 ${symbolsOf(text).length}개, 서로 다른 글자 ${tree.leaves.length}개를 셌습니다.`);
+    });
+
+    btn('merge')?.addEventListener('click', () => {
+      merged = Math.min(merged + 1, tree.merges.length);
+      render();
+      announce();
+    });
+    btn('merge-all')?.addEventListener('click', () => {
+      merged = tree.merges.length;
+      render();
+      announce();
+    });
+    btn('unmerge')?.addEventListener('click', () => {
+      merged = 0;
+      read = 0;
+      render();
+      announce();
+      btn('merge')?.focus();
+    });
+    btn('bit')?.addEventListener('click', () => {
+      read++;
+      render();
+      announce();
+    });
+    btn('bits-all')?.addEventListener('click', () => {
+      read = encode(tree, text).length;
+      render();
+      say(`끝까지 읽어 「${text}」를 되찾았습니다.`);
+    });
+    btn('unbit')?.addEventListener('click', () => {
+      read = 0;
+      render();
+      announce();
+      btn('bit')?.focus();
+    });
+
+    root.classList.add('is-live');
+    render();
+  }
+</script>
+
+<style>
+  .hf-input {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .hf-input label {
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .hf-input input {
+    width: 100%;
+    font-family: var(--font-sans) !important;
+  }
+  .hf-static-text {
+    margin: 0 0 8px;
+  }
+  .hf-step-title {
+    margin: 18px 0 8px;
+    font-size: 0.95rem;
+  }
+  .hf-table {
+    margin: 0 !important;
+    font-size: 0.9rem;
+  }
+  .hf-table caption {
+    margin-bottom: 4px;
+    color: var(--fg-muted);
+    font-size: 0.8rem;
+    text-align: left;
+  }
+  .hf-table :global(th),
+  .hf-table :global(td) {
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+  .hf-table :global(tbody th) {
+    font-size: 1.05rem;
+  }
+  .hf-table :global(code) {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--dg-accent);
+  }
+  .hf-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hf-buttons[hidden] {
+    display: none;
+  }
+  .hf-msg {
+    margin: 8px 0 0;
+    font-size: 0.92rem;
+  }
+  .hf-queue {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 8px 0 0;
+    list-style: none;
+  }
+  .hf-queue :global(li) {
+    margin: 0 !important;
+    padding: 2px 10px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 999px;
+    background: var(--dg-cell);
+    font-size: 0.88rem;
+  }
+  .hf-queue :global(li.is-next) {
+    border-color: var(--dg-accent);
+    background: var(--dg-accent-soft);
+    font-weight: 700;
+  }
+  .hf-queue :global(small) {
+    color: var(--fg-muted);
+  }
+  .hf-tree {
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .hf-tree :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .hf-tree :global(.hf-edge) {
+    stroke: var(--dg-line);
+    stroke-width: 1.6;
+  }
+  .hf-tree :global(.hf-edge.is-on) {
+    stroke: var(--dg-accent);
+    stroke-width: 3;
+  }
+  .hf-tree :global(.hf-bit) {
+    fill: var(--dg-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .hf-tree :global(.hf-bit.is-on) {
+    fill: var(--dg-accent);
+    font-weight: 700;
+  }
+  .hf-tree :global(.hf-inner),
+  .hf-tree :global(.hf-leaf) {
+    fill: var(--dg-cell);
+    stroke: var(--dg-line);
+    stroke-width: 1.5;
+  }
+  .hf-tree :global(.is-picked) {
+    stroke: var(--dg-accent);
+    stroke-width: 2.5;
+    stroke-dasharray: 4 3;
+  }
+  .hf-tree :global(.hf-inner.is-on),
+  .hf-tree :global(.hf-leaf.is-on) {
+    fill: var(--dg-accent-soft);
+    stroke: var(--dg-accent);
+    stroke-width: 2.5;
+  }
+  .hf-tree :global(.hf-sym) {
+    fill: var(--dg-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .hf-tree :global(.hf-w) {
+    fill: var(--dg-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .hf-hint {
+    margin: 6px 0 0;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .hf-bits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    margin: 0;
+  }
+  .hf-bits :global(.hf-group) {
+    display: inline-grid;
+    justify-items: center;
+    padding: 2px 6px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 6px;
+    background: var(--dg-cell);
+  }
+  .hf-bits :global(code) {
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    font-family: var(--font-mono);
+    font-size: 1rem !important;
+    letter-spacing: 0.06em;
+  }
+  .hf-bits :global(b) {
+    font-weight: 500;
+  }
+  .hf-bits :global(b.is-read) {
+    color: var(--dg-accent);
+    font-weight: 700;
+  }
+  .hf-bits :global(b.is-current) {
+    color: var(--dg-accent);
+    font-weight: 700;
+    text-decoration: underline 2px;
+    text-underline-offset: 3px;
+  }
+  .hf-bits :global(small) {
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+  }
+  .hf-bits :global(.hf-wait) {
+    color: var(--fg-muted);
+    font-size: 0.9rem;
+  }
+  .hf-sum {
+    margin: 8px 0 0;
+    font-size: 0.9rem;
+  }
+  .hf-out {
+    margin: 8px 0 0;
+  }
+  .hf-out strong {
+    white-space: pre-wrap;
+  }
+</style>

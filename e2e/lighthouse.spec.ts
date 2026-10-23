@@ -26,6 +26,9 @@ const PAGES: Record<string, { scriptKb: number; tbtMs?: number }> = {
   '/games/romhacking/snes/banks/': { scriptKb: 60 },
   '/games/romhacking/snes/assembly/': { scriptKb: 60 },
   '/games/romhacking/snes/graphics/': { scriptKb: 60 },
+  '/games/romhacking/lzss/': { scriptKb: 60 },
+  '/games/romhacking/huffman/': { scriptKb: 60 },
+  '/games/romhacking/snes/expansion/': { scriptKb: 60 },
 };
 const MIN_SCORE = { performance: 0.8, accessibility: 0.95, 'best-practices': 0.95, seo: 0.95 };
 // Fonts: the site uses system fonts only, so any web font download is a regression.

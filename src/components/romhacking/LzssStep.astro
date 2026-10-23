@@ -1,0 +1,604 @@
+---
+import { trace } from '../../lib/lzss.ts';
+import { toHex } from '../../lib/numbers.ts';
+import { LZSS_SAMPLES, MAX_INPUT, charOf, describe } from './lzss-samples.ts';
+
+// Without scripts the widget shows the first sample fully decoded, with every step written out.
+const sample = LZSS_SAMPLES[0];
+if (!sample) throw new Error('no LZSS sample');
+const t = trace(sample.bytes, 0, sample.partial);
+const roleOf = (i: number) => {
+  const s = t.steps.find(st => i >= st.at && i < st.at + (st.kind === 'size' || st.kind === 'copy' ? 2 : 1));
+  return s?.kind ?? 'size';
+};
+const ROLE_LABEL = { size: '크기', flags: '플래그', literal: '그대로', copy: '복사' } as const;
+---
+
+<section class="widget lzss-step" data-lzss aria-labelledby="lzss-title">
+  <h3 class="widget-title" id="lzss-title">
+    LZSS 압축 한 단계씩 풀기
+  </h3>
+  <p class="widget-help">
+    압축된 바이트를 앞에서부터 읽으며 출력을 만들어 갑니다.{' '}
+    <span class="live-only">
+      「한 단계 풀기」를 누를 때마다 항목 하나를 읽습니다. 예를 고르거나 영문·숫자를 직접 적어 압축한 뒤 풀어 볼 수도
+      있습니다.
+    </span>
+  </p>
+
+  <div class="lz-controls live-only">
+    <fieldset>
+      <legend>예</legend>
+      {LZSS_SAMPLES.map((s, i) => (
+        <label>
+          <input type="radio" name="lzss-sample" value={s.id} checked={i === 0} /> {s.label}
+        </label>
+      ))}
+    </fieldset>
+    <div class="lz-own">
+      <label for="lzss-text">직접 적은 글({MAX_INPUT}바이트까지)</label>
+      <div class="lz-own-row">
+        <input
+          id="lzss-text"
+          type="text"
+          maxlength={MAX_INPUT}
+          spellcheck="false"
+          autocomplete="off"
+          value="to be or not to be"
+          aria-describedby="lzss-error"
+          data-text
+        />
+        <button type="button" class="widget-btn" data-act="own">
+          압축해서 풀기
+        </button>
+      </div>
+      <p class="widget-error" id="lzss-error" role="alert" data-error hidden></p>
+    </div>
+  </div>
+
+  <p class="lz-note" data-note>
+    {sample.note}
+  </p>
+
+  <div class="lz-block">
+    <p class="lz-sub">
+      압축된 바이트{' '}
+      <span class="muted" data-in-count>
+        ({sample.bytes.length}바이트)
+      </span>
+    </p>
+    <ol class="lz-bytes lz-in" aria-label="압축된 바이트" data-in>
+      {sample.bytes.map((b, i) => (
+        <li class:list={[`role-${roleOf(i)}`, 'is-read']} data-i={i}>
+          <code>{toHex(b, 2)}</code>
+          <small>{ROLE_LABEL[roleOf(i)]}</small>
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  <div class="lz-block live-only">
+    <p class="lz-sub">
+      플래그 비트 <span class="muted">(1 = 그대로 1바이트, 0 = 복사 2바이트)</span>
+    </p>
+    <ol class="lz-flags" aria-label="지금 플래그 바이트의 비트, 비트 0부터" data-flags></ol>
+  </div>
+
+  <div class="lz-panel live-only">
+    <div class="lz-buttons">
+      <button type="button" class="widget-btn is-primary" data-act="step">
+        한 단계 풀기
+      </button>
+      <button type="button" class="widget-btn" data-act="run">
+        끝까지 풀기
+      </button>
+      <button type="button" class="widget-btn" data-act="reset">
+        처음부터
+      </button>
+    </div>
+    <p class="lz-counter" data-counter></p>
+    <p class="lz-last" data-last>
+      아직 아무것도 읽지 않았습니다.
+    </p>
+    <div class="lz-copy" data-copy hidden>
+      <svg viewBox="0 0 320 70" role="img" aria-labelledby="lzss-copy-t">
+        <title id="lzss-copy-t" data-copy-title>복사</title>
+        <rect class="dg-cool" x="4" y="14" width="120" height="40" rx="6"></rect>
+        <text class="dg-small" x="64" y="30" text-anchor="middle">
+          가져온 곳
+        </text>
+        <text class="dg-mono" x="64" y="47" text-anchor="middle" data-copy-from></text>
+        <rect class="dg-accent" x="196" y="14" width="120" height="40" rx="6"></rect>
+        <text class="dg-small" x="256" y="30" text-anchor="middle">
+          쓴 곳
+        </text>
+        <text class="dg-mono" x="256" y="47" text-anchor="middle" data-copy-to></text>
+        <path class="dg-arrow" d="M126 34H192" marker-end="url(#dg-arrowhead)"></path>
+        <text class="dg-small" x="160" y="26" text-anchor="middle" data-copy-dist></text>
+        <text class="dg-small" x="160" y="52" text-anchor="middle" data-copy-len></text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="lz-block">
+    <p class="lz-sub">
+      출력{' '}
+      <span class="muted" data-out-count>
+        ({t.data.length}바이트)
+      </span>
+    </p>
+    <ol class="lz-bytes lz-out" aria-label="풀어 낸 바이트" data-out>
+      {t.data.map((b, i) => (
+        <li>
+          <span class="idx">{i}</span>
+          <code>{toHex(b, 2)}</code>
+          <small>{charOf(b) || '·'}</small>
+        </li>
+      ))}
+    </ol>
+    <p class="lz-legend live-only">
+      <span class="key key-src">가져온 곳</span> <span class="key key-new">방금 쓴 곳</span>{' '}
+      <span class="key key-zero">시작보다 앞(0)</span>
+    </p>
+  </div>
+
+  <div class="static-only">
+    <p class="lz-sub">한 단계씩 읽으면</p>
+    <ol class="lz-static-steps">
+      {t.steps.map(s => (
+        <li>{describe(s)}</li>
+      ))}
+    </ol>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { LzssError, compress, trace, type LzssStep, type LzssTrace } from '../../lib/lzss.ts';
+  import { toHex } from '../../lib/numbers.ts';
+  import { LZSS_SAMPLES, MAX_INPUT, charOf, describe, stepWidth } from './lzss-samples.ts';
+
+  const ROLE_LABEL = { size: '크기', flags: '플래그', literal: '그대로', copy: '복사' } as const;
+  const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-lzss]')) {
+    const $ = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel);
+    const inList = $('[data-in]');
+    const outList = $('[data-out]');
+    const flagsList = $('[data-flags]');
+    const last = $('[data-last]');
+    const counter = $('[data-counter]');
+    const note = $('[data-note]');
+    const live = $('[data-live]');
+    const copyBox = $('[data-copy]');
+    const textInput = $<HTMLInputElement>('[data-text]');
+    const error = $('[data-error]');
+    const stepBtn = $<HTMLButtonElement>('[data-act="step"]');
+    const runBtn = $<HTMLButtonElement>('[data-act="run"]');
+
+    let bytes: number[] = [];
+    let t: LzssTrace = { steps: [], data: [], length: 0, truncated: false };
+    let k = 0;
+
+    const setError = (text: string) => {
+      textInput?.setAttribute('aria-invalid', text ? 'true' : 'false');
+      if (error) {
+        error.hidden = !text;
+        error.textContent = text;
+      }
+    };
+
+    const render = () => {
+      const done = t.steps.slice(0, k);
+      const current: LzssStep | undefined = done.at(-1);
+      const read = current ? current.at + stepWidth(current) : 0;
+
+      inList?.replaceChildren(
+        ...bytes.map((b, i) => {
+          const owner = t.steps.find(s => i >= s.at && i < s.at + stepWidth(s));
+          const li = el('li', `role-${owner?.kind ?? 'size'}`);
+          li.dataset['i'] = String(i);
+          if (i < read) li.classList.add('is-read');
+          if (current && i >= current.at && i < current.at + stepWidth(current)) li.classList.add('is-current');
+          li.append(el('code', '', toHex(b, 2)), el('small', '', ROLE_LABEL[owner?.kind ?? 'size']));
+          return li;
+        }),
+      );
+
+      const out: number[] = [];
+      for (const s of done) {
+        if (s.kind === 'literal') out.push(s.byte);
+        if (s.kind === 'copy') out.push(...s.bytes);
+      }
+      const isCopy = current?.kind === 'copy';
+      const newFrom = current?.kind === 'literal' || current?.kind === 'copy' ? current.outAt : out.length;
+      const items: HTMLLIElement[] = [];
+      if (current?.kind === 'copy' && current.src < 0) {
+        const z = el('li', 'is-zero');
+        z.append(el('span', 'idx', '앞'), el('code', '', '00'), el('small', '', `${-current.src}칸`));
+        items.push(z);
+      }
+      out.forEach((b, i) => {
+        const li = el('li');
+        if (i >= newFrom) li.classList.add('is-new');
+        else if (isCopy && current && i >= current.src && i < current.src + current.len) li.classList.add('is-src');
+        li.append(el('span', 'idx', String(i)), el('code', '', toHex(b, 2)), el('small', '', charOf(b) || '·'));
+        items.push(li);
+      });
+      outList?.replaceChildren(...items);
+      const outCount = $('[data-out-count]');
+      if (outCount) outCount.textContent = `(${out.length}바이트)`;
+
+      // The flag byte in force and how many of its bits are used.
+      let flagStep = -1;
+      for (let i = done.length - 1; i >= 0; i--)
+        if (done[i]?.kind === 'flags') {
+          flagStep = i;
+          break;
+        }
+      const flag = t.steps[flagStep];
+      const used = flagStep >= 0 ? done.length - 1 - flagStep : 0;
+      flagsList?.replaceChildren(
+        ...Array.from({ length: 8 }, (_, bit) => {
+          const li = el('li');
+          if (flag?.kind !== 'flags') {
+            li.append(el('small', '', `비트 ${bit}`), el('code', '', '·'));
+            return li;
+          }
+          const v = (flag.value >> bit) & 1;
+          li.classList.add(v ? 'bit-lit' : 'bit-copy');
+          if (bit < used - 1) li.classList.add('is-used');
+          if (bit === used - 1 && (current?.kind === 'literal' || current?.kind === 'copy'))
+            li.classList.add('is-current');
+          li.append(el('small', '', `비트 ${bit}`), el('code', '', String(v)), el('small', '', v ? '그대로' : '복사'));
+          return li;
+        }),
+      );
+
+      if (copyBox) {
+        copyBox.hidden = current?.kind !== 'copy';
+        if (current?.kind === 'copy') {
+          const end = current.src + current.len - 1;
+          const range = (a: number, b: number) => (a < 0 ? `앞 ${-a}칸–${b}번` : `${a}–${b}번 칸`);
+          const set = (sel: string, text: string) => {
+            const n = $(sel);
+            if (n) n.textContent = text;
+          };
+          set('[data-copy-from]', range(current.src, end));
+          set('[data-copy-to]', `${current.outAt}–${current.outAt + current.len - 1}번 칸`);
+          set('[data-copy-dist]', `거리 ${current.dist}`);
+          set('[data-copy-len]', `길이 ${current.len}`);
+          set(
+            '[data-copy-title]',
+            `복사: ${range(current.src, end)}에서 ${current.outAt}번 칸부터 ${current.len}바이트, 거리 ${current.dist}`,
+          );
+        }
+      }
+
+      const total = t.steps.length;
+      if (counter) counter.textContent = `읽은 항목 ${k}/${total}`;
+      const text = current
+        ? describe(current)
+        : '아직 아무것도 읽지 않았습니다. 「한 단계 풀기」를 누르면 처음 2바이트(크기)부터 읽습니다.';
+      const end =
+        k === total
+          ? t.truncated
+            ? ' 여기까지가 옮겨 온 부분입니다. 실제 자료는 더 이어집니다.'
+            : ' 다 풀었습니다.'
+          : '';
+      if (last) last.textContent = text + end;
+      if (live) live.textContent = text + end;
+      if (stepBtn) stepBtn.disabled = k >= total;
+      if (runBtn) runBtn.disabled = k >= total;
+    };
+
+    const load = (data: number[], partial: boolean, text: string) => {
+      bytes = data;
+      t = trace(bytes, 0, partial);
+      k = 0;
+      const inCount = $('[data-in-count]');
+      if (inCount) inCount.textContent = `(${bytes.length}바이트)`;
+      if (note) note.textContent = text;
+      render();
+    };
+
+    root.querySelectorAll<HTMLInputElement>('input[name="lzss-sample"]').forEach(radio =>
+      radio.addEventListener('change', () => {
+        const s = LZSS_SAMPLES.find(x => x.id === radio.value);
+        if (!s) return;
+        setError('');
+        load(s.bytes, s.partial, s.note);
+      }),
+    );
+
+    const own = () => {
+      const raw = new TextEncoder().encode(textInput?.value ?? '');
+      if (raw.length === 0) return setError('압축할 글을 적어 주세요.');
+      if (raw.length > MAX_INPUT)
+        return setError(`${MAX_INPUT}바이트까지 적을 수 있습니다. 지금 ${raw.length}바이트입니다.`);
+      setError('');
+      root.querySelectorAll<HTMLInputElement>('input[name="lzss-sample"]').forEach(r => (r.checked = false));
+      try {
+        const packed = compress([...raw]);
+        load(
+          packed,
+          false,
+          `적은 글 ${raw.length}바이트가 ${packed.length}바이트(크기 2바이트 포함)가 되었습니다. 한글은 글자마다 3바이트(UTF-8)로 셉니다.`,
+        );
+      } catch (e) {
+        setError(e instanceof LzssError ? e.message : String(e));
+      }
+    };
+    $('[data-act="own"]')?.addEventListener('click', own);
+    textInput?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        own();
+      }
+    });
+
+    stepBtn?.addEventListener('click', () => {
+      if (k < t.steps.length) k++;
+      render();
+    });
+    runBtn?.addEventListener('click', () => {
+      k = t.steps.length;
+      render();
+    });
+    $('[data-act="reset"]')?.addEventListener('click', () => {
+      k = 0;
+      render();
+      stepBtn?.focus();
+    });
+
+    const first = LZSS_SAMPLES[0];
+    if (first) load(first.bytes, first.partial, first.note);
+    root.classList.add('is-live');
+  }
+</script>
+
+<style>
+  .lz-controls {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .lz-controls fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 14px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .lz-controls legend {
+    float: left;
+    margin-right: 10px;
+    color: var(--fg-muted);
+  }
+  .lz-controls fieldset label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    min-height: 44px;
+  }
+  .lz-own label {
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .lz-own-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .lz-own-row input {
+    flex: 1 1 180px;
+    min-width: 0;
+  }
+  .lz-note {
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+  }
+  .lz-block {
+    margin-top: 12px;
+  }
+  .lz-sub {
+    margin: 0 0 6px;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .lz-sub .muted {
+    font-weight: 400;
+  }
+  .lz-bytes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0;
+    list-style: none;
+  }
+  .lz-bytes :global(li) {
+    display: grid;
+    justify-items: center;
+    min-width: 38px;
+    margin: 0 !important;
+    padding: 3px 4px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 6px;
+    background: var(--dg-cell);
+    line-height: 1.3;
+  }
+  .lz-bytes :global(code) {
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    font-family: var(--font-mono);
+    font-size: 0.95rem !important;
+    font-weight: 600;
+  }
+  .lz-bytes :global(small) {
+    color: var(--fg-muted);
+    font-size: 0.68rem;
+  }
+  .lz-bytes :global(.idx) {
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+  }
+  .lz-in :global(li.role-flags) {
+    border-style: dashed;
+  }
+  .lz-in :global(li.role-size) {
+    background: var(--bg-soft);
+  }
+  .lz-in :global(li:not(.is-read)) {
+    border-color: var(--border);
+    background: var(--bg);
+  }
+  .lz-in :global(li.is-current) {
+    border-color: var(--dg-accent);
+    background: var(--dg-accent-soft);
+    outline: 2px solid var(--dg-accent);
+    outline-offset: 1px;
+  }
+  .lz-out :global(li.is-new) {
+    border-color: var(--dg-accent);
+    background: var(--dg-accent-soft);
+  }
+  .lz-out :global(li.is-src) {
+    border-color: var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .lz-out :global(li.is-zero) {
+    border-style: dashed;
+    border-color: var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .lz-flags {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 4px;
+    max-width: 440px;
+    margin: 0;
+    list-style: none;
+  }
+  .lz-flags :global(li) {
+    display: grid;
+    justify-items: center;
+    margin: 0 !important;
+    padding: 3px 0;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 6px;
+    background: var(--dg-cell);
+    line-height: 1.25;
+  }
+  .lz-flags :global(code) {
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+  .lz-flags :global(small) {
+    color: var(--fg-muted);
+    font-size: 0.62rem;
+    white-space: nowrap;
+  }
+  .lz-flags :global(li.is-used) {
+    border-color: var(--border);
+    background: var(--bg-soft);
+  }
+  .lz-flags :global(li.is-current) {
+    border-color: var(--dg-accent);
+    background: var(--dg-accent-soft);
+    outline: 2px solid var(--dg-accent);
+    outline-offset: 1px;
+  }
+  .lz-panel {
+    margin-top: 14px;
+  }
+  .lz-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .lz-counter {
+    margin: 10px 0 0;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .lz-last {
+    min-height: 3em;
+    margin: 4px 0 0;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 0.92rem;
+  }
+  .lz-copy svg {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    margin-top: 8px;
+  }
+  .lz-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin: 8px 0 0;
+    font-size: 0.8rem;
+    color: var(--fg-muted);
+  }
+  .key::before {
+    content: '' / '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    border: 1.5px solid;
+    border-radius: 3px;
+    vertical-align: -1px;
+  }
+  .key-src::before {
+    border-color: var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .key-new::before {
+    border-color: var(--dg-accent);
+    background: var(--dg-accent-soft);
+  }
+  .key-zero::before {
+    border-style: dashed;
+    border-color: var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .lz-static-steps {
+    margin: 0;
+    padding-left: 1.4em !important;
+    font-size: 0.9rem;
+  }
+  .lz-static-steps li + li {
+    margin-top: 4px !important;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .lz-out :global(li.is-new) {
+      animation: lz-in 0.25s ease-out;
+    }
+    @keyframes lz-in {
+      from {
+        transform: translateY(-4px);
+        opacity: 0.3;
+      }
+    }
+  }
+</style>
