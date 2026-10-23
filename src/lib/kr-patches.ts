@@ -119,7 +119,7 @@ export const downloads = (patch: KrPatch) => {
 
 /** e.g. `슈퍼 패미컴 · 1996 · 한글패치 v1.1`. */
 export const releaseLabel = (patch: KrPatch, prefix = '한글패치 ') =>
-  `슈퍼 패미컴 · ${patch.year} · ${prefix}v${patch.version}`;
+  `슈퍼 패미컴 · ${patch.year}년 발매 · ${prefix}v${patch.version} (${patch.released})`;
 
 export const trail = (patch: KrPatch) => [
   { name: '한글패치', path: KR_PATCH_LIST_PATH },
