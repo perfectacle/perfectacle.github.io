@@ -57,6 +57,9 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
     let data: Promise<ArrayBuffer> | undefined;
     let source: AudioBufferSourceNode | undefined;
     let starting: Promise<void> | undefined;
+    // Set only once a play attempt has had time to resume the context and it is still suspended, so the hint
+    // shows where autoplay is really blocked and not while the music is merely loading.
+    let blocked = false;
 
     const load = () =>
       (data ??= fetch(src)
@@ -71,7 +74,7 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
     const playing = () => on && !!source && ctx?.state === 'running';
     const render = () => {
       button.setAttribute('aria-pressed', String(on));
-      root.dataset['state'] = !on ? 'off' : playing() ? 'playing' : 'waiting';
+      root.dataset['state'] = !on ? 'off' : playing() ? 'playing' : blocked ? 'blocked' : 'waiting';
       label.textContent = on ? '켜짐' : '꺼짐';
     };
     // The music file (up to 3 MB) waits until a while after load: started any earlier, Lighthouse's simulated slow
@@ -101,9 +104,18 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
         gain = ctx.createGain();
         gain.gain.value = 0;
         gain.connect(ctx.destination);
-        ctx.addEventListener('statechange', render);
+        ctx.addEventListener('statechange', () => {
+          if (ctx?.state === 'running') blocked = false;
+          render();
+        });
       }
-      void ctx.resume();
+      const audio = ctx;
+      // A blocked resume() neither resolves nor rejects in Chrome, so check the state a moment later instead.
+      void audio.resume();
+      setTimeout(() => {
+        blocked = audio.state !== 'running';
+        render();
+      }, 500);
       gain.gain.cancelScheduledValues(ctx.currentTime);
       gain.gain.setTargetAtTime(VOLUME, ctx.currentTime, 0.05);
       if (!source && !starting) {
@@ -180,6 +192,25 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
     // Try once the page has settled: browsers that allow autoplay on this site (Chrome for sites visited often,
     // Safari and Firefox when the visitor allows it) start the music then; the rest wait for the first press.
     root.hidden = false;
+    // The button floats in the corner but stops above the footer, rising with it as it scrolls into view.
+    const footer = document.querySelector<HTMLElement>('.page-footer');
+    if (footer) {
+      const GAP = 16;
+      let queued = false;
+      const lift = () => {
+        queued = false;
+        const overlap = window.innerHeight - footer.getBoundingClientRect().top + GAP;
+        root.style.setProperty('--bgm-lift', `${Math.max(0, overlap)}px`);
+      };
+      const queue = () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(lift);
+      };
+      window.addEventListener('scroll', queue, { passive: true });
+      window.addEventListener('resize', queue);
+      lift();
+    }
     void pageSettled.then(() => {
       if (on) play();
     });
@@ -193,6 +224,7 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
     right: max(16px, env(safe-area-inset-right));
     bottom: max(16px, env(safe-area-inset-bottom));
     z-index: 20;
+    translate: 0 calc(-1 * var(--bgm-lift, 0px));
     display: grid;
     justify-items: end;
     gap: 8px;
@@ -200,18 +232,6 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
 
   .bgm[hidden] {
     display: none;
-  }
-
-  /* Keeps the floating button and its hint off the footer text: beside it on wide screens, below it on phones. */
-  :global(body:has(.bgm:not([hidden])) .page-footer) {
-    padding-right: 220px;
-  }
-
-  @media (max-width: 639px) {
-    :global(body:has(.bgm:not([hidden])) .page-footer) {
-      padding-right: 16px;
-      padding-bottom: 128px;
-    }
   }
 
   .bgm-hint {
@@ -226,7 +246,7 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
     line-height: 1.4;
   }
 
-  .bgm:not([data-state='waiting']) .bgm-hint {
+  .bgm:not([data-state='blocked']) .bgm-hint {
     display: none;
   }
 

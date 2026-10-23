@@ -1236,19 +1236,65 @@ test('where autoplay is blocked, background music waits with a hint and starts o
 }) => {
   // Like a browser's autoplay policy: the AudioContext stays suspended until the visitor interacts.
   await page.addInitScript(() => {
-    const resume = AudioContext.prototype.resume;
-    AudioContext.prototype.resume = function () {
-      return navigator.userActivation.hasBeenActive ? resume.call(this) : new Promise<void>(() => undefined);
+    // Playwright pages count as activated from the start, so the first real press is tracked here instead.
+    let pressed = false;
+    for (const type of ['pointerdown', 'keydown']) window.addEventListener(type, () => (pressed = true), true);
+    const Native = AudioContext;
+    // A new context starts suspended and resume() hangs until the first press, as in a browser that blocks autoplay.
+    window.AudioContext = class extends Native {
+      constructor(options?: AudioContextOptions) {
+        super(options);
+        if (!pressed) void Native.prototype.suspend.call(this);
+      }
+      override resume() {
+        return pressed ? super.resume() : new Promise<void>(() => undefined);
+      }
     };
   });
   await page.goto('/games/kr-patches/sfc/otogirisou/');
   const bgm = page.locator('.bgm');
   await expect(bgm).toHaveAttribute('data-state', 'waiting');
+  await expect(bgm.locator('.bgm-hint')).toBeHidden();
+  await expect(bgm).toHaveAttribute('data-state', 'blocked', { timeout: 10_000 });
   await expect(bgm.locator('.bgm-hint')).toBeVisible();
   await page.locator('h1').first().click();
   await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
   await expect(bgm.locator('.bgm-hint')).toBeHidden();
 });
+
+test('where autoplay is allowed, the hint never shows while the music loads', async ({ page }) => {
+  await page.goto('/games/kr-patches/sfc/otogirisou/');
+  const bgm = page.locator('.bgm');
+  await page.evaluate(() => {
+    const hint = document.querySelector('.bgm-hint');
+    (window as unknown as { hintSeen: boolean }).hintSeen = false;
+    const check = () => {
+      if (hint && getComputedStyle(hint).display !== 'none')
+        (window as unknown as { hintSeen: boolean }).hintSeen = true;
+      requestAnimationFrame(check);
+    };
+    check();
+  });
+  await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
+  expect(await page.evaluate(() => (window as unknown as { hintSeen: boolean }).hintSeen)).toBe(false);
+});
+
+for (const width of [390, 1280]) {
+  test(`background music button stays above the footer at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/games/kr-patches/sfc/otogirisou/');
+    const toggle = page.locator('.bgm-toggle');
+    await expect(toggle).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect
+      .poll(async () => {
+        const footer = await page.locator('footer.page-footer').boundingBox();
+        const button = await toggle.boundingBox();
+        return footer && button ? footer.y - (button.y + button.height) : -1;
+      })
+      .toBeGreaterThanOrEqual(8);
+  });
+}
 
 test('background music stops for a video and comes back on the next visit', async ({ page }) => {
   await page.route('https://www.youtube-nocookie.com/embed/**', route =>
@@ -1274,9 +1320,19 @@ test('a first click that plays a video does not start the background music', asy
   );
   // Like a browser's autoplay policy, so the music waits for the first press.
   await page.addInitScript(() => {
-    const resume = AudioContext.prototype.resume;
-    AudioContext.prototype.resume = function () {
-      return navigator.userActivation.hasBeenActive ? resume.call(this) : new Promise<void>(() => undefined);
+    // Playwright pages count as activated from the start, so the first real press is tracked here instead.
+    let pressed = false;
+    for (const type of ['pointerdown', 'keydown']) window.addEventListener(type, () => (pressed = true), true);
+    const Native = AudioContext;
+    // A new context starts suspended and resume() hangs until the first press, as in a browser that blocks autoplay.
+    window.AudioContext = class extends Native {
+      constructor(options?: AudioContextOptions) {
+        super(options);
+        if (!pressed) void Native.prototype.suspend.call(this);
+      }
+      override resume() {
+        return pressed ? super.resume() : new Promise<void>(() => undefined);
+      }
     };
   });
   await page.goto('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/#endings');
