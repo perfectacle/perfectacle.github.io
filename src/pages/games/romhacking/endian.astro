@@ -136,7 +136,7 @@ const references = [
   </h2>
   <p>
     프로그램 안에도 숫자가 잔뜩 들어 있습니다. "이 주소로 가라"는 명령이라면 주소가 명령 바로 뒤에 붙는데, 이 주소도
-    리틀 엔디안입니다. 그래서 롬을 헥스 뷰어로 열면 주소가 거꾸로 보입니다.
+    리틀 엔디안입니다. 그래서 롬을 헥스 에디터로 열면 주소가 거꾸로 보입니다.
   </p>
   <Figure caption="돌격편의 명령 JSL $8286B0은 롬에 22 B0 86 82로 들어 있습니다." max={600}>
     <svg viewBox="0 0 360 170" role="img" aria-labelledby="jsl-t jsl-d">
@@ -268,7 +268,7 @@ const references = [
 &gt;&gt;&gt; hex(int.from_bytes(bytes.fromhex('fe85'), 'big'))
 '0xfe85'</code></pre>
   <p>
-    두 롬에서 어디가 바뀌었는지는 <code>krpatch diff a.sfc b.sfc</code>로 찾고, 찾은 범위를 헥스 뷰어로 열어 두 순서로
+    두 롬에서 어디가 바뀌었는지는 <code>krpatch diff a.sfc b.sfc</code>로 찾고, 찾은 범위를 헥스 에디터로 열어 두 순서로
     읽어 보세요.
   </p>
 </GuideChapter>

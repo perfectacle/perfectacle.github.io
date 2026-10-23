@@ -79,6 +79,16 @@
   color: var(--fg-muted);
   font-size: 0.875rem;
 }
+.guide-kicker a {
+  margin-left: auto;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+}
+.guide-kicker a:hover {
+  color: var(--accent);
+}
 .guide-kicker .mono {
   color: var(--accent);
   font-weight: 600;

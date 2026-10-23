@@ -16,14 +16,16 @@ import {
   GUIDE_PATH,
   GUIDE_TITLE,
   PLATFORM_LABEL,
+  chapterBySlug,
   chapterLabel,
   chapterPath,
   chaptersForNote,
   notePath,
 } from '../../../components/romhacking/chapters.ts';
+import { GLOSSARY, GLOSSARY_PATH } from '../../../components/romhacking/glossary.ts';
 
 const description =
-  '한글패치를 만들며 쓴 롬 해킹 지식을 처음부터 풀어 쓴 가이드입니다. 16진수와 엔디안부터 65c816 어셈블리, 뱅크와 매핑, 후킹, 타일과 글꼴, 대사 형식, 압축과 롬 확장까지 그림과 직접 만져 보는 도구로 배웁니다.';
+  '한글패치를 만들며 쓴 롬 해킹 지식을 처음부터 풀어 쓴 가이드입니다. 16진수와 엔디안부터 65c816 어셈블리, 뱅크와 매핑, 후킹, 타일과 폰트, 대사 형식, 압축과 롬 확장, 에뮬레이터로 확인하는 법까지 그림과 직접 만져 보는 도구로 배웁니다.';
 const first = GUIDE_CHAPTERS.find(c => c.ready);
 ---
 
@@ -164,6 +166,12 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
           ))}
         </ul>
 
+        <h2 id="glossary">용어집</h2>
+        <p>
+          읽다가 모르는 말이 나오면 <a href={GLOSSARY_PATH}>용어집</a>에서 찾아보세요. 가이드에 나오는 용어{' '}
+          {GLOSSARY.length}개를 가나다순으로 모았고, 용어마다 그 말을 설명한 장으로 가는 링크가 있습니다.
+        </p>
+
         <h2 id="tools">준비물</h2>
         <ul>
           <li>
@@ -176,7 +184,8 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
             설치합니다.
           </li>
           <li>
-            <strong>에뮬레이터</strong>: 디버거가 있는 Mesen 2를 썼습니다. 12장에서 자세히 다룹니다.
+            <strong>에뮬레이터</strong>: 디버거가 있는 Mesen 2를 썼습니다.{' '}
+            <a href={chapterPath(chapterBySlug('snes', 'emulator'))}>12장</a>에서 자세히 다룹니다.
           </li>
           <li>
             <strong>롬 파일</strong>: 이 가이드와 툴킷에는 롬이 들어 있지 않습니다. 직접 가진 카트리지에서 뽑은 롬으로

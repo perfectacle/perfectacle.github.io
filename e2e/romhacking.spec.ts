@@ -7,9 +7,10 @@ import {
   notePath,
   readyChapters,
 } from '../src/components/romhacking/chapters.ts';
+import { GLOSSARY, GLOSSARY_PATH, entryHref } from '../src/components/romhacking/glossary.ts';
 import { KR_PATCHES, KR_PATCH_TOOLKIT_URL, sourceUrl } from '../src/lib/kr-patches.ts';
 
-const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...KR_PATCHES.map(notePath)];
+const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...KR_PATCHES.map(notePath), GLOSSARY_PATH];
 const first = (list: ReturnType<typeof readyChapters>) => {
   const chapter = list[0];
   if (!chapter) throw new Error('no written chapters');
@@ -25,6 +26,7 @@ const GRAPHICS = '/games/romhacking/snes/graphics/';
 const LZSS = '/games/romhacking/lzss/';
 const HUFFMAN = '/games/romhacking/huffman/';
 const EXPANSION = '/games/romhacking/snes/expansion/';
+const EMULATOR = '/games/romhacking/snes/emulator/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -282,7 +284,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(page.getByRole('button', { name: '한 줄 실행' }).first()).toBeHidden();
   await page.goto(BANKS);
   await expect(page.locator('[data-bank-map] [data-summary-off]')).toHaveText('0x14000C');
-  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS, LZSS, HUFFMAN, EXPANSION]) {
+  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS, LZSS, HUFFMAN, EXPANSION, EMULATOR]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
     expect(await help.count()).toBeGreaterThan(0);
@@ -314,6 +316,13 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(grow.locator('[data-row="after"] li.is-new')).toHaveCount(2);
   await expect(grow.locator('select')).toHaveCount(2);
   await expect(grow.locator('select').first()).toBeHidden();
+  await page.goto(EMULATOR);
+  const run = page.locator('[data-run-script]');
+  await expect(run.locator('[data-summary]')).toContainText('300프레임까지');
+  await expect(run.locator('[data-lines] li')).toHaveCount(7);
+  await expect(run.locator('.rs-static-text')).toBeVisible();
+  await expect(run.locator('textarea')).toBeHidden();
+  await expect(run.locator('[data-lane="output"] .rs-mark')).toHaveCount(4);
   await context.close();
 });
 
@@ -513,4 +522,83 @@ test('the guide index lists the four ROM analysis notes', async ({ page }) => {
   const notes = page.locator('.note-map');
   await expect(notes.locator('li')).toHaveCount(KR_PATCHES.length);
   for (const patch of KR_PATCHES) await expect(notes.getByRole('link', { name: patch.title })).toHaveCount(1);
+});
+
+test('input script widget reads scripts like the toolkit and shows each frame', async ({ page }) => {
+  await page.goto(EMULATOR);
+  const widget = page.locator('[data-run-script]');
+  await expect(widget).toHaveClass(/is-live/);
+  await expect(widget.locator('[data-lines] li')).toHaveCount(7);
+  await expect(widget.locator('[data-lines] li.is-poke')).toContainText('$7E:0012');
+  const frame = widget.getByLabel('프레임', { exact: true });
+  await frame.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(widget.locator('[data-frame-out]')).toHaveText('111프레임: A 누름');
+  await frame.fill('202');
+  await expect(widget.locator('[data-frame-out]')).toContainText('이 프레임 뒤 스크린샷');
+  await expect(widget.locator('[data-live]')).toContainText('202프레임');
+
+  await widget.getByLabel('틀린 예: end 뒤의 명령').check();
+  const alert = widget.getByRole('alert');
+  await expect(alert).toContainText("krpatch: error: line 2: frame is after 'end' at frame 300");
+  await expect(alert).toContainText('2번째 줄');
+  await expect(widget.locator('[data-result]')).toBeHidden();
+  await expect(widget.locator('textarea')).toHaveAttribute('aria-invalid', 'true');
+
+  const text = widget.getByLabel('스크립트');
+  await text.fill('10 tap a 0 20\n30 end');
+  await expect(alert).toContainText('range() arg 3 must not be zero');
+  await text.fill('# 손으로 적은 예\n5 a+B 3\n10 tap start 4 30\n12 poke 7F0000 ABCD\n40 end');
+  await expect(alert).toBeHidden();
+  await expect(widget.locator('input[name="rs-sample"]:checked')).toHaveCount(0);
+  await expect(widget.locator('[data-lines] li')).toHaveCount(4);
+  await expect(widget.locator('[data-lines] li.is-tap')).toContainText('모두 5번');
+  await expect(widget.locator('[data-lines] li.is-poke')).toContainText('$7F:0000');
+  await frame.fill('6');
+  await expect(widget.locator('[data-frame-out]')).toHaveText('6프레임: B+A 누름');
+  await text.fill('10 shot');
+  await expect(alert).toContainText("script has no 'end' command");
+  await noHorizontalOverflow(page);
+});
+
+test('input script widget moves the frame cursor without animation for reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(EMULATOR);
+  const cursor = page.locator('[data-run-script] [data-cursor]').first();
+  expect(await cursor.evaluate(e => getComputedStyle(e).transitionDuration)).toBe('0s');
+});
+
+test('glossary index jumps to each initial and every entry links to a real section', async ({ page }) => {
+  await page.goto(GUIDE_PATH);
+  await page.getByRole('link', { name: '용어집', exact: true }).first().click();
+  await expect(page).toHaveURL(GLOSSARY_PATH);
+  await expect(page.locator('.gl-entry')).toHaveCount(GLOSSARY.length);
+  const index = page.getByRole('navigation', { name: '초성 색인' });
+  await index.getByRole('link', { name: 'ㅂ', exact: true }).click();
+  await expect(page).toHaveURL(/#initial-b$/);
+  await expect(page.locator('#initial-b')).toBeInViewport();
+  await expect(page.locator('#initial-b + dl dt').first()).toContainText(/^[바-빟]/);
+  await index.getByRole('link', { name: '영문·숫자' }).click();
+  await expect(page.locator('#initial-latin')).toBeInViewport();
+  await expect(index.locator('span[aria-disabled="true"]')).toHaveCount(15 - (await index.getByRole('link').count()));
+
+  const targets = new Map<string, Set<string>>();
+  for (const e of GLOSSARY) {
+    const [path = '', id = ''] = entryHref(e).split('#');
+    targets.set(path, (targets.get(path) ?? new Set()).add(id));
+  }
+  for (const [path, ids] of targets) {
+    await page.goto(path);
+    for (const id of ids) await expect(page.locator(`[id="${id}"]`), `${path}#${id}`).toHaveCount(1);
+  }
+});
+
+test('chapters link the glossary, and search finds it', async ({ page }) => {
+  await page.goto(EMULATOR);
+  await page.getByRole('link', { name: '모르는 용어는 용어집에서' }).click();
+  await expect(page).toHaveURL(GLOSSARY_PATH);
+  await page.goto('/search/?q=용어집');
+  await expect(
+    page.locator(`pagefind-results[instance="page"] .pf-result-link[href*="${GLOSSARY_PATH}"]`).first(),
+  ).toBeVisible();
 });

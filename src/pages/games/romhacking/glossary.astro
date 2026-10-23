@@ -1,0 +1,201 @@
+---
+import Base from '../../../layouts/Base.astro';
+import '../../../styles/romhacking.css';
+import { SITE } from '../../../lib/posts.ts';
+import { breadcrumbs } from '../../../lib/structured-data.ts';
+import { GUIDE_PATH, GUIDE_TITLE } from '../../../components/romhacking/chapters.ts';
+import {
+  GLOSSARY,
+  GLOSSARY_PATH,
+  INITIALS,
+  entryChapterLabel,
+  entryHref,
+  glossaryGroups,
+  initialId,
+} from '../../../components/romhacking/glossary.ts';
+
+const title = '용어집';
+const description = `롬 해킹 기초 가이드에 나오는 용어 ${GLOSSARY.length}개를 가나다순으로 모았습니다. 용어마다 원어와 뜻, 그 용어를 설명한 장으로 가는 링크가 있습니다.`;
+const groups = glossaryGroups();
+const present = new Set(groups.map(g => g.initial));
+---
+
+<Base
+  title={`${title} - ${GUIDE_TITLE}`}
+  description={description}
+  jsonLd={[
+    breadcrumbs(SITE, [
+      { name: GUIDE_TITLE, path: GUIDE_PATH },
+      { name: title, path: GLOSSARY_PATH },
+    ]),
+  ]}
+>
+  <div class="container guide">
+    <nav class="guide-crumbs" aria-label="현재 위치" data-pagefind-ignore>
+      <ol>
+        <li>
+          <a href={GUIDE_PATH}>{GUIDE_TITLE}</a>
+        </li>
+        <li aria-current="page">{title}</li>
+      </ol>
+    </nav>
+    <article data-pagefind-body>
+      <header class="guide-head">
+        <h1 data-pagefind-meta="title">{title}</h1>
+        <p class="guide-summary">
+          가이드에 나오는 용어 {GLOSSARY.length}개를 가나다순으로 모았습니다. 영문으로 시작하는 용어는 맨 뒤에 있습니다.
+          링크를 누르면 그 용어를 설명한 장의 절로 갑니다.
+        </p>
+      </header>
+
+      <nav class="gl-index" id="top-index" aria-label="초성 색인" data-pagefind-ignore>
+        <ul>
+          {INITIALS.map(i => (
+            <li>
+              {present.has(i) ? (
+                <a href={`#${initialId(i)}`}>{i}</a>
+              ) : (
+                <span aria-disabled="true" title={`${i}로 시작하는 용어 없음`}>
+                  {i}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="prose gl-body">
+        {groups.map(g => (
+          <section class="gl-group" aria-labelledby={initialId(g.initial)}>
+            <h2 id={initialId(g.initial)}>{g.initial}</h2>
+            <dl>
+              {g.entries.map(e => (
+                <div class="gl-entry">
+                  <dt>
+                    {e.term}
+                    {e.en && ' '}
+                    {e.en && <span class="gl-en">{e.en}</span>}
+                  </dt>
+                  <dd>
+                    <p>{e.meaning}</p>
+                    <p class="gl-where">
+                      <a href={entryHref(e)}>{entryChapterLabel(e)}</a>
+                    </p>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            <p class="gl-top" data-pagefind-ignore>
+              <a href="#top-index">색인으로</a>
+            </p>
+          </section>
+        ))}
+      </div>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .gl-index {
+    max-width: var(--measure);
+    margin: 0 0 24px;
+    padding: 8px 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .gl-index ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .gl-index a,
+  .gl-index span {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .gl-index a {
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .gl-index a:hover {
+    border-color: var(--accent);
+  }
+  .gl-index span {
+    color: var(--fg-muted);
+    background: var(--bg-soft);
+    font-weight: 400;
+  }
+  /* Desktop keeps the index under the sticky site header; phones have neither sticky, so headings need no extra room. */
+  @media (min-width: 641px) {
+    .gl-index {
+      position: sticky;
+      top: 60px;
+      z-index: 2;
+    }
+    .gl-group h2 {
+      scroll-margin-top: 80px;
+    }
+  }
+  .gl-group {
+    max-width: var(--measure);
+  }
+  .gl-group h2 {
+    margin: 1.6em 0 0.6em;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--accent);
+  }
+  .gl-group dl {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+  }
+  .gl-entry {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .gl-entry dt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    align-items: baseline;
+    font-weight: 700;
+  }
+  .gl-en {
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+  }
+  .gl-entry dd {
+    margin: 4px 0 0;
+  }
+  .gl-entry dd p {
+    margin: 0;
+  }
+  .gl-where {
+    margin-top: 2px !important;
+    font-size: 0.875rem;
+  }
+  .gl-where a {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    text-underline-offset: 3px;
+  }
+  .gl-where a::before {
+    content: '→ ' / '';
+  }
+  .gl-top {
+    margin: 8px 0 0;
+    font-size: 0.85rem;
+    text-align: right;
+  }
+</style>
