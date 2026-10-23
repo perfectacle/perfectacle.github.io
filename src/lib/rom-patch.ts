@@ -96,7 +96,7 @@ export const OTOGIRISOU: RomSpec = {
   ],
 };
 
-export const COPIER_HEADER = 512;
+const COPIER_HEADER = 512;
 const MIN_ROM_SIZE = 1048576;
 
 export const megabytes = (spec: RomSpec, size = spec.size) => `${size / 1048576}MB`;
