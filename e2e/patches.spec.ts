@@ -359,8 +359,8 @@ for (const width of [390, 768, 1280]) {
     await page.goto(KAKUSEI);
     const allies = page.locator('#cast').getByRole('list', { name: '주인공과 동료', exact: true });
     const enemies = page.locator('#cast').getByRole('list', { name: '주요 적', exact: true });
-    await expect(allies.locator('h3')).toHaveText(['손오공', '손오반', '피콜로']);
-    await expect(enemies.locator('h3')).toHaveText(['라데츠', '베지터', '프리더']);
+    await expect(allies.locator('h3')).toHaveText(['손오공', '손오반', '피콜로', '크리링', '계왕']);
+    await expect(enemies.locator('h3')).toHaveText(['라데츠', '베지터', '자봉', '도도리아', '기뉴', '프리더']);
     const allyBounds = await allies.boundingBox();
     const enemyBounds = await enemies.boundingBox();
     if (!allyBounds || !enemyBounds) throw new Error('Cast groups have no visible bounds');
@@ -372,12 +372,12 @@ for (const width of [390, 768, 1280]) {
           items.map(item => ({ x: item.getBoundingClientRect().x, y: item.getBoundingClientRect().y })),
         );
       if (width >= 960) {
-        expect(new Set(cards.map(card => card.y)).size).toBe(1);
+        expect(new Set(cards.map(card => card.y)).size).toBe(Math.ceil(cards.length / 3));
         expect(new Set(cards.map(card => card.x)).size).toBe(3);
       } else if (width === 390) {
         expect(new Set(cards.map(card => card.x)).size).toBe(1);
         const rows = cards.map(card => card.y);
-        expect(new Set(rows).size).toBe(3);
+        expect(new Set(rows).size).toBe(cards.length);
         expect(rows).toEqual([...rows].sort((a, b) => a - b));
       }
     }
