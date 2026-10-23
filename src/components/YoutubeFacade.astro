@@ -10,6 +10,8 @@
     iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
     iframe.allowFullscreen = true;
     button.replaceWith(iframe);
+    // Lets page music (the Korean patch pages' background track) make way for the video.
+    document.dispatchEvent(new Event('media-start'));
   });
 </script>
 
