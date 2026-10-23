@@ -122,16 +122,19 @@ export const downloads = (patch: KrPatch) => {
   };
 };
 
-/** Shared tools (`krpatch`) that the game folders in kr-patches build with, at the version they pin. */
-export const KR_PATCH_TOOLKIT_URL = 'https://github.com/perfectacle/kr-patch-toolkit/tree/v0.1.0';
+/**
+ * Korean README of the shared tools (`krpatch`) that the game folders in kr-patches build with. Release tags
+ * predate the Korean docs, so this points at main.
+ */
+export const KR_PATCH_TOOLKIT_URL = 'https://github.com/perfectacle/kr-patch-toolkit/blob/main/README.ko.md';
 
 /**
- * The patch source on GitHub at the tag of `version`. The kr-patches folders and tags are named after the
- * last segment of `path` (`snes/super-mario-rpg`, `super-mario-rpg-v1.2`).
+ * Korean README of the patch source on GitHub. The kr-patches folders are named after the last segment of
+ * `path` (`snes/super-mario-rpg`). Release tags predate the Korean docs, so this points at main.
  */
 export const sourceUrl = (patch: KrPatch) => {
   const dir = patch.path.slice(patch.path.lastIndexOf('/') + 1);
-  return `https://github.com/perfectacle/kr-patches/tree/${dir}-v${patch.version}/snes/${dir}`;
+  return `https://github.com/perfectacle/kr-patches/blob/main/snes/${dir}/README.ko.md`;
 };
 
 /** e.g. `슈퍼 패미컴 · 1996 · 한글패치 v1.1`. */
