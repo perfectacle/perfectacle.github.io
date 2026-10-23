@@ -123,8 +123,8 @@ const cast = [
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
         <ManualPatch patch={patch} />
+        <SaveNote />
       </PatchBox>
-      <SaveNote />
     </div>
     <figure class="hero-shot screen">
       <ZoomImage
