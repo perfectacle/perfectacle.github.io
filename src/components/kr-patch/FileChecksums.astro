@@ -1,6 +1,6 @@
 ---
 import { formatBytes } from '../../lib/kr-patches';
-import { patchedSize, type RomSpec } from '../../lib/rom-patch';
+import { COPIER_HEADER, patchedSize, type RomSpec } from '../../lib/rom-patch';
 
 interface Props {
   spec: RomSpec;
@@ -9,17 +9,21 @@ interface Props {
 
 const { spec, version } = Astro.props;
 const files = [
-  { name: '일본판 원본', size: spec.size, fingerprint: spec.original },
-  { name: `한글판 v${version}`, size: patchedSize(spec), fingerprint: spec.patched },
+  { name: '일본판 원본', size: spec.size, headeredSize: spec.size + COPIER_HEADER, fingerprint: spec.original },
+  { name: `한글판 v${version}`, size: patchedSize(spec), headeredSize: undefined, fingerprint: spec.patched },
 ];
 ---
 
 <details class="file-checksums">
   <summary>롬파일 크기·해시 보기</summary>
   <div class="file-checksums-body">
+    <p>
+      일본판 원본 롬파일에만 패치할 수 있습니다. 앞에 512바이트 헤더가 붙은 파일도 쓸 수 있고, 이 페이지가 헤더를 떼어
+      내고 확인합니다. 한글판은 헤더 없이 저장됩니다.
+    </p>
     <p class="file-checksums-note">
-      일본판 원본 롬파일에만 패치할 수 있습니다. 크기와 해시는 헤더 없는 롬파일 기준이고, 512바이트 헤더가 붙은 파일도
-      이 페이지에서 알아서 처리합니다.
+      CRC32·MD5는 헤더를 뺀 롬 데이터의 값이라 헤더가 있든 없든 같습니다. 헤더 내용은 파일을 만든 도구마다 달라서,
+      헤더까지 포함한 파일 전체의 해시는 하나로 정해지지 않습니다.
     </p>
     <div class="file-checksums-files">
       {files.map(file => (
@@ -28,7 +32,12 @@ const files = [
           <dl>
             <div>
               <dt>크기</dt>
-              <dd>{formatBytes(file.size)}</dd>
+              <dd>
+                {formatBytes(file.size)}
+                {file.headeredSize && (
+                  <span class="file-checksums-alt">헤더 포함 {formatBytes(file.headeredSize)}</span>
+                )}
+              </dd>
             </div>
             <div>
               <dt>CRC32</dt>

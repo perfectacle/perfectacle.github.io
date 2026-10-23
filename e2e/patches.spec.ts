@@ -74,19 +74,23 @@ for (const patch of KR_PATCHES) {
     await page.keyboard.press('Enter');
     await expect(details).toHaveAttribute('open', '');
     await expect(details).toContainText('일본판 원본 롬파일에만 패치할 수 있습니다.');
-    await expect(details).toContainText('헤더 없는 롬파일 기준');
-    await expect(details).toContainText('512바이트 헤더');
+    await expect(details).toContainText('512바이트 헤더가 붙은 파일도 쓸 수 있고');
+    await expect(details).toContainText('헤더가 있든 없든 같습니다');
     for (const file of [
-      { name: '일본판 원본', size: patch.spec.size, fingerprint: patch.spec.original },
-      { name: `한글판 v${patch.version}`, size: patchedSize(patch.spec), fingerprint: patch.spec.patched },
+      {
+        name: '일본판 원본',
+        size: `${formatBytes(patch.spec.size)}헤더 포함 ${formatBytes(patch.spec.size + 512)}`,
+        fingerprint: patch.spec.original,
+      },
+      {
+        name: `한글판 v${patch.version}`,
+        size: formatBytes(patchedSize(patch.spec)),
+        fingerprint: patch.spec.patched,
+      },
     ]) {
       const region = details.getByRole('region', { name: file.name, exact: true });
       await expect(region.getByRole('heading', { name: file.name, exact: true })).toBeVisible();
-      await expect(region.locator('dd')).toHaveText([
-        formatBytes(file.size),
-        file.fingerprint.crc32,
-        file.fingerprint.md5,
-      ]);
+      await expect(region.locator('dd')).toHaveText([file.size, file.fingerprint.crc32, file.fingerprint.md5]);
     }
     await expect(page.locator('.manual table')).toHaveCount(0);
     for (const width of [320, 390]) {
