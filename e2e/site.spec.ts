@@ -1249,3 +1249,42 @@ test('where autoplay is blocked, background music waits with a hint and starts o
   await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
   await expect(bgm.locator('.bgm-hint')).toBeHidden();
 });
+
+test('background music stops for a video and comes back on the next visit', async ({ page }) => {
+  await page.route('https://www.youtube-nocookie.com/embed/**', route =>
+    route.fulfill({ contentType: 'text/html', body: '<html lang="ko"><title>동영상</title></html>' }),
+  );
+  await page.goto('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/');
+  const bgm = page.locator('.bgm');
+  await page.locator('h1').first().click();
+  await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
+
+  await page.locator('#endings').getByRole('list', { name: '엔딩 목록' }).getByRole('button').nth(2).click();
+  await expect(page.locator('#endings iframe')).toHaveCount(1);
+  await expect(bgm).toHaveAttribute('data-state', 'off');
+
+  // Only this page made way for the video; the saved choice still says on.
+  await page.reload();
+  await expect(bgm.getByRole('button', { name: '배경음악' })).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('a first click that plays a video does not start the background music', async ({ page }) => {
+  await page.route('https://www.youtube-nocookie.com/embed/**', route =>
+    route.fulfill({ contentType: 'text/html', body: '<html lang="ko"><title>동영상</title></html>' }),
+  );
+  // Like a browser's autoplay policy, so the music waits for the first press.
+  await page.addInitScript(() => {
+    const resume = AudioContext.prototype.resume;
+    AudioContext.prototype.resume = function () {
+      return navigator.userActivation.hasBeenActive ? resume.call(this) : new Promise<void>(() => undefined);
+    };
+  });
+  await page.goto('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/#endings');
+  const bgm = page.locator('.bgm');
+  await expect(bgm).toHaveAttribute('data-state', 'waiting');
+  await page.locator('#endings [data-stage]').click();
+  await expect(page.locator('#endings iframe')).toHaveCount(1);
+  await expect(bgm).toHaveAttribute('data-state', 'off');
+  await page.waitForTimeout(3000);
+  await expect(bgm).toHaveAttribute('data-state', 'off');
+});

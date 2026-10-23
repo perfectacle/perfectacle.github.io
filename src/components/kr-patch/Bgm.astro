@@ -140,8 +140,26 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
       else pause();
     };
 
+    // A video or other sound on the page takes over: the music stops here without changing the saved choice,
+    // so the next page still starts with it.
+    const yieldToMedia = () => {
+      if (!on) return;
+      on = false;
+      pause();
+    };
+    document.addEventListener('media-start', yieldToMedia);
+    document.addEventListener(
+      'play',
+      event => {
+        if (event.target instanceof HTMLMediaElement) yieldToMedia();
+      },
+      true,
+    );
+
     const unlock = (event: Event) => {
       if (event.target instanceof Node && button.contains(event.target)) return;
+      // Pressing play on a video is not a cue for the music.
+      if (event.target instanceof Element && event.target.closest('.yt-facade, [data-starts-media]')) return;
       if (event instanceof KeyboardEvent && (event.code === 'KeyM' || event.key === 'Escape')) return;
       window.removeEventListener('click', unlock, true);
       window.removeEventListener('keydown', unlock, true);

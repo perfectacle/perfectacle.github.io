@@ -21,7 +21,14 @@ const thumb = (id: string) => `${base}/images/endings/${id}.webp`;
   <div class="endings-player frame" data-endings>
     <div class="endings-main">
       <div class="endings-stage yt-frame">
-        <button type="button" class="yt-facade" data-stage data-ending={first.id} aria-label={`${first.title} 재생`}>
+        <button
+          type="button"
+          class="yt-facade"
+          data-stage
+          data-starts-media
+          data-ending={first.id}
+          aria-label={`${first.title} 재생`}
+        >
           <img src={thumb(first.id)} alt="" width="480" height="360" loading="lazy" decoding="async" />
         </button>
       </div>
@@ -49,6 +56,7 @@ const thumb = (id: string) => `${base}/images/endings/${id}.webp`;
             <button
               type="button"
               class="ending-item"
+              data-starts-media
               data-ending={ending.id}
               data-title={ending.title}
               data-duration={ending.duration}
@@ -128,6 +136,7 @@ const thumb = (id: string) => `${base}/images/endings/${id}.webp`;
         stage.replaceChildren(frame);
       }
       frame.src = src;
+      document.dispatchEvent(new Event('media-start'));
     };
 
     window.addEventListener('message', event => {
