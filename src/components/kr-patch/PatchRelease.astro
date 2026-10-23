@@ -10,13 +10,106 @@ const { patch, version } = Astro.props;
 const release = releaseOf(patch, version);
 ---
 
-<article class="patch-release" aria-labelledby={release.id}>
+<article class="patch-release" aria-labelledby={release.id} data-release={release.id}>
   <h3 id={release.id} class="pixel">
     v{release.version}
     {release.latest && ' · 최신 버전'}
   </h3>
-  <p class="section-note">
+  <p class="section-note release-meta">
     <time datetime={release.date}>{release.dateText}</time>
+    <button type="button" class="release-share" aria-describedby={release.id}>
+      링크 복사
+    </button>
   </p>
   <slot />
+  <p class="release-share-status sr-only" role="status" aria-live="polite"></p>
 </article>
+
+<script>
+  const releases = [...document.querySelectorAll<HTMLElement>('.patch-release[data-release]')];
+
+  // A link to a version, or to anything inside its notes, opens those notes so the shared view matches.
+  const reveal = (settle = false) => {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id ? document.getElementById(id) : null;
+    if (!target) return;
+    const details = target.closest('.patch-release')?.querySelector('details');
+    const hidden = !!details && !details.open && details.contains(target);
+    if (details) details.open = true;
+    if (hidden || settle) target.scrollIntoView({ behavior: settle ? 'instant' : 'smooth' });
+  };
+
+  for (const release of releases) {
+    const id = release.dataset['release'] ?? '';
+    const details = release.querySelector('details');
+    const share = release.querySelector<HTMLButtonElement>('.release-share');
+    const status = release.querySelector<HTMLElement>('.release-share-status');
+    if (!details || !share || !status) continue;
+
+    // Opening a version puts its address in the bar, so copying the page address shares these notes open.
+    details.addEventListener('toggle', () => {
+      if (details.open && location.hash !== `#${id}`) history.replaceState(history.state, '', `#${id}`);
+      if (!details.open && location.hash === `#${id}`)
+        history.replaceState(history.state, '', location.pathname + location.search);
+    });
+
+    let reset = 0;
+    share.addEventListener('click', async () => {
+      details.open = true;
+      const url = new URL(`#${id}`, location.href).href;
+      let done = '링크를 복사했습니다';
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        history.replaceState(history.state, '', `#${id}`);
+        done = '주소창의 링크를 복사해 주세요';
+      }
+      share.textContent = done === '링크를 복사했습니다' ? '복사했습니다' : '주소창에서 복사';
+      status.textContent = done;
+      clearTimeout(reset);
+      reset = window.setTimeout(() => {
+        share.textContent = '링크 복사';
+        status.textContent = '';
+      }, 2500);
+    });
+  }
+
+  // Scripts that fold sections and the fonts and pictures above a shared anchor move it after the browser's first
+  // jump, so land on it again once the page has settled, unless the reader has already moved on.
+  reveal(true);
+  let moved = false;
+  for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown'])
+    window.addEventListener(type, () => (moved = true), { once: true, passive: true });
+  window.addEventListener('load', () => !moved && reveal(true), { once: true });
+  window.addEventListener('hashchange', () => reveal());
+</script>
+
+<style>
+  .release-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: center;
+  }
+
+  .release-share {
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--accent);
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .release-share:hover {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+  }
+
+  .release-share:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+</style>

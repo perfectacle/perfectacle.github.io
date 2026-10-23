@@ -1,6 +1,7 @@
 ---
 import { SECTION_TITLES, sectionsOf } from '../../../../lib/patch-sections';
 import PatchRelease from '../../../../components/kr-patch/PatchRelease.astro';
+import LatestRelease from '../../../../components/kr-patch/LatestRelease.astro';
 import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
@@ -128,6 +129,9 @@ const chapters = [
     ],
   },
 ];
+
+const latestOverview =
+  '전투 메시지와 이름 띠의 영문 이름, 대사와 메뉴에서 잘못 나오던 글자를 고치고 셸·쉘 표기를 통일했습니다.';
 ---
 
 <PatchBook
@@ -158,6 +162,7 @@ const chapters = [
         output={patch.stem}
         speaker={GUIDE}
       >
+        <LatestRelease slot="intro" patch={patch} overview={latestOverview} />
         <ManualPatch patch={patch} />
         <SaveNote />
       </PatchBox>
@@ -291,9 +296,7 @@ const chapters = [
       {SECTION_TITLES['patch-notes']}
     </h2>
     <PatchRelease patch={patch} version="1.2">
-      <p class="release-overview">
-        전투 메시지와 이름 띠의 영문 이름, 대사와 메뉴에서 잘못 나오던 글자를 고치고 셸·쉘 표기를 통일했습니다.
-      </p>
+      <p class="release-overview">{latestOverview}</p>
       <ReleaseDetails>
         <ReleaseItem>
           <ul>

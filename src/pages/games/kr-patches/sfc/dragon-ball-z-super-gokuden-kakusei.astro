@@ -1,6 +1,7 @@
 ---
 import { SECTION_TITLES, sectionsOf } from '../../../../lib/patch-sections';
 import PatchRelease from '../../../../components/kr-patch/PatchRelease.astro';
+import LatestRelease from '../../../../components/kr-patch/LatestRelease.astro';
 import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
@@ -13,7 +14,7 @@ import BattleSystem from '../../../../components/kakusei/BattleSystem.astro';
 import Endings from '../../../../components/kakusei/Endings.astro';
 import MakingOf from '../../../../components/kakusei/MakingOf.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
-import { KAKUSEI_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
+import { KAKUSEI_PATCH, TOTSUGEKI_PATCH, downloads, releaseLabel, releaseOf, trail } from '../../../../lib/kr-patches';
 import { kakuseiGroups, kakuseiV13Groups, kakuseiV13Versions, kakuseiVersions } from '../../../../lib/kakusei-showcase';
 
 const patch = KAKUSEI_PATCH;
@@ -112,6 +113,9 @@ const castGroups = [
     ],
   },
 ];
+
+const latestOverview =
+  '나레이션 줄바꿈을 바로잡고, 전투 말풍선을 원문과 다시 대조하고, 돌격편 암호가 이어지도록 고쳤습니다.';
 ---
 
 <PatchBook
@@ -130,6 +134,7 @@ const castGroups = [
         {patch.title} 한글판
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
+        <LatestRelease slot="intro" patch={patch} overview={latestOverview} />
         <ManualPatch patch={patch} />
         <SaveNote />
       </PatchBox>
@@ -268,11 +273,14 @@ const castGroups = [
       {SECTION_TITLES['patch-notes']}
     </h2>
     <PatchRelease patch={patch} version="1.3">
-      <p class="release-overview">
-        나레이션 줄바꿈을 바로잡고, 전투 말풍선을 원문과 다시 대조하고, 돌격편 암호가 이어지도록 고쳤습니다.
-      </p>
+      <p class="release-overview">{latestOverview}</p>
       <ReleaseDetails>
-        <ReleaseItem>
+        <ReleaseItem
+          more={{
+            href: `${TOTSUGEKI_PATCH.path}/#${releaseOf(TOTSUGEKI_PATCH, '1.2').id}`,
+            label: '돌격편 엔딩 암호 보기',
+          }}
+        >
           <ul>
             <li>나레이션 대사 8개에서 마지막 글자가 혼자 다음 줄로 떨어지던 문제를 고쳤습니다.</li>
             <li>전투 말풍선 문자열 443개(대사 ID 719개)를 원문에 맞게 고쳤습니다.</li>
