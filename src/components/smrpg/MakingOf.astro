@@ -221,14 +221,14 @@ const allFiles = Object.entries(files)
   </figure>
   <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="section-note">
-    빌드에 쓴 스크립트, 어셈블리 소스, 이름 데이터, v1.0 코드표와 롬 분석 문서는
+    빌드에 쓴 스크립트, 어셈블리 소스, 이름 데이터, v1.0 코드표와 롬 분석 문서는{' '}
     <a href={tools} download>
-      빌드 도구(zip, 640KB)
+      패치 소스(zip, 640KB)
     </a>
     로 받을 수 있습니다. 롬, asar, Mesen은 들어 있지 않고, 빌드 순서는 압축 파일 안 README.txt에 있습니다. 롬 헤더,
     메모리, 대사·폰트 형식, 후킹 주소, 쓴 빈 공간, 디버그 기능은 ANALYSIS.txt에 직접 확인한 것과 추정을 나눠 적었습니다.
     아래 「자세히 보기」의 항목마다 그 내용을 다루는 파일을 적어 두었고, 전체 목록은 마지막
-    <a href="#making-tools">빌드 도구 파일</a>에 있습니다.
+    <a href="#making-tools">패치 소스 파일</a>에 있습니다.
   </p>
 
   <details class="more making">
@@ -865,7 +865,7 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
       <ToolFiles items={[{ path: 'ANALYSIS.txt', text: '10장 다음 사람에게, 9장 사용한 빈 공간' }]} />
 
       <h3 id="making-tools" class="pixel">
-        11. 빌드 도구 파일
+        11. 패치 소스 파일
       </h3>
       <div class="table-wrap">
         <table>

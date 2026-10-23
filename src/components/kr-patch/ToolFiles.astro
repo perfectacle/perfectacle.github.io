@@ -6,8 +6,8 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<aside class="tool-files" aria-label="빌드 도구에서 이 내용에 해당하는 파일">
-  <p class="tool-files-title">빌드 도구 속 파일</p>
+<aside class="tool-files" aria-label="패치 소스에서 이 내용에 해당하는 파일">
+  <p class="tool-files-title">패치 소스 속 파일</p>
   <ul>
     {items.map(item => (
       <li>
