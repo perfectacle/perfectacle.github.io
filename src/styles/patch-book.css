@@ -323,7 +323,21 @@ details[open]:not(.section-nav-menu) > summary::after {
 @media (min-width: 1104px) {
   .hero {
     grid-template-columns: minmax(0, 1fr) 512px;
-    gap: 48px;
+    gap: 16px 48px;
+  }
+
+  /* The title screen starts level with the patch box, not with the release label above it. */
+  .hero > .hero-copy {
+    display: contents;
+  }
+
+  .hero-copy > * {
+    grid-column: 1;
+  }
+
+  .hero > :not(.hero-copy) {
+    grid-column: 2;
+    grid-row: 3;
   }
 }
 
