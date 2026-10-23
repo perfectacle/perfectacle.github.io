@@ -124,10 +124,10 @@ const chapter = (id: string) => {
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
         <ManualPatch patch={patch} />
+        <SaveNote>
+          <p>엔딩에서 「終」이 나온 뒤에는 리셋해 주세요. 원작과 같은 동작입니다.</p>
+        </SaveNote>
       </PatchBox>
-      <SaveNote>
-        <p>엔딩에서 「終」이 나온 뒤에는 리셋해 주세요. 원작과 같은 동작입니다.</p>
-      </SaveNote>
     </div>
     <SoundNovel base={base} />
   </section>

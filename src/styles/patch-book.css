@@ -480,8 +480,9 @@ h1.pixel {
   font-size: 0.8125rem;
 }
 
-/* The two folds at the foot of the patch box read as one list, so only the first draws the rule. */
-.file-checksums + .manual {
+/* The folds at the foot of the patch box read as one list, so only the first draws the rule. */
+.file-checksums + .manual,
+.manual + .manual {
   border-top: 0;
 }
 
@@ -776,6 +777,17 @@ h3.pixel {
   }
 }
 
+/* Once two screens fit side by side at 2x, they go under the text at that size instead of a 1x column beside it. */
+@container section (width >= 1060px) {
+  .story {
+    grid-template-columns: none;
+  }
+
+  .story-shots {
+    --shot: 512px;
+  }
+}
+
 /* Cards are as wide as their screen plus the theme's own frame, which differs per game. */
 .play-list,
 .feature-list {
@@ -789,6 +801,27 @@ h3.pixel {
   box-sizing: content-box;
   width: var(--shot);
   max-width: calc(100% - 48px);
+}
+
+/* Up to three cards go two a row at 2x, which reads better than three small screens; four cards stay at 1x
+   and share one row. */
+@container section (width >= 1200px) {
+  :is(.play-list, .feature-list):not(:has(> :nth-child(4))) {
+    --shot: 512px;
+  }
+}
+
+@container section (width >= 1080px) {
+  :is(.play-list, .feature-list):has(> :nth-child(4):last-child) {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  :is(.play-list, .feature-list):has(> :nth-child(4):last-child) > * {
+    width: auto;
+    max-width: none;
+  }
 }
 
 .play {
@@ -884,6 +917,11 @@ h3.pixel {
 
 .speech {
   line-height: 1.75;
+}
+
+/* A lone dialog box spanning the whole section makes lines too long to read. */
+.section > .speech {
+  max-inline-size: 48rem;
 }
 
 .speaker {
@@ -1008,12 +1046,6 @@ h3.pixel {
   background: var(--panel);
   font-size: 24px;
   text-shadow: none;
-}
-
-[data-theme='smrpg'] .masthead nav {
-  padding: 8px 16px 8px 38px;
-  border-radius: 8px;
-  background: var(--panel);
 }
 
 .pad-buttons {
