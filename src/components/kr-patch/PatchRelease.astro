@@ -80,7 +80,10 @@ const release = releaseOf(patch, version);
   let moved = false;
   for (const type of ['wheel', 'touchstart', 'keydown', 'pointerdown'])
     window.addEventListener(type, () => (moved = true), { once: true, passive: true });
-  window.addEventListener('load', () => !moved && reveal(true), { once: true });
+  const settle = () => !moved && reveal(true);
+  window.addEventListener('load', settle, { once: true });
+  // Web fonts can finish after load and change line heights above the anchor.
+  void document.fonts.ready.then(settle);
   window.addEventListener('hashchange', () => reveal());
 </script>
 
