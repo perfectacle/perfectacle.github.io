@@ -5,7 +5,7 @@ import SectionNav from '../components/kr-patch/SectionNav.astro';
 import ImagePreview from '../components/kr-patch/ImagePreview.astro';
 import Bgm from '../components/kr-patch/Bgm.astro';
 import { SITE } from '../lib/posts.ts';
-import { KR_PATCH_LIST_PATH, KR_PATCH_SITE_TITLE, KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
+import { KR_PATCH_SFC_PATH, KR_PATCH_SITE_TITLE, KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
 import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
 
 interface Props {
@@ -68,7 +68,7 @@ const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH
     {theme !== 'sfc' && (
       <header class="masthead page-width">
         <nav aria-label="한글패치">
-          <a class="wordmark" href={KR_PATCH_LIST_PATH}>
+          <a class="wordmark" href={KR_PATCH_SFC_PATH}>
             <span aria-hidden="true">←</span> 한글패치 목록
           </a>
         </nav>

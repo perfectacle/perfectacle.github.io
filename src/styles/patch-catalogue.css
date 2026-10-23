@@ -54,6 +54,20 @@
     inset 0 -5px #a8a4b0;
 }
 
+.console-back {
+  display: inline-block;
+  margin-bottom: 4px;
+  color: #494352;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.console-back:hover,
+.console-back:focus-visible {
+  color: #2d2636;
+  text-decoration: underline;
+}
+
 .console-heading h1 {
   color: #3c334c;
   font-family: var(--pixel);

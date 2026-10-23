@@ -116,7 +116,9 @@ export const OTOGIRISOU_PATCH: KrPatch = {
 /** In catalogue order. */
 export const KR_PATCHES = [SMRPG_PATCH, TOTSUGEKI_PATCH, KAKUSEI_PATCH, OTOGIRISOU_PATCH];
 
+/** Platform select; each platform then has its own game list. */
 export const KR_PATCH_LIST_PATH = '/games/kr-patches/';
+export const KR_PATCH_SFC_PATH = '/games/kr-patches/sfc/';
 export const KR_PATCH_SITE_TITLE = '한글패치';
 
 export const downloads = (patch: KrPatch) => {
@@ -145,6 +147,7 @@ export const releaseLabel = (patch: KrPatch, prefix = '한글패치 ') =>
 
 export const trail = (patch: KrPatch) => [
   { name: '한글패치', path: KR_PATCH_LIST_PATH },
+  { name: '슈퍼 패미컴', path: KR_PATCH_SFC_PATH },
   { name: patch.title, path: `${patch.path}/` },
 ];
 
