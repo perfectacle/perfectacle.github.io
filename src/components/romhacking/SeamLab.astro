@@ -1,0 +1,553 @@
+---
+import {
+  DEFAULT_SEAM,
+  FADE,
+  FADE_SHAPES,
+  INTRO,
+  PERIOD,
+  RATE,
+  SEAM_MAX,
+  SEAM_MIN,
+  SEAM_STEP,
+  WINDOW,
+  analyse,
+  curvePath,
+  fmtDb,
+  fmtPercent,
+  fmtSeconds,
+  makeTune,
+  picks,
+  played,
+  renderLoop,
+  scoreCurve,
+  seamX,
+  toSample,
+  wavePath,
+  zoomGain,
+  type FadeShape,
+} from './seam-lab.ts';
+
+// Without scripts the widget draws its starting state, plus two tables that compare positions and fade shapes.
+const x = makeTune();
+const curve = scoreCurve(x);
+const { best, earliest } = picks(curve);
+const START_SHAPE: FadeShape = 'none';
+const r = analyse(x, DEFAULT_SEAM, START_SHAPE);
+const y = renderLoop(x, r.seam, START_SHAPE);
+const span = toSample(0.08);
+const zoom = toSample(0.004);
+const WAVE: [number, number, number, number] = [6, 6, 348, 76];
+const ZOOM: [number, number, number, number] = [6, 6, 348, 96];
+const zoomRec = x.slice(r.loopEnd - zoom, r.loopEnd + zoom);
+const zoomPlay = played(y, r.seam, r.loopEnd - zoom, r.loopEnd + zoom);
+const zg = zoomGain(zoomRec, zoomPlay);
+const CHART: [number, number, number, number] = [30, 8, 320, 92];
+const FLOOR = 0.5;
+const fadeX = WAVE[0] + (WAVE[2] * (span - toSample(FADE))) / (2 * span);
+const introRight = seamX(INTRO, CHART[0], CHART[2]);
+const scoreY = (s: number) => CHART[1] + CHART[3] - (CHART[3] * (Math.max(FLOOR, s) - FLOOR)) / (1 - FLOOR);
+
+const positions = [
+  { label: '인트로가 끝나는 곳', seconds: INTRO },
+  { label: '처음 고른 곳', seconds: DEFAULT_SEAM },
+  { label: '충분히 좋은 가장 이른 곳', seconds: earliest.seconds },
+].map(p => ({ ...p, report: analyse(x, p.seconds, 'none') }));
+const shapes = FADE_SHAPES.map(s => ({ ...s, report: analyse(x, earliest.seconds, s.id) }));
+const verdict = (rep: ReturnType<typeof analyse>, shape: FadeShape) => {
+  if (rep.score < 0.9)
+    return '점수가 낮습니다. T 앞뒤와 한 주기 뒤의 소리가 달라서, 어떻게 섞어도 녹음과 다른 소리가 납니다.';
+  if (shape === 'none' && rep.jump > rep.natural * 3 + 1)
+    return '되돌아가는 순간 파형이 끊겨 "딱" 하는 소리가 날 수 있습니다. 섞는 방법을 골라 보세요.';
+  if (shape === 'equal-power' && rep.bumpDb > 1)
+    return `양쪽 소리가 거의 같아서 sin·cos로 섞으면 페이드 가운데가 ${fmtDb(rep.bumpDb)} 커집니다.`;
+  return '되돌아가도 녹음과 거의 같은 소리가 이어집니다.';
+};
+const figures = {
+  score: r.score.toFixed(3),
+  jump: `${fmtPercent(r.jump)} (녹음은 ${fmtPercent(r.natural)})`,
+  deviation: fmtPercent(r.deviation),
+  bump: START_SHAPE === 'none' ? '섞지 않음' : fmtDb(r.bumpDb),
+};
+---
+
+<section class="widget seam-lab" data-seam-lab aria-labelledby="sl-title">
+  <h3 class="widget-title" id="sl-title">
+    이음매 위치 옮겨 보기
+  </h3>
+  <p class="widget-help" id="sl-help">
+    이 페이지가 만든 2초짜리 연습용 곡입니다. 0.3초 인트로 뒤에 0.75초짜리 마디가 되풀이되는데, 저음의 떨림은 마디와
+    박자가 맞지 않고 북과 하이햇의 잡음은 마디마다 달라서, 실제 녹음처럼 어디서 잇느냐에 따라 잘 맞는 정도가 다릅니다.
+    반복 구간은 이음매 T부터 한 주기 뒤인 loopEnd까지입니다.{' '}
+    <span class="live-only">
+      슬라이더나 방향키로 T를 옮기고 섞는 방법을 바꿔 보세요. 「들어 보기」를 누르면 인트로 뒤에 반복 구간을 세 번 이어
+      들려줍니다.
+    </span>
+  </p>
+
+  <div class="sl-controls live-only">
+    <div class="sl-seam">
+      <label for="sl-seam">이음매 위치 T</label>
+      <input
+        id="sl-seam"
+        type="range"
+        min={SEAM_MIN}
+        max={SEAM_MAX}
+        step={SEAM_STEP}
+        value={DEFAULT_SEAM}
+        aria-describedby="sl-help"
+        data-seam
+      />
+      <output for="sl-seam" data-seam-out>
+        {fmtSeconds(DEFAULT_SEAM)} · loopEnd {fmtSeconds(DEFAULT_SEAM + PERIOD)}
+      </output>
+    </div>
+    <fieldset class="sl-shapes">
+      <legend>섞는 방법(loopEnd 앞 {Math.round(FADE * 1000)} ms)</legend>
+      {FADE_SHAPES.map(s => (
+        <label>
+          <input type="radio" name="sl-shape" value={s.id} checked={s.id === START_SHAPE} /> {s.label}
+        </label>
+      ))}
+    </fieldset>
+    <div class="sl-buttons">
+      <button type="button" class="widget-btn" data-pick="earliest">
+        충분히 좋은 가장 이른 곳으로
+      </button>
+      <button type="button" class="widget-btn" data-pick="best">
+        점수가 가장 높은 곳으로
+      </button>
+      <button type="button" class="widget-btn is-primary" data-play>
+        들어 보기
+      </button>
+    </div>
+    <p class="widget-error" role="alert" data-error hidden></p>
+  </div>
+
+  <p class="sl-caption static-only">T = {fmtSeconds(DEFAULT_SEAM)}, 섞지 않은 상태입니다.</p>
+
+  <p class="sl-label" id="sl-chart-title">
+    위치마다 이음매 점수(0.5 아래는 바닥에 붙여 그림)
+  </p>
+  <svg
+    class="sl-chart"
+    viewBox="0 0 360 122"
+    role="img"
+    aria-labelledby="sl-chart-title"
+    aria-describedby="sl-chart-desc"
+  >
+    <desc id="sl-chart-desc" data-chart-desc>
+      {`인트로가 끝나는 ${INTRO}초 앞은 점수가 낮고, ${fmtSeconds(earliest.seconds)} 근처에서 가장 높습니다(최고 ${best.score.toFixed(3)}, ${fmtSeconds(best.seconds)}). 지금 T는 ${fmtSeconds(DEFAULT_SEAM)}, 점수 ${r.score.toFixed(3)}입니다.`}
+    </desc>
+    <rect class="sl-intro" x={CHART[0]} y={CHART[1]} width={introRight - CHART[0]} height={CHART[3]} />
+    <text class="dg-small" x={CHART[0] + 4} y={CHART[1] + 14}>
+      인트로
+    </text>
+    <path class="dg-line" d={`M${CHART[0]} ${scoreY(1)}H${CHART[0] + CHART[2]}`} />
+    <path class="dg-line dg-dash" d={`M${CHART[0]} ${scoreY(0.75)}H${CHART[0] + CHART[2]}`} />
+    <path class="dg-line" d={`M${CHART[0]} ${scoreY(FLOOR)}H${CHART[0] + CHART[2]}`} />
+    <text class="dg-small" x="2" y={scoreY(1) + 4}>
+      1.0
+    </text>
+    <text class="dg-small" x="2" y={scoreY(0.75) + 4}>
+      0.75
+    </text>
+    <text class="dg-small" x="2" y={scoreY(FLOOR) + 4}>
+      0.5
+    </text>
+    <path class="sl-curve" d={curvePath(curve, CHART, FLOOR)} />
+    <g class="sl-cursor" style={`transform: translateX(${seamX(DEFAULT_SEAM, CHART[0], CHART[2])}px)`} data-cursor>
+      <path d={`M0 ${CHART[1]}V${CHART[1] + CHART[3]}`} />
+    </g>
+    <text class="dg-small" x={CHART[0]} y="118">
+      {SEAM_MIN}초
+    </text>
+    <text class="dg-small" x={CHART[0] + CHART[2]} y="118" text-anchor="end">
+      {SEAM_MAX}초
+    </text>
+    <text class="dg-small sl-cursor-label" x={CHART[0] + CHART[2] / 2} y="118" text-anchor="middle" data-cursor-label>
+      T {fmtSeconds(DEFAULT_SEAM)}
+    </text>
+  </svg>
+
+  <p class="sl-label" id="sl-wave-title">
+    loopEnd 앞뒤 80 ms: 위는 녹음 그대로, 아래는 반복 재생
+  </p>
+  <svg class="sl-wave" viewBox="0 0 360 176" role="img" aria-labelledby="sl-wave-title" data-wave>
+    <rect class="sl-fade" x={fadeX} y="0" width={180 - fadeX} height="176" data-fade />
+    <path class="sl-rec" d={wavePath(x, r.loopEnd - span, r.loopEnd + span, WAVE)} data-rec />
+    <path
+      class="sl-play"
+      d={wavePath(played(y, r.seam, r.loopEnd - span, r.loopEnd + span), 0, 2 * span, [6, 94, 348, 76])}
+      data-play-path
+    />
+    <path class="dg-arrow" d="M180 0V176" />
+    <text class="dg-small" x="184" y="12">
+      녹음: 그대로 이어짐
+    </text>
+    <text class="dg-small" x="184" y="100">
+      재생: T로 되돌아감
+    </text>
+    <text class="dg-small" x={fadeX + 2} y="172" data-fade-label>
+      페이드 {Math.round(FADE * 1000)} ms
+    </text>
+  </svg>
+
+  <p class="sl-label" id="sl-zoom-title">
+    되돌아가는 곳 앞뒤 4 ms(세로도 키움): 실선은 반복 재생, 점선은 녹음
+  </p>
+  <svg class="sl-wave" viewBox="0 0 360 108" role="img" aria-labelledby="sl-zoom-title">
+    <path class="sl-rec dg-dash" d={wavePath(zoomRec, 0, 2 * zoom, ZOOM, zg)} data-zoom-rec />
+    <path class="sl-play" d={wavePath(zoomPlay, 0, 2 * zoom, ZOOM, zg)} data-zoom-play />
+    <path class="dg-arrow" d="M180 0V108" />
+  </svg>
+
+  <dl class="readout sl-readout">
+    <div>
+      <dt>이음매 점수</dt>
+      <dd data-out="score">{figures.score}</dd>
+    </div>
+    <div>
+      <dt>되돌아가는 순간 샘플 차</dt>
+      <dd data-out="jump">{figures.jump}</dd>
+    </div>
+    <div>
+      <dt>녹음과 가장 크게 다른 곳</dt>
+      <dd data-out="deviation">{figures.deviation}</dd>
+    </div>
+    <div>
+      <dt>페이드 가운데 음량(녹음 대비)</dt>
+      <dd data-out="bump">{figures.bump}</dd>
+    </div>
+  </dl>
+  <p class="sl-verdict" data-verdict>
+    {verdict(r, START_SHAPE)}
+  </p>
+  <p class="sl-foot">
+    샘플 차와 다른 정도는 곡에서 가장 큰 진폭에 대한 비율입니다. 점수는 T 앞뒤 {Math.round(WINDOW * 1000)} ms와 한 주기
+    뒤 같은 길이를 견준 정규화 상호상관이고, {RATE.toLocaleString('ko-KR')} Hz 한 채널로 계산합니다.
+  </p>
+
+  <div class="static-only">
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="sl-pos-caption">
+      <table>
+        <caption id="sl-pos-caption">섞지 않았을 때, 이음매 위치에 따라</caption>
+        <thead>
+          <tr>
+            <th scope="col">T</th>
+            <th scope="col">점수</th>
+            <th scope="col">되돌아가는 순간 샘플 차(녹음)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {positions.map(p => (
+            <tr>
+              <th scope="row">
+                {fmtSeconds(p.seconds)} {p.label}
+              </th>
+              <td>{p.report.score.toFixed(3)}</td>
+              <td>
+                {fmtPercent(p.report.jump)} ({fmtPercent(p.report.natural)})
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <div class="table-scroll" tabindex="0" role="region" aria-labelledby="sl-shape-caption">
+      <table>
+        <caption id="sl-shape-caption">T ={fmtSeconds(earliest.seconds)}에서 섞는 방법에 따라</caption>
+        <thead>
+          <tr>
+            <th scope="col">섞는 방법</th>
+            <th scope="col">녹음과 가장 크게 다른 곳</th>
+            <th scope="col">페이드 가운데 음량</th>
+          </tr>
+        </thead>
+        <tbody>
+          {shapes.map(s => (
+            <tr>
+              <th scope="row">{s.label}</th>
+              <td>{fmtPercent(s.report.deviation)}</td>
+              <td>{s.id === 'none' ? '—' : fmtDb(s.report.bumpDb)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import {
+    DEFAULT_SEAM,
+    FADE_SHAPES,
+    PERIOD,
+    RATE,
+    analyse,
+    fmtDb,
+    fmtPercent,
+    fmtSeconds,
+    makeTune,
+    picks,
+    playback,
+    played,
+    renderLoop,
+    scoreCurve,
+    seamX,
+    toSample,
+    wavePath,
+    zoomGain,
+    type FadeShape,
+  } from './seam-lab.ts';
+
+  const x = makeTune();
+  const curve = scoreCurve(x);
+  const { best, earliest } = picks(curve);
+  const span = toSample(0.08);
+  const zoom = toSample(0.004);
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-seam-lab]')) {
+    const q = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel);
+    const seamInput = q<HTMLInputElement>('[data-seam]');
+    const playBtn = q<HTMLButtonElement>('[data-play]');
+    const error = q('[data-error]');
+    const live = q('[data-live]');
+    let audio: AudioContext | undefined;
+    let source: AudioBufferSourceNode | undefined;
+    let announce: ReturnType<typeof setTimeout> | undefined;
+
+    const shape = () =>
+      (root.querySelector<HTMLInputElement>('input[name="sl-shape"]:checked')?.value ?? 'none') as FadeShape;
+    const seconds = () => Number(seamInput?.value ?? DEFAULT_SEAM);
+    const set = (sel: string, attr: string, value: string) => q(sel)?.setAttribute(attr, value);
+    const text = (sel: string, value: string) => {
+      const e = q(sel);
+      if (e) e.textContent = value;
+    };
+
+    const verdict = (rep: ReturnType<typeof analyse>, s: FadeShape) => {
+      if (rep.score < 0.9)
+        return '점수가 낮습니다. T 앞뒤와 한 주기 뒤의 소리가 달라서, 어떻게 섞어도 녹음과 다른 소리가 납니다.';
+      if (s === 'none' && rep.jump > rep.natural * 3 + 1)
+        return '되돌아가는 순간 파형이 끊겨 "딱" 하는 소리가 날 수 있습니다. 섞는 방법을 골라 보세요.';
+      if (s === 'equal-power' && rep.bumpDb > 1)
+        return `양쪽 소리가 거의 같아서 sin·cos로 섞으면 페이드 가운데가 ${fmtDb(rep.bumpDb)} 커집니다.`;
+      return '되돌아가도 녹음과 거의 같은 소리가 이어집니다.';
+    };
+
+    const render = (speak: boolean) => {
+      const t = seconds();
+      const s = shape();
+      const rep = analyse(x, t, s);
+      const y = renderLoop(x, rep.seam, s);
+      text('[data-seam-out]', `${fmtSeconds(t)} · loopEnd ${fmtSeconds(t + PERIOD)}`);
+      set('[data-rec]', 'd', wavePath(x, rep.loopEnd - span, rep.loopEnd + span, [6, 6, 348, 76]));
+      set(
+        '[data-play-path]',
+        'd',
+        wavePath(played(y, rep.seam, rep.loopEnd - span, rep.loopEnd + span), 0, 2 * span, [6, 94, 348, 76]),
+      );
+      const zr = x.slice(rep.loopEnd - zoom, rep.loopEnd + zoom);
+      const zp = played(y, rep.seam, rep.loopEnd - zoom, rep.loopEnd + zoom);
+      const g = zoomGain(zr, zp);
+      set('[data-zoom-rec]', 'd', wavePath(zr, 0, 2 * zoom, [6, 6, 348, 96], g));
+      set('[data-zoom-play]', 'd', wavePath(zp, 0, 2 * zoom, [6, 6, 348, 96], g));
+      q('[data-fade]')?.toggleAttribute('hidden', s === 'none');
+      q('[data-fade-label]')?.toggleAttribute('hidden', s === 'none');
+      const cursor = q<SVGGElement>('[data-cursor]');
+      if (cursor) cursor.style.transform = `translateX(${seamX(t, 30, 320)}px)`;
+      text('[data-cursor-label]', `T ${fmtSeconds(t)}`);
+      text(
+        '[data-chart-desc]',
+        `인트로가 끝나는 0.3초 앞은 점수가 낮고, ${fmtSeconds(earliest.seconds)} 근처에서 가장 높습니다(최고 ${best.score.toFixed(3)}, ${fmtSeconds(best.seconds)}). 지금 T는 ${fmtSeconds(t)}, 점수 ${rep.score.toFixed(3)}입니다.`,
+      );
+      text('[data-out="score"]', rep.score.toFixed(3));
+      text('[data-out="jump"]', `${fmtPercent(rep.jump)} (녹음은 ${fmtPercent(rep.natural)})`);
+      text('[data-out="deviation"]', fmtPercent(rep.deviation));
+      text('[data-out="bump"]', s === 'none' ? '섞지 않음' : fmtDb(rep.bumpDb));
+      const v = verdict(rep, s);
+      text('[data-verdict]', v);
+      if (speak) {
+        clearTimeout(announce);
+        const label = FADE_SHAPES.find(f => f.id === s)?.label ?? '';
+        announce = setTimeout(() => {
+          if (live) live.textContent = `T ${fmtSeconds(t)}, ${label}, 점수 ${rep.score.toFixed(3)}. ${v}`;
+        }, 400);
+      }
+    };
+
+    const stop = () => {
+      source?.stop();
+      source = undefined;
+      if (playBtn) playBtn.textContent = '들어 보기';
+    };
+
+    seamInput?.addEventListener('input', () => render(true));
+    root
+      .querySelectorAll<HTMLInputElement>('input[name="sl-shape"]')
+      .forEach(r => r.addEventListener('change', () => render(true)));
+    root.querySelectorAll<HTMLButtonElement>('[data-pick]').forEach(b =>
+      b.addEventListener('click', () => {
+        if (!seamInput) return;
+        seamInput.value = String((b.dataset['pick'] === 'best' ? best : earliest).seconds);
+        render(true);
+      }),
+    );
+    playBtn?.addEventListener('click', () => {
+      if (source) {
+        stop();
+        return;
+      }
+      try {
+        audio ??= new AudioContext();
+        void audio.resume();
+        const rep = analyse(x, seconds(), shape());
+        const data = playback(renderLoop(x, rep.seam, shape()), rep.seam, 3);
+        const buffer = audio.createBuffer(1, data.length, RATE);
+        buffer.getChannelData(0).set(data);
+        const gain = audio.createGain();
+        gain.gain.value = 0.5;
+        gain.connect(audio.destination);
+        const node = audio.createBufferSource();
+        node.buffer = buffer;
+        node.connect(gain);
+        node.addEventListener('ended', () => {
+          if (source === node) stop();
+        });
+        node.start();
+        source = node;
+        playBtn.textContent = '멈추기';
+        if (error) error.hidden = true;
+      } catch {
+        if (error) {
+          error.hidden = false;
+          error.textContent = '이 브라우저에서는 소리를 낼 수 없습니다.';
+        }
+      }
+    });
+
+    root.classList.add('is-live');
+    render(false);
+  }
+</script>
+
+<style>
+  .sl-controls {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .sl-seam {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 4px 12px;
+    align-items: center;
+  }
+  .sl-seam label {
+    font-weight: 600;
+  }
+  .sl-seam input {
+    min-height: 44px;
+    accent-color: var(--accent);
+  }
+  .sl-seam output {
+    grid-column: 1 / -1;
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+  .sl-shapes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 16px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .sl-shapes legend {
+    width: 100%;
+    margin-bottom: 2px;
+    padding: 0;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .sl-shapes label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    min-height: 44px;
+  }
+  .sl-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sl-caption,
+  .sl-label {
+    margin: 12px 0 4px;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .sl-chart,
+  .sl-wave {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--dg-cell);
+  }
+  .sl-intro {
+    fill: var(--dg-paper);
+  }
+  .sl-curve {
+    fill: none;
+    stroke: var(--dg-ink);
+    stroke-width: 1.6;
+  }
+  .sl-cursor path {
+    stroke: var(--dg-accent);
+    stroke-width: 2.5;
+  }
+  .sl-cursor {
+    transition: transform 0.12s;
+  }
+  .sl-cursor-label {
+    fill: var(--dg-accent);
+    font-weight: 700;
+  }
+  .sl-fade {
+    fill: var(--dg-paper);
+  }
+  .sl-rec {
+    fill: none;
+    stroke: var(--dg-muted);
+    stroke-width: 1;
+  }
+  .sl-play {
+    fill: none;
+    stroke: var(--dg-accent);
+    stroke-width: 1.3;
+  }
+  .sl-readout {
+    margin-top: 12px !important;
+  }
+  .sl-verdict {
+    margin: 10px 0 0;
+    font-weight: 600;
+  }
+  .sl-foot {
+    margin: 6px 0 0;
+    color: var(--fg-muted);
+    font-size: 0.8rem;
+  }
+  .seam-lab .static-only {
+    margin-top: 14px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sl-cursor {
+      transition: none;
+    }
+  }
+</style>

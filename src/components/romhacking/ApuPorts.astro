@@ -1,0 +1,343 @@
+---
+import { APU_STEPS, LOG_LINES, PHASE_LABEL, PORT_ADDR, SPC_ADDR, formatPc, hex2, parseLine } from './apu-log.ts';
+
+const ROLE = ['신호·번호', '데이터·명령', '주소 아래 바이트', '주소 위 바이트'] as const;
+const TONE = ['', '', 'is-cool', 'is-warm'] as const;
+const steps = APU_STEPS.map((s, i) => ({ ...s, i, write: s.line ? parseLine(s.line) : undefined }));
+---
+
+<section class="widget apu-log" data-apu-log aria-labelledby="apu-title">
+  <h3 class="widget-title" id="apu-title">
+    사운드 포트 기록 따라가 보기
+  </h3>
+  <p class="widget-help" id="apu-help">
+    각성편을 Mesen 2에서 켜고 <code>$2140</code>–<code>$2143</code>에 값을 쓸 때마다 남긴 기록(
+    {LOG_LINES.toLocaleString('ko-KR')}줄)에서 고른 줄입니다. 한 줄은 "프레임, 포트, 쓴 값, PC"이고, 값이 바뀐 쓰기만
+    남았습니다. 앞쪽은 사운드 드라이버를 올리는 과정, 뒤쪽은 곡을 바꾸고 효과음을 보내는 명령입니다.{' '}
+    <span class="live-only">
+      「다음 줄」을 누를 때마다 한 줄씩 나아가며, 네 포트에 마지막으로 쓴 값과 S-CPU가 다음에 기다리는 것을 보여 줍니다.
+      같은 쓰기가 길게 되풀이되는 곳은 한 단계로 건너뜁니다.
+    </span>
+  </p>
+
+  <div class="apu-panel live-only">
+    <div class="apu-buttons">
+      <button type="button" class="widget-btn" data-act="prev" disabled>
+        이전 줄
+      </button>
+      <button type="button" class="widget-btn is-primary" data-act="next">
+        다음 줄
+      </button>
+      <button type="button" class="widget-btn" data-act="reset">
+        처음으로
+      </button>
+    </div>
+    <p class="apu-where" data-where>
+      기록 시작 전: IPL이 AA BB를 띄우고 시작 신호를 기다립니다.
+    </p>
+    <ul class="apu-ports" aria-label="S-CPU가 포트에 마지막으로 쓴 값">
+      {PORT_ADDR.map((addr, p) => (
+        <li class={TONE[p]} data-port={p}>
+          <span class="apu-port-name mono">{addr}</span>
+          <code data-value>--</code>
+          <small>{ROLE[p]}</small>
+          <small class="apu-spc">SPC700 쪽 {SPC_ADDR[p]}</small>
+          <small class="apu-changed">방금 씀</small>
+        </li>
+      ))}
+    </ul>
+    <dl class="readout apu-readout">
+      <div>
+        <dt>$2142–$2143에 적힌 주소</dt>
+        <dd data-addr>—</dd>
+      </div>
+      <div>
+        <dt>S-CPU가 다음에 기다리는 것</dt>
+        <dd data-wait>—</dd>
+      </div>
+    </dl>
+  </div>
+
+  <p class="apu-sub" id="apu-list-title">
+    기록에서 고른 줄
+  </p>
+  <ol class="apu-steps" tabindex="0" aria-labelledby="apu-list-title" data-list>
+    {steps.map(s => (
+      <li class:list={[`is-${s.phase}`, { 'is-skip': !s.line }]} data-step={s.i}>
+        <p class="apu-step-head">
+          <span class="apu-phase">{PHASE_LABEL[s.phase]}</span>
+          {s.write ? (
+            <code class="apu-line">{s.line}</code>
+          ) : (
+            <span class="apu-skip">건너뜀 {s.skip?.lines.toLocaleString('ko-KR')}줄</span>
+          )}
+        </p>
+        <p class="apu-step-title">
+          {s.write && (
+            <span class="apu-step-port mono">
+              {PORT_ADDR[s.write.port]} ← {hex2(s.write.value)}
+            </span>
+          )}
+          <strong>{s.title}</strong>
+          {s.write && <span class="apu-pc">쓴 명령 다음 주소 {formatPc(s.write.pc)}</span>}
+        </p>
+        <p class="apu-note">{s.note}</p>
+        {s.wait && <p class="apu-wait">기다림: {s.wait}</p>}
+      </li>
+    ))}
+  </ol>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { APU_STEPS, PHASE_LABEL, hex2, hex4, portAddress, replay, stepReport } from './apu-log.ts';
+
+  const states = replay(APU_STEPS);
+  for (const root of document.querySelectorAll<HTMLElement>('[data-apu-log]')) {
+    const q = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel);
+    const prevBtn = q<HTMLButtonElement>('[data-act="prev"]');
+    const nextBtn = q<HTMLButtonElement>('[data-act="next"]');
+    const list = q('[data-list]');
+    const live = q('[data-live]');
+    let at = -1;
+
+    const render = (speak: boolean) => {
+      const ports = at >= 0 ? states[at] : undefined;
+      const step = at >= 0 ? APU_STEPS[at] : undefined;
+      const before = at > 0 ? states[at - 1] : undefined;
+      for (const li of root.querySelectorAll<HTMLElement>('[data-port]')) {
+        const p = Number(li.dataset['port']);
+        const v = ports?.[p];
+        const code = li.querySelector('[data-value]');
+        if (code) code.textContent = v === undefined ? '--' : hex2(v);
+        li.classList.toggle('is-changed', ports !== undefined && v !== before?.[p]);
+      }
+      const addr = ports ? portAddress(ports) : undefined;
+      const addrEl = q('[data-addr]');
+      if (addrEl) addrEl.textContent = addr === undefined ? '—' : `$${hex4(addr)}`;
+      const waitEl = q('[data-wait]');
+      if (waitEl) waitEl.textContent = step?.wait ?? '—';
+      const where = q('[data-where]');
+      if (where) {
+        where.textContent = step
+          ? `${at + 1}/${APU_STEPS.length}단계 · ${PHASE_LABEL[step.phase]} · ${step.title}`
+          : '기록 시작 전: IPL이 AA BB를 띄우고 시작 신호를 기다립니다.';
+      }
+      for (const li of root.querySelectorAll<HTMLElement>('[data-step]')) {
+        const current = Number(li.dataset['step']) === at;
+        if (current) li.setAttribute('aria-current', 'step');
+        else li.removeAttribute('aria-current');
+        // Scroll only the list box, so the page itself never jumps while stepping.
+        if (current && list) {
+          const top = li.offsetTop - list.offsetTop;
+          if (top < list.scrollTop || top + li.offsetHeight > list.scrollTop + list.clientHeight) {
+            list.scrollTop = Math.max(0, top - 8);
+          }
+        }
+      }
+      if (prevBtn) prevBtn.disabled = at < 0;
+      if (nextBtn) nextBtn.disabled = at >= APU_STEPS.length - 1;
+      if (speak && live) {
+        live.textContent = step ? stepReport(step, at, APU_STEPS.length) : '기록 시작 전으로 돌아갔습니다.';
+      }
+    };
+
+    nextBtn?.addEventListener('click', () => {
+      if (at < APU_STEPS.length - 1) at += 1;
+      render(true);
+      if (nextBtn.disabled) prevBtn?.focus();
+    });
+    prevBtn?.addEventListener('click', () => {
+      if (at >= 0) at -= 1;
+      render(true);
+      if (prevBtn.disabled) nextBtn?.focus();
+    });
+    q('[data-act="reset"]')?.addEventListener('click', () => {
+      at = -1;
+      if (list) list.scrollTop = 0;
+      render(true);
+      nextBtn?.focus();
+    });
+    root.classList.add('is-live');
+    render(false);
+  }
+</script>
+
+<style>
+  .apu-panel {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .apu-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .apu-where {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .apu-ports {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .apu-ports li {
+    display: grid;
+    gap: 1px;
+    padding: 6px 8px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--dg-cell);
+    text-align: center;
+    line-height: 1.35;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .apu-ports li.is-cool {
+    border-color: var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .apu-ports li.is-warm {
+    border-color: var(--dg-warm);
+    background: var(--dg-warm-soft);
+  }
+  .apu-ports li.is-changed {
+    box-shadow: 0 0 0 3px var(--dg-accent);
+  }
+  .apu-port-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+  .apu-ports code {
+    font-family: var(--font-mono);
+    font-size: 1.35rem;
+    font-weight: 700;
+  }
+  .apu-ports small {
+    color: var(--fg-muted);
+    font-size: 0.72rem;
+  }
+  .apu-ports .apu-changed {
+    visibility: hidden;
+    color: var(--dg-accent);
+    font-weight: 700;
+  }
+  .apu-ports li.is-changed .apu-changed {
+    visibility: visible;
+  }
+  .apu-readout {
+    margin: 0 !important;
+  }
+  .apu-readout dd {
+    font-size: 0.95rem !important;
+  }
+  .apu-sub {
+    margin: 0 0 6px;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .apu-steps {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    max-height: 26rem;
+    margin: 0;
+    padding: 0 4px 0 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    list-style: none;
+  }
+  .widget:not(.is-live) .apu-steps {
+    max-height: none;
+    overflow: visible;
+  }
+  .apu-steps:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .apu-steps li {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .apu-steps li.is-command {
+    border-left-color: var(--dg-accent);
+  }
+  .apu-steps li.is-skip {
+    border-style: dashed;
+    border-left-style: solid;
+  }
+  .apu-steps li[aria-current='step'] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .apu-steps p {
+    margin: 0;
+  }
+  .apu-step-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    align-items: baseline;
+  }
+  .apu-phase {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--fg-muted);
+  }
+  .apu-steps li.is-command .apu-phase {
+    color: var(--dg-accent);
+  }
+  .apu-line {
+    font-size: 0.85rem;
+  }
+  .apu-skip {
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .apu-step-title {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    align-items: baseline;
+    margin-top: 2px !important;
+  }
+  .apu-step-port {
+    font-weight: 700;
+  }
+  .apu-pc {
+    color: var(--fg-muted);
+    font-size: 0.8rem;
+  }
+  .apu-note,
+  .apu-wait {
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+  .apu-note {
+    color: var(--fg-muted);
+  }
+  .apu-wait {
+    margin-top: 2px !important;
+    font-weight: 600;
+  }
+  @media (max-width: 520px) {
+    .apu-ports {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .apu-ports li {
+      transition: none;
+    }
+  }
+</style>

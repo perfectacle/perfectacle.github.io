@@ -27,6 +27,8 @@ const LZSS = '/games/romhacking/lzss/';
 const HUFFMAN = '/games/romhacking/huffman/';
 const EXPANSION = '/games/romhacking/snes/expansion/';
 const EMULATOR = '/games/romhacking/snes/emulator/';
+const SOUND = '/games/romhacking/snes/sound/';
+const MUSIC = '/games/romhacking/music-loop/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -284,7 +286,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(page.getByRole('button', { name: '한 줄 실행' }).first()).toBeHidden();
   await page.goto(BANKS);
   await expect(page.locator('[data-bank-map] [data-summary-off]')).toHaveText('0x14000C');
-  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS, LZSS, HUFFMAN, EXPANSION, EMULATOR]) {
+  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS, LZSS, HUFFMAN, EXPANSION, EMULATOR, SOUND, MUSIC]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
     expect(await help.count()).toBeGreaterThan(0);
@@ -323,6 +325,17 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(run.locator('.rs-static-text')).toBeVisible();
   await expect(run.locator('textarea')).toBeHidden();
   await expect(run.locator('[data-lane="output"] .rs-mark')).toHaveCount(4);
+  await page.goto(SOUND);
+  const apu = page.locator('[data-apu-log]');
+  await expect(apu.locator('[data-step]')).toHaveCount(33);
+  await expect(apu.locator('.apu-steps')).toContainText('11 2140 CC pc=8380D4');
+  await expect(apu.getByRole('button', { name: '다음 줄' })).toBeHidden();
+  await page.goto(MUSIC);
+  const seam = page.locator('[data-seam-lab]');
+  await expect(seam.locator('[data-out="score"]')).toHaveText('0.887');
+  await expect(seam.locator('table')).toHaveCount(2);
+  await expect(seam.getByRole('button', { name: '들어 보기' })).toBeHidden();
+  await expect(seam.getByLabel('이음매 위치 T')).toBeHidden();
   await context.close();
 });
 
@@ -628,4 +641,87 @@ test('chapters link the glossary, and search finds it', async ({ page }) => {
   await expect(
     page.locator(`pagefind-results[instance="page"] .pf-result-link[href*="${GLOSSARY_PATH}"]`).first(),
   ).toBeVisible();
+});
+
+test('APU port log widget steps through the upload and the song commands with the keyboard', async ({ page }) => {
+  await page.goto(SOUND);
+  const widget = page.locator('[data-apu-log]');
+  await expect(widget).toHaveClass(/is-live/);
+  const next = widget.getByRole('button', { name: '다음 줄' });
+  const port = (n: number) => widget.locator(`[data-port="${n}"] [data-value]`);
+  await expect(port(0)).toHaveText('--');
+  await next.focus();
+  for (let i = 0; i < 4; i++) await page.keyboard.press('Enter');
+  await expect(port(0)).toHaveText('CC');
+  await expect(port(1)).toHaveText('01');
+  await expect(widget.locator('[data-addr]')).toHaveText('$0800');
+  await expect(widget.locator('[data-wait]')).toHaveText('$2140을 읽어 CC가 돌아올 때까지');
+  await expect(widget.locator('[data-port="0"]')).toHaveClass(/is-changed/);
+  await expect(widget.locator('[data-port="1"]')).not.toHaveClass(/is-changed/);
+  await expect(widget.locator('[aria-current="step"]')).toContainText('11 2140 CC pc=8380D4');
+  await expect(widget.locator('[data-live]')).toContainText('4/33단계, 올리기. 11프레임, $2140에 CC');
+  for (let i = 0; i < 12; i++) await page.keyboard.press('Enter');
+  await expect(widget.locator('[aria-current="step"]')).toContainText('18 2140 23 pc=8380D4');
+  await expect(widget.locator('[data-addr]')).toHaveText('$1E00');
+  for (let i = 0; i < 17; i++) await page.keyboard.press('Enter');
+  await expect(next).toBeDisabled();
+  await expect(widget.locator('[aria-current="step"]')).toContainText('3161 2141 0A pc=838031');
+  await expect(widget.locator('[aria-current="step"]')).toContainText('명령');
+  await expect(port(3)).toHaveText('D7');
+  await widget.getByRole('button', { name: '이전 줄' }).click();
+  await expect(port(1)).toHaveText('0B');
+  await widget.getByRole('button', { name: '처음으로' }).click();
+  await expect(port(0)).toHaveText('--');
+  await expect(widget.getByRole('button', { name: '이전 줄' })).toBeDisabled();
+  await noHorizontalOverflow(page);
+});
+
+test('APU port log widget drops the highlight transition for reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(SOUND);
+  const box = page.locator('[data-apu-log] [data-port="0"]');
+  expect(await box.evaluate(e => getComputedStyle(e).transitionDuration)).toBe('0s');
+});
+
+test('seam widget moves the seam with the keyboard, compares fade shapes and plays on request', async ({ page }) => {
+  await page.goto(MUSIC);
+  const widget = page.locator('[data-seam-lab]');
+  await expect(widget).toHaveClass(/is-live/);
+  const slider = widget.getByLabel('이음매 위치 T');
+  await expect(widget.locator('[data-seam-out]')).toHaveText('0.770초 · loopEnd 1.520초');
+  await slider.focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(widget.locator('[data-seam-out]')).toHaveText('0.775초 · loopEnd 1.525초');
+  await expect(widget.locator('[data-out="score"]')).toHaveText('0.876');
+  await expect(widget.locator('[data-live]')).toContainText('T 0.775초');
+
+  await widget.getByRole('button', { name: '충분히 좋은 가장 이른 곳으로' }).click();
+  await expect(slider).toHaveValue('0.47');
+  await expect(widget.locator('[data-out="score"]')).toHaveText('0.994');
+  await widget.getByLabel('sin·cos로 섞기').check();
+  await expect(widget.locator('[data-out="bump"]')).toHaveText('+2.9 dB');
+  await expect(widget.locator('[data-verdict]')).toContainText('+2.9 dB 커집니다');
+  await widget.getByLabel('sin²으로 섞기').check();
+  await expect(widget.locator('[data-out="bump"]')).toHaveText('0.0 dB');
+  await expect(widget.locator('[data-out="deviation"]')).toHaveText('2.8%');
+  await widget.getByRole('button', { name: '점수가 가장 높은 곳으로' }).click();
+  await expect(slider).toHaveValue('0.5');
+  await expect(widget.locator('[data-out="score"]')).toHaveText('0.997');
+
+  const play = widget.getByRole('button', { name: '들어 보기' });
+  await play.click();
+  await expect(widget.getByRole('button', { name: '멈추기' })).toBeVisible();
+  await widget.getByRole('button', { name: '멈추기' }).click();
+  await expect(play).toBeVisible();
+  await noHorizontalOverflow(page);
+});
+
+test('seam widget moves its cursor without animation for reduced motion and never plays by itself', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(MUSIC);
+  const cursor = page.locator('[data-seam-lab] [data-cursor]');
+  expect(await cursor.evaluate(e => getComputedStyle(e).transitionDuration)).toBe('0s');
+  await expect(page.locator('[data-seam-lab]').getByRole('button', { name: '들어 보기' })).toBeVisible();
 });
