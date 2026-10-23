@@ -72,7 +72,13 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
           throw error;
         }));
     const playing = () => on && !!source && ctx?.state === 'running';
+    // Tabs and windows of this site in the same browser hear one another: whichever starts playing silences the rest.
+    const channel = 'BroadcastChannel' in window ? new BroadcastChannel(KEY) : undefined;
+    let announced = false;
     const render = () => {
+      const now = playing();
+      if (now && !announced) channel?.postMessage('playing');
+      announced = now;
       button.setAttribute('aria-pressed', String(on));
       root.dataset['state'] = !on ? 'off' : playing() ? 'playing' : blocked ? 'blocked' : 'waiting';
       label.textContent = on ? '켜짐' : '꺼짐';
@@ -160,6 +166,9 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
       pause();
     };
     document.addEventListener('media-start', yieldToMedia);
+    channel?.addEventListener('message', event => {
+      if (event.data === 'playing') yieldToMedia();
+    });
     document.addEventListener(
       'play',
       event => {
@@ -211,7 +220,18 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
       window.addEventListener('resize', queue);
       lift();
     }
-    void pageSettled.then(() => {
+    // A tab opened in the background waits until it is shown, so it does not cut off the music in the tab in view.
+    const whenShown = () =>
+      new Promise<void>(resolve => {
+        if (!document.hidden) return resolve();
+        const shown = () => {
+          if (document.hidden) return;
+          document.removeEventListener('visibilitychange', shown);
+          resolve();
+        };
+        document.addEventListener('visibilitychange', shown);
+      });
+    void pageSettled.then(whenShown).then(() => {
       if (on) play();
     });
     render();
