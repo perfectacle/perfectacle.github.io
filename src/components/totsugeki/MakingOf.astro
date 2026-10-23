@@ -1,7 +1,7 @@
 ---
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
-import { KAKUSEI_PATCH, downloads, type KrPatch } from '../../lib/kr-patches';
+import { KAKUSEI_PATCH, KR_PATCH_TOOLKIT_URL, sourceUrl, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
   patch: KrPatch;
@@ -9,7 +9,7 @@ interface Props {
 
 const { patch } = Astro.props;
 const base = patch.path;
-const { tools } = downloads(patch);
+const source = sourceUrl(patch);
 const img = (name: string) => `${base}/images/making/${name}`;
 
 const memories = [
@@ -120,7 +120,7 @@ const toolFiles = [
   { name: 'tools/font1.py', text: '폰트 글자 읽기', section: 'font' },
   { name: 'tools/fontext1.py', text: '글자 추가 블록과 렌더러 후킹', section: 'font-ext' },
   { name: 'tools/title.py', text: '타이틀 그래픽 생성', section: 'title-gfx' },
-  { name: 'tools/lz.py', text: 'LZSS 압축과 해제', section: 'title-gfx' },
+  { name: 'krpatch lzss', text: '공통 도구. LZSS 압축과 해제', section: 'title-gfx' },
   { name: 'tools/credits1.py', text: '엔딩 크레딧 줄 정렬', section: 'etc' },
   {
     name: 'tools/pwglyph1.py',
@@ -130,9 +130,9 @@ const toolFiles = [
   { name: 'tools/endpw1.py', text: '엔딩 암호 자리에 「손오공은사이어인」 넣기', section: 'etc' },
   { name: 'tools/textdump1.py', text: '모든 텍스트를 코드 목록으로 덤프(버전 간 비교)', section: 'etc' },
   { name: 'lua/ending.lua', text: 'Mesen 2용. 엔딩 상태에서 이름을 바꿔 암호 화면 촬영', section: 'etc' },
-  { name: 'tools/fixsum.py', text: '헤더 체크섬 다시 계산', section: 'etc' },
-  { name: 'tools/ips.py', text: 'IPS 만들기와 적용', section: 'tools' },
-  { name: 'tools/dis65816.py', text: '65c816 역어셈블러', section: 'basics' },
+  { name: 'krpatch snes checksum', text: '공통 도구. 헤더 체크섬 다시 계산', section: 'etc' },
+  { name: 'krpatch ips', text: '공통 도구. IPS 만들기와 적용', section: 'tools' },
+  { name: 'krpatch snes dis', text: '공통 도구. 65c816 역어셈블러', section: 'basics' },
   { name: 'tools/pages1.py', text: '촬영한 화면에서 페이지별 완성 화면 고르기', section: 'testing' },
   { name: 'tools/rgcmp1.py', text: '두 롬의 시나리오별 대사 ID 순서 비교', section: 'testing' },
   {
@@ -143,15 +143,23 @@ const toolFiles = [
   { name: 'lua/eventlist.lua', text: 'Mesen 2용. 이벤트 표 문제 재현', section: 'event-list' },
   { name: 'tools/wintest1.py', text: '첫 나레이션을 줄 폭 시험 줄로 바꾼 롬 만들기', section: 'dialogue' },
   { name: 'lua/wintest.lua', text: 'Mesen 2용. 새 게임에서 창 크기·줄 넘김 기록', section: 'dialogue' },
-  { name: 'compat/lr.py', text: 'libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램', section: 'testing' },
+  {
+    name: 'krpatch snes run',
+    text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램',
+    section: 'testing',
+  },
   { name: 'compat/run_all.sh', text: '코어마다 새 게임·이어하기 비교', section: 'testing' },
-  { name: 'compat/mesen.lua', text: 'Mesen 2에서 같은 입력 재생', section: 'testing' },
+  { name: 'script.lua (krpatch snes lua)', text: 'Mesen 2에서 같은 입력 재생', section: 'testing' },
   {
     name: 'tables/',
     text: 'v1.1 텍스트, 메뉴 문자열, 일본어 원문과 v1.0 대조 덤프, 글자 코드표, 암호 글자표',
     section: 'dialogue',
   },
-  { name: 'ANALYSIS.txt', text: '롬 분석 문서(헤더·메모리·대사와 폰트 형식·후킹 주소·쓴 빈 공간)', section: 'next' },
+  {
+    name: 'docs/ANALYSIS.md',
+    text: '롬 분석 문서(헤더·메모리·대사와 폰트 형식·후킹 주소·쓴 빈 공간)',
+    section: 'next',
+  },
 ];
 
 const sectionTitles: Record<string, string> = {
@@ -168,7 +176,7 @@ const sectionTitles: Record<string, string> = {
 };
 
 const sectionTools: Record<string, string[]> = {
-  basics: ['tools/dis65816.py', 'lua/scenario.lua'],
+  basics: ['krpatch snes dis', 'lua/scenario.lua'],
   dialogue: [
     'tools/dialogue1.py',
     'tools/text_patch1.py',
@@ -180,25 +188,25 @@ const sectionTools: Record<string, string[]> = {
   ],
   font: ['tools/font1.py', 'tables/'],
   'font-ext': ['tools/fontext1.py', 'tools/text_patch1.py'],
-  'title-gfx': ['tools/title.py', 'tools/lz.py'],
+  'title-gfx': ['tools/title.py', 'krpatch lzss'],
   'event-list': ['lua/eventlist.lua'],
   testing: [
     'lua/scenario.lua',
     'tools/pages1.py',
     'tools/rgcmp1.py',
-    'compat/lr.py',
+    'krpatch snes run',
     'compat/run_all.sh',
-    'compat/mesen.lua',
+    'script.lua (krpatch snes lua)',
   ],
   etc: [
     'tools/credits1.py',
-    'tools/fixsum.py',
+    'krpatch snes checksum',
     'tools/pwglyph1.py',
     'tools/endpw1.py',
     'tools/textdump1.py',
     'lua/ending.lua',
   ],
-  next: ['ANALYSIS.txt'],
+  next: ['docs/ANALYSIS.md'],
 };
 const toolsFor = (section: string) =>
   (sectionTools[section] ?? []).map(path => ({
@@ -231,12 +239,11 @@ const toolsFor = (section: string) =>
   </figure>
   <p class="section-note">슈퍼 패미컴 구조나 65c816 어셈블리를 몰라도 읽을 수 있게 풀어 썼습니다.</p>
   <p class="section-note">
-    빌드 스크립트, 대사·폰트·타이틀 도구, Mesen 2용 Lua 스크립트, 대조 덤프와 롬 분석 문서(ANALYSIS.txt)는{' '}
-    <a href={tools} download>
-      패치 소스(zip, 3MB)
-    </a>
-    로 받을 수 있습니다. 롬은 들어 있지 않습니다. 아래 「자세히 보기」의 항목마다 그 내용을 다루는 파일을 적어 두었고,
-    전체 목록은 마지막 <a href="#making-tools">패치 소스 파일</a>에 있습니다.
+    빌드 스크립트, 대사·폰트·타이틀 도구, Mesen 2용 Lua 스크립트, 대조 덤프와 롬 분석 문서(docs/ANALYSIS.md)는{' '}
+    <a href={source}>패치 소스(GitHub)</a>에 있습니다. 롬은 들어 있지 않고, IPS·체크섬·LZSS·역어셈블러·libretro 실행
+    같은 공통 도구는 <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 <code>krpatch</code> 명령을 씁니다. 아래
+    「자세히 보기」의 항목마다 그 내용을 다루는 파일을 적어 두었고, 전체 목록은 마지막{' '}
+    <a href="#making-tools">패치 소스 파일</a>에 있습니다.
   </p>
 
   <details class="more making">
@@ -637,7 +644,7 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         <code>$81:A703</code>이 표 <code>$81:A743</code>의 3번 항목(0부터 셈)을 읽어 이 루틴을 부르고, 푼 뒤 타일마다 두
         플레인을 번갈아 놓도록 순서를 바꿉니다. 배치표는 <code>$81:A8B0</code>이 표 <code>$81:A8EC</code>의 39번
         항목으로 부릅니다. Mesen 2로 부팅 뒤를 기록해 보니 일본판과 v1.1 모두 126프레임째에 타일, 536프레임째에 배치표를
-        풀었습니다. 작업 노트와 <code>lz.py</code>에 적힌 <code>$80:9CFA</code>는 각성편의 주소였습니다.
+        풀었습니다. 작업 노트에 적힌 <code>$80:9CFA</code>는 각성편의 주소였습니다.
       </p>
       <p>
         두 자료의 위치는 5바이트 항목(주소 2바이트, 뱅크 1바이트, 크기 2바이트)에 적혀 있습니다. 타일은 파일{' '}
@@ -808,8 +815,8 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         9. 다음 사람에게
       </h3>
       <p>
-        이 롬을 이어서 고칠 분이 알아 두면 좋을 것입니다. 주소와 형식 전체는 묶음 안의 ANALYSIS.txt에 있고, 롬에서 다시
-        확인한 것은 [실측], 짐작한 것은 [추정]으로 표시했습니다.
+        이 롬을 이어서 고칠 분이 알아 두면 좋을 것입니다. 주소와 형식 전체는 패치 소스의 docs/ANALYSIS.md에 있고, 롬에서
+        다시 확인한 것은 [실측], 짐작한 것은 [추정]으로 표시했습니다.
       </p>
       <ul class="notes">
         <li>
@@ -818,9 +825,8 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
           않았습니다.
         </li>
         <li>
-          <code>lz.py</code> 머리말의 해제 루틴 주소(<code>$80:9CFA</code>, <code>$80:9DA7</code>)는 각성편 것입니다.
-          돌격편은 <code>$81:DF4F</code>와 <code>$81:DFE7</code>입니다(5절). 묶음 안의 파일은 배포 때와 같게 두고
-          ANALYSIS.txt에 바로잡아 적었습니다.
+          LZSS 형식은 각성편과 같지만 해제 루틴 주소는 다릅니다. 돌격편은 <code>$81:DF4F</code>와 <code>$81:DFE7</code>
+          이고(5절), 각성편 주소 <code>$80:9CFA</code>는 돌격편에서는 메뉴 커서 코드 중간입니다.
         </li>
         <li>
           v1.2 엔딩은 기록과 상관없이 「손오공은사이어인」을 보여 줍니다. 원래 데이터 암호는 디버그 엔딩 암호와 이름만
@@ -833,8 +839,8 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         <li>새 글자 블록 5곳(320자)이 통째로 비어 있습니다. 글자를 더 넣을 때 주소 표를 고치지 않고 쓸 수 있습니다.</li>
         <li>실제 슈퍼 패미컴과 플래시 카트리지에서 돌려 본 기록은 없습니다. 에뮬레이터 결과는 7절에 있습니다.</li>
         <li>
-          쓴 도구: Python 3.9.6(Pillow 11.3.0, numpy 2.0.2), Mesen 2.1.1, 새 글자 폰트 Galmuri11 2.404. 이 환경에서
-          묶음과 일본판 원본만으로 빌드해 배포판과 같은 CRC32가 나오는 것을 확인했습니다.
+          쓴 도구: Python 3.9.6(Pillow 11.3.0, numpy 2.0.2), Mesen 2.1.1, 새 글자 폰트 Galmuri11 2.404. 패치 소스와
+          일본판 원본만으로 빌드해 배포판과 같은 CRC32가 나오는 것을 확인했습니다.
         </li>
       </ul>
 
@@ -844,11 +850,11 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         10. 패치 소스 파일
       </h3>
       <p>
-        위에서 설명한 주소 전체가 묶음 안에 있습니다. 압축을 푼 폴더에 일본판 원본(헤더 없음, CRC32{' '}
-        <code>{patch.spec.original.crc32}</code>)을 <code>super-gokuden-jp.smc</code>로 두고{' '}
+        위에서 설명한 파일은 모두 <a href={source}>패치 소스</a>의 게임 폴더에 있습니다. 그 폴더에 일본판 원본(헤더
+        없음, CRC32 <code>{patch.spec.original.crc32}</code>)을 <code>super-gokuden-jp.smc</code>로 두고{' '}
         <code>zsh tools/build.sh</code>를 실행하면 배포판과 같은 롬(CRC32 <code>{patch.spec.patched.crc32}</code>)이
-        나옵니다. Python 3(Pillow, numpy)이 필요하고, 사용법은 묶음 안의 README.txt에, 롬 분석 문서는 ANALYSIS.txt에
-        있습니다.
+        나옵니다. Python 3(Pillow, numpy)과 <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>이 필요하고, 사용법은
+        게임 폴더의 README.md에, 롬 분석 문서는 docs/ANALYSIS.md에 있습니다.
       </p>
       <div class="table-wrap">
         <table>
