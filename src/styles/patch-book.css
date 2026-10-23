@@ -512,10 +512,20 @@ h1.pixel {
   cursor: pointer;
 }
 
+:is(.file-checksums, .manual)[open] > summary {
+  color: var(--ink);
+}
+
+/* An open fold hangs off a rule of its own, so its text never runs into the next fold's title. */
+:is(.file-checksums-body, .manual-body) {
+  margin: 8px 0 14px 4px;
+  padding: 2px 0 2px 14px;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
 .file-checksums-body {
   display: grid;
   gap: 10px;
-  padding-top: 10px;
 }
 
 .file-checksums-note {
@@ -634,7 +644,6 @@ h1.pixel {
 .manual-body {
   display: grid;
   gap: 10px;
-  padding-top: 10px;
 }
 
 /* Sections */
