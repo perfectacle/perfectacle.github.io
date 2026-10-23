@@ -59,7 +59,7 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
     let starting: Promise<void> | undefined;
 
     const load = () =>
-      (data ??= fetch(src, { priority: 'low' })
+      (data ??= fetch(src)
         .then(response => {
           if (!response.ok) throw new Error(`${response.status} ${src}`);
           return response.arrayBuffer();
@@ -74,7 +74,13 @@ const { title, loopStart, loopEnd, duration } = patch.bgm;
       root.dataset['state'] = !on ? 'off' : playing() ? 'playing' : 'waiting';
       label.textContent = on ? '켜짐' : '꺼짐';
     };
+    // The file waits for the page's own images and fonts, or it slows the first paint on slow connections.
+    const pageLoaded = new Promise<void>(resolve => {
+      if (document.readyState === 'complete') resolve();
+      else window.addEventListener('load', () => resolve(), { once: true });
+    });
     const startSource = async (audio: AudioContext, out: GainNode) => {
+      await pageLoaded;
       const buffer = await audio.decodeAudioData(await load());
       source = audio.createBufferSource();
       source.buffer = buffer;
