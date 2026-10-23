@@ -1,4 +1,6 @@
 ---
+import { SECTION_TITLES, sectionsOf } from '../../../../lib/patch-sections';
+import PatchRelease from '../../../../components/kr-patch/PatchRelease.astro';
 import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
@@ -104,14 +106,7 @@ const chapter = (id: string) => {
   title={`${patch.title} 한글판`}
   trail={trail(patch)}
   description={`${patch.year}년 슈퍼 패미컴 사운드 노벨 ${patch.title}(弟切草) 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
-  sections={[
-    { id: 'korean', label: '한국어로 바뀐 것' },
-    { id: 'features', label: '편의 기능' },
-    { id: 'story', label: '이야기' },
-    { id: 'play', label: '진행 방식' },
-    { id: 'patch-notes', label: '패치 노트' },
-    { id: 'making', label: '롬 분석 노트' },
-  ]}
+  sections={sectionsOf(['korean', 'features', 'story', 'play', 'patch-notes', 'making'])}
   theme={patch.theme}
   image={{ src: `${base}/images/scenes/title.webp`, alt: '제절초 타이틀 화면' }}
   copyright={[patch.copyright]}
@@ -135,7 +130,7 @@ const chapter = (id: string) => {
   <section id="korean" class="section page-width" aria-labelledby="korean-title">
     <p class="label chapter-mark">{chapter('korean').mark}</p>
     <h2 id="korean-title" class="pixel">
-      한국어로 바뀐 것
+      {SECTION_TITLES.korean}
     </h2>
     <ul class="checklist frame">
       <li>모든 문장과 선택지</li>
@@ -150,7 +145,7 @@ const chapter = (id: string) => {
   <section id="features" class="section page-width" aria-labelledby="features-title">
     <p class="label chapter-mark">{chapter('features').mark}</p>
     <h2 id="features-title" class="pixel">
-      편의 기능
+      {SECTION_TITLES.features}
     </h2>
     <p>
       제절초는 선택지에 따라 결말이 여러 개로 갈리지만, 원작에는 읽은 곳으로 되돌아가는 기능이 없어 다른 엔딩을 보려면
@@ -186,7 +181,7 @@ const chapter = (id: string) => {
   <section id="story" class="section page-width" aria-labelledby="story-title">
     <p class="label chapter-mark">{chapter('story').mark}</p>
     <h2 id="story-title" class="pixel">
-      이야기
+      {SECTION_TITLES.story}
     </h2>
     <div class="story">
       <div class="story-copy">
@@ -229,7 +224,7 @@ const chapter = (id: string) => {
   <section id="play" class="section page-width" aria-labelledby="play-title">
     <p class="label chapter-mark">{chapter('play').mark}</p>
     <h2 id="play-title" class="pixel">
-      진행 방식
+      {SECTION_TITLES.play}
     </h2>
     <div class="play-list">
       {play.map(item => (
@@ -254,15 +249,9 @@ const chapter = (id: string) => {
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
     <p class="label chapter-mark">{chapter('patch-notes').mark}</p>
     <h2 id="patch-notes-title" class="pixel">
-      패치 노트
+      {SECTION_TITLES['patch-notes']}
     </h2>
-    <article class="patch-release" aria-labelledby="release-1-2">
-      <h3 id="release-1-2" class="pixel">
-        v1.2 · 최신 버전
-      </h3>
-      <p class="section-note">
-        <time datetime="2026-10-22">2026년 10월 22일</time>
-      </p>
+    <PatchRelease patch={patch} version="1.2">
       <p class="release-overview">플로차트·장 목록·엔딩 목록을 추가하고, 책갈피와 되감기를 개선했습니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
@@ -333,14 +322,8 @@ const chapter = (id: string) => {
           </ul>
         </ReleaseItem>
       </ReleaseDetails>
-    </article>
-    <article class="patch-release" aria-labelledby="release-1-1">
-      <h3 id="release-1-1" class="pixel">
-        v1.1
-      </h3>
-      <p class="section-note">
-        <time datetime="2026-10-18">2026년 10월 18일</time>
-      </p>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.1">
       <p class="release-overview">진행·입력 오류를 고치고, 번역과 단어 단위 줄바꿈을 다듬었습니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
@@ -454,14 +437,8 @@ const chapter = (id: string) => {
           </ul>
         </ReleaseItem>
       </ReleaseDetails>
-    </article>
-    <article class="patch-release" aria-labelledby="release-1-0">
-      <h3 id="release-1-0" class="pixel">
-        v1.0
-      </h3>
-      <p class="section-note">
-        <time datetime="2016-09-29">2016년 9월 29일</time>
-      </p>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.0">
       <p class="release-overview">제절초의 첫 한글판입니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
@@ -491,7 +468,7 @@ const chapter = (id: string) => {
           />
         </ReleaseItem>
       </ReleaseDetails>
-    </article>
+    </PatchRelease>
   </section>
 
   <MakingOf patch={patch} mark={chapter('making').mark} />

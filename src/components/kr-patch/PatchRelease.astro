@@ -1,0 +1,22 @@
+---
+import { releaseOf, type KrPatch } from '../../lib/kr-patches';
+
+interface Props {
+  patch: KrPatch;
+  version: string;
+}
+
+const { patch, version } = Astro.props;
+const release = releaseOf(patch, version);
+---
+
+<article class="patch-release" aria-labelledby={release.id}>
+  <h3 id={release.id} class="pixel">
+    v{release.version}
+    {release.latest && ' · 최신 버전'}
+  </h3>
+  <p class="section-note">
+    <time datetime={release.date}>{release.dateText}</time>
+  </p>
+  <slot />
+</article>

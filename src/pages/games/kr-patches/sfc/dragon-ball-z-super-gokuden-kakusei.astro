@@ -1,4 +1,6 @@
 ---
+import { SECTION_TITLES, sectionsOf } from '../../../../lib/patch-sections';
+import PatchRelease from '../../../../components/kr-patch/PatchRelease.astro';
 import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
@@ -116,16 +118,7 @@ const castGroups = [
   title={`${patch.title} 한글판`}
   trail={trail(patch)}
   description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
-  sections={[
-    { id: 'changes', label: '한국어로 바뀐 것' },
-    { id: 'story', label: '이야기' },
-    { id: 'cast', label: '등장인물' },
-    { id: 'play', label: '진행 방식' },
-    { id: 'battle-system', label: '전투 시스템' },
-    { id: 'endings', label: '엔딩과 특별 장면' },
-    { id: 'patch-notes', label: '패치 노트' },
-    { id: 'making', label: '롬 분석 노트' },
-  ]}
+  sections={sectionsOf(['changes', 'story', 'cast', 'play', 'battle-system', 'endings', 'patch-notes', 'making'])}
   theme={patch.theme}
   image={{ src: `${base}/images/title.webp`, alt: '드래곤볼 Z 초오공전 각성편 한글판 타이틀 화면' }}
   copyright={[patch.copyright]}
@@ -154,7 +147,7 @@ const castGroups = [
 
   <section id="changes" class="section page-width" aria-labelledby="changes-title">
     <h2 id="changes-title" class="pixel">
-      한국어로 바뀐 것
+      {SECTION_TITLES.changes}
     </h2>
     <p>
       천하제일 무술대회부터 프리더와의 결전까지, 대사와 선택지를 한국어로 읽습니다. 타이틀·메뉴·전투 화면과 DBZ 퀴즈도
@@ -170,7 +163,7 @@ const castGroups = [
 
   <section id="story" class="section page-width" aria-labelledby="story-title">
     <h2 id="story-title" class="pixel">
-      이야기
+      {SECTION_TITLES.story}
     </h2>
     <div class="story">
       <div class="story-copy">
@@ -215,7 +208,7 @@ const castGroups = [
 
   <section id="cast" class="section page-width" aria-labelledby="cast-title">
     <h2 id="cast-title" class="pixel">
-      등장인물
+      {SECTION_TITLES.cast}
     </h2>
     <div class="cast-groups">
       {castGroups.map(group => (
@@ -245,7 +238,7 @@ const castGroups = [
 
   <section id="play" class="section page-width" aria-labelledby="play-title">
     <h2 id="play-title" class="pixel">
-      진행 방식
+      {SECTION_TITLES.play}
     </h2>
     <div class="play-list">
       {play.map(item => (
@@ -272,15 +265,9 @@ const castGroups = [
 
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
     <h2 id="patch-notes-title" class="pixel">
-      패치 노트
+      {SECTION_TITLES['patch-notes']}
     </h2>
-    <article class="patch-release" aria-labelledby="release-1-3">
-      <h3 id="release-1-3" class="pixel">
-        v1.3 · 최신 버전
-      </h3>
-      <p class="section-note">
-        <time datetime="2026-10-22">2026년 10월 22일</time>
-      </p>
+    <PatchRelease patch={patch} version="1.3">
       <p class="release-overview">
         나레이션 줄바꿈을 바로잡고, 전투 말풍선을 원문과 다시 대조하고, 돌격편 암호가 이어지도록 고쳤습니다.
       </p>
@@ -309,14 +296,8 @@ const castGroups = [
           </ReleaseItem>
         ))}
       </ReleaseDetails>
-    </article>
-    <article class="patch-release" aria-labelledby="release-1-2">
-      <h3 id="release-1-2" class="pixel">
-        v1.2
-      </h3>
-      <p class="section-note">
-        <time datetime="2026-10-18">2026년 10월 18일</time>
-      </p>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.2">
       <p class="release-overview">대사와 타이틀을 다듬고, 우주선 장면의 진행 오류를 고쳤습니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
@@ -337,14 +318,8 @@ const castGroups = [
           </ReleaseItem>
         ))}
       </ReleaseDetails>
-    </article>
-    <article class="patch-release" aria-labelledby="release-1-1">
-      <h3 id="release-1-1" class="pixel">
-        v1.1
-      </h3>
-      <p class="section-note">
-        <time datetime="2016-01-04">2016년 1월 4일</time>
-      </p>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.1">
       <p class="release-overview">DBZ 퀴즈 일부의 난이도를 조정했습니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
@@ -369,14 +344,8 @@ const castGroups = [
           />
         </ReleaseItem>
       </ReleaseDetails>
-    </article>
-    <article class="patch-release" aria-labelledby="release-1-0">
-      <h3 id="release-1-0" class="pixel">
-        v1.0
-      </h3>
-      <p class="section-note">
-        <time datetime="2011-12-30">2011년 12월 30일</time>
-      </p>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.0">
       <p class="release-overview">드래곤볼 Z 초오공전 각성편의 첫 한글판입니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
@@ -401,7 +370,7 @@ const castGroups = [
           />
         </ReleaseItem>
       </ReleaseDetails>
-    </article>
+    </PatchRelease>
   </section>
 
   <MakingOf patch={patch} />

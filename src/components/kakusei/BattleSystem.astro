@@ -1,4 +1,5 @@
 ---
+import { SECTION_TITLES } from '../../lib/patch-sections';
 import BattleShot from '../kr-patch/BattleShot.astro';
 
 const shot = (index: number) =>
@@ -35,7 +36,7 @@ const results = [
 
 <section id="battle-system" class="section page-width battle-system" aria-labelledby="battle-system-title">
   <h2 id="battle-system-title" class="pixel">
-    전투 시스템
+    {SECTION_TITLES['battle-system']}
   </h2>
   <p class="lead">
     각성편의 전투는 상대의 기술을 보고 유리한 계열로 받아치는 가위바위보입니다. 버튼부터 연달아 누르기보다, 기를

@@ -8,7 +8,7 @@ import {
   readyChapters,
 } from '../src/components/romhacking/chapters.ts';
 import { GLOSSARY, GLOSSARY_PATH, entryHref } from '../src/components/romhacking/glossary.ts';
-import { KR_PATCHES, KR_PATCH_TOOLKIT_URL, sourceUrl } from '../src/lib/kr-patches.ts';
+import { KR_PATCHES, KR_PATCH_LIST_PATH, KR_PATCH_TOOLKIT_URL, sourceUrl } from '../src/lib/kr-patches.ts';
 
 const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...KR_PATCHES.map(notePath), GLOSSARY_PATH];
 const first = (list: ReturnType<typeof readyChapters>) => {
@@ -68,7 +68,7 @@ for (const path of PAGES) {
 
 test('the patch hub leads to the guide, which maps every chapter', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/games/kr-patches/');
+  await page.goto(KR_PATCH_LIST_PATH);
   await page.getByRole('link', { name: /롬 해킹 기초/ }).click();
   await expect(page).toHaveURL(GUIDE_PATH);
   const map = page.locator('.chapter-map > li');

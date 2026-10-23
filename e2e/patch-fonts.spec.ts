@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
-import { KR_PATCHES } from '../src/lib/kr-patches.ts';
+import { KR_PATCHES, KR_PATCH_LIST_PATH, KR_PATCH_SFC_PATH } from '../src/lib/kr-patches.ts';
 
-for (const path of ['/games/kr-patches/', '/games/kr-patches/sfc/', ...KR_PATCHES.map(patch => `${patch.path}/`)]) {
+for (const path of [KR_PATCH_LIST_PATH, KR_PATCH_SFC_PATH, ...KR_PATCHES.map(patch => `${patch.path}/`)]) {
   test(`${path} keeps Korean pixel text in its web font at native scale`, async ({ page, browserName }) => {
     test.skip(browserName !== 'chromium', 'Platform font inspection uses the Chromium DevTools protocol.');
     await page.goto(path);
