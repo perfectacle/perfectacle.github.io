@@ -22,7 +22,7 @@ description: GitHub Actions 워크플로를 바꾸거나 CI 가 실패했을 때
 
 ### CI-01 — ci-ok 와 자동 머지
 
-main 은 `ci-ok` 체크 통과가 필수다(저장소 ruleset). `ci-ok` 는 모든 잡을 모아 하나라도 실패·취소면 실패한다. 통과한 PR 은 GitHub 자동 머지로 머지된다. 배포는 PR 이 아닌 실행(main push·수동 실행)에서만 하고, `github-pages` 환경이 main 만 허용한다.
+main 은 `ci-ok` 체크 통과가 필수다(저장소 ruleset). `ci-ok` 는 모든 잡을 모아 하나라도 실패·취소면 실패한다. 통과한 PR 은 GitHub 자동 머지로 머지된다. 배포는 main 의 PR 이 아닌 실행(push·수동 실행)에서만 하고, `github-pages` 환경도 main 만 허용한다. 다른 브랜치에 수동 실행한 CI(`audit.yml` 이 자동 수정 PR 에 돌리는 것)는 검사만 한다.
 
 - 새 잡을 추가하면 `ci-ok` 의 `needs` 에 넣는다. 빠지면 그 잡이 실패해도 머지된다.
 - 새 검사 잡에는 `needs: tested` 와 `if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}` 를 붙인다. 안 붙이면 PR 이 이미 검사한 트리라도 main 에서 다시 돈다([main 재검사 생략](#참고)). `!cancelled()` 가 빠지면 `tested` 가 skip 되는 PR 에서 그 잡도 skip 된다. `build`·`deploy` 처럼 main 에서 늘 돌아야 하는 잡에는 붙이지 않는다. `tested` 는 `ci-ok` 의 `needs` 에 넣지 않는다. 표식 조회만 하는 잡이라, 그 잡이 죽어도 검사는 전부 돌고 배포까지 막을 이유가 없다.
@@ -40,6 +40,7 @@ main 은 `ci-ok` 체크 통과가 필수다(저장소 ruleset). `ci-ok` 는 모�
 
 ## 참고
 
+- **audit**: 파일이 그대로여도 새 advisory 로 결과가 바뀌므로, PR 에서는 의존성 파일(`package.json`·`pnpm-lock.yaml`·`pnpm-workspace.yaml`)을 바꾼 PR 에서만 돈다. 새 advisory 는 매일 도는 `audit.yml` 이 수정 PR 을 열어 고치고 머지 후 배포를 실행한다([dependencies](../dependencies/SKILL.md#절차--audit-이-새-advisory-로-실패했을-때)).
 - **결과 재사용**: PR 에서 잡마다 입력 파일 해시로 "통과 표식"을 캐시해 같은 입력이면 설치·실행을 건너뛴다. 입력 범위를 바꾸는 변경(새 파일 종류를 읽는 검사 등)은 그 잡의 fingerprint 패턴도 같이 고친다.
 - **main 재검사 생략**: PR 캐시는 main 에서 읽히지 않는다. 그래서 PR 의 `ci-ok` 가 통과하면 머지 결과의 트리 해시로 `verified-tree-<트리>` 아티팩트를 남긴다. main push 때 `tested` 잡이 같은 트리의 표식을 찾으면 검사 잡을 건너뛰고 build·deploy 만 돈다. PR 검사 뒤 main 이 움직였거나(필수 체크가 strict 가 아니다) 수동 실행이면 트리가 달라 전부 다시 돈다. 그래서 main 실행은 그때만 최후 방어선 역할을 한다.
 - **이미지 캐시**: `.github/actions/astro-assets-cache` 는 최적화 이미지와 형식 선택 결과를 `node_modules/.astro/assets` 에 함께 보관한다. 키에는 `astro.config.ts`·`src/lib/rehype-post-images.ts`·`src/lib/image-format.ts`·`src/components/PostList.astro` 의 해시가 들어간다. AVIF 설정이나 Sharp 버전이 바뀌면 내부 설정 표식으로 생성된 AVIF 만 지우고 WebP 와 형식 선택 캐시는 남긴다. 선택 캐시는 원본·변환 설정·Sharp 버전으로 구분된다. 이미지 선택 코드를 다른 파일로 옮기면 CI 키와 `src/lib/image-cache.ts` 의 `CODE` 목록도 고친다.

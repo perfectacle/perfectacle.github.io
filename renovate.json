@@ -28,6 +28,12 @@
     {
       "matchManagers": ["github-actions"],
       "groupName": "github actions"
+    },
+    {
+      "description": "Overrides pin a security fix inside the dependent's major; moving to another major is a person's call",
+      "matchDepTypes": ["pnpm-workspace.overrides"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ],
   "customManagers": [
