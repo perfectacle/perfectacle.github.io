@@ -3,7 +3,9 @@ import YoutubeFacade from '../YoutubeFacade.astro';
 import endings from './endings.json';
 
 const base = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei';
-const playlist = 'PLI1EOGS3LxJElISvlsBMN_Lg7nFEpveRc';
+const [first] = endings;
+if (!first) throw new Error('endings.json is empty');
+const thumb = (id: string) => `${base}/images/endings/${id}.webp`;
 ---
 
 <section id="endings" class="section page-width" aria-labelledby="endings-title">
@@ -15,60 +17,137 @@ const playlist = 'PLI1EOGS3LxJElISvlsBMN_Lg7nFEpveRc';
     2회차에서 다른 선택도 해 보세요.
   </p>
   <p class="endings-spoiler">아래 영상의 제목과 설명에는 이야기의 결말과 분기 조건이 포함되어 있습니다.</p>
-  <p class="endings-playlist">
-    <a href={`https://www.youtube.com/playlist?list=${playlist}`} target="_blank" rel="noopener noreferrer">
-      YouTube에서 전체 재생목록 열기 ↗
-    </a>
-  </p>
-  <ol class="endings-list" role="list">
-    {endings.map(ending => (
-      <li class="ending frame" aria-labelledby={`ending-${ending.id}`}>
-        <div class="ending-video yt-frame">
-          <button
-            type="button"
-            class="yt-facade"
-            data-yt={ending.id}
-            data-title={ending.title}
-            aria-label={`${ending.title} 재생`}
-          >
-            <img
-              src={`${base}/images/endings/${ending.id}.webp`}
-              alt=""
-              width="480"
-              height="360"
-              loading="lazy"
-              decoding="async"
-            />
-          </button>
-        </div>
-        <div class="ending-copy">
-          <p class="ending-meta">
-            <span class="ending-number" aria-hidden="true">
-              {String(ending.index).padStart(2, '0')}
-            </span>
-            <span>재생 시간 {ending.duration}</span>
-            {ending.secondPlaythrough && <span class="ending-round">2회차부터</span>}
-          </p>
-          <h3 id={`ending-${ending.id}`} class="pixel">
-            {ending.title}
-          </h3>
-          <p>{ending.description}</p>
-          <a
-            class="ending-link"
-            href={`https://www.youtube.com/watch?v=${ending.id}&list=${playlist}&index=${ending.index}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`${ending.title} YouTube에서 열기`}
-          >
-            YouTube에서 열기 ↗
-          </a>
-        </div>
-      </li>
-    ))}
-  </ol>
+
+  <div class="endings-player frame" data-endings>
+    <div class="endings-main">
+      <div class="endings-stage yt-frame">
+        <button type="button" class="yt-facade" data-stage data-ending={first.id} aria-label={`${first.title} 재생`}>
+          <img src={thumb(first.id)} alt="" width="480" height="360" loading="lazy" decoding="async" />
+        </button>
+      </div>
+      <div class="endings-now" aria-live="polite">
+        <p class="ending-meta">
+          <span class="ending-number" data-now-number>
+            01
+          </span>
+          <span data-now-duration>재생 시간 {first.duration}</span>
+          <span class="ending-round" data-now-round hidden={!first.secondPlaythrough}>
+            2회차부터
+          </span>
+        </p>
+        <h3 class="pixel" data-now-title>
+          {first.title}
+        </h3>
+        <p data-now-description>{first.description}</p>
+      </div>
+    </div>
+
+    <div class="endings-side">
+      <ol class="endings-list" role="list" aria-label="엔딩 목록">
+        {endings.map(ending => (
+          <li>
+            <button
+              type="button"
+              class="ending-item"
+              data-ending={ending.id}
+              data-title={ending.title}
+              data-duration={ending.duration}
+              data-description={ending.description}
+              data-round={ending.secondPlaythrough ? '' : undefined}
+              aria-current={ending.id === first.id ? 'true' : undefined}
+            >
+              <img src={thumb(ending.id)} alt="" width="480" height="360" loading="lazy" decoding="async" />
+              <span class="ending-item-copy">
+                <span class="ending-item-meta">
+                  <span class="ending-number">{String(ending.index).padStart(2, '0')}</span>
+                  <span>{ending.duration}</span>
+                  {ending.secondPlaythrough && <span class="ending-round">2회차부터</span>}
+                </span>
+                <span class="ending-item-title">{ending.title}</span>
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
 </section>
 
 <YoutubeFacade />
+
+<script>
+  const ORIGIN = 'https://www.youtube-nocookie.com';
+  const root = document.querySelector<HTMLElement>('[data-endings]');
+  const stage = root?.querySelector<HTMLElement>('.endings-stage');
+  const items = root ? [...root.querySelectorAll<HTMLButtonElement>('.ending-item')] : [];
+
+  if (root && stage && items.length) {
+    const ids = items.map(item => item.dataset['ending'] ?? '');
+    const now = (name: string) => root.querySelector<HTMLElement>(`[data-now-${name}]`);
+    let frame: HTMLIFrameElement | null = null;
+
+    // Marks an ending as current: the list, the title and description, and the facade while nothing plays yet.
+    const select = (index: number) => {
+      const item = items[index];
+      if (!item) return;
+      items.forEach((other, i) => {
+        if (i === index) other.setAttribute('aria-current', 'true');
+        else other.removeAttribute('aria-current');
+      });
+      const set = (name: string, text: string) => {
+        const el = now(name);
+        if (el) el.textContent = text;
+      };
+      set('number', String(index + 1).padStart(2, '0'));
+      set('duration', `재생 시간 ${item.dataset['duration'] ?? ''}`);
+      set('title', item.dataset['title'] ?? '');
+      set('description', item.dataset['description'] ?? '');
+      const round = now('round');
+      if (round) round.hidden = !('round' in item.dataset);
+      const facade = stage.querySelector<HTMLButtonElement>('[data-stage]');
+      if (facade) {
+        facade.dataset['ending'] = ids[index];
+        facade.setAttribute('aria-label', `${item.dataset['title'] ?? ''} 재생`);
+        facade.querySelector('img')?.setAttribute('src', item.querySelector('img')?.getAttribute('src') ?? '');
+      }
+    };
+
+    // Plays from the chosen ending to the last; YouTube moves on by itself and reports each new video.
+    const play = (index: number) => {
+      select(index);
+      // With `playlist` set, YouTube plays that list and skips the video in the path, so the list starts with it.
+      const src = `${ORIGIN}/embed/${ids[index]}?autoplay=1&enablejsapi=1&playlist=${ids.slice(index).join(',')}`;
+      if (!frame) {
+        frame = document.createElement('iframe');
+        frame.title = '엔딩 영상';
+        frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        frame.allowFullscreen = true;
+        frame.addEventListener('load', () =>
+          frame?.contentWindow?.postMessage(JSON.stringify({ event: 'listening', id: 'endings' }), ORIGIN),
+        );
+        stage.replaceChildren(frame);
+      }
+      frame.src = src;
+    };
+
+    window.addEventListener('message', event => {
+      if (event.origin !== ORIGIN || event.source !== frame?.contentWindow || typeof event.data !== 'string') return;
+      try {
+        const id = JSON.parse(event.data)?.info?.videoData?.video_id;
+        const index = typeof id === 'string' ? ids.indexOf(id) : -1;
+        if (index >= 0 && items[index]?.getAttribute('aria-current') !== 'true') select(index);
+      } catch {
+        // Not a player message.
+      }
+    });
+
+    stage.addEventListener('click', event => {
+      const facade = (event.target as Element).closest<HTMLButtonElement>('[data-stage]');
+      if (facade) play(Math.max(0, ids.indexOf(facade.dataset['ending'] ?? '')));
+    });
+    items.forEach((item, index) => item.addEventListener('click', () => play(index)));
+  }
+</script>
 
 <style>
   .endings-intro {
@@ -82,47 +161,118 @@ const playlist = 'PLI1EOGS3LxJElISvlsBMN_Lg7nFEpveRc';
     color: var(--muted);
   }
 
-  .endings-playlist {
-    margin-top: 0.75rem;
-  }
-
-  .endings-list {
+  /* One player with its list beside it; the list is as tall as the player column and scrolls inside. */
+  .endings-player {
     display: grid;
-    gap: 1.5rem;
-    margin: 1.5rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .ending {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    gap: 1.5rem;
-    align-items: start;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
     padding: 1.25rem;
   }
 
-  .ending-video {
-    margin: 0;
+  .endings-main,
+  .endings-side {
     min-width: 0;
   }
 
-  .ending-video img {
+  .endings-main {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+  }
+
+  .endings-stage {
+    margin: 0;
+  }
+
+  .endings-stage img {
     image-rendering: auto;
     object-fit: contain;
   }
 
-  .ending-copy {
+  .endings-list {
+    display: grid;
+    align-content: start;
+    gap: 4px;
+    max-height: 420px;
+    margin: 0;
+    padding: 0 4px 0 0;
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  @container section (width >= 960px) {
+    .endings-player {
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 0.45fr);
+    }
+
+    .endings-side {
+      position: relative;
+    }
+
+    .endings-list {
+      position: absolute;
+      inset: 0;
+      max-height: none;
+    }
+  }
+
+  .ending-item {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    padding: 6px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .ending-item:hover {
+    background: rgb(255 255 255 / 6%);
+  }
+
+  .ending-item:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .ending-item[aria-current='true'] {
+    border-color: var(--accent);
+    background: rgb(255 255 255 / 8%);
+  }
+
+  .ending-item img {
+    width: 96px;
+    height: 72px;
+    object-fit: cover;
+    image-rendering: auto;
+    border-radius: 2px;
+  }
+
+  .ending-item-copy {
+    display: grid;
+    gap: 2px;
     min-width: 0;
   }
 
+  .ending-item-title {
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+
+  .ending-item-meta,
   .ending-meta {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.4rem 0.75rem;
+    gap: 0.25rem 0.6rem;
     color: var(--muted);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
   }
 
   .ending-number {
@@ -135,27 +285,16 @@ const playlist = 'PLI1EOGS3LxJElISvlsBMN_Lg7nFEpveRc';
   .ending-round {
     border: 1px solid currentcolor;
     border-radius: 3px;
-    padding: 0.05rem 0.4rem;
+    padding: 0 0.35rem;
   }
 
-  .ending-copy h3 {
-    margin: 0.5rem 0 0.75rem;
+  .ending-round[hidden] {
+    display: none;
+  }
+
+  .endings-now h3 {
+    margin: 0.4rem 0 0.5rem;
     font-size: 24px;
     line-height: 1.5;
-  }
-
-  .ending-link {
-    display: inline-block;
-    margin-top: 0.75rem;
-    padding: 0.25rem 0;
-    font-size: 1rem;
-  }
-
-  @media (max-width: 720px) {
-    .ending {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1rem;
-      padding: 1rem;
-    }
   }
 </style>

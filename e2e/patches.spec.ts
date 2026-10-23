@@ -878,9 +878,9 @@ test('Otogirisou title menu only starts the novel; the page menu lists the secti
 for (const patch of KR_PATCHES) {
   test(`${patch.title} opens every screenshot and diagram in the preview`, async ({ page }) => {
     await page.goto(`${patch.path}/`);
-    // Portraits are face sprites, ending tiles play videos, and the sound novel's screen turns its pages.
+    // Portraits are face sprites, the endings player and its list play videos, and the sound novel turns its pages.
     const loose = await page
-      .locator('main img:not([data-patch-preview] img):not(.portrait):not(.ending-video img):not(.novel img)')
+      .locator('main img:not([data-patch-preview] img):not(.portrait):not([data-endings] img):not(.novel img)')
       .evaluateAll(images => images.map(image => image.getAttribute('src')));
     expect(loose).toEqual([]);
     const triggers = page.locator('[data-patch-preview]');

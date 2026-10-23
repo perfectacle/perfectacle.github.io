@@ -703,7 +703,7 @@ test('SMRPG secrets keep spoilers folded and support independent keyboard disclo
   await noHorizontalOverflow(page);
 });
 
-test('Kakusei ending videos stay local until the chosen player is activated', async ({ page }) => {
+test('Kakusei endings play as a playlist that stays local until an ending is chosen', async ({ page }) => {
   const videoRequests: string[] = [];
   page.on('request', request => {
     if (/youtube(?:-nocookie)?\.com|ytimg\.com/.test(request.url())) videoRequests.push(request.url());
@@ -713,25 +713,36 @@ test('Kakusei ending videos stay local until the chosen player is activated', as
   );
   await page.goto('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/#endings');
   const endings = page.locator('#endings');
-  const buttons = endings.locator('.yt-facade');
-  await expect(buttons).toHaveCount(16);
-  const ids = await buttons.evaluateAll(items => items.map(item => (item as HTMLElement).dataset['yt']));
+  const items = endings.getByRole('list', { name: '엔딩 목록' }).getByRole('button');
+  await expect(items).toHaveCount(16);
+  const ids = await items.evaluateAll(list => list.map(item => (item as HTMLElement).dataset['ending']));
   expect(new Set(ids).size).toBe(16);
   expect(ids[0]).toBe('YE8lXY8IUN8');
   expect(ids.at(-1)).toBe('I0drihp8GS0');
+  await expect(items.first()).toHaveAttribute('aria-current', 'true');
   await expect(endings.locator('iframe')).toHaveCount(0);
   expect(videoRequests).toEqual([]);
 
-  const first = buttons.first();
-  const title = await first.getAttribute('data-title');
-  expect(title).toBeTruthy();
-  await first.focus();
+  // The big facade plays the current ending, then the rest of the list follows in order.
+  await endings.locator('[data-stage]').focus();
   await page.keyboard.press('Enter');
   const player = endings.locator('iframe');
   await expect(player).toHaveCount(1);
-  await expect(player).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/YE8lXY8IUN8?autoplay=1');
-  await expect(player).toHaveAttribute('title', title ?? '');
-  await expect(buttons).toHaveCount(15);
+  await expect(player).toHaveAttribute(
+    'src',
+    `https://www.youtube-nocookie.com/embed/${ids[0]}?autoplay=1&enablejsapi=1&playlist=${ids.join(',')}`,
+  );
+
+  // Choosing another ending reuses the same player from there on.
+  await items.nth(14).click();
+  await expect(player).toHaveCount(1);
+  await expect(player).toHaveAttribute(
+    'src',
+    `https://www.youtube-nocookie.com/embed/${ids[14]}?autoplay=1&enablejsapi=1&playlist=${ids[14]},${ids[15]}`,
+  );
+  await expect(items.nth(14)).toHaveAttribute('aria-current', 'true');
+  await expect(items.first()).not.toHaveAttribute('aria-current', 'true');
+  await expect(endings.locator('[data-now-title]')).toHaveText((await items.nth(14).getAttribute('data-title')) ?? '');
   await noHorizontalOverflow(page);
 });
 
