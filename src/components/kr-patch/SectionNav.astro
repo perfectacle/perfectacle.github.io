@@ -31,7 +31,7 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
 
   if (nav && menu && current) {
     nav.dataset['enhanced'] = 'true';
-    const wide = window.matchMedia('(min-width: 1200px)');
+    const wide = window.matchMedia('(min-width: 1500px)');
     const links = [...nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
     const targets = links.flatMap(link => {
       if (link.hash === '#main') return [];
@@ -169,13 +169,13 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
     background-color: #000;
   }
 
-  @media (max-width: 1199px) {
+  @media (max-width: 1499px) {
     .patch-section-nav[data-enhanced] {
       position: sticky;
     }
   }
 
-  @media (min-width: 1200px) {
+  @media (min-width: 1500px) {
     .has-section-nav {
       padding-right: 240px;
     }
@@ -197,8 +197,14 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
       display: none;
     }
 
+    /* A mouse needs no 44px touch rows; the list stays one short block. */
     .section-nav-menu ul {
+      gap: 0;
       padding-top: 0;
+    }
+
+    .section-nav-menu a {
+      padding-block: 3px;
     }
 
     .has-section-nav :is(#main, #patch, .section, .section [id]) {

@@ -10,7 +10,11 @@ type Props = Omit<HTMLAttributes<'img'>, 'width' | 'height' | 'alt'> & {
 };
 
 const { width, height, alt, smooth = false, loading = 'lazy', decoding = 'async', ...rest } = Astro.props;
-const dimensions = `--patch-image-width: ${Number(width)}px; --patch-image-ratio: ${Number(width) / Number(height)}`;
+const w = Number(width);
+const h = Number(height);
+// 512×448 images are 2× captures: one game pixel is two source pixels, so the scale steps are 256 wide.
+const unit = w % 512 === 0 && h % 448 === 0 ? w / 2 : w;
+const dimensions = `--patch-image-width: ${w}px; --patch-pixel-unit: ${unit}px; --patch-image-ratio: ${w / h}`;
 ---
 
 <button class="zoom-image" type="button" data-patch-preview aria-label={`${alt} 크게 보기`}>
@@ -23,6 +27,7 @@ const dimensions = `--patch-image-width: ${Number(width)}px; --patch-image-ratio
   .zoom-image {
     display: block;
     width: 100%;
+    container-type: inline-size;
     padding: 0;
     border: 0;
     background: transparent;

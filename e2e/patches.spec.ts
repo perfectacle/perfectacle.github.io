@@ -904,7 +904,8 @@ for (const patch of KR_PATCHES) {
     const preview = page.locator('#patch-image-preview');
     const last = triggers.filter({ visible: true }).last();
     await last.scrollIntoViewIfNeeded();
-    const thumbnail = await last.boundingBox();
+    // The button fills its cell; the picture inside keeps whole-number scales and can be narrower.
+    const thumbnail = await last.locator('.patch-picture').boundingBox();
     await last.click();
     await expect(preview).toBeVisible();
     const enlarged = await preview.locator('.patch-picture').boundingBox();
@@ -914,5 +915,28 @@ for (const patch of KR_PATCHES) {
     await page.keyboard.press('Escape');
     await expect(preview).not.toBeVisible();
     await expect(last).toBeFocused();
+  });
+}
+
+for (const width of [1280, 1920]) {
+  test(`game screens render at whole-number scales at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    for (const patch of KR_PATCHES) {
+      await page.goto(`${patch.path}/`);
+      await page.evaluate(() => document.querySelectorAll('details').forEach(d => (d.open = true)));
+      const off = await page
+        .locator('main :is(.zoom-image, .patch-image-trigger) > .patch-picture:not(.smooth)')
+        .evaluateAll(pictures =>
+          pictures.flatMap(picture => {
+            const width = picture.getBoundingClientRect().width;
+            const unit = parseFloat(getComputedStyle(picture).getPropertyValue('--patch-pixel-unit'));
+            const cell = picture.parentElement?.getBoundingClientRect().width ?? 0;
+            // A cell narrower than one scale is the only place a screen may shrink.
+            if (!width || cell < unit || Math.abs(width / unit - Math.round(width / unit)) < 0.01) return [];
+            return [`${picture.querySelector('img')?.getAttribute('src')} ${width}/${unit}`];
+          }),
+        );
+      expect(off, patch.title).toEqual([]);
+    }
   });
 }
