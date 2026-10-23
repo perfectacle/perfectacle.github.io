@@ -1211,6 +1211,22 @@ for (const game of PATCH_GUIDES) {
     expect(errors).toEqual([]);
   });
 
+  test(`${game} background music plays in one tab at a time`, async ({ page, context }) => {
+    await page.goto(path);
+    const first = page.locator('.bgm');
+    await page.locator('h1').first().click();
+    await expect(first).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
+
+    const other = await context.newPage();
+    await other.goto(path);
+    const second = other.locator('.bgm');
+    await other.locator('h1').first().click();
+    await expect(second).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
+    await expect(first).toHaveAttribute('data-state', 'off');
+    // Silenced by another tab, not turned off: the saved choice still starts the music on the next page.
+    expect(await page.evaluate(() => localStorage.getItem('kr-patch-bgm'))).not.toBe('off');
+  });
+
   test(`${game} background music file covers its loop points`, async ({ page }) => {
     await page.goto(path);
     const { duration, loopStart, loopEnd, decoded } = await page.locator('.bgm-toggle').evaluate(async button => {
