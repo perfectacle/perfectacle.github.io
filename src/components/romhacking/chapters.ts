@@ -188,7 +188,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     platform: 'common',
     title: '압축 ① RLE·LZSS',
     summary:
-      'RLE는 "같은 바이트를 몇 번", LZSS는 "몇 칸 앞에서 몇 바이트"로 자료를 줄입니다. 플래그 바이트와 거리·길이를 실제 롬 바이트로 풀어 봅니다.',
+      'RLE는 "같은 바이트를 몇 번", LZSS는 "몇 칸 앞에서 몇 바이트"로 데이터를 줄입니다. 플래그 바이트와 거리·길이를 실제 롬 바이트로 풀어 봅니다.',
     ready: true,
     notes: [
       note(KAKUSEI_PATCH, 'making-title-gfx', '각성편: 압축된 타이틀 그림'),
@@ -228,7 +228,39 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     slug: 'emulator',
     platform: 'snes',
     title: '에뮬레이터로 확인',
-    summary: '디버거로 "어디서 읽나"를 잡고, 여러 에뮬레이터에서 같은 결과가 나오는지 봅니다.',
+    summary:
+      '중단점으로 "어디서 읽나"를 잡고, 입력 스크립트로 같은 장면을 되풀이해 찍고, 정확도가 다른 여러 에뮬레이터에서 같은 결과가 나오는지 봅니다.',
+    ready: true,
+    notes: [
+      note(OTOGIRISOU_PATCH, 'making-lap2', '제절초: 2회차에 멈추던 이유'),
+      note(OTOGIRISOU_PATCH, 'making-testing', '제절초: 확인은 에뮬레이터가'),
+      note(SMRPG_PATCH, 'making-testing', '슈퍼 마리오 RPG: 확인은 에뮬레이터가'),
+      note(TOTSUGEKI_PATCH, 'making-testing', '돌격편: 확인은 에뮬레이터가'),
+      note(KAKUSEI_PATCH, 'making-testing', '각성편: 확인은 에뮬레이터가'),
+    ],
+    tools: [
+      { command: 'krpatch snes run', anchor: 'snes-run-헤드리스-libretro-실행기' },
+      { command: 'krpatch snes lua', anchor: 'snes-lua-mesen-2-스크립트' },
+      { command: 'krpatch shotcmp', anchor: 'shotcmp-contact-스크린샷을-텍스트로' },
+    ],
+  },
+  {
+    order: 13,
+    slug: 'sound',
+    platform: 'snes',
+    title: '소리 ① 슈퍼 패미컴 사운드 구조',
+    summary:
+      '본체 CPU와 따로 도는 소리 전용 CPU(SPC700)와 음원 칩(S-DSP), 둘이 값을 주고받는 포트 $2140–$2143을 봅니다.',
+    ready: false,
+    notes: [],
+    tools: [],
+  },
+  {
+    order: 14,
+    slug: 'music-loop',
+    platform: 'snes',
+    title: '소리 ② 게임 음악 뽑아 끊김 없이 반복하기',
+    summary: '곡 하나만 나오게 해서 녹음하고, 반복 구간을 찾아 이음매를 다듬어 웹에서 끊김 없이 반복 재생합니다.',
     ready: false,
     notes: [],
     tools: [],

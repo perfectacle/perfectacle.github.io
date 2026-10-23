@@ -108,8 +108,8 @@ const hexTable = Array.from({ length: 16 }, (_, n) => n);
   </Figure>
   <p>
     10진수에서 오른쪽부터 1, 10, 100의 자리가 있듯 2진수에는 1, 2, 4, 8, … 128의 자리가 있습니다. 켜진 칸의 자릿값을
-    더하면 10진수가 됩니다. 아래 「비트 켜고 끄기」에서 직접 켜 보세요. 처음 값 <code>$30</code>은 돌격편 롬 헤더에
-    실제로 있는 바이트입니다(<a href="#in-patch">실제 패치에서</a>).
+    더하면 10진수가 됩니다. 아래 「비트 켜고 끄기」에서 직접 켜 보세요. 처음 값 <code>$30</code>은 돌격편 내부 헤더(게임
+    이름·크기를 적어 둔 곳, 4장)에 실제로 있는 바이트입니다(<a href="#in-patch">실제 패치에서</a>).
   </p>
   <BulbByte value={0x30} />
 
@@ -271,7 +271,8 @@ const hexTable = Array.from({ length: 16 }, (_, n) => n);
   <p>
     16진수라는 것을 표시하는 방법이 여러 가지라 처음엔 헷갈립니다. <code>$30</code>, <code>0x30</code>, <code>30h</code>
     는 모두 같은 값(10진수 48)입니다. 게임기 쪽 문서와 어셈블리는 <code>$</code>를, 파일 오프셋과 프로그래밍 언어는{' '}
-    <code>0x</code>를 주로 씁니다. 이 가이드도 CPU 주소는 <code>$</code>, 파일 위치는 <code>0x</code>로 적습니다.
+    <code>0x</code>를 주로 씁니다. 이 가이드는 CPU가 보는 주소와 값에는 <code>$</code>, 파일 오프셋과 파일 속 길이에는{' '}
+    <code>0x</code>를 붙입니다.
   </p>
 
   <h2 id="sizes">
@@ -279,11 +280,11 @@ const hexTable = Array.from({ length: 16 }, (_, n) => n);
   </h2>
   <p>
     롬 크기를 말할 때 1KB는 1000이 아니라 2<sup>10</sup> = 1,024바이트이고, 1MB는 1,024KB = 1,048,576바이트입니다.
-    1,000단위와 헷갈리지 않게 KiB·MiB라고 적기도 하지만, 롬 해킹 자료는 대부분 KB·MB를 1,024단위로 씁니다. 16진수로
+    1,000단위와 헷갈리지 않게 KiB·MiB라고 적기도 하지만, 롬 해킹 문서는 대부분 KB·MB를 1,024단위로 씁니다. 16진수로
     적으면 깔끔합니다. 1KB = <code>$400</code>, 32KB = <code>$8000</code>, 64KB = <code>$10000</code>, 1MB ={' '}
     <code>$100000</code>입니다. 앞으로 자주 나오는 숫자이니 눈에 익혀 두세요.
   </p>
-  <Figure caption="두 배씩 커지는 크기와 16진수. 롬 헤더는 크기를 '2의 몇 제곱 KB'로 적습니다." max={560}>
+  <Figure caption="두 배씩 커지는 크기와 16진수. 내부 헤더는 크기를 '2의 몇 제곱 KB'로 적습니다." max={560}>
     <svg viewBox="0 0 360 196" role="img" aria-labelledby="sz-t sz-d">
       <title id="sz-t">롬 크기 바이트</title>
       <desc id="sz-d">
@@ -331,13 +332,13 @@ const hexTable = Array.from({ length: 16 }, (_, n) => n);
   <p>
     <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a> 롬의 파일 0x7FD5에는 <code>$30</code>이 있습니다. 2진수로{' '}
     <code>{toBinary(0x30)}</code>입니다. 이 바이트는 칸마다 뜻이 따로 있어서, 오른쪽 네 칸 <code>0000</code>은 "LoROM
-    방식" (4장), 비트 4(16의 자리)는 "빠른 롬(FastROM)"을 뜻합니다. 같은 LoROM이지만 빠른 롬을 쓰지 않는{' '}
+    방식" (4장), 비트 4(16의 자리)는 "FastROM(빠른 롬)"을 뜻합니다. 같은 LoROM이지만 FastROM을 쓰지 않는{' '}
     <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>는 <code>$20</code>입니다. 「비트 켜고 끄기」에서 비트 4만 꺼 보면
     $30이 $20이 됩니다.
   </p>
   <h3>체크섬: 모든 바이트의 합</h3>
   <p>
-    롬 헤더에는 롬의 모든 바이트를 더한 값의 아래 16비트(<strong>체크섬</strong>)와, 그 값의 모든 비트를 뒤집은 값(
+    내부 헤더에는 롬의 모든 바이트를 더한 값의 아래 16비트(<strong>체크섬</strong>)와, 그 값의 모든 비트를 뒤집은 값(
     <strong>보수</strong>)이 들어 있습니다. 둘을 더하면 언제나 <code>$FFFF</code>입니다. 패치로 바이트를 바꾸면 합도
     바뀌므로 다시 계산해 적어야 합니다.
   </p>
@@ -452,8 +453,8 @@ const hexTable = Array.from({ length: 16 }, (_, n) => n);
     직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
   </h2>
   <p>
-    헤더 바이트 세 개(맵 모드, 카트리지 종류, 롬 크기)를 헥스 뷰어로 봅니다. 돌격편 일본판이라면 <code>30 02 0B</code>가
-    나옵니다.
+    헤더 바이트 세 개(맵 모드, 카트리지 종류, 롬 크기)를 헥스 에디터로 봅니다. 돌격편 일본판이라면 <code>30 02 0B</code>
+    가 나옵니다.
   </p>
   <pre tabindex="0"><code>xxd -s 0x7FD5 -l 3 game.sfc</code></pre>
   <p>

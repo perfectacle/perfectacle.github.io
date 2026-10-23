@@ -136,7 +136,7 @@ const references = [
   </h2>
   <p>
     프로그램 안에도 숫자가 잔뜩 들어 있습니다. "이 주소로 가라"는 명령이라면 주소가 명령 바로 뒤에 붙는데, 이 주소도
-    리틀 엔디안입니다. 그래서 롬을 헥스 뷰어로 열면 주소가 거꾸로 보입니다.
+    리틀 엔디안입니다. 그래서 롬을 헥스 에디터로 열면 주소가 거꾸로 보입니다.
   </p>
   <Figure caption="돌격편의 명령 JSL $8286B0은 롬에 22 B0 86 82로 들어 있습니다." max={600}>
     <svg viewBox="0 0 360 170" role="img" aria-labelledby="jsl-t jsl-d">
@@ -220,7 +220,7 @@ const references = [
   </h2>
   <h3>대사 포인터 표</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>은 대사 번호마다 2바이트 포인터를 표에 적어 둡니다. 대사 0x006의
+    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>은 대사 번호마다 2바이트 포인터를 표에 적어 둡니다. 대사 $006의
     포인터는 파일 0x14000C에 있고, 바이트는 <code>FE 85</code>입니다. 거꾸로 읽으면 <code>$85FE</code>, 곧 같은 뱅크의{' '}
     <code>$A8:85FE</code>(파일 0x1405FE)에 대사가 있습니다.
   </p>
@@ -259,7 +259,7 @@ const references = [
   <h2 id="try">
     직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
   </h2>
-  <p>돌격편 v1.1 이후 롬이 있다면 대사 0x006의 포인터를 직접 읽어 봅니다.</p>
+  <p>돌격편 v1.1 이후 롬이 있다면 대사 $006의 포인터를 직접 읽어 봅니다.</p>
   <pre tabindex="0"><code>$ xxd -s 0x14000C -l 2 game.sfc
 0014000c: fe85                                     ..</code></pre>
   <p>Python으로는 바이트 순서를 지정해 숫자로 바꿉니다.</p>
@@ -268,7 +268,7 @@ const references = [
 &gt;&gt;&gt; hex(int.from_bytes(bytes.fromhex('fe85'), 'big'))
 '0xfe85'</code></pre>
   <p>
-    두 롬에서 어디가 바뀌었는지는 <code>krpatch diff a.sfc b.sfc</code>로 찾고, 찾은 범위를 헥스 뷰어로 열어 두 순서로
+    두 롬에서 어디가 바뀌었는지는 <code>krpatch diff a.sfc b.sfc</code>로 찾고, 찾은 범위를 헥스 에디터로 열어 두 순서로
     읽어 보세요.
   </p>
 </GuideChapter>

@@ -19,7 +19,7 @@ const references = [
   {
     href: 'https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf',
     label: 'WDC, W65C816S 데이터시트',
-    note: '명령표, 주소 지정 방식 24가지, 사이클 수, 인터럽트 순서와 벡터',
+    note: '명령 표, 주소 지정 방식 24가지, 사이클 수, 인터럽트 순서와 벡터',
   },
   {
     href: 'https://problemkaputt.de/fullsnes.htm#cpumemoryaddressing',
@@ -105,7 +105,10 @@ const modes = [
         12
       </text>
       <text class="dg-small" x="55" y="82" text-anchor="middle">
-        명령(옵코드)
+        명령 바이트
+      </text>
+      <text class="dg-small" x="55" y="98" text-anchor="middle">
+        (옵코드)
       </text>
       <text class="dg-small" x="172" y="82" text-anchor="middle">
         피연산자 $1234
@@ -113,7 +116,7 @@ const modes = [
       <text class="dg-small" x="172" y="98" text-anchor="middle">
         (작은 자리 먼저)
       </text>
-      <path class="dg-arrow" d="M55 92 55 112" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M55 104 55 116" marker-end="url(#dg-arrowhead)"></path>
       <path class="dg-arrow" d="M172 104 172 116" marker-end="url(#dg-arrowhead)"></path>
       <text class="dg-mono dg-bold" x="55" y="138" text-anchor="middle">
         LDA
@@ -222,9 +225,9 @@ const modes = [
     </svg>
   </Figure>
   <p>
-    <code>#</code> 하나 차이로 "숫자 $12"와 "$12번 칸에 든 것"이 갈립니다. 어셈블리를 읽을 때 가장 먼저 확인할 것이 이{' '}
-    <code>#</code>입니다. <code>,X</code>는 표의 몇 번째 칸을 읽을 때 씁니다. X를 늘려 가며 같은 명령을 되풀이하면 표를
-    차례로 훑을 수 있습니다.
+    <code>#</code> 하나 차이로 "숫자 $12"와 "$12번 칸에 든 것"이 갈립니다. <code>#</code> 뒤의 값을 즉시값이라고 합니다.
+    어셈블리를 읽을 때 가장 먼저 확인할 것이 이 <code>#</code>입니다. <code>,X</code>는 표의 몇 번째 칸을 읽을 때
+    씁니다. X를 늘려 가며 같은 명령을 되풀이하면 표를 차례로 훑을 수 있습니다.
   </p>
 
   <h2 id="branch">
@@ -458,7 +461,7 @@ const modes = [
         RTL로 돌아오면 스택이 어긋나 게임이 멈춥니다.
       </li>
       <li>
-        <code>PHK</code>/<code>PLB</code>는 "지금 코드 뱅크를 데이터 뱅크로" 맞출 때 자주 짝지어 나옵니다.
+        <code>PHK</code>/<code>PLB</code>는 "지금 프로그램 뱅크(PB)를 데이터 뱅크(DB)로" 맞출 때 자주 짝지어 나옵니다.
       </li>
     </ul>
     <h3>인터럽트와 NMI</h3>

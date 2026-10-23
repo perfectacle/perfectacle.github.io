@@ -9,6 +9,7 @@ import {
   SITE,
 } from '../lib/posts.ts';
 import { GUIDE_PATH, chapterPath, readyChapters } from '../components/romhacking/chapters.ts';
+import { GLOSSARY_PATH } from '../components/romhacking/glossary.ts';
 
 export async function GET() {
   const posts = await getPosts();
@@ -27,6 +28,7 @@ export async function GET() {
     ['/games/kr-patches/sfc/otogirisou/'],
     [GUIDE_PATH],
     ...readyChapters().map(c => [chapterPath(c)] as [string]),
+    [GLOSSARY_PATH],
     ...(await getTags()).map(t => [`/tags/${t.slug}/`] as [string]),
     ...flattenCategories(await getCategoryTree()).map(c => [categoryPath(c.path)] as [string]),
   ];
