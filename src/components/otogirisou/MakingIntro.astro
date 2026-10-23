@@ -1,0 +1,30 @@
+---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
+import type { KrPatch } from '../../lib/kr-patches';
+
+interface Props {
+  patch: KrPatch;
+}
+
+const { patch } = Astro.props;
+const img = (name: string) => `${patch.path}/images/making/${name}`;
+---
+
+<p class="lead">
+  이 롬을 다시 분석하거나 한글판을 이어서 고칠 사람을 위해 남기는 기록입니다. 2016년에 낸 v1.0은 2회차부터 멈추거나, A
+  버튼을 누르지 않았는데 화면이 넘어가거나, 단어 중간에서 줄이 끊기는 문제가 있었습니다. v1.1은 이 문제를 롬에서 원인을
+  찾아 고치고 번역을 원문과 대조해 다시 다듬었습니다. v1.2는 한 걸음 더 나아가 원작에 없던 플로차트, 장 목록, 엔딩
+  목록을 넣었습니다. 게임 엔진에 새 화면과 새 동작을 끼워 넣은 것이라 번역 패치라기보다 개조 롬에 가깝습니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('versions.webp')}
+    width="1568"
+    height="448"
+    alt="세 화면을 나란히 놓은 그림. 왼쪽은 v1.0 2회차에서 w로 가득 차 멈춘 화면, 가운데는 v1.1에서 단어 단위로 줄이 바뀐 산길 장면, 오른쪽은 v1.2 플로차트의 제1장 강낚시 귀갓길"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>왼쪽부터 v1.0 2회차 멈춤, v1.1 단어 단위 줄바꿈, v1.2 플로차트</figcaption>
+</figure>

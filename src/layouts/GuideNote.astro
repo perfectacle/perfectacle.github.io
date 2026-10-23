@@ -1,0 +1,156 @@
+---
+import Base from './Base.astro';
+import Comments from '../components/Comments.astro';
+import ImagePreview from '../components/kr-patch/ImagePreview.astro';
+import '../styles/romhacking.css';
+import '../styles/romhacking-notes.css';
+import { SITE } from '../lib/posts.ts';
+import { breadcrumbs } from '../lib/structured-data.ts';
+import {
+  KR_PATCH_TOOLKIT_URL,
+  KR_PATCH_TOOLKIT_VERSION,
+  analysisUrl,
+  sourceUrl,
+  type KrPatch,
+} from '../lib/kr-patches.ts';
+import {
+  GUIDE_PATH,
+  GUIDE_TITLE,
+  NOTE_PATCHES,
+  chapterLabel,
+  chapterPath,
+  chaptersForNote,
+  notePath,
+} from '../components/romhacking/chapters.ts';
+
+interface Props {
+  patch: KrPatch;
+  /** Sections for the "이 노트에서" list, in page order. */
+  sections: { id: string; title: string }[];
+}
+
+const { patch, sections } = Astro.props;
+const path = notePath(patch);
+const title = `롬 분석 노트: ${patch.title}`;
+const description = `${patch.title} 한글패치 v${patch.version}을 만들며 롬에서 확인한 주소와 형식, 고친 코드와 확인 방법을 적은 기록입니다.`;
+const i = NOTE_PATCHES.indexOf(patch);
+const prev = NOTE_PATCHES[i - 1];
+const next = NOTE_PATCHES[i + 1];
+const related = chaptersForNote(patch);
+const trail = [
+  { name: GUIDE_TITLE, path: GUIDE_PATH },
+  { name: '롬 분석 노트', path: `${GUIDE_PATH}#notes` },
+  { name: patch.title, path },
+];
+---
+
+<Base title={`${title} - ${GUIDE_TITLE}`} description={description} jsonLd={[breadcrumbs(SITE, trail)]}>
+  <div class="container guide note">
+    <nav class="guide-crumbs" aria-label="현재 위치" data-pagefind-ignore>
+      <ol>
+        <li>
+          <a href={GUIDE_PATH}>{GUIDE_TITLE}</a>
+        </li>
+        <li>
+          <a href={`${GUIDE_PATH}#notes`}>롬 분석 노트</a>
+        </li>
+        <li aria-current="page">{patch.title}</li>
+      </ol>
+    </nav>
+    <article data-pagefind-body>
+      <header class="guide-head">
+        <p class="guide-kicker" data-pagefind-ignore>
+          <span>롬 분석 노트 · 슈퍼 패미컴</span>
+        </p>
+        <h1 data-pagefind-meta="title">{title}</h1>
+        <p class="guide-summary">
+          <a href={`${patch.path}/`}>{patch.title} 한글패치</a> v{patch.version}을 만들며 남긴 기록입니다. 개념은 각
+          절의 「가이드」 링크에서 처음부터 풀어 설명합니다.
+        </p>
+      </header>
+
+      <nav class="guide-toc" aria-labelledby="toc-title" data-pagefind-ignore>
+        <h2 id="toc-title">이 노트에서</h2>
+        <ol>
+          {sections.map(s => (
+            <li>
+              <a href={`#${s.id}`}>{s.title.replace(/^\d+\.\s*/, '')}</a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <div class="prose note-body">
+        <slot />
+      </div>
+
+      <div class="guide-links">
+        {related.length > 0 && (
+          <section class="guide-box" aria-labelledby="chapters-title">
+            <h2 id="chapters-title">이 노트의 개념을 설명하는 장</h2>
+            <ul>
+              {related.map(c => (
+                <li>
+                  <a href={chapterPath(c)}>
+                    {chapterLabel(c)} {c.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        <section class="guide-box" aria-labelledby="source-title">
+          <h2 id="source-title">
+            <span class="layer-badge layer-try">직접 해 보기</span> 소스와 도구
+          </h2>
+          <ul>
+            <li>
+              <a href={sourceUrl(patch)}>패치 소스</a>{' '}
+              <span class="muted">— 이 노트가 가리키는 파일과 빌드 순서(한국어 안내)</span>
+            </li>
+            <li>
+              <a href={analysisUrl(patch)}>롬 분석 문서 v{patch.version}</a>{' '}
+              <span class="muted">— 주소와 형식을 [실측]·[추정]으로 나눠 적은 한국어 문서</span>
+            </li>
+            <li>
+              <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit {KR_PATCH_TOOLKIT_VERSION}</a>{' '}
+              <span class="muted">— 공통 명령 krpatch 한국어 설명</span>
+            </li>
+            <li>
+              <a href={`${patch.path}/`}>{patch.title} 한글패치 페이지</a>{' '}
+              <span class="muted">— 패치 내려받기와 롬에 바로 적용</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </article>
+
+    <nav class="chapter-pager" aria-label="이전·다음 노트" data-pagefind-ignore>
+      {prev ? (
+        <a class="prev" href={notePath(prev)} rel="prev">
+          <small>← 이전 노트</small>
+          {prev.title}
+        </a>
+      ) : (
+        <a class="prev" href={`${GUIDE_PATH}#notes`}>
+          <small>← 처음으로</small>
+          {GUIDE_TITLE} 차례
+        </a>
+      )}
+      {next ? (
+        <a class="next" href={notePath(next)} rel="next">
+          <small>다음 노트 →</small>
+          {next.title}
+        </a>
+      ) : (
+        <a class="next" href={`${GUIDE_PATH}#notes`}>
+          <small>차례로 →</small>
+          {GUIDE_TITLE} 차례
+        </a>
+      )}
+    </nav>
+
+    <Comments path={path} />
+  </div>
+  <ImagePreview />
+</Base>

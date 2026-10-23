@@ -1,13 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator } from '@playwright/test';
-import {
-  KAKUSEI_PATCH,
-  KR_PATCHES,
-  KR_PATCH_TOOLKIT_URL,
-  OTOGIRISOU_PATCH,
-  formatBytes,
-  sourceUrl,
-} from '../src/lib/kr-patches.ts';
+import { KR_PATCHES, formatBytes } from '../src/lib/kr-patches.ts';
 import {
   GOKUDEN_KAKUSEI,
   GOKUDEN_TOTSUGEKI,
@@ -791,55 +784,19 @@ test('Super Gokuden: Kakusei-hen patch box tells it apart from Totsugeki-hen', a
 });
 
 for (const patch of KR_PATCHES) {
-  test(`${patch.title} links its patch source on GitHub instead of a zip`, async ({ page }) => {
+  test(`${patch.title} leaves the full ROM analysis note to the guide`, async ({ page }) => {
     await page.goto(`${patch.path}/`);
+    expect(await page.content()).not.toContain('cafe.naver.com/hansicgu');
     const making = page.locator('#making');
-    const source = making.getByRole('link', { name: '패치 소스(GitHub)' });
-    await expect(source).toHaveAttribute('href', sourceUrl(patch));
-    await expect(source).not.toHaveAttribute('download');
-    await expect(making.getByRole('link', { name: 'kr-patch-toolkit' }).first()).toHaveAttribute(
+    await expect(making.locator('.paper img')).toHaveCount(1);
+    await expect(making.locator('details')).toHaveCount(0);
+    await expect(making.getByRole('link', { name: '노트 읽기' })).toHaveAttribute(
       'href',
-      KR_PATCH_TOOLKIT_URL,
+      `/games/romhacking/snes/notes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/`,
     );
     expect(await page.locator('a[href$=".zip"]').count()).toBe(0);
   });
 }
-
-test('Super Gokuden: Kakusei-hen explains how the patch was made and offers the analysis tools', async ({ page }) => {
-  await page.goto(KAKUSEI);
-  expect(await page.content()).not.toContain('cafe.naver.com/hansicgu');
-  const making = page.locator('#making');
-  await making.locator('summary').click();
-  for (const img of await making.locator('img').all()) {
-    await img.scrollIntoViewIfNeeded();
-    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
-  }
-  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
-    0,
-  );
-  await expect(making.getByRole('link', { name: '패치 소스(GitHub)' })).toHaveAttribute(
-    'href',
-    sourceUrl(KAKUSEI_PATCH),
-  );
-});
-
-test('Otogirisou explains how the patch was made and offers the build tools', async ({ page }) => {
-  await page.goto(OTOGIRI);
-  expect(await page.content()).not.toContain('cafe.naver.com/hansicgu');
-  const making = page.locator('#making');
-  await making.locator('summary').click();
-  for (const img of await making.locator('img').all()) {
-    await img.scrollIntoViewIfNeeded();
-    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
-  }
-  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
-    0,
-  );
-  await expect(making.getByRole('link', { name: '패치 소스(GitHub)' })).toHaveAttribute(
-    'href',
-    sourceUrl(OTOGIRISOU_PATCH),
-  );
-});
 
 test('Otogirisou patch box wants the 1 MB original and turns away a 2 MB Korean build', async ({ page }) => {
   await page.goto(OTOGIRI);

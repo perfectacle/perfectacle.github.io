@@ -1,0 +1,142 @@
+/* Game ROM analysis notes in the guide. The note components were written for the patch pages, so their colour names
+   are mapped onto the blog theme here. */
+.note-body {
+  --panel: var(--bg-soft);
+  --muted: var(--fg-muted);
+  --ink: var(--fg);
+  --link: var(--accent);
+  --mono: var(--font-mono);
+  /* Notes chain identifiers like KoBtlItem·KoBtlSkill with no space; keep-all alone would push them off a phone. */
+  overflow-wrap: anywhere;
+}
+
+.note-body .lead {
+  font-size: 1.05rem;
+}
+
+.note-body .paper {
+  max-width: var(--measure);
+  margin: 1.5em 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+}
+
+.note-body .paper.narrow {
+  max-width: 480px;
+}
+
+.note-body .paper img {
+  margin: 0;
+  border-radius: 4px;
+  filter: none;
+}
+
+.note-body .paper figcaption {
+  padding-top: 6px;
+  color: var(--fg-muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.note-body .table-wrap {
+  max-width: var(--measure);
+  margin: 1.25em 0;
+  overflow-x: auto;
+}
+
+.note-body .table-wrap table {
+  display: table;
+  margin: 0;
+}
+
+.note-body th,
+.note-body td {
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.note-body td.wrap {
+  min-width: 16rem;
+  white-space: normal;
+}
+
+.note-body .bytes td {
+  text-align: center;
+}
+
+.note-body .flow {
+  display: grid;
+  gap: 8px;
+  max-width: var(--measure);
+  padding: 14px 18px 14px 44px;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--bg-soft);
+}
+
+.note-body .flow li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.note-body .notes {
+  display: grid;
+  gap: 8px;
+}
+
+.note-related-label {
+  padding: 1px 9px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.note-related {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-top: -0.4em;
+  font-size: 0.9rem;
+}
+
+.making-sources {
+  max-width: var(--measure);
+  margin: 1.5em 0;
+  padding: 16px 20px;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--bg-soft);
+  font-size: 0.95rem;
+}
+
+.making-sources-title {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.making-sources dl {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.making-sources dl > div {
+  display: grid;
+  grid-template-columns: 5.5em minmax(0, 1fr);
+  gap: 12px;
+}
+
+.making-sources dt {
+  color: var(--fg-muted);
+  font-weight: 700;
+}
+
+.making-sources dd {
+  margin: 0;
+}

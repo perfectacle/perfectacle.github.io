@@ -1,7 +1,8 @@
 ---
-import { KR_PATCH_TOOLKIT_URL } from '../../lib/kr-patches';
+import { KR_PATCH_TOOLKIT_URL, KR_PATCH_TOOLKIT_VERSION, analysisUrl, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
+  patch: KrPatch;
   /** The game's folder in the patch source repository. */
   source: string;
   /** What that folder holds. */
@@ -12,7 +13,7 @@ interface Props {
   toolkit: string;
 }
 
-const { source, holds, missing, toolkit } = Astro.props;
+const { patch, source, holds, missing, toolkit } = Astro.props;
 ---
 
 <aside class="making-sources" aria-labelledby="making-sources-title">
@@ -29,7 +30,9 @@ const { source, holds, missing, toolkit } = Astro.props;
     <div>
       <dt>공통 도구</dt>
       <dd>
-        {toolkit} — <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 <code>krpatch</code> 명령
+        {toolkit} — <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a> {KR_PATCH_TOOLKIT_VERSION}의{' '}
+        <code>krpatch</code>
+        명령
       </dd>
     </div>
     <div>
@@ -39,7 +42,8 @@ const { source, holds, missing, toolkit } = Astro.props;
     <div>
       <dt>문서</dt>
       <dd>
-        빌드 순서는 게임 폴더의 <code>README.md</code>, 롬 주소와 형식은 <code>docs/ANALYSIS.md</code>
+        롬 주소와 형식은 <a href={analysisUrl(patch)}>롬 분석 문서(docs/ANALYSIS.md)</a>, 빌드 순서는 위 패치 소스의
+        안내(README.ko.md)
       </dd>
     </div>
     <div>

@@ -5,7 +5,12 @@ import Figure from '../../../components/romhacking/Figure.astro';
 import '../../../styles/romhacking.css';
 import { SITE } from '../../../lib/posts.ts';
 import { breadcrumbs } from '../../../lib/structured-data.ts';
-import { KR_PATCH_LIST_PATH, KR_PATCH_TOOLKIT_URL, KR_PATCHES } from '../../../lib/kr-patches.ts';
+import {
+  KR_PATCH_LIST_PATH,
+  KR_PATCH_TOOLKIT_URL,
+  KR_PATCH_TOOLKIT_VERSION,
+  KR_PATCHES,
+} from '../../../lib/kr-patches.ts';
 import {
   GUIDE_CHAPTERS,
   GUIDE_PATH,
@@ -13,6 +18,8 @@ import {
   PLATFORM_LABEL,
   chapterLabel,
   chapterPath,
+  chaptersForNote,
+  notePath,
 } from '../../../components/romhacking/chapters.ts';
 
 const description =
@@ -40,7 +47,9 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
         <h2 id="who">이런 분께 맞습니다</h2>
         <ul>
           <li>롬 해킹이 궁금하지만 "16진수", "뱅크", "어셈블리" 같은 말에서 막힌 사람</li>
-          <li>한글패치 페이지의 「롬 분석 노트」를 읽다가 개념을 처음부터 알고 싶어진 사람</li>
+          <li>
+            아래 <a href="#notes">롬 분석 노트</a>를 읽다가 개념을 처음부터 알고 싶어진 사람
+          </li>
           <li>직접 번역 패치를 만들어 보고 싶은 사람</li>
         </ul>
         <p>
@@ -129,6 +138,32 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
           ))}
         </ol>
 
+        <h2 id="notes">롬 분석 노트</h2>
+        <p>
+          한글패치 네 개를 만들며 롬에서 확인한 주소와 형식, 고친 코드, 확인 방법을 게임마다 적은 기록입니다. 노트의 각
+          절에서 그 개념을 설명하는 장으로 건너갈 수 있습니다.
+        </p>
+        <ul class="note-map">
+          {KR_PATCHES.map(p => (
+            <li class="is-ready">
+              <p class="chapter-meta">
+                <span class="mono">노트</span>
+                <span class="chapter-platform">{PLATFORM_LABEL.snes}</span>
+                <span>한글패치 v{p.version}</span>
+              </p>
+              <h3>
+                <a href={notePath(p)}>{p.title}</a>
+              </h3>
+              <p class="chapter-summary">
+                이어지는 장:{' '}
+                {chaptersForNote(p)
+                  .map(c => chapterLabel(c))
+                  .join(' · ')}
+              </p>
+            </li>
+          ))}
+        </ul>
+
         <h2 id="tools">준비물</h2>
         <ul>
           <li>
@@ -137,7 +172,8 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
           </li>
           <li>
             <strong>kr-patch-toolkit</strong>: 이 패치들을 만들 때 쓴 명령 모음입니다. Python 3.15 이상에서{' '}
-            <code>pip install git+https://github.com/perfectacle/kr-patch-toolkit@v0.1.0</code>으로 설치합니다.
+            <code>pip install git+https://github.com/perfectacle/kr-patch-toolkit@{KR_PATCH_TOOLKIT_VERSION}</code>으로
+            설치합니다.
           </li>
           <li>
             <strong>에뮬레이터</strong>: 디버거가 있는 Mesen 2를 썼습니다. 12장에서 자세히 다룹니다.
@@ -154,7 +190,7 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
 </Base>
 
 <style>
-  .chapter-map {
+  :is(.chapter-map, .note-map) {
     display: grid;
     gap: 10px;
     max-width: var(--measure);
@@ -162,16 +198,16 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
     padding: 0;
     list-style: none;
   }
-  .chapter-map li {
+  :is(.chapter-map, .note-map) li {
     margin: 0;
     padding: 12px 16px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
   }
-  .chapter-map li.is-ready {
+  :is(.chapter-map, .note-map) li.is-ready {
     border-left: 4px solid var(--accent);
   }
-  .chapter-map li:not(.is-ready) {
+  :is(.chapter-map, .note-map) li:not(.is-ready) {
     background: var(--bg-soft);
   }
   .chapter-meta {
@@ -191,11 +227,11 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
     border: 1px solid var(--border);
     border-radius: 999px;
   }
-  .chapter-map h3 {
+  :is(.chapter-map, .note-map) h3 {
     margin: 2px 0 2px;
     font-size: 1.1rem;
   }
-  .chapter-map li:not(.is-ready) h3 {
+  :is(.chapter-map, .note-map) li:not(.is-ready) h3 {
     color: var(--fg-muted);
   }
   .chapter-summary {

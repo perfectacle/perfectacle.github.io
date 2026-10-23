@@ -1,0 +1,22 @@
+/** Sections of this game's ROM analysis note, in page order. */
+export const chapters = [
+  { id: 'making-basics', title: '1. 배경지식' },
+  { id: 'making-script', title: '2. 대사가 들어 있는 방식' },
+  { id: 'making-lap2', title: '3. 2회차에 멈추던 이유' },
+  { id: 'making-a-wait', title: '4. A 버튼 없이 넘어가던 화면' },
+  { id: 'making-font', title: '5. 글자표를 눈으로 읽게 하기' },
+  { id: 'making-wordwrap', title: '6. 단어 단위 줄바꿈' },
+  { id: 'making-retranslate', title: '7. 원문 대조 재번역' },
+  { id: 'making-save-compat', title: '8. 옛 세이브로 이어하기' },
+  { id: 'making-select', title: '9. v1.2 편의 기능: 빈 버튼 찾기' },
+  { id: 'making-readers', title: '10. 대본을 읽는 손이 셋' },
+  { id: 'making-menu', title: '11. 메뉴는 그리지 않고 대본으로 쓴다' },
+  { id: 'making-scene-music', title: '12. 장으로 옮길 때 배경과 음악' },
+  { id: 'making-records', title: '13. 읽은 장과 본 엔딩 기록' },
+  { id: 'making-flowchart', title: '14. 플로차트' },
+  { id: 'making-yellow', title: '15. 책갈피와 노란 글씨' },
+  { id: 'making-space', title: '16. 코드를 둔 자리' },
+  { id: 'making-testing', title: '17. 확인은 에뮬레이터가' },
+  { id: 'making-next', title: '18. 다음 사람에게' },
+  { id: 'making-tools', title: '19. 패치 소스 파일' },
+];

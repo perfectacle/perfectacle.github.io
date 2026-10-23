@@ -111,7 +111,6 @@ samp {
 .hero-copy > .lead,
 .section > p:not(.chapter-mark),
 .story-copy > p,
-.making-body > :is(p, ul, ol),
 .manual-body > :is(p, ul, ol) {
   max-inline-size: 42rem;
 }
@@ -1423,268 +1422,31 @@ h4.pixel {
 }
 
 /* Notes are long reading: they sit on a solid panel instead of the patterned page background. */
-#making > .lead,
-#making > .making-badge {
+/* On a patch page the note is a teaser: its intro and a link to the full note in the ROM hacking guide. */
+.making-teaser > .lead {
   max-inline-size: 46rem;
-}
-
-.making-badge {
-  justify-self: start;
-  width: fit-content;
-  margin: 0;
-  padding: 4px 12px;
-  border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
-  border-radius: 999px;
-  background: rgb(0 0 0 / 45%);
-  color: var(--ink);
-  font-size: 0.8125rem;
-}
-
-#making > .lead {
   padding: 18px 22px;
   border-radius: 10px;
   background: var(--panel);
   line-height: 1.85;
 }
 
-.making-sources {
-  max-inline-size: 46rem;
-  padding: 16px 20px;
-  border-left: 4px solid var(--accent);
-  border-radius: 8px;
-  background: var(--panel);
-  font-size: 0.9375rem;
-}
-
-.making-sources-title {
-  margin: 0 0 10px;
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.making-sources dl {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-}
-
-.making-sources dl > div {
-  display: grid;
-  grid-template-columns: 5.5em minmax(0, 1fr);
-  gap: 12px;
-}
-
-.making-sources dt {
-  color: var(--muted);
-  font-weight: 700;
-}
-
-.making-sources dd {
-  margin: 0;
-  line-height: 1.7;
-}
-
-details.making > summary.making-open {
+.making-open {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  margin: 8px 0 0;
-  padding: 12px 20px 12px 34px;
+  gap: 8px;
+  padding: 12px 22px;
   border: 2px solid var(--accent);
   border-radius: 10px;
   background: var(--panel);
   color: var(--ink);
   font-weight: 700;
-  list-style: none;
-  cursor: pointer;
-}
-
-details.making > summary.making-open::-webkit-details-marker {
-  display: none;
-}
-
-details.making > summary.making-open:hover,
-details.making > summary.making-open:focus-visible {
-  background: color-mix(in srgb, var(--accent) 18%, var(--panel));
-}
-
-details.making[open] > summary.making-open {
-  margin-bottom: 16px;
-}
-
-details.making[open] > summary.making-open .pointer {
-  font-size: 0;
-}
-
-details.making[open] > summary.making-open .pointer::after {
-  content: '노트 접기';
-  font-size: 1rem;
-}
-
-.making-count {
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: #000;
-  font-size: 0.8125rem;
-}
-
-.making-body {
-  display: grid;
-  gap: 18px;
-  max-width: 900px;
-  padding: clamp(18px, 3vw, 36px);
-  border-radius: 12px;
-  background: rgb(8 10 16 / 88%);
-  box-shadow: 0 6px 0 rgb(0 0 0 / 35%);
-  font-size: 1rem;
-  line-height: 1.85;
-}
-
-.making-body > :is(p, ul, ol) {
-  max-inline-size: 46rem;
-}
-
-.making-toc {
-  padding: 16px 20px;
-  border-radius: 8px;
-  background: rgb(255 255 255 / 6%);
-}
-
-.making-toc ol {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: 6px 24px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 0.9375rem;
-}
-
-.making-toc a {
-  color: var(--ink);
   text-decoration: none;
 }
 
-.making-toc a:hover,
-.making-toc a:focus-visible {
-  color: var(--link);
-  text-decoration: underline;
-}
-
-.making-body h3 {
-  margin-top: 28px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  color: var(--accent);
-  scroll-margin-top: 24px;
-}
-
-.making-body h3:first-of-type {
-  margin-top: 8px;
-}
-
-.making-body h4 {
-  margin: 12px 0 0;
-  padding-left: 10px;
-  border-left: 3px solid var(--accent);
-  font-size: 1.0625rem;
-  line-height: 1.5;
-}
-
-.making-body p,
-.making-body ul,
-.making-body ol {
-  margin: 0;
-}
-
-.making-body :not(pre) > code {
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: rgb(255 255 255 / 10%);
-  font-family: var(--mono);
-  font-size: 0.875em;
-  overflow-wrap: anywhere;
-}
-
-.making-body pre {
-  margin: 0;
-  padding: 14px 18px;
-  overflow-x: auto;
-  border: 1px solid rgb(255 255 255 / 14%);
-  border-radius: 8px;
-  background: rgb(0 0 0 / 60%);
-  font-size: 0.875rem;
-  line-height: 1.7;
-}
-
-.making-body pre code {
-  font-family: var(--mono);
-}
-
-.table-wrap {
-  overflow-x: auto;
-  border: 1px solid rgb(255 255 255 / 14%);
-  border-radius: 8px;
-}
-
-.making-body table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-  line-height: 1.6;
-}
-
-.making-body th,
-.making-body td {
-  padding: 8px 12px;
-  border-bottom: 1px solid rgb(255 255 255 / 10%);
-  text-align: left;
-  vertical-align: top;
-  white-space: nowrap;
-}
-
-.making-body thead th {
-  background: rgb(255 255 255 / 10%);
-  color: var(--accent);
-}
-
-.making-body tbody tr:nth-child(even) {
-  background: rgb(255 255 255 / 4%);
-}
-
-.making-body tbody tr:last-child > * {
-  border-bottom: 0;
-}
-
-.making-body .bytes td {
-  text-align: center;
-}
-
-.making-body td.wrap {
-  min-width: 16rem;
-  white-space: normal;
-}
-
-.flow {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-  padding: 14px 18px 14px 44px;
-  border-left: 4px solid var(--accent);
-  border-radius: 8px;
-  background: rgb(255 255 255 / 6%);
-}
-
-.flow li::marker {
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.notes {
-  display: grid;
-  gap: 8px;
-  padding-left: 20px;
+.making-open:hover,
+.making-open:focus-visible {
+  background: color-mix(in srgb, var(--accent) 18%, var(--panel));
 }
 
 /* The boot scene on the patch list ends on black; let the next page fade in from it. */

@@ -1,8 +1,15 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
-import { GUIDE_CHAPTERS, GUIDE_PATH, chapterPath, readyChapters } from '../src/components/romhacking/chapters.ts';
+import {
+  GUIDE_CHAPTERS,
+  GUIDE_PATH,
+  chapterPath,
+  notePath,
+  readyChapters,
+} from '../src/components/romhacking/chapters.ts';
+import { KR_PATCHES, KR_PATCH_TOOLKIT_URL, sourceUrl } from '../src/lib/kr-patches.ts';
 
-const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath)];
+const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...KR_PATCHES.map(notePath)];
 const first = (list: ReturnType<typeof readyChapters>) => {
   const chapter = list[0];
   if (!chapter) throw new Error('no written chapters');
@@ -90,10 +97,10 @@ test('chapters key comments by their own path and link the patch notes and toolk
   await page.goto(BANKS);
   await expect(page.locator('#waline')).toHaveAttribute('data-path', BANKS);
   await expect(
-    page.locator('a[href="/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/#making-dialogue"]'),
+    page.locator('a[href="/games/romhacking/snes/notes/dragon-ball-z-super-gokuden-totsugeki/#making-dialogue"]'),
   ).toHaveCount(1);
   await expect(
-    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/main/README.ko.md#snes-dis"]'),
+    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/README.ko.md#snes-dis"]'),
   ).toHaveCount(1);
 });
 
@@ -261,9 +268,9 @@ test('tile painting widget paints pixels with the keyboard and reads typed bytes
 
 test('the hooking chapter links the word-wrap note and the toolkit', async ({ page }) => {
   await page.goto(HOOKING);
-  await expect(page.locator('a[href="/games/kr-patches/sfc/otogirisou/#making-wordwrap"]')).toHaveCount(1);
+  await expect(page.locator('a[href="/games/romhacking/snes/notes/otogirisou/#making-wordwrap"]')).toHaveCount(1);
   await expect(
-    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/main/README.ko.md#snes-dis"]'),
+    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/README.ko.md#snes-dis"]'),
   ).toHaveCount(1);
 });
 
@@ -457,4 +464,53 @@ test('ROM expansion widget redraws banks, the size byte and the checksum note', 
   await expect(size).toHaveValue(String(0x400000));
   await expect(size.locator('option[value="8388608"]')).toHaveJSProperty('disabled', true);
   await noHorizontalOverflow(page);
+});
+
+for (const patch of KR_PATCHES) {
+  test(`${patch.title} ROM analysis note lives in the guide and links both ways`, async ({ page }) => {
+    const note = `/games/romhacking/snes/notes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/`;
+    await page.goto(`${patch.path}/`);
+    const read = page.locator('#making').getByRole('link', { name: '노트 읽기' });
+    await expect(read).toHaveAttribute('href', note);
+    await read.click();
+    await expect(page).toHaveURL(note);
+    await expect(page.locator('h1')).toHaveText(`롬 분석 노트: ${patch.title}`);
+    await expect(page.locator('#waline')).toHaveAttribute('data-path', note);
+    const toc = page.getByRole('navigation', { name: '이 노트에서' });
+    for (const href of await toc.locator('a').evaluateAll(links => links.map(a => (a as HTMLAnchorElement).hash))) {
+      await expect(page.locator(`[id="${decodeURIComponent(href.slice(1))}"]`)).toHaveCount(1);
+    }
+    expect(await page.locator('.note-related a[href^="/games/romhacking/"]').count()).toBeGreaterThan(0);
+    const making = page.locator('.making-sources');
+    await expect(making.getByRole('link', { name: '패치 소스(GitHub)' })).toHaveAttribute('href', sourceUrl(patch));
+    await expect(making.getByRole('link', { name: 'kr-patch-toolkit' })).toHaveAttribute('href', KR_PATCH_TOOLKIT_URL);
+    await expect(making.getByRole('link', { name: /롬 분석 문서/ })).toHaveAttribute(
+      'href',
+      new RegExp(`/blob/[^/]+-v${patch.version.replace('.', '\\.')}/snes/.+/docs/ANALYSIS\\.md$`),
+    );
+    for (const img of await page.locator('.note-body img').all()) {
+      await img.scrollIntoViewIfNeeded();
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+      0,
+    );
+  });
+}
+
+for (const patch of KR_PATCHES) {
+  test(`${patch.title} ROM analysis note fits a 320px phone`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 });
+    await page.goto(notePath(patch));
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+      0,
+    );
+  });
+}
+
+test('the guide index lists the four ROM analysis notes', async ({ page }) => {
+  await page.goto(GUIDE_PATH);
+  const notes = page.locator('.note-map');
+  await expect(notes.locator('li')).toHaveCount(KR_PATCHES.length);
+  for (const patch of KR_PATCHES) await expect(notes.getByRole('link', { name: patch.title })).toHaveCount(1);
 });
