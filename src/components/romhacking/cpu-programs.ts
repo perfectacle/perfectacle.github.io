@@ -1,4 +1,4 @@
-/** Short 65c816 programs for the "CPU 한 걸음" widget. Bytes are hand-assembled; tests/cpu65816.test.ts checks them. */
+/** Short 65c816 programs for the step-through CPU widget. Bytes are hand-assembled; tests/cpu65816.test.ts checks them. */
 
 export interface CpuProgram {
   id: string;

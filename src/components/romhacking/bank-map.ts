@@ -18,7 +18,7 @@ const AREA_LABEL: Record<RegionArea, string> = {
   sram: '세이브 RAM(SRAM) 자리',
   board: '보드마다 다른 자리(롬이 한 번 더 보일 때가 많음)',
   bwram: 'BW-RAM(SA-1 카트리지 RAM)',
-  'bwram-bitmap': 'BW-RAM 비트맵 보기(SA-1 쪽)',
+  'bwram-bitmap': '본체 CPU에서는 비어 있음(SA-1만 BW-RAM 비트맵으로 봄)',
   'sa1-io': 'SA-1 레지스터',
   iram: 'I-RAM(SA-1 칩 안 RAM 2KB)',
   'bwram-window': 'BW-RAM 8KB 창',

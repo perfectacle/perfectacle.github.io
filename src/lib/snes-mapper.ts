@@ -99,7 +99,10 @@ const system = (lo: number): Region => {
   return { kind: 'open', area: 'unused' };
 };
 
-/** What the console shows at a 24-bit CPU address for this kind of cartridge. */
+/**
+ * What the console's main CPU (S-CPU) sees at a 24-bit address for this kind of cartridge. On SA-1 boards the
+ * SA-1 itself has a different map; `bwram-bitmap` marks banks $60-$6F, which only the SA-1 can see.
+ */
 export function region(mapper: MapperName, addr: number): Region {
   const bank = addr >>> 16;
   const lo = addr & 0xffff;
@@ -119,7 +122,7 @@ export function region(mapper: MapperName, addr: number): Region {
     case 'sa1':
       if (bank >= 0xc0 || (systemBank && lo >= 0x8000)) return { kind: 'rom', area: 'rom' };
       if (bank >= 0x40 && bank < 0x44) return { kind: 'sa1-ram', area: 'bwram' };
-      if (bank >= 0x60 && bank < 0x70) return { kind: 'sa1-ram', area: 'bwram-bitmap' };
+      if (bank >= 0x60 && bank < 0x70) return { kind: 'open', area: 'bwram-bitmap' };
       if (systemBank && lo >= 0x2200 && lo < 0x2400) return { kind: 'io', area: 'sa1-io' };
       if (systemBank && lo >= 0x3000 && lo < 0x3800) return { kind: 'sa1-ram', area: 'iram' };
       if (systemBank && lo >= 0x6000) return { kind: 'sa1-ram', area: 'bwram-window' };

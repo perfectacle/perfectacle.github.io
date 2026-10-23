@@ -36,21 +36,24 @@ const references = [
   {
     href: 'https://github.com/perfectacle/kr-patch-toolkit/blob/main/src/kr_patch/snes/mapper.py',
     label: 'kr-patch-toolkit, mapper.py',
-    note: '뱅크 지도 위젯이 옮겨 온 변환 공식(같은 테스트 사례로 확인)',
+    note: '「주소 → 롬 위치 계산기」가 옮겨 온 변환 공식(같은 테스트 사례로 확인)',
   },
 ];
 const systemAreas = [
-  { from: '$0000', to: '$1FFF', name: 'WRAM 앞 8KB가 비쳐 보임', cls: 'dg-cool' },
-  { from: '$2100', to: '$21FF', name: 'PPU·APU 레지스터(화면·소리)', cls: 'dg-cell' },
-  { from: '$4200', to: '$5FFF', name: 'CPU 레지스터(DMA·인터럽트 등)', cls: 'dg-cell' },
-  { from: '$6000', to: '$7FFF', name: '확장 영역(HiROM은 세이브 RAM)', cls: 'dg-paper' },
-  { from: '$8000', to: '$FFFF', name: '롬', cls: 'dg-accent' },
+  { from: '$0000', to: '$1FFF', name: 'WRAM 앞 8KB가 비쳐 보임', sub: '', cls: 'dg-cool' },
+  { from: '$2000', to: '$20FF', name: '쓰지 않음', sub: '', cls: 'dg-paper' },
+  { from: '$2100', to: '$21FF', name: 'PPU·APU 레지스터', sub: '화면과 소리', cls: 'dg-cell' },
+  { from: '$2200', to: '$3FFF', name: '쓰지 않음', sub: 'SA-1 같은 카트리지 칩이 쓰기도 함', cls: 'dg-paper' },
+  { from: '$4000', to: '$41FF', name: '옛 방식 컨트롤러 포트', sub: '이 구간만 1.78MHz로 느림', cls: 'dg-cell' },
+  { from: '$4200', to: '$5FFF', name: 'CPU 레지스터', sub: 'DMA·인터럽트·곱셈 등', cls: 'dg-cell' },
+  { from: '$6000', to: '$7FFF', name: '확장 영역', sub: 'HiROM 세이브 RAM($20-$3F·$A0-$BF만)', cls: 'dg-paper' },
+  { from: '$8000', to: '$FFFF', name: '롬', sub: '', cls: 'dg-accent' },
 ];
 ---
 
 <GuideChapter platform="snes" slug="banks" sections={sections} references={references}>
   <h2 id="books">
-    64KB짜리 책 256권 <span class="layer-badge layer-easy">쉽게</span>
+    뱅크: 주소를 64KB씩 나눈 묶음 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
     65c816은 주소가 24비트라서 16MB까지 가리킬 수 있습니다. 이 24비트를 앞 8비트와 뒤 16비트로 나눠 적는 것이
@@ -204,9 +207,17 @@ const systemAreas = [
     </svg>
   </Figure>
   <p>
-    LoROM은 뱅크마다 32KB만 롬이라서 공식이 "뱅크 번호 × $8000 + 뱅크 안 위치"가 됩니다. HiROM은 64KB를 통째로 쓰니
-    "뱅크 번호 × $10000 + 주소"입니다. 직접 계산해 보세요. 아래 위젯은 kr-patch-toolkit의 <code>krpatch snes dis</code>
-    와 같은 공식을 쓰고, 툴킷의 테스트 사례로 결과가 같은지 확인했습니다.
+    LoROM은 뱅크마다 32KB만 롬입니다. 뱅크 번호에서 맨 위 비트를 떼고($A8 → $28) $8000을 곱한 다음, 주소에서 $8000을 뺀
+    값을 더합니다. <code>$A8:800C</code>라면 $28 × $8000 + ($800C − $8000) = $140000 + $000C, 곧 파일
+    <code>0x14000C</code>입니다.
+  </p>
+  <p>
+    HiROM은 뱅크 $C0–$FF에 64KB씩 통째로 놓입니다. 뱅크 번호에서 $C0을 빼고 $10000을 곱한 다음, 주소를 그대로 더합니다.{' '}
+    <code>$C1:2345</code>라면 ($C1 − $C0) × $10000 + $2345 = 파일 <code>0x012345</code>입니다.
+  </p>
+  <p>
+    아래 계산기는 kr-patch-toolkit의 <code>krpatch snes dis</code>와 같은 공식을 쓰고, 툴킷의 테스트 사례로 결과가
+    같은지 확인했습니다. 다른 뱅크 번호와 주소도 넣어 보세요.
   </p>
   <BankMap />
 
@@ -218,24 +229,30 @@ const systemAreas = [
     $80–$BF는 모두 이 모양이라, 어느 뱅크에서 코드를 실행하든 같은 주소로 작업 메모리와 레지스터에 닿을 수 있습니다.
   </p>
   <Figure caption="뱅크 $00-$3F·$80-$BF 한 권의 쪽 배치" max={560}>
-    <svg viewBox="0 0 360 250" role="img" aria-labelledby="sys-t sys-d">
+    <svg viewBox="0 0 360 356" role="img" aria-labelledby="sys-t sys-d">
       <title id="sys-t">시스템 뱅크의 구성</title>
       <desc id="sys-d">
-        $0000-$1FFF는 WRAM 앞 8KB가 비쳐 보이는 곳, $2100-$21FF는 PPU·APU 레지스터, $4200-$5FFF는 CPU 레지스터,
-        $6000-$7FFF는 확장 영역, $8000-$FFFF는 롬이다.
+        $0000-$1FFF는 WRAM 앞 8KB가 비쳐 보이는 곳, $2000-$20FF는 쓰지 않음, $2100-$21FF는 PPU·APU 레지스터,
+        $2200-$3FFF는 쓰지 않음, $4000-$41FF는 옛 방식 컨트롤러 포트, $4200-$5FFF는 CPU 레지스터, $6000-$7FFF는 확장
+        영역, $8000-$FFFF는 롬이다.
       </desc>
       {systemAreas.map((a, i) => (
         <>
-          <rect class={a.cls} x="8" y={8 + i * 46} width="96" height="40" rx="4" />
-          <text class="dg-mono" x="56" y={25 + i * 46} text-anchor="middle">
+          <rect class={a.cls} x="8" y={8 + i * 43} width="96" height="38" rx="4" />
+          <text class="dg-mono" x="56" y={24 + i * 43} text-anchor="middle">
             {a.from}
           </text>
-          <text class="dg-small" x="56" y={41 + i * 46} text-anchor="middle">
+          <text class="dg-small" x="56" y={39 + i * 43} text-anchor="middle">
             -{a.to}
           </text>
-          <text class="dg-text" x="116" y={33 + i * 46}>
+          <text class="dg-text" x="114" y={(a.sub ? 24 : 31) + i * 43}>
             {a.name}
           </text>
+          {a.sub && (
+            <text class="dg-small" x="114" y={40 + i * 43}>
+              {a.sub}
+            </text>
+          )}
         </>
       ))}
     </svg>
@@ -250,11 +267,44 @@ const systemAreas = [
     <h3>롬도 두 번 보인다</h3>
     <p>
       LoROM 롬은 뱅크 $00–$3F에 한 번, $80–$BF에 한 번 더 보입니다. <code>$00:8000</code>과 <code>$80:8000</code>은 같은
-      바이트입니다. 차이는 속도입니다. 헤더에 FastROM 표시가 있고 게임이 레지스터 <code>$420D</code>로 켜면 $80 이상
-      뱅크는 3.58MHz로 읽힙니다. 그래서 FastROM 게임 주소는 대개 <code>$80:8000</code>처럼 적고, 툴킷도 파일 오프셋을
-      CPU 주소로 바꿀 때 $80 이상 뱅크로 적습니다. 공식에서 <code>&amp; $7F</code>는 이 두 거울을 같은 자리로 모으는
-      것입니다.
+      바이트입니다. 차이는 속도입니다. 게임이 레지스터 <code>$420D</code>의 비트 0을 켜면 <code>$80</code>–
+      <code>$BF</code>쪽 롬(과 <code>$C0</code>–<code>$FF</code>)은 3.58MHz로 읽히고, <code>$00</code>–<code>$3F</code>{' '}
+      쪽은 늘 2.68MHz입니다. 헤더의 FastROM 비트는 "빠르게 읽어도 되는 롬"이라는 표시일 뿐 속도를 바꾸지 않습니다.
+      그래서 FastROM 게임 주소는 대개 <code>$80:8000</code>처럼 적고, 툴킷도 파일 오프셋을 CPU 주소로 바꿀 때 $80 이상
+      뱅크로 적습니다. 공식에서 <code>&amp; $7F</code>는 이 두 거울을 같은 자리로 모으는 것입니다.
     </p>
+    <Figure caption="LoROM 롬 칩 하나가 두 뱅크 범위에 함께 보입니다." max={520}>
+      <svg viewBox="0 0 360 150" role="img" aria-labelledby="mir-t mir-d">
+        <title id="mir-t">롬 미러</title>
+        <desc id="mir-d">
+          뱅크 $00-$3F의 $8000-$FFFF와 뱅크 $80-$BF의 $8000-$FFFF가 같은 롬 칩을 가리킨다. 앞쪽은 늘 2.68MHz, 뒤쪽은
+          FastROM을 켜면 3.58MHz다.
+        </desc>
+        <rect class="dg-cool" x="8" y="12" width="176" height="50" rx="8"></rect>
+        <text class="dg-mono" x="96" y="34" text-anchor="middle">
+          $00-$3F
+        </text>
+        <text class="dg-small" x="96" y="52" text-anchor="middle">
+          :$8000-$FFFF · 2.68MHz
+        </text>
+        <rect class="dg-warm" x="8" y="88" width="176" height="50" rx="8"></rect>
+        <text class="dg-mono" x="96" y="110" text-anchor="middle">
+          $80-$BF
+        </text>
+        <text class="dg-small" x="96" y="128" text-anchor="middle">
+          :$8000-$FFFF · 최대 3.58MHz
+        </text>
+        <rect class="dg-accent" x="244" y="46" width="108" height="58" rx="8"></rect>
+        <text class="dg-text dg-bold" x="298" y="72" text-anchor="middle">
+          롬 칩
+        </text>
+        <text class="dg-small" x="298" y="90" text-anchor="middle">
+          같은 바이트
+        </text>
+        <path class="dg-arrow" d="M188 37 238 64" marker-end="url(#dg-arrowhead)"></path>
+        <path class="dg-arrow" d="M188 113 238 88" marker-end="url(#dg-arrowhead)"></path>
+      </svg>
+    </Figure>
     <ul>
       <li>
         <strong>LoROM</strong>: 파일 = (뱅크 &amp; $7F) × $8000 + (주소 &amp; $7FFF). 보통 2MB까지 $00–$3F에 놓고, 더 큰
@@ -274,26 +324,26 @@ const systemAreas = [
       SA-1 카트리지는 롬을 1MB 블록으로 나누고, 레지스터 <code>$2220</code>–<code>$2223</code>으로 블록을 골라 네 개의
       창에 보여 줍니다. 창은 HiROM식 $C0–$CF·$D0–$DF·$E0–$EF·$F0–$FF와, LoROM식 $00–$1F·$20–$3F·$80–$9F·$A0–$BF의 위쪽
       반입니다. 전원을 켜면 네 레지스터가 0, 1, 2, 3이라 처음 4MB가 차례로 보입니다. 각 레지스터의 비트 7이 0이면
-      LoROM식 창은 블록 선택과 상관없이 앞 2MB($00–$3F)와 다음 2MB($80–$BF)를 보여 줍니다. 위젯과 툴킷은 이 전원 상태로
-      계산합니다.
+      LoROM식 창은 블록 선택과 상관없이 앞 2MB($00–$3F)와 다음 2MB($80–$BF)를 보여 줍니다. 이 장의 계산기와 툴킷은 이
+      전원 상태로 계산합니다.
     </p>
     <p>
       SA-1 쪽 RAM도 있습니다. 칩 안의 I-RAM 2KB는 <code>$00:3000</code>–<code>$37FF</code>에, 카트리지의 BW-RAM은 뱅크
       $40–$43에 있고, BW-RAM 중 8KB가 레지스터 <code>$2224</code>가 고른 대로 <code>$00:6000</code>–<code>$7FFF</code>에
-      보입니다.
+      보입니다. 뱅크 $60–$6F의 BW-RAM 비트맵 보기는 SA-1에서만 보이고 본체 CPU에서는 보이지 않습니다.
     </p>
     <h3>롬이 어느 매핑인지 알아내기</h3>
     <p>
       롬 안에는 게임 이름과 크기를 적은 <strong>내부 헤더</strong>가 CPU 주소 <code>$00:FFC0</code>에 있습니다. 파일로는
       LoROM·SA-1이 0x7FC0, HiROM이 0xFFC0, ExHiROM이 0x40FFC0입니다. 세 자리를 읽어 보고 게임 이름이 제대로 보이는 쪽이
       답입니다. 확인은 헤더의 맵 모드 바이트(+0x15)로 합니다. 아래 네 비트가 0이면 LoROM, 1이면 HiROM, 3이면 SA-1, 5면
-      ExHiROM이고, 비트 4는 FastROM, 비트 5는 늘 1입니다.
+      ExHiROM이고, 비트 4는 FastROM 표시, 비트 5는 늘 1입니다.
     </p>
     <h3>뱅크 경계</h3>
     <p>
       PC는 16비트라서 코드가 뱅크 끝 <code>$FFFF</code>를 지나면 다음 뱅크가 아니라 같은 뱅크의 처음으로 돌아갑니다.
       2바이트 포인터도 같은 뱅크 안만 가리킵니다. 다른 뱅크로 가려면 3바이트 주소를 쓰는 <code>JSL</code>·{' '}
-      <code>JML</code> 같은 명령이 필요합니다.
+      <code>JML</code> 같은 명령을 써야 합니다.
     </p>
   </Deeper>
 
@@ -304,7 +354,7 @@ const systemAreas = [
   <p>
     <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>(LoROM)은 대사 5,370줄을 아홉 개 뱅크에 나눠 두고, 뱅크마다 2바이트
     포인터 표를 둡니다. 대사 0x006의 포인터는 <code>$A8:8000 + 0x006 × 2 = $A8:800C</code>, 파일로는{' '}
-    <code>0x28 × 0x8000 + 0x000C = 0x14000C</code>입니다. 위젯의 처음 값이 이 주소입니다.
+    <code>0x28 × 0x8000 + 0x000C = 0x14000C</code>입니다. 「주소 → 롬 위치 계산기」의 처음 값이 이 주소입니다.
   </p>
   <p>
     포인터가 2바이트라 대사는 자기 뱅크(32KB) 안에서만 옮길 수 있습니다. 한국어 번역이 일본어보다 길어져도 다른 뱅크로

@@ -16,7 +16,7 @@ import {
 } from '../../../components/romhacking/chapters.ts';
 
 const description =
-  '한글패치를 만들며 쓴 롬 해킹 지식을 처음부터 풀어 쓴 가이드입니다. 16진수와 엔디안부터 65c816 어셈블리, 뱅크와 매핑까지 그림과 직접 만져 보는 위젯으로 배웁니다.';
+  '한글패치를 만들며 쓴 롬 해킹 지식을 처음부터 풀어 쓴 가이드입니다. 16진수와 엔디안부터 65c816 어셈블리, 뱅크와 매핑까지 그림과 직접 만져 보는 도구로 배웁니다.';
 const first = GUIDE_CHAPTERS.find(c => c.ready);
 ---
 
@@ -28,9 +28,6 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
   <div class="container guide">
     <article data-pagefind-body>
       <header class="guide-head">
-        <p class="guide-kicker" data-pagefind-ignore>
-          <span class="mono">ROM HACKING 101</span>
-        </p>
         <h1 data-pagefind-meta="title">{GUIDE_TITLE}</h1>
         <p class="guide-summary">
           이 블로그의 <a href={KR_PATCH_LIST_PATH}>한글패치</a>({KR_PATCHES.map(p => p.title).join(', ')})를 만들면서 쓴
@@ -40,7 +37,7 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
       </header>
 
       <div class="prose">
-        <h2 id="who">누구를 위한 가이드인가요</h2>
+        <h2 id="who">이런 분께 맞습니다</h2>
         <ul>
           <li>롬 해킹이 궁금하지만 "16진수", "뱅크", "어셈블리" 같은 말에서 막힌 사람</li>
           <li>한글패치 페이지의 「롬 분석 노트」를 읽다가 개념을 처음부터 알고 싶어진 사람</li>
@@ -51,14 +48,14 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
           <a href={first ? chapterPath(first) : GUIDE_PATH}>0장</a>부터 차례로 읽어 주세요.
         </p>
 
-        <h2 id="layers">한 장은 네 겹으로 되어 있습니다</h2>
+        <h2 id="layers">한 장은 네 부분으로 되어 있습니다</h2>
         <p>
           같은 장 안에서 읽는 깊이를 고를 수 있습니다. 처음에는 「쉽게」만 읽고 넘어가도 다음 장을 따라오는 데 문제가
           없습니다.
         </p>
-        <Figure caption="한 장을 이루는 네 겹. 위에서 아래로 갈수록 깊어집니다." max={520}>
+        <Figure caption="한 장을 이루는 네 부분. 위에서 아래로 갈수록 깊어집니다." max={520}>
           <svg viewBox="0 0 360 236" role="img" aria-labelledby="layers-t layers-d">
-            <title id="layers-t">한 장의 네 겹</title>
+            <title id="layers-t">한 장의 네 부분</title>
             <desc id="layers-d">
               쉽게, 더 깊이, 실제 패치에서, 직접 해 보기 네 칸이 위에서 아래로 쌓여 있다. 쉽게는 늘 펼쳐져 있고 더
               깊이는 접혀 있다.
@@ -90,7 +87,7 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
                 4 직접 해 보기
               </text>
               <text class="dg-small" x="24" y="222">
-                krpatch 명령과 위젯으로 손을 움직입니다
+                krpatch 명령과 페이지 안 도구로 직접 해 봅니다
               </text>
             </g>
           </svg>
@@ -108,7 +105,7 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
             같은 개념을 다시 봅니다.
           </li>
           <li>
-            <span class="layer-badge layer-try">직접 해 보기</span> 페이지 안의 위젯을 만져 보거나,{' '}
+            <span class="layer-badge layer-try">직접 해 보기</span> 페이지 안의 계산기·실행기를 만져 보거나,{' '}
             <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 <code>krpatch</code> 명령으로 따라 합니다.
           </li>
         </ul>

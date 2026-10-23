@@ -33,12 +33,16 @@ const widthNote = (s: CpuState) =>
 
 <section class="widget cpu-step" data-cpu-step={program.id} aria-labelledby={`${id}-title`}>
   <h3 class="widget-title" id={`${id}-title`}>
-    <span class="mono">WIDGET</span> CPU 한 걸음: {program.title}
+    명령 한 줄씩 실행하기: {program.title}
   </h3>
   <p class="widget-help">
-    {program.intro} <span class="live-only">「한 걸음」을 누를 때마다 ▶ 표시가 붙은 명령 하나를 실행합니다.</span>
+    {program.intro} <span class="live-only">「한 줄 실행」을 누를 때마다 ▶ 표시가 붙은 명령 하나를 실행합니다.</span>
   </p>
 
+  <p class="cpu-start">
+    시작 상태: 이미 네이티브 모드로 바꾼 뒤이고, A·X·Y는 8비트(M=1, X=1), DB와 PB는 $80, S는 $1FFF입니다. 전원을 켠
+    직후(에뮬레이션 모드, DB·PB·D가 모두 0)와는 다릅니다.
+  </p>
   <div class="cpu-layout">
     <ol class="cpu-listing" aria-label="프로그램" tabindex="0" data-listing>
       {lines.map(ins => (
@@ -68,13 +72,13 @@ const widthNote = (s: CpuState) =>
     <div class="cpu-panel live-only">
       <div class="cpu-buttons">
         <button type="button" class="widget-btn is-primary" data-act="step">
-          한 걸음
+          한 줄 실행
         </button>
         <button type="button" class="widget-btn" data-act="run">
-          끝까지
+          끝까지 실행
         </button>
         <button type="button" class="widget-btn" data-act="reset">
-          처음부터
+          처음 상태로
         </button>
       </div>
       <p class="cpu-last" data-last>
@@ -117,7 +121,7 @@ const widthNote = (s: CpuState) =>
     </div>
 
     <div class="cpu-panel static-only">
-      <p class="cpu-sub">끝까지 실행한 뒤({trace.steps.length}걸음)</p>
+      <p class="cpu-sub">끝까지 실행한 뒤(명령 {trace.steps.length}개)</p>
       <dl class="cpu-regs">
         {regs(trace.final).map(r => (
           <div>
@@ -219,7 +223,7 @@ const widthNote = (s: CpuState) =>
       const lastEl = q<HTMLElement>('[data-last]');
       if (lastEl) {
         lastEl.textContent = last
-          ? `${count}걸음째: ${last.instruction.text}${state.stopped ? ' — 멈췄습니다.' : ''}`
+          ? `${count}번째 명령: ${last.instruction.text}${state.stopped ? ' — 멈췄습니다.' : ''}`
           : '아직 아무 명령도 실행하지 않았습니다.';
       }
       if (stepBtn) stepBtn.disabled = state.stopped;
@@ -257,7 +261,7 @@ const widthNote = (s: CpuState) =>
       }
       render(before);
       if (live)
-        live.textContent = `끝까지 실행했습니다. ${count}걸음, A는 ${regText('A', state)}, X는 ${regText('X', state)}`;
+        live.textContent = `끝까지 실행했습니다. 명령 ${count}개, A는 ${regText('A', state)}, X는 ${regText('X', state)}`;
     });
     q('[data-act="reset"]')?.addEventListener('click', () => {
       mem = new Memory({ [ORIGIN]: program.code });
@@ -274,6 +278,11 @@ const widthNote = (s: CpuState) =>
 </script>
 
 <style>
+  .cpu-start {
+    margin: -6px 0 14px;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
   .cpu-layout {
     display: grid;
     gap: 16px;

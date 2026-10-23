@@ -45,12 +45,18 @@ const references = [
   },
 ];
 const regs = [
-  { name: 'A', bits: 16, role: '계산하는 손. 읽고, 더하고, 비교하고, 적는 일 대부분이 A를 거칩니다.', split: true },
-  { name: 'X', bits: 16, role: '세는 손. "표의 몇 번째"처럼 위치를 셀 때 씁니다(인덱스).' },
-  { name: 'Y', bits: 16, role: 'X와 같은 일을 하는 두 번째 세는 손.' },
+  {
+    name: 'A',
+    bits: 16,
+    easy: true,
+    role: '계산하는 손. 읽고, 더하고, 비교하고, 적는 일 대부분이 A를 거칩니다.',
+    split: true,
+  },
+  { name: 'X', bits: 16, easy: true, role: '세는 손. "표의 몇 번째"처럼 위치를 셀 때 씁니다(인덱스).' },
+  { name: 'Y', bits: 16, easy: true, role: 'X와 같은 일을 하는 두 번째 세는 손.' },
   { name: 'S', bits: 16, role: '스택 포인터. 잠깐 맡겨 둘 값을 쌓는 더미의 꼭대기 위치.' },
-  { name: 'PC', bits: 16, role: '프로그램 카운터. 지금 읽을 줄을 가리키는 책갈피.' },
-  { name: 'P', bits: 8, role: '상태 플래그 8개. "방금 결과가 0이었나" 같은 표시와 8/16비트 설정.' },
+  { name: 'PC', bits: 16, easy: true, role: '프로그램 카운터. 지금 읽을 줄을 가리키는 책갈피.' },
+  { name: 'P', bits: 8, easy: true, role: '상태 플래그 8개. "방금 결과가 0이었나" 같은 표시와 8/16비트 설정.' },
   { name: 'DB', bits: 8, role: '데이터 뱅크. 데이터를 읽고 쓸 때 기본으로 쓰는 뱅크 번호.' },
   { name: 'PB', bits: 8, role: '프로그램 뱅크. 지금 실행 중인 코드의 뱅크 번호.' },
   { name: 'D', bits: 16, role: '다이렉트 페이지. 짧은 주소($10 같은)의 기준 위치.' },
@@ -59,12 +65,12 @@ const regs = [
 
 <GuideChapter platform="snes" slug="cpu" sections={sections} references={references}>
   <h2 id="worker">
-    CPU는 한 줄씩 읽는 일꾼 <span class="layer-badge layer-easy">쉽게</span>
+    CPU: 명령을 한 줄씩 실행하는 장치 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
     롬 안의 프로그램은 "A에 5를 넣어라", "그 값을 어디에 적어라" 같은 아주 작은 명령이 줄지어 있는 것입니다.{' '}
-    <strong>CPU</strong>는 이 명령을 한 줄 읽고, 무슨 뜻인지 알아내고, 실행한 다음, 다음 줄로 넘어가는 일을 1초에 수백만
-    번 되풀이하는 일꾼입니다.
+    <strong>CPU</strong>는 이 명령을 한 줄 읽고, 무슨 뜻인지 알아내고, 실행한 다음, 다음 줄로 넘어가는 일을 1초에
+    수십만에서 백만 번 가까이 되풀이하는 일꾼입니다.
   </p>
   <p>
     지금 몇 번째 줄을 읽는지는 <strong>PC</strong>(프로그램 카운터)라는 책갈피가 기억합니다. 보통은 한 줄을 실행하면
@@ -111,7 +117,7 @@ const regs = [
   </Figure>
 
   <h2 id="registers">
-    레지스터: 일꾼의 손 <span class="layer-badge layer-easy">쉽게</span>
+    레지스터: CPU 안의 작은 저장 칸 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
     메모리는 크지만 CPU에서 멀리 있습니다. 그래서 CPU 안에는 지금 다루는 값을 잠깐 쥐고 있는 아주 작은 칸이 몇 개
@@ -186,12 +192,15 @@ const regs = [
     </svg>
   </Figure>
   <ul>
-    {regs.map(r => (
-      <li>
-        <strong class="mono">{r.name}</strong> ({r.bits}비트): {r.role}
-      </li>
-    ))}
+    {regs
+      .filter(r => r.easy)
+      .map(r => (
+        <li>
+          <strong class="mono">{r.name}</strong> ({r.bits}비트): {r.role}
+        </li>
+      ))}
   </ul>
+  <p>그림의 나머지 S·DB·PB·D는 이 장의 「더 깊이」와 5장에서 다룹니다.</p>
   <p>
     레지스터 이름은 외울 필요가 없습니다. A로 계산하고, X·Y로 세고, PC가 다음 줄을 가리키고, P에 "방금 결과" 표시가
     남는다는 것만 기억하면 5장의 어셈블리를 읽을 수 있습니다.
@@ -215,7 +224,7 @@ const regs = [
   <p>
     이 칸을 끄는 명령이 <code>REP</code>, 켜는 명령이 <code>SEP</code>입니다. <code>REP #$20</code>은 "M 칸(값{' '}
     <code>$20</code>)을 꺼라", 곧 "A를 16비트로"라는 뜻입니다. 중요한 점은 같은 명령 바이트라도 이 설정에 따라 뒤에 붙는
-    값의 길이가 달라진다는 것입니다. 아래 프로그램을 한 걸음씩 실행해 보세요.
+    값의 길이가 달라진다는 것입니다. 아래 프로그램을 한 줄씩 실행해 보세요.
   </p>
   <CpuStep program="width" />
   <p>
@@ -234,15 +243,17 @@ const regs = [
       65c816에 DMA 같은 장치를 더한 것입니다. 주소는 24비트라 16MB까지 가리킬 수 있습니다.
     </p>
     <p>
-      슈퍼 패미컴에서 CPU 속도는 어느 주소를 읽느냐에 따라 3.58MHz, 2.68MHz, 1.78MHz로 달라집니다. 롬 헤더에 "빠른 롬"
-      표시가 있는 게임은 뱅크 $80 이상의 롬을 3.58MHz로 읽을 수 있습니다(4장).
+      슈퍼 패미컴에서 CPU 속도는 어느 주소를 읽느냐에 따라 3.58MHz, 2.68MHz, 1.78MHz로 달라집니다. 롬은 보통 2.68MHz로
+      읽지만, 게임이 레지스터 <code>$420D</code>의 비트 0을 켜면 <code>$80</code>–<code>$BF</code>의<code>$8000</code>–
+      <code>$FFFF</code>와 <code>$C0</code>–<code>$FF</code> 뱅크를 3.58MHz로 읽습니다(FastROM). 롬 헤더의 "빠른 롬"
+      비트는 "이 카트리지는 빠르게 읽어도 된다"는 표시일 뿐, 속도를 바꾸지는 않습니다(4장).
     </p>
     <h3>에뮬레이션 모드와 네이티브 모드</h3>
     <p>
       65c816은 전원을 켜면 6502처럼 동작하는 <strong>에뮬레이션 모드</strong>로 시작합니다. 이 모드에서는 A·X·Y가 모두
       8비트로 묶이고 스택은 $0100–$01FF에만 쌓입니다. 옛 6502 프로그램이 그대로 돌게 하려는 장치입니다. 16비트 기능을
       쓰려면 <code>CLC</code> 다음 <code>XCE</code>를 실행해 <strong>네이티브 모드</strong>로 바꿉니다. 슈퍼 패미컴
-      게임은 거의 모두 시작하자마자 이렇게 합니다. 이 가이드의 위젯은 네이티브 모드만 다룹니다.
+      게임은 거의 모두 시작하자마자 이렇게 합니다. 이 장과 5장의 「명령 한 줄씩 실행하기」는 네이티브 모드만 다룹니다.
     </p>
     <h3>P 레지스터의 여덟 칸</h3>
     <Figure caption="네이티브 모드의 P 레지스터. 왼쪽이 비트 7입니다." max={600}>
@@ -316,23 +327,23 @@ const regs = [
   <p>
     <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a> 롬의 파일 0x7FFC에는 <code>00 80</code>, 곧 <code>$8000</code>이
     있습니다. 이 자리를 <strong>리셋 벡터</strong>라고 하며, CPU는 전원을 켜면 에뮬레이션 모드로 <code>$00:8000</code>
-    부터 읽기 시작합니다. 같은 헤더의 0x7FEA에 있는 <code>$818D</code>는 화면을 한 번 다 그릴 때마다 불리는 NMI 루틴의
-    주소입니다.
+    부터 읽기 시작합니다. 같은 헤더의 0x7FEA에 있는 <code>$818D</code>는 NMI 루틴의 주소입니다. NMI는 화면을 한 번 다
+    그린 직후마다 불리는데, 게임이 레지스터 <code>$4200</code>의 비트 7을 켜 두었을 때만 옵니다.
   </p>
   <h3>CPU가 둘인 카트리지</h3>
   <p>
     <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a> 카트리지에는 <strong>SA-1</strong>이라는 CPU가 하나 더
-    있습니다. 본체 CPU보다 세 배쯤 빠른(10.74MHz) 65c816이라 같은 어셈블리로 짭니다. 두 CPU가 동시에 돌기 때문에 필드
-    메뉴는 본체 CPU가, 전투 메뉴는 SA-1이 그립니다. 아이템 이름 하나를 한글로 바꾸려 해도 두 길을 따로 고쳐야 했던
-    이유입니다.
+    있습니다. 본체 CPU보다 세 배쯤 빠른(10.74MHz) 65c816이라 같은 어셈블리로 짭니다. 두 CPU는 동시에 돌고, 이 게임은
+    필드 메뉴를 본체 CPU에, 전투 메뉴를 SA-1에 맡기도록 만들어졌습니다. 그래서 아이템 이름 하나를 한글로 바꾸려 해도 두
+    길을 따로 고쳐야 했습니다.
   </p>
 
   <h2 id="try">
     직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
   </h2>
   <p>
-    툴킷의 역어셈블러는 롬 바이트를 위 위젯처럼 명령으로 풀어 줍니다. <code>REP</code>·<code>SEP</code>를 만나면 폭을
-    바꿔 가며 읽고, 중간부터 읽을 때는 시작 폭을 직접 알려 줍니다.
+    툴킷의 역어셈블러는 롬 바이트를 위 「명령 한 줄씩 실행하기」의 목록처럼 명령으로 풀어 줍니다. <code>REP</code>·
+    <code>SEP</code>를 만나면 폭을 바꿔 가며 읽고, 중간부터 읽을 때는 시작 폭을 직접 알려 줍니다.
   </p>
   <pre tabindex="0"><code>krpatch snes dis game.sfc 808000 40            # $80:8000부터 명령 40개
 krpatch snes dis game.sfc 808000 --m16 --x16   # A·X/Y를 16비트로 놓고 시작</code></pre>

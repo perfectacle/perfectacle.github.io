@@ -97,7 +97,7 @@ test('search finds the guide', async ({ page }) => {
   await expect(page.locator(`pagefind-results[instance="page"] .pf-result-link[href*="${ENDIAN}"]`)).toBeVisible();
 });
 
-test('bulb byte toggles bits with the keyboard and reads typed hex', async ({ page }) => {
+test('bit toggle widget toggles bits with the keyboard and reads typed hex', async ({ page }) => {
   await page.goto(NUMBERS);
   const widget = page.locator('[data-bulb-byte]');
   await expect(widget).toHaveClass(/is-live/);
@@ -121,7 +121,7 @@ test('bulb byte toggles bits with the keyboard and reads typed hex', async ({ pa
   await expect(widget.getByRole('alert')).toBeVisible();
 });
 
-test('endian scale lays bytes out in both orders and switches to 24 bits', async ({ page }) => {
+test('byte order widget lays bytes out in both orders and switches to 24 bits', async ({ page }) => {
   await page.goto(ENDIAN);
   const widget = page.locator('[data-endian]');
   const cells = (order: string) => widget.locator(`[data-order="${order}"] .cell code`);
@@ -136,7 +136,7 @@ test('endian scale lays bytes out in both orders and switches to 24 bits', async
   await noHorizontalOverflow(page);
 });
 
-test('endian scale animates the drop, or steps one cell at a time with reduced motion', async ({ page }) => {
+test('byte order widget animates the drop, or steps one cell at a time with reduced motion', async ({ page }) => {
   await page.goto(ENDIAN);
   const widget = page.locator('[data-endian]');
   const play = widget.locator('[data-play]');
@@ -156,7 +156,7 @@ test('endian scale animates the drop, or steps one cell at a time with reduced m
   await expect(play).toHaveText('순서대로 놓기');
 });
 
-test('bank map converts both ways for each mapper like the toolkit', async ({ page }) => {
+test('address calculator converts both ways for each mapper like the toolkit', async ({ page }) => {
   await page.goto(BANKS);
   const widget = page.locator('[data-bank-map]');
   const cpu = widget.getByLabel('CPU 주소');
@@ -166,7 +166,7 @@ test('bank map converts both ways for each mapper like the toolkit', async ({ pa
   await cpu.fill('$E2:B400');
   await expect(off).toHaveValue('0x22B400');
   await expect(widget.locator('[data-region]')).toHaveText('롬');
-  await widget.getByRole('button', { name: /LoROM식 창으로/ }).click();
+  await widget.getByRole('button', { name: /LoROM식 주소로/ }).click();
   await expect(off).toHaveValue('0x22B400');
   await expect(cpu).toHaveValue('$85:B400');
   await widget.getByLabel('LoROM').focus();
@@ -182,10 +182,10 @@ test('bank map converts both ways for each mapper like the toolkit', async ({ pa
   await expect(widget.locator('[data-error]')).toBeVisible();
 });
 
-test('CPU stepper runs one instruction per press and switches register width', async ({ page }) => {
+test('instruction stepper runs one instruction per press and switches register width', async ({ page }) => {
   await page.goto(CPU);
   const widget = page.locator('[data-cpu-step="width"]');
-  const stepBtn = widget.getByRole('button', { name: '한 걸음' });
+  const stepBtn = widget.getByRole('button', { name: '한 줄 실행' });
   await stepBtn.focus();
   await page.keyboard.press('Enter');
   await expect(widget.locator('[data-flag="M"]')).not.toHaveClass(/\bon\b/);
@@ -197,23 +197,23 @@ test('CPU stepper runs one instruction per press and switches register width', a
   await expect(widget.locator('[data-addr="8260097"] code')).toHaveText('12');
   await expect(widget.locator('[data-addr="8260097"]')).toHaveClass(/is-changed/);
   await expect(widget.locator('[data-live]')).toContainText('$7E:0A01에 12');
-  await widget.getByRole('button', { name: '끝까지' }).click();
+  await widget.getByRole('button', { name: '끝까지 실행' }).click();
   await expect(widget.locator('[data-reg="A"]')).toHaveText('B $12 · A $56');
   await expect(stepBtn).toBeDisabled();
-  await widget.getByRole('button', { name: '처음부터' }).click();
+  await widget.getByRole('button', { name: '처음 상태로' }).click();
   await expect(stepBtn).toBeEnabled();
   await expect(stepBtn).toBeFocused();
   await expect(widget.locator('[data-reg="A"]')).toHaveText('B $00 · A $00');
 });
 
-test('CPU stepper copies the string and follows the subroutine', async ({ page }) => {
+test('instruction stepper copies the string and follows the subroutine', async ({ page }) => {
   await page.goto(ASSEMBLY);
   const copy = page.locator('[data-cpu-step="copy"]');
-  await copy.getByRole('button', { name: '끝까지' }).click();
+  await copy.getByRole('button', { name: '끝까지 실행' }).click();
   await expect(copy.locator('[data-mem] code')).toHaveText(['F3', '08', 'B5', '06', '27', '05']);
   await expect(copy.locator('[data-reg="X"]')).toHaveText('$0006');
   const loop = page.locator('[data-cpu-step="loop"]');
-  for (let i = 0; i < 17; i++) await loop.getByRole('button', { name: '한 걸음' }).click();
+  for (let i = 0; i < 17; i++) await loop.getByRole('button', { name: '한 줄 실행' }).click();
   await expect(loop.locator('li[aria-current="step"] .cpu-asm')).toHaveText('CLC');
   await expect(loop.locator('[data-reg="S"]')).toHaveText('$1FFD');
   await expect(loop.locator('[data-addr="8265726"] code')).toHaveText('10');
@@ -224,9 +224,15 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   const page = await context.newPage();
   await page.goto(ASSEMBLY);
   await expect(page.locator('[data-cpu-step="copy"]')).toContainText('끝까지 실행한 뒤');
-  await expect(page.getByRole('button', { name: '한 걸음' }).first()).toBeHidden();
+  await expect(page.getByRole('button', { name: '한 줄 실행' }).first()).toBeHidden();
   await page.goto(BANKS);
   await expect(page.locator('[data-bank-map] [data-summary-off]')).toHaveText('0x14000C');
+  for (const path of [ENDIAN, BANKS, CPU]) {
+    await page.goto(path);
+    const help = page.locator('.widget-help .live-only');
+    expect(await help.count()).toBeGreaterThan(0);
+    for (const hint of await help.all()) await expect(hint).toBeHidden();
+  }
   await page.goto(NUMBERS);
   await expect(page.locator('[data-bulb-byte] [data-out="hex"]')).toHaveText('$30');
   await context.close();

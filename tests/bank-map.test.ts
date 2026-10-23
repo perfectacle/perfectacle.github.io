@@ -41,3 +41,8 @@ test('the SA-1 LoROM-style window reaches the same name table', () => {
   expect(explain('sa1', 0x85b400).offset).toBe(0x22b400);
   expect(explain('sa1', 0xe2b400).offset).toBe(0x22b400);
 });
+
+test('SA-1 bitmap banks are not shown as main-CPU memory', () => {
+  expect(regionLabel('sa1', 0x600000)).toBe('본체 CPU에서는 비어 있음(SA-1만 BW-RAM 비트맵으로 봄)');
+  expect(bankShape('sa1', 0x60)).toBe('none');
+});

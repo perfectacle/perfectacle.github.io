@@ -8,22 +8,22 @@ const { steps, offset } = explain(mapper, addr);
 const mappers = Object.keys(MAPPERS) as MapperName[];
 const examples = [
   { label: '돌격편 대사 포인터', mapper: 'lorom', addr: '$A8:800C' },
-  { label: '제절초 대본 시작', mapper: 'lorom', addr: '$15:E401' },
+  { label: '제절초 일본판 압축 대본 시작', mapper: 'lorom', addr: '$15:E401' },
   { label: '마리오 RPG 이름 표', mapper: 'sa1', addr: '$E2:B400' },
-  { label: '같은 이름 표를 LoROM식 창으로', mapper: 'sa1', addr: '$85:B400' },
-  { label: 'WRAM 거울', mapper: 'lorom', addr: '$80:0A00' },
+  { label: '같은 이름 표, LoROM식 주소로', mapper: 'sa1', addr: '$85:B400' },
+  { label: 'WRAM이 비쳐 보이는 주소', mapper: 'lorom', addr: '$80:0A00' },
 ];
 const banks = Array.from({ length: 256 }, (_, i) => i);
 ---
 
 <section class="widget bank-map" data-bank-map data-mapper={mapper} data-addr={addr} aria-labelledby="bank-map-title">
   <h3 class="widget-title" id="bank-map-title">
-    <span class="mono">WIDGET</span> 뱅크 지도
+    주소 → 롬 위치 계산기
   </h3>
   <p class="widget-help">
     CPU 주소 <code>$뱅크:주소</code>를 롬 파일 오프셋으로 바꿉니다. 계산은 kr-patch-toolkit의{' '}
     <code>krpatch snes dis</code>와 같은 공식입니다.{' '}
-    <span class='\"live-only\"'>매핑을 고르고 주소나 오프셋 중 하나를 고쳐 보세요.</span>
+    <span class="live-only">매핑을 고르고 주소나 오프셋 중 하나를 고쳐 보세요.</span>
   </p>
 
   <fieldset class="bm-mappers live-only">
