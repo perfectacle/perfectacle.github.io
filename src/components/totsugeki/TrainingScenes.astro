@@ -7,6 +7,24 @@ const base = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/images
 // Each training game as the event list names it, with the controls the game itself tells the player.
 const games = [
   {
+    image: 'minigame-radar',
+    alt: '드래곤 레이더 화면과 함께 오공이 구슬은 아직 멀리 있나 보네라고 말하는 장면',
+    title: '드래곤볼 찾기',
+    text: 'X로 드래곤 레이더를 보며 직접 걸어 다니면서 구슬을 찾습니다.',
+  },
+  {
+    image: 'minigame-stone-choice',
+    alt: '북쪽으로 간다, 동쪽으로 간다, 서쪽으로 간다 중 고르는 선택지',
+    title: '실력시험 · 거북돌 찾기',
+    text: '무천도사의 두 번째 실력시험입니다. 숲속에서 갈 방향을 골라 거북돌을 찾습니다.',
+  },
+  {
+    image: 'milk',
+    alt: '무천도사가 여긴 전력으로 달리지 않으면 잡아먹힌다!라고 말하는 장면',
+    title: '새벽 수련 · 우유 배달',
+    text: '공룡이 사는 길을 달려 우유를 나릅니다. 「여긴 전력으로 달리지 않으면 잡아먹힌다!」',
+  },
+  {
     image: 'minigame-plow-rule',
     alt: '무천도사가 A버튼과 Y버튼을 번갈아 눌러서 밭을 가는 게다!라고 말하는 장면',
     title: '아침 수련 · 밭일',
@@ -22,25 +40,19 @@ const games = [
     image: 'minigame-rock',
     alt: '큰 바위 앞에서 오공이 좋았어라고 말하는 장면',
     title: '큰 바위를 움직이다',
-    text: 'A를 연타해 큰 바위를 밉니다. 움직이지 못하면 「제‥제길‥ 역시 안 되나‥」 하고 물러납니다.',
+    text: 'A를 연타해 큰 바위를 밉니다. 움직이지 못하면 「제‥제길‥ 역시 안 되나‥」 하고 수련을 처음부터 다시 하지만, 누른 횟수는 쌓여서 다음에는 더 쉬워집니다.',
   },
   {
-    image: 'minigame-stone-choice',
-    alt: '북쪽으로 간다, 동쪽으로 간다, 서쪽으로 간다 중 고르는 선택지',
-    title: '실력시험 · 거북돌 찾기',
-    text: '무천도사의 두 번째 실력시험입니다. 숲속에서 갈 방향을 골라 거북돌을 찾습니다.',
+    image: 'karin-climb',
+    alt: '카린 탑을 기어오르는 오공',
+    title: '카린 탑 오르기',
+    text: 'A와 Y를 번갈아 눌러 카린 탑을 오릅니다. 손을 멈추면 미끄러져 내려옵니다.',
   },
   {
     image: 'minigame-karin-rule',
     alt: '카린이 한가운데 있는 나를 때맞춰 A버튼으로 잡는 거다라고 말하는 장면',
     title: '카린 탑 · 초성수 뺏기',
     text: '좌우로 움직이는 카린이 한가운데 왔을 때 A를 눌러 붙잡습니다.',
-  },
-  {
-    image: 'minigame-radar',
-    alt: '드래곤 레이더 화면과 함께 오공이 구슬은 아직 멀리 있나 보네라고 말하는 장면',
-    title: '드래곤볼 찾기',
-    text: 'X로 드래곤 레이더를 보며 직접 걸어 다니면서 구슬을 찾습니다.',
   },
 ];
 ---
@@ -50,8 +62,9 @@ const games = [
     수련과 선택 장면
   </h2>
   <p class="lead">
-    이야기 사이사이에 버튼을 눌러 해내는 수련과, 고른 대로 장면이 바뀌는 선택지가 들어 있습니다. 본 장면은 이벤트 표에
-    하나씩 채워집니다.
+    이야기 사이사이에 버튼을 눌러 해내는 수련과, 고른 대로 장면이 바뀌는 선택지가 들어 있습니다. 미니게임을 해내면
+    기술을 익히기도 합니다. 선택에 따라 원작의 싸움을 피해 가는 길은 있지만 줄거리가 크게 바뀌지는 않고, 엔딩은
+    하나입니다. 본 장면은 이벤트 표에 하나씩 채워집니다.
   </p>
   <h3 class="pixel scenes-subtitle">수련 미니게임</h3>
   <ul class="play-list scenes-list">
@@ -104,6 +117,26 @@ const games = [
         },
       ]}
       caption="무천도사가 데려오라는 「싱싱한 아가씨」 고르기. 걷는 쪽을 데려가면 「어디가 싱싱한 아가씨냐!!」라는 호통을 듣습니다."
+    />
+    <ReleaseScreenshot
+      panels={[
+        {
+          label: '문제',
+          src: `${base}/quiz-question.webp`,
+          alt: '펭귄 마을에서 이 게임을 한글화 한 사람의 네이버 아이디는?이라고 묻는 퀴즈',
+        },
+        {
+          label: '보기',
+          src: `${base}/quiz-choice.webp`,
+          alt: 'CYJZERO, EXOBUD, PERFECTACLE 세 보기 중 PERFECTACLE에 커서가 있는 선택지',
+        },
+        {
+          label: '아라레의 반응',
+          src: `${base}/quiz-answer.webp`,
+          alt: 'PERFECTACLE을 고른 뒤 아라레가 머엇지다!!라고 말하는 장면',
+        },
+      ]}
+      caption="펭귄 마을에서 아라레가 내는 퀴즈. 원문은 「아라레는 날아가는 근두운을 보고 뭐라고 했을까요?」이지만, 한글판은 한글화한 사람의 아이디를 묻는 문제로 바꿔 두었습니다. 공략에 따르면 원작 장면을 빠짐없이 보고 와서 원문의 「ほひょ!?」 자리, 한글판의 「PERFECTACLE」을 고르면 초신수를 마신 뒤 숨은 기술 「무천류 최종오의」를 익힙니다."
     />
   </div>
 </section>
