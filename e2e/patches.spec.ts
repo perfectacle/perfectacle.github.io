@@ -1,6 +1,15 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator } from '@playwright/test';
-import { KR_PATCHES, formatBytes } from '../src/lib/kr-patches.ts';
+import {
+  KAKUSEI_PATCH,
+  KR_PATCHES,
+  KR_PATCH_LIST_PATH,
+  KR_PATCH_SFC_PATH,
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  TOTSUGEKI_PATCH,
+  formatBytes,
+} from '../src/lib/kr-patches.ts';
 import {
   GOKUDEN_KAKUSEI,
   GOKUDEN_TOTSUGEKI,
@@ -12,11 +21,11 @@ import {
   type RomSpec,
 } from '../src/lib/rom-patch.ts';
 
-const HUB = '/games/kr-patches/';
-const CATALOGUE = '/games/kr-patches/sfc/';
-const GOKUDEN = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/';
-const KAKUSEI = '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/';
-const OTOGIRI = '/games/kr-patches/sfc/otogirisou/';
+const HUB = KR_PATCH_LIST_PATH;
+const CATALOGUE = KR_PATCH_SFC_PATH;
+const GOKUDEN = `${TOTSUGEKI_PATCH.path}/`;
+const KAKUSEI = `${KAKUSEI_PATCH.path}/`;
+const OTOGIRI = `${OTOGIRISOU_PATCH.path}/`;
 
 async function loadSpriteImage(sprite: Locator) {
   return sprite.evaluate(async element => {
@@ -30,7 +39,7 @@ async function loadSpriteImage(sprite: Locator) {
   });
 }
 
-for (const path of [HUB, CATALOGUE, '/games/kr-patches/sfc/super-mario-rpg/', GOKUDEN, KAKUSEI, OTOGIRI]) {
+for (const path of [HUB, CATALOGUE, ...KR_PATCHES.map(patch => `${patch.path}/`)]) {
   for (const colorScheme of ['light', 'dark'] as const) {
     test(`${path} guide works in ${colorScheme}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme });
@@ -60,7 +69,7 @@ for (const path of [HUB, CATALOGUE, '/games/kr-patches/sfc/super-mario-rpg/', GO
   }
 }
 
-const GAME = '/games/kr-patches/sfc/super-mario-rpg/';
+const GAME = `${SMRPG_PATCH.path}/`;
 
 for (const patch of KR_PATCHES) {
   test(`${patch.title} exposes the original and latest Korean file checksums without crowding the patch box`, async ({
@@ -377,12 +386,8 @@ for (const width of [390, 768, 1280]) {
 
 test('catalogue cards show the patch release date and their own game credits', async ({ page }) => {
   await page.goto(CATALOGUE);
-  for (const [path, version, released, copyright] of [
-    [GAME, '1.2', '2026-10-23', '게임 © 1995 Nintendo / SQUARE · 캐릭터 © Nintendo, © SQUARE'],
-    [GOKUDEN, '1.2', '2026-10-23', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
-    [KAKUSEI, '1.3', '2026-10-22', '게임 및 캐릭터 © バードスタジオ/集英社・フジテレビ・東映動画 © BANDAI 1995'],
-    [OTOGIRI, '1.2', '2026-10-22', '게임 © 1992 CHUNSOFT'],
-  ] as const) {
+  for (const { path: root, version, released, copyright } of KR_PATCHES) {
+    const path = `${root}/`;
     const card = page.locator(`main a[href="${path}"]`);
     await expect(card).not.toContainText('한글패치 출시일');
     await expect(card.locator('.game-release')).toContainText(`한글패치 v${version} (${released})`);

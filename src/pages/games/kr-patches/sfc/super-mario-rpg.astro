@@ -1,4 +1,6 @@
 ---
+import { SECTION_TITLES, sectionsOf } from '../../../../lib/patch-sections';
+import PatchRelease from '../../../../components/kr-patch/PatchRelease.astro';
 import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
 import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
 import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
@@ -132,14 +134,7 @@ const chapters = [
   title={`${patch.title} 한글판`}
   trail={trail(patch)}
   description={`${patch.year}년 슈퍼 패미컴 ${patch.title} 한글패치 v${patch.version}. 일본판 롬파일을 고르면 이 페이지에서 바로 한글판을 만듭니다.`}
-  sections={[
-    { id: 'korean', label: '한국어로 바뀐 것' },
-    { id: 'story', label: '이야기' },
-    { id: 'play', label: '진행 방식' },
-    { id: 'secrets', label: '놓치기 쉬운 즐길 거리' },
-    { id: 'patch-notes', label: '패치 노트' },
-    { id: 'making', label: '롬 분석 노트' },
-  ]}
+  sections={sectionsOf(['korean', 'story', 'play', 'secrets', 'patch-notes', 'making'])}
   theme={patch.theme}
   image={{
     src: `${base}/images/world-map-4x.webp`,
@@ -180,7 +175,7 @@ const chapters = [
 
   <section id="korean" class="section page-width" aria-labelledby="korean-title">
     <h2 id="korean-title" class="pixel">
-      한국어로 바뀐 것
+      {SECTION_TITLES.korean}
     </h2>
     <ul class="checklist frame">
       <li>모든 대사와 이름</li>
@@ -201,7 +196,7 @@ const chapters = [
 
   <section id="story" class="section page-width" aria-labelledby="story-title">
     <h2 id="story-title" class="pixel">
-      이야기
+      {SECTION_TITLES.story}
     </h2>
     <p>
       1996년, 스퀘어가 개발하고 닌텐도가 발매한 슈퍼 패미컴 RPG입니다.
@@ -257,7 +252,7 @@ const chapters = [
 
   <section id="play" class="section page-width" aria-labelledby="play-title">
     <h2 id="play-title" class="pixel">
-      진행 방식
+      {SECTION_TITLES.play}
     </h2>
     <div class="play-list">
       {play.map(item => (
@@ -293,15 +288,9 @@ const chapters = [
 
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
     <h2 id="patch-notes-title" class="pixel">
-      패치 노트
+      {SECTION_TITLES['patch-notes']}
     </h2>
-    <article class="patch-release" aria-labelledby="release-1-2">
-      <h3 id="release-1-2" class="pixel">
-        v1.2 · 최신 버전
-      </h3>
-      <p class="section-note">
-        <time datetime="2026-10-23">2026년 10월 23일</time>
-      </p>
+    <PatchRelease patch={patch} version="1.2">
       <p class="release-overview">
         전투 메시지와 이름 띠의 영문 이름, 대사와 메뉴에서 잘못 나오던 글자를 고치고 셸·쉘 표기를 통일했습니다.
       </p>
@@ -435,14 +424,8 @@ const chapters = [
           </ul>
         </ReleaseItem>
       </ReleaseDetails>
-    </article>
-    <article class="patch-release" aria-labelledby="release-1-1">
-      <h3 id="release-1-1" class="pixel">
-        v1.1
-      </h3>
-      <p class="section-note">
-        <time datetime="2026-10-18">2026년 10월 18일</time>
-      </p>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.1">
       <p class="release-overview">이름 한글화와 조사 처리를 개선하고, 빠진 대사를 복구했습니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
@@ -625,14 +608,8 @@ const chapters = [
           </ul>
         </ReleaseItem>
       </ReleaseDetails>
-    </article>
-    <article class="patch-release" aria-labelledby="release-1-0">
-      <h3 id="release-1-0" class="pixel">
-        v1.0
-      </h3>
-      <p class="section-note">
-        <time datetime="2015-03-12">2015년 3월 12일</time>
-      </p>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.0">
       <p class="release-overview">대사와 메뉴를 한국어로 옮긴 첫 버전입니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
@@ -662,7 +639,7 @@ const chapters = [
           />
         </ReleaseItem>
       </ReleaseDetails>
-    </article>
+    </PatchRelease>
   </section>
 
   <MakingOf patch={patch} />

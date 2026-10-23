@@ -1,4 +1,5 @@
 ---
+import { SECTION_TITLES } from '../../lib/patch-sections';
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import MakingIntro from './MakingIntro.astro';
 import NoteRelated from '../romhacking/NoteRelated.astro';
@@ -842,7 +843,8 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
 <NoteRelated patch={patch} id="making-tools" />
 <p>
   같은 엔진을 쓰는 <a href={`${TOTSUGEKI_PATCH.path}/`}>초오공전 돌격편</a>을 분석할 때도 주소만 바꾸면 대부분 쓸 수
-  있습니다. 돌격편에서 찾은 주소는 그 페이지의 <a href={`${TOTSUGEKI_PATCH.path}/#making`}>롬 분석 노트</a>에 있습니다.
+  있습니다. 돌격편에서 찾은 주소는 그 페이지의 <a href={`${TOTSUGEKI_PATCH.path}/#making`}>{SECTION_TITLES.making}</a>에
+  있습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>

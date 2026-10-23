@@ -1,4 +1,5 @@
 ---
+import { SECTION_TITLES } from '../../lib/patch-sections';
 import YoutubeFacade from '../YoutubeFacade.astro';
 import endings from './endings.json';
 
@@ -10,7 +11,7 @@ const thumb = (id: string) => `${base}/images/endings/${id}.webp`;
 
 <section id="endings" class="section page-width" aria-labelledby="endings-title">
   <h2 id="endings-title" class="pixel">
-    엔딩과 특별 장면
+    {SECTION_TITLES.endings}
   </h2>
   <p class="endings-intro">
     같은 이야기에서도 선택에 따라 뜻밖의 결말과 특별 장면을 만날 수 있습니다. 원작의 흐름을 따르는 노멀 엔딩을 본 뒤에는

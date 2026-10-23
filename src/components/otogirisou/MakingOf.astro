@@ -1,4 +1,5 @@
 ---
+import { SECTION_TITLES } from '../../lib/patch-sections';
 import MakingIntro from './MakingIntro.astro';
 import { notePath } from '../romhacking/chapters';
 import type { KrPatch } from '../../lib/kr-patches';
@@ -15,7 +16,7 @@ const { patch, mark } = Astro.props;
 <section id="making" class="section page-width making-teaser" aria-labelledby="making-title">
   <p class="label chapter-mark">{mark}</p>
   <h2 id="making-title" class="pixel">
-    롬 분석 노트
+    {SECTION_TITLES.making}
   </h2>
   <MakingIntro patch={patch} />
   <p>

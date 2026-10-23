@@ -1,4 +1,5 @@
 ---
+import { SECTION_TITLES } from '../../lib/patch-sections';
 import ReleaseScreenshot from '../kr-patch/ReleaseScreenshot.astro';
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 
@@ -59,7 +60,7 @@ const games = [
 
 <section id="scenes" class="section page-width" aria-labelledby="scenes-title">
   <h2 id="scenes-title" class="pixel">
-    수련과 선택 장면
+    {SECTION_TITLES.scenes}
   </h2>
   <p class="lead">
     이야기 사이사이에 버튼을 눌러 해내는 수련과, 고른 대로 장면이 바뀌는 선택지가 들어 있습니다. 미니게임을 해내면

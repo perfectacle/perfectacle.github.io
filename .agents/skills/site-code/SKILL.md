@@ -55,6 +55,8 @@ description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, s
 
 ## 참고
 
-- 글 폴더 → URL 규칙은 두 곳에 있다: Astro 라우트용 `postPath`(`src/lib/posts.ts`)와 빌드 스크립트·remark 플러그인용 `postUrlOf`(`src/lib/post-files.ts`). 하나를 바꾸면 다른 하나도 같이 바꾼다.
+- 글 URL 모양(`/YYYY/MM/DD/<slug>/`)은 `src/lib/post-url.ts` 한 곳에 있다. Astro 라우트용 `postPath`(`src/lib/posts.ts`, 파싱한 날짜)와 빌드 스크립트·remark 플러그인용 `postUrlOf`(`src/lib/post-files.ts`, frontmatter 에 적힌 날짜)가 이것을 쓴다.
+- 한글패치 새 버전은 `src/lib/kr-patches.ts` 의 그 패치 `releases` 맨 앞에 `{ version, date }` 한 줄을 넣는다. 목록 카드·발매 정보 줄·IPS 파일명(`fileBase` + 버전)·패치 노트 머리(`PatchRelease`)·테스트 기대값이 모두 여기서 읽는다. 패치 노트 본문은 페이지에 `<PatchRelease patch={patch} version="x.y">` 로 쓴다.
+- 패치 페이지 섹션 제목은 `src/lib/patch-sections.ts` 의 `SECTION_TITLES` 에 있다. 오른쪽 메뉴(`sectionsOf`)와 섹션 `<h2>` 가 같이 읽는다. 키는 URL 앵커라 바꾸지 않는다.
 - 성능 예산(`e2e/lighthouse.spec.ts` 의 `PAGES`·`MIN_SCORE`·`MAX`)에 걸리면 [ci §CI-02](../ci/SKILL.md#ci-02--실패는-원인을-고친다) 를 따른다.
 - 사이트 UI 문구를 쓰거나 고치면 [korean-copy](../korean-copy/SKILL.md) 를 따른다.

@@ -4,6 +4,7 @@ import remarkParse from 'remark-parse';
 import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
 import { slugize } from './slugize.ts';
+import { postUrl } from './post-url.ts';
 
 export type Post = CollectionEntry<'posts'>;
 
@@ -38,7 +39,7 @@ export const postSlug = (post: Post): string => {
 
 export const postPath = (post: Post) => {
   const { y, m, d } = ymd(post.data.date);
-  return `/${y}/${m}/${d}/${postSlug(post)}/`;
+  return postUrl(y, m, d, postSlug(post));
 };
 
 export const tagPath = (t: string) => `/tags/${slugize(t)}/`;

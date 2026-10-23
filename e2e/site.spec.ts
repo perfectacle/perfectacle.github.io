@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { KAKUSEI_PATCH, KR_PATCHES, KR_PATCH_SFC_PATH, OTOGIRISOU_PATCH, SMRPG_PATCH } from '../src/lib/kr-patches.ts';
 
 const POST = '/2022/06/06/tdd-is-design-activity/';
 const MERMAID_POST = '/2022/09/25/hikari-cp-time-config/';
@@ -668,7 +669,7 @@ for (const width of [390, 800, 1280]) {
 }
 
 test('SMRPG secrets keep spoilers folded and support independent keyboard disclosure', async ({ page }) => {
-  await page.goto('/games/kr-patches/sfc/super-mario-rpg/#secrets');
+  await page.goto(`${SMRPG_PATCH.path}/#secrets`);
   const secrets = page.locator('#secrets');
   const details = secrets.locator('details');
   expect(await details.count()).toBeGreaterThan(1);
@@ -746,12 +747,7 @@ test('Kakusei endings play as a playlist that stays local until an ending is cho
   await noHorizontalOverflow(page);
 });
 
-const PATCH_GUIDES = [
-  'super-mario-rpg',
-  'dragon-ball-z-super-gokuden-totsugeki',
-  'dragon-ball-z-super-gokuden-kakusei',
-  'otogirisou',
-];
+const PATCH_GUIDES = KR_PATCHES.map(patch => patch.path.slice(patch.path.lastIndexOf('/') + 1));
 
 const PATCH_SCREEN_COVERAGE: Record<string, { version: string; images: string[] }[]> = {
   'super-mario-rpg': [
@@ -827,36 +823,19 @@ const PATCH_SCREEN_COVERAGE: Record<string, { version: string; images: string[] 
 };
 
 for (const game of PATCH_GUIDES) {
-  const path = `/games/kr-patches/sfc/${game}/`;
+  const path = `${KR_PATCH_SFC_PATH}${game}/`;
 
   test(`${game} presents the current translation separately from version history`, async ({ page }) => {
     await page.goto(path);
     const notes = page.locator('#patch-notes');
-    const versions: Record<string, string[]> = {
-      'super-mario-rpg': ['v1.2 · 최신 버전', 'v1.1', 'v1.0'],
-      'dragon-ball-z-super-gokuden-totsugeki': ['v1.2 · 최신 버전', 'v1.1', 'v1.0'],
-      'dragon-ball-z-super-gokuden-kakusei': ['v1.3 · 최신 버전', 'v1.2', 'v1.1', 'v1.0'],
-      otogirisou: ['v1.2 · 최신 버전', 'v1.1', 'v1.0'],
-    };
-    const headings = versions[game];
-    if (!headings) throw new Error(`Missing versions for ${game}`);
+    const patch = KR_PATCHES.find(p => `${p.path}/` === path);
+    if (!patch) throw new Error(`Missing patch data for ${game}`);
+    const headings = patch.releases.map((r, i) => `v${r.version}${i === 0 ? ' · 최신 버전' : ''}`);
     await expect(notes.locator('.patch-release > h3')).toHaveText(headings);
-    const releaseDates: Record<string, Record<string, string>> = {
-      'super-mario-rpg': { '1-0': '2015-03-12', '1-1': '2026-10-18', '1-2': '2026-10-23' },
-      'dragon-ball-z-super-gokuden-totsugeki': { '1-0': '2012-12-12', '1-1': '2026-10-18', '1-2': '2026-10-23' },
-      'dragon-ball-z-super-gokuden-kakusei': {
-        '1-0': '2011-12-30',
-        '1-1': '2016-01-04',
-        '1-2': '2026-10-18',
-        '1-3': '2026-10-22',
-      },
-      otogirisou: { '1-0': '2016-09-29', '1-1': '2026-10-18', '1-2': '2026-10-22' },
-    };
-    const dates = releaseDates[game];
-    if (!dates) throw new Error(`Missing release dates for ${game}`);
     await expect(notes.locator('time')).toHaveCount(headings.length);
-    for (const [version, date] of Object.entries(dates)) {
-      await expect(notes.locator(`[aria-labelledby="release-${version}"] time`)).toHaveAttribute('datetime', date);
+    for (const { version, date } of patch.releases) {
+      const id = `release-${version.replaceAll('.', '-')}`;
+      await expect(notes.locator(`[aria-labelledby="${id}"] time`)).toHaveAttribute('datetime', date);
     }
     await expect(notes.locator('.patch-release').last()).toContainText('최초 한글패치');
     await expect(notes.locator('.patch-release').first()).toContainText('이전 버전 세이브');
@@ -1268,7 +1247,7 @@ test('where autoplay is blocked, background music waits with a hint and starts o
       }
     };
   });
-  await page.goto('/games/kr-patches/sfc/otogirisou/');
+  await page.goto(`${OTOGIRISOU_PATCH.path}/`);
   const bgm = page.locator('.bgm');
   await expect(bgm).toHaveAttribute('data-state', 'waiting');
   await expect(bgm.locator('.bgm-hint')).toBeHidden();
@@ -1280,7 +1259,7 @@ test('where autoplay is blocked, background music waits with a hint and starts o
 });
 
 test('where autoplay is allowed, the hint never shows while the music loads', async ({ page }) => {
-  await page.goto('/games/kr-patches/sfc/otogirisou/');
+  await page.goto(`${OTOGIRISOU_PATCH.path}/`);
   const bgm = page.locator('.bgm');
   await page.evaluate(() => {
     const hint = document.querySelector('.bgm-hint');
@@ -1299,7 +1278,7 @@ test('where autoplay is allowed, the hint never shows while the music loads', as
 for (const width of [390, 1280]) {
   test(`background music button stays above the footer at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto('/games/kr-patches/sfc/otogirisou/');
+    await page.goto(`${OTOGIRISOU_PATCH.path}/`);
     const toggle = page.locator('.bgm-toggle');
     await expect(toggle).toBeVisible();
     await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
@@ -1317,7 +1296,7 @@ test('background music stops for a video and comes back on the next visit', asyn
   await page.route('https://www.youtube-nocookie.com/embed/**', route =>
     route.fulfill({ contentType: 'text/html', body: '<html lang="ko"><title>동영상</title></html>' }),
   );
-  await page.goto('/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/');
+  await page.goto(`${KAKUSEI_PATCH.path}/`);
   const bgm = page.locator('.bgm');
   await page.locator('h1').first().click();
   await expect(bgm).toHaveAttribute('data-state', 'playing', { timeout: 15_000 });
