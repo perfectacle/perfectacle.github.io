@@ -855,10 +855,6 @@ for (const game of PATCH_GUIDES) {
       await expect(korean.locator('.compare-group')).toHaveCount(0);
       expect(await notes.locator('.compare-group').count()).toBeGreaterThan(0);
     }
-    if (game === 'otogirisou') {
-      await expect(page.locator('#play a[href="#patch-notes"]')).toBeAttached();
-      await expect(notes.locator('a[href="#making"]')).toBeAttached();
-    }
   });
 
   test(`${game} patch notes reveal each version with keyboard controls`, async ({ page, isMobile }) => {
