@@ -361,7 +361,7 @@ test('LZSS widget decodes one item per press and shows each copy', async ({ page
   await widget.getByRole('button', { name: '끝까지 풀기' }).click();
   await expect(widget.locator('[data-counter]')).toHaveText('읽은 항목 10/10');
   await expect(widget.locator('[data-out] li:not(.is-zero)')).toHaveCount(38);
-  await expect(widget.locator('[data-last]')).toContainText('실제 자료는 더 이어집니다');
+  await expect(widget.locator('[data-last]')).toContainText('실제 데이터는 더 이어집니다');
 
   const text = widget.getByLabel(/직접 적은 글/);
   await text.fill('abcabcabcabc');
@@ -587,10 +587,37 @@ test('glossary index jumps to each initial and every entry links to a real secti
     const [path = '', id = ''] = entryHref(e).split('#');
     targets.set(path, (targets.get(path) ?? new Set()).add(id));
   }
+  const missing: string[] = [];
   for (const [path, ids] of targets) {
     await page.goto(path);
     for (const id of ids) await expect(page.locator(`[id="${id}"]`), `${path}#${id}`).toHaveCount(1);
+    // Text of each section: the h2 with the id and everything up to the next h2, folded parts included.
+    const sections = await page.evaluate(() => {
+      const out: Record<string, string> = {};
+      for (const h of document.querySelectorAll<HTMLElement>('main h2[id]')) {
+        let text = h.textContent ?? '';
+        for (let n = h.nextElementSibling; n && n.tagName !== 'H2'; n = n.nextElementSibling)
+          text += ` ${n.textContent}`;
+        out[h.id] = text;
+      }
+      return out;
+    });
+    for (const e of GLOSSARY.filter(x => entryHref(x).startsWith(`${path}#`))) {
+      // 「덤프(롬)」 is 덤프, 「배경 레이어(BG)」 may appear as either part, and 「M 플래그·X 플래그」 as either name.
+      const base = e.term.replace(/\(.*\)$/, '');
+      const inner = /\((.*)\)$/.exec(e.term)?.[1];
+      const names = [
+        e.term,
+        base,
+        ...base.split('·'),
+        ...(inner ? [inner] : []),
+        ...(e.en ? [e.en, ...e.en.split(/ \/ |, /)] : []),
+      ];
+      if (!names.some(name => (sections[e.anchor] ?? '').includes(name)))
+        missing.push(`${e.term} → ${path}#${e.anchor}`);
+    }
   }
+  expect(missing).toEqual([]);
 });
 
 test('chapters link the glossary, and search finds it', async ({ page }) => {

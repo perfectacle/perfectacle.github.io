@@ -36,3 +36,14 @@ test('initial consonants fold double consonants and send Latin and digits last',
   expect(groups.flatMap(g => g.entries)).toHaveLength(GLOSSARY.length);
   expect(new Set(INITIALS.map(initialId)).size).toBe(INITIALS.length);
 });
+
+// The exact section is checked on the built pages in e2e/romhacking.spec.ts; this catches a term whose page never names it.
+test('every term, or its original, is named on the page it links to', () => {
+  const missing = GLOSSARY.filter(e => {
+    const page = source(chapterPath(e.chapter));
+    const base = e.term.replace(/\(.*\)$/, '');
+    const names = [e.term, base, ...base.split('·'), ...(e.en ? [e.en, ...e.en.split(/ \/ |, /)] : [])];
+    return !names.some(n => page.includes(n));
+  }).map(e => e.term);
+  expect(missing).toEqual([]);
+});

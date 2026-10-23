@@ -18,7 +18,7 @@ const banks = Array.from({ length: 256 }, (_, i) => i);
 
 <section class="widget bank-map" data-bank-map data-mapper={mapper} data-addr={addr} aria-labelledby="bank-map-title">
   <h3 class="widget-title" id="bank-map-title">
-    주소 → 파일 오프셋 계산기
+    CPU 주소 → 파일 오프셋 계산기
   </h3>
   <p class="widget-help">
     CPU 주소 <code>$뱅크:주소</code>를 롬 파일 오프셋으로 바꿉니다. 계산은 kr-patch-toolkit의{' '}
@@ -81,7 +81,7 @@ const banks = Array.from({ length: 256 }, (_, i) => i);
     <code data-summary-cpu>{formatCpu(addr)}</code>
     {'는 '}
     <span data-region>{regionLabel(mapper, addr)}</span>
-    {'이고, 공식으로 계산한 파일 위치는 '}
+    {'이고, 공식으로 계산한 파일 오프셋은 '}
     <code data-summary-off>0x{hex(offset, 6)}</code>입니다.
   </p>
   <p class="bm-warning" data-warning hidden></p>

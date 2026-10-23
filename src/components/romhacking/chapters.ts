@@ -188,7 +188,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     platform: 'common',
     title: '압축 ① RLE·LZSS',
     summary:
-      'RLE는 "같은 바이트를 몇 번", LZSS는 "몇 칸 앞에서 몇 바이트"로 자료를 줄입니다. 플래그 바이트와 거리·길이를 실제 롬 바이트로 풀어 봅니다.',
+      'RLE는 "같은 바이트를 몇 번", LZSS는 "몇 칸 앞에서 몇 바이트"로 데이터를 줄입니다. 플래그 바이트와 거리·길이를 실제 롬 바이트로 풀어 봅니다.',
     ready: true,
     notes: [
       note(KAKUSEI_PATCH, 'making-title-gfx', '각성편: 압축된 타이틀 그림'),
