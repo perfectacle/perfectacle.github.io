@@ -179,19 +179,24 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     slug: 'lzss',
     platform: 'common',
     title: '압축 ① RLE·LZSS',
-    summary: '"같은 것 반복"과 "앞에서 본 것 다시"로 데이터를 줄이는 법입니다.',
-    ready: false,
-    notes: [],
-    tools: [],
+    summary:
+      'RLE는 "같은 바이트를 몇 번", LZSS는 "몇 칸 앞에서 몇 바이트"로 자료를 줄입니다. 플래그 바이트와 거리·길이를 실제 롬 바이트로 풀어 봅니다.',
+    ready: true,
+    notes: [
+      note(KAKUSEI_PATCH, 'making-title-gfx', '각성편: 압축된 타이틀 그림'),
+      note(TOTSUGEKI_PATCH, 'making-title-gfx', '돌격편: 타이틀 화면'),
+    ],
+    tools: [{ command: 'krpatch lzss', anchor: 'lzss-lzss-코덱' }],
   },
   {
     order: 10,
     slug: 'huffman',
     platform: 'common',
     title: '압축 ② 허프만',
-    summary: '자주 나오는 글자에 짧은 부호를 주는 압축입니다.',
-    ready: false,
-    notes: [],
+    summary:
+      '자주 나오는 글자에 짧은 비트를 주는 압축입니다. 트리를 만들어 부호를 얻고, 제절초 일본판 대본의 비트열을 한 비트씩 읽어 봅니다.',
+    ready: true,
+    notes: [note(OTOGIRISOU_PATCH, 'making-script', '제절초: 대사가 들어 있는 방식')],
     tools: [],
   },
   {
@@ -199,10 +204,16 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     slug: 'expansion',
     platform: 'snes',
     title: '롬 확장',
-    summary: '책장에 칸을 더 붙이듯 롬을 늘리는 방법과 그 한계입니다.',
-    ready: false,
-    notes: [],
-    tools: [],
+    summary:
+      '롬을 늘리면 헤더의 크기 바이트, 미러, 체크섬이 함께 바뀝니다. 매핑마다 늘릴 수 있는 한계와, 늘리지 않고 자리를 만드는 방법을 봅니다.',
+    ready: true,
+    notes: [
+      note(OTOGIRISOU_PATCH, 'making', '제절초: 1MB 롬을 2MB로 늘린 한글판'),
+      note(OTOGIRISOU_PATCH, 'making-space', '제절초: 코드를 둔 자리'),
+      note(SMRPG_PATCH, 'making-space', '슈퍼 마리오 RPG: 롬을 4MB보다 키우지 않은 이유'),
+      note(KAKUSEI_PATCH, 'making-bugfix', '각성편: 우주선이 맵 밖을 헤매던 이유'),
+    ],
+    tools: [{ command: 'krpatch snes checksum', anchor: 'snes-checksum-헤더-체크섬-확인수정' }],
   },
   {
     order: 12,

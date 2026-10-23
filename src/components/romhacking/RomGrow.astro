@@ -1,0 +1,356 @@
+---
+import {
+  BOARD_LABEL,
+  MAX_ORIGINAL,
+  MAX_SIZE,
+  SIZES,
+  cellLabel,
+  cells,
+  offsetLabel,
+  report,
+  sizeLabel,
+  type BoardKind,
+} from './rom-expansion.ts';
+import { MAPPER_LABEL } from './bank-map.ts';
+import { toHex } from '../../lib/numbers.ts';
+
+// Starts on Otogirisou: a 1 MB LoROM grown to 2 MB.
+const board: BoardKind = 'lorom';
+const original = 0x100000;
+const size = 0x200000;
+const r = report(board, original, size);
+const rows = [
+  { id: 'before', title: `늘리기 전 (${sizeLabel(original)})`, list: cells(board, original, original) },
+  { id: 'after', title: `늘린 뒤 (${sizeLabel(size)})`, list: cells(board, size, original) },
+];
+---
+
+<section class="widget rom-grow" data-rom-grow aria-labelledby="grow-title">
+  <h3 class="widget-title" id="grow-title">
+    롬 크기를 늘리면 바뀌는 것
+  </h3>
+  <p class="widget-help">
+    한 칸은 롬 512KB입니다. 칸마다 위에 CPU에서 보이는 뱅크, 아래에 파일 오프셋을 적었습니다.{' '}
+    <span class="live-only">매핑과 크기를 고르면 늘리기 전과 뒤의 롬 공간, 헤더의 크기 바이트, 체크섬이 바뀝니다.</span>
+  </p>
+
+  <div class="grow-controls live-only">
+    <fieldset>
+      <legend>매핑</legend>
+      {(Object.keys(BOARD_LABEL) as BoardKind[]).map(b => (
+        <label>
+          <input type="radio" name="grow-board" value={b} checked={b === board} /> {BOARD_LABEL[b]}
+        </label>
+      ))}
+    </fieldset>
+    <div class="grow-selects">
+      <label>
+        원래 크기
+        <select data-original>
+          {SIZES.filter(n => n <= MAX_ORIGINAL).map(n => (
+            <option value={n} selected={n === original}>
+              {sizeLabel(n)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        늘린 크기
+        <select data-size>
+          {SIZES.map(n => (
+            <option value={n} selected={n === size} disabled={n < original || n > MAX_SIZE[board]}>
+              {sizeLabel(n)}
+            </option>
+          ))}
+        </select>
+      </label>
+    </div>
+  </div>
+  <p class="static-only muted">지금 그림: LoROM, 1MB를 2MB로 늘린 경우(제절초 한글판).</p>
+
+  {rows.map(row => (
+    <div class="grow-row" data-row={row.id}>
+      <p class="grow-sub" data-row-title>
+        {row.title} <span class="muted">· {MAPPER_LABEL[row.id === 'before' ? r.before.mapper : r.after.mapper]}</span>
+      </p>
+      <ol class="grow-cells" aria-label={row.title} data-cells>
+        {row.list.map(c => (
+          <li class={`is-${c.kind}`}>
+            <span class="bank">{c.banks || '—'}</span>
+            <span class="off">{offsetLabel(c.file)}</span>
+            <span class="what">{cellLabel(c)}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  ))}
+  <p class="grow-legend">
+    <span class="key key-data">원래 롬</span> <span class="key key-new">새로 붙인 곳</span>{' '}
+    <span class="key key-mirror">미러(아래 오프셋의 데이터가 한 번 더 보임)</span>
+  </p>
+
+  <dl class="readout grow-readout">
+    <div>
+      <dt data-size-at>크기 바이트(파일 {offsetLabel(r.after.header + 0x17)})</dt>
+      <dd data-size-byte>
+        {toHex(r.before.sizeByte, 2)} → {toHex(r.after.sizeByte, 2)}
+      </dd>
+      <dd class="grow-dd-note" data-size-claims>
+        {sizeLabel(r.before.claims)} → {sizeLabel(r.after.claims)}
+      </dd>
+    </div>
+    <div>
+      <dt>체크섬에 더하는 방식(늘린 뒤)</dt>
+      <dd class="grow-parts" data-parts>
+        {r.after.parts.map(p => (
+          <span>{p}</span>
+        ))}
+      </dd>
+    </div>
+  </dl>
+  <p class="grow-checksum" data-checksum>
+    {r.checksum}
+  </p>
+  <ul class="grow-notes" data-notes>
+    {r.notes.map(n => (
+      <li>{n}</li>
+    ))}
+  </ul>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { toHex } from '../../lib/numbers.ts';
+  import { MAPPER_LABEL } from './bank-map.ts';
+  import { MAX_SIZE, cellLabel, cells, offsetLabel, report, sizeLabel, type BoardKind } from './rom-expansion.ts';
+
+  const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  };
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-rom-grow]')) {
+    const $ = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel);
+    const originalSel = $<HTMLSelectElement>('[data-original]');
+    const sizeSel = $<HTMLSelectElement>('[data-size]');
+    const board = () =>
+      (root.querySelector<HTMLInputElement>('input[name="grow-board"]:checked')?.value ?? 'lorom') as BoardKind;
+
+    const render = () => {
+      const b = board();
+      const original = Number(originalSel?.value);
+      if (sizeSel) {
+        for (const o of sizeSel.options) o.disabled = Number(o.value) < original || Number(o.value) > MAX_SIZE[b];
+        if (sizeSel.selectedOptions[0]?.disabled) {
+          const ok = [...sizeSel.options].filter(o => !o.disabled);
+          const pick = ok.find(o => Number(o.value) >= original) ?? ok.at(-1);
+          if (pick) sizeSel.value = pick.value;
+        }
+      }
+      const size = Number(sizeSel?.value);
+      const r = report(b, original, size);
+      const rows = {
+        before: {
+          title: `늘리기 전 (${sizeLabel(original)})`,
+          mapper: r.before.mapper,
+          list: cells(b, original, original),
+        },
+        after: { title: `늘린 뒤 (${sizeLabel(size)})`, mapper: r.after.mapper, list: cells(b, size, original) },
+      };
+      for (const [id, row] of Object.entries(rows)) {
+        const box = $(`[data-row="${id}"]`);
+        if (!box) continue;
+        const title = box.querySelector('[data-row-title]');
+        if (title) {
+          title.replaceChildren(`${row.title} `, el('span', 'muted', `· ${MAPPER_LABEL[row.mapper]}`));
+        }
+        const list = box.querySelector('[data-cells]');
+        list?.setAttribute('aria-label', row.title);
+        list?.replaceChildren(
+          ...row.list.map(c => {
+            const li = el('li', `is-${c.kind}`);
+            li.append(
+              el('span', 'bank', c.banks || '—'),
+              el('span', 'off', offsetLabel(c.file)),
+              el('span', 'what', cellLabel(c)),
+            );
+            return li;
+          }),
+        );
+      }
+      const set = (sel: string, text: string) => {
+        const n = $(sel);
+        if (n) n.textContent = text;
+      };
+      set('[data-size-at]', `크기 바이트(파일 ${offsetLabel(r.after.header + 0x17)})`);
+      set('[data-size-byte]', `${toHex(r.before.sizeByte, 2)} → ${toHex(r.after.sizeByte, 2)}`);
+      set('[data-size-claims]', `${sizeLabel(r.before.claims)} → ${sizeLabel(r.after.claims)}`);
+      $('[data-parts]')?.replaceChildren(...r.after.parts.map(p => el('span', '', p)));
+      set('[data-checksum]', r.checksum);
+      $('[data-notes]')?.replaceChildren(...r.notes.map(n => el('li', '', n)));
+      set(
+        '[data-live]',
+        `${MAPPER_LABEL[r.after.mapper]}, ${sizeLabel(original)}에서 ${sizeLabel(size)}로. 크기 바이트 ${toHex(r.before.sizeByte, 2)}에서 ${toHex(r.after.sizeByte, 2)}로. ${r.checksum}`,
+      );
+    };
+
+    root.querySelectorAll('input[name="grow-board"]').forEach(i => i.addEventListener('change', render));
+    originalSel?.addEventListener('change', render);
+    sizeSel?.addEventListener('change', render);
+    root.classList.add('is-live');
+    render();
+  }
+</script>
+
+<style>
+  .grow-controls {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .grow-controls fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 14px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .grow-controls legend {
+    float: left;
+    margin-right: 10px;
+    color: var(--fg-muted);
+  }
+  .grow-controls fieldset label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    min-height: 44px;
+  }
+  .grow-selects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+  .grow-selects label {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    color: var(--fg-muted);
+  }
+  .grow-selects select {
+    min-height: 44px;
+    padding: 4px 8px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .grow-row {
+    margin-top: 12px;
+  }
+  .grow-sub {
+    margin: 0 0 6px;
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+  .grow-sub :global(.muted) {
+    font-weight: 400;
+  }
+  .grow-cells {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+    gap: 4px;
+    margin: 0;
+    list-style: none;
+  }
+  .grow-cells :global(li) {
+    display: grid;
+    gap: 1px;
+    margin: 0 !important;
+    padding: 5px 6px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 6px;
+    background: var(--dg-cell);
+    line-height: 1.3;
+    font-size: 0.72rem;
+  }
+  .grow-cells :global(.bank) {
+    color: var(--dg-warm);
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+  .grow-cells :global(.off) {
+    color: var(--dg-cool);
+    font-family: var(--font-mono);
+  }
+  .grow-cells :global(.what) {
+    color: var(--fg-muted);
+  }
+  .grow-cells :global(li.is-new) {
+    border-color: var(--dg-accent);
+    background: var(--dg-accent-soft);
+  }
+  .grow-cells :global(li.is-new .what) {
+    color: var(--dg-accent);
+    font-weight: 700;
+  }
+  .grow-cells :global(li.is-mirror),
+  .grow-cells :global(li.is-switch) {
+    border-style: dashed;
+    background: var(--bg-soft);
+  }
+  .grow-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin: 8px 0 0;
+    color: var(--fg-muted);
+    font-size: 0.8rem;
+  }
+  .key::before {
+    content: '' / '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 3px;
+    background: var(--dg-cell);
+    vertical-align: -1px;
+  }
+  .key-new::before {
+    border-color: var(--dg-accent);
+    background: var(--dg-accent-soft);
+  }
+  .key-mirror::before {
+    border-style: dashed;
+    background: var(--bg-soft);
+  }
+  .grow-readout {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  }
+  .grow-dd-note {
+    color: var(--fg-muted);
+    font-size: 0.85rem !important;
+    font-weight: 400 !important;
+  }
+  .grow-parts {
+    display: grid;
+    font-size: 0.85rem !important;
+  }
+  .grow-checksum {
+    margin: 10px 0 0;
+    font-size: 0.92rem;
+  }
+  .grow-notes {
+    margin: 8px 0 0;
+    padding-left: 1.2em !important;
+    font-size: 0.88rem;
+  }
+  .grow-notes:empty {
+    display: none;
+  }
+</style>

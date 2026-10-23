@@ -15,6 +15,9 @@ const CPU = '/games/romhacking/snes/cpu/';
 const ASSEMBLY = '/games/romhacking/snes/assembly/';
 const HOOKING = '/games/romhacking/snes/hooking/';
 const GRAPHICS = '/games/romhacking/snes/graphics/';
+const LZSS = '/games/romhacking/lzss/';
+const HUFFMAN = '/games/romhacking/huffman/';
+const EXPANSION = '/games/romhacking/snes/expansion/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -272,7 +275,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(page.getByRole('button', { name: '한 줄 실행' }).first()).toBeHidden();
   await page.goto(BANKS);
   await expect(page.locator('[data-bank-map] [data-summary-off]')).toHaveText('0x14000C');
-  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS]) {
+  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS, LZSS, HUFFMAN, EXPANSION]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
     expect(await help.count()).toBeGreaterThan(0);
@@ -286,5 +289,172 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(tile.locator('textarea')).toBeHidden();
   await expect(tile.locator('.widget-help .live-only')).toBeHidden();
   await expect(tile.getByRole('button', { name: '가로 0, 세로 1: 색 1' })).toBeDisabled();
+
+  await page.goto(LZSS);
+  const lzss = page.locator('[data-lzss]');
+  await expect(lzss.locator('.lz-static-steps li')).toHaveCount(7);
+  await expect(lzss.locator('[data-out] li small')).toHaveText([...'ha␣ha␣ha␣ha␣ha!']);
+  await expect(lzss.getByRole('button', { name: '한 단계 풀기' })).toBeHidden();
+  await page.goto(HUFFMAN);
+  const huff = page.locator('[data-huffman]');
+  await expect(huff.locator('[data-table] tbody code')).toHaveText(['110', '0', '111', '10']);
+  await expect(huff.locator('[data-bits]')).toHaveAttribute('aria-label', '비트열 11001111001111000');
+  await expect(huff.locator('[data-tree] svg')).toBeVisible();
+  await expect(huff.getByRole('button', { name: '한 번 묶기' })).toBeHidden();
+  await page.goto(EXPANSION);
+  const grow = page.locator('[data-rom-grow]');
+  await expect(grow.locator('[data-size-byte]')).toHaveText('0A → 0B');
+  await expect(grow.locator('[data-row="after"] li.is-new')).toHaveCount(2);
+  await expect(grow.locator('select')).toHaveCount(2);
+  await expect(grow.locator('select').first()).toBeHidden();
   await context.close();
+});
+
+test('LZSS widget decodes one item per press and shows each copy', async ({ page }) => {
+  await page.goto(LZSS);
+  const widget = page.locator('[data-lzss]');
+  await expect(widget).toHaveClass(/is-live/);
+  const step = widget.getByRole('button', { name: '한 단계 풀기' });
+  await step.focus();
+  await page.keyboard.press('Enter');
+  await expect(widget.locator('[data-counter]')).toHaveText('읽은 항목 1/7');
+  await expect(widget.locator('[data-last]')).toContainText('$000F = 15바이트');
+  await page.keyboard.press('Enter');
+  await expect(widget.locator('[data-flags] li.bit-lit')).toHaveCount(4);
+  for (let i = 0; i < 4; i++) await page.keyboard.press('Enter');
+  await expect(widget.locator('[data-last]')).toContainText('거리 = $003 = 3, 길이 = 8 + 3 = 11');
+  await expect(widget.locator('[data-last]')).toContainText('겹쳐서');
+  await expect(widget.locator('[data-live]')).toContainText('출력 3번 칸부터 3칸 앞');
+  await expect(widget.locator('[data-out] li.is-new')).toHaveCount(11);
+  await expect(widget.locator('[data-out] li.is-src')).toHaveCount(3);
+  await expect(widget.locator('[data-copy]')).toBeVisible();
+  await expect(widget.locator('[data-copy-from]')).toHaveText('0–10번 칸');
+  await expect(widget.locator('[data-flags] li.is-current small').first()).toHaveText('비트 3');
+  await widget.getByRole('button', { name: '끝까지 풀기' }).click();
+  await expect(widget.locator('[data-out] li small')).toHaveText([...'ha␣ha␣ha␣ha␣ha!']);
+  await expect(step).toBeDisabled();
+  await expect(widget.locator('[data-last]')).toContainText('다 풀었습니다');
+
+  await widget.getByLabel('돌격편 타이틀 그림 첫머리').check();
+  await expect(widget.locator('[data-in] li')).toHaveCount(14);
+  await step.click();
+  await step.click();
+  await step.click();
+  await expect(widget.locator('[data-out] li.is-zero')).toHaveText(/18칸/);
+  await expect(widget.locator('[data-last]')).toContainText('시작보다 앞은 0으로 읽습니다');
+  await widget.getByRole('button', { name: '끝까지 풀기' }).click();
+  await expect(widget.locator('[data-counter]')).toHaveText('읽은 항목 10/10');
+  await expect(widget.locator('[data-out] li:not(.is-zero)')).toHaveCount(38);
+  await expect(widget.locator('[data-last]')).toContainText('실제 자료는 더 이어집니다');
+
+  const text = widget.getByLabel(/직접 적은 글/);
+  await text.fill('abcabcabcabc');
+  await page.keyboard.press('Enter');
+  await expect(widget.locator('[data-note]')).toContainText('12바이트가 8바이트');
+  await expect(widget.locator('input[name="lzss-sample"]:checked')).toHaveCount(0);
+  await widget.getByRole('button', { name: '끝까지 풀기' }).click();
+  await expect(widget.locator('[data-out] li small')).toHaveText([...'abcabcabcabc']);
+  await text.fill('가'.repeat(14));
+  await widget.getByRole('button', { name: '압축해서 풀기' }).click();
+  await expect(text).toHaveAttribute('aria-invalid', 'true');
+  await expect(widget.getByRole('alert')).toContainText('지금 42바이트');
+  await widget.getByRole('button', { name: '처음부터' }).click();
+  await expect(step).toBeFocused();
+  await expect(widget.locator('[data-counter]')).toHaveText('읽은 항목 0/6');
+  await noHorizontalOverflow(page);
+});
+
+test('LZSS widget skips the write animation with reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(LZSS);
+  const widget = page.locator('[data-lzss]');
+  await widget.getByRole('button', { name: '끝까지 풀기' }).click();
+  const newest = widget.locator('[data-out] li.is-new').first();
+  expect(await newest.evaluate(e => getComputedStyle(e).animationName)).toBe('none');
+});
+
+test('Huffman widget merges step by step, then encodes and decodes bit by bit', async ({ page }) => {
+  await page.goto(HUFFMAN);
+  const widget = page.locator('[data-huffman]');
+  await expect(widget).toHaveClass(/is-live/);
+  await expect(widget.locator('[data-table] tbody code')).toHaveText(['—', '—', '—', '—']);
+  await expect(widget.locator('[data-queue] li')).toHaveText([
+    '「간」(1) → 0',
+    '「␣」(2) → 1',
+    '「공」(2)',
+    '「장」(4)',
+  ]);
+  const merge = widget.getByRole('button', { name: '한 번 묶기' });
+  await merge.focus();
+  await page.keyboard.press('Enter');
+  await expect(widget.locator('[data-merge-msg]')).toContainText('「간」(1) + 「␣」(2) → 무게 3');
+  await expect(widget.locator('[data-live]')).toContainText('무게 3');
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('Enter');
+  await expect(widget.locator('[data-merge-msg]')).toContainText('트리가 완성됐습니다');
+  await expect(merge).toBeDisabled();
+  await expect(widget.locator('[data-table] tbody code')).toHaveText(['110', '0', '111', '10']);
+  await expect(widget.locator('[data-bits]')).toHaveAttribute('aria-label', '비트열 11001111001111000');
+  await expect(widget.locator('[data-sum]')).toContainText('9글자가 17비트');
+  await expect(widget.locator('[data-tree] circle')).toHaveCount(3);
+
+  const bit = widget.getByRole('button', { name: '한 비트 읽기' });
+  await bit.click();
+  await expect(widget.locator('[data-decode-msg]')).toContainText('오른쪽 가지');
+  await bit.click();
+  await bit.click();
+  await expect(widget.locator('[data-decoded]')).toHaveText('간');
+  await expect(widget.locator('[data-decode-msg]')).toContainText('「간」에 닿았습니다');
+  await expect(widget.locator('[data-tree] .hf-leaf.is-on')).toHaveCount(1);
+  await widget.getByRole('button', { name: '끝까지 읽기' }).click();
+  await expect(widget.locator('[data-decoded]')).toHaveText('간장 공장 공장장');
+  await expect(bit).toBeDisabled();
+
+  const input = widget.getByLabel('문장');
+  await input.fill('abracadabra');
+  await expect(widget.locator('[data-table] tbody tr')).toHaveCount(5);
+  await widget.getByRole('button', { name: '끝까지 묶기' }).click();
+  await expect(widget.locator('[data-sum]')).toContainText('11글자가 23비트');
+  await input.fill('abcdefghijk');
+  await expect(input).toHaveAttribute('aria-invalid', 'true');
+  await expect(widget.getByRole('alert')).toContainText('지금 11개');
+  await noHorizontalOverflow(page);
+});
+
+test('ROM expansion widget redraws banks, the size byte and the checksum note', async ({ page }) => {
+  await page.goto(EXPANSION);
+  const widget = page.locator('[data-rom-grow]');
+  await expect(widget).toHaveClass(/is-live/);
+  const after = widget.locator('[data-row="after"] [data-cells] li');
+  await expect(after).toHaveCount(8);
+  await expect(widget.locator('[data-row="after"] li.is-new .bank')).toHaveText(['$A0–$AF', '$B0–$BF']);
+  await expect(widget.locator('[data-size-byte]')).toHaveText('0A → 0B');
+  await expect(widget.locator('[data-checksum]')).toContainText('+1');
+
+  const original = widget.getByLabel('원래 크기');
+  const size = widget.getByLabel('늘린 크기');
+  await original.selectOption({ label: '1.5MB' });
+  await expect(size).toHaveValue(String(0x200000));
+  await expect(widget.locator('[data-checksum]')).toContainText('0x100000–0x17FFFF(× 2 → × 1)');
+  await expect(widget.locator('[data-live]')).toContainText('1.5MB에서 2MB로');
+
+  await widget.getByLabel('HiROM').focus();
+  await page.keyboard.press('Space');
+  await original.selectOption({ label: '4MB' });
+  await size.selectOption({ label: '6MB' });
+  await expect(widget.locator('[data-row="after"] [data-row-title]')).toContainText('ExHiROM');
+  await expect(after).toHaveCount(16);
+  await expect(widget.locator('[data-size-at]')).toContainText('0x40FFD7');
+  await expect(widget.locator('[data-size-byte]')).toHaveText('0C → 0D');
+  await expect(widget.locator('[data-notes]')).toContainText('$25');
+
+  await widget.getByLabel('SA-1').check();
+  await size.selectOption({ label: '8MB' });
+  await expect(widget.locator('[data-row="after"] li.is-switch')).toHaveCount(8);
+  await expect(widget.locator('[data-notes]')).toContainText('$2220');
+
+  await widget.getByLabel('LoROM').check();
+  await expect(size).toHaveValue(String(0x400000));
+  await expect(size.locator('option[value="8388608"]')).toHaveJSProperty('disabled', true);
+  await noHorizontalOverflow(page);
 });
