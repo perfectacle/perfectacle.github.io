@@ -28,6 +28,11 @@ const references = [
     note: '보통의 LoROM 2MB·HiROM 4MB 한계와 BigLoROM·ExHiROM 같은 넓히는 방법',
   },
   {
+    href: 'https://problemkaputt.de/fullsnes.htm#snescartlorommappingromdividedinto32kbanksaround1500games',
+    label: 'fullsnes, SNES Cart LoROM Mapping',
+    note: '2MB보다 큰 LoROM 게임은 뱅크 $40부터 64KB 뱅크마다 32KB를 두 번 보여 준다는 설명',
+  },
+  {
     href: 'https://problemkaputt.de/fullsnes.htm#snescartsa1memorycontrol',
     label: 'fullsnes, SNES Cart SA-1 Memory Control',
     note: 'Super MMC 레지스터 $2220–$2223(1MB 블록 0–7 선택)과 두 CPU에 함께 걸리는 점',
@@ -35,7 +40,7 @@ const references = [
   {
     href: 'https://snes.nesdev.org/wiki/ROM_header',
     label: 'SNESdev Wiki, ROM header',
-    note: '체크섬은 헤더가 말하는 2의 거듭제곱 크기로 계산하고, 파일을 2의 거듭제곱으로 채워 두기를 권하는 이유',
+    note: '체크섬은 헤더가 말하는 2의 거듭제곱 크기로 계산한다는 점과, 어중간한 크기면 뒤쪽 조각을 2의 거듭제곱까지 채우라는 권고',
   },
   {
     href: 'https://snes.nesdev.org/wiki/Memory_map',
@@ -69,7 +74,7 @@ const limits = [
   {
     name: 'LoROM',
     max: '보통 2MB, 최대 4MB',
-    how: '앞 2MB는 $00–$3F(와 $80–$BF)의 위쪽 32KB에 놓입니다. 4MB까지 쓰려면 $40–$7D·$C0–$FF의 위쪽 반까지 롬을 보여 주는 보드가 필요합니다.',
+    how: '앞 2MB는 $00–$3F(와 $80–$BF)의 위쪽 32KB에 놓입니다. 2MB 뒤는 $40–$7D·$C0–$FF에 놓이는데, 이 뱅크에서는 32KB 하나가 아래 반과 위 반에 두 번 보입니다. 그렇게 배선한 보드에서 4MB까지 씁니다.',
   },
   {
     name: 'HiROM',
@@ -117,9 +122,8 @@ const instead = [
   </h2>
   <p>
     번역하면 대사가 길어지고, 한글 글꼴이 들어가고, 줄바꿈 같은 새 코드가 붙습니다. 원래 롬에 남는 자리로 모자라면 롬
-    파일 자체를 키울 수 있습니다. 책장에 칸을 더 붙이는 것과 비슷합니다. 그런데 책장 칸에는 번호표가 붙어 있어서, 칸을
-    붙이면 번호표를 어떻게 다는지(CPU에서 어느 뱅크로 보이는지), 책장 이름표(헤더)를 어떻게 고치는지까지 함께 정해야
-    합니다.
+    파일 자체를 키울 수 있습니다. 이때 늘린 바이트가 CPU에서 어느 뱅크로 보이는지, 롬 안의 헤더를 어떻게 고치는지를 함께
+    정해야 합니다.
   </p>
   <p>
     파일을 늘리는 것 자체는 쉽습니다. 뒤에 바이트를 붙이면 됩니다. 어려운 것은 세 가지입니다. 늘린 자리가 CPU에서
@@ -160,7 +164,7 @@ const instead = [
             <code>0B</code>
           </td>
           <td>2¹¹KB = 2MB</td>
-          <td>1.5MB, 2MB</td>
+          <td>1MB 초과–2MB</td>
           <td>돌격편·각성편, 제절초 한글판 v1.1부터</td>
         </tr>
         <tr>
@@ -168,7 +172,7 @@ const instead = [
             <code>0C</code>
           </td>
           <td>2¹²KB = 4MB</td>
-          <td>2.5–4MB</td>
+          <td>2MB 초과–4MB</td>
           <td>슈퍼 마리오 RPG</td>
         </tr>
         <tr>
@@ -176,7 +180,7 @@ const instead = [
             <code>0D</code>
           </td>
           <td>2¹³KB = 8MB</td>
-          <td>4.5–8MB</td>
+          <td>4MB 초과–8MB</td>
           <td>ExHiROM 게임 등</td>
         </tr>
       </tbody>
@@ -215,9 +219,10 @@ const instead = [
     <h3>LoROM: 2MB를 넘으면</h3>
     <p>
       보통의 LoROM 보드는 롬을 <code>$00</code>–<code>$3F</code>와 그 미러 <code>$80</code>–<code>$BF</code>에만 보여
-      줘서 2MB가 끝입니다. 2MB 뒤를 <code>$40</code>–<code>$7D</code>·<code>$C0</code>–<code>$FF</code>의 위쪽 반에 보여
-      주는 보드(fullsnes의 BigLoROM)라면 4MB까지 갑니다. 이때 2MB 뒤의 자료는 WRAM·레지스터가 없는 뱅크에 있으므로,
-      그쪽에 둔 코드에서 레지스터를 쓰려면 긴 주소(<code>STA $002100</code> 꼴)를 쓰거나 DB를 바꿔야 합니다.
+      줘서 2MB가 끝입니다. 2MB 뒤를 <code>$40</code>–<code>$7D</code>·<code>$C0</code>–<code>$FF</code>에 보여 주는
+      보드(fullsnes의 BigLoROM)라면 4MB까지 갑니다. 이 뱅크들은 64KB 전체가 롬이라, 32KB 뱅크 하나가 아래 반과 위 반에
+      두 번 보입니다. 이때 2MB 뒤의 자료는 WRAM·레지스터가 없는 뱅크에 있으므로, 그쪽에 둔 코드에서 레지스터를 쓰려면 긴
+      주소(<code>STA $002100</code> 꼴)를 쓰거나 DB를 바꿔야 합니다.
     </p>
     <h3>HiROM에서 ExHiROM으로</h3>
     <p>
@@ -325,8 +330,9 @@ const instead = [
   </p>
   <ul>
     <li>
-      <strong>파일 크기를 2의 거듭제곱으로 맞춥니다.</strong> 1.5MB나 3MB처럼 어중간한 파일의 남는 자리를 무엇으로
-      채울지는 에뮬레이터마다 다를 수 있습니다. SNESdev 위키도 파일을 2의 거듭제곱으로 채워 두기를 권합니다.
+      <strong>파일 크기를 맞춥니다.</strong> 파일 크기는 2의 거듭제곱이거나, 큰 2의 거듭제곱 + 작은 2의 거듭제곱(1.5MB,
+      3MB, 6MB처럼)으로 맞춥니다. 그보다 어중간하면 에뮬레이터마다 채우는 방식이 달라서, SNESdev 위키는 뒤쪽 조각을 2의
+      거듭제곱까지 채우라고 권합니다.
     </li>
     <li>
       <strong>헤더의 맵 모드·크기·체크섬을 맞춥니다.</strong> 많은 에뮬레이터가 헤더를 보고 LoROM인지 HiROM인지를

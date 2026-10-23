@@ -1,5 +1,5 @@
 import { MAPPERS, hex, type MapperName } from '../../lib/snes-mapper.ts';
-import { checksumParts, mirrorOffset, roundUpPow2, sizeByte, sizeOfByte } from '../../lib/snes-header.ts';
+import { checksumParts, mirrorOffset, sizeByte, sizeOfByte } from '../../lib/snes-header.ts';
 
 /** What the "롬 크기를 늘리면 바뀌는 것" widget draws. HiROM past 4 MB becomes ExHiROM. */
 export type BoardKind = 'lorom' | 'hirom' | 'sa1';
@@ -135,7 +135,7 @@ export function report(board: BoardKind, original: number, size: number): Expans
 
   if (board === 'lorom' && size > 2 * MB)
     notes.push(
-      'LoROM에서 WRAM·레지스터와 같은 뱅크($00–$3F, $80–$BF)에 보이는 것은 앞 2MB뿐입니다. 2MB 뒤는 $C0–$FF(와 $40–$7D)의 위쪽 반으로만 읽습니다. 이 영역까지 보이게 배선한 보드여야 합니다.',
+      'LoROM에서 WRAM·레지스터와 같은 뱅크($00–$3F, $80–$BF)에 보이는 것은 앞 2MB뿐입니다. 2MB 뒤는 $40–$7D·$C0–$FF에 놓이고, 이 뱅크에서는 32KB 하나가 아래 반($0000–$7FFF)과 위 반($8000–$FFFF)에 두 번 보입니다. 이 영역까지 보이게 배선한 보드여야 합니다.',
     );
   if (after.mapper === 'exhirom')
     notes.push(
@@ -145,13 +145,19 @@ export function report(board: BoardKind, original: number, size: number): Expans
     notes.push(
       'SA-1이 한 번에 보여 주는 롬은 1MB 창 4개, 곧 4MB입니다. 블록 4 이후는 $2220–$2223에 블록 번호를 써서 창을 바꿔야 보입니다. 이 레지스터는 본체 CPU와 SA-1 양쪽의 창을 함께 바꿉니다.',
     );
-  if (roundUpPow2(size) !== size && after.mapper === 'exhirom')
+  const parts = checksumParts(size);
+  const [big, small] = parts;
+  if (parts.length === 2 && big && small && after.mapper === 'exhirom')
     notes.push(
-      `${sizeLabel(size)}는 2의 거듭제곱이 아니라서 헤더에는 ${sizeLabel(after.claims)}로 올려 적고, 체크섬도 그 크기에 맞춰 뒤쪽 조각을 되풀이해 더합니다. ExHiROM은 WRAM 뱅크 몫만큼 8MB를 다 쓸 수 없으므로 파일을 8MB로 채우지는 않습니다.`,
+      `${sizeLabel(size)}는 ${sizeLabel(big.length)} + ${sizeLabel(small.length)}입니다. 헤더에는 ${sizeLabel(after.claims)}로 올려 적습니다. 실제로 나온 ExHiROM 게임도 5MB·6MB였고, fullsnes는 이런 롬의 체크섬을 "4MB + 남은 1–2MB의 미러"로 계산한다고 적습니다.`,
     );
-  else if (roundUpPow2(size) !== size)
+  else if (parts.length === 2 && big && small)
     notes.push(
-      `${sizeLabel(size)}는 2의 거듭제곱이 아니라서 헤더에는 ${sizeLabel(after.claims)}로 올려 적고, 남는 자리에는 뒤쪽 조각이 되풀이해 보입니다. 에뮬레이터에 따라 이 자리를 다르게 채우기도 하므로 파일을 ${sizeLabel(after.claims)}까지 채워 두는 편이 안전합니다.`,
+      `${sizeLabel(size)}는 2의 거듭제곱이 아니지만 큰 쪽 ${sizeLabel(big.length)} + 작은 쪽 ${sizeLabel(small.length)}로 나뉘는 정해진 배치입니다. 헤더에는 ${sizeLabel(after.claims)}로 올려 적고, 남는 자리에는 작은 쪽이 되풀이해 보입니다. 파일을 ${sizeLabel(after.claims)}까지 채워도 되지만, 그러면 체크섬을 더하는 방식이 바뀝니다.`,
+    );
+  else if (parts.length > 2)
+    notes.push(
+      `${sizeLabel(size)}는 큰 2의 거듭제곱 + 작은 2의 거듭제곱으로 나뉘지 않습니다. 에뮬레이터마다 남는 자리를 채우는 방식이 달라서, 뒤쪽 조각을 2의 거듭제곱까지 채워 두는 편이 안전합니다.`,
     );
   return { mapper: after.mapper, before, after, checksum, notes };
 }

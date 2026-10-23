@@ -21,8 +21,8 @@ const ROLE_LABEL = { size: '크기', flags: '플래그', literal: '그대로', c
   <p class="widget-help">
     압축된 바이트를 앞에서부터 읽으며 출력을 만들어 갑니다.{' '}
     <span class="live-only">
-      「한 단계 풀기」를 누를 때마다 항목 하나를 읽습니다. 예를 고르거나 영문·숫자를 직접 적어 압축한 뒤 풀어 볼 수도
-      있습니다.
+      「한 단계 풀기」를 누를 때마다 항목 하나를 읽습니다. 예를 고르거나 글을 직접 적어 압축한 뒤 풀어 볼 수도 있습니다.
+      영문·숫자는 한 글자에 1바이트, 한글은 한 글자에 3바이트(UTF-8)로 셉니다.
     </span>
   </p>
 
@@ -328,7 +328,7 @@ const ROLE_LABEL = { size: '크기', flags: '플래그', literal: '그대로', c
         load(
           packed,
           false,
-          `적은 글 ${raw.length}바이트가 ${packed.length}바이트(크기 2바이트 포함)가 되었습니다. 한글은 글자마다 3바이트(UTF-8)로 셉니다.`,
+          `적은 글 ${raw.length}바이트가 ${packed.length}바이트(크기 2바이트 포함)가 되었습니다. 한글은 한 글자에 3바이트(UTF-8)로 셉니다.`,
         );
       } catch (e) {
         setError(e instanceof LzssError ? e.message : String(e));

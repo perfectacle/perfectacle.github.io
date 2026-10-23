@@ -391,7 +391,7 @@ test('Huffman widget merges step by step, then encodes and decodes bit by bit', 
   await expect(widget.locator('[data-live]')).toContainText('무게 3');
   await page.keyboard.press('Enter');
   await page.keyboard.press('Enter');
-  await expect(widget.locator('[data-merge-msg]')).toContainText('나무가 완성됐습니다');
+  await expect(widget.locator('[data-merge-msg]')).toContainText('트리가 완성됐습니다');
   await expect(merge).toBeDisabled();
   await expect(widget.locator('[data-table] tbody code')).toHaveText(['110', '0', '111', '10']);
   await expect(widget.locator('[data-bits]')).toHaveAttribute('aria-label', '비트열 11001111001111000');

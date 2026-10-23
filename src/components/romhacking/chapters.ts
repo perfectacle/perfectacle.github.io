@@ -194,7 +194,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     platform: 'common',
     title: '압축 ② 허프만',
     summary:
-      '자주 나오는 글자에 짧은 비트를 주는 압축입니다. 나무를 만들어 부호를 얻고, 제절초 일본판 대본의 비트열을 한 비트씩 읽어 봅니다.',
+      '자주 나오는 글자에 짧은 비트를 주는 압축입니다. 트리를 만들어 부호를 얻고, 제절초 일본판 대본의 비트열을 한 비트씩 읽어 봅니다.',
     ready: true,
     notes: [note(OTOGIRISOU_PATCH, 'making-script', '제절초: 대사가 들어 있는 방식')],
     tools: [],
