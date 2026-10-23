@@ -298,7 +298,10 @@ details[open]:not(.section-nav-menu) > summary::after {
 .page-footer {
   display: grid;
   gap: 6px;
-  padding-block: 48px 40px;
+  margin-top: 48px;
+  border-top: 2px solid rgb(255 255 255 / 16%);
+  padding-block: 24px;
+  background: rgb(10 12 18 / 82%);
   color: var(--muted);
   font-size: 0.875rem;
 }
@@ -829,10 +832,6 @@ h3.pixel {
   box-shadow: 0 0 0 3px #000;
 }
 
-.back-to-top {
-  padding: 24px 0 0 30px;
-}
-
 /* Catalogue */
 
 .catalogue {
@@ -1011,13 +1010,6 @@ h3.pixel {
   padding: 8px 16px 8px 38px;
   border-radius: 8px;
   background: var(--panel);
-}
-
-/* Like the copyright line under the title screen. */
-[data-theme='smrpg'] .page-footer {
-  justify-items: center;
-  font-size: 0.875rem;
-  text-align: center;
 }
 
 .pad-buttons {

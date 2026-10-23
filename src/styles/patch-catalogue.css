@@ -40,42 +40,75 @@
   padding-block: clamp(40px, 7vw, 72px) 16px;
 }
 
+/* The heading is cut from the same plastic as the cartridges below: shoulder ridges and a printed label. */
 .console-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 24px;
-  border: 4px solid #ece8dc;
-  background: #c6c3c6;
+  padding: 20px 46px 24px;
+  border-radius: 30px 30px 8px 8px;
+  background:
+    repeating-linear-gradient(180deg, #86868a 0 4px, #d7d7d9 4px 5px, transparent 5px 12px) left 14px top 34px / 18px
+      58px no-repeat,
+    repeating-linear-gradient(180deg, #86868a 0 4px, #d7d7d9 4px 5px, transparent 5px 12px) right 14px top 34px / 18px
+      58px no-repeat,
+    linear-gradient(180deg, #d3d3d6, #b9b9bc 45%, #a6a6aa);
   box-shadow:
-    0 4px #797580,
-    4px 8px #13251c,
-    inset 0 -5px #a8a4b0;
+    0 0 0 2px #77777b,
+    inset 0 4px #e7e7ea,
+    inset 0 -4px #96969a;
+  filter: drop-shadow(0 10px 8px rgb(5 12 9 / 55%));
+}
+
+.console-label {
+  display: grid;
+  flex: 1;
+  grid-template-columns: auto 1fr;
+  column-gap: 20px;
+  align-items: center;
+  padding: 14px 20px;
+  border-radius: 8px;
+  background: linear-gradient(115deg, #fbf8f0, #efeadd);
+  box-shadow:
+    0 0 0 4px #9a9a9e,
+    inset 0 0 0 1px rgb(0 0 0 / 8%);
+}
+
+/* The four-dot block printed on every Super Famicom label. */
+.console-label::before {
+  content: '';
+  grid-row: 1 / 3;
+  width: 58px;
+  height: 58px;
+  border-radius: 4px;
+  background:
+    radial-gradient(circle at 34% 40%, #4b9dec 0 14%, transparent 15%),
+    radial-gradient(circle at 66% 34%, #ed5e68 0 14%, transparent 15%),
+    radial-gradient(circle at 30% 66%, #48c493 0 14%, transparent 15%),
+    radial-gradient(circle at 64% 62%, #f2cc58 0 14%, transparent 15%), #1b1a1f;
 }
 
 .console-back {
-  display: inline-block;
-  margin-bottom: 4px;
-  color: #494352;
+  justify-self: start;
+  color: #4b4651;
   font-size: 0.875rem;
   text-decoration: none;
 }
 
 .console-back:hover,
 .console-back:focus-visible {
-  color: #2d2636;
+  color: #1f1c24;
   text-decoration: underline;
 }
 
 .console-heading h1 {
-  color: #3c334c;
+  color: #1f1c24;
   font-family: var(--pixel);
   font-synthesis: none;
   font-size: 24px;
   font-weight: 700;
-  line-height: 1.5;
-  text-shadow: 2px 2px #f3efe4;
+  line-height: 1.2;
 }
 
 .sfc-controller {
@@ -83,7 +116,6 @@
   width: 192px;
   height: 96px;
   flex: none;
-  filter: drop-shadow(4px 6px 0 #88808f);
 }
 
 .game-catalogue {
@@ -244,12 +276,26 @@
     gap: 28px;
   }
   .console-heading {
-    gap: 12px;
-    padding: 18px 12px;
+    padding: 14px 30px 18px;
+    background-position:
+      left 9px top 24px,
+      right 9px top 24px,
+      0 0;
+    background-size:
+      12px 44px,
+      12px 44px,
+      auto;
+  }
+  .console-label {
+    column-gap: 12px;
+    padding: 10px 12px;
+  }
+  .console-label::before {
+    width: 40px;
+    height: 40px;
   }
   .sfc-controller {
-    width: 104px;
-    height: 52px;
+    display: none;
   }
 }
 

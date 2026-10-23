@@ -412,9 +412,25 @@ for (const width of [390, 1280]) {
   });
 }
 
+for (const [width, visible] of [
+  [390, false],
+  [1280, true],
+] as const) {
+  test(`catalogue heading ${visible ? 'shows' : 'hides'} the controller at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(CATALOGUE);
+    const heading = page.locator('.console-heading');
+    await expect(heading.getByRole('heading', { level: 1, name: '슈퍼 패미컴' })).toBeVisible();
+    await expect(heading.getByRole('link', { name: '기종 고르기' })).toHaveAttribute('href', HUB);
+    const controller = heading.locator('svg.sfc-controller');
+    if (visible) await expect(controller).toBeVisible();
+    else await expect(controller).toBeHidden();
+  });
+}
+
 test('catalogue characters stay on the original forest ground through scrolling and resizing', async ({ page }) => {
   await page.goto(CATALOGUE);
-  await expect(page.locator('svg.sfc-controller[aria-hidden="true"]')).toBeVisible();
+  await expect(page.locator('svg.sfc-controller[aria-hidden="true"]')).toHaveCount(1);
   await expect(page.locator('.world-rail[aria-hidden="true"]')).toHaveCount(2);
   await expect(page.locator('.world-sprite')).toHaveCount(3);
   const background = await page.locator('body').evaluate(async element => {
