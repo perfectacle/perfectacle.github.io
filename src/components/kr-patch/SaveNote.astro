@@ -1,0 +1,24 @@
+<div class="save-note">
+  <p>
+    <strong>세이브</strong>
+    게임 안에서 저장한 세이브 파일(.srm·.sav)은 이전 한글판에서 저장했든 일본판에서 저장했든, 이름을 새 롬파일과 같게
+    맞추면 그대로 이어서 할 수 있습니다. 일본판에서 지은 캐릭터 이름은 다른 글자로 보일 수 있지만 진행에는 지장이
+    없습니다. 에뮬레이터의 상태 저장(스테이트)은 롬이 바뀌면 불러오지 못할 수 있으니, 바꾸기 전에 게임 안에서 저장해
+    두세요.
+  </p>
+  <slot />
+</div>
+
+<style>
+  .save-note {
+    display: grid;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  strong {
+    margin-right: 0.4em;
+    color: var(--ink);
+  }
+</style>

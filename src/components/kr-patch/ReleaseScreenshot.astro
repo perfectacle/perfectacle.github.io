@@ -51,8 +51,13 @@ const columns = Math.max(...lines.map(line => line.length));
     gap: 12px;
     min-width: 0;
     width: 100%;
-    max-width: calc(var(--release-columns) * 512px + (var(--release-columns) - 1) * 16px);
+    max-width: calc(var(--release-columns) * 512px + (var(--release-columns) - 1) * 16px + 26px);
     margin: 0;
+    /* A card per figure, so a caption visibly belongs to the screens above it and not to the next figure. */
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, var(--muted) 35%, transparent);
+    border-radius: 6px;
+    background: rgb(0 0 0 / 22%);
   }
 
   .release-panels {

@@ -251,6 +251,33 @@ summary.pointer:focus-visible::before {
   opacity: 1;
 }
 
+/* Every fold on these pages shows the same arrow after its label, turned down while open. The browser's own marker
+   disappears on summary.pointer (inline-block), so all folds draw this one instead. */
+details:not(.section-nav-menu) > summary {
+  list-style: none;
+}
+
+details:not(.section-nav-menu) > summary::-webkit-details-marker {
+  display: none;
+}
+
+details:not(.section-nav-menu) > summary::after {
+  content: '▸';
+  display: inline-block;
+  margin-left: 0.4em;
+  transition: transform 0.15s;
+}
+
+details[open]:not(.section-nav-menu) > summary::after {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  details:not(.section-nav-menu) > summary::after {
+    transition: none;
+  }
+}
+
 /* Header and footer */
 
 .masthead {
@@ -559,8 +586,12 @@ h1.pixel {
 
 .manual summary {
   margin-left: 30px;
-  color: var(--link);
+  color: var(--ink);
   cursor: pointer;
+}
+
+.manual-note {
+  color: var(--muted);
 }
 
 .manual-body {
@@ -688,7 +719,7 @@ h3.pixel {
 
 .more summary {
   margin: 0 0 20px 30px;
-  color: var(--link);
+  color: var(--ink);
   cursor: pointer;
 }
 

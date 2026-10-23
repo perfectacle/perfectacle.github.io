@@ -5,6 +5,7 @@ import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot
 import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
 import ReleasePairs from '../../../../components/kr-patch/ReleasePairs.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
+import SaveNote from '../../../../components/kr-patch/SaveNote.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import BattleSystem from '../../../../components/kakusei/BattleSystem.astro';
 import Endings from '../../../../components/kakusei/Endings.astro';
@@ -136,9 +137,8 @@ const castGroups = [
         {patch.title} 한글판
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem} />
-      <ManualPatch patch={patch}>
-        <p>세이브 구조는 바꾸지 않아 v1.2·v1.1 세이브 파일을 그대로 이어서 쓸 수 있습니다.</p>
-      </ManualPatch>
+      <SaveNote />
+      <ManualPatch patch={patch} />
     </div>
     <figure class="hero-shot screen">
       <ZoomImage
@@ -296,7 +296,7 @@ const castGroups = [
               v1.2 쪽은 같은 암호를 메모리에 직접 써 넣고 찍었습니다.
             </li>
             <li>새 게임의 이름 입력 화면도 암호 화면과 같은 글자 판을 써서 글자 배치가 바뀌었습니다.</li>
-            <li>v1.2·v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+            <li>이전 버전 세이브를 그대로 이어서 할 수 있습니다.</li>
           </ul>
           <p class="section-note">아래는 같은 장면을 같은 입력으로 찍어 v1.2와 v1.3을 나란히 놓은 것입니다.</p>
         </ReleaseItem>
@@ -324,7 +324,7 @@ const castGroups = [
             <li>타이틀 화면을 한국어로 옮겼습니다.</li>
             <li>폰트에 없던 글자 11자(깨·롭 등)를 추가했습니다.</li>
             <li>베지터·부르마의 우주선 장면에서 진행이 막히던 문제를 수정했습니다.</li>
-            <li>v1.1 세이브 파일을 그대로 사용할 수 있습니다.</li>
+            <li>이전 버전 세이브를 그대로 이어서 할 수 있습니다.</li>
           </ul>
           <p class="section-note">아래는 같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓은 것입니다.</p>
         </ReleaseItem>

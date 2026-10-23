@@ -948,3 +948,24 @@ for (const width of [1280, 1920]) {
     }
   });
 }
+
+for (const patch of KR_PATCHES) {
+  test(`${patch.title} keeps the manual patch and save notes plain`, async ({ page }) => {
+    await page.goto(`${patch.path}/`);
+    const manual = page.locator('.manual');
+    await manual.locator('summary').click();
+    await expect(manual.locator('a[download]')).toHaveCount(1);
+    await expect(manual.locator('a[download]')).toHaveAttribute('href', /\.ips$/);
+    expect(
+      await manual.locator('.downloads a').evaluateAll(links => links.map(a => (a as HTMLAnchorElement).host)),
+    ).toEqual(['github.com', 'fusoya.eludevisibility.org', 'www.marcrobledo.com']);
+    // Most players do not know what a copier header is, so the hero never asks them about it.
+    await expect(page.locator('.hero')).not.toContainText('헤더');
+    await expect(page.locator('.save-note')).toContainText('.srm');
+    await expect(page.locator('.save-note')).toContainText('상태 저장');
+    await expect(page.locator('.save-note')).toContainText('일본판에서 저장했든');
+    for (const summary of await page.locator('details:not(.section-nav-menu) > summary').all()) {
+      expect(await summary.evaluate(node => getComputedStyle(node, '::after').content)).toBe('"▸"');
+    }
+  });
+}

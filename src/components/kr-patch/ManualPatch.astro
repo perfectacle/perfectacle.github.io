@@ -8,48 +8,38 @@ interface Props {
 
 const { patch } = Astro.props;
 const { spec } = patch;
-const { ips, headeredIps } = downloads(patch);
+const { ips } = downloads(patch);
 const korean = patchedSize(spec);
+const tools = [
+  { name: 'Floating IPS', href: 'https://github.com/Alcaro/Flips', note: 'Windows·Linux' },
+  { name: 'Lunar IPS', href: 'https://fusoya.eludevisibility.org/lips/', note: 'Windows' },
+  { name: 'ROM Patcher JS', href: 'https://www.marcrobledo.com/RomPatcher.js/', note: '웹 브라우저, 폰에서도 됨' },
+];
 ---
 
 <details class="manual">
-  <summary class="pointer">직접 패치하려면</summary>
+  <summary class="pointer">패치 도구로 직접 하기</summary>
   <div class="manual-body">
-    {headeredIps ? (
-      <>
-        <p>
-          Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 손대지 않은 일본판 원본에 적용하세요. 파일 크기에 맞는 IPS를
-          받으세요.
-          {korean !== spec.size && ` 패치하면 파일이 ${megabytes(spec, korean)}로 늘어납니다.`}
-        </p>
-        <ul class="downloads">
-          <li>
-            <a href={ips} download>
-              헤더 없는 파일용 IPS
-            </a>
-            <span>
-              ({megabytes(spec)}, {formatBytes(spec.size)})
-            </span>
-          </li>
-          <li>
-            <a href={headeredIps} download>
-              헤더 있는 파일용 IPS
-            </a>
-            <span>
-              ({megabytes(spec)}+512바이트, {formatBytes(spec.size + 512)})
-            </span>
-          </li>
-        </ul>
-      </>
-    ) : (
-      <p>
-        <a href={ips} download>
-          IPS 파일 받기
-        </a>
-        를 누른 뒤 Floating IPS·Lunar IPS·ROM Patcher JS 같은 도구로 헤더 없는 일본판 원본에 적용하세요. 헤더가 있는
-        파일({megabytes(spec)}+512바이트)은 이 페이지의 패치 상자를 쓰면 알아서 처리합니다.
-      </p>
-    )}
-    <slot />
+    <p>
+      <a href={ips} download>
+        IPS 파일
+      </a>
+      을 받아 아래 패치 도구로 일본판 원본 롬파일({formatBytes(spec.size)})에 적용하세요.
+      {korean !== spec.size && ` 패치하면 파일이 ${megabytes(spec, korean)}로 늘어납니다.`}
+    </p>
+    <ul class="downloads">
+      {tools.map(tool => (
+        <li>
+          <a href={tool.href} rel="noopener">
+            {tool.name}
+          </a>
+          <span>({tool.note})</span>
+        </li>
+      ))}
+    </ul>
+    <p class="manual-note">
+      롬파일 크기가 {formatBytes(spec.size)}가 아니면 이 IPS로는 제대로 패치되지 않습니다. 그럴 때는 위의 패치 상자에
+      파일을 넣으면 알아서 맞춰 패치합니다.
+    </p>
   </div>
 </details>

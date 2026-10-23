@@ -10,10 +10,8 @@ export interface KrPatch {
   version: string;
   /** Release date of `version` (YYYY-MM-DD), shown on the catalogue card. */
   released: string;
-  /** Download names: `${stem}.ips`, `${stem}_Headered.ips`, and the saved ROM. */
+  /** Download names: `${stem}.ips` and the saved ROM. */
   stem: string;
-  /** Whether a separate IPS for copier-headered files is published. */
-  headeredIps: boolean;
   spec: RomSpec;
   /** Page look in patch-book.css; each theme ships its own font subset under `fonts/`. */
   theme: 'smrpg' | 'gokuden' | 'kakusei' | 'otogirisou';
@@ -41,7 +39,6 @@ export const SMRPG_PATCH: KrPatch = {
   version: '1.2',
   released: '2026-10-23',
   stem: 'Super_Mario_RPG_K_v1_2',
-  headeredIps: false,
   spec: SMRPG,
   theme: 'smrpg',
   color: '#2b2d31',
@@ -60,7 +57,6 @@ export const TOTSUGEKI_PATCH: KrPatch = {
   version: '1.2',
   released: '2026-10-23',
   stem: 'Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_2',
-  headeredIps: true,
   spec: GOKUDEN_TOTSUGEKI,
   theme: 'gokuden',
   color: '#0b1a4a',
@@ -80,7 +76,6 @@ export const KAKUSEI_PATCH: KrPatch = {
   version: '1.3',
   released: '2026-10-22',
   stem: 'Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_3',
-  headeredIps: true,
   spec: GOKUDEN_KAKUSEI,
   theme: 'kakusei',
   color: '#101829',
@@ -100,7 +95,6 @@ export const OTOGIRISOU_PATCH: KrPatch = {
   version: '1.2',
   released: '2026-10-22',
   stem: 'Otogirisou_K_v1_2',
-  headeredIps: true,
   spec: OTOGIRISOU,
   theme: 'otogirisou',
   color: '#000000',
@@ -125,7 +119,6 @@ export const downloads = (patch: KrPatch) => {
   const root = `${patch.path}/downloads/${patch.stem}`;
   return {
     ips: `${root}.ips`,
-    headeredIps: patch.headeredIps ? `${root}_Headered.ips` : undefined,
   };
 };
 

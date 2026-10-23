@@ -5,6 +5,7 @@ import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import ComparePairs from '../../../../components/kr-patch/ComparePairs.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
+import SaveNote from '../../../../components/kr-patch/SaveNote.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import MakingOf from '../../../../components/otogirisou/MakingOf.astro';
 import SoundNovel from '../../../../components/otogirisou/SoundNovel.astro';
@@ -122,12 +123,10 @@ const chapter = (id: string) => {
         {patch.title} 한글판
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem} />
-      <ManualPatch patch={patch}>
-        <p>
-          일본판 세이브 파일(.srm)도 패치한 파일과 같은 이름으로 바꾸면 이어서 할 수 있습니다. 엔딩에서 「終」이 나온
-          뒤에는 리셋해 주세요. 원작과 같은 동작입니다.
-        </p>
-      </ManualPatch>
+      <SaveNote>
+        <p>엔딩에서 「終」이 나온 뒤에는 리셋해 주세요. 원작과 같은 동작입니다.</p>
+      </SaveNote>
+      <ManualPatch patch={patch} />
     </div>
     <SoundNovel base={base} chapters={chapters.map(c => ({ href: `#${c.id}`, label: c.label }))} />
   </section>
@@ -329,7 +328,7 @@ const chapter = (id: string) => {
         </ReleaseItem>
         <ReleaseItem>
           <ul>
-            <li>기존 세이브 파일을 그대로 사용할 수 있습니다.</li>
+            <li>이전 버전 세이브를 그대로 이어서 할 수 있습니다.</li>
           </ul>
         </ReleaseItem>
       </ReleaseDetails>
@@ -450,7 +449,7 @@ const chapter = (id: string) => {
         </ReleaseItem>
         <ReleaseItem>
           <ul>
-            <li>기존 세이브 파일의 읽던 위치를 변환해 이어서 할 수 있도록 했습니다.</li>
+            <li>v1.0 세이브는 읽던 위치를 새 대본에 맞게 옮겨, 그대로 이어서 할 수 있게 했습니다.</li>
           </ul>
         </ReleaseItem>
       </ReleaseDetails>
