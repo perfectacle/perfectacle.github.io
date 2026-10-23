@@ -1,4 +1,5 @@
 ---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import { KAKUSEI_PATCH, downloads, type KrPatch } from '../../lib/kr-patches';
 
@@ -217,13 +218,14 @@ const toolsFor = (section: string) =>
     512자를 더 넣을 수 있게 했습니다. 아래는 v1.1에서 새로 그린 213자를 롬에서 꺼낸 것입니다.
   </p>
   <figure class="paper">
-    <img
+    <ZoomImage
       src={img('new-glyphs.webp')}
       width="978"
       height="654"
       alt="v1.1에서 새로 그린 한글 213자. 남색 칸에 흰 글자와 짙은 그림자로 그려져 있다"
       loading="lazy"
       decoding="async"
+      smooth
     />
     <figcaption>v1.1 롬에서 꺼낸 새 글자 213자</figcaption>
   </figure>
@@ -314,13 +316,14 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
         개발자용 디버그 메뉴로 들어갑니다. 배포한 패치는 이 두 바이트를 바꾸지 않습니다.
       </p>
       <figure class="paper narrow">
-        <img
+        <ZoomImage
           src={img('debug-menu.webp')}
           width="512"
           height="448"
           alt="남색 화면에 날짜와 TITLE, FMAP, BATTLE, ADVENTURE, DATA, VOICE, ADVSE, BTLSE 메뉴가 있는 디버그 메뉴"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -409,13 +412,14 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
         폭으로 재 보니 이렇게 넘치는 줄이 13줄 있었습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('line-width.svg')}
           width="860"
           height="410"
           alt="v1.0 대사 0x1022의 셋째 줄은 글자 폭을 더하면 131px이라 128px 창을 넘어 느낌표만 넷째 줄로 밀린다. v1.1은 같은 줄이 118px이다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -432,13 +436,14 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
         창으로 바꾸면 128px까지 들어가고 129px에서 넘어갔습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('narration-wrap.webp')}
           width="448"
           height="392"
           alt="나레이션 창의 시험 화면. 첫 줄 176px은 한 줄에 다 나오고, 둘째 줄 177px은 마지막 느낌표 하나가 셋째 줄로 넘어간다"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>
           위: 첫 줄 176px, 둘째 줄은 「！」 10개(168px)까지. 아래: 11번째 「！」(177px)가 셋째 줄로 넘어감
@@ -501,13 +506,14 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
         전체입니다. 남색은 한글이 들어간 칸, 노란색은 한글이 아닌 칸(기호와 남은 한자)입니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('font-v1.webp')}
           width="1156"
           height="1012"
           alt="v1.0 폰트의 16×16 칸 888개. 대부분 한글로 차 있고 끝부분 몇 줄만 기호와 한자다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -528,13 +534,14 @@ $B7:97BC → 0x37 × 0x8000 + 0x17BC = 0x1B97BC</code></pre>
         일본판에서 0xFF였던 <code>$B7:FA00</code>부터 0x78바이트입니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('font-blocks.svg')}
           width="860"
           height="430"
           alt="코드 0x100부터 0xBEF까지는 원래 폰트 세 곳을 읽고, 0xC00 이상은 후킹한 코드가 블록 표를 보고 롬의 빈 공간 8곳 중 하나를 읽는다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <pre><code>CMP #$0C00      ; 코드가 0xC00 이상이면
@@ -561,13 +568,14 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         $84:FAA0(파일 0x27AA0)에 글자가 있습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('glyph-jjot.svg')}
           width="860"
           height="420"
           alt="새 글자 블록에 그린 「쫓」을 플레인 0, 플레인 1, 합친 모양의 16×16 픽셀 격자와 줄마다의 바이트 값으로 나타낸 그림"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>
@@ -585,13 +593,14 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         채웠고, 빈 공간에 새로 쓴 것은 글자 블록 3곳과 <code>$B7:FA00</code>의 새 코드뿐입니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('rom-map.svg')}
           width="860"
           height="470"
           alt="뱅크 $80부터 $BF까지 64칸의 롬 지도. 대사 뱅크 9곳, 그 밖의 텍스트 뱅크, 폰트 $83과 $BF, 후킹한 $B7, 새 글자 블록 8곳 중 쓴 3곳과 빈 5곳을 표시했다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
 
@@ -606,13 +615,14 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         가타카나는 지웠습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('title-layers.webp')}
           width="1568"
           height="512"
           alt="일본판 타이틀 화면을 세 겹으로 나눈 그림. 오공, 파랑에서 초록으로 바뀌는 배경, 로고와 저작권 글자"
           loading="lazy"
           decoding="async"
+          smooth
         />
         <figcaption>일본판 타이틀의 세 겹</figcaption>
       </figure>
@@ -657,13 +667,14 @@ JML $B797D6     ; 원래 글자를 그리는 코드로 돌아간다</code></pre>
         이벤트 이름의 글자 코드가 있습니다. 게임은 이 값을 주소로 알고 WRAM의 그 자리를 문자열로 읽습니다.
       </p>
       <figure class="paper">
-        <img
+        <ZoomImage
           src={img('event-list.svg')}
           width="860"
           height="360"
           alt="포인터 표의 0–203번은 이벤트 이름을 가리키고, 숨은 204번은 WRAM의 쓰레기 값을 가리켜 줄이 넘친다. v1.1은 204번에 빈 문자열을 넣었다"
           loading="lazy"
           decoding="async"
+          smooth
         />
       </figure>
       <p>

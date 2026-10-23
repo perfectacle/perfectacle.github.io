@@ -68,13 +68,12 @@ for (const patch of KR_PATCHES) {
     const details = page.locator('.patch-box .file-checksums');
     const summary = details.locator('summary');
     await expect(details).not.toHaveAttribute('open');
-    await expect(summary).toContainText('일본어 원본');
-    await expect(summary).toContainText('대상 파일·해시 확인');
+    await expect(summary).toHaveText('롬파일 크기·해시 보기');
     await expect(details.getByRole('heading', { name: '일본판 원본', exact: true })).toBeHidden();
     await summary.focus();
     await page.keyboard.press('Enter');
     await expect(details).toHaveAttribute('open', '');
-    await expect(details).toContainText('패치 전 언어는 일본어, 패치 후 언어는 한국어입니다.');
+    await expect(details).toContainText('일본판 원본 롬파일에만 패치할 수 있습니다.');
     await expect(details).toContainText('헤더 없는 롬파일 기준');
     await expect(details).toContainText('512바이트 헤더');
     for (const file of [
@@ -767,3 +766,29 @@ test('Otogirisou title menu points at sections on the page', async ({ page }) =>
   expect(hashes.length).toBeGreaterThan(5);
   for (const hash of new Set(hashes)) await expect(page.locator(hash)).toHaveCount(1);
 });
+
+for (const patch of KR_PATCHES) {
+  test(`${patch.title} opens every screenshot and diagram in the preview`, async ({ page }) => {
+    await page.goto(`${patch.path}/`);
+    // Portraits are face sprites, ending tiles play videos, and the sound novel's screen turns its pages.
+    const loose = await page
+      .locator('main img:not([data-patch-preview] img):not(.portrait):not(.ending-video img):not(.novel img)')
+      .evaluateAll(images => images.map(image => image.getAttribute('src')));
+    expect(loose).toEqual([]);
+    const triggers = page.locator('[data-patch-preview]');
+    expect(await triggers.count()).toBeGreaterThan(10);
+    const preview = page.locator('#patch-image-preview');
+    const last = triggers.filter({ visible: true }).last();
+    await last.scrollIntoViewIfNeeded();
+    const thumbnail = await last.boundingBox();
+    await last.click();
+    await expect(preview).toBeVisible();
+    const enlarged = await preview.locator('.patch-picture').boundingBox();
+    const viewport = page.viewportSize();
+    if (!thumbnail || !enlarged || !viewport) throw new Error('Missing preview dimensions');
+    expect(enlarged.width).toBeGreaterThanOrEqual(Math.min(thumbnail.width, viewport.width - 50) - 1);
+    await page.keyboard.press('Escape');
+    await expect(preview).not.toBeVisible();
+    await expect(last).toBeFocused();
+  });
+}
