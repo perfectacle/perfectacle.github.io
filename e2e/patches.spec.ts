@@ -240,30 +240,10 @@ test('patch box explains why a file cannot be patched', async ({ page }) => {
   await expect(status).toContainText('다른 게임 롬파일');
 });
 
-test('comparison groups reveal the remaining scenes on demand', async ({ page }) => {
+test('the story introduces each companion in the order they join', async ({ page }) => {
   await page.goto(GAME);
-  const more = page.locator('#korean details.more').first();
-  const hidden = more.locator('img').first();
-  await expect(hidden).not.toBeVisible();
-  await more.locator('summary').click();
-  await hidden.scrollIntoViewIfNeeded();
-  await expect.poll(() => hidden.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
-});
-
-test('the story is told one dialog box at a time, paged with ▶', async ({ page }) => {
-  await page.goto(GAME);
-  const boxes = page.locator('#story .speech');
-  const count = await boxes.count();
-  expect(count).toBeGreaterThan(1);
-  await expect(boxes.nth(1)).toBeHidden();
-  for (let i = 1; i < count; i++) {
-    await boxes
-      .nth(i - 1)
-      .getByRole('button', { name: '다음 대사 보기' })
-      .click();
-    await expect(boxes.nth(i)).toBeVisible();
-  }
-  await expect(page.locator('#story .next')).toHaveCount(0);
+  await expect(page.locator('#story .companion strong')).toHaveText(['마리오', '마로', '지노', '쿠파', '피치']);
+  await expect(page.locator('#cast')).toHaveCount(0);
 });
 
 test('comparison screens stay at least 1x on a phone so the dialog is readable', async ({ page }) => {

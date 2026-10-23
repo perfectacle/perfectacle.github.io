@@ -10,7 +10,6 @@ import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import Speech from '../../../../components/kr-patch/Speech.astro';
 import MakingOf from '../../../../components/smrpg/MakingOf.astro';
 import Secrets from '../../../../components/smrpg/Secrets.astro';
-import SpeechChain from '../../../../components/smrpg/SpeechChain.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import { SMRPG_PATCH, downloads, releaseLabel, trail } from '../../../../lib/kr-patches';
 import { compareGroups } from '../../../../lib/smrpg-showcase';
@@ -54,65 +53,73 @@ const play = [
   },
 ];
 
-const cast = [
+// Told in the order the party gathers; each screen is the Korean version of that scene.
+const chapters = [
   {
-    id: 'mario',
-    name: '마리오',
-    role: '점프 · 불꽃',
-    text: '이번에도 피치 공주를 구하러 나섰다가, 스타 피스를 모으는 모험을 맡게 됩니다.',
-    // Mario never speaks in the game; he answers with gestures, which the game narrates.
-    line: '‥‥‥ (마리오는 말없이 고개를 끄덕였다)',
+    title: '하늘에서 떨어진 검',
+    shots: [
+      { src: 'patch/chancellor_kidnap_ko_1', alt: '피치 공주가 또 납치됐다며 놀라는 버섯 대신' },
+      { src: 'scenes/castle', alt: '공주의 기운을 느끼며 성 안을 걷는 마리오' },
+    ],
+    text: [
+      '이번에도 쿠파에게 잡혀간 피치 공주를 구하러 쿠파성에 쳐들어간 마리오. 쿠파와 맞붙은 순간, 하늘에서 거대한 검이 성에 내리꽂히고 마리오는 성 밖까지 튕겨 나갑니다.',
+      '쿠파성은 검의 주인 「카지오」가 이끄는 카지오 군단에게 넘어갔습니다. 검이 하늘의 스타 로드를 뚫고 들어오면서 소원을 이루어 주던 스타 피스 7개도 세계 곳곳으로 흩어졌습니다. 스타 로드를 고치지 않으면 누구의 소원도 이루어지지 않습니다.',
+    ],
+    member: { id: 'mario', name: '마리오', role: '점프 · 불꽃' },
   },
   {
-    id: 'mallow',
-    name: '마로',
-    role: '날씨 · 회복',
-    text: '자신을 개구리라 믿는 구름 같은 아이. 잘 울지만 날씨를 부리는 힘이 있습니다.',
-    speaker: '마로',
-    line: '저는 개굴개굴 연못에서 온 개구리 「마로」입니다.',
+    title: '자기가 개구리라 믿는 아이',
+    shots: [
+      { src: 'patch/mallow_plan_ko_1', alt: '크로코를 뒤에서 잡자고 말하는 마로' },
+      { src: 'patch/croco_hide_ko_1', alt: '막다른 길에 몰린 크로코' },
+    ],
+    text: [
+      '버섯 왕국에서 만난 마로는 도둑 크로코에게 개구리 코인을 빼앗긴 참이었습니다. 함께 크로코를 쫓아 코인을 되찾고 돌아오니, 이번에는 카지오 군단의 맥이 버섯 궁전을 차지하고 있었습니다. 맥을 물리치자 첫 번째 스타 피스가 나타납니다.',
+      '개굴개굴 연못으로 돌아간 마로는 할아버지 개구리 선인에게서 자신이 개구리가 아니라는 말을 듣습니다. 울음을 그친 마로는 진짜 부모를 찾으려고 마리오를 따라나섭니다.',
+    ],
+    member: { id: 'mallow', name: '마로', role: '날씨 · 회복' },
   },
   {
-    id: 'geno',
-    name: '지노',
-    role: '천공의 사자',
-    text: '천공에서 내려와 인형의 몸을 빌린 사자. 스타 로드를 고치려 마리오와 함께합니다.',
-    speaker: '지노',
-    line: '나는 천공의 사자! 그리고 별을 쫓는 자!!',
+    title: '인형에 깃든 별',
+    shots: [
+      { src: 'patch/geno_sky_ko_1', alt: '숲속 공터에서 천공의 사자라고 외치는 지노' },
+      { src: 'patch/geno_name_ko_1', alt: '지노라는 이름을 얻는 장면' },
+    ],
+    text: [
+      '로즈 타운 사람들은 카지오 군단의 유민파가 쏜 화살에 맞아 꼼짝도 못 하고 있었습니다. 유민파가 별을 가로채려 하자, 파란 모자를 쓴 인형이 「나는 천공의 사자!」라며 앞을 막아섭니다.',
+      '하늘에서 내려와 아이의 히어로 인형에 몸을 빌린 별의 사자는 인형의 이름을 따서 「지노」가 됩니다. 유민파를 물리쳐 두 번째 스타 피스를 되찾은 뒤, 지노는 스타 로드를 고치려고 일행에 합류합니다.',
+    ],
+    member: { id: 'geno', name: '지노', role: '천공의 사자' },
   },
   {
-    id: 'bowser',
-    name: '쿠파',
-    role: '힘 · 물리 공격',
-    text: '거대한 검에 성을 빼앗긴 라이벌. 성을 되찾으려 이번에는 같은 편이 됩니다.',
-    speaker: '쿠파',
-    line: '이 몸의 「쿠파 군단」에 너희를 넣어주마! 거절은 사양한다!',
+    title: '집을 잃은 대마왕',
+    shots: [
+      { src: 'patch/bowser_reminisce_ko_1', alt: '집도 없다며 한탄하는 쿠파' },
+      { src: 'patch/bowser_army_ko_1', alt: '마리오 일행을 쿠파 군단에 넣어 주겠다는 쿠파' },
+    ],
+    text: [
+      '두더지 마을에서 세 번째 스타 피스를 찾고 부키 타워에 다다른 일행 앞에, 부하들이 모두 떠나 버린 쿠파가 홀로 있었습니다. 「부키라는 녀석도 집이 있는데 이 몸은 아무것도 없다니‥」',
+      '성을 되찾고 싶지만 도와 달라는 말은 차마 못 하는 쿠파. 대신 마리오 일행을 「쿠파 군단」에 넣어 주겠다며, 어제의 라이벌이 같은 편이 됩니다.',
+    ],
+    member: { id: 'bowser', name: '쿠파', role: '힘 · 물리 공격' },
   },
   {
-    id: 'peach',
-    name: '피치',
-    role: '회복 · 지원',
-    text: '구해야 할 공주이자, 합류한 뒤에는 회복으로 일행을 지탱하는 동료입니다.',
-    speaker: '피치',
-    line: '마리오 씨~~! 힘내세요~~!!',
-  },
-];
-
-// Told by the Chancellor in his own voice from the patch; the last box is game-style narration.
-const story = [
-  {
-    speaker: '버섯 대신',
-    text: '마리오 씨, 큰일입니다! 공주님을 구하러 쿠파성에 가셨을 때, 하늘에서 거대한 검이 내리꽂혔지요. 그 바람에 마리오 씨는 성 밖으로 튕겨 나가고 말았습니다.',
+    title: '원치 않는 결혼식',
+    shots: [
+      { src: 'patch/booster_itchy_ko_1', alt: '우는 신부에게 말을 거는 부키' },
+      { src: 'patch/booster_salty_ko_1', alt: '짜다고 말하는 부키' },
+    ],
+    text: [
+      '하늘에서 떨어진 피치 공주를 데려간 것은 부키 타워의 주인 부키였습니다. 메리마리 마을 성당에서 억지 결혼식이 열리려는 찰나, 마리오 일행이 뛰어듭니다. 신부가 왜 우는지도 모르는 부키는 눈물을 맛보고 「짜다.」 한마디뿐입니다.',
+      '무사히 버섯 궁전으로 돌아간 공주는 성에서 기다리지 않고, 스타 피스를 찾는 모험에 직접 따라나섭니다.',
+    ],
+    member: { id: 'peach', name: '피치', role: '회복 · 지원' },
   },
   {
-    speaker: '버섯 대신',
-    text: '검과 함께 나타난 카지오 군단이 소원을 이루어 주는 스타 로드를 부숴 버렸습니다. 흩어진 스타 피스 7개는 세계 곳곳으로 떨어졌다고 합니다.',
-  },
-  {
-    speaker: '버섯 대신',
-    text: '스타 피스를 모아 스타 로드를 고치지 않으면 누구의 소원도 이루어지지 않습니다. 마리오 씨, 부탁이네! 서둘러주게!!',
-  },
-  {
-    text: '1996년, 스퀘어가 개발하고 닌텐도가 발매한 슈퍼 패미컴 RPG. 마리오다운 점프와 장난기 위에, 동료를 모으고 성장하는 RPG의 재미를 얹었다.',
+    title: '남은 스타 피스를 찾아서',
+    text: [
+      '다섯이 모인 뒤에도 여정은 이어집니다. 구름 위 나라에서는 마로의 출생에 얽힌 비밀이, 뜨거운 화산 속에서는 여섯 번째 스타 피스가 기다립니다. 그리고 마지막 스타 피스는 모든 일이 시작된 쿠파성, 그 거대한 검 너머에 있습니다.',
+    ],
   },
 ];
 ---
@@ -125,7 +132,6 @@ const story = [
     { id: 'korean', label: '한국어로 바뀐 것' },
     { id: 'story', label: '이야기' },
     { id: 'play', label: '진행 방식' },
-    { id: 'cast', label: '주인공과 동료' },
     { id: 'secrets', label: '놓치기 쉬운 즐길 거리' },
     { id: 'patch-notes', label: '패치 노트' },
     { id: 'making', label: '롬 분석 노트' },
@@ -176,7 +182,6 @@ const story = [
       <li>모든 대사와 이름</li>
       <li>메뉴·상점·아이템 설명</li>
       <li>전투 명령·적 이름·필살기 설명</li>
-      <li>동료마다 다른 원작의 말투</li>
     </ul>
     <Speech speaker={GUIDE}>같은 장면을 같은 입력으로 찍어서 일본판과 한글판을 나란히 놓았어요.</Speech>
     {compareGroups.map(group => (
@@ -194,31 +199,55 @@ const story = [
     <h2 id="story-title" class="pixel">
       이야기
     </h2>
-    <div class="story">
-      <SpeechChain lines={story} />
-      <div class="story-shots">
-        <figure class="screen">
-          <ZoomImage
-            src={`${base}/images/patch/chancellor_kidnap_ko_1.webp`}
-            width="256"
-            height="224"
-            alt="피치 공주가 또 납치됐다며 놀라는 버섯 대신"
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
-        <figure class="screen">
-          <ZoomImage
-            src={`${base}/images/scenes/castle.webp`}
-            width="256"
-            height="224"
-            alt="공주의 기운을 느끼며 성 안을 걷는 마리오"
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
-      </div>
-    </div>
+    <p>
+      1996년, 스퀘어가 개발하고 닌텐도가 발매한 슈퍼 패미컴 RPG입니다. 흩어진 스타 피스 7개를 찾아 떠나는 길에 동료가 한
+      명씩 늘어납니다.
+    </p>
+    <ol class="chapters">
+      {chapters.map(chapter => (
+        <li class="chapter frame">
+          {chapter.shots && (
+            <div class="chapter-shots">
+              {chapter.shots.map(shot => (
+                <figure class="screen">
+                  <ZoomImage
+                    src={`${base}/images/${shot.src}.webp`}
+                    width="256"
+                    height="224"
+                    alt={shot.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+              ))}
+            </div>
+          )}
+          <div class="chapter-copy">
+            <h3 class="pixel">{chapter.title}</h3>
+            {chapter.text.map(paragraph => (
+              <p>{paragraph}</p>
+            ))}
+            {chapter.member && (
+              <p class="companion">
+                <img
+                  class="portrait"
+                  src={`${base}/images/cast/${chapter.member.id}.webp`}
+                  width="144"
+                  height="144"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span>
+                  <strong>{chapter.member.name}</strong>
+                  <span class="label">{chapter.member.role}</span>
+                </span>
+              </p>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
   </section>
 
   <section id="play" class="section page-width" aria-labelledby="play-title">
@@ -253,33 +282,6 @@ const story = [
         </article>
       ))}
     </div>
-  </section>
-
-  <section id="cast" class="section page-width" aria-labelledby="cast-title">
-    <h2 id="cast-title" class="pixel">
-      주인공과 동료
-    </h2>
-    <ul class="cast-list">
-      {cast.map(member => (
-        <li class="member frame">
-          <img
-            class="portrait"
-            src={`${base}/images/cast/${member.id}.webp`}
-            width="144"
-            height="144"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
-          <div>
-            <h3 class="pixel">{member.name}</h3>
-            <p class="label">{member.role}</p>
-            <p>{member.text}</p>
-            <Speech speaker={member.speaker}>{member.line}</Speech>
-          </div>
-        </li>
-      ))}
-    </ul>
   </section>
 
   <Secrets />

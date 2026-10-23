@@ -856,41 +856,62 @@ h3.pixel {
   font-weight: 700;
 }
 
-.speech-chain {
+.chapters {
+  display: grid;
+  gap: 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.chapter {
+  display: grid;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Two screens sit side by side only once both fit at 1x; below that they stack. */
+@media (min-width: 1100px) {
+  .chapter:has(.chapter-shots) {
+    grid-template-columns: 524px minmax(0, 1fr);
+  }
+}
+
+.chapter-shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(256px, 1fr));
+  gap: 12px;
+}
+
+.chapter-copy {
   display: grid;
   gap: 12px;
-  align-content: start;
 }
 
-.speech[hidden] {
-  display: none;
+.chapter-copy h3 {
+  margin: 0;
+  font-size: 24px;
 }
 
-/* The game's ▶ prompt that waits for the A button. */
-.speech .next {
+.chapter-copy p {
+  margin: 0;
+  max-inline-size: 42rem;
+  line-height: 1.8;
+}
+
+.companion {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.companion .portrait {
+  width: 72px;
+  height: 72px;
+}
+
+.companion strong {
   display: block;
-  min-width: 32px;
-  min-height: 24px;
-  margin: 2px 0 0 auto;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--dialog-ink);
-  font: inherit;
-  cursor: pointer;
-  animation: next-bob 0.8s steps(2, jump-none) infinite alternate;
-}
-
-@keyframes next-bob {
-  to {
-    transform: translateX(3px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .speech .next {
-    animation: none;
-  }
+  font-size: 1.125rem;
 }
 
 /* Each item gets its own Star Piece, spinning with the game's six frames at 6/60 s each. */
@@ -978,25 +999,6 @@ h3.pixel {
 
 [data-theme='smrpg'] .play-list {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
-}
-
-[data-theme='smrpg'] .cast-list {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
-}
-
-[data-theme='smrpg'] .member {
-  flex-wrap: wrap;
-}
-
-[data-theme='smrpg'] .member > div {
-  display: grid;
-  flex: 1 1 200px;
-  gap: 8px;
-}
-
-[data-theme='smrpg'] .portrait {
-  width: 144px;
-  height: 144px;
 }
 
 /* Section titles are window name tabs, not web headings. */
@@ -1358,7 +1360,7 @@ h3.pixel {
 
 .paper {
   padding: 8px;
-  background: #fafafa;
+  background: var(--panel);
   border-radius: 8px;
   box-shadow: 0 4px 0 rgb(0 0 0 / 35%);
 }
@@ -1375,7 +1377,7 @@ h3.pixel {
 
 .paper figcaption {
   padding-top: 6px;
-  color: #333;
+  color: var(--muted);
   font-size: 0.875rem;
   text-align: center;
 }
