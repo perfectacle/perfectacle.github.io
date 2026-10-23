@@ -1173,10 +1173,11 @@ for (const game of PATCH_GUIDES) {
       window.scrollTo(0, window.scrollY + element.getBoundingClientRect().top + 300);
     });
     await expect(current).toHaveAttribute('href', '#story');
-    const control = isMobile ? nav.locator('summary') : nav;
+    // On wide screens the nav is a column down the page; the menu box inside it is what stays on screen.
+    const control = isMobile ? nav.locator('summary') : nav.locator('details');
     await expect(control).toBeInViewport({ ratio: 1 });
     if (!isMobile) {
-      const menuBox = await nav.boundingBox();
+      const menuBox = await control.boundingBox();
       const sectionBox = await page.locator('#story').boundingBox();
       expect(menuBox).not.toBeNull();
       expect(sectionBox).not.toBeNull();
