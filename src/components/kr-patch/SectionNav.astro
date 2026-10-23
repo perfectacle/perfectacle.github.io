@@ -63,7 +63,10 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
         update();
       });
     };
+    const box = document.getElementById('patch');
     const measure = () => {
+      // The wide menu starts level with the patch box, which sits below a title whose height depends on the page.
+      if (box) nav.style.setProperty('--nav-start', `${box.getBoundingClientRect().top + window.scrollY}px`);
       const target = targets[0]?.target;
       anchorMargin = target ? parseFloat(getComputedStyle(target).scrollMarginTop) || 0 : 0;
       schedule();
@@ -177,20 +180,31 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
 
   @media (min-width: 1500px) {
     .has-section-nav {
+      position: relative;
       padding-right: 240px;
     }
 
+    /* A column down the right edge from the patch box; the menu inside sticks to the top once scrolled past. */
     .patch-section-nav {
-      position: fixed;
-      top: 80px;
+      position: absolute;
+      top: var(--nav-start, 80px);
       right: 16px;
+      bottom: 0;
       width: 208px;
       padding: 0;
     }
 
     .section-nav-menu.frame {
-      max-height: calc(100dvh - 96px);
+      position: sticky;
+      top: 24px;
+      max-height: calc(100dvh - 48px);
       padding: 12px 8px;
+    }
+
+    /* The footer runs under the menu column too, so its centered text sits in the middle of the window. */
+    .has-section-nav .page-footer {
+      width: auto;
+      margin-inline: 0 -240px;
     }
 
     .patch-section-nav[data-enhanced] .section-nav-menu summary {
