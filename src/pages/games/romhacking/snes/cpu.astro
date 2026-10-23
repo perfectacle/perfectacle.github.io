@@ -1,0 +1,354 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import Figure from '../../../../components/romhacking/Figure.astro';
+import CpuStep from '../../../../components/romhacking/CpuStep.astro';
+import { SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+
+const sections = [
+  { id: 'worker', label: 'CPU는 한 줄씩 읽는 일꾼' },
+  { id: 'registers', label: '레지스터: 일꾼의 손' },
+  { id: 'width', label: '8비트와 16비트를 오가는 CPU' },
+  { id: 'in-patch', label: '실제 패치에서' },
+  { id: 'try', label: '직접 해 보기' },
+];
+const references = [
+  {
+    href: 'https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf',
+    label: 'WDC, W65C816S 데이터시트',
+    note: '레지스터 구성, 에뮬레이션·네이티브 모드, M·X 플래그, 리셋 때의 초기값',
+  },
+  {
+    href: 'https://problemkaputt.de/fullsnes.htm#cpuregistersandflags',
+    label: 'fullsnes, CPU Registers and Flags',
+    note: 'P 레지스터 비트 배치',
+  },
+  {
+    href: 'https://problemkaputt.de/fullsnes.htm#snesmemorymap',
+    label: 'fullsnes, SNES Memory Map',
+    note: '영역별 CPU 속도 3.58·2.68·1.78MHz',
+  },
+  {
+    href: 'https://problemkaputt.de/fullsnes.htm#snescartsa1programmable65c816cpuakasuperaccelerator35games',
+    label: 'fullsnes, SNES Cart SA-1',
+    note: 'SA-1이 10.74MHz 65C816이라는 것',
+  },
+  {
+    href: 'https://snes.nesdev.org/wiki/65C816',
+    label: 'SNESdev Wiki, 65C816',
+    note: '명령과 주소 지정 방식 요약',
+  },
+  {
+    href: 'https://en.wikipedia.org/wiki/WDC_65C816',
+    label: 'Wikipedia, WDC 65C816',
+    note: '1985년 출시, Apple IIGS·SNES(Ricoh 5A22) 채용',
+  },
+];
+const regs = [
+  {
+    name: 'A',
+    bits: 16,
+    easy: true,
+    role: '계산하는 손. 읽고, 더하고, 비교하고, 적는 일 대부분이 A를 거칩니다.',
+    split: true,
+  },
+  { name: 'X', bits: 16, easy: true, role: '세는 손. "표의 몇 번째"처럼 위치를 셀 때 씁니다(인덱스).' },
+  { name: 'Y', bits: 16, easy: true, role: 'X와 같은 일을 하는 두 번째 세는 손.' },
+  { name: 'S', bits: 16, role: '스택 포인터. 잠깐 맡겨 둘 값을 쌓는 더미의 꼭대기 위치.' },
+  { name: 'PC', bits: 16, easy: true, role: '프로그램 카운터. 지금 읽을 줄을 가리키는 책갈피.' },
+  { name: 'P', bits: 8, easy: true, role: '상태 플래그 8개. "방금 결과가 0이었나" 같은 표시와 8/16비트 설정.' },
+  { name: 'DB', bits: 8, role: '데이터 뱅크. 데이터를 읽고 쓸 때 기본으로 쓰는 뱅크 번호.' },
+  { name: 'PB', bits: 8, role: '프로그램 뱅크. 지금 실행 중인 코드의 뱅크 번호.' },
+  { name: 'D', bits: 16, role: '다이렉트 페이지. 짧은 주소($10 같은)의 기준 위치.' },
+];
+---
+
+<GuideChapter platform="snes" slug="cpu" sections={sections} references={references}>
+  <h2 id="worker">
+    CPU: 명령을 한 줄씩 실행하는 장치 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    롬 안의 프로그램은 "A에 5를 넣어라", "그 값을 어디에 적어라" 같은 아주 작은 명령이 줄지어 있는 것입니다.{' '}
+    <strong>CPU</strong>는 이 명령을 한 줄 읽고, 무슨 뜻인지 알아내고, 실행한 다음, 다음 줄로 넘어가는 일을 1초에
+    수십만에서 백만 번 가까이 되풀이하는 일꾼입니다.
+  </p>
+  <p>
+    지금 몇 번째 줄을 읽는지는 <strong>PC</strong>(프로그램 카운터)라는 책갈피가 기억합니다. 보통은 한 줄을 실행하면
+    책갈피가 다음 줄로 넘어가지만, "어디로 가라"는 명령은 책갈피를 다른 곳에 꽂습니다. 반복과 갈림길은 모두 이렇게
+    만들어집니다.
+  </p>
+  <Figure caption="CPU가 쉬지 않고 도는 고리. PC가 다음에 읽을 위치를 가리킵니다." max={520}>
+    <svg viewBox="0 0 360 230" role="img" aria-labelledby="cyc-t cyc-d">
+      <title id="cyc-t">읽기, 해석, 실행의 반복</title>
+      <desc id="cyc-d">
+        읽기, 해석, 실행 세 단계가 고리처럼 이어지고, 실행이 끝나면 PC가 다음 줄을 가리킨 채 다시 읽기로 돌아간다.
+      </desc>
+      <rect class="dg-cool" x="120" y="8" width="120" height="48" rx="24"></rect>
+      <text class="dg-text dg-bold" x="180" y="30" text-anchor="middle">
+        1 읽기
+      </text>
+      <text class="dg-small" x="180" y="47" text-anchor="middle">
+        PC 자리의 바이트
+      </text>
+      <rect class="dg-warm" x="236" y="128" width="116" height="48" rx="24"></rect>
+      <text class="dg-text dg-bold" x="294" y="150" text-anchor="middle">
+        2 해석
+      </text>
+      <text class="dg-small" x="294" y="167" text-anchor="middle">
+        무슨 명령인가
+      </text>
+      <rect class="dg-accent" x="8" y="128" width="116" height="48" rx="24"></rect>
+      <text class="dg-text dg-bold" x="66" y="150" text-anchor="middle">
+        3 실행
+      </text>
+      <text class="dg-small" x="66" y="167" text-anchor="middle">
+        계산·읽기·적기
+      </text>
+      <path class="dg-arrow" d="M244 44 Q300 70 298 120" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M230 168 Q180 200 132 168" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M62 120 Q60 70 116 44" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="180" y="218" text-anchor="middle">
+        실행이 끝나면 PC는 다음 줄로
+      </text>
+      <text class="dg-small" x="8" y="74">
+        다음 줄
+      </text>
+    </svg>
+  </Figure>
+
+  <h2 id="registers">
+    레지스터: CPU 안의 작은 저장 칸 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    메모리는 크지만 CPU에서 멀리 있습니다. 그래서 CPU 안에는 지금 다루는 값을 잠깐 쥐고 있는 아주 작은 칸이 몇 개
+    있습니다. 이것이 <strong>레지스터</strong>입니다. 일꾼의 손이나 작업대 위 메모지라고 생각하면 됩니다. 슈퍼 패미컴의
+    CPU인 <strong>65c816</strong>은 손이 이렇게 생겼습니다.
+  </p>
+  <Figure caption="65c816의 레지스터. 칸 길이가 크기(8비트·16비트)를 나타냅니다." max={600}>
+    <svg viewBox="0 0 360 330" role="img" aria-labelledby="reg-t reg-d">
+      <title id="reg-t">65c816 레지스터</title>
+      <desc id="reg-d">
+        16비트 레지스터 A, X, Y, S, PC, D와 8비트 레지스터 P, DB, PB. A는 위쪽 바이트 B와 아래쪽 바이트 A로 나뉜다. PB와
+        PC를 합치면 24비트 코드 주소가 된다.
+      </desc>
+      {regs.map((r, i) => {
+        const y = 8 + i * 36;
+        const w = r.bits === 16 ? 200 : 100;
+        const cls = r.name === 'PB' || r.name === 'DB' ? 'dg-warm' : r.name === 'P' ? 'dg-accent' : 'dg-cool';
+        return (
+          <>
+            <text class="dg-mono dg-bold" x="8" y={y + 21}>
+              {r.name}
+            </text>
+            {r.split ? (
+              <>
+                <rect class="dg-warm" x="44" y={y} width="100" height="28" rx="4" />
+                <rect class="dg-cool" x="144" y={y} width="100" height="28" rx="4" />
+                <text class="dg-small" x="94" y={y + 19} text-anchor="middle">
+                  B (위 8비트)
+                </text>
+                <text class="dg-small" x="194" y={y + 19} text-anchor="middle">
+                  A (아래 8비트)
+                </text>
+              </>
+            ) : (
+              <>
+                <rect class={cls} x="44" y={y} width={w} height="28" rx="4" />
+                <text class="dg-small" x={44 + w / 2} y={y + 19} text-anchor="middle">
+                  {r.bits}비트
+                </text>
+              </>
+            )}
+          </>
+        );
+      })}
+      <text class="dg-small" x="256" y="29">
+        계산
+      </text>
+      <text class="dg-small" x="256" y="65">
+        세기
+      </text>
+      <text class="dg-small" x="256" y="101">
+        세기
+      </text>
+      <text class="dg-small" x="256" y="137">
+        스택 꼭대기
+      </text>
+      <text class="dg-small" x="256" y="173">
+        다음에 읽을 줄
+      </text>
+      <text class="dg-small" x="156" y="209">
+        상태 표시
+      </text>
+      <text class="dg-small" x="156" y="245">
+        데이터 뱅크
+      </text>
+      <text class="dg-small" x="156" y="281">
+        코드 뱅크
+      </text>
+      <text class="dg-small" x="256" y="317">
+        짧은 주소 기준
+      </text>
+    </svg>
+  </Figure>
+  <ul>
+    {regs
+      .filter(r => r.easy)
+      .map(r => (
+        <li>
+          <strong class="mono">{r.name}</strong> ({r.bits}비트): {r.role}
+        </li>
+      ))}
+  </ul>
+  <p>그림의 나머지 S·DB·PB·D는 이 장의 「더 깊이」와 5장에서 다룹니다.</p>
+  <p>
+    레지스터 이름은 외울 필요가 없습니다. A로 계산하고, X·Y로 세고, PC가 다음 줄을 가리키고, P에 "방금 결과" 표시가
+    남는다는 것만 기억하면 5장의 어셈블리를 읽을 수 있습니다.
+  </p>
+
+  <h2 id="width">
+    8비트와 16비트를 오가는 CPU <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    65c816은 한 번에 1바이트(8비트)씩 다룰 수도, 2바이트(16비트)씩 다룰 수도 있습니다. 어느 쪽인지는 P 레지스터의 두
+    칸이 정합니다.
+  </p>
+  <ul>
+    <li>
+      <strong>M</strong> 칸이 1이면 A가 8비트, 0이면 16비트입니다.
+    </li>
+    <li>
+      <strong>X</strong> 칸이 1이면 X·Y가 8비트, 0이면 16비트입니다.
+    </li>
+  </ul>
+  <p>
+    이 칸을 끄는 명령이 <code>REP</code>, 켜는 명령이 <code>SEP</code>입니다. <code>REP #$20</code>은 "M 칸(값{' '}
+    <code>$20</code>)을 꺼라", 곧 "A를 16비트로"라는 뜻입니다. 중요한 점은 같은 명령 바이트라도 이 설정에 따라 뒤에 붙는
+    값의 길이가 달라진다는 것입니다. 아래 프로그램을 한 줄씩 실행해 보세요.
+  </p>
+  <CpuStep program="width" />
+  <p>
+    <code>LDA</code>(A에 값 넣기)의 명령 바이트는 두 번 다 <code>A9</code>이지만, 처음에는 뒤에 2바이트(
+    <code>34 12</code>), 두 번째에는 1바이트(<code>56</code>)가 붙습니다. 그래서 롬을 읽을 때는 "지금 M·X가 어떤
+    상태인지" 알아야 바이트를 제대로 끊을 수 있습니다. 엉뚱한 상태로 읽으면 한 바이트씩 어긋나 뒤의 명령이 모두 엉터리로
+    보입니다. 마지막에 A가 <code>$1256</code>인 것도 눈여겨보세요. 8비트 모드에서도 위 바이트(B)는 지워지지 않고 숨어
+    있습니다.
+  </p>
+
+  <Deeper title="65c816의 계보, 두 가지 모드, P 레지스터 전부">
+    <h3>6502에서 65c816까지</h3>
+    <p>
+      65c816은 1970년대의 8비트 CPU 6502를 16비트로 넓힌 것입니다. Western Design Center(WDC)의 빌 멘시(Bill Mensch)가
+      설계했고 1985년에 나왔습니다. Apple IIGS와 슈퍼 패미컴이 이 CPU를 썼는데, 슈퍼 패미컴의 CPU 칩(Ricoh 5A22)은
+      65c816에 DMA 같은 장치를 더한 것입니다. 주소는 24비트라 16MB까지 가리킬 수 있습니다.
+    </p>
+    <p>
+      슈퍼 패미컴에서 CPU 속도는 어느 주소를 읽느냐에 따라 3.58MHz, 2.68MHz, 1.78MHz로 달라집니다. 롬은 보통 2.68MHz로
+      읽지만, 게임이 레지스터 <code>$420D</code>의 비트 0을 켜면 <code>$80</code>–<code>$BF</code>의<code>$8000</code>–
+      <code>$FFFF</code>와 <code>$C0</code>–<code>$FF</code> 뱅크를 3.58MHz로 읽습니다(FastROM). 롬 헤더의 "빠른 롬"
+      비트는 "이 카트리지는 빠르게 읽어도 된다"는 표시일 뿐, 속도를 바꾸지는 않습니다(4장).
+    </p>
+    <h3>에뮬레이션 모드와 네이티브 모드</h3>
+    <p>
+      65c816은 전원을 켜면 6502처럼 동작하는 <strong>에뮬레이션 모드</strong>로 시작합니다. 이 모드에서는 A·X·Y가 모두
+      8비트로 묶이고 스택은 $0100–$01FF에만 쌓입니다. 옛 6502 프로그램이 그대로 돌게 하려는 장치입니다. 16비트 기능을
+      쓰려면 <code>CLC</code> 다음 <code>XCE</code>를 실행해 <strong>네이티브 모드</strong>로 바꿉니다. 슈퍼 패미컴
+      게임은 거의 모두 시작하자마자 이렇게 합니다. 이 장과 5장의 「명령 한 줄씩 실행하기」는 네이티브 모드만 다룹니다.
+    </p>
+    <h3>P 레지스터의 여덟 칸</h3>
+    <Figure caption="네이티브 모드의 P 레지스터. 왼쪽이 비트 7입니다." max={600}>
+      <svg viewBox="0 0 360 130" role="img" aria-labelledby="p-t p-d">
+        <title id="p-t">P 레지스터 비트</title>
+        <desc id="p-d">
+          비트 7부터 0까지 N 음수, V 넘침, M 누산기 8비트, X 인덱스 8비트, D 10진, I 인터럽트 막기, Z 0, C 올림이다.
+        </desc>
+        {[
+          ['N', '음수'],
+          ['V', '넘침'],
+          ['M', 'A 8비트'],
+          ['X', 'X·Y 8비트'],
+          ['D', '10진'],
+          ['I', 'IRQ 막기'],
+          ['Z', '0'],
+          ['C', '올림'],
+        ].map(([f, t], i) => (
+          <>
+            <rect
+              class={f === 'M' || f === 'X' ? 'dg-warm' : 'dg-cell'}
+              x={8 + i * 43}
+              y="24"
+              width="40"
+              height="40"
+              rx="6"
+            />
+            <text class="dg-mono dg-bold" x={28 + i * 43} y="50" text-anchor="middle">
+              {f}
+            </text>
+            <text class="dg-small" x={28 + i * 43} y="16" text-anchor="middle">
+              {7 - i}
+            </text>
+            <text class="dg-small" x={28 + i * 43} y={i % 2 ? 100 : 82} text-anchor="middle">
+              {t}
+            </text>
+          </>
+        ))}
+      </svg>
+    </Figure>
+    <ul>
+      <li>
+        <strong>N</strong>: 결과의 맨 위 비트(음수 표시). <strong>Z</strong>: 결과가 0이면 1.
+      </li>
+      <li>
+        <strong>C</strong>: 덧셈에서 올림이 났거나, 비교에서 "크거나 같음"이면 1. <strong>V</strong>: 부호 있는 덧셈이
+        넘쳤으면 1.
+      </li>
+      <li>
+        <strong>M</strong>·<strong>X</strong>: 위에서 본 8/16비트 설정. X를 1로 바꾸는 순간 X·Y의 위 바이트는 0으로
+        지워집니다. A의 위 바이트(B)는 M을 바꿔도 남아 있고, <code>XBA</code>로 A와 맞바꿀 수 있습니다.
+      </li>
+      <li>
+        <strong>D</strong>: 10진(BCD) 계산 모드. <strong>I</strong>: 켜면 IRQ 인터럽트를 받지 않습니다.
+      </li>
+      <li>에뮬레이션 모드에서는 비트 5가 쓰이지 않고 비트 4가 B(BRK 표시)입니다.</li>
+    </ul>
+    <h3>뱅크 레지스터와 다이렉트 페이지</h3>
+    <p>
+      명령에 적힌 주소는 대부분 16비트라서, 나머지 8비트(뱅크)는 레지스터가 채웁니다. 코드는 PB, 데이터는 DB를 씁니다.{' '}
+      <code>LDA $8012</code>는 실제로 <code>DB:$8012</code>를 읽습니다. 짧은 주소 <code>LDA $10</code>은 다이렉트
+      페이지라고 하며 <code>D + $10</code>, 늘 뱅크 $00을 읽습니다. 1바이트 짧아 자주 쓰는 변수에 씁니다. 리셋 때
+      DB·PB·D는 모두 0입니다.
+    </p>
+  </Deeper>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>전원을 켜면 어디부터 실행하나</h3>
+  <p>
+    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a> 롬의 파일 0x7FFC에는 <code>00 80</code>, 곧 <code>$8000</code>이
+    있습니다. 이 자리를 <strong>리셋 벡터</strong>라고 하며, CPU는 전원을 켜면 에뮬레이션 모드로 <code>$00:8000</code>
+    부터 읽기 시작합니다. 같은 헤더의 0x7FEA에 있는 <code>$818D</code>는 NMI 루틴의 주소입니다. NMI는 화면을 한 번 다
+    그린 직후마다 불리는데, 게임이 레지스터 <code>$4200</code>의 비트 7을 켜 두었을 때만 옵니다.
+  </p>
+  <h3>CPU가 둘인 카트리지</h3>
+  <p>
+    <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a> 카트리지에는 <strong>SA-1</strong>이라는 CPU가 하나 더
+    있습니다. 본체 CPU보다 세 배쯤 빠른(10.74MHz) 65c816이라 같은 어셈블리로 짭니다. 두 CPU는 동시에 돌고, 이 게임은
+    필드 메뉴를 본체 CPU에, 전투 메뉴를 SA-1에 맡기도록 만들어졌습니다. 그래서 아이템 이름 하나를 한글로 바꾸려 해도 두
+    길을 따로 고쳐야 했습니다.
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    툴킷의 역어셈블러는 롬 바이트를 위 「명령 한 줄씩 실행하기」의 목록처럼 명령으로 풀어 줍니다. <code>REP</code>·
+    <code>SEP</code>를 만나면 폭을 바꿔 가며 읽고, 중간부터 읽을 때는 시작 폭을 직접 알려 줍니다.
+  </p>
+  <pre tabindex="0"><code>krpatch snes dis game.sfc 808000 40            # $80:8000부터 명령 40개
+krpatch snes dis game.sfc 808000 --m16 --x16   # A·X/Y를 16비트로 놓고 시작</code></pre>
+  <p>
+    같은 자리를 <code>--m16</code> 없이 한 번, 붙여서 한 번 읽어 보세요. 어느 쪽이 말이 되는지 비교하는 것이 실제
+    분석에서 폭을 알아내는 방법입니다.
+  </p>
+</GuideChapter>

@@ -1,0 +1,353 @@
+---
+import { bytesOf, toHex } from '../../lib/numbers.ts';
+
+interface Props {
+  value?: number;
+  size?: 2 | 3;
+}
+const { value = 0x4575, size = 2 } = Astro.props;
+const orders = [
+  { id: 'little', name: '리틀 엔디안', note: '작은 자리 바이트부터 적습니다. 65c816·x86·ARM(보통)이 이 순서입니다.' },
+  { id: 'big', name: '빅 엔디안', note: '큰 자리 바이트부터 적습니다. 사람이 숫자를 적는 순서와 같습니다.' },
+] as const;
+// Byte i of the number counts from the low end: 0 = lowest.
+const roleOf = (i: number, n: number) => (i === 0 ? '작은' : i === n - 1 ? '큰' : '가운데');
+const toneOf = (i: number, n: number) => (i === 0 ? 'cool' : i === n - 1 ? 'warm' : 'mid');
+const digits = size * 2;
+const numberBytes = bytesOf(value, size, 'big');
+---
+
+<section class="widget endian" data-endian data-value={value} data-size={size} aria-labelledby="endian-title">
+  <h3 class="widget-title" id="endian-title">
+    바이트 순서 보기
+  </h3>
+  <p class="widget-help">
+    숫자 하나를 바이트로 나눠 메모리 칸 <span class="mono">+0</span>, <span class="mono">+1</span>…에 차례로 놓습니다.{' '}
+    <span class="live-only">숫자를 바꾸거나 「순서대로 놓기」를 눌러 보세요.</span>
+  </p>
+  <div class="endian-controls live-only">
+    <label>
+      숫자(16진수){' '}
+      <span class="mono" aria-hidden="true">
+        $
+      </span>
+      <input
+        type="text"
+        maxlength="8"
+        size="8"
+        value={toHex(value, digits)}
+        data-endian-input
+        aria-describedby="endian-error"
+      />
+    </label>
+    <fieldset>
+      <legend>크기</legend>
+      <label>
+        <input type="radio" name="endian-size" value="2" checked={size === 2} /> 16비트(2바이트)
+      </label>
+      <label>
+        <input type="radio" name="endian-size" value="3" checked={size === 3} /> 24비트(3바이트)
+      </label>
+    </fieldset>
+    <button type="button" class="widget-btn is-primary" data-play>
+      순서대로 놓기
+    </button>
+  </div>
+  <p class="widget-error live-only" id="endian-error" data-error hidden></p>
+
+  <p class="endian-number">
+    <span class="muted">숫자</span>
+    <span class="number-bytes" data-number>
+      {numberBytes.map((b, j) => {
+        const i = size - 1 - j;
+        return (
+          <span class={`nb tone-${toneOf(i, size)}`}>
+            <code>{toHex(b, 2)}</code>
+            <small>{roleOf(i, size)} 자리</small>
+          </span>
+        );
+      })}
+    </span>
+  </p>
+
+  <div class="endian-rows">
+    {orders.map(order => {
+      const mem = bytesOf(value, size, order.id);
+      return (
+        <div class="endian-row" data-order={order.id}>
+          <p class="row-name">
+            <strong>{order.name}</strong> <span class="muted">{order.note}</span>
+          </p>
+          <ol class="cells" aria-label={`${order.name}로 놓은 메모리`}>
+            {mem.map((b, k) => {
+              const i = order.id === 'little' ? k : size - 1 - k;
+              return (
+                <li class={`cell tone-${toneOf(i, size)}`} data-cell={k}>
+                  <span class="addr mono">+{k}</span>
+                  <code>{toHex(b, 2)}</code>
+                  <small>{roleOf(i, size)} 자리</small>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      );
+    })}
+  </div>
+  <p class="endian-read">
+    리틀 엔디안 칸을 다시 숫자로 읽으려면 칸을 뒤에서부터 이어 붙입니다:{' '}
+    <code data-readback>
+      {bytesOf(value, size, 'little')
+        .map(b => toHex(b, 2))
+        .join(' ')}{' '}
+      → ${toHex(value, digits)}
+    </code>
+  </p>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { bytesOf, parseHex, toHex } from '../../lib/numbers.ts';
+
+  const ROLE = (i: number, n: number) => (i === 0 ? '작은' : i === n - 1 ? '큰' : '가운데');
+  const TONE = (i: number, n: number) => (i === 0 ? 'cool' : i === n - 1 ? 'warm' : 'mid');
+  const STEP_MS = 450;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-endian]')) {
+    let value = Number(root.dataset['value'] ?? 0);
+    let size = Number(root.dataset['size'] ?? 2);
+    const input = root.querySelector<HTMLInputElement>('[data-endian-input]');
+    const error = root.querySelector<HTMLElement>('[data-error]');
+    const live = root.querySelector<HTMLElement>('[data-live]');
+    const play = root.querySelector<HTMLButtonElement>('[data-play]');
+    const numberEl = root.querySelector<HTMLElement>('[data-number]');
+    const readback = root.querySelector<HTMLElement>('[data-readback]');
+    let shown = Infinity;
+    let timer = 0;
+
+    const piece = (tag: string, cls: string, b: number, i: number, extra = '') => {
+      const el = document.createElement(tag);
+      el.className = `${cls} tone-${TONE(i, size)}`;
+      el.innerHTML = `${extra}<code>${toHex(b, 2)}</code><small>${ROLE(i, size)} 자리</small>`;
+      return el;
+    };
+
+    const render = () => {
+      if (numberEl) {
+        numberEl.replaceChildren(...bytesOf(value, size, 'big').map((b, j) => piece('span', 'nb', b, size - 1 - j)));
+      }
+      for (const row of root.querySelectorAll<HTMLElement>('[data-order]')) {
+        const order = row.dataset['order'] === 'big' ? 'big' : 'little';
+        const cells = row.querySelector('.cells');
+        cells?.replaceChildren(
+          ...bytesOf(value, size, order).map((b, k) => {
+            const i = order === 'little' ? k : size - 1 - k;
+            const li = piece('li', 'cell', b, i, `<span class="addr mono">+${k}</span>`);
+            li.dataset['cell'] = String(k);
+            if (k >= shown) li.classList.add('is-empty');
+            li.style.setProperty('--delay', `${k * STEP_MS}ms`);
+            return li;
+          }),
+        );
+      }
+      if (readback) {
+        readback.textContent = `${bytesOf(value, size, 'little')
+          .map(b => toHex(b, 2))
+          .join(' ')} → $${toHex(value, size * 2)}`;
+      }
+    };
+
+    const announce = () => {
+      if (!live) return;
+      const fmt = (order: 'little' | 'big') =>
+        bytesOf(value, size, order)
+          .map(b => toHex(b, 2))
+          .join(' ');
+      live.textContent = `$${toHex(value, size * 2)}: 리틀 엔디안 ${fmt('little')}, 빅 엔디안 ${fmt('big')}`;
+    };
+
+    const finish = () => {
+      window.clearTimeout(timer);
+      root.classList.remove('is-playing');
+      shown = Infinity;
+      if (play) play.textContent = '순서대로 놓기';
+    };
+
+    // With reduced motion each press fills one more cell; otherwise the cells drop in one after another.
+    play?.addEventListener('click', () => {
+      if (reduced.matches) {
+        if (shown >= size) shown = 0;
+        shown += 1;
+        render();
+        if (live) live.textContent = `칸 +${shown - 1}까지 놓았습니다`;
+        if (shown >= size) finish();
+        else play.textContent = `다음 칸 놓기 (${shown}/${size})`;
+        return;
+      }
+      finish();
+      root.classList.add('is-playing');
+      render();
+      timer = window.setTimeout(finish, size * STEP_MS + 400);
+    });
+
+    input?.addEventListener('input', () => {
+      const parsed = parseHex(input.value, size * 2);
+      const bad = parsed === null;
+      input.setAttribute('aria-invalid', bad ? 'true' : 'false');
+      if (error) {
+        error.hidden = !bad;
+        error.textContent = bad ? `0-9와 A-F로 ${size * 2}자리까지 적어 주세요.` : '';
+      }
+      if (parsed === null) return;
+      value = parsed;
+      finish();
+      render();
+      announce();
+    });
+    for (const radio of root.querySelectorAll<HTMLInputElement>('input[type="radio"]')) {
+      radio.addEventListener('change', () => {
+        size = Number(radio.value);
+        if (input) {
+          input.maxLength = size * 2 + 2;
+          const parsed = parseHex(input.value, 6) ?? 0;
+          value = parsed % 256 ** size;
+          input.value = toHex(value, size * 2);
+          input.setAttribute('aria-invalid', 'false');
+        }
+        if (error) error.hidden = true;
+        finish();
+        render();
+        announce();
+      });
+    }
+    root.classList.add('is-live');
+  }
+</script>
+
+<style>
+  .endian-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items: center;
+  }
+  .endian-controls input[type='text'] {
+    width: 7.5em;
+    margin-left: 4px;
+  }
+  .endian-controls fieldset {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .endian-controls legend {
+    float: left;
+    margin-right: 10px;
+    color: var(--fg-muted);
+  }
+  .endian-controls fieldset label {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    min-height: 44px;
+  }
+  .endian-number {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin: 14px 0 6px;
+  }
+  .number-bytes,
+  .cells {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .endian :global(.nb),
+  .endian :global(.cell) {
+    display: grid;
+    min-width: 64px;
+    padding: 6px 10px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--dg-cell);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .endian :global(.nb code),
+  .endian :global(.cell code) {
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+  .endian :global(small) {
+    color: var(--fg-muted);
+    font-size: 0.72rem;
+  }
+  .endian :global(.addr) {
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+  }
+  .endian :global(.tone-warm) {
+    border-color: var(--dg-warm);
+    background: var(--dg-warm-soft);
+  }
+  .endian :global(.tone-cool) {
+    border-color: var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .endian :global(.tone-mid) {
+    border-style: dashed;
+  }
+  .endian :global(.cell.is-empty) {
+    border-style: dashed;
+    border-color: var(--dg-line);
+    background: transparent;
+  }
+  .endian :global(.cell.is-empty code),
+  .endian :global(.cell.is-empty small) {
+    visibility: hidden;
+  }
+  .endian-rows {
+    display: grid;
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .endian-row {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+  }
+  .row-name {
+    margin: 0 0 8px;
+    font-size: 0.9rem;
+  }
+  .endian-read {
+    margin: 12px 0 0;
+    font-size: 0.9rem;
+  }
+  .endian-read code {
+    font-family: var(--font-mono);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .endian:global(.is-playing) :global(.cell) {
+      animation: drop 0.35s both;
+      animation-delay: var(--delay);
+    }
+    @keyframes drop {
+      from {
+        opacity: 0;
+        transform: translateY(-18px);
+      }
+    }
+  }
+</style>

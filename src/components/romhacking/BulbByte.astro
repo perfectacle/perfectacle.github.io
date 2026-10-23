@@ -1,0 +1,230 @@
+---
+import { toBinary, toHex, toSigned8 } from '../../lib/numbers.ts';
+
+interface Props {
+  /** Starting byte, shown as is when scripts don't run. */
+  value?: number;
+}
+const { value = 0x30 } = Astro.props;
+const bits = [7, 6, 5, 4, 3, 2, 1, 0];
+---
+
+<section class="widget bulb-byte" data-bulb-byte data-value={value} aria-labelledby="bulb-title">
+  <h3 class="widget-title" id="bulb-title">
+    비트 켜고 끄기
+  </h3>
+  <p class="widget-help live-only">전구를 눌러 켜고 끄거나, 아래 칸에 16진수 두 자리를 적어 보세요.</p>
+  <p class="widget-help static-only">
+    전구 여덟 개가 바이트 하나입니다. 지금은 비트 5와 4가 켜져 있습니다(스크립트가 꺼져 있어 누를 수 없습니다).
+  </p>
+  <ol class="bulbs" aria-label="비트 8개, 왼쪽이 비트 7">
+    {bits.map(bit => {
+      const on = (value >> bit) & 1;
+      return (
+        <li>
+          <button type="button" class="bulb" data-bit={bit} aria-pressed={on ? 'true' : 'false'} disabled>
+            <span class="visually-hidden">{`비트 ${bit}, 자릿값 ${2 ** bit}`}</span>
+            <svg viewBox="0 0 40 52" aria-hidden="true">
+              <path
+                class="glass"
+                d="M20 3a15 15 0 0 0-9 27c2 1.6 3 3.6 3 6v3h12v-3c0-2.4 1-4.4 3-6a15 15 0 0 0-9-27Z"
+              />
+              <path class="base" d="M14 41h12v3H14zm1 5h10v3H15z" />
+              <text x="20" y="25" text-anchor="middle" class="digit">
+                {on}
+              </text>
+            </svg>
+          </button>
+          <span class="place mono" aria-hidden="true">
+            {2 ** bit}
+          </span>
+        </li>
+      );
+    })}
+  </ol>
+  <div class="bulb-actions live-only">
+    <label>
+      16진수 <input type="text" inputmode="text" maxlength="4" size="5" value={toHex(value, 2)} data-hex-input />
+    </label>
+    <button type="button" class="widget-btn" data-act="inc">
+      +1
+    </button>
+    <button type="button" class="widget-btn" data-act="not">
+      모두 뒤집기
+    </button>
+    <button type="button" class="widget-btn" data-act="clear">
+      모두 끄기
+    </button>
+  </div>
+  <p class="widget-error live-only" data-error role="alert" hidden></p>
+  <dl class="readout">
+    <div>
+      <dt>2진수</dt>
+      <dd data-out="bin">{toBinary(value)}</dd>
+    </div>
+    <div>
+      <dt>16진수</dt>
+      <dd data-out="hex">${toHex(value, 2)}</dd>
+    </div>
+    <div>
+      <dt>10진수</dt>
+      <dd data-out="dec">{value}</dd>
+    </div>
+    <div>
+      <dt>부호 있는 수로 읽으면</dt>
+      <dd data-out="signed">{toSigned8(value)}</dd>
+    </div>
+  </dl>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { parseHex, toBinary, toHex, toSigned8 } from '../../lib/numbers.ts';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-bulb-byte]')) {
+    let value = Number(root.dataset['value'] ?? 0);
+    const bulbs = [...root.querySelectorAll<HTMLButtonElement>('[data-bit]')];
+    const input = root.querySelector<HTMLInputElement>('[data-hex-input]');
+    const error = root.querySelector<HTMLElement>('[data-error]');
+    const live = root.querySelector<HTMLElement>('[data-live]');
+    const out = (name: string) => root.querySelector<HTMLElement>(`[data-out="${name}"]`);
+
+    const render = (announce: boolean, syncInput = true) => {
+      for (const bulb of bulbs) {
+        const on = (value >> Number(bulb.dataset['bit'])) & 1;
+        bulb.setAttribute('aria-pressed', on ? 'true' : 'false');
+        const digit = bulb.querySelector('.digit');
+        if (digit) digit.textContent = String(on);
+      }
+      const hex = toHex(value, 2);
+      const set = (name: string, text: string) => {
+        const el = out(name);
+        if (el) el.textContent = text;
+      };
+      set('bin', toBinary(value));
+      set('hex', `$${hex}`);
+      set('dec', String(value));
+      set('signed', String(toSigned8(value)));
+      if (input && syncInput) input.value = hex;
+      if (announce && live) live.textContent = `2진수 ${toBinary(value)}, 16진수 ${hex}, 10진수 ${value}`;
+    };
+
+    for (const bulb of bulbs) {
+      bulb.disabled = false;
+      bulb.addEventListener('click', () => {
+        value ^= 1 << Number(bulb.dataset['bit']);
+        render(true);
+      });
+    }
+    root.querySelector('[data-act="inc"]')?.addEventListener('click', () => {
+      value = (value + 1) & 0xff;
+      render(true);
+    });
+    root.querySelector('[data-act="not"]')?.addEventListener('click', () => {
+      value ^= 0xff;
+      render(true);
+    });
+    root.querySelector('[data-act="clear"]')?.addEventListener('click', () => {
+      value = 0;
+      render(true);
+    });
+    input?.addEventListener('input', () => {
+      const parsed = parseHex(input.value, 2);
+      const bad = parsed === null && input.value.trim() !== '';
+      input.setAttribute('aria-invalid', bad ? 'true' : 'false');
+      if (error) {
+        error.hidden = !bad;
+        error.textContent = bad ? '16진수는 0-9와 A-F로, 두 자리(00-FF)까지 적어 주세요.' : '';
+      }
+      if (parsed !== null) {
+        value = parsed;
+        render(true, false);
+      }
+    });
+    root.classList.add('is-live');
+    render(false);
+  }
+</script>
+
+<style>
+  .bulbs {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .bulbs li {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+  }
+  .bulb {
+    width: 100%;
+    max-width: 56px;
+    min-height: 44px;
+    padding: 2px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .bulb:disabled {
+    cursor: default;
+  }
+  .bulb svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .bulb .glass {
+    fill: var(--dg-cell);
+    stroke: var(--dg-line);
+    stroke-width: 2;
+    transition:
+      fill 0.15s,
+      filter 0.15s;
+  }
+  .bulb .base {
+    fill: var(--dg-line);
+  }
+  .bulb .digit {
+    fill: var(--dg-muted);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .bulb[aria-pressed='true'] .glass {
+    fill: #ffd34d;
+    stroke: var(--dg-warm);
+    filter: drop-shadow(0 0 6px rgb(255 196 0 / 65%));
+  }
+  .bulb[aria-pressed='true'] .digit {
+    fill: #3a2600;
+  }
+  .place {
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+  }
+  .bulb-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 14px;
+  }
+  .bulb-actions label {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .bulb-actions input {
+    width: 5.5em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bulb .glass {
+      transition: none;
+    }
+  }
+</style>

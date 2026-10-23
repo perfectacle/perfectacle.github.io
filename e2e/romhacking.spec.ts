@@ -1,0 +1,239 @@
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test, type Page } from '@playwright/test';
+import { GUIDE_CHAPTERS, GUIDE_PATH, chapterPath, readyChapters } from '../src/components/romhacking/chapters.ts';
+
+const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath)];
+const first = (list: ReturnType<typeof readyChapters>) => {
+  const chapter = list[0];
+  if (!chapter) throw new Error('no written chapters');
+  return chapter;
+};
+const NUMBERS = '/games/romhacking/numbers/';
+const ENDIAN = '/games/romhacking/endian/';
+const BANKS = '/games/romhacking/snes/banks/';
+const CPU = '/games/romhacking/snes/cpu/';
+const ASSEMBLY = '/games/romhacking/snes/assembly/';
+
+const noHorizontalOverflow = async (page: Page) =>
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+    0,
+  );
+
+for (const path of PAGES) {
+  test(`${path} renders without errors or overflow`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', e => errors.push(e.message));
+    const res = await page.goto(path);
+    expect(res?.status()).toBe(200);
+    await expect(page.locator('h1')).toHaveCount(1);
+    for (const d of await page.locator('details.deeper').all())
+      await d.evaluate(e => ((e as HTMLDetailsElement).open = true));
+    await noHorizontalOverflow(page);
+    for (const hash of await page
+      .locator('main a[href^="#"]')
+      .evaluateAll(links => links.map(a => (a as HTMLAnchorElement).hash))) {
+      await expect(page.locator(`[id="${decodeURIComponent(hash.slice(1))}"]`)).toHaveCount(1);
+    }
+    expect(errors).toEqual([]);
+  });
+
+  for (const colorScheme of ['light', 'dark'] as const) {
+    test(`${path} has no serious accessibility violations (${colorScheme})`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme });
+      await page.goto(path);
+      for (const d of await page.locator('details.deeper').all())
+        await d.evaluate(e => ((e as HTMLDetailsElement).open = true));
+      const { violations } = await new AxeBuilder({ page }).exclude('#waline').analyze();
+      const serious = violations.filter(v => v.impact === 'serious' || v.impact === 'critical');
+      expect(serious.map(v => `${v.id}: ${v.nodes.map(n => n.target.join(' ')).join(', ')}`)).toEqual([]);
+    });
+  }
+}
+
+test('the patch hub leads to the guide, which maps every chapter', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/games/kr-patches/');
+  await page.getByRole('link', { name: /롬 해킹 기초/ }).click();
+  await expect(page).toHaveURL(GUIDE_PATH);
+  const map = page.locator('.chapter-map > li');
+  await expect(map).toHaveCount(GUIDE_CHAPTERS.length);
+  await expect(page.locator('.chapter-map a')).toHaveCount(readyChapters().length);
+  await expect(page.locator('.chapter-map .chapter-soon')).toHaveCount(GUIDE_CHAPTERS.length - readyChapters().length);
+  await expect(page.locator('.chapter-map a').first()).toHaveAttribute('href', chapterPath(first(readyChapters())));
+});
+
+test('chapters link to each other in reading order', async ({ page }) => {
+  const ready = readyChapters();
+  await page.goto(chapterPath(first(ready)));
+  await expect(page.getByRole('navigation', { name: '이전·다음 장' }).getByRole('link').first()).toHaveAttribute(
+    'href',
+    GUIDE_PATH,
+  );
+  for (const next of ready.slice(1)) {
+    await page.getByRole('navigation', { name: '이전·다음 장' }).locator('a[rel="next"]').click();
+    await expect(page).toHaveURL(chapterPath(next));
+    await expect(page.locator('h1')).toContainText(next.title);
+  }
+  const pager = page.getByRole('navigation', { name: '이전·다음 장' });
+  await expect(pager.locator('a[rel="next"]')).toHaveCount(0);
+  await expect(pager).toContainText('다음 장은 준비 중');
+  await page.getByRole('navigation', { name: '현재 위치' }).getByRole('link', { name: '롬 해킹 기초' }).click();
+  await expect(page).toHaveURL(GUIDE_PATH);
+});
+
+test('chapters key comments by their own path and link the patch notes and toolkit', async ({ page }) => {
+  await page.goto(BANKS);
+  await expect(page.locator('#waline')).toHaveAttribute('data-path', BANKS);
+  await expect(
+    page.locator('a[href="/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/#making-dialogue"]'),
+  ).toHaveCount(1);
+  await expect(
+    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/main/README.ko.md#snes-dis"]'),
+  ).toHaveCount(1);
+});
+
+test('search finds the guide', async ({ page }) => {
+  await page.goto('/search/?q=리틀 엔디안');
+  await expect(page.locator(`pagefind-results[instance="page"] .pf-result-link[href*="${ENDIAN}"]`)).toBeVisible();
+});
+
+test('bit toggle widget toggles bits with the keyboard and reads typed hex', async ({ page }) => {
+  await page.goto(NUMBERS);
+  const widget = page.locator('[data-bulb-byte]');
+  await expect(widget).toHaveClass(/is-live/);
+  const bit7 = widget.getByRole('button', { name: '비트 7, 자릿값 128' });
+  await bit7.focus();
+  await expect(bit7).toBeFocused();
+  await page.keyboard.press('Space');
+  await expect(bit7).toHaveAttribute('aria-pressed', 'true');
+  await expect(widget.locator('[data-out="hex"]')).toHaveText('$B0');
+  await expect(widget.locator('[data-out="dec"]')).toHaveText('176');
+  await expect(widget.locator('[data-out="signed"]')).toHaveText('-80');
+  await expect(widget.locator('[data-live]')).toContainText('16진수 B0');
+  const input = widget.getByLabel('16진수');
+  await input.fill('ff');
+  await expect(widget.locator('[aria-pressed="true"]')).toHaveCount(8);
+  await expect(widget.locator('[data-out="bin"]')).toHaveText('1111 1111');
+  await widget.getByRole('button', { name: '+1' }).click();
+  await expect(widget.locator('[data-out="hex"]')).toHaveText('$00');
+  await input.fill('zz');
+  await expect(input).toHaveAttribute('aria-invalid', 'true');
+  await expect(widget.getByRole('alert')).toBeVisible();
+});
+
+test('byte order widget lays bytes out in both orders and switches to 24 bits', async ({ page }) => {
+  await page.goto(ENDIAN);
+  const widget = page.locator('[data-endian]');
+  const cells = (order: string) => widget.locator(`[data-order="${order}"] .cell code`);
+  await widget.getByLabel(/숫자\(16진수\)/).fill('1234');
+  await expect(cells('little')).toHaveText(['34', '12']);
+  await expect(cells('big')).toHaveText(['12', '34']);
+  await expect(widget.locator('[data-live]')).toContainText('리틀 엔디안 34 12');
+  await widget.getByLabel('24비트(3바이트)').check();
+  await widget.getByLabel(/숫자\(16진수\)/).fill('208000');
+  await expect(cells('little')).toHaveText(['00', '80', '20']);
+  await expect(cells('big')).toHaveText(['20', '80', '00']);
+  await noHorizontalOverflow(page);
+});
+
+test('byte order widget animates the drop, or steps one cell at a time with reduced motion', async ({ page }) => {
+  await page.goto(ENDIAN);
+  const widget = page.locator('[data-endian]');
+  const play = widget.locator('[data-play]');
+  await play.click();
+  await expect(widget).toHaveClass(/is-playing/);
+  await expect(widget).not.toHaveClass(/is-playing/);
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.reload();
+  await play.focus();
+  await page.keyboard.press('Enter');
+  await expect(widget).not.toHaveClass(/is-playing/);
+  await expect(widget.locator('[data-order="little"] .cell.is-empty')).toHaveCount(1);
+  await expect(play).toHaveText('다음 칸 놓기 (1/2)');
+  await page.keyboard.press('Enter');
+  await expect(widget.locator('.cell.is-empty')).toHaveCount(0);
+  await expect(play).toHaveText('순서대로 놓기');
+});
+
+test('address calculator converts both ways for each mapper like the toolkit', async ({ page }) => {
+  await page.goto(BANKS);
+  const widget = page.locator('[data-bank-map]');
+  const cpu = widget.getByLabel('CPU 주소');
+  const off = widget.getByLabel('파일 오프셋');
+  await expect(off).toHaveValue('0x14000C');
+  await widget.getByLabel('SA-1').check();
+  await cpu.fill('$E2:B400');
+  await expect(off).toHaveValue('0x22B400');
+  await expect(widget.locator('[data-region]')).toHaveText('롬');
+  await widget.getByRole('button', { name: /LoROM식 주소로/ }).click();
+  await expect(off).toHaveValue('0x22B400');
+  await expect(cpu).toHaveValue('$85:B400');
+  await widget.getByLabel('LoROM').focus();
+  await page.keyboard.press('Space');
+  await off.fill('0x7FC0');
+  await expect(cpu).toHaveValue('$80:FFC0');
+  await expect(widget.locator('[data-live]')).toContainText('파일 오프셋 0x007FC0');
+  await cpu.fill('$80:0A00');
+  await expect(widget.locator('[data-warning]')).toBeVisible();
+  await expect(widget.locator('.bm-bank.is-current')).toHaveAttribute('data-b', String(0x80));
+  await cpu.fill('nope');
+  await expect(cpu).toHaveAttribute('aria-invalid', 'true');
+  await expect(widget.locator('[data-error]')).toBeVisible();
+});
+
+test('instruction stepper runs one instruction per press and switches register width', async ({ page }) => {
+  await page.goto(CPU);
+  const widget = page.locator('[data-cpu-step="width"]');
+  const stepBtn = widget.getByRole('button', { name: '한 줄 실행' });
+  await stepBtn.focus();
+  await page.keyboard.press('Enter');
+  await expect(widget.locator('[data-flag="M"]')).not.toHaveClass(/\bon\b/);
+  await page.keyboard.press('Enter');
+  await expect(widget.locator('[data-reg="A"]')).toHaveText('$1234');
+  await expect(widget.locator('li[aria-current="step"] .cpu-asm')).toHaveText('STA $0A00');
+  await page.keyboard.press('Enter');
+  await expect(widget.locator('[data-addr="8260096"] code')).toHaveText('34');
+  await expect(widget.locator('[data-addr="8260097"] code')).toHaveText('12');
+  await expect(widget.locator('[data-addr="8260097"]')).toHaveClass(/is-changed/);
+  await expect(widget.locator('[data-live]')).toContainText('$7E:0A01에 12');
+  await widget.getByRole('button', { name: '끝까지 실행' }).click();
+  await expect(widget.locator('[data-reg="A"]')).toHaveText('B $12 · A $56');
+  await expect(stepBtn).toBeDisabled();
+  await widget.getByRole('button', { name: '처음 상태로' }).click();
+  await expect(stepBtn).toBeEnabled();
+  await expect(stepBtn).toBeFocused();
+  await expect(widget.locator('[data-reg="A"]')).toHaveText('B $00 · A $00');
+});
+
+test('instruction stepper copies the string and follows the subroutine', async ({ page }) => {
+  await page.goto(ASSEMBLY);
+  const copy = page.locator('[data-cpu-step="copy"]');
+  await copy.getByRole('button', { name: '끝까지 실행' }).click();
+  await expect(copy.locator('[data-mem] code')).toHaveText(['F3', '08', 'B5', '06', '27', '05']);
+  await expect(copy.locator('[data-reg="X"]')).toHaveText('$0006');
+  const loop = page.locator('[data-cpu-step="loop"]');
+  for (let i = 0; i < 17; i++) await loop.getByRole('button', { name: '한 줄 실행' }).click();
+  await expect(loop.locator('li[aria-current="step"] .cpu-asm')).toHaveText('CLC');
+  await expect(loop.locator('[data-reg="S"]')).toHaveText('$1FFD');
+  await expect(loop.locator('[data-addr="8265726"] code')).toHaveText('10');
+});
+
+test('widgets read as static pictures without scripts', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto(ASSEMBLY);
+  await expect(page.locator('[data-cpu-step="copy"]')).toContainText('끝까지 실행한 뒤');
+  await expect(page.getByRole('button', { name: '한 줄 실행' }).first()).toBeHidden();
+  await page.goto(BANKS);
+  await expect(page.locator('[data-bank-map] [data-summary-off]')).toHaveText('0x14000C');
+  for (const path of [ENDIAN, BANKS, CPU]) {
+    await page.goto(path);
+    const help = page.locator('.widget-help .live-only');
+    expect(await help.count()).toBeGreaterThan(0);
+    for (const hint of await help.all()) await expect(hint).toBeHidden();
+  }
+  await page.goto(NUMBERS);
+  await expect(page.locator('[data-bulb-byte] [data-out="hex"]')).toHaveText('$30');
+  await context.close();
+});

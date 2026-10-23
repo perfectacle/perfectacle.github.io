@@ -20,6 +20,11 @@ const PAGES: Record<string, { scriptKb: number; tbtMs?: number }> = {
   '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki/': { scriptKb: 5 },
   '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/': { scriptKb: 5 },
   '/games/kr-patches/sfc/otogirisou/': { scriptKb: 5 },
+  '/games/romhacking/': { scriptKb: 60 },
+  // Widget pages: each widget's script is bundled with the page; the CPU stepper carries the small interpreter.
+  '/games/romhacking/numbers/': { scriptKb: 60 },
+  '/games/romhacking/snes/banks/': { scriptKb: 60 },
+  '/games/romhacking/snes/assembly/': { scriptKb: 60 },
 };
 const MIN_SCORE = { performance: 0.8, accessibility: 0.95, 'best-practices': 0.95, seo: 0.95 };
 // Fonts: the site uses system fonts only, so any web font download is a regression.

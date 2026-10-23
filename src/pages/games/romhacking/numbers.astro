@@ -1,0 +1,471 @@
+---
+import GuideChapter from '../../../layouts/GuideChapter.astro';
+import Deeper from '../../../components/romhacking/Deeper.astro';
+import Figure from '../../../components/romhacking/Figure.astro';
+import BulbByte from '../../../components/romhacking/BulbByte.astro';
+import { toBinary, toHex } from '../../../lib/numbers.ts';
+import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
+
+const sections = [
+  { id: 'bits', label: '전구 여덟 개가 바이트 하나' },
+  { id: 'hex', label: '16진수: 네 칸씩 묶어 읽기' },
+  { id: 'sizes', label: 'KB와 MB, 2의 거듭제곱' },
+  { id: 'in-patch', label: '실제 패치에서' },
+  { id: 'try', label: '직접 해 보기' },
+];
+const references = [
+  {
+    href: 'https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf',
+    label: 'WDC, W65C816S 데이터시트',
+    note: 'D 플래그(10진 모드)와 ADC·SBC의 BCD 동작',
+  },
+  {
+    href: 'https://problemkaputt.de/fullsnes.htm#snescartridgeromheader',
+    label: 'fullsnes, SNES Cartridge ROM Header',
+    note: '롬 크기 바이트(1 SHL n KB), 체크섬과 보수의 정의',
+  },
+  {
+    href: 'https://snes.nesdev.org/wiki/ROM_header',
+    label: 'SNESdev Wiki, ROM header',
+    note: '맵 모드 바이트의 FastROM 비트',
+  },
+];
+const hexTable = Array.from({ length: 16 }, (_, n) => n);
+---
+
+<GuideChapter platform="common" slug="numbers" sections={sections} references={references}>
+  <h2 id="bits">
+    비트와 바이트 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    컴퓨터 안의 모든 것은 "켜짐"과 "꺼짐" 두 가지로 적힙니다. 전구 하나를 떠올려 보세요. 켜지면 1, 꺼지면 0입니다. 이 0
+    또는 1 한 칸을 <strong>비트</strong>(bit)라고 합니다.
+  </p>
+  <p>
+    전구 하나로는 두 가지밖에 나타낼 수 없지만 여덟 개를 나란히 두면 켜고 끄는 조합이 2 × 2 × … × 2 = 256가지가 됩니다.
+    이 여덟 칸 묶음이 <strong>바이트</strong>(byte)이고, 0부터 255까지의 숫자 하나를 담습니다. 롬 파일은 이런 바이트가
+    수백만 개 늘어선 것입니다.
+  </p>
+  <Figure caption="자릿값. 10진수는 칸마다 10배씩, 2진수는 칸마다 2배씩 커집니다." max={600}>
+    <svg viewBox="0 0 360 200" role="img" aria-labelledby="pv-t pv-d">
+      <title id="pv-t">10진수와 2진수의 자릿값</title>
+      <desc id="pv-d">
+        10진수 365는 3×100 + 6×10 + 5×1이다. 2진수 0011 0000은 자릿값 128, 64, 32, 16, 8, 4, 2, 1 가운데 32와 16 칸이
+        켜져 있어 48이다.
+      </desc>
+      <text class="dg-small" x="8" y="18">
+        10진수 365
+      </text>
+      <g>
+        <rect class="dg-cell" x="8" y="26" width="48" height="36" rx="6"></rect>
+        <rect class="dg-cell" x="60" y="26" width="48" height="36" rx="6"></rect>
+        <rect class="dg-cell" x="112" y="26" width="48" height="36" rx="6"></rect>
+        <text class="dg-mono dg-bold" x="32" y="50" text-anchor="middle">
+          3
+        </text>
+        <text class="dg-mono dg-bold" x="84" y="50" text-anchor="middle">
+          6
+        </text>
+        <text class="dg-mono dg-bold" x="136" y="50" text-anchor="middle">
+          5
+        </text>
+        <text class="dg-small" x="32" y="78" text-anchor="middle">
+          ×100
+        </text>
+        <text class="dg-small" x="84" y="78" text-anchor="middle">
+          ×10
+        </text>
+        <text class="dg-small" x="136" y="78" text-anchor="middle">
+          ×1
+        </text>
+        <text class="dg-text" x="172" y="50">
+          = 300 + 60 + 5
+        </text>
+      </g>
+      <text class="dg-small" x="8" y="110">
+        2진수 0011 0000
+      </text>
+      <g>
+        {[128, 64, 32, 16, 8, 4, 2, 1].map((place, i) => {
+          const on = place === 32 || place === 16;
+          return (
+            <>
+              <rect class={on ? 'dg-accent' : 'dg-cell'} x={8 + i * 44} y="118" width="40" height="36" rx="6" />
+              <text class="dg-mono dg-bold" x={28 + i * 44} y="142" text-anchor="middle">
+                {on ? 1 : 0}
+              </text>
+              <text class="dg-small" x={28 + i * 44} y="170" text-anchor="middle">
+                {place}
+              </text>
+            </>
+          );
+        })}
+      </g>
+      <text class="dg-text" x="8" y="194">
+        = 32 + 16 = 48 (켜진 칸의 자릿값만 더함)
+      </text>
+    </svg>
+  </Figure>
+  <p>
+    10진수에서 오른쪽부터 1, 10, 100의 자리가 있듯 2진수에는 1, 2, 4, 8, … 128의 자리가 있습니다. 켜진 칸의 자릿값을
+    더하면 10진수가 됩니다. 아래 「비트 켜고 끄기」에서 직접 켜 보세요. 처음 값 <code>$30</code>은 돌격편 롬 헤더에
+    실제로 있는 바이트입니다(<a href="#in-patch">실제 패치에서</a>).
+  </p>
+  <BulbByte value={0x30} />
+
+  <Deeper title="음수, 비트 연산, 10진 모드">
+    <h3>음수: 2의 보수</h3>
+    <p>
+      바이트에는 부호 칸이 따로 없습니다. 대신 "맨 왼쪽 비트(128의 자리)가 켜져 있으면 256을 빼서 읽는다"고 약속합니다.
+      이것을 <strong>2의 보수</strong>라고 합니다. <code>$FF</code>는 255이면서 −1이고, <code>$80</code>은 128이면서
+      −128입니다. 같은 바이트를 어느 쪽으로 읽을지는 그것을 쓰는 명령이 정합니다.
+    </p>
+    <Figure caption="한 바이트를 부호 있는 수로 읽으면 $80부터 음수입니다." max={600}>
+      <svg viewBox="0 0 360 110" role="img" aria-labelledby="tc-t tc-d">
+        <title id="tc-t">2의 보수 수직선</title>
+        <desc id="tc-d">$00부터 $7F까지는 0부터 127, $80부터 $FF까지는 −128부터 −1이다.</desc>
+        <rect class="dg-cool" x="8" y="20" width="170" height="36" rx="6"></rect>
+        <rect class="dg-warm" x="182" y="20" width="170" height="36" rx="6"></rect>
+        <text class="dg-mono" x="16" y="43">
+          $00
+        </text>
+        <text class="dg-mono" x="170" y="43" text-anchor="end">
+          $7F
+        </text>
+        <text class="dg-mono" x="190" y="43">
+          $80
+        </text>
+        <text class="dg-mono" x="344" y="43" text-anchor="end">
+          $FF
+        </text>
+        <text class="dg-small" x="16" y="76">
+          0
+        </text>
+        <text class="dg-small" x="170" y="76" text-anchor="end">
+          127
+        </text>
+        <text class="dg-small" x="190" y="76">
+          −128
+        </text>
+        <text class="dg-small" x="344" y="76" text-anchor="end">
+          −1
+        </text>
+        <text class="dg-small" x="93" y="100" text-anchor="middle">
+          양수(맨 왼쪽 비트 0)
+        </text>
+        <text class="dg-small" x="267" y="100" text-anchor="middle">
+          음수(맨 왼쪽 비트 1)
+        </text>
+      </svg>
+    </Figure>
+    <p>
+      2의 보수에서 −x는 "모든 비트를 뒤집고 1을 더한 것"입니다. 「비트 켜고 끄기」에서 <code>$06</code>을 넣고 「모두
+      뒤집기」, 「+1」을 차례로 누르면 <code>$FA</code>, 곧 −6이 됩니다. 5장의 분기 명령 <code>D0 FA</code>가 "6바이트
+      되돌아가라"인 이유가 이것입니다. 이때 거리는 분기 명령 자신이 아니라 <strong>그다음 명령의 위치</strong>부터
+      셉니다. <code>D0 FA</code>가 <code>$800A</code>에 있으면 다음 명령은 <code>$800C</code>이고, 거기서 6바이트
+      되돌아간 <code>$8006</code>으로 갑니다.
+    </p>
+    <h3>비트 연산</h3>
+    <p>롬 해킹 공식에는 자릿수 계산보다 비트 연산이 자주 나옵니다.</p>
+    <ul>
+      <li>
+        <strong>AND</strong>(<code>&amp;</code>): 둘 다 1인 칸만 1. 필요한 칸만 남기는 "마스크"로 씁니다.{' '}
+        <code>$A8 &amp; $7F = $28</code>은 맨 왼쪽 비트만 지운 것입니다(4장의 LoROM 공식).
+      </li>
+      <li>
+        <strong>OR</strong>(<code>|</code>): 하나라도 1이면 1. 특정 칸을 켤 때 씁니다.
+      </li>
+      <li>
+        <strong>XOR</strong>(<code>^</code>): 서로 다르면 1. <code>^ $FF</code>는 모든 칸 뒤집기입니다(「비트 켜고
+        끄기」의 「모두 뒤집기」).
+      </li>
+      <li>
+        <strong>시프트</strong>(<code>&lt;&lt;</code>, <code>&gt;&gt;</code>): 칸을 왼쪽·오른쪽으로 미는 것으로, 한 칸에
+        ×2, ÷2입니다. <code>n &lt;&lt; 15</code>는 n × $8000입니다.
+      </li>
+    </ul>
+    <h3>10진 모드(BCD)</h3>
+    <p>
+      점수처럼 화면에 10진수로 보여 줄 값은 한 바이트의 두 16진수 자리에 10진수 두 자리를 따로 넣기도 합니다.{' '}
+      <code>$25</code>를 "25"로 읽는 방식으로, BCD라고 합니다. 65c816은 P 레지스터의 D 플래그를 켜면
+      덧셈(ADC)·뺄셈(SBC)을 이 방식으로 계산합니다. 롬에서 <code>$99</code> 다음이 <code>$00</code>이 되는 값을 보면
+      BCD를 의심해 보세요.
+    </p>
+  </Deeper>
+
+  <h2 id="hex">
+    16진수: 네 칸씩 묶어 읽기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    <code>0011 0000</code>처럼 0과 1을 여덟 개씩 적으면 읽기 힘듭니다. 그래서 네 칸씩 끊어 한 글자로 적습니다. 네 칸은
+    0부터 15까지 16가지라서, 0–9 다음에 A–F를 이어 붙여 16가지 글자를 씁니다. 이것이 <strong>16진수</strong>입니다.
+  </p>
+  <Figure caption="바이트 하나 = 네 칸 두 묶음 = 16진수 두 자리" max={560}>
+    <svg viewBox="0 0 360 150" role="img" aria-labelledby="nb-t nb-d">
+      <title id="nb-t">2진수 여덟 칸을 16진수 두 자리로</title>
+      <desc id="nb-d">0011 0000의 앞 네 칸 0011은 3, 뒤 네 칸 0000은 0이라 16진수로 30, $30이라고 적는다.</desc>
+      <rect class="dg-warm" x="8" y="14" width="168" height="44" rx="8"></rect>
+      <rect class="dg-cool" x="184" y="14" width="168" height="44" rx="8"></rect>
+      <text class="dg-mono dg-bold" x="92" y="42" text-anchor="middle">
+        0 0 1 1
+      </text>
+      <text class="dg-mono dg-bold" x="268" y="42" text-anchor="middle">
+        0 0 0 0
+      </text>
+      <path class="dg-arrow" d="M92 62v28" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M268 62v28" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="100" y="80">
+        2 + 1
+      </text>
+      <text class="dg-small" x="276" y="80">
+        0
+      </text>
+      <rect class="dg-warm" x="64" y="94" width="56" height="44" rx="8"></rect>
+      <rect class="dg-cool" x="240" y="94" width="56" height="44" rx="8"></rect>
+      <text class="dg-mono dg-bold" x="92" y="122" text-anchor="middle">
+        3
+      </text>
+      <text class="dg-mono dg-bold" x="268" y="122" text-anchor="middle">
+        0
+      </text>
+      <text class="dg-text" x="180" y="122" text-anchor="middle">
+        → $30
+      </text>
+    </svg>
+  </Figure>
+  <div class="table-scroll" tabindex="0">
+    <table class="hex-table">
+      <caption class="visually-hidden">16진수 한 자리와 2진수 네 칸</caption>
+      <thead>
+        <tr>
+          <th scope="col">10진수</th>
+          <th scope="col">2진수</th>
+          <th scope="col">16진수</th>
+          <th scope="col">10진수</th>
+          <th scope="col">2진수</th>
+          <th scope="col">16진수</th>
+        </tr>
+      </thead>
+      <tbody>
+        {hexTable.slice(0, 8).map(n => (
+          <tr>
+            <td>{n}</td>
+            <td>
+              <code>{toBinary(n, 4)}</code>
+            </td>
+            <td>
+              <code>{toHex(n, 1)}</code>
+            </td>
+            <td>{n + 8}</td>
+            <td>
+              <code>{toBinary(n + 8, 4)}</code>
+            </td>
+            <td>
+              <code>{toHex(n + 8, 1)}</code>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    16진수라는 것을 표시하는 방법이 여러 가지라 처음엔 헷갈립니다. <code>$30</code>, <code>0x30</code>, <code>30h</code>
+    는 모두 같은 값(10진수 48)입니다. 게임기 쪽 문서와 어셈블리는 <code>$</code>를, 파일 오프셋과 프로그래밍 언어는{' '}
+    <code>0x</code>를 주로 씁니다. 이 가이드도 CPU 주소는 <code>$</code>, 파일 위치는 <code>0x</code>로 적습니다.
+  </p>
+
+  <h2 id="sizes">
+    KB와 MB, 2의 거듭제곱 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    롬 크기를 말할 때 1KB는 1000이 아니라 2<sup>10</sup> = 1,024바이트이고, 1MB는 1,024KB = 1,048,576바이트입니다.
+    1,000단위와 헷갈리지 않게 KiB·MiB라고 적기도 하지만, 롬 해킹 자료는 대부분 KB·MB를 1,024단위로 씁니다. 16진수로
+    적으면 깔끔합니다. 1KB = <code>$400</code>, 32KB = <code>$8000</code>, 64KB = <code>$10000</code>, 1MB ={' '}
+    <code>$100000</code>입니다. 앞으로 자주 나오는 숫자이니 눈에 익혀 두세요.
+  </p>
+  <Figure caption="두 배씩 커지는 크기와 16진수. 롬 헤더는 크기를 '2의 몇 제곱 KB'로 적습니다." max={560}>
+    <svg viewBox="0 0 360 196" role="img" aria-labelledby="sz-t sz-d">
+      <title id="sz-t">롬 크기 바이트</title>
+      <desc id="sz-d">
+        헤더의 롬 크기 바이트가 0A면 2의 10제곱 KB, 곧 1MB이고 16진수로 $100000바이트다. 0B는 2MB($200000), 0C는
+        4MB($400000)다.
+      </desc>
+      <text class="dg-small" x="8" y="16">
+        헤더 바이트
+      </text>
+      <text class="dg-small" x="104" y="16">
+        뜻
+      </text>
+      <text class="dg-small" x="248" y="16">
+        바이트 수
+      </text>
+      {[
+        { b: '0A', mean: '2¹⁰KB = 1MB', size: '$100000', w: 30, game: '제절초 원본' },
+        { b: '0B', mean: '2¹¹KB = 2MB', size: '$200000', w: 60, game: '돌격편·각성편' },
+        { b: '0C', mean: '2¹²KB = 4MB', size: '$400000', w: 120, game: '슈퍼 마리오 RPG' },
+      ].map((r, i) => (
+        <>
+          <rect class="dg-warm" x="8" y={26 + i * 56} width="44" height="28" rx="6" />
+          <text class="dg-mono dg-bold" x="30" y={45 + i * 56} text-anchor="middle">
+            {r.b}
+          </text>
+          <text class="dg-text" x="104" y={45 + i * 56}>
+            {r.mean}
+          </text>
+          <text class="dg-mono" x="248" y={45 + i * 56}>
+            {r.size}
+          </text>
+          <rect class="dg-accent" x="104" y={60 + i * 56} width={r.w} height="10" rx="3" />
+          <text class="dg-small" x={112 + r.w} y={70 + i * 56}>
+            {r.game}
+          </text>
+        </>
+      ))}
+    </svg>
+  </Figure>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>헤더 바이트 하나에 정보 두 개</h3>
+  <p>
+    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a> 롬의 파일 0x7FD5에는 <code>$30</code>이 있습니다. 2진수로{' '}
+    <code>{toBinary(0x30)}</code>입니다. 이 바이트는 칸마다 뜻이 따로 있어서, 오른쪽 네 칸 <code>0000</code>은 "LoROM
+    방식" (4장), 비트 4(16의 자리)는 "빠른 롬(FastROM)"을 뜻합니다. 같은 LoROM이지만 빠른 롬을 쓰지 않는{' '}
+    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>는 <code>$20</code>입니다. 「비트 켜고 끄기」에서 비트 4만 꺼 보면
+    $30이 $20이 됩니다.
+  </p>
+  <h3>체크섬: 모든 바이트의 합</h3>
+  <p>
+    롬 헤더에는 롬의 모든 바이트를 더한 값의 아래 16비트(<strong>체크섬</strong>)와, 그 값의 모든 비트를 뒤집은 값(
+    <strong>보수</strong>)이 들어 있습니다. 둘을 더하면 언제나 <code>$FFFF</code>입니다. 패치로 바이트를 바꾸면 합도
+    바뀌므로 다시 계산해 적어야 합니다.
+  </p>
+  <div class="table-scroll" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">롬</th>
+          <th scope="col">체크섬</th>
+          <th scope="col">보수</th>
+          <th scope="col">합</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">돌격편 일본판</th>
+          <td>
+            <code>$10F0</code>
+          </td>
+          <td>
+            <code>$EF0F</code>
+          </td>
+          <td>
+            <code>$FFFF</code>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">돌격편 v1.1</th>
+          <td>
+            <code>$2B67</code>
+          </td>
+          <td>
+            <code>$D498</code>
+          </td>
+          <td>
+            <code>$FFFF</code>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a> 일본판
+          </th>
+          <td>
+            <code>$4575</code>
+          </td>
+          <td>
+            <code>$BA8A</code>
+          </td>
+          <td>
+            <code>$FFFF</code>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    실제 게임기는 이 값을 확인하지 않아서 틀려도 게임은 돌아갑니다. 하지만 에뮬레이터나 롬 관리 도구가 "손상된 롬"으로
+    표시하므로 한글패치들은 마지막 단계에서 다시 계산합니다.
+  </p>
+  <Deeper title="체크섬을 정확히 계산하는 법">
+    <Figure caption="모든 바이트의 합에서 체크섬과 보수를 얻는 순서(돌격편 일본판)" max={560}>
+      <svg viewBox="0 0 360 214" role="img" aria-labelledby="ck-t ck-d">
+        <title id="ck-t">체크섬과 보수</title>
+        <desc id="ck-d">
+          롬의 모든 바이트를 더한 값에서 아래 16비트만 남기면 체크섬 $10F0이다. 모든 비트를 뒤집으면 보수 $EF0F이고,
+          둘을 더하면 $FFFF다.
+        </desc>
+        <rect class="dg-cell" x="8" y="8" width="344" height="40" rx="8"></rect>
+        <text class="dg-text" x="20" y="33">
+          롬의 모든 바이트를 더함 → …10F0
+        </text>
+        <path class="dg-arrow" d="M180 50v16" marker-end="url(#dg-arrowhead)"></path>
+        <rect class="dg-cool" x="8" y="70" width="344" height="40" rx="8"></rect>
+        <text class="dg-text" x="20" y="95">
+          아래 16비트만 남김(&amp; $FFFF) → 체크섬 $10F0
+        </text>
+        <path class="dg-arrow" d="M180 112v16" marker-end="url(#dg-arrowhead)"></path>
+        <rect class="dg-warm" x="8" y="132" width="344" height="40" rx="8"></rect>
+        <text class="dg-text" x="20" y="157">
+          모든 비트 뒤집기(^ $FFFF) → 보수 $EF0F
+        </text>
+        <text class="dg-small" x="20" y="200">
+          확인: $10F0 + $EF0F = $FFFF
+        </text>
+      </svg>
+    </Figure>
+    <ul>
+      <li>
+        더할 때 헤더의 보수·체크섬 네 바이트는 <code>FF FF 00 00</code>으로 놓고 셉니다. 보수와 체크섬은 서로 비트를
+        뒤집은 값이라 네 바이트의 합이 언제나 <code>$1FE</code>로 같아서, 어떤 값이 들어 있든 미리 정해 둔 값으로 더해도
+        결과가 같습니다.
+      </li>
+      <li>
+        롬 크기가 2의 거듭제곱이 아니면(예: 3MB) 카트리지가 보여 주는 모양대로 더합니다. 가장 큰 2의 거듭제곱
+        부분(2MB)을 한 번, 나머지(1MB)는 그 크기(2MB)가 될 때까지 되풀이해 더합니다. kr-patch-toolkit의{' '}
+        <code>krpatch snes checksum</code>이 이렇게 계산합니다.
+      </li>
+      <li>
+        체크섬 자리는 헤더 위치에 따라 다릅니다. LoROM·SA-1은 파일 0x7FDC–0x7FDF, HiROM은 0xFFDC–0xFFDF, ExHiROM은
+        0x40FFDC–0x40FFDF입니다(보수 2바이트, 체크섬 2바이트, 각각 작은 자리 먼저). 카피어 헤더가 붙은 파일은 그
+        512바이트를 빼고 셉니다.
+      </li>
+    </ul>
+  </Deeper>
+  <h3>글자 코드의 맨 위 비트</h3>
+  <p>
+    돌격편 대사는 글자 하나를 16비트 코드로 적는데, 맨 위 비트(<code>$8000</code>)가 켜진 코드는 작은 글자로 그립니다.
+    비트 하나를 "글자 크기 표시"로 빌려 쓴 것입니다. 이렇게 한 칸 한 칸에 뜻을 싣는 일이 롬 안에서는 아주 흔합니다.
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    헤더 바이트 세 개(맵 모드, 카트리지 종류, 롬 크기)를 헥스 뷰어로 봅니다. 돌격편 일본판이라면 <code>30 02 0B</code>가
+    나옵니다.
+  </p>
+  <pre tabindex="0"><code>xxd -s 0x7FD5 -l 3 game.sfc</code></pre>
+  <p>
+    체크섬은 툴킷이 계산해 줍니다. 틀리면 1로 끝나고, <code>--fix</code>를 주면 제자리에 다시 씁니다.
+  </p>
+  <pre tabindex="0"><code>krpatch snes checksum game.sfc
+krpatch snes checksum game.sfc --fix</code></pre>
+</GuideChapter>
+
+<style>
+  .hex-table td,
+  .hex-table th {
+    text-align: center;
+  }
+</style>

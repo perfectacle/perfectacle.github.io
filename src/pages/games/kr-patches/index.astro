@@ -1,6 +1,7 @@
 ---
 import PatchBook from '../../../layouts/PatchBook.astro';
 import { KR_PATCH_LIST_PATH, KR_PATCHES } from '../../../lib/kr-patches';
+import { GUIDE_PATH } from '../../../components/romhacking/chapters.ts';
 import '../../../styles/kr-patch-hub.css';
 
 const systems = [
@@ -136,6 +137,23 @@ const lines = [
       KR-PATCH <span>MONITOR</span>
     </p>
   </section>
+  <aside class="guide-card" aria-labelledby="guide-card-title">
+    <a href={GUIDE_PATH}>
+      <span class="guide-card-kicker" aria-hidden="true">
+        MANUAL
+      </span>
+      <span class="guide-card-title" id="guide-card-title">
+        롬 해킹 기초
+      </span>
+      <span class="guide-card-text">
+        이 패치들은 어떻게 만들었을까요? 16진수와 엔디안부터 뱅크와 어셈블리까지 그림과 직접 만져 보는 도구로 처음부터
+        배웁니다.
+      </span>
+      <span class="guide-card-cta">
+        가이드 읽기 <span aria-hidden="true">→</span>
+      </span>
+    </a>
+  </aside>
 </PatchBook>
 
 <script>

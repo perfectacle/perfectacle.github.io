@@ -379,3 +379,50 @@
     animation: none;
   }
 }
+
+/* Entry to the ROM hacking guide, set under the monitor like a manual beside the console. */
+.guide-card {
+  width: min(100% - 32px, 920px);
+  margin: 8px auto 40px;
+}
+.guide-card a {
+  display: grid;
+  gap: 6px;
+  padding: 18px 20px;
+  border: 2px solid rgb(125 255 160 / 45%);
+  border-radius: 12px;
+  background: linear-gradient(160deg, #0d1a12, #07100b);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: 0 0 18px rgb(125 255 160 / 12%);
+}
+.guide-card a:hover,
+.guide-card a:focus-visible {
+  border-color: var(--accent);
+}
+.guide-card a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.guide-card-kicker {
+  color: var(--muted);
+  font:
+    700 0.75rem/1 ui-monospace,
+    monospace;
+  letter-spacing: 0.3em;
+}
+.guide-card-title {
+  font-family: var(--pixel);
+  /* Whole multiples of the font's 12px grid keep the pixel strokes even. */
+  font-size: 24px;
+  color: var(--accent);
+}
+.guide-card-text {
+  color: var(--ink);
+  line-height: 1.6;
+}
+.guide-card-cta {
+  font-family: var(--pixel);
+  font-size: 12px;
+  color: var(--link);
+}

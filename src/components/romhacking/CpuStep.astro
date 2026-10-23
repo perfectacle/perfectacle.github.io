@@ -1,0 +1,473 @@
+---
+import { FLAG, FLAG_ORDER, Memory, run, startState, type CpuState } from '../../lib/cpu65816.ts';
+import { formatCpu, hex } from '../../lib/snes-mapper.ts';
+import { CPU_PROGRAMS } from './cpu-programs.ts';
+
+interface Props {
+  program: string;
+}
+const program = CPU_PROGRAMS.find(p => p.id === Astro.props.program);
+if (!program) throw new Error(`Unknown CPU program ${Astro.props.program}`);
+
+const ORIGIN = 0x808000;
+const mem = new Memory({ [ORIGIN]: program.code });
+const trace = run(mem);
+const seen = new Map<number, (typeof trace.steps)[number]['instruction']>();
+for (const s of trace.steps) if (!seen.has(s.instruction.addr)) seen.set(s.instruction.addr, s.instruction);
+const lines = [...seen.values()].sort((a, b) => a.addr - b.addr);
+const dataBytes = program.dataFrom ? program.code.slice(program.dataFrom - 0x8000) : [];
+const start = startState();
+const id = `cpu-${program.id}`;
+
+const regs = (s: CpuState) => [
+  { name: 'A', value: s.p & FLAG.M ? `B $${hex(s.a >> 8, 2)} · A $${hex(s.a & 0xff, 2)}` : `$${hex(s.a, 4)}` },
+  { name: 'X', value: s.p & FLAG.X ? `$${hex(s.x, 2)}` : `$${hex(s.x, 4)}` },
+  { name: 'Y', value: s.p & FLAG.X ? `$${hex(s.y, 2)}` : `$${hex(s.y, 4)}` },
+  { name: 'S', value: `$${hex(s.s, 4)}` },
+  { name: 'PC', value: formatCpu((s.pb << 16) | s.pc) },
+  { name: 'DB', value: `$${hex(s.db, 2)}` },
+];
+const widthNote = (s: CpuState) =>
+  `M=${s.p & FLAG.M ? 1 : 0}: A ${s.p & FLAG.M ? 8 : 16}비트 · X=${s.p & FLAG.X ? 1 : 0}: X·Y ${s.p & FLAG.X ? 8 : 16}비트`;
+---
+
+<section class="widget cpu-step" data-cpu-step={program.id} aria-labelledby={`${id}-title`}>
+  <h3 class="widget-title" id={`${id}-title`}>
+    명령 한 줄씩 실행하기: {program.title}
+  </h3>
+  <p class="widget-help">
+    {program.intro} <span class="live-only">「한 줄 실행」을 누를 때마다 ▶ 표시가 붙은 명령 하나를 실행합니다.</span>
+  </p>
+
+  <p class="cpu-start">
+    시작 상태: 이미 네이티브 모드로 바꾼 뒤이고, A·X·Y는 8비트(M=1, X=1), DB와 PB는 $80, S는 $1FFF입니다. 전원을 켠
+    직후(에뮬레이션 모드, DB·PB·D가 모두 0)와는 다릅니다.
+  </p>
+  <div class="cpu-layout">
+    <ol class="cpu-listing" aria-label="프로그램" tabindex="0" data-listing>
+      {lines.map(ins => (
+        <li data-line={ins.addr & 0xffff} aria-current={ins.addr === ORIGIN ? 'step' : undefined}>
+          <span class="cpu-mark" aria-hidden="true">
+            ▶
+          </span>
+          <span class="cpu-code mono">
+            <span class="cpu-addr">{hex(ins.addr & 0xffff, 4)}</span>
+            <span class="cpu-bytes">{ins.bytes.map(b => hex(b, 2)).join(' ')}</span>
+            <strong class="cpu-asm">{ins.text}</strong>
+          </span>
+          <span class="cpu-note">{program.notes[ins.addr & 0xffff]}</span>
+        </li>
+      ))}
+      {program.dataFrom && (
+        <li class="cpu-data">
+          <span class="cpu-code mono">
+            <span class="cpu-addr">{hex(program.dataFrom, 4)}</span>
+            <span class="cpu-bytes">{dataBytes.map(b => hex(b, 2)).join(' ')}</span>
+          </span>
+          <span class="cpu-note">{program.dataNote}</span>
+        </li>
+      )}
+    </ol>
+
+    <div class="cpu-panel live-only">
+      <div class="cpu-buttons">
+        <button type="button" class="widget-btn is-primary" data-act="step">
+          한 줄 실행
+        </button>
+        <button type="button" class="widget-btn" data-act="run">
+          끝까지 실행
+        </button>
+        <button type="button" class="widget-btn" data-act="reset">
+          처음 상태로
+        </button>
+      </div>
+      <p class="cpu-last" data-last>
+        아직 아무 명령도 실행하지 않았습니다.
+      </p>
+      <dl class="cpu-regs">
+        {regs(start).map(r => (
+          <div>
+            <dt>{r.name}</dt>
+            <dd data-reg={r.name}>{r.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="cpu-flags">
+        <p class="cpu-sub">P(상태 플래그) — 대문자·1이 켜진 비트</p>
+        <ol data-flags>
+          {FLAG_ORDER.map(f => (
+            <li data-flag={f} class:list={{ on: start.p & FLAG[f] }}>
+              <span>{start.p & FLAG[f] ? f : f.toLowerCase()}</span>
+              <small>{start.p & FLAG[f] ? 1 : 0}</small>
+            </li>
+          ))}
+        </ol>
+        <p class="cpu-width" data-width>
+          {widthNote(start)}
+        </p>
+      </div>
+      <div class="cpu-mem">
+        <p class="cpu-sub">메모리(WRAM)</p>
+        <ul data-mem>
+          {program.watch.map(a => (
+            <li data-addr={a}>
+              <span class="mono">{formatCpu(a)}</span>
+              <code>00</code>
+              <small class="changed">방금 바뀜</small>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="cpu-panel static-only">
+      <p class="cpu-sub">끝까지 실행한 뒤(명령 {trace.steps.length}개)</p>
+      <dl class="cpu-regs">
+        {regs(trace.final).map(r => (
+          <div>
+            <dt>{r.name}</dt>
+            <dd>{r.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="cpu-width">{widthNote(trace.final)}</p>
+      <ul class="cpu-static-mem">
+        {program.watch.map(a => (
+          <li>
+            <span class="mono">{formatCpu(a)}</span> <code>{hex(mem.read(a), 2)}</code>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { FLAG, FLAG_ORDER, Memory, startState, step, type CpuState, type StepResult } from '../../lib/cpu65816.ts';
+  import { formatCpu, hex } from '../../lib/snes-mapper.ts';
+  import { CPU_PROGRAMS } from './cpu-programs.ts';
+
+  const ORIGIN = 0x808000;
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-cpu-step]')) {
+    const program = CPU_PROGRAMS.find(p => p.id === root.dataset['cpuStep']);
+    if (!program) continue;
+    let mem = new Memory({ [ORIGIN]: program.code });
+    let state: CpuState = startState();
+    let last: StepResult | null = null;
+    let count = 0;
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel);
+    const live = q<HTMLElement>('[data-live]');
+    const stepBtn = q<HTMLButtonElement>('[data-act="step"]');
+    const runBtn = q<HTMLButtonElement>('[data-act="run"]');
+
+    const regText = (name: string, s: CpuState) => {
+      switch (name) {
+        case 'A':
+          return s.p & FLAG.M ? `B $${hex(s.a >> 8, 2)} · A $${hex(s.a & 0xff, 2)}` : `$${hex(s.a, 4)}`;
+        case 'X':
+          return s.p & FLAG.X ? `$${hex(s.x, 2)}` : `$${hex(s.x, 4)}`;
+        case 'Y':
+          return s.p & FLAG.X ? `$${hex(s.y, 2)}` : `$${hex(s.y, 4)}`;
+        case 'S':
+          return `$${hex(s.s, 4)}`;
+        case 'PC':
+          return formatCpu((s.pb << 16) | s.pc);
+        default:
+          return `$${hex(s.db, 2)}`;
+      }
+    };
+
+    const render = (prev: CpuState | null) => {
+      const listing = q<HTMLElement>('[data-listing]');
+      for (const li of root.querySelectorAll<HTMLElement>('[data-line]')) {
+        const current = !state.stopped && Number(li.dataset['line']) === state.pc;
+        if (current) li.setAttribute('aria-current', 'step');
+        else li.removeAttribute('aria-current');
+        // Scroll only the listing box, so the page itself never jumps while stepping.
+        if (current && listing) {
+          const top = li.offsetTop;
+          if (top < listing.scrollTop || top + li.offsetHeight > listing.scrollTop + listing.clientHeight) {
+            listing.scrollTop = Math.max(0, top - listing.clientHeight / 3);
+          }
+        }
+      }
+      for (const dd of root.querySelectorAll<HTMLElement>('[data-reg]')) {
+        const name = dd.dataset['reg'] ?? '';
+        const value = regText(name, state);
+        const changed = prev !== null && regText(name, prev) !== value;
+        dd.textContent = value;
+        dd.parentElement?.classList.toggle('is-changed', changed);
+      }
+      for (const li of root.querySelectorAll<HTMLElement>('[data-flag]')) {
+        const f = (li.dataset['flag'] ?? 'C') as (typeof FLAG_ORDER)[number];
+        const on = (state.p & FLAG[f]) !== 0;
+        li.classList.toggle('on', on);
+        li.classList.toggle('is-changed', prev !== null && ((prev.p & FLAG[f]) !== 0) !== on);
+        const [letter, bit] = li.children;
+        if (letter) letter.textContent = on ? f : f.toLowerCase();
+        if (bit) bit.textContent = on ? '1' : '0';
+      }
+      const width = q<HTMLElement>('[data-width]');
+      if (width) {
+        width.textContent = `M=${state.p & FLAG.M ? 1 : 0}: A ${state.p & FLAG.M ? 8 : 16}비트 · X=${state.p & FLAG.X ? 1 : 0}: X·Y ${state.p & FLAG.X ? 8 : 16}비트`;
+      }
+      const written = new Set(last?.writes.map(w => w.addr));
+      for (const li of root.querySelectorAll<HTMLElement>('[data-mem] [data-addr]')) {
+        const addr = Number(li.dataset['addr']);
+        const code = li.querySelector('code');
+        if (code) code.textContent = hex(mem.read(addr), 2);
+        li.classList.toggle('is-changed', written.has(addr));
+      }
+      const lastEl = q<HTMLElement>('[data-last]');
+      if (lastEl) {
+        lastEl.textContent = last
+          ? `${count}번째 명령: ${last.instruction.text}${state.stopped ? ' — 멈췄습니다.' : ''}`
+          : '아직 아무 명령도 실행하지 않았습니다.';
+      }
+      if (stepBtn) stepBtn.disabled = state.stopped;
+      if (runBtn) runBtn.disabled = state.stopped;
+    };
+
+    const announce = (prev: CpuState) => {
+      if (!live || !last) return;
+      const parts = ['A', 'X', 'Y', 'S']
+        .filter(n => regText(n, prev) !== regText(n, state))
+        .map(n => `${n}는 ${regText(n, state)}`);
+      if (prev.p !== state.p) parts.push(`플래그 ${FLAG_ORDER.map(f => (state.p & FLAG[f] ? f : '-')).join('')}`);
+      for (const w of last.writes) parts.push(`${formatCpu(w.addr)}에 ${hex(w.value, 2)}`);
+      if (state.stopped) parts.push('멈춤');
+      live.textContent = `${last.instruction.text} 실행. ${parts.join(', ') || '바뀐 레지스터 없음'}`;
+    };
+
+    const once = () => {
+      if (state.stopped) return;
+      const prev = state;
+      last = step(state, mem);
+      state = last.state;
+      count += 1;
+      render(prev);
+      announce(prev);
+    };
+
+    stepBtn?.addEventListener('click', once);
+    runBtn?.addEventListener('click', () => {
+      const before = state;
+      for (let i = 0; i < 500 && !state.stopped; i++) {
+        last = step(state, mem);
+        state = last.state;
+        count += 1;
+      }
+      render(before);
+      if (live)
+        live.textContent = `끝까지 실행했습니다. 명령 ${count}개, A는 ${regText('A', state)}, X는 ${regText('X', state)}`;
+    });
+    q('[data-act="reset"]')?.addEventListener('click', () => {
+      mem = new Memory({ [ORIGIN]: program.code });
+      state = startState();
+      last = null;
+      count = 0;
+      render(null);
+      if (live) live.textContent = '처음 상태로 돌아갔습니다.';
+      stepBtn?.focus();
+    });
+    root.classList.add('is-live');
+    render(null);
+  }
+</script>
+
+<style>
+  .cpu-start {
+    margin: -6px 0 14px;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .cpu-layout {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 900px) {
+    .cpu-layout {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+  .cpu-listing {
+    position: relative;
+    display: grid;
+    gap: 4px;
+    max-height: 22rem;
+    margin: 0;
+    padding: 0 4px 0 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    list-style: none;
+  }
+  .cpu-listing li {
+    display: grid;
+    grid-template-columns: 1.2em minmax(0, 1fr);
+    gap: 0 6px;
+    padding: 6px 8px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .cpu-mark {
+    grid-row: span 2;
+    color: var(--accent);
+    visibility: hidden;
+  }
+  .cpu-listing li[aria-current='step'] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .cpu-listing li[aria-current='step'] .cpu-mark {
+    visibility: visible;
+  }
+  .cpu-code {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 12px;
+    font-size: 0.9rem;
+  }
+  .cpu-addr,
+  .cpu-bytes {
+    color: var(--fg-muted);
+  }
+  .cpu-bytes {
+    min-width: 7.5em;
+  }
+  .cpu-asm {
+    color: var(--fg);
+  }
+  .cpu-note {
+    grid-column: 2;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .cpu-data {
+    border-style: dashed !important;
+    border-color: var(--dg-line) !important;
+  }
+  .cpu-data .cpu-code,
+  .cpu-data .cpu-note {
+    grid-column: 2;
+  }
+  .cpu-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .cpu-last {
+    margin: 10px 0;
+    font-size: 0.9rem;
+  }
+  .cpu-sub {
+    margin: 12px 0 6px;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  .cpu-regs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 6px;
+    margin: 0;
+  }
+  .cpu-regs div {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    padding: 6px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .cpu-regs dt {
+    min-width: 1.8em;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--fg-muted);
+  }
+  .cpu-regs dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+  .cpu-regs div.is-changed,
+  .cpu-flags li.is-changed,
+  .cpu-mem li.is-changed {
+    border-color: var(--dg-warm);
+    background: var(--dg-warm-soft);
+  }
+  .cpu-flags ol {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cpu-flags li {
+    display: grid;
+    justify-items: center;
+    padding: 4px 0;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    font-family: var(--font-mono);
+    color: var(--fg-muted);
+  }
+  .cpu-flags li.on {
+    color: var(--fg);
+    font-weight: 700;
+    border-color: var(--accent);
+  }
+  .cpu-flags small {
+    font-size: 0.75rem;
+  }
+  .cpu-width {
+    margin: 6px 0 0;
+    font-size: 0.85rem;
+  }
+  .cpu-mem ul,
+  .cpu-static-mem {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cpu-mem li {
+    display: grid;
+    padding: 4px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  .cpu-mem code {
+    font-family: var(--font-mono);
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+  .cpu-mem .changed {
+    visibility: hidden;
+    color: var(--dg-warm);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+  .cpu-mem li.is-changed .changed {
+    visibility: visible;
+  }
+  .cpu-static-mem li {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    font-size: 0.85rem;
+  }
+</style>
