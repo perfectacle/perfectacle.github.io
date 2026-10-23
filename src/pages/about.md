@@ -22,13 +22,13 @@ profileImage: /about/profile.webp
 * 레저큐 서버 개발자 (2017.08 ~ 2019.04)
 
 ## 관심사
-* Java, Kotlin, Spring 기반 서버 개발과 동시성 (Virtual Thread, 코루틴)
+* Java, Kotlin, Spring 기반 서버 개발과 동시성
 * 소프트웨어 설계와 아키텍처
 * Kubernetes, 클라우드, 관측 가능성 같은 인프라와 운영
 * AI 코딩 에이전트와 함께 일하는 방식
-* 야생동물, 고전 게임 한글화
+* [야생동물](/2025/12/02/travel-001-kenya-01/), [고전 게임 한글화](/games/kr-patches/)
 * 음악: 힙합, 재즈, 보사노바, Lofi
 
 ## 이 블로그
 궁금한 걸 파고들다 알게 된 것들을 정리해 두는 곳입니다.  
-새 글은 [RSS 피드](https://perfectacle.github.io/atom.xml) 로 받아 보실 수 있습니다.
+새 글은 [RSS 피드](/atom.xml) 로 받아 보실 수 있습니다.
