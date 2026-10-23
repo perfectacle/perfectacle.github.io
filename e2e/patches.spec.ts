@@ -121,6 +121,48 @@ test('catalogue opens the game page, which leads with the patch box and plays no
   await expect(page.locator(`a[href$=".ips"]`)).toHaveAttribute('download', '');
 });
 
+test('choosing a cartridge boots it in the console before opening the game page', async ({ page }) => {
+  await page.goto('/games/kr-patches/');
+  const card = page.locator(`main a[href="${GOKUDEN}"]`);
+  await card.click();
+  const stage = page.locator('.boot-stage[aria-hidden="true"]');
+  await expect(stage).toBeVisible();
+  await expect(page.getByRole('status')).toHaveText('드래곤볼 Z 초오공전 돌격편 페이지로 이동합니다');
+  await expect(stage.locator('.boot-cart')).toBeVisible();
+  await expect(card.locator('.cartridge')).toBeHidden();
+  await expect(stage.locator('.boot-lamp')).toHaveClass(/is-on/);
+  await expect(stage.locator('.boot-crt img')).toHaveAttribute(
+    'src',
+    /dragon-ball-z-super-gokuden-totsugeki\/images\/title\.webp$/,
+  );
+  await expect(page).toHaveURL(GOKUDEN);
+  await page.goBack();
+  await expect(page).toHaveURL('/games/kr-patches/');
+  await expect(page.locator('.boot-stage')).toHaveCount(0);
+  await expect(card.locator('.cartridge')).toBeVisible();
+});
+
+test('the boot scene can be skipped from the keyboard', async ({ page }) => {
+  await page.goto('/games/kr-patches/');
+  await page.locator(`main a[href="${OTOGIRI}"]`).click();
+  await expect(page.locator('.boot-stage')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page).toHaveURL(OTOGIRI, { timeout: 1000 });
+});
+
+test('choosing a cartridge opens the game page at once when motion is reduced', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/games/kr-patches/');
+  await page.evaluate(() =>
+    new MutationObserver(() => {
+      if (document.querySelector('.boot-stage')) sessionStorage.setItem('booted', 'yes');
+    }).observe(document.body, { childList: true }),
+  );
+  await page.locator(`main a[href="${GOKUDEN}"]`).click();
+  await expect(page).toHaveURL(GOKUDEN);
+  expect(await page.evaluate(() => sessionStorage.getItem('booted'))).toBeNull();
+});
+
 test('patch box explains why a file cannot be patched', async ({ page }) => {
   await page.goto(GAME);
   const input = page.locator('.patch-box input[type=file]');
@@ -194,6 +236,8 @@ test('llms.txt points AI assistants to the patch pages', async ({ request }) => 
 });
 
 test('catalogue lists every game page', async ({ page }) => {
+  // The boot scene has its own test; here only the links matter.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/games/kr-patches/');
   await expect(page.locator('header')).toHaveCount(0);
   await expect(page.getByText('한글판 만들기', { exact: true })).toHaveCount(0);

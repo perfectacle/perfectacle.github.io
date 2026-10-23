@@ -1,6 +1,9 @@
 ---
 import PatchBook from '../../../layouts/PatchBook.astro';
 import SfcController from '../../../components/kr-patch/SfcController.astro';
+import CartridgeBoot from '../../../components/kr-patch/CartridgeBoot.astro';
+import SfcCartridge from '../../../components/kr-patch/SfcCartridge.astro';
+import SfcCartridgeDefs from '../../../components/kr-patch/SfcCartridgeDefs.astro';
 import { KR_PATCH_LIST_PATH, KR_PATCHES } from '../../../lib/kr-patches';
 import '../../../styles/patch-catalogue.css';
 ---
@@ -22,6 +25,10 @@ import '../../../styles/patch-catalogue.css';
     { href: 'https://spritedatabase.net/file/8203', label: '록맨 X3 스프라이트' },
     { href: 'https://spritedatabase.net/file/7653', label: '동키콩 컨트리 2 스프라이트' },
     { href: 'https://spritedatabase.net/file/31727', label: '스트리트 파이터 II 스프라이트' },
+    {
+      href: 'https://commons.wikimedia.org/wiki/File:Nintendo-Super-Famicom-Set-FL.png',
+      label: '슈퍼 패미컴 사진 Evan-Amos(퍼블릭 도메인)',
+    },
   ]}
 >
   <div class="catalogue-world">
@@ -36,6 +43,7 @@ import '../../../styles/patch-catalogue.css';
         </div>
         <SfcController />
       </div>
+      <SfcCartridgeDefs />
       <ul class="game-catalogue">
         {KR_PATCHES.map((patch, i) => {
           const href = `${patch.path}/`;
@@ -46,18 +54,7 @@ import '../../../styles/patch-catalogue.css';
           return (
             <li>
               <a class="game-card" href={href}>
-                <div class="selection-slot" aria-hidden="true">
-                  <span>{String(i + 1).padStart(2, '0')}</span>
-                  <span class="slot-meter"></span>
-                  <span>SFC</span>
-                </div>
-                <div class="game-screen">
-                  {i === 0 ? (
-                    <img src={image} width="256" height="224" alt="" fetchpriority="high" />
-                  ) : (
-                    <img src={image} width="256" height="224" alt="" loading="lazy" decoding="async" />
-                  )}
-                </div>
+                <SfcCartridge title={patch.title} image={image} color={patch.color} eager={i === 0} />
                 <div class="game-card-copy">
                   <p class="game-release">
                     게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}{' '}
@@ -76,4 +73,5 @@ import '../../../styles/patch-catalogue.css';
       <div class="world-sprite sprite-ryu"></div>
     </div>
   </div>
+  <CartridgeBoot />
 </PatchBook>

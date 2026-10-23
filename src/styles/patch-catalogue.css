@@ -82,75 +82,135 @@
 }
 
 .game-card {
-  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
-  border: 4px solid #e5e1d9;
-  padding: 8px;
-  background: #c6c3c6;
-  box-shadow:
-    0 0 0 2px #625c69,
-    6px 8px #101e18,
-    inset -4px -4px #99939f,
-    inset 3px 3px #f0ece2;
   color: var(--ink);
   text-decoration: none;
 }
 
-.game-card:hover,
 .game-card:focus-visible {
   outline: 4px solid #ac8dcb;
-  outline-offset: 2px;
-  background: #d6d0db;
+  outline-offset: 6px;
 }
 
-.selection-slot {
+.sfc-cart-defs {
+  position: absolute;
+}
+
+.cartridge {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 400 / 250;
+  container-type: inline-size;
+  filter: drop-shadow(0 10px 8px rgb(5 12 9 / 55%));
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.game-card:hover .cartridge,
+.game-card:focus-visible .cartridge {
+  transform: translateY(-10px);
+}
+
+.cartridge-shell {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Matches the label recess in the shell's 400×250 viewBox. */
+.cartridge-label {
+  position: absolute;
+  left: 10.25%;
+  top: 4.8%;
+  width: 79.5%;
+  height: 39.2%;
   display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 8px 8px 14px;
-  color: #494352;
-  font:
-    700 0.75rem/1.2 ui-monospace,
-    monospace;
-  letter-spacing: 0.12em;
-}
-
-.selection-slot > span:first-child {
-  padding: 4px 8px;
-  background: #6b527e;
-  color: #fff4df;
-  box-shadow:
-    inset 2px 2px #8c77a1,
-    2px 2px #a09aa6;
-}
-
-.slot-meter {
-  flex: 1;
-  max-width: 176px;
-  height: 12px;
-  margin-left: auto;
-  border-block: 2px solid #a39ba8;
-  background: repeating-linear-gradient(90deg, #736c79 0 3px, #d4cfd5 3px 8px);
-}
-
-.game-screen {
-  display: flex;
-  justify-content: center;
-  margin-inline: 4px;
   overflow: hidden;
-  border: 6px solid #3b3643;
-  background: #101610;
+  border-radius: 5px;
+  background: var(--label);
   box-shadow:
-    0 2px #f0ece2,
-    0 -2px #a19ba7;
+    inset 0 0 0 1px rgb(255 255 255 / 18%),
+    0 1px 0 #d5d5d8;
 }
 
-.game-screen img {
+.cartridge-label::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, rgb(255 255 255 / 22%), transparent 38%);
+  pointer-events: none;
+}
+
+.cartridge-label-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6%;
+  min-width: 0;
+  padding: 2% 4%;
+}
+
+.cartridge-mark {
+  display: grid;
+  grid-template-columns: repeat(2, 0.32em);
+  gap: 0.08em;
+  width: fit-content;
+  margin: 0.1em;
+  font-size: 20px;
+  transform: rotate(45deg);
+}
+
+.cartridge-mark span {
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.cartridge-mark span:nth-child(1) {
+  background: #4b9dec;
+}
+
+.cartridge-mark span:nth-child(2) {
+  background: #ed5e68;
+}
+
+.cartridge-mark span:nth-child(3) {
+  background: #48c493;
+}
+
+.cartridge-mark span:nth-child(4) {
+  background: #f2cc58;
+}
+
+.cartridge-title {
+  color: #fff8e8;
+  font-family: var(--pixel);
+  font-synthesis: none;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-shadow: 1px 1px #000;
+  word-break: keep-all;
+}
+
+@container (min-width: 420px) {
+  .cartridge-mark {
+    font-size: 28px;
+  }
+
+  .cartridge-title {
+    font-size: 24px;
+  }
+}
+
+.cartridge-label img {
   display: block;
-  width: min(100%, 384px);
-  height: auto;
+  flex: none;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 256 / 224;
   image-rendering: pixelated;
 }
 
@@ -160,7 +220,15 @@
   flex: 1;
   flex-direction: column;
   justify-content: center;
-  padding: 18px 12px;
+  margin-top: 16px;
+  padding: 18px;
+  border: 4px solid #e5e1d9;
+  /* Same width as the top border so the title block stays centred; it blends into the copyright below. */
+  border-bottom-color: #c6c3c6;
+  background: #c6c3c6;
+  box-shadow:
+    0 0 0 2px #625c69,
+    inset 3px 3px #f0ece2;
 }
 
 .game-release {
@@ -184,13 +252,25 @@
 }
 
 .game-copyright {
-  margin: 0 8px;
-  border-top: 1px solid #a39caa;
-  padding: 12px 4px 10px;
+  padding: 0 18px 14px;
+  border: 4px solid #e5e1d9;
+  border-top: 0;
+  background: #c6c3c6;
+  box-shadow:
+    0 0 0 2px #625c69,
+    6px 8px #101e18,
+    inset -4px -4px #99939f;
   color: #494352;
   font-size: 0.875rem;
   line-height: 1.8;
   overflow-wrap: anywhere;
+}
+
+.game-copyright::before {
+  content: '';
+  display: block;
+  margin-bottom: 10px;
+  border-top: 1px solid #a39caa;
 }
 
 [data-theme='sfc'] .page-footer {
@@ -356,4 +436,133 @@
   .world-sprite {
     animation: none;
   }
+
+  .cartridge {
+    transition: none;
+  }
+}
+
+/* Boot scene played by CartridgeBoot before opening a game page. Inside the rig the photo is drawn twice:
+   the back copy under the flying cartridge, the front copy (clipped below the slot's lip) over it once it
+   is in the slot. The CRT and the black curtain cover everything. */
+.boot-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 60%, #1d2028, #050608 70%);
+  cursor: pointer;
+}
+
+.boot-rig {
+  position: relative;
+  width: min(92vw, 880px, calc((100vh - 48px) * 1.6));
+  aspect-ratio: 1139 / 505;
+  margin-top: min(18vw, 160px);
+}
+
+.boot-console {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.boot-console-front {
+  z-index: 3;
+}
+
+.boot-cart {
+  position: absolute;
+  z-index: 4;
+  margin: 0;
+  transform-origin: 0 0;
+  transition: none;
+  filter: none;
+}
+
+.boot-cart.is-in-slot {
+  z-index: 2;
+}
+
+/* Matches the photo's light, which falls from the front left. */
+.boot-cart::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 4% / 6%;
+  background: linear-gradient(100deg, rgb(255 255 255 / 6%), rgb(0 0 0 / 14%));
+  pointer-events: none;
+}
+
+.boot-lamp {
+  position: absolute;
+  z-index: 4;
+  width: 2.1%;
+  height: 0.9%;
+  border-radius: 50%;
+  background: #ff3a2a;
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(14deg);
+  box-shadow:
+    0 0 6px 2px rgb(255 60 40 / 80%),
+    0 0 18px 6px rgb(255 60 40 / 35%);
+  transition: opacity 0.12s steps(2);
+}
+
+.boot-lamp.is-on {
+  opacity: 1;
+}
+
+.boot-crt {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  background: #000;
+  visibility: hidden;
+}
+
+.boot-crt.is-on {
+  visibility: visible;
+}
+
+.boot-crt-screen {
+  position: relative;
+  width: min(100vw, calc(100vh * 4 / 3));
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 2.5% / 3.3%;
+  clip-path: inset(50% 50% 50% 50%);
+}
+
+.boot-crt-screen img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  image-rendering: pixelated;
+}
+
+.boot-crt-screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(180deg, rgb(0 0 0 / 28%) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgb(0 0 0 / 65%));
+  pointer-events: none;
+}
+
+.boot-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
 }

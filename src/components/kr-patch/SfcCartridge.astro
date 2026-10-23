@@ -1,0 +1,73 @@
+---
+interface Props {
+  title: string;
+  image: string;
+  /** Label background behind the title. */
+  color: string;
+  eager?: boolean;
+}
+
+const { title, image, color, eager = false } = Astro.props;
+const ridges = [0, 1, 2, 3, 4];
+// Front of a Super Famicom cartridge, traced from the real shell: landscape body with a raised top lip,
+// five grip ridges on each shoulder, the label recess, the lower grip groove and the two screws.
+// Its gradients are defined once by SfcCartridgeDefs, which the page must render.
+---
+
+<div class="cartridge" style={`--label: ${color}`}>
+  <svg class="cartridge-shell" viewBox="0 0 400 250" aria-hidden="true">
+    <path
+      d="M0 26C0 18 3 14 9 12L31 3C35 1 39 0 44 0H356C361 0 365 1 369 3L391 12C397 14 400 18 400 26V237C400 244 395 250 388 250H12C5 250 0 244 0 237Z"
+      fill="url(#sfc-cart-body)"
+      stroke="#77777b"
+      stroke-width="1.5"
+    ></path>
+    <path d="M36 4H364L374 8.5H26Z" fill="#d3d3d6"></path>
+    <path d="M26 9H374" stroke="#97979b" stroke-width="1.2"></path>
+    {ridges.map(i => (
+      <>
+        <rect x="6" y={26 + i * 9} width="16" height="3.6" rx="1.8" fill="#86868a" />
+        <path d={`M8 ${30.6 + i * 9}H20`} stroke="#d7d7d9" stroke-width="1" />
+        <rect x="378" y={26 + i * 9} width="16" height="3.6" rx="1.8" fill="#86868a" />
+        <path d={`M380 ${30.6 + i * 9}H392`} stroke="#d7d7d9" stroke-width="1" />
+      </>
+    ))}
+    <rect x="39" y="11" width="322" height="100" rx="7" fill="#9a9a9e"></rect>
+    <path d="M62 112V249M338 112V249" stroke="#929296" stroke-width="1.4"></path>
+    <path d="M63.4 112V249M339.4 112V249" stroke="#d2d2d5" stroke-width="1"></path>
+    <rect x="63" y="112" width="275" height="137" fill="#000" opacity="0.035"></rect>
+    <rect
+      x="92"
+      y="139"
+      width="216"
+      height="22"
+      rx="11"
+      fill="url(#sfc-cart-groove)"
+      stroke="#86868a"
+      stroke-width="1.2"
+    ></rect>
+    <path d="M103 159.5H297" stroke="#d9d9dc" stroke-width="1"></path>
+    <path d="M162 142V158M238 142V158" stroke="#a3a3a7" stroke-width="1.4"></path>
+    <circle cx="20" cy="229" r="6" fill="#8a8a8e"></circle>
+    <circle cx="20" cy="229" r="4" fill="url(#sfc-cart-screw)"></circle>
+    <circle cx="380" cy="229" r="6" fill="#8a8a8e"></circle>
+    <circle cx="380" cy="229" r="4" fill="url(#sfc-cart-screw)"></circle>
+    <path d="M12 249H388" stroke="#8c8c90" stroke-width="2"></path>
+  </svg>
+  <div class="cartridge-label">
+    <div class="cartridge-label-copy" aria-hidden="true">
+      <span class="cartridge-mark">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+      <span class="cartridge-title">{title}</span>
+    </div>
+    {eager ? (
+      <img src={image} width="256" height="224" alt="" fetchpriority="high" />
+    ) : (
+      <img src={image} width="256" height="224" alt="" loading="lazy" decoding="async" />
+    )}
+  </div>
+</div>

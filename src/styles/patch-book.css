@@ -1381,3 +1381,15 @@ h3.pixel {
   gap: 8px;
   padding-left: 20px;
 }
+
+/* The boot scene on the patch list ends on black; let the next page fade in from it. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.45s;
+  }
+}
