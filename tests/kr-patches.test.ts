@@ -19,9 +19,9 @@ describe('kr-patches', () => {
     ]);
   });
 
-  it('keeps the old snes/ folder for release tags, which were cut before the folders moved to sfc/', () => {
+  it('links the ROM analysis document at the release tag of the served version', () => {
     expect(analysisUrl(KAKUSEI_PATCH)).toBe(
-      'https://github.com/perfectacle/kr-patches/blob/dragon-ball-z-super-gokuden-kakusei-v1.3/snes/dragon-ball-z-super-gokuden-kakusei/docs/ANALYSIS.md',
+      'https://github.com/perfectacle/kr-patches/blob/dragon-ball-z-super-gokuden-kakusei-v1.3/sfc/dragon-ball-z-super-gokuden-kakusei/docs/ANALYSIS.md',
     );
   });
 

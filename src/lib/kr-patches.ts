@@ -196,11 +196,10 @@ export const releaseTag = (patch: KrPatch, version = patch.version) => `${patchS
 
 /**
  * A file of the patch source on GitHub at `ref` (`main` or a release tag), by its path inside the game's folder
- * (`tools/build.sh`); a path ending in `/` is a folder. The folders are named after the last segment of `path`. The
- * repository moved them from `snes/` to `sfc/` after the releases, so a tag still has the old folder.
+ * (`tools/build.sh`); a path ending in `/` is a folder. The folders are named after the last segment of `path`.
  */
 export const patchFileUrl = (patch: KrPatch, ref: string, file: string) =>
-  `https://github.com/perfectacle/kr-patches/${file.endsWith('/') ? 'tree' : 'blob'}/${ref}/${ref === 'main' ? 'sfc' : 'snes'}/${patchSlug(patch)}/${file}`;
+  `https://github.com/perfectacle/kr-patches/${file.endsWith('/') ? 'tree' : 'blob'}/${ref}/sfc/${patchSlug(patch)}/${file}`;
 
 /** A file of the patch source on main. Release tags predate the Korean docs, so links to them go here. */
 export const sourceFileUrl = (patch: KrPatch, file: string) => patchFileUrl(patch, 'main', file);

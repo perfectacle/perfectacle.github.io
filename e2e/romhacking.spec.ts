@@ -524,7 +524,7 @@ for (const patch of KR_PATCHES) {
     await expect(making.getByRole('link', { name: 'kr-patch-toolkit' })).toHaveAttribute('href', KR_PATCH_TOOLKIT_URL);
     await expect(making.getByRole('link', { name: /롬 분석 문서/ })).toHaveAttribute(
       'href',
-      new RegExp(`/blob/[^/]+-v${patch.version.replace('.', '\\.')}/snes/.+/docs/ANALYSIS\\.md$`),
+      new RegExp(`/blob/[^/]+-v${patch.version.replace('.', '\\.')}/sfc/.+/docs/ANALYSIS\\.md$`),
     );
     for (const img of await page.locator('.note-body img').all()) {
       await img.scrollIntoViewIfNeeded();
