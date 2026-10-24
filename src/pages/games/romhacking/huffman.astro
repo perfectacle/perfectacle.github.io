@@ -3,7 +3,7 @@ import GuideChapter from '../../../layouts/GuideChapter.astro';
 import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import HuffmanCode from '../../../components/romhacking/HuffmanCode.astro';
-import { OTOGIRISOU_PATCH } from '../../../lib/kr-patches.ts';
+import { OTOGIRISOU_PATCH, analysisUrl, sourceFileUrl } from '../../../lib/kr-patches.ts';
 import { chapterBySlug, chapterPath, notePath } from '../../../components/romhacking/chapters.ts';
 
 const references = [
@@ -18,7 +18,7 @@ const references = [
     note: '부호 길이만 저장하고 부호를 정해진 순서로 다시 만드는 정규 허프만 부호와 그 예(ABCDEFGH)',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patches/blob/otogirisou-v1.2/snes/otogirisou/docs/ANALYSIS.md',
+    href: analysisUrl(OTOGIRISOU_PATCH),
     label: 'kr-patches, 제절초 docs/ANALYSIS.ko.md 3장',
     note: '일본판 허프만 비트열의 기준점, 트리 표 두 개와 루트, 첫 문장의 비트, v1.0의 2바이트 대본',
   },
@@ -463,8 +463,11 @@ const noWalk = [
   </h2>
   <p>
     kr-patch-toolkit에는 허프만 명령이 없습니다. 한 게임에만 쓰이는 형식은 툴킷이 아니라 그 게임의 패치 소스에 두기
-    때문입니다. 제절초 패치 소스의 <code>tools/script.py</code>가 일본판 비트열을 읽습니다. 그 폴더에서 Python을 열고
-    일본판 롬으로 첫 문장을 읽어 봅니다.
+    때문입니다. 제절초 패치 소스의{' '}
+    <a href={sourceFileUrl(OTOGIRISOU_PATCH, 'tools/script.py')}>
+      <code>tools/script.py</code>
+    </a>
+    가 일본판 비트열을 읽습니다. 그 폴더에서 Python을 열고 일본판 롬으로 첫 문장을 읽어 봅니다.
   </p>
   <pre tabindex="0"><code>&gt;&gt;&gt; import script
 &gt;&gt;&gt; rom = open('otogirisou-j.sfc', 'rb').read()

@@ -1,0 +1,25 @@
+---
+import type { KrPatch } from '../../lib/kr-patches';
+import { sourceLink } from './source-links';
+
+interface Props {
+  patch: KrPatch;
+  /** One or more names separated by `, `: patch source paths, `krpatch` commands, or toolkit scripts marked
+   * `(krpatch snes lua)`. */
+  name: string;
+  class?: string;
+}
+
+const { patch, name, class: className } = Astro.props;
+const links = name.split(', ').map(part => sourceLink(patch, part));
+---
+
+{links.map((link, i) => (
+  <>
+    {i > 0 && ', '}
+    <a class="source-file" href={link.href}>
+      <code class={className}>{link.label}</code>
+    </a>
+    {link.note && ` ${link.note}`}
+  </>
+))}

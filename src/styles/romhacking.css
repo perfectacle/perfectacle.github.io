@@ -628,3 +628,31 @@
   word-break: normal;
   overflow-wrap: anywhere;
 }
+
+/* Section titles link to themselves. The 「#」 moves inside the link so it is part of what a reader clicks. */
+.guide .prose h2:has(> .heading-link)::before {
+  content: none;
+}
+.guide .heading-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.guide .prose h2 > .heading-link::before {
+  content: '#' / '';
+  margin-right: 0.45em;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--accent);
+}
+.guide .heading-link:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  text-underline-offset: 5px;
+}
+.guide .heading-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}

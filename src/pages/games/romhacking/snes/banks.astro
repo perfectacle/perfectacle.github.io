@@ -3,7 +3,7 @@ import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import BankMap from '../../../../components/romhacking/BankMap.astro';
-import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH, toolkitFileUrl } from '../../../../lib/kr-patches.ts';
 import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
@@ -28,7 +28,7 @@ const references = [
     note: 'LoROM·HiROM 지도 그림',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/src/kr_patch/snes/mapper.py',
+    href: toolkitFileUrl('src/kr_patch/snes/mapper.py'),
     label: 'kr-patch-toolkit, mapper.py',
     note: '「CPU 주소 → 파일 오프셋 계산기」가 옮겨 온 변환 공식(같은 테스트 사례로 확인)',
   },
@@ -358,9 +358,9 @@ const systemAreas = [
   <h3>슈퍼 마리오 RPG: 4MB를 넘기지 않은 이유</h3>
   <p>
     <a href={`${notePath(SMRPG_PATCH)}#making-address`}>슈퍼 마리오 RPG</a>는 SA-1 카트리지입니다. 새 한글 이름 표는{' '}
-    <code>$E2:B400</code>
-    (파일 0x22B400)에 있습니다. 롬을 4MB보다 키우면 실행 중에 창의 블록을 바꿔야 하는데, 두 CPU가 동시에 돌아서 바꾸는
-    사이 다른 쪽이 엉뚱한 블록을 읽을 수 있습니다. 그래서 롬을 늘리지 않고 원래 비어 있던 공간만 썼습니다.
+    <code>$E2:B400</code>(파일 0x22B400)에 있습니다. 롬을 4MB보다 키우면 실행 중에 창의 블록을 바꿔야 하는데, 두 CPU가
+    동시에 돌아서 바꾸는 사이 다른 쪽이 엉뚱한 블록을 읽을 수 있습니다. 그래서 롬을 늘리지 않고 원래 비어 있던 공간만
+    썼습니다.
   </p>
   <h3>제절초: 뱅크를 넘는 대본과 세이브 RAM</h3>
   <p>

@@ -3,7 +3,7 @@ import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
-import { notePath } from '../../../../components/romhacking/chapters.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -151,9 +151,10 @@ const references = [
     다른 뱅크의 코드를 불렀다 돌아오기: JSL과 RTL <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    5장에서 본 <code>JSR</code>·<code>RTS</code>는 같은 뱅크 안의 서브루틴을 다녀오는 쌍입니다. 후킹할 새 코드는 대개
-    다른 뱅크의 빈 곳에 두므로, 뱅크까지 3바이트로 적는 <code>JSL</code>(옵코드 <code>22</code>)과 그 짝인{' '}
-    <code>RTL</code>(<code>6B</code>)을 씁니다. <code>JSL</code>은 4바이트라서 원래 코드 4바이트 이상을 덮어써야 합니다.
+    <a href={chapterHref(5)}>5장</a>에서 본 <code>JSR</code>·<code>RTS</code>는 같은 뱅크 안의 서브루틴을 다녀오는
+    쌍입니다. 후킹할 새 코드는 대개 다른 뱅크의 빈 곳에 두므로, 뱅크까지 3바이트로 적는 <code>JSL</code>(옵코드{' '}
+    <code>22</code>)과 그 짝인 <code>RTL</code>(<code>6B</code>)을 씁니다. <code>JSL</code>은 4바이트라서 원래 코드
+    4바이트 이상을 덮어써야 합니다.
   </p>
   <p>
     <a href={`${notePath(OTOGIRISOU_PATCH)}#making-wordwrap`}>제절초</a> 한글패치는 글자를 찍는 루틴의{' '}
@@ -215,10 +216,10 @@ const references = [
     </li>
   </ul>
   <p>
-    주소 <code>$1E8000</code>이 <code>00 80 1E</code>로 적힌 것은 2장의 리틀 엔디안입니다. 새 코드가 끝나면{' '}
-    <code>RTL</code>이 스택에 적어 둔 곳으로 돌려보냅니다. 그 자리는 <code>JSL</code> 바로 다음 바이트인{' '}
-    <code>$A77B</code>라서 <code>NOP</code> 두 개를 지나 원래 다음 명령인 <code>$A77D</code>의 <code>ADC</code>에
-    닿습니다.
+    주소 <code>$1E8000</code>이 <code>00 80 1E</code>로 적힌 것은 <a href={chapterHref(2)}>2장</a>의 리틀 엔디안입니다.
+    새 코드가 끝나면 <code>RTL</code>이 스택에 적어 둔 곳으로 돌려보냅니다. 그 자리는 <code>JSL</code> 바로 다음
+    바이트인 <code>$A77B</code>라서 <code>NOP</code> 두 개를 지나 원래 다음 명령인 <code>$A77D</code>의 <code>ADC</code>
+    에 닿습니다.
   </p>
   <Figure caption="후킹한 흐름. 새 코드는 끝에서 덮어쓴 명령을 다시 실행하고 돌아옵니다." max={600}>
     <svg viewBox="0 0 360 300" role="img" aria-labelledby="flow-t flow-d">
@@ -386,7 +387,8 @@ const references = [
     </li>
     <li>
       <strong>폭(M·X 플래그)</strong>: 원래 코드가 16비트 A를 기대하는데 8비트로 돌아가면 다음 명령의 바이트 길이부터
-      달라집니다(3장). 제절초는 덮어쓴 <code>REP #$30</code>을 끝에서 다시 실행해 폭을 원래대로 맞춥니다.
+      달라집니다(<a href={chapterHref(3)}>3장</a>). 제절초는 덮어쓴 <code>REP #$30</code>을 끝에서 다시 실행해 폭을
+      원래대로 맞춥니다.
     </li>
     <li>
       <strong>플래그</strong>: 바로 뒤가 <code>ADC</code>라서 올림(C)이 0이어야 합니다. 마지막에 다시 실행하는{' '}
@@ -456,7 +458,8 @@ const references = [
   </h2>
   <p>
     새 코드는 롬에서 아무도 쓰지 않는 곳에 둡니다. 롬을 만들 때 남은 칸은 보통 <code>00</code>이나 <code>FF</code>로
-    채워져 있어서, 같은 바이트가 길게 이어진 곳이 후보가 됩니다. 롬을 늘려 새 뱅크를 붙이는 방법도 있습니다(11장).
+    채워져 있어서, 같은 바이트가 길게 이어진 곳이 후보가 됩니다. 롬을 늘려 새 뱅크를 붙이는 방법도 있습니다(
+    <a href={chapterHref(11)}>11장</a>).
   </p>
   <p>
     그러나 <strong>같은 바이트가 이어진다고 빈 곳은 아닙니다.</strong> 각성편 v1.1은 <code>FF</code>가 이어진 것처럼
@@ -660,7 +663,7 @@ B7:FA1F  5C D6 97 B7  JML $B797D6    ; 모든 갈래가 만나는 곳으로</cod
       위의 제어 코드 표처럼, 게임이 주소를 표에서 꺼내 점프한다면 그 칸만 바꿔도 새 코드로 갑니다. 원래 코드를 한
       바이트도 덮어쓰지 않아 덮어쓴 명령을 다시 실행할 필요가 없습니다. 슈퍼 마리오 RPG는 쓰이지 않던 대사 제어 코드{' '}
       <code>$1B</code>의 처리 주소(<code>$C0:6896</code>, 원래 <code>4E 62</code>)를 아이템 이름 처리 루틴{' '}
-      <code>$60A6</code>으로 바꿔, 새 제어 코드를 하나 얻었습니다(8장).
+      <code>$60A6</code>으로 바꿔, 새 제어 코드를 하나 얻었습니다(<a href={chapterHref(8)}>8장</a>).
     </p>
 
     <h3>변수를 둘 RAM</h3>
@@ -673,10 +676,10 @@ B7:FA1F  5C D6 97 B7  JML $B797D6    ; 모든 갈래가 만나는 곳으로</cod
 
     <h3>NMI 안에 끼워 넣을 때</h3>
     <p>
-      NMI는 화면을 그리지 않는 짧은 시간에 VRAM을 고칠 수 있는 곳이라(5장), 글자 그림을 올리는 코드를 자주 끼워
-      넣습니다. 이 시간은 짧아서, NMI에 더하는 일은 미리 준비해 두고 옮기기만 하게 만듭니다. 슈퍼 마리오 RPG의 필드
-      메뉴는 그릴 글자를 WRAM에 12자까지 모아 두었다가 NMI에서 DMA(CPU 대신 하드웨어가 메모리 사이에 바이트를 한꺼번에
-      옮기는 기능)로 올립니다.
+      NMI는 화면을 그리지 않는 짧은 시간에 VRAM을 고칠 수 있는 곳이라(<a href={chapterHref(5)}>5장</a>), 글자 그림을
+      올리는 코드를 자주 끼워 넣습니다. 이 시간은 짧아서, NMI에 더하는 일은 미리 준비해 두고 옮기기만 하게 만듭니다.
+      슈퍼 마리오 RPG의 필드 메뉴는 그릴 글자를 WRAM에 12자까지 모아 두었다가 NMI에서 DMA(CPU 대신 하드웨어가 메모리
+      사이에 바이트를 한꺼번에 옮기는 기능)로 올립니다.
     </p>
     <ul>
       <li>
@@ -740,7 +743,7 @@ WordWrap:
   <p>
     돌격편 v1.1은 앞의 <code>JML</code> 후킹으로 글자 코드 <code>$0C00</code>–<code>$0FFF</code>를 새로 열었습니다. 새
     코드 120바이트(<code>$B7:FA00</code>–<code>$B7:FA77</code>)와 4KB짜리 글자 블록 여덟 곳은 모두 일본판과 v1.0에서
-    전부 <code>FF</code>였던 곳입니다. 글자 칸을 어떻게 나눴는지는 7장에서 이어집니다.
+    전부 <code>FF</code>였던 곳입니다. 글자 칸을 어떻게 나눴는지는 <a href={chapterHref(7)}>7장</a>에서 이어집니다.
   </p>
 
   <h3>슈퍼 마리오 RPG: 같은 뱅크 안의 빈 곳</h3>

@@ -183,17 +183,22 @@ export const downloads = (patch: KrPatch) => {
 
 /** The toolkit release the notes and the guide were checked against. */
 export const KR_PATCH_TOOLKIT_VERSION = 'v0.2.0';
+/** A file of the toolkit at that release, by its path in the repository. */
+export const toolkitFileUrl = (path: string) =>
+  `https://github.com/perfectacle/kr-patch-toolkit/blob/${KR_PATCH_TOOLKIT_VERSION}/${path}`;
 /** Korean README of the toolkit (`krpatch`) at that release. It is the first release that has the Korean docs. */
-export const KR_PATCH_TOOLKIT_URL = `https://github.com/perfectacle/kr-patch-toolkit/blob/${KR_PATCH_TOOLKIT_VERSION}/README.ko.md`;
+export const KR_PATCH_TOOLKIT_URL = toolkitFileUrl('README.ko.md');
 
 /**
- * Korean README of the patch source on GitHub. The kr-patches folders are named after the last segment of
- * `path` (`snes/super-mario-rpg`). Release tags predate the Korean docs, so this points at main.
+ * A file of the patch source on GitHub, by its path inside the game's folder (`tools/build.sh`); a path ending in `/`
+ * is a folder. The kr-patches folders are named after the last segment of `path` (`snes/super-mario-rpg`). Release
+ * tags predate the Korean docs, so this points at main.
  */
-export const sourceUrl = (patch: KrPatch) => {
-  const dir = patch.path.slice(patch.path.lastIndexOf('/') + 1);
-  return `https://github.com/perfectacle/kr-patches/blob/main/snes/${dir}/README.ko.md`;
-};
+export const sourceFileUrl = (patch: KrPatch, file: string) =>
+  `https://github.com/perfectacle/kr-patches/${file.endsWith('/') ? 'tree' : 'blob'}/main/snes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/${file}`;
+
+/** Korean README of the patch source on GitHub. */
+export const sourceUrl = (patch: KrPatch) => sourceFileUrl(patch, 'README.ko.md');
 
 const releaseTag = (patch: KrPatch) => `${patch.path.slice(patch.path.lastIndexOf('/') + 1)}-v${patch.version}`;
 

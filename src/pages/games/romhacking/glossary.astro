@@ -62,7 +62,11 @@ const present = new Set(groups.map(g => g.initial));
       <div class="prose gl-body">
         {groups.map(g => (
           <section class="gl-group" aria-labelledby={initialId(g.initial)}>
-            <h2 id={initialId(g.initial)}>{g.initial}</h2>
+            <h2 id={initialId(g.initial)}>
+              <a class="heading-link" href={`#${initialId(g.initial)}`}>
+                {g.initial}
+              </a>
+            </h2>
             <dl>
               {g.entries.map(e => (
                 <div class="gl-entry" id={termId(e)}>

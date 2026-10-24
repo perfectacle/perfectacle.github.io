@@ -4,7 +4,7 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import CpuStep from '../../../../components/romhacking/CpuStep.astro';
 import { SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
-import { notePath } from '../../../../components/romhacking/chapters.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -127,8 +127,8 @@ const modes = [
     </svg>
   </Figure>
   <p>
-    3장에서 본 것처럼 피연산자 길이는 M·X 설정에 따라 달라지고, 주소는 작은 자리부터 적힙니다(2장). 이 두 가지만
-    기억하면 바이트를 손으로도 어셈블리로 바꿀 수 있습니다.
+    <a href={chapterHref(3)}>3장</a>에서 본 것처럼 피연산자 길이는 M·X 설정에 따라 달라지고, 주소는 작은 자리부터
+    적힙니다(<a href={chapterHref(2)}>2장</a>). 이 두 가지만 기억하면 바이트를 손으로도 어셈블리로 바꿀 수 있습니다.
   </p>
 
   <h2 id="cards">
@@ -461,7 +461,8 @@ const modes = [
       화면을 다 그리고 다음 화면을 그리기 전(수직 귀선 기간)에 오는 <strong>NMI</strong>입니다. CPU는 PB, PC, P를 스택에
       쌓고 네이티브 모드 벡터 <code>$00:FFEA</code>에 적힌 주소로 갑니다. 단, 게임이 레지스터 <code>$4200</code>의 비트
       7을 켜 두었을 때만 NMI가 옵니다. 루틴은 <code>RTI</code>로 끝나 원래 자리로 돌아갑니다. 화면 데이터는 이 짧은
-      시간에만 안전하게 바꿀 수 있어서, 글자 그림을 VRAM에 올리는 코드를 여기에 끼워 넣는 일이 많습니다(6·7장).
+      시간에만 안전하게 바꿀 수 있어서, 글자 그림을 VRAM에 올리는 코드를 여기에 끼워 넣는 일이 많습니다(
+      <a href={chapterHref(6)}>6</a>·<a href={chapterHref(7)}>7장</a>).
     </p>
     <h3>사이클</h3>
     <p>

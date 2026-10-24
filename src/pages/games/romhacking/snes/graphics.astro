@@ -3,8 +3,14 @@ import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import TileBytes from '../../../../components/romhacking/TileBytes.astro';
-import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
-import { notePath } from '../../../../components/romhacking/chapters.ts';
+import {
+  KAKUSEI_PATCH,
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  TOTSUGEKI_PATCH,
+  toolkitFileUrl,
+} from '../../../../lib/kr-patches.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
 import { toBinary, toHex } from '../../../../lib/numbers.ts';
 import { SAMPLE_GLYPH, decode, encode, shadowed } from '../../../../lib/snes-tiles.ts';
 
@@ -40,7 +46,7 @@ const references = [
     note: 'CGRAM과 색 0(투명)',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/src/kr_patch/snes/tiles.py',
+    href: toolkitFileUrl('src/kr_patch/snes/tiles.py'),
     label: 'kr-patch-toolkit, tiles.py',
     note: '「타일을 칠하며 바이트 보기」가 옮겨 온 해독·부호화 코드(같은 테스트 사례로 확인)',
   },
@@ -273,7 +279,11 @@ const strategies = [
   <p>
     그래서 2bpp 타일 16바이트는 "0번 줄 평면 0, 0번 줄 평면 1, 1번 줄 평면 0, …" 순서입니다. 4bpp는 이렇게 만든
     16바이트(평면 0·1) 뒤에 평면 2·3이 같은 모양으로 16바이트 더 붙습니다. 아래에서 칸을 눌러 칠해 보면 어느 바이트의
-    어느 비트가 바뀌는지 바로 보입니다. 툴킷 <code>tiles.py</code>를 옮긴 코드라 툴킷과 같은 바이트가 나옵니다.
+    어느 비트가 바뀌는지 바로 보입니다. 툴킷{' '}
+    <a href={toolkitFileUrl('src/kr_patch/snes/tiles.py')}>
+      <code>tiles.py</code>
+    </a>
+    를 옮긴 코드라 툴킷과 같은 바이트가 나옵니다.
   </p>
   <TileBytes />
   <p>
@@ -357,8 +367,8 @@ const strategies = [
     </svg>
   </Figure>
   <p>
-    색 하나가 2바이트라 롬이나 CGRAM 덤프에서 색을 찾을 때도 2장의 리틀 엔디안으로 읽습니다. 빨강·초록·파랑이
-    5비트씩이라 0–31 단계이고, 순서가 흔히 쓰는 RGB와 반대로 파랑이 위쪽 비트에 있습니다.
+    색 하나가 2바이트라 롬이나 CGRAM 덤프에서 색을 찾을 때도 <a href={chapterHref(2)}>2장</a>의 리틀 엔디안으로
+    읽습니다. 빨강·초록·파랑이 5비트씩이라 0–31 단계이고, 순서가 흔히 쓰는 RGB와 반대로 파랑이 위쪽 비트에 있습니다.
   </p>
 
   <h2 id="vram">
@@ -367,8 +377,8 @@ const strategies = [
   <p>
     화면에 쓰는 타일 그림과 타일맵은 화면 처리 칩(PPU)의 메모리 <strong>VRAM</strong>(64KB)에 있습니다. 롬에 있는 그림은
     게임이 VRAM으로 옮겨야 화면에 나옵니다. 이 옮기는 일은 화면을 그리지 않는 동안(수직 귀선 기간이나 화면을 끈
-    동안)에만 할 수 있어서, 보통 NMI에서 DMA로 한꺼번에 보냅니다(5장). DMA는 CPU가 한 바이트씩 옮기는 대신 하드웨어가
-    메모리 사이에 바이트를 한꺼번에 옮기는 기능입니다.
+    동안)에만 할 수 있어서, 보통 NMI에서 DMA로 한꺼번에 보냅니다(<a href={chapterHref(5)}>5장</a>). DMA는 CPU가 한
+    바이트씩 옮기는 대신 하드웨어가 메모리 사이에 바이트를 한꺼번에 옮기는 기능입니다.
   </p>
   <p>
     VRAM은 2바이트(워드) 단위로 주소를 매깁니다. 게임이 레지스터 <code>$2116</code>·<code>$2117</code>에 적는 VRAM
@@ -525,8 +535,8 @@ const strategies = [
   </Figure>
   <p>
     한국어 번역에서 가변폭이 반가운 이유는 두 가지입니다. 같은 창에 더 많은 글자가 들어가고, 띄어쓰기 빈칸을 좁게 만들
-    수 있습니다. 대신 줄바꿈 위치가 글자 폭의 합으로 정해져, 번역문을 넣을 때마다 줄 폭을 계산해야 합니다(6장의 단어
-    단위 줄바꿈).
+    수 있습니다. 대신 줄바꿈 위치가 글자 폭의 합으로 정해져, 번역문을 넣을 때마다 줄 폭을 계산해야 합니다(
+    <a href={chapterHref(6)}>6장</a>의 단어 단위 줄바꿈).
   </p>
 
   <h2 id="hangul">
@@ -547,8 +557,9 @@ const strategies = [
     ))}
   </ul>
   <p>
-    어느 방법이든 "이 글자 코드가 어떤 그림인가"를 적은 글자표가 함께 바뀝니다(8장). 그리고 원래 글자 칸을 덮어쓸 때는
-    그 글자를 쓰는 곳이 정말 없는지, 대사뿐 아니라 메뉴·이름 입력 화면·전투 메시지까지 모두 확인해야 합니다.
+    어느 방법이든 "이 글자 코드가 어떤 그림인가"를 적은 글자표가 함께 바뀝니다(<a href={chapterHref(8)}>8장</a>). 그리고
+    원래 글자 칸을 덮어쓸 때는 그 글자를 쓰는 곳이 정말 없는지, 대사뿐 아니라 메뉴·이름 입력 화면·전투 메시지까지 모두
+    확인해야 합니다.
   </p>
 
   <Deeper title="비트평면 공식, 16×16 글자의 타일 배치, 1bpp 폰트와 그림자">
@@ -639,9 +650,9 @@ const strategies = [
     <a href={`${notePath(TOTSUGEKI_PATCH)}#making-font`}>돌격편</a>의 글자 코드는 범위에 따라 시트가 정해집니다.{' '}
     <code>$100</code>–<code>$4FF</code>는 8×16 가나 자리, <code>$500</code>–<code>$BEF</code>는 16×16 한자 자리입니다.
     v1.0은 한자 850칸과 가나 160칸에 한글을 그려 1,010자를 썼고, 재번역한 v1.1에는 213자를 새로 그려야 했습니다. 그중
-    37자는 더는 쓰지 않게 된 옛 칸에 그리고, 나머지 176자를 위해 6장의 <code>JML</code> 후킹으로 원래 쓰지 않던{' '}
-    <code>$C00</code>–<code>$FFF</code>를 열고, 4KB씩 여덟 곳의 빈 공간을 블록으로 이었습니다. 블록 하나가 128코드(글자
-    64개)라 모두 512자입니다.
+    37자는 더는 쓰지 않게 된 옛 칸에 그리고, 나머지 176자를 위해 <a href={chapterHref(6)}>6장</a>의 <code>JML</code>{' '}
+    후킹으로 원래 쓰지 않던 <code>$C00</code>–<code>$FFF</code>를 열고, 4KB씩 여덟 곳의 빈 공간을 블록으로 이었습니다.
+    블록 하나가 128코드(글자 64개)라 모두 512자입니다.
   </p>
   <Figure caption="코드 $CE5 「쫓」이 블록 표를 거쳐 CPU 주소 $84:FAA0이 되는 과정" max={600}>
     <svg viewBox="0 0 360 214" role="img" aria-labelledby="blk-t blk-d">

@@ -8,7 +8,8 @@ import BankMap from '../romhacking/BankMap.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import MakingSources from '../kr-patch/MakingSources.astro';
 import { chapterBySlug, chapterLabel, chapterPath, type GuidePlatform } from '../romhacking/chapters';
-import { sourceUrl, type KrPatch } from '../../lib/kr-patches';
+import { sourceFileUrl, sourceUrl, type KrPatch } from '../../lib/kr-patches';
+import SourceFile from '../kr-patch/SourceFile.astro';
 
 interface Props {
   patch: KrPatch;
@@ -429,7 +430,7 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
     ...</code></pre>
 <p>v1.1은 필드 메뉴, 전투 메뉴, 결과 창, 레벨업 화면, 대사 엔진 등 스무 곳 남짓에 이런 후킹을 걸었습니다.</p>
 
-<ToolFiles items={files.intro} />
+<ToolFiles patch={patch} items={files.intro} />
 
 <h2 id="making-map">
   2. 롬 지도 <span class="layer-badge layer-easy">쉽게</span>
@@ -543,7 +544,7 @@ $C1:06AF → 0x01 × 0x10000 + 0x06AF = 0x0106AF</code></pre>
   </p>
 </Deeper>
 
-<ToolFiles items={files.map} />
+<ToolFiles patch={patch} items={files.map} />
 
 <h2 id="making-dialogue">
   3. 대사 <span class="layer-badge layer-easy">쉽게</span>
@@ -765,7 +766,7 @@ $C1:06AF → 0x01 × 0x10000 + 0x06AF = 0x0106AF</code></pre>
   </p>
 </Deeper>
 
-<ToolFiles items={files.dialogue} />
+<ToolFiles patch={patch} items={files.dialogue} />
 
 <h2 id="making-font">
   4. 글자 <span class="layer-badge layer-easy">쉽게</span>
@@ -922,7 +923,7 @@ $C1:06AF → 0x01 × 0x10000 + 0x06AF = 0x0106AF</code></pre>
   </p>
 </Deeper>
 
-<ToolFiles items={files.font} />
+<ToolFiles patch={patch} items={files.font} />
 
 <h2 id="making-gfx">
   5. 그림·압축 <span class="layer-badge layer-easy">쉽게</span>
@@ -1118,7 +1119,7 @@ $C1:06AF → 0x01 × 0x10000 + 0x06AF = 0x0106AF</code></pre>
   </p>
 </Deeper>
 
-<ToolFiles items={files.names} />
+<ToolFiles patch={patch} items={files.names} />
 
 <h2 id="making-save">
   7. 세이브·암호 <span class="layer-badge layer-easy">쉽게</span>
@@ -1165,8 +1166,8 @@ $C1:06AF → 0x01 × 0x10000 + 0x06AF = 0x0106AF</code></pre>
 </h2>
 <NoteRelated patch={patch} id="making-unique" />
 <p>
-  이 게임만의 문제는 4절의 "화면에 상주하는 256칸"을 넘어 메뉴 폰트에 없는 글자를 띄우는 일이었습니다. 게다가 같은 이름
-  표를 두 CPU가 서로 다른 방식으로 그립니다.
+  이 게임만의 문제는 <a href="#making-font">4절</a>의 "화면에 상주하는 256칸"을 넘어 메뉴 폰트에 없는 글자를 띄우는
+  일이었습니다. 게다가 같은 이름 표를 두 CPU가 서로 다른 방식으로 그립니다.
 </p>
 <Figure caption="같은 이름 표, 다른 두 길. 필드 메뉴는 타일을, 전투 메뉴는 비트맵을 씁니다." max={600}>
   <svg viewBox="0 0 360 256" role="img" aria-labelledby="smrpg-path-t smrpg-path-d">
@@ -1346,7 +1347,8 @@ $C1:06AF → 0x01 × 0x10000 + 0x06AF = 0x0106AF</code></pre>
   <p>
     테스트 롬에서 굼바와 가시돌이가 마법을 쓰게 바꾸고, Mesen 2에서 띠 명령이 번호를 읽는 순간 번호를 바꿔 아군 필살기
     27개와 아이템 165개를 모두 띄웠습니다. 그려지는 글자 코드를 기록해 이름과 대조하니 모두 같았습니다. 처음 돌렸을 때는
-    「힐셸」과 「천둥콰르릉」이 「캡셸」, 「천둥잣르릉」으로 나왔는데, 띠가 아니라 4절의 대사 폰트 코드 충돌이었습니다.
+    「힐셸」과 「천둥콰르릉」이 「캡셸」, 「천둥잣르릉」으로 나왔는데, 띠가 아니라 <a href="#making-font">4절</a>의 대사
+    폰트 코드 충돌이었습니다.
   </p>
   <p>
     새 코드는 <code>$E2:FDE2–$E2:FF6C</code>와 <code>$C1:56BB–56BE</code>, <code>$C1:56F2–56F5</code>(원래 루틴이 남긴
@@ -1354,7 +1356,7 @@ $C1:06AF → 0x01 × 0x10000 + 0x06AF = 0x0106AF</code></pre>
   </p>
 </Deeper>
 
-<ToolFiles items={files.unique} />
+<ToolFiles patch={patch} items={files.unique} />
 
 <h2 id="making-testing">
   9. 확인 방법 <span class="layer-badge layer-try">직접 해 보기</span>
@@ -1402,9 +1404,9 @@ end, emu.callbackType.write, 0x3030, 0x3031, emu.cpuType.snes, emu.memType.snesM
 
 <h3 id="making-debug">개발자 디버그 메뉴</h3>
 <p>
-  1절에서 본 한 바이트(파일 <code>0x106AF</code>, <code>F0</code> → <code>80</code>)를 바꾸면 전투 중 내 턴에 Start로
-  전투 디버그 메뉴가 열립니다. Mesen 2 Lua로는 <code>emu.write(0x106AF, 0x80, emu.memType.snesPrgRom)</code> 한
-  줄입니다.
+  <a href="#making-about">1절</a>에서 본 한 바이트(파일 <code>0x106AF</code>, <code>F0</code> → <code>80</code>)를
+  바꾸면 전투 중 내 턴에 Start로 전투 디버그 메뉴가 열립니다. Mesen 2 Lua로는{' '}
+  <code>emu.write(0x106AF, 0x80, emu.memType.snesPrgRom)</code> 한 줄입니다.
 </p>
 <figure class="paper">
   <ZoomImage
@@ -1454,7 +1456,7 @@ end, emu.callbackType.write, 0x3030, 0x3031, emu.cpuType.snes, emu.memType.snesM
   </div>
   <p>표를 만든 뒤 고친 이름 표기(셸 → 쉘)와 메뉴 글자(힐, 휠)는 bsnes와 Snes9x에서 다시 돌려 화면 84장이 같았습니다.</p>
 </Deeper>
-<ToolFiles items={files.testing} />
+<ToolFiles patch={patch} items={files.testing} />
 
 <h2 id="making-next">
   10. 다음 사람에게 <span class="layer-badge layer-patch">실제 패치에서</span>
@@ -1494,19 +1496,24 @@ end, emu.callbackType.write, 0x3030, 0x3031, emu.cpuType.snes, emu.memType.snesM
 </ul>
 <h3>쓴 도구</h3>
 <p>
-  asar 1.91, Mesen 2.1.1, Python 3.9.6과 Pillow 11.3.0, Galmuri11 Condensed 2.404입니다. 호환성 확인에는 9절 표의
-  libretro 코어를 썼습니다. asar에서 분기 명령에 숫자 주소를 직접 쓰면 상대 오프셋이 잘못 계산된 적이 있어, 같은 블록의
-  레이블로 분기하고 <code>assert pc() == …</code>로 덮어쓴 범위를 확인했습니다.
+  asar 1.91, Mesen 2.1.1, Python 3.9.6과 Pillow 11.3.0, Galmuri11 Condensed 2.404입니다. 호환성 확인에는{' '}
+  <a href="#making-testing">9절</a> 표의 libretro 코어를 썼습니다. asar에서 분기 명령에 숫자 주소를 직접 쓰면 상대
+  오프셋이 잘못 계산된 적이 있어, 같은 블록의 레이블로 분기하고 <code>assert pc() == …</code>로 덮어쓴 범위를
+  확인했습니다.
 </p>
-<ToolFiles items={[{ path: 'docs/ANALYSIS.md', text: '10장 다음 사람에게, 9장 사용한 빈 공간' }]} />
+<ToolFiles patch={patch} items={[{ path: 'docs/ANALYSIS.md', text: '10장 다음 사람에게, 9장 사용한 빈 공간' }]} />
 
 <h2 id="making-tools">
   11. 패치 소스 파일 <span class="layer-badge layer-try">직접 해 보기</span>
 </h2>
 <NoteRelated patch={patch} id="making-tools" />
 <p>
-  빌드는 일본판 롬에 v1.0 IPS를 적용한 롬에서 시작해 <code>zsh tools/make.sh</code> 한 번으로 이름·글자 데이터 생성 →
-  대사 다시 채우기 → asar → 이름 대조까지 갑니다. 각 파일이 어느 절의 내용인지 아래에 모았습니다.
+  빌드는 일본판 롬에 v1.0 IPS를 적용한 롬에서 시작해{' '}
+  <a href={sourceFileUrl(patch, 'tools/make.sh')}>
+    <code>zsh tools/make.sh</code>
+  </a>{' '}
+  한 번으로 이름·글자 데이터 생성 → 대사 다시 채우기 → asar → 이름 대조까지 갑니다. 각 파일이 어느 절의 내용인지 아래에
+  모았습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -1521,7 +1528,7 @@ end, emu.callbackType.write, 0x3030, 0x3031, emu.cpuType.snes, emu.memType.snesM
       {allFiles.map(file => (
         <tr>
           <td>
-            <code>{file.path}</code>
+            <SourceFile patch={patch} name={file.path} />
           </td>
           <td class="wrap">{file.text}</td>
           <td>

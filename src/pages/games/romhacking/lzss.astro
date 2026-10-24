@@ -3,7 +3,7 @@ import GuideChapter from '../../../layouts/GuideChapter.astro';
 import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import LzssStep from '../../../components/romhacking/LzssStep.astro';
-import { KAKUSEI_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
+import { KAKUSEI_PATCH, TOTSUGEKI_PATCH, analysisUrl, toolkitFileUrl } from '../../../lib/kr-patches.ts';
 import { chapterBySlug, chapterPath, notePath } from '../../../components/romhacking/chapters.ts';
 
 const references = [
@@ -34,12 +34,12 @@ const references = [
     note: 'GBA·닌텐도 DS BIOS의 LZ77(플래그 위 비트부터, 1 = 복사)과 RLE 형식',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/src/kr_patch/lzss.py',
+    href: toolkitFileUrl('src/kr_patch/lzss.py'),
     label: 'kr-patch-toolkit, lzss.py',
     note: '「LZSS 압축 한 단계씩 풀기」가 옮겨 온 압축·해제 코드(같은 테스트 사례로 확인)',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patches/blob/dragon-ball-z-super-gokuden-totsugeki-v1.2/snes/dragon-ball-z-super-gokuden-totsugeki/docs/ANALYSIS.md',
+    href: analysisUrl(TOTSUGEKI_PATCH),
     label: 'kr-patches, 돌격편 docs/ANALYSIS.ko.md 5장',
     note: '해제 루틴 $81:DF4F, 항목 표, 압축 크기 3,613 → 3,237바이트',
   },

@@ -959,3 +959,17 @@ test('on a phone the trail fits one line and its menus stay on screen', async ({
     }
   }
 });
+
+test('section titles in chapters, notes and the glossary link to themselves', async ({ page }) => {
+  for (const path of [TEXT, SMRPG_NOTE, GLOSSARY_PATH]) {
+    await page.goto(path);
+    const link = page.locator('.prose h2 > a.heading-link').nth(1);
+    const id = await link.evaluate(a => a.parentElement?.id ?? '');
+    await expect(link).toHaveAttribute('href', `#${id}`);
+    expect(await link.evaluate(a => getComputedStyle(a).cursor), path).toBe('pointer');
+    await link.click();
+    await expect(page).toHaveURL(new RegExp(`#${encodeURIComponent(id).replace(/%/g, '%')}$`));
+  }
+  await page.goto(TEXT);
+  await expect(page.locator('.prose h3 > a.heading-link').first()).toHaveAttribute('href', /^#.+/);
+});

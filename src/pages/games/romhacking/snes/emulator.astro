@@ -3,12 +3,18 @@ import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import RunScript from '../../../../components/romhacking/RunScript.astro';
-import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import {
+  KAKUSEI_PATCH,
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  TOTSUGEKI_PATCH,
+  sourceFileUrl,
+  toolkitFileUrl,
+} from '../../../../lib/kr-patches.ts';
 import { TOOLKIT_README_KO, chapterBySlug, chapterPath, notePath } from '../../../../components/romhacking/chapters.ts';
+import { TOOLKIT_LUA } from '../../../../components/kr-patch/source-links.ts';
 
 const MESEN = 'https://github.com/SourMesen/Mesen2/blob/master';
-const TOOLKIT = 'https://github.com/perfectacle/kr-patch-toolkit/blob/main';
-const PATCHES = 'https://github.com/perfectacle/kr-patches/blob/main/snes';
 const references = [
   {
     href: `${MESEN}/Core/Debugger/LuaApi.cpp`,
@@ -71,37 +77,37 @@ const references = [
     note: 'retro_run(한 프레임 실행), retro_get_memory_data(WRAM 내주기), retro_cheat_set',
   },
   {
-    href: `${TOOLKIT}/src/kr_patch/snes/script.py`,
+    href: toolkitFileUrl('src/kr_patch/snes/script.py'),
     label: 'kr-patch-toolkit, snes/script.py와 libretro.py',
     note: '입력 스크립트 규칙, 프레임을 세는 방법, WRAM 포인터가 없는 코어에서 poke를 Pro Action Replay 치트로 거는 방법. 이 장의 도구는 script.py의 결과로 만든 사례 80개로 같은 결과를 내는지 시험합니다',
   },
   {
-    href: `${TOOLKIT}/src/kr_patch/snes/lua/lib.lua`,
+    href: toolkitFileUrl('src/kr_patch/snes/lua/lib.lua'),
     label: 'kr-patch-toolkit, snes/lua/',
     note: 'lib.lua(입력은 inputPolled에서, 세이브스테이트는 실행 콜백으로 미룸), script.lua, probe/*.lua',
   },
   {
-    href: `${PATCHES}/dragon-ball-z-super-gokuden-kakusei/compat/run_all.sh`,
+    href: sourceFileUrl(KAKUSEI_PATCH, 'compat/run_all.sh'),
     label: 'kr-patches, 각성편 compat/run_all.sh',
     note: 'Mesen 2와 libretro 코어 여섯에 같은 입력 스크립트를 넣는 실제 스크립트',
   },
   {
-    href: `${PATCHES}/otogirisou/docs/ANALYSIS.ko.md`,
+    href: sourceFileUrl(OTOGIRISOU_PATCH, 'docs/ANALYSIS.ko.md'),
     label: 'kr-patches, 제절초 docs/ANALYSIS.ko.md 2장·8장·9장',
     note: '멈춤 찾기 순서, 쓰기 감시로 WRAM 빈 곳 확인, 코어별 결과와 확인하지 않은 것',
   },
   {
-    href: `${PATCHES}/dragon-ball-z-super-gokuden-totsugeki/docs/ANALYSIS.ko.md`,
+    href: sourceFileUrl(TOTSUGEKI_PATCH, 'docs/ANALYSIS.ko.md'),
     label: 'kr-patches, 돌격편 docs/ANALYSIS.ko.md 8장',
     note: '대사 ID 읽기 감시로 하는 회귀 시험, 창 폭 시험(lua/wintest.lua), 코어별 결과',
   },
   {
-    href: `${PATCHES}/super-mario-rpg/docs/ANALYSIS.ko.md`,
+    href: sourceFileUrl(SMRPG_PATCH, 'docs/ANALYSIS.ko.md'),
     label: 'kr-patches, 슈퍼 마리오 RPG docs/ANALYSIS.ko.md 7장·8장',
     note: '쓰기 콜백으로 값 바꿔치기, 시험용 롬, 코어별 결과',
   },
   {
-    href: `${PATCHES}/dragon-ball-z-super-gokuden-kakusei/docs/ANALYSIS.ko.md`,
+    href: sourceFileUrl(KAKUSEI_PATCH, 'docs/ANALYSIS.ko.md'),
     label: 'kr-patches, 각성편 docs/ANALYSIS.ko.md 9장·10장',
     note: '디버그 메뉴로 장면 띄우기, 장면 376개 회귀, 코어별 결과',
   },
@@ -358,7 +364,9 @@ const cores = [
         {probes.map(p => (
           <tr>
             <td>
-              <code>{p.file}</code>
+              <a href={toolkitFileUrl(`${TOOLKIT_LUA}${p.file}`)}>
+                <code>{p.file}</code>
+              </a>
             </td>
             <td>{p.text}</td>
           </tr>
@@ -371,13 +379,19 @@ const cores = [
     <ul>
       <li>
         <strong>버튼은 inputPolled에서 넣습니다.</strong> 프레임 끝에서 <code>emu.setInput</code>을 불러도 게임이 읽는
-        순간과 어긋나면 입력이 들어가지 않습니다. 툴킷의 <code>lib.lua</code>는 누를 버튼을 기억해 두었다가 게임이
-        버튼을 읽는 이벤트에서 넣습니다.
+        순간과 어긋나면 입력이 들어가지 않습니다. 툴킷의{' '}
+        <a href={toolkitFileUrl(`${TOOLKIT_LUA}lib.lua`)}>
+          <code>lib.lua</code>
+        </a>
+        는 누를 버튼을 기억해 두었다가 게임이 버튼을 읽는 이벤트에서 넣습니다.
       </li>
       <li>
         <strong>세이브스테이트는 실행 콜백 안에서만 됩니다.</strong> 다른 곳에서 <code>emu.createSavestate</code>를
-        부르면 "주 CPU의 실행 콜백 안에서 불러야 한다"는 오류가 납니다. <code>lib.lua</code>는 할 일을 줄 세워 두고,
-        다음 명령이 실행될 때 한 번만 불리는 실행 콜백을 걸어 처리합니다.
+        부르면 "주 CPU의 실행 콜백 안에서 불러야 한다"는 오류가 납니다.{' '}
+        <a href={toolkitFileUrl(`${TOOLKIT_LUA}lib.lua`)}>
+          <code>lib.lua</code>
+        </a>
+        는 할 일을 줄 세워 두고, 다음 명령이 실행될 때 한 번만 불리는 실행 콜백을 걸어 처리합니다.
       </li>
       <li>
         <strong>콜백 안의 오류는 조용히 지나갈 수 있습니다.</strong> 각성편 분석 문서는 <code>pcall</code>로 감싸고
@@ -391,7 +405,11 @@ const cores = [
         <strong>
           zsh에서 <code>WATCH</code>라는 환경 변수는 피합니다.
         </strong>{' '}
-        zsh가 같은 이름의 셸 변수를 따로 써서, <code>script.lua</code>는 <code>WATCH_WRAM</code>을 씁니다.
+        zsh가 같은 이름의 셸 변수를 따로 써서,{' '}
+        <a href={toolkitFileUrl(`${TOOLKIT_LUA}script.lua`)}>
+          <code>script.lua</code>
+        </a>
+        는 <code>WATCH_WRAM</code>을 씁니다.
       </li>
     </ul>
   </Deeper>
@@ -407,8 +425,11 @@ const cores = [
   </p>
   <p>
     입력 스크립트는 한 줄에 명령 하나이고, 맨 앞 숫자는 전원을 켠 뒤 몇 번째 프레임인지입니다. 슈퍼 패미컴은 1초에 약
-    60프레임을 그리므로 600은 약 10초 뒤입니다. 툴킷의 Lua 스크립트 <code>script.lua</code>도 같은 파일을 같은 규칙으로
-    읽기 때문에, 스크립트 하나로 모든 에뮬레이터에 같은 입력을 넣을 수 있습니다.
+    60프레임을 그리므로 600은 약 10초 뒤입니다. 툴킷의 Lua 스크립트{' '}
+    <a href={toolkitFileUrl(`${TOOLKIT_LUA}script.lua`)}>
+      <code>script.lua</code>
+    </a>
+    도 같은 파일을 같은 규칙으로 읽기 때문에, 스크립트 하나로 모든 에뮬레이터에 같은 입력을 넣을 수 있습니다.
   </p>
   <div class="table-scroll" tabindex="0" role="region" aria-labelledby="script-caption">
     <table class="script-table">
@@ -500,8 +521,11 @@ const cores = [
     </p>
     <p>
       코어는 프로세스 안에 전역 상태를 갖고 있어서 한 프로세스에서 스크립트 하나만 돌립니다. 여러 시나리오는 셸
-      스크립트로 하나씩 돌리고, 실행마다 결과를 한 줄씩 모읍니다. 툴킷의 <code>examples/snes/run_all.sh</code>와 각
-      패치의 <code>compat/run_all.sh</code>가 그 모양입니다.
+      스크립트로 하나씩 돌리고, 실행마다 결과를 한 줄씩 모읍니다. 툴킷의{' '}
+      <a href={toolkitFileUrl('examples/snes/run_all.sh')}>
+        <code>examples/snes/run_all.sh</code>
+      </a>
+      와 각 패치의 <code>compat/run_all.sh</code>가 그 모양입니다.
     </p>
   </Deeper>
 
@@ -604,8 +628,11 @@ const cores = [
     <a href={`${notePath(OTOGIRISOU_PATCH)}#making-lap2`}>제절초</a> v1.0은 2회차부터 뽑힐 수 있는 2번 시나리오에서
     화면이 글자로 가득 찬 채 멈췄습니다. 2회차까지 직접 플레이하지 않고 버그를 다시 일으키려고, 시나리오를 고르는 코드(
     <code>$02:A569</code>)가 실행되는 순간 세 세이브 슬롯의 회차 수를 원하는 값으로 바꿔 쓰는 Lua 스크립트(
-    <code>lua/lap.lua</code>)를 만들었습니다. 같은 스크립트가 <code>$02:A5EF</code>에서 A 레지스터를 읽어 어느
-    시나리오가 뽑혔는지 기록합니다. 회차를 1, 2, 3으로 바꿔 가며 세 시나리오가 모두 정상으로 시작하는 것을 확인했습니다.
+    <a href={sourceFileUrl(OTOGIRISOU_PATCH, 'lua/lap.lua')}>
+      <code>lua/lap.lua</code>
+    </a>
+    )를 만들었습니다. 같은 스크립트가 <code>$02:A5EF</code>에서 A 레지스터를 읽어 어느 시나리오가 뽑혔는지 기록합니다.
+    회차를 1, 2, 3으로 바꿔 가며 세 시나리오가 모두 정상으로 시작하는 것을 확인했습니다.
   </p>
   <p>
     멈춘 원인을 찾는 순서도 분석 문서에 남아 있습니다. 프레임마다 CPU가 실행 중인 주소(PC)를 기록해 어디서 멈췄는지
@@ -628,9 +655,12 @@ const cores = [
     <a href={`${notePath(TOTSUGEKI_PATCH)}#making-testing`}>돌격편</a>은 대사를 띄울 때마다 대사 번호로 창 정보(
     <code>$8E:C9BA</code> + 번호×2)를 읽습니다. 이 범위에 읽기 콜백을 걸면 어떤 대사가 몇 번째로 나왔는지 기록됩니다.
     시나리오 256개를 8000프레임씩 돌려 일본판과 한글패치의 대사 번호 순서를 비교했고, 순서가 다르거나 먼저 멈춘
-    시나리오는 없었습니다. 한 줄에 들어가는 글자 수는 <code>lua/wintest.lua</code>로 시험했습니다. 시험용 줄을 넣은 롬을
-    돌리면서, 창 크기를 정한 직후(<code>$81:ADDD</code>), 글자 오른쪽 끝을 비교하는 코드(<code>$B7:984A</code>), 줄을
-    넘기는 코드(
+    시나리오는 없었습니다. 한 줄에 들어가는 글자 수는{' '}
+    <a href={sourceFileUrl(TOTSUGEKI_PATCH, 'lua/wintest.lua')}>
+      <code>lua/wintest.lua</code>
+    </a>
+    로 시험했습니다. 시험용 줄을 넣은 롬을 돌리면서, 창 크기를 정한 직후(<code>$81:ADDD</code>), 글자 오른쪽 끝을
+    비교하는 코드(<code>$B7:984A</code>), 줄을 넘기는 코드(
     <code>$B7:9851</code>)가 실행될 때마다 값을 기록해 어느 글자에서 줄이 넘어가는지 봅니다.
   </p>
   <h3>각성편: 디버그 메뉴로 장면 376개 돌리기</h3>
@@ -720,7 +750,10 @@ $ tail -1 out/snes9x/wram.log
   <p>
     <code>Map_LoROMMap</code>은 snes9x 코어가 스스로 찍는 줄입니다. <code>wram.log</code>는 NMI 수가 프레임마다 1씩
     늘어나는 것을 보여 줍니다. 같은 스크립트를 bsnes 코어와 Mesen 2에도 넣고 스크린샷을 비교합니다. Mesen 2에는 툴킷의{' '}
-    <code>script.lua</code>를 씁니다. 경로는 절대 경로로 줍니다.
+    <a href={toolkitFileUrl(`${TOOLKIT_LUA}script.lua`)}>
+      <code>script.lua</code>
+    </a>
+    를 씁니다. 경로는 절대 경로로 줍니다.
   </p>
   <pre tabindex="0"><code>$ krpatch snes run cores/bsnes_libretro.dylib test.sfc out/bsnes demo.txt --watch 7E0010:2
 OK 300

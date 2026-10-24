@@ -4,7 +4,7 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import CpuStep from '../../../../components/romhacking/CpuStep.astro';
 import { SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
-import { notePath } from '../../../../components/romhacking/chapters.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -194,10 +194,12 @@ const regs = [
         </li>
       ))}
   </ul>
-  <p>그림의 나머지 S·DB·PB·D는 이 장의 「더 깊이」와 5장에서 다룹니다.</p>
+  <p>
+    그림의 나머지 S·DB·PB·D는 이 장의 「더 깊이」와 <a href={chapterHref(5)}>5장</a>에서 다룹니다.
+  </p>
   <p>
     레지스터 이름은 외울 필요가 없습니다. A 레지스터로 계산하고, X·Y 레지스터로 세고, PC가 다음 줄을 가리키고, P
-    레지스터에 "방금 결과" 표시가 남는다는 것만 기억하면 5장의 어셈블리를 읽을 수 있습니다.
+    레지스터에 "방금 결과" 표시가 남는다는 것만 기억하면 <a href={chapterHref(5)}>5장</a>의 어셈블리를 읽을 수 있습니다.
   </p>
 
   <h2 id="width">
@@ -240,14 +242,15 @@ const regs = [
       슈퍼 패미컴에서 CPU 속도는 어느 주소를 읽느냐에 따라 3.58MHz, 2.68MHz, 1.78MHz로 달라집니다. 롬은 보통 2.68MHz로
       읽지만, 게임이 레지스터 <code>$420D</code>의 비트 0을 켜면 <code>$80</code>–<code>$BF</code>의 <code>$8000</code>–
       <code>$FFFF</code>와 <code>$C0</code>–<code>$FF</code> 뱅크를 3.58MHz로 읽습니다(FastROM). 내부 헤더의 FastROM
-      비트는 "이 카트리지는 빠르게 읽어도 된다"는 표시일 뿐, 속도를 바꾸지는 않습니다(4장).
+      비트는 "이 카트리지는 빠르게 읽어도 된다"는 표시일 뿐, 속도를 바꾸지는 않습니다(<a href={chapterHref(4)}>4장</a>).
     </p>
     <h3>에뮬레이션 모드와 네이티브 모드</h3>
     <p>
       65c816은 전원을 켜면 6502처럼 동작하는 <strong>에뮬레이션 모드</strong>로 시작합니다. 이 모드에서는 A·X·Y가 모두
       8비트로 묶이고 스택은 $0100–$01FF에만 쌓입니다. 옛 6502 프로그램이 그대로 돌게 하려는 장치입니다. 16비트 기능을
       쓰려면 <code>CLC</code> 다음 <code>XCE</code>를 실행해 <strong>네이티브 모드</strong>로 바꿉니다. 슈퍼 패미컴
-      게임은 거의 모두 시작하자마자 이렇게 합니다. 이 장과 5장의 「명령 한 줄씩 실행하기」는 네이티브 모드만 다룹니다.
+      게임은 거의 모두 시작하자마자 이렇게 합니다. 이 장과 <a href={chapterHref(5)}>5장</a>의 「명령 한 줄씩
+      실행하기」는 네이티브 모드만 다룹니다.
     </p>
     <h3>P 레지스터의 여덟 칸</h3>
     <Figure caption="네이티브 모드의 P 레지스터. 왼쪽이 비트 7입니다." max={600}>
@@ -321,9 +324,8 @@ const regs = [
   <p>
     <a href={`${notePath(TOTSUGEKI_PATCH)}#making-basics`}>돌격편</a> 롬의 파일 0x7FFC에는 <code>00 80</code>, 곧{' '}
     <code>$8000</code>이 있습니다. 이 자리를 <strong>리셋 벡터</strong>라고 하며, CPU는 전원을 켜면 에뮬레이션 모드로{' '}
-    <code>$00:8000</code>
-    부터 읽기 시작합니다. 같은 헤더의 0x7FEA에 있는 <code>$818D</code>는 NMI 루틴의 주소입니다. NMI는 화면을 한 번 다
-    그린 직후마다 불리는데, 게임이 레지스터 <code>$4200</code>의 비트 7을 켜 두었을 때만 옵니다.
+    <code>$00:8000</code>부터 읽기 시작합니다. 같은 헤더의 0x7FEA에 있는 <code>$818D</code>는 NMI 루틴의 주소입니다.
+    NMI는 화면을 한 번 다 그린 직후마다 불리는데, 게임이 레지스터 <code>$4200</code>의 비트 7을 켜 두었을 때만 옵니다.
   </p>
   <h3>CPU가 둘인 카트리지</h3>
   <p>

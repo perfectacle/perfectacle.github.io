@@ -1,6 +1,6 @@
 import {
   KAKUSEI_PATCH,
-  KR_PATCH_TOOLKIT_VERSION,
+  KR_PATCH_TOOLKIT_URL,
   KR_PATCHES,
   OTOGIRISOU_PATCH,
   SMRPG_PATCH,
@@ -15,7 +15,7 @@ import {
 
 export const GUIDE_PATH = '/games/romhacking/';
 export const GUIDE_TITLE = '롬 해킹 기초';
-export const TOOLKIT_README_KO = `https://github.com/perfectacle/kr-patch-toolkit/blob/${KR_PATCH_TOOLKIT_VERSION}/README.ko.md`;
+export const TOOLKIT_README_KO = KR_PATCH_TOOLKIT_URL;
 
 /** `common` chapters apply to any console; the rest live under `/games/romhacking/<platform>/`. */
 export type GuidePlatform = 'common' | 'snes' | 'nds';
@@ -373,6 +373,13 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
 
 export const chapterPath = (c: Pick<GuideChapter, 'platform' | 'slug'>) =>
   c.platform === 'common' ? `${GUIDE_PATH}${c.slug}/` : `${GUIDE_PATH}${c.platform}/${c.slug}/`;
+
+/** A chapter's page by its number, for prose that refers to 「N장」. */
+export const chapterHref = (order: number) => {
+  const chapter = GUIDE_CHAPTERS.find(c => c.order === order);
+  if (!chapter?.ready) throw new Error(`No written chapter ${order}`);
+  return chapterPath(chapter);
+};
 
 export const chapterBySlug = (platform: GuidePlatform, slug: string) => {
   const chapter = GUIDE_CHAPTERS.find(c => c.platform === platform && c.slug === slug);

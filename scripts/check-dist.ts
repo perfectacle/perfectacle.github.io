@@ -56,6 +56,16 @@ for (const page of pages) {
   const html = readFileSync(join(DIST, page), 'utf8')
     // Code samples contain markup-looking text that is not a real link.
     .replace(/<pre[\s\S]*?<\/pre>/g, '');
+  // Site pages are templates, where a line break next to a link or code renders as no space at all ("자리는<a>").
+  if (pageUrl.startsWith('/games/')) {
+    for (const m of html.replace(/<(script|style|svg)[\s\S]*?<\/\1>/g, '').matchAll(/[가-힣]<(?:a|code)\b/g)) {
+      const at = m.index;
+      problems.push(`${pageUrl}: no space before an inline element (…${html.slice(Math.max(0, at - 20), at + 1)})`);
+    }
+    // A link written inside another link comes out as an empty one, which screen readers announce without a name.
+    for (const [empty] of html.matchAll(/<a\s[^>]*><\/a>/g))
+      problems.push(`${pageUrl}: empty link ${empty.slice(0, 120)}`);
+  }
   const refs = [...html.matchAll(/\s(href|src)="([^"]*)"/g)].map(([, attr = '', raw = '']) => [attr, raw]);
   // Each srcset candidate is "<url> <descriptor>"; most screens load these instead of src.
   for (const [, raw = ''] of html.matchAll(/\ssrcset="([^"]*)"/g)) {

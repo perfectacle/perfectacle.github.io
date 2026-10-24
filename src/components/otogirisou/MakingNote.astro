@@ -7,7 +7,8 @@ import Figure from '../romhacking/Figure.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import MakingSources from '../kr-patch/MakingSources.astro';
 import { chapterBySlug, chapterPath, type GuidePlatform } from '../romhacking/chapters';
-import { sourceUrl, type KrPatch } from '../../lib/kr-patches';
+import { analysisUrl, sourceFileUrl, sourceUrl, type KrPatch } from '../../lib/kr-patches';
+import SourceFile from '../kr-patch/SourceFile.astro';
 
 interface Props {
   patch: KrPatch;
@@ -327,21 +328,21 @@ const toolVersions = [
     <a href="#making-map">2절</a>, <a href="#making-script">3절</a>).
   </li>
   <li>
-    <strong>v1.1</strong>: v1.0의 버그를 롬에서 원인을 찾아 고쳤습니다. <a href="#making-lap2">2회차 멈춤</a>,
+    <strong>v1.1</strong>: v1.0의 버그를 롬에서 원인을 찾아 고쳤습니다. <a href="#making-lap2">2회차 멈춤</a>,{' '}
     <a href="#making-a-wait">A 버튼 없이 넘어가는 화면</a>, <a href="#making-wordwrap">단어 중간에서 끊기는 줄</a>이고,
     대본을 <a href="#making-retranslate">원문과 대조해 다시 다듬고</a>
-    <a href="#making-font">새 글자 75자</a>를 그려 넣었습니다. <a href="#making-save-compat">옛 세이브도 이어서</a>
-    읽을 수 있습니다.
+    <a href="#making-font">새 글자 75자</a>를 그려 넣었습니다. <a href="#making-save-compat">옛 세이브도 이어서</a> 읽을
+    수 있습니다.
   </li>
   <li>
-    <strong>v1.2</strong>: 원작에 없던 <a href={`${base}/#feature-chapter-list`}>장 목록</a>,
-    <a href={`${base}/#feature-ending-list`}>엔딩 목록</a>, <a href={`${base}/#feature-flowchart`}>플로차트</a>,
+    <strong>v1.2</strong>: 원작에 없던 <a href={`${base}/#feature-chapter-list`}>장 목록</a>,{' '}
+    <a href={`${base}/#feature-ending-list`}>엔딩 목록</a>, <a href={`${base}/#feature-flowchart`}>플로차트</a>,{' '}
     <a href={`${base}/#feature-rewind`}>되감은 페이지의 노란 글씨</a>를 엔진에 끼워 넣었습니다(
     <a href="#making-unique">8절</a>).
   </li>
 </ul>
 <p>
-  처음 읽는다면 가이드의 <a href={guide('common', 'rom-patch')}>0장 롬과 패치</a>,
+  처음 읽는다면 가이드의 <a href={guide('common', 'rom-patch')}>0장 롬과 패치</a>,{' '}
   <a href={guide('snes', 'banks')}>4장 주소와 뱅크</a>, <a href={guide('snes', 'text')}>8장 대사는 어떻게 저장되나</a>를
   먼저 보면 이 노트의 주소와 바이트가 읽힙니다. 일본판 대본의 압축은{' '}
   <a href={guide('common', 'huffman')}>10장 허프만</a>이, v1.2 기능을 끼워 넣은 방법은{' '}
@@ -377,7 +378,7 @@ const toolVersions = [
 <h4>주소 읽는 법</h4>
 <p>
   <code>$15:E401</code> 같은 SNES 주소는 CPU가 보는 <code>뱅크:주소</code>이고, <code>0xAE401</code> 같은 파일 오프셋은
-  롬 파일을 처음부터 센 위치입니다. 이 게임(LoROM)은 뱅크 하나가 롬의 32KB를 비춥니다. 계산은
+  롬 파일을 처음부터 센 위치입니다. 이 게임(LoROM)은 뱅크 하나가 롬의 32KB를 비춥니다. 계산은{' '}
   <a href={guide('snes', 'banks', 'mapping')}>4장 「CPU 주소와 파일 오프셋은 다르다」</a>의 위젯으로 직접 해 볼 수 있고,
   예에 이 주소가 들어 있습니다.
 </p>
@@ -457,7 +458,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   롬을 늘리면 헤더의 크기 바이트도 고쳐야 합니다. 헤더(<code>$00:FFC0</code>, 파일 0x7FC0)의 0x7FD7은 롬 크기를 적는
   자리인데, v1.0은 롬을 2MB로 늘리고도 1MB를 뜻하는 <code>0A</code>를 그대로 두었습니다. v1.1이 2MB를 뜻하는{' '}
-  <code>0B</code>로 고치고 체크섬을 다시 계산했습니다. 크기 바이트와 미러, 체크섬이 왜 함께 바뀌는지는
+  <code>0B</code>로 고치고 체크섬을 다시 계산했습니다. 크기 바이트와 미러, 체크섬이 왜 함께 바뀌는지는{' '}
   <a href={guide('snes', 'expansion', 'header')}>11장 「헤더의 크기 바이트」</a>에 있고, 그 장의 위젯이 처음부터 이
   게임의 1MB → 2MB를 보여 줍니다.
 </p>
@@ -498,6 +499,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     16비트 값(예: 줄바꿈 표시 <code>$5A3C</code>)으로 판정합니다.
   </p>
   <ToolFiles
+    patch={patch}
     items={[
       { path: 'probe/wrange.lua (krpatch snes lua)', text: '플레이 중 한 번이라도 쓰인 WRAM 영역 기록' },
       { path: 'probe/wdump.lua (krpatch snes lua)', text: 'WRAM 구간을 파일로 덤프' },
@@ -531,7 +533,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <NoteRelated patch={patch} id="making-script" />
 <p>
   사운드 노벨의 대본은 글자 사이사이에 명령(제어 코드)이 섞인 하나의 긴 줄입니다. 대사마다 번호를 붙여 포인터 표로 찾는
-  RPG와 달리, 게임은 이 줄을 앞에서부터 읽으며 글자는 화면에 찍고 명령은 실행합니다. 이런 대본의 모양은
+  RPG와 달리, 게임은 이 줄을 앞에서부터 읽으며 글자는 화면에 찍고 명령은 실행합니다. 이런 대본의 모양은{' '}
   <a href={guide('snes', 'text', 'stream')}>8장 「번호 없이 한 줄로 이어진 대사」</a>가 이 게임을 예로 설명합니다.
 </p>
 <p>
@@ -613,11 +615,12 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   <p>
     선택지 코드는 인자 수 자리에 <code>0x63</code>이라는 특별한 값이 들어 있습니다. 처리 루틴($00:9DAE)은 기호 3개를
     읽은 뒤 (첫 기호 &amp; 7) − 1개의 점프 인자를 읽는데, 건너뛰기 루틴($00:A99F)은 기호를 2개만 읽습니다. 파서는 처리
-    루틴 쪽을 따라야 줄이 어긋나지 않습니다. 제어 코드의 분기표는 <code>$00:F390</code>, 인자 표는
-    <code>$00:F41E</code>에 2바이트씩 0x47개 있습니다.
+    루틴 쪽을 따라야 줄이 어긋나지 않습니다. 제어 코드의 분기표는 <code>$00:F390</code>, 인자 표는 <code>$00:F41E</code>
+    에 2바이트씩 0x47개 있습니다.
   </p>
 </Deeper>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/script.py', text: '일본판 허프만 비트열과 v1.0 2바이트 대사를 둘 다 읽는 파서' },
     { path: 'tools/dump.py', text: '대사를 줄 단위 텍스트로 꺼내기 (점프 대상은 레이블로)' },
@@ -702,6 +705,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   <a href={guide('snes', 'emulator', 'in-patch')}>12장 「실제 패치에서」</a>에 있습니다.
 </p>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/fixes.py', text: '시작 주소 표 2번과 헤더의 롬 크기 바이트 고치기' },
     { path: 'lua/lap.lua', text: '회차 수를 바꿔 원하는 시나리오로 시작하기 (Mesen 2)' },
@@ -732,6 +736,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   결과를 파일로 남기고, 0건이어야 통과입니다.
 </p>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/waits.py', text: '줄마다 입력 대기 위치를 일본판과 비교' },
     { path: 'tools/fixwaits.py', text: '일본판이 기다리는 곳에만 {16}을 넣고 겹친 대기 지우기' },
@@ -761,6 +766,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </li>
 </ul>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/trcheck.py', text: '고친 번역의 제어 코드가 원래와 같은지 검사' },
     { path: 'tools/trmerge.py', text: '묶음별 번역 결과를 대본에 합치기' },
@@ -816,7 +822,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <Deeper title="472번 글자를 롬에서 찾는 계산">
   <p>
     그룹 표 한 칸은 5바이트입니다. v1.2의 첫 칸 <code>05 92 00 80 2C</code>는 앞 2바이트 <code>$9205</code>의 아래
-    12비트가 글자 수 517, 위 4비트가 폭 9, 다음 2바이트가 시작 주소 <code>$8000</code>(뱅크 $1F 안), 마지막 바이트
+    12비트가 글자 수 517, 위 4비트가 폭 9, 다음 2바이트가 시작 주소 <code>$8000</code>(뱅크 $1F 안), 마지막 바이트{' '}
     <code>$2C</code>를 2비트 내리면 높이 11입니다. 코드는 1부터 세므로 첫 그룹이 1–517번입니다.
   </p>
   <pre tabindex="0"><code>비트 위치 = (472 − 1) × 폭 9 × 높이 11 = 46,629
@@ -875,7 +881,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <Deeper title="표 끝 표시가 없는 그룹 표와 빈 글자로 바꾼 168개">
   <p>
     엔진은 표 끝 표시를 따로 보지 않습니다. 글자를 찾는 코드($00:A4F4–$00:A51C)는 첫 칸부터 칸마다 글자 수를 더해
-    가다가, 찾는 코드가 들어가는 칸에서 멈춥니다. 그래서 마지막 그룹보다 큰 코드를 대본에 쓰면 표 뒤의
+    가다가, 찾는 코드가 들어가는 칸에서 멈춥니다. 그래서 마지막 그룹보다 큰 코드를 대본에 쓰면 표 뒤의{' '}
     <code>$00:F5CE</code> 데이터를 그룹 칸으로 읽습니다. 그 자리는 줄 끝에 매달 수 있는 문자 목록입니다.
   </p>
   <p>
@@ -885,6 +891,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </p>
 </Deeper>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/font.py', text: '뱅크 $1F의 가변 폭 폰트와 그룹 표 읽기' },
     { path: 'tools/fontjson.py', text: '폰트를 krpatch ocr이 읽는 JSON 글리프 묶음으로 꺼내기' },
@@ -915,7 +922,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   글자를 찍는 루틴($00:A777)을 후킹해, 공백이나 쉼표·마침표 뒤에서 대본의 다음 단어 폭을 미리 재고 줄 끝을 넘으면 먼저
   줄을 바꾸게 했습니다. 폭은 v1.1이 새로 넣은 글자 폭 표(<code>$1E:F000</code>, 코드마다 1바이트)에서 읽습니다. 주인공
-  이름처럼 길이가 그때그때 다른 것도 실행 중에 재므로 맞게 동작합니다. 이 후킹의 코드 한 줄 한 줄은
+  이름처럼 길이가 그때그때 다른 것도 실행 중에 재므로 맞게 동작합니다. 이 후킹의 코드 한 줄 한 줄은{' '}
   <a href={guide('snes', 'hooking', 'jump')}>6장 후킹</a>의 예제입니다.
 </p>
 <p>
@@ -935,6 +942,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </p>
 </Deeper>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'asm/wordwrap.asm', text: '글자 찍는 루틴($00:A777)을 후킹한 단어 단위 줄바꿈' },
     { path: 'tools/layout.py', text: '모든 갈래를 따라가며 페이지마다 줄 수 계산 (9줄 초과 찾기)' },
@@ -948,7 +956,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <NoteRelated patch={patch} id="making-gfx" />
 <p>
   이 게임에서 압축된 것은 그림이 아니라 일본판 대본입니다(<a href="#making-script">3절</a>). v1.1·v1.2가 롬에 쓴 곳을
-  모두 적은 롬 분석 문서의 목록에는 압축 그림을 풀거나 다시 넣은 곳이 없습니다. 그림을 압축하는 흔한 방식은
+  모두 적은 롬 분석 문서의 목록에는 압축 그림을 풀거나 다시 넣은 곳이 없습니다. 그림을 압축하는 흔한 방식은{' '}
   <a href={guide('common', 'lzss')}>9장 RLE·LZSS</a>에서 다른 게임의 타이틀 그림으로 봅니다.
 </p>
 <p>
@@ -990,7 +998,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   v1.2는 플로차트에 쓰는 4×6 픽셀 글자 17개를 새로 그렸습니다. 타일로 올리지 않고 글자 레이어의 비트맵에 픽셀을 직접
   찍습니다(<a href="#making-flowchart">8절 「플로차트」</a>). 되감은 페이지의 노란 글씨는 그림이 아니라 팔레트 한 색을
-  바꾼 것입니다(<a href="#making-yellow">8절 「책갈피와 노란 글씨」</a>, 팔레트는
+  바꾼 것입니다(<a href="#making-yellow">8절 「책갈피와 노란 글씨」</a>, 팔레트는{' '}
   <a href={guide('snes', 'graphics', 'palette')}>7장 「색은 팔레트 번호로 고른다」</a>).
 </p>
 
@@ -1017,7 +1025,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </li>
 </ul>
 <p>
-  v1.2의 장 목록과 엔딩 목록은 새 화면을 그리지 않고 이 선택지 화면을 그대로 빌려 씁니다. 그 이야기는
+  v1.2의 장 목록과 엔딩 목록은 새 화면을 그리지 않고 이 선택지 화면을 그대로 빌려 씁니다. 그 이야기는{' '}
   <a href="#making-menu">8절 「메뉴는 그리지 않고 대본으로 쓴다」</a>에 있습니다. 제어 코드를 하나 새로 달아 메뉴 동작을
   만든 방법이라, <a href={guide('snes', 'text', 'control')}>8장 「제어 코드: 글자가 아닌 명령」</a>을 먼저 보면 읽기
   쉽습니다.
@@ -1072,8 +1080,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 </div>
 <p>
   슬롯이 깨지지 않았는지는 체크섬으로 봅니다. <code>$700022</code>부터 0x5E1바이트를 모두 더한 값입니다. 체크섬이
-  무엇인지는
-  <a href={guide('common', 'numbers')}>1장 비트·바이트·16진수</a>에, 24비트 위치를 작은 자리부터 적는 이유는
+  무엇인지는 <a href={guide('common', 'numbers')}>1장 비트·바이트·16진수</a>에, 24비트 위치를 작은 자리부터 적는 이유는{' '}
   <a href={guide('common', 'endian')}>2장 엔디안</a>에 있습니다.
 </p>
 
@@ -1097,6 +1104,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </p>
 </Deeper>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/savemap.py', text: '옛 대본과 새 대본을 줄마다 맞춰 세이브 위치 변환표 만들기' },
     { path: 'asm/savecompat.asm', text: '세이브를 불러올 때 위치를 변환하고 표식 남기기' },
@@ -1140,6 +1148,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </li>
 </ul>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'asm/qol.asm', text: '장 목록·엔딩 목록·기록·노란 글씨·책갈피 코드와 후킹' },
     { path: 'tables/qol-endings.tsv', text: '엔딩 18개 (줄, 제목)' },
@@ -1228,8 +1237,8 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   먼저 기능을 열 버튼이 필요했습니다. 게임이 패드 값을 받아 쓰는 루틴($00:8B9A)을 읽어 보니 Select와 R은 어디서도 쓰지
   않았습니다. A 버튼 입력 대기 중 X를 누르면 되감기로 가는 자리($00:9CF9)가 있어서, 그 바로 앞을 후킹해 Select를 먼저
-  보게 했습니다. 원래 바이트 <code>A5 CC 29 00 80</code>(<code>LDA $CC</code> · <code>AND #$8000</code>)을
-  <code>22 45 84 1A EA</code>(<code>JSL $1A:8445</code> · <code>NOP</code>)로 바꾼 것입니다. 이 명령들을 읽는 법은
+  보게 했습니다. 원래 바이트 <code>A5 CC 29 00 80</code>(<code>LDA $CC</code> · <code>AND #$8000</code>)을{' '}
+  <code>22 45 84 1A EA</code>(<code>JSL $1A:8445</code> · <code>NOP</code>)로 바꾼 것입니다. 이 명령들을 읽는 법은{' '}
   <a href={guide('snes', 'assembly')}>5장 어셈블리 기초</a>에 있습니다.
 </p>
 
@@ -1291,6 +1300,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </p>
 </Deeper>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'lua/qol/pcs.lua', text: '프레임마다 CPU가 실행 중인 주소 기록 (어디서 멈췄나)' },
     {
@@ -1362,6 +1372,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </li>
 </ul>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'asm/qol.asm', text: '장 목록·엔딩 목록·기록·노란 글씨·책갈피 코드와 후킹' },
     { path: 'tools/qol.py', text: '장 범위와 시작, 엔딩 위치, 메뉴 문자열, 장별 배경·음악 표 만들기' },
@@ -1408,6 +1419,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </p>
 </Deeper>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/qol.py', text: '장 범위와 시작, 엔딩 위치, 메뉴 문자열, 장별 배경·음악 표 만들기' },
     { path: 'lua/qol/menujump.sh', text: '장마다 메뉴로 옮겨 첫 화면 찍기' },
@@ -1475,6 +1487,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </ul>
 </Deeper>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/flow.py', text: '플로차트 노드와 장별 행 배치 만들기' },
     { path: 'asm/flow.asm', text: '플로차트 그리기와 입력 처리' },
@@ -1495,6 +1508,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   <a href={guide('snes', 'hooking', 'restore')}>6장 「덮어쓴 명령 다시 실행하기」</a>에 있습니다.
 </p>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'asm/qol.asm', text: '장 목록·엔딩 목록·기록·노란 글씨·책갈피 코드와 후킹' },
     { path: 'probe/cgram.lua (krpatch snes lua)', text: '팔레트(CGRAM)와 화면 저장' },
@@ -1529,7 +1543,10 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   libretro 코어를 직접 불러 쓰는 작은 프로그램(<code>krpatch snes run</code>)으로 같은 입력을 여러 에뮬레이터에 넣고 새
   게임, 이어하기, 장 목록, 플로차트를 비교했습니다. 세이브를 불러온 뒤 A를 눌러 가며 화면을 찍는 이어하기 시나리오(
-  <code>compat/s_cont.txt</code>)입니다. 왼쪽 숫자가 프레임이고, 주석은 이 노트에서 붙였습니다.
+  <a href={sourceFileUrl(patch, 'compat/s_cont.txt')}>
+    <code>compat/s_cont.txt</code>
+  </a>
+  )입니다. 왼쪽 숫자가 프레임이고, 주석은 이 노트에서 붙였습니다.
 </p>
 <pre tabindex="0"><code>1000 start 4        ; 1000프레임에 Start를 4프레임 동안
 1300 a 4            ; 1300프레임에 A
@@ -1538,8 +1555,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 500 shot            ; 500프레임에 화면 저장. 5000프레임까지 250프레임마다 같은 줄 19개 …
 5000 end</code></pre>
 <p>
-  실행할 때 <code>--watch 7E0052:3</code>을 붙여 대본 위치(<code>$52</code>–<code>$54</code>, 3절)를 프레임마다
-  기록합니다. 코어마다 이 기록이 같은 순서로 흘러가면 같은 장면과 선택지로 갔다는 뜻입니다. 이 스크립트 형식은
+  실행할 때 <code>--watch 7E0052:3</code>을 붙여 대본 위치(<code>$52</code>–<code>$54</code>,{' '}
+  <a href="#making-script">3절</a>)를 프레임마다 기록합니다. 코어마다 이 기록이 같은 순서로 흘러가면 같은 장면과
+  선택지로 갔다는 뜻입니다. 이 스크립트 형식은{' '}
   <a href={guide('snes', 'emulator', 'headless')}>12장 「화면 없이 돌리기: 입력 스크립트」</a>의 위젯에서 「제절초
   이어하기」를 골라 한 줄씩 볼 수 있습니다.
 </p>
@@ -1567,6 +1585,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </table>
 </div>
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'lua/pages.lua', text: '입력 대기마다 화면을 찍고 대사 위치 기록' },
     { path: 'lua/jumpsave.py', text: '원하는 대사에서 이어지는 세이브 파일 만들기' },
@@ -1581,10 +1600,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 </h2>
 <NoteRelated patch={patch} id="making-next" />
 <p>
-  롬 주소와 형식은 패치 소스의 docs/ANALYSIS.md에 모았습니다. 헤더, 메모리 지도, 대본 형식, 제어 코드, 폰트 그룹 표,
-  후킹 지점 전체(원래 바이트와 바꾼 바이트), 세이브 형식, 쓴 공간이 들어 있고, 직접 확인한 것은 [실측], 짐작만 한 것은
-  [추정]으로 나눠 적었습니다. 여기에는 확인하지 못한 것과 알려진 한계, 쓴 도구만 적습니다. 남은 롬 자리는
-  <a href="#making-free-space">2절 「남은 자리」</a>에 있습니다.
+  롬 주소와 형식은 패치 소스의{' '}
+  <a href={analysisUrl(patch)}>
+    <code>docs/ANALYSIS.md</code>
+  </a>
+  에 모았습니다. 헤더, 메모리 지도, 대본 형식, 제어 코드, 폰트 그룹 표, 후킹 지점 전체(원래 바이트와 바꾼 바이트),
+  세이브 형식, 쓴 공간이 들어 있고, 직접 확인한 것은 [실측], 짐작만 한 것은 [추정]으로 나눠 적었습니다. 여기에는
+  확인하지 못한 것과 알려진 한계, 쓴 도구만 적습니다. 남은 롬 자리는 <a href="#making-free-space">2절 「남은 자리」</a>
+  에 있습니다.
 </p>
 <h3>확인하지 못한 것</h3>
 <ul class="notes">
@@ -1612,7 +1635,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </table>
 </div>
 <p>글자표를 읽을 때 쓴 문자 인식은 macOS의 Vision이라, krpatch ocr은 macOS에서만 돌아갑니다.</p>
-<ToolFiles items={[{ path: 'docs/ANALYSIS.md', text: '롬 분석 문서. 주소와 형식 전체' }]} />
+<ToolFiles patch={patch} items={[{ path: 'docs/ANALYSIS.md', text: '롬 분석 문서. 주소와 형식 전체' }]} />
 
 <h2 id="making-tools">
   11. 패치 소스 파일 <span class="layer-badge layer-try">직접 해 보기</span>
@@ -1638,7 +1661,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
           <th scope="row">{t.job}</th>
           <td class="wrap">
             {t.files.map(f => (
-              <code class="file">{f}</code>
+              <SourceFile patch={patch} name={f} class="file" />
             ))}
           </td>
           <td>
