@@ -973,3 +973,61 @@ test('section titles in chapters, notes and the glossary link to themselves', as
   await page.goto(TEXT);
   await expect(page.locator('.prose h3 > a.heading-link').first()).toHaveAttribute('href', /^#.+/);
 });
+
+const boxOf = async (page: Page, selector: string) => {
+  const box = await page.locator(selector).first().boundingBox();
+  if (!box) throw new Error(`${selector} is not on screen`);
+  return box;
+};
+
+test('the trail sits under the site header at the top, never across its border', async ({ page }) => {
+  for (const path of [GUIDE_PATH, TEXT, SMRPG_NOTE, GLOSSARY_PATH]) {
+    await page.goto(path);
+    const header = await boxOf(page, '.site-header');
+    const trail = await boxOf(page, '.gcrumbs');
+    expect(trail.y, path).toBeGreaterThanOrEqual(header.y + header.height - 0.5);
+  }
+});
+
+test('the trail stays on screen under the header while scrolling, and its menus open over the body', async ({
+  page,
+}) => {
+  await page.goto(SMRPG_NOTE);
+  await page.mouse.wheel(0, 3000);
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(1000);
+  const trail = page.getByRole('navigation', { name: '현재 위치' });
+  await expect(trail).toBeInViewport();
+  const header = await page.locator('.site-header').boundingBox();
+  const box = await boxOf(page, '.gcrumbs');
+  // Phones let the header scroll away, so the trail takes the top of the screen there.
+  expect(box.y).toBeCloseTo(Math.max(0, (header?.y ?? 0) + (header?.height ?? 0)), 0);
+  await trail.getByRole('button', { name: '롬 분석 노트 펼치기' }).click();
+  const menu = page.locator('.gcrumb-menu:visible');
+  const m = await menu.boundingBox();
+  const width = page.viewportSize()?.width ?? 0;
+  expect(m && m.x >= 0 && m.x + m.width <= width).toBe(true);
+  // The menu is what the reader sees at its middle, not the body under it.
+  const hit = await menu.evaluate(el => {
+    const r = el.getBoundingClientRect();
+    return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2));
+  });
+  expect(hit).toBe(true);
+  await noHorizontalOverflow(page);
+});
+
+test('a jump to a section leaves its title below the header and the trail', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  for (const path of [TEXT, SMRPG_NOTE]) {
+    await page.goto(path);
+    const link = page.locator('.prose h2 > a.heading-link').nth(3);
+    const id = await link.evaluate(a => a.parentElement?.id ?? '');
+    await link.click();
+    const trail = await boxOf(page, '.gcrumbs');
+    const title = await boxOf(page, `[id="${id}"]`);
+    expect(title.y, `${path}#${id}`).toBeGreaterThanOrEqual(trail.y + trail.height);
+    await page.goto(`${path}#${id}`);
+    await expect
+      .poll(async () => (await boxOf(page, `[id="${id}"]`)).y - (await boxOf(page, '.gcrumbs')).y)
+      .toBeGreaterThanOrEqual((await boxOf(page, '.gcrumbs')).height);
+  }
+});

@@ -54,6 +54,9 @@
 }
 
 html {
+  /* Height of the sticky site header (60px bar and its 1px border); phones let the header scroll away. Bars that
+     stick under it, such as the ROM hacking guide's trail, start here. */
+  --site-header-h: 61px;
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: 80px;
 }
@@ -452,6 +455,7 @@ iframe {
 @media (max-width: 640px) {
   html {
     /* The header is not sticky on phones. */
+    --site-header-h: 0px;
     scroll-padding-top: 16px;
   }
   body {

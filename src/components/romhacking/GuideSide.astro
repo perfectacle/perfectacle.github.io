@@ -71,11 +71,11 @@ const { label, headings } = Astro.props;
   @media (min-width: 1280px) {
     .guide-side {
       position: sticky;
-      top: 84px;
+      top: calc(var(--site-header-h) + var(--guide-crumbs-h, 0px) + 20px);
       align-self: start;
       display: flex;
       flex-direction: column;
-      max-height: calc(100vh - 110px);
+      max-height: calc(100vh - var(--site-header-h) - var(--guide-crumbs-h, 0px) - 44px);
       padding-left: 16px;
       border-left: 1px solid var(--border);
       font-size: 0.85rem;
