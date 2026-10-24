@@ -1,11 +1,15 @@
 ---
-import { SECTION_TITLES } from '../../lib/patch-sections';
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import MakingIntro from './MakingIntro.astro';
 import NoteRelated from '../romhacking/NoteRelated.astro';
+import Deeper from '../romhacking/Deeper.astro';
+import Figure from '../romhacking/Figure.astro';
+import LzssStep from '../romhacking/LzssStep.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import MakingSources from '../kr-patch/MakingSources.astro';
 import { sourceUrl, TOTSUGEKI_PATCH, type KrPatch } from '../../lib/kr-patches';
+import { GLOSSARY_PATH } from '../romhacking/glossary';
+import { notePath } from '../romhacking/chapters';
 
 interface Props {
   patch: KrPatch;
@@ -15,25 +19,80 @@ const { patch } = Astro.props;
 const base = patch.path;
 const img = (name: string) => `${base}/images/making/${name}`;
 const source = sourceUrl(patch);
+const totsugeki = notePath(TOTSUGEKI_PATCH);
+const ch = (slug: string, hash = '') => `/games/romhacking/snes/${slug}/${hash && `#${hash}`}`;
+const common = (slug: string, hash = '') => `/games/romhacking/${slug}/${hash && `#${hash}`}`;
 
-const memories = [
-  { name: '롬', size: '2MB', like: '책', role: '카트리지에 든 프로그램·대사·폰트·그림. 읽기만 합니다.' },
+const versions = [
   {
-    name: 'WRAM',
-    size: '128KB',
-    like: '작업 책상',
-    role: 'CPU가 계산하며 값을 적어 두는 곳. 지금 장면 번호도 여기 있습니다.',
+    version: 'v1.1 (2016)',
+    did: '대사·메뉴·지명·크레딧·전투 말풍선을 한글로 바꾼 첫 공개 패치. v1.2와 v1.3은 이 패치를 적용한 롬에서 출발합니다.',
+    at: [{ href: '#making-map', label: '2. 롬 지도' }],
   },
-  { name: 'VRAM', size: '64KB', like: '스티커판', role: '화면에 붙일 8×8 그림 조각(타일)을 올려 두는 곳.' },
-  { name: 'SRAM', size: '8KB', like: '수첩', role: '전원을 꺼도 남는 세이브 데이터. 에뮬레이터의 .srm 파일입니다.' },
+  {
+    version: 'v1.2',
+    did: 'v1.1이 덮어쓴 데이터를 되살려 진행 버그를 고치고, 타이틀 로고를 한글로 다시 그리고, 대사 782줄을 원문과 대조해 고쳤습니다.',
+    at: [
+      { href: '#making-bugfix', label: '8. 진행 버그' },
+      { href: '#making-title-gfx', label: '5. 타이틀' },
+      { href: '#making-dialogue', label: '3. 대사' },
+    ],
+  },
+  {
+    version: 'v1.3',
+    did: '나레이션 줄바꿈을 창 폭에 맞추고, 전투 말풍선 443개를 고치고, 돌격편 한글패치 엔딩의 암호를 받게 했습니다.',
+    at: [
+      { href: '#making-wrap', label: '3. 창 폭' },
+      { href: '#making-bubbles', label: '6. 말풍선' },
+      { href: '#making-password', label: '7. 암호' },
+    ],
+  },
 ];
 
-const opcodes = [
-  { bytes: '80 0C', asm: 'BRA $806A', text: '무조건 12바이트 뒤로 건너뜁니다. 제품판은 아래 네 줄을 늘 건너뜁니다.' },
-  { bytes: 'AD 33 02', asm: 'LDA $0233', text: '$0233번지 값을 읽습니다. 주소는 거꾸로 적힙니다.' },
-  { bytes: '29 FF 00', asm: 'AND #$00FF', text: '아래 바이트만 남깁니다.' },
-  { bytes: 'D0 04', asm: 'BNE $806A', text: '0이 아니면 다음 4바이트를 건너뜁니다.' },
-  { bytes: '22 2B 9F 80', asm: 'JSL $809F2B', text: '디버그 메뉴 루틴을 부릅니다.' },
+const readFirst = [
+  { href: common('rom-patch'), label: '0장 롬과 패치', why: 'IPS 패치가 무엇을 적는지' },
+  { href: common('endian'), label: '2장 엔디안', why: '2바이트 글자 코드와 포인터를 거꾸로 읽는 이유' },
+  { href: ch('banks'), label: '4장 주소와 뱅크', why: '$99:A9BE 같은 주소를 파일 위치로 바꾸는 법' },
+  { href: ch('text'), label: '8장 대사는 어떻게 저장되나', why: '글자표와 포인터 표' },
+  { href: ch('graphics'), label: '7장 그림과 글자', why: '16×16 글자를 8×8 타일 네 장으로 나누는 법' },
+  { href: common('lzss'), label: '9장 압축 ① RLE·LZSS', why: '타이틀 그림 압축' },
+  { href: ch('emulator'), label: '12장 에뮬레이터로 확인', why: 'Lua 스크립트와 여러 에뮬레이터 비교' },
+];
+
+const memories = [
+  { name: '롬', size: '2MB', role: '카트리지에 든 프로그램·대사·폰트·그림. 읽기만 합니다.' },
+  { name: 'WRAM', size: '128KB', role: 'CPU가 계산하며 값을 적어 두는 곳. 지금 장면 번호($7E:029C)도 여기 있습니다.' },
+  { name: 'VRAM', size: '64KB', role: '화면에 붙일 8×8 그림 조각(타일)과 배치표(타일맵)를 올려 두는 곳.' },
+  { name: 'SRAM', size: '8KB', role: '전원을 꺼도 남는 세이브 데이터. 에뮬레이터의 .srm 파일입니다.' },
+];
+
+const romBanks = [
+  { bank: '$80', what: '부팅 코드, 디버그 메뉴 문구($80:C96F), 롬 헤더($80:FFC0)' },
+  {
+    bank: '$81–$84',
+    what: '메뉴·글자판·상태 창($84:86BE)·기술 이름($84:C234)·세이브 메뉴($83:AA0E)·전투 안내 문구($82:F6D3), 엔딩 크레딧($83)',
+  },
+  { bank: '$88', what: '지명($88:8000 포인터 표), 맵 이동 경로($88:FC80 포인터 표)' },
+  { bank: '$89', what: '타이틀 그림(LZSS 압축), 「플레이어 체인지」 문자열($89:9989)' },
+  { bank: '$98–$9F', what: '대사 8뱅크. 뱅크마다 앞에 포인터 표, 뒤에 문자열' },
+  { bank: '$B4', what: '전투 말풍선 대사(ID $1000–$13FF)' },
+  { bank: '$B5', what: '전투 스크립트(말풍선을 부르는 명령)' },
+  { bank: '$B6–$B7', what: '대사 폰트(16×16 글자)' },
+];
+
+const freeSpace = [
+  {
+    where: '대사 뱅크 $98–$9F',
+    size: '뱅크마다 2,526–4,840바이트',
+    note: '아래 3절 표. v1.1 대사가 일본어보다 짧아 남은 끝쪽 0xFF',
+  },
+  { where: '말풍선 뱅크 $B4', size: '3,669바이트', note: 'v1.3 빌드 뒤' },
+  { where: '파일 0x4C801–0x4FFFF', size: '14,335바이트', note: '일본판에서도 0xFF. 타이틀 자료가 길어질 때 옮길 자리' },
+  {
+    where: '파일 0x1F53C–0x1FFFF',
+    size: '2,756바이트',
+    note: '일본판에서도 0xFF. 바로 앞 0x1F510–0x1F53B는 크레딧 줄이 씀',
+  },
 ];
 
 const lineBytes = [
@@ -73,63 +132,56 @@ const relocated = [
   { bank: '$98', moved: 29, free: '3,226' },
 ];
 
+const fontRanges = [
+  { codes: '100–4FF', offset: '0x1B00A0', note: '' },
+  { codes: '500–8FF', offset: '0x1B8000', note: '' },
+  { codes: '900–FFF', offset: '0x1B3CA0', note: '첫 시트의 0x2E0 뒤와 같은 데이터' },
+];
+
+const kkaeRows = [
+  ['00 00', '0'],
+  ['00 00', '1'],
+  ['00 00', '2'],
+  ['00 00', '3'],
+  ['7E 7E', '4'],
+  ['12 12', '5'],
+  ['12 12', '6'],
+  ['12 12', '7'],
+];
+
+const newGlyphs = [
+  { when: 'v1.2', what: '대사에 필요한 11자', list: '깨 꽉 꾼 닿 렁 롭 벅 빡 뻐 셋 씻' },
+  { when: 'v1.3', what: '돌격편 암호에 필요한 2자', list: '뎀 띠' },
+  { when: 'v1.3', what: 'v1.1이 그려 두었지만 글자 표에 이름이 없던 6자', list: '딩 렉 션 창 펙 홍' },
+  { when: 'v1.3', what: 'v1.1이 말풍선에 쓰던 4자(표에만 더함)', list: 'P 롱 릭 토' },
+];
+
 const bubbleWindows = [
   { op: '01', code: '$82:D172', tiles: '0x0C × 0x0A', glyphs: '8자 × 5줄', use: '계왕권 설명처럼 긴 안내' },
   { op: '02, 03', code: '$82:D1DC', tiles: '0x12 × 0x06', glyphs: '12자 × 3줄', use: '보통 말풍선' },
 ];
 
-const dialogFlow = [
-  '스크립트의 대사 명령(0x08)이 16비트 대사 ID를 줍니다. 예: $2A7',
-  'ID 범위로 뱅크를 고릅니다. $2A7은 $99입니다.',
-  '그 뱅크 첫머리 포인터 표에서 ID 순서대로 2바이트를 읽습니다. $99:8000 + $2A7 × 2 = $99:854E에 BE A9가 있습니다.',
-  '같은 뱅크의 $99:A9BE(파일 0xCA9BE)에 대사 문자열이 있습니다.',
+const passwordBytes = [
+  {
+    bytes: '0–1',
+    totsugeki: '$0D99·$0D9B·$0D9D의 9비트',
+    kakusei: '바이트 0의 비트 2가 켜져 있으면 기술 15번(손오공 파워기술 「거북선인류최종오의」)을 익힘',
+  },
+  { bytes: '2–4', totsugeki: '$0C8B–$0C8D', kakusei: '읽지 않음' },
+  { bytes: '5', totsugeki: '$0B00', kakusei: '읽지 않음' },
+  { bytes: '6–17', totsugeki: '$0B01–$0B0C (이름, 글자마다 2바이트)', kakusei: '6–15를 이름 5자로 바꿔 씀' },
+  { bytes: '18–20', totsugeki: '$0C91, $0C92, $0C90', kakusei: '읽지 않음' },
+  { bytes: '21–22', totsugeki: '$022F–$0230', kakusei: '$0266–$0267(플레이 시간 분·시)에 씀' },
+  { bytes: '23–24', totsugeki: '0–22의 합(16비트)', kakusei: '검사에만 씀' },
 ];
 
-const toolFiles = [
-  { file: 'tools/build.sh', text: '아래 순서대로 전체 빌드', section: 'tools' },
-  { file: 'tools/dialogue.py', text: '대사 ID로 대사 위치 찾기', section: 'dialogue' },
-  { file: 'tools/extract.py', text: '일본어·한국어 대사 덤프(TSV)', section: 'dialogue' },
-  { file: 'tools/font.py', text: '대사 폰트 글자 읽기', section: 'font' },
-  { file: 'tools/usedsheet.py', text: '대사에 쓰인 글자 목록', section: 'font' },
-  { file: 'tools/dialogue_patch.py', text: '대사 넣기, 옮기기, 새 글자 그리기', section: 'relocate' },
-  { file: 'tools/bubble_patch.py', text: '전투 말풍선 넣기, 옮기기', section: 'dialogue' },
-  { file: 'tools/check_width.py', text: '창보다 넓은 줄이 있으면 빌드 실패', section: 'dialogue' },
-  { file: 'tools/fix_overwrites.py', text: 'v1.1이 덮어쓴 데이터 되살리기', section: 'bugfix' },
-  { file: 'krpatch lzss', text: '공통 도구. LZSS 압축·해제', section: 'title-gfx' },
-  { file: 'tools/title.py', text: '타이틀 그림 그리기·넣기', section: 'title-gfx' },
-  { file: 'tools/credits.py', text: '엔딩 크레딧 고치기', section: 'credits' },
-  { file: 'tools/password.py', text: '돌격편 암호 입력 칸·검사 표 맞추기', section: 'password' },
-  { file: 'tables/totsugeki-password.tsv', text: '돌격편 v1.1 롬에서 꺼낸 암호 글자와 쌍 표', section: 'password' },
-  { file: 'krpatch snes checksum', text: '공통 도구. 롬 헤더 체크섬 다시 계산', section: 'tools' },
-  { file: 'krpatch ips', text: '공통 도구. IPS 적용·생성', section: 'tools' },
-  { file: 'tables/', text: '일본판·v1.1·v1.3 글자 표, 고친 대사 782줄, 고친 말풍선 443개', section: 'dialogue' },
-  {
-    file: 'lua/',
-    text: 'Mesen 2 스크립트: 디버그 메뉴 장면 시작, 크레딧 바로 보기',
-    section: 'testing',
-  },
-  { file: 'compat/', text: 'Mesen 2와 libretro 코어에 같은 입력을 넣어 비교', section: 'testing' },
-  {
-    file: 'krpatch snes run',
-    text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램',
-    section: 'testing',
-  },
-  { file: 'docs/ANALYSIS.md', text: '롬 분석 문서(주소·형식 전체)', section: 'basics' },
+const opcodes = [
+  { bytes: '80 0C', asm: 'BRA $806A', text: '무조건 12바이트 뒤로 건너뜁니다. 제품판은 아래 네 줄을 늘 건너뜁니다.' },
+  { bytes: 'AD 33 02', asm: 'LDA $0233', text: '$0233번지 값을 읽습니다. 주소는 작은 바이트부터 적힙니다.' },
+  { bytes: '29 FF 00', asm: 'AND #$00FF', text: '아래 바이트만 남깁니다.' },
+  { bytes: 'D0 04', asm: 'BNE $806A', text: '0이 아니면 다음 4바이트를 건너뜁니다.' },
+  { bytes: '22 2B 9F 80', asm: 'JSL $809F2B', text: '디버그 메뉴 루틴을 부릅니다.' },
 ];
-
-const sectionTitles: Record<string, string> = {
-  basics: '1. 배경지식',
-  dialogue: '2. 대사',
-  font: '3. 폰트',
-  relocate: '4. 대사 옮기기',
-  bugfix: '5. 진행 버그',
-  'title-gfx': '6. 타이틀',
-  credits: '7. 크레딧',
-  password: '8. 돌격편 암호',
-  testing: '9. 확인',
-  next: '10. 다음 사람에게',
-  tools: '11. 패치 소스 파일',
-};
 
 const emulators = [
   {
@@ -151,19 +203,48 @@ const emulators = [
   { name: 'Mesen-S 코어', result: '판정 불가 (일본판 원본도 테스트 프로그램에서 바로 종료)' },
 ];
 
-const passwordBytes = [
+const toolFiles = [
+  { file: 'tools/build.sh', text: '아래 순서대로 전체 빌드', section: 'tools' },
+  { file: 'tools/dialogue.py', text: '대사 ID로 대사 위치 찾기', section: 'dialogue' },
+  { file: 'tools/extract.py', text: '일본어·한국어 대사 덤프(TSV)', section: 'dialogue' },
+  { file: 'tools/dialogue_patch.py', text: '대사 넣기, 옮기기, 새 글자 그리기', section: 'relocate' },
+  { file: 'tools/check_width.py', text: '창보다 넓은 줄이 있으면 빌드 실패', section: 'wrap' },
+  { file: 'tools/font.py', text: '대사 폰트 글자 읽기', section: 'font' },
+  { file: 'tools/usedsheet.py', text: '대사에 쓰인 글자 목록', section: 'font' },
+  { file: 'krpatch lzss', text: '공통 도구. LZSS 압축·해제', section: 'title-gfx' },
+  { file: 'tools/title.py', text: '타이틀 그림 그리기·넣기', section: 'title-gfx' },
+  { file: 'tools/bubble_patch.py', text: '전투 말풍선 넣기, 옮기기', section: 'bubbles' },
+  { file: 'tools/credits.py', text: '엔딩 크레딧 고치기', section: 'credits' },
+  { file: 'tools/password.py', text: '돌격편 암호 입력 칸·검사 표 맞추기', section: 'password' },
+  { file: 'tables/totsugeki-password.tsv', text: '돌격편 v1.1 롬에서 꺼낸 암호 글자와 쌍 표', section: 'password' },
+  { file: 'tools/fix_overwrites.py', text: 'v1.1이 덮어쓴 데이터 되살리기', section: 'bugfix' },
+  { file: 'lua/', text: 'Mesen 2 스크립트: 디버그 메뉴 장면 시작, 크레딧 바로 보기', section: 'testing' },
+  { file: 'compat/', text: 'Mesen 2와 libretro 코어에 같은 입력을 넣어 비교', section: 'testing' },
   {
-    bytes: '0–1',
-    totsugeki: '$0D99·$0D9B·$0D9D의 9비트',
-    kakusei: '바이트 0의 비트 2가 켜져 있으면 기술 15번(손오공 파워기술 「거북선인류최종오의」)을 익힘',
+    file: 'krpatch snes run',
+    text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램',
+    section: 'testing',
   },
-  { bytes: '2–4', totsugeki: '$0C8B–$0C8D', kakusei: '읽지 않음' },
-  { bytes: '5', totsugeki: '$0B00', kakusei: '읽지 않음' },
-  { bytes: '6–17', totsugeki: '$0B01–$0B0C (이름, 글자마다 2바이트)', kakusei: '6–15를 이름 5자로 바꿔 씀' },
-  { bytes: '18–20', totsugeki: '$0C91, $0C92, $0C90', kakusei: '읽지 않음' },
-  { bytes: '21–22', totsugeki: '$022F–$0230', kakusei: '$0266–$0267(플레이 시간 분·시)에 씀' },
-  { bytes: '23–24', totsugeki: '0–22의 합(16비트)', kakusei: '검사에만 씀' },
+  { file: 'krpatch snes checksum', text: '공통 도구. 롬 헤더 체크섬 다시 계산', section: 'tools' },
+  { file: 'krpatch ips', text: '공통 도구. IPS 적용·생성', section: 'tools' },
+  { file: 'tables/', text: '일본판·v1.1·v1.3 글자 표, 고친 대사 782줄, 고친 말풍선 443개', section: 'dialogue' },
+  { file: 'docs/ANALYSIS.md', text: '롬 분석 문서(주소·형식 전체)', section: 'map' },
 ];
+
+const sectionTitles: Record<string, string> = {
+  map: '2. 롬 지도',
+  dialogue: '3. 대사',
+  relocate: '3. 같은 뱅크 안으로',
+  wrap: '3. 창 폭',
+  font: '4. 글자',
+  'title-gfx': '5. 그림·압축',
+  bubbles: '6. 전투 말풍선',
+  credits: '6. 엔딩 크레딧',
+  password: '7. 돌격편 암호',
+  bugfix: '8. 진행 버그',
+  testing: '9. 확인 방법',
+  tools: '11. 패치 소스 파일',
+};
 
 const buildSteps = [
   '일본판 원본에 v1.1 IPS를 적용합니다.',
@@ -188,12 +269,60 @@ const buildSteps = [
   toolkit="IPS·체크섬·LZSS·libretro 실행과 Lua 스크립트"
 />
 
-<h2 id="making-basics">1. 배경지식</h2>
-<NoteRelated patch={patch} id="making-basics" />
+<h2 id="making-about">
+  1. 이 노트에서 <span class="layer-badge layer-easy">쉽게</span>
+</h2>
+<NoteRelated patch={patch} id="making-about" />
+<p>
+  각성편 한글패치는 세 번에 걸쳐 쌓였습니다. 2016년의 v1.1이 처음 한글로 바꿨고, v1.2와 v1.3은 일본판에 v1.1을 적용한 롬
+  위에서 고쳤습니다. 그래서 이 노트에는 일본판, v1.1, v1.2, v1.3 네 롬이 나옵니다. 같은 엔진을 쓰는 1편은{' '}
+  <a href={totsugeki}>돌격편 노트</a>에 있습니다.
+</p>
+<div class="table-wrap" tabindex="0">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">버전</th>
+        <th scope="col">바꾼 것</th>
+        <th scope="col">이 노트에서</th>
+      </tr>
+    </thead>
+    <tbody>
+      {versions.map(v => (
+        <tr>
+          <th scope="row">{v.version}</th>
+          <td class="wrap">{v.did}</td>
+          <td class="wrap">
+            {v.at.map((a, i) => (
+              <>
+                {i > 0 && ', '}
+                <a href={a.href}>{a.label}</a>
+              </>
+            ))}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<h3>먼저 읽으면 좋은 장</h3>
+<p>
+  아래 장을 읽고 오면 이 노트의 주소와 바이트가 쉽게 읽힙니다. 처음 보는 말은 <a href={GLOSSARY_PATH}>용어집</a>에
+  있습니다.
+</p>
+<ul class="notes">
+  {readFirst.map(r => (
+    <li>
+      <a href={r.href}>{r.label}</a> — {r.why}
+    </li>
+  ))}
+</ul>
+
 <h3>게임기 안의 메모리</h3>
 <p>
   CPU는 화면에 직접 그리지 않습니다. 그림 조각(타일)을 VRAM에 올려 두고 "이 칸에는 몇 번 타일" 이라는 배치표(타일맵)를
-  적어 화면을 만듭니다. 대사 글자도 타일입니다.
+  적어 화면을 만듭니다. 대사 글자도 타일입니다. 이 노트에 나오는 메모리는 네 가지입니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -201,7 +330,6 @@ const buildSteps = [
       <tr>
         <th scope="col">이름</th>
         <th scope="col">크기</th>
-        <th scope="col">비유</th>
         <th scope="col">하는 일</th>
       </tr>
     </thead>
@@ -210,7 +338,6 @@ const buildSteps = [
         <tr>
           <th scope="row">{m.name}</th>
           <td>{m.size}</td>
-          <td>{m.like}</td>
           <td class="wrap">{m.role}</td>
         </tr>
       ))}
@@ -218,110 +345,186 @@ const buildSteps = [
   </table>
 </div>
 
-<h3>주소 읽는 법</h3>
+<h3 id="making-basics">주소 읽는 법</h3>
+<NoteRelated patch={patch} id="making-basics" />
 <p>
   <code>0xCA9BE</code> 같은 파일 오프셋은 롬 파일을 처음부터 센 위치이고, <code>$99:A9BE</code> 같은 SNES 주소는 CPU가
-  보는 <code>뱅크:주소</code>입니다. 이 게임은 LoROM이라 뱅크마다 뒤쪽 32KB($8000–$FFFF)에만 롬이 보입니다. 그래서
-  다음처럼 바꿉니다.
+  보는 <code>뱅크:주소</code>입니다. 이 게임은 LoROM이라 뱅크마다 뒤쪽 32KB($8000–$FFFF)에만 롬이 보입니다(
+  <a href={ch('banks', 'mapping')}>4장의 LoROM</a>). 그래서 다음처럼 바꿉니다.
 </p>
 <pre tabindex="0"><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
 $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
-
-<h3>어셈블리, 필요한 만큼만</h3>
 <p>
-  어셈블리는 CPU가 실행하는 명령을 사람이 읽는 이름으로 적은 것이고, 롬 안에서는 그냥 바이트입니다. 전원을 켠 직후
-  실행되는 코드(<code>$80:805C</code>, 파일 <code>0x5C</code>)를 보겠습니다.
+  이 노트의 파일 오프셋은 모두 앞에 512바이트 카피어 헤더가 없는 롬 기준입니다. 헤더가 있는 롬이면 0x200을 더합니다.
+  배포한 패치도 그래서 두 가지(헤더 없는 롬용, 있는 롬용)입니다.
 </p>
+
+<h2 id="making-map">
+  2. 롬 지도 <span class="layer-badge layer-patch">실제 패치에서</span>
+</h2>
+<NoteRelated patch={patch} id="making-map" />
+<p>
+  롬은 2MB이고, LoROM에서는 32KB 뱅크 64개($80–$BF)로 나뉩니다. 한글패치가 손댄 뱅크는 그중 일부입니다. 일본판, v1.1,
+  v1.2 롬을 바이트 단위로 비교해 뱅크마다 바뀐 곳을 표시하면 이렇습니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('rom-map.svg')}
+    width="860"
+    height="432"
+    alt="2MB 롬을 뱅크 64칸으로 그린 지도. $98–$9F가 대사, $B6–$B7이 폰트, $89가 타이틀 그림이고, v1.1이 메뉴·지명·크레딧·전투 말풍선을 바꾼 $80–$84·$88·$B4가 초록, v1.2가 되살린 $83:F3AF와 $88:FFAE가 빨간 줄로 표시돼 있다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>일본판·v1.1·v1.2를 비교한 뱅크 지도</figcaption>
+</figure>
 <div class="table-wrap" tabindex="0">
   <table>
     <thead>
       <tr>
-        <th scope="col">바이트</th>
-        <th scope="col">어셈블리</th>
-        <th scope="col">뜻</th>
+        <th scope="col">뱅크</th>
+        <th scope="col">들어 있는 것</th>
       </tr>
     </thead>
     <tbody>
-      {opcodes.map(o => (
+      {romBanks.map(b => (
         <tr>
-          <td>
-            <code>{o.bytes}</code>
-          </td>
-          <td>
-            <code>{o.asm}</code>
-          </td>
-          <td class="wrap">{o.text}</td>
+          <th scope="row">
+            <code>{b.bank}</code>
+          </th>
+          <td class="wrap">{b.what}</td>
         </tr>
       ))}
     </tbody>
   </table>
 </div>
 <p>
-  첫 줄 <code>80 0C</code>를 아무 일도 안 하는 명령 두 개 <code>EA EA</code>(NOP NOP)로 바꾸면 건너뛰지 않고 디버그
-  메뉴로 들어갑니다. 위 화면이 그렇게 연 메뉴입니다. ADVENTURE에서 장면 번호를 넣고 시작하면 맵까지 그 장면에 맞게
-  불러와서, 처음부터 플레이하지 않고도 원하는 대사를 띄울 수 있습니다. 롬 해킹은 이런 바이트 바꾸기의 연속입니다.
+  나머지 뱅크($85–$87, $8A–$97, $A0–$B3, $B5, $B8–$BF)는 세 롬이 같습니다. 롬 크기도 원본과 같은 2MB라, 롬을 늘리지
+  않고(<a href={ch('expansion', 'instead')}>11장의 늘리지 않고 자리 만들기</a>) 빈 곳에 맞춰 넣었습니다.
 </p>
 
-<ToolFiles items={[{ path: 'lua/dbgscene.lua', text: 'Mesen 2용. 디버그 메뉴로 원하는 장면 시작' }]} />
+<h3>버전마다 바뀐 뱅크</h3>
+<ul class="notes">
+  <li>
+    <strong>v1.1</strong>: 대사 8뱅크와 함께 메뉴($81–$84), 지명($88), 크레딧($83), 전투 말풍선($B4)까지 한글로
+    바꿨습니다. 롬 헤더의 게임 이름도 반각 가타카나 「スーパーゴクウデン カクセイヘン」에서 「DBZ SUPER GOKUDEN 2」로
+    바뀌었습니다.
+  </li>
+  <li>
+    <strong>v1.2</strong>: 대사 8뱅크, 타이틀($89), 새 글자($B6–$B7), 아래 8절의 두 곳($83:F3AF, $88:FFAE), 헤더 체크섬.
+  </li>
+  <li>
+    <strong>v1.3</strong>: 대사 뱅크 $98·$9B·$9C(나레이션 줄바꿈), 말풍선 뱅크 $B4, 암호 화면의 표($81·$83·$84), 새 글자
+    4자($B7), 헤더 체크섬.
+  </li>
+</ul>
 
-<h2 id="making-dialogue">2. 대사가 롬에 들어 있는 모양</h2>
-<NoteRelated patch={patch} id="making-dialogue" />
+<h3>남은 빈 공간</h3>
 <p>
-  대사 글자 하나는 16비트(2바이트) 코드이고, 작은 쪽 바이트를 먼저 적습니다. <code>0A 00</code>은 줄바꿈,{' '}
-  <code>00 00</code>은 대사 끝입니다. 한 페이지는 4줄이고, 한 줄에는 얼굴 그림이 있는 창은 10자, 나레이션 창은 14자까지
-  들어갑니다. 크리링의 대사 하나를 롬에서 그대로 꺼내면 이렇습니다.
+  다음 사람이 무언가를 더 넣을 때 쓸 수 있는 곳입니다. 다만 0xFF가 이어진다고 다 빈 곳은 아닙니다. v1.1은 그렇게 믿고
+  넣었다가 진행 버그를 만들었습니다(<a href="#making-bugfix">8절</a>,{' '}
+  <a href={ch('hooking', 'space')}>6장의 빈 공간 찾기</a>).
 </p>
 <div class="table-wrap" tabindex="0">
-  <table class="bytes">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">위치</th>
+        <th scope="col">크기</th>
+        <th scope="col">메모</th>
+      </tr>
+    </thead>
     <tbody>
-      <tr>
-        <th scope="row">바이트</th>
-        {lineBytes.map(([b]) => (
-          <td>
-            <code>{b}</code>
-          </td>
-        ))}
-      </tr>
-      <tr>
-        <th scope="row">글자</th>
-        {lineBytes.map(([, ch]) => (
-          <td>{ch}</td>
-        ))}
-      </tr>
+      {freeSpace.map(f => (
+        <tr>
+          <th scope="row">{f.where}</th>
+          <td>{f.size}</td>
+          <td class="wrap">{f.note}</td>
+        </tr>
+      ))}
     </tbody>
   </table>
 </div>
+
+<h2 id="making-dialogue">
+  3. 대사 <span class="layer-badge layer-patch">실제 패치에서</span>
+</h2>
+<NoteRelated patch={patch} id="making-dialogue" />
 <p>
-  창은 대사를 띄우는 코드(<code>$80:B879</code>)가 고릅니다. 대사 ID $200부터는 <code>$98:8000</code>에 ID마다 2바이트가
-  있고 첫 바이트가 화자 번호인데, 이 값이 0xFF면 8×8 타일 0x15칸 폭의 나레이션 창, 아니면 0x10칸 폭의 얼굴 창을 깝니다.
-  ID $000–$056은 화자 번호가 없는 짧은 감탄사 81개라 늘 얼굴 창입니다.
+  대사 글자 하나는 16비트(2바이트) 코드이고, 작은 쪽 바이트를 먼저 적습니다(
+  <a href={common('endian', 'order')}>2장의 리틀 엔디안</a>). <code>0A 00</code>은 줄바꿈, <code>00 00</code>은 대사
+  끝입니다. 크리링의 대사 하나를 롬에서 그대로 꺼내면 이렇습니다. 위가 롬의 바이트, 아래가 그 바이트가 뜻하는
+  글자입니다.
 </p>
+<ul class="byte-strip" aria-label={`크리링 대사의 바이트: ${lineBytes.map(([b, c]) => `${b} = ${c}`).join(', ')}`}>
+  {lineBytes.map(([b, c]) => (
+    <li class:list={{ 'is-accent': b === '0A 00' || b === '00 00' }}>
+      <code>{b}</code>
+      <small>{c}</small>
+    </li>
+  ))}
+</ul>
 <p>
-  글자를 찍는 코드(<code>$80:9B2C</code>)는 글자마다 12픽셀씩 오른쪽으로 가고, 다음 글자가 창 폭(타일 수 × 8픽셀)을
-  넘으면 줄을 바꿉니다. 0x10칸은 128픽셀이라 10자, 0x15칸은 168픽셀이라 14자입니다. 시험용 줄을 넣어 띄워 봐도 얼굴 창은
-  11번째, 나레이션 창은 15번째 글자부터 다음 줄로 떨어지고, 그만큼 줄을 하나 더 씁니다. 일본판에도 이렇게 넘치는 줄이
-  2개(ID $7C0, $E59) 있어 「‥!」과 「‥」가 혼자 다음 줄에 찍힙니다.
+  <code>A2 06</code>은 거꾸로 읽어 코드 <code>$06A2</code>이고, 글자 표에서 「크」입니다. 이 숫자와 글자의 대응표를 글자
+  표라고 합니다(<a href={ch('text', 'table')}>8장</a>). 일본판의 글자 표는 롬에 없어서, v1.1 때 만든 표에 v1.2와 v1.3이
+  고친 것을 더해 씁니다.
 </p>
-<figure class="paper">
-  <ZoomImage
-    src={img('wrap.webp')}
-    width="848"
-    height="400"
-    alt="대사 창 네 장. 위는 시험용 줄로 나레이션 창은 15번째 글자 「거」, 얼굴 창은 11번째 글자 「카」가 다음 줄로 넘어가는 모습이고, 아래는 v1.2의 실제 나레이션 대사에서 「이」와 「을」이 혼자 다음 줄로 떨어진 모습"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-  <figcaption>위는 시험용 줄(왼쪽 나레이션, 오른쪽 얼굴 창), 아래는 v1.2의 실제 대사</figcaption>
-</figure>
+
+<h3>포인터 표 따라가기</h3>
 <p>
-  v1.2는 나레이션 창을 15자로 잘못 알고 줄을 나눴습니다. 그래서 대사 3,558개(글자 시험용 대사 제외) 중 얼굴 창은 모두
-  10자 안에 들어갔지만, 나레이션 대사 8개(ID $600, $83E, $881, $883, $895, $F84, $F86, $F87)의 9줄은 15자라 마지막
-  글자가 다음 줄로 떨어졌습니다. v1.3은 이 8개를 14자 안으로 다시 나눴고, 빌드 마지막에 모든 줄을 창 폭과 비교해 넘치면
-  빌드를 멈추는 검사를 넣었습니다. v1.2 롬에 이 검사를 돌리면 대사 8개와 말풍선 4개가 걸립니다.
+  대사 ID는 $000부터 $F94까지 4천 개 가까이 됩니다. 스크립트의 대사 명령(0x08)이 ID를 주면, 게임은 ID 범위로 뱅크를
+  고르고 그 뱅크 첫머리의 포인터 표에서 문자열 위치를 찾습니다(<a href={ch('text', 'pointers')}>8장의 포인터 표</a>). 위
+  크리링 대사는 ID <code>$2A7</code>입니다.
 </p>
+<Figure caption="대사 ID $2A7에서 롬 속 문자열까지. 포인터는 2바이트라 같은 뱅크 안만 가리킵니다" max={560}>
+  <svg viewBox="0 0 360 312" role="img" aria-labelledby="kk-ptr-t kk-ptr-d">
+    <title id="kk-ptr-t">대사 포인터 따라가기</title>
+    <desc id="kk-ptr-d">
+      대사 ID $2A7은 $000–$3DF 범위라 뱅크 $99의 표를 쓴다. $99:8000에서 ID × 2바이트 뒤인 $99:854E에 BE A9가 있고, 작은
+      바이트가 먼저라 주소 $A9BE다. $99:A9BE, 파일 0xCA9BE에 A2 06 45 09 52 09 0A 00이 있고 크리링 줄바꿈이다.
+    </desc>
+    <rect class="dg-accent" x="8" y="8" width="344" height="52" rx="6"></rect>
+    <text class="dg-text dg-bold" x="20" y="30">
+      ① 대사 ID $2A7
+    </text>
+    <text class="dg-small" x="20" y="50">
+      $000–$3DF 범위라 뱅크 $99의 표를 씁니다
+    </text>
+    <path class="dg-arrow" d="M180 62V80" marker-end="url(#dg-arrowhead)"></path>
+    <rect class="dg-cell" x="8" y="82" width="344" height="64" rx="6"></rect>
+    <text class="dg-small" x="20" y="102">
+      ② $99:8000 포인터 표 (ID마다 2바이트)
+    </text>
+    <text class="dg-mono" x="20" y="130">
+      $8000 + $2A7×2 = $854E
+    </text>
+    <rect class="dg-warm" x="252" y="108" width="88" height="30" rx="5"></rect>
+    <text class="dg-mono dg-bold" x="296" y="128" text-anchor="middle">
+      BE A9
+    </text>
+    <path class="dg-arrow" d="M180 148V166" marker-end="url(#dg-arrowhead)"></path>
+    <rect class="dg-cell" x="8" y="168" width="344" height="40" rx="6"></rect>
+    <text class="dg-text" x="20" y="193">
+      ③ BE A9 → 주소 $A9BE (작은 쪽 먼저)
+    </text>
+    <path class="dg-arrow" d="M180 210V228" marker-end="url(#dg-arrowhead)"></path>
+    <rect class="dg-cool" x="8" y="230" width="344" height="74" rx="6"></rect>
+    <text class="dg-small" x="20" y="250">
+      ④ $99:A9BE (파일 0xCA9BE)의 문자열
+    </text>
+    <text class="dg-mono" x="20" y="274">
+      A2 06 45 09 52 09 0A 00 …
+    </text>
+    <text class="dg-text" x="20" y="294">
+      = 크 리 링 (줄바꿈) …
+    </text>
+  </svg>
+</Figure>
 <p>
-  대사 ID는 $000부터 $F94까지 4천 개 가까이 됩니다. ID 범위마다 뱅크가 정해져 있고, 뱅크 첫머리에 포인터 표가 있습니다.
+  표의 첫 칸(<code>$99:8000</code>)에는 <code>C0 87</code>, 곧 <code>$87C0</code>이 들어 있습니다. 이 뱅크의 ID는
+  0x3E0개이고 칸마다 2바이트라 표가 0x7C0바이트를 차지하므로, 문자열은 표가 끝나는 <code>$99:87C0</code>부터 시작합니다.
+  ID 범위와 표 위치는 뱅크마다 다릅니다. 마지막 범위만 표가 뱅크 $98의 중간(<code>$98:C1C8</code>)에 있습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -349,14 +552,355 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
     </tbody>
   </table>
 </div>
-<ol class="flow">
-  {dialogFlow.map(step => (
-    <li>{step}</li>
-  ))}
-</ol>
+<Deeper title="ID로 뱅크를 고르는 코드, 최상위 비트, 화자 번호">
+  <ul>
+    <li>
+      ID 범위로 뱅크를 고르는 분기는 <code>$83:BA13</code>에 있습니다.
+    </li>
+    <li>
+      글자 코드의 최상위 비트(0x8000)는 떼고 읽었습니다. 일본판의 실제 대사에는 이 비트가 켜진 코드가 하나도 없습니다.
+    </li>
+    <li>
+      대사 ID $200부터는 <code>$98:8000</code>에 ID마다 2바이트가 더 있고, 첫 바이트가 화자 번호입니다. 아래 창 크기를
+      정할 때 씁니다.
+    </li>
+    <li>「!!」「!?」처럼 두 글자를 한 칸에 그린 글자도 있습니다.</li>
+    <li>
+      줄은 단어 중간에서 끊지 않고, 위아래 줄 길이를 비슷하게 맞추고, 필요한 것보다 줄을 많이 쓰지 않고, 더듬는
+      말(「주‥죽어」)은 한 줄에 두었습니다.
+    </li>
+  </ul>
+</Deeper>
+
+<h3 id="making-wrap">창 폭: 얼굴 창 10자, 나레이션 창 14자</h3>
 <p>
-  전투 중에 캐릭터 옆에 뜨는 말풍선은 따로 있습니다. 대사 ID $1000–$13FF가 <code>$B4:8000</code> 포인터 표를 쓰고, 전투
-  스크립트(뱅크 <code>$B5</code>)의 명령이 이 ID를 줍니다. 명령마다 창 크기가 정해져 있습니다.
+  한 페이지는 4줄이고, 한 줄에는 얼굴 그림이 있는 창은 10자, 나레이션 창은 14자까지 들어갑니다. 빈 줄(줄바꿈 연속)로
+  페이지를 채워 다음 페이지로 넘깁니다. 창은 대사를 띄우는 코드(<code>$80:B879</code>)가 고릅니다. 위의 화자 번호가
+  0xFF면 8×8 타일 0x15칸 폭의 나레이션 창, 아니면 0x10칸 폭의 얼굴 창을 깝니다. ID $000–$056은 화자 번호가 없는 짧은
+  감탄사 81개라 늘 얼굴 창입니다.
+</p>
+<p>
+  글자를 찍는 코드(<code>$80:9B2C</code>)는 글자마다 12픽셀씩 오른쪽으로 가고, 다음 글자가 창 폭(타일 수 × 8픽셀)을
+  넘으면 줄을 바꿉니다. 0x10칸은 128픽셀이라 10자, 0x15칸은 168픽셀이라 14자입니다. 시험용 줄을 넣어 띄워 봐도 얼굴 창은
+  11번째, 나레이션 창은 15번째 글자부터 다음 줄로 떨어지고, 그만큼 줄을 하나 더 씁니다. 일본판에도 이렇게 넘치는 줄이
+  2개(ID $7C0, $E59) 있어 「‥!」과 「‥」가 혼자 다음 줄에 찍힙니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('wrap.webp')}
+    width="848"
+    height="400"
+    alt="대사 창 네 장. 위는 시험용 줄로 나레이션 창은 15번째 글자 「거」, 얼굴 창은 11번째 글자 「카」가 다음 줄로 넘어가는 모습이고, 아래는 v1.2의 실제 나레이션 대사에서 「이」와 「을」이 혼자 다음 줄로 떨어진 모습"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>위는 시험용 줄(왼쪽 나레이션, 오른쪽 얼굴 창), 아래는 v1.2의 실제 대사</figcaption>
+</figure>
+<p>
+  v1.2는 나레이션 창을 15자로 잘못 알고 줄을 나눴습니다. 그래서 대사 3,558개(글자 시험용 대사 제외) 중 얼굴 창은 모두
+  10자 안에 들어갔지만, 나레이션 대사 8개(ID $600, $83E, $881, $883, $895, $F84, $F86, $F87)의 9줄은 15자라 마지막
+  글자가 다음 줄로 떨어졌습니다. v1.3은 이 8개를 14자 안으로 다시 나눴고, 빌드 마지막에 모든 줄을 창 폭과 비교해 넘치면
+  빌드를 멈추는 검사를 넣었습니다. v1.2 롬에 이 검사를 돌리면 대사 8개와 말풍선 4개가 걸립니다.
+</p>
+
+<h3 id="making-relocate">늘어난 대사는 같은 뱅크 안으로</h3>
+<NoteRelated patch={patch} id="making-relocate" />
+<p>
+  포인터는 2바이트라 뱅크 번호 없이 같은 뱅크 안의 주소만 가리킵니다. 그래서 고친 대사가 원래보다 길면 다른 뱅크로는 못
+  보내고, 같은 뱅크의 빈 공간으로 옮긴 뒤 포인터만 고칩니다(<a href={ch('text', 'grow')}>8장의 번역이 길어졌을 때</a>).
+  여러 ID가 한 문자열을 같이 가리키는 경우도 있어서, 그런 문자열은 제자리에서 고치지 않고 새 자리에 따로 씁니다.
+  제자리에서 고치면 같은 문자열을 쓰는 다른 ID의 대사까지 바뀝니다.
+</p>
+<p>
+  고친 782줄 중 432줄이 이렇게 옮겨졌습니다(v1.3 빌드 기준. v1.2 빌드는 436줄). v1.1 대사는 일본어보다 짧아 뱅크마다
+  끝쪽에 0xFF가 남아 있었고, 옮긴 대사는 그 자리와 다른 대사가 비우고 간 자리에 들어갔습니다. 돌격편은 같은 문제를
+  뱅크를 처음부터 다시 채우는 방법으로 풀었습니다(<a href={`${totsugeki}#making-dialogue`}>돌격편 노트 3절</a>).
+</p>
+<div class="table-wrap" tabindex="0">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">뱅크</th>
+        <th scope="col">옮긴 줄</th>
+        <th scope="col">빌드 뒤 남은 빈 곳</th>
+      </tr>
+    </thead>
+    <tbody>
+      {relocated.map(r => (
+        <tr>
+          <td>
+            <code>{r.bank}</code>
+          </td>
+          <td>{r.moved}</td>
+          <td>{r.free}바이트</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p class="muted">
+  「빈 곳」은 첫 문자열부터 뱅크 끝까지의 0xFF 구간을 합친 값이고, 살아 있는 데이터 옆 1바이트 여유를 뺐습니다.
+</p>
+
+<ToolFiles
+  items={[
+    { path: 'tools/dialogue.py', text: '대사 ID로 대사 위치 찾기' },
+    { path: 'tools/extract.py', text: '일본어·한국어 대사 덤프(TSV)' },
+    { path: 'tools/dialogue_patch.py', text: '대사 넣기, 옮기기, 새 글자 그리기' },
+    { path: 'tools/check_width.py', text: '창보다 넓은 줄이 있으면 빌드 실패' },
+    { path: 'tables/kr-v1.3.txt', text: 'v1.3 글자 코드표' },
+    { path: 'tables/dialogue-v1.3.tsv', text: '고친 대사 782줄(v1.3 줄바꿈)' },
+  ]}
+/>
+
+<h2 id="making-font">
+  4. 글자 <span class="layer-badge layer-patch">실제 패치에서</span>
+</h2>
+<NoteRelated patch={patch} id="making-font" />
+<p>
+  대사 폰트는 16×16 픽셀이고, 8×8 타일 4장으로 나뉘어 들어 있습니다(<a href={ch('graphics', 'fonts')}>7장의 폰트</a>).
+  롬에 저장된 시트는 한 줄에 타일 16장이라 글자 8개의 위 절반이 한 줄, 아래 절반이 그다음 줄입니다. 그래서
+  0x108–0x10F처럼 아래 절반 줄에 해당하는 코드는 글자로 쓰지 않습니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('font-sheet.svg')}
+    width="620"
+    height="356"
+    alt="롬의 폰트 시트 네 줄. 파란 줄은 글자 8개의 위 절반, 빨간 줄은 아래 절반이고, 이어 붙이면 슈·가·각·간 같은 글자가 된다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>폰트 시트: 위 절반 줄과 아래 절반 줄이 번갈아 나옵니다</figcaption>
+</figure>
+
+<h3>글자 코드로 그림 찾기</h3>
+<p>코드 범위마다 시트가 시작하는 파일 위치가 다릅니다.</p>
+<div class="table-wrap" tabindex="0">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">코드</th>
+        <th scope="col">시트 시작(파일)</th>
+        <th scope="col">메모</th>
+      </tr>
+    </thead>
+    <tbody>
+      {fontRanges.map(f => (
+        <tr>
+          <td>
+            <code>{f.codes}</code>
+          </td>
+          <td>
+            <code>{f.offset}</code>
+          </td>
+          <td class="wrap">{f.note}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p>
+  v1.2가 그려 넣은 「깨」(코드 <code>0x123</code>)로 계산해 보겠습니다. 시트 시작 코드 0x100에서 0x23번째 글자이고, 글자
+  하나가 32바이트(타일 2장)라 위 절반은 <code>0x1B00A0 + 0x23 × 32 = 0x1B0500</code>, 아래 절반은 시트 한
+  줄(0x100바이트) 뒤인 <code>0x1B0600</code>에 있습니다. 0x23 ÷ 8 = 4로 짝수 줄이라 실제 글자입니다. 위 절반의 왼쪽 타일
+  16바이트를 꺼내면 다음과 같습니다. 2바이트가 한 줄입니다.
+</p>
+<ul class="byte-strip" aria-label="깨의 왼쪽 위 타일, 줄마다 2바이트: 00 00 네 줄, 7E 7E, 12 12 세 줄">
+  {kkaeRows.map(([b, y]) => (
+    <li class:list={{ 'is-accent': b !== '00 00' }}>
+      <code>{b}</code>
+      <small>{y}줄</small>
+    </li>
+  ))}
+</ul>
+<p>
+  줄마다 두 바이트가 늘 같습니다. 2bpp 타일은 한 줄을 비트평면 두 장(
+  <a href={ch('graphics', 'bitplanes')}>7장의 비트평면</a>)으로 적는데, 이 폰트는 한 가지 색만 써서 두 평면에 같은 값이
+  들어갑니다. <code>7E</code> = 01111110이 「ㄲ」의 가로줄, <code>12</code> = 00010010이 두 세로줄입니다.
+</p>
+<figure class="paper narrow">
+  <ZoomImage
+    src={img('glyph-kkae.svg')}
+    width="520"
+    height="412"
+    alt="대사 폰트 코드 0x123에 그려 넣은 「깨」를 16×16 픽셀 격자와 줄마다의 바이트 값으로 나타낸 그림"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>코드 0x123에 그린 「깨」 전체</figcaption>
+</figure>
+
+<h3>폰트에 없던 글자</h3>
+<p>
+  v1.1 폰트에는 대사를 고치며 필요해진 글자 몇 개가 없었습니다. 그래서 어떤 대사에서도 쓰지 않는 글자 자리를 찾아
+  Galmuri11 폰트로 그려 넣었습니다. 예를 들어 「깨」가 들어간 0x123은 원래 「겄」 자리였습니다.
+</p>
+<div class="table-wrap" tabindex="0">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">버전</th>
+        <th scope="col">무엇</th>
+        <th scope="col">글자</th>
+      </tr>
+    </thead>
+    <tbody>
+      {newGlyphs.map(g => (
+        <tr>
+          <td>{g.when}</td>
+          <td class="wrap">{g.what}</td>
+          <td class="wrap">{g.list}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p>
+  글자 표를 그대로 믿으면 안 된다는 것도 배웠습니다. v1.1 글자 표에는 922번이 「렁」이라고 적혀 있었지만 실제 그림은
+  「렇」이었습니다. 지금은 표의 글자와 롬의 그림을 대조해서 씁니다. 돌격편은 폰트 칸 자체가 모자라 칸을 늘렸습니다(
+  <a href={`${totsugeki}#making-font`}>돌격편 노트 4절</a>). 각성편은 빈 자리만으로 충분했습니다.
+</p>
+<Deeper title="새 글자 자리를 고를 때 조심할 것">
+  <ul>
+    <li>
+      빈 자리는 "어떤 대사에서도 쓰지 않는 글자"로 고릅니다. 타이틀 압축 데이터의 바이트를 글자 코드로 잘못 세어 빈 자리
+      계산이 틀어진 적이 있어, 지금은 타이틀 자료를 빼고 셉니다.
+    </li>
+    <li>
+      말풍선은 대사 빌드가 만든 글자 표를 그대로 씁니다. 대사 빌드는 빈 자리를 고를 때 입력 롬(v1.1)의 말풍선만 보므로,
+      글자를 더 넣을 때는 그 자리가 v1.3 말풍선에 쓰였는지 먼저 확인해야 합니다.
+    </li>
+  </ul>
+</Deeper>
+
+<ToolFiles
+  items={[
+    { path: 'tools/font.py', text: '대사 폰트 글자 읽기' },
+    { path: 'tools/usedsheet.py', text: '대사에 쓰인 글자 목록' },
+    { path: 'tools/dialogue_patch.py', text: '대사 넣기, 옮기기, 새 글자 그리기' },
+  ]}
+/>
+
+<h2 id="making-gfx">
+  5. 그림·압축 <span class="layer-badge layer-try">직접 해 보기</span>
+</h2>
+<NoteRelated patch={patch} id="making-gfx" />
+<p>
+  v1.2와 v1.3이 압축을 풀어 다시 그린 그림은 타이틀 로고 하나입니다. 롬 지도에서 그림이 바뀐 뱅크도 타이틀이 있는
+  $89뿐입니다.
+</p>
+<h3 id="making-title-gfx">타이틀 로고</h3>
+<NoteRelated patch={patch} id="making-title-gfx" />
+<p>
+  타이틀 로고는 롬에 LZSS로 압축돼 있습니다(<a href={common('lzss', 'lzss')}>9장의 LZSS</a>). 앞에서 나온 것과 같은
+  내용이 또 나오면 바이트를 다시 적지 않고 "몇 바이트 앞에서 몇 바이트를 베껴라" 라고만 적는 방식입니다. 그래서 롬에서
+  바이트만 바꿔서는 로고를 고칠 수 없고, 풀어서 그림을 고친 뒤 다시 압축해야 합니다.
+</p>
+<p>
+  압축된 자료가 어디 있는지는 5바이트 항목이 알려 줍니다. 타이틀 글자가 그려진 배경 레이어(BG3) 타일의 항목은 파일
+  <code>0xD720</code>에 있습니다.
+</p>
+<ul class="byte-strip" aria-label="파일 0xD720의 항목: 9D 9B 89 50 13. 주소 $9B9D, 뱅크 $89, 크기 $1350">
+  <li class="is-cool">
+    <code>9D</code>
+    <small>주소 아래</small>
+  </li>
+  <li class="is-cool">
+    <code>9B</code>
+    <small>주소 위</small>
+  </li>
+  <li class="is-warm">
+    <code>89</code>
+    <small>뱅크</small>
+  </li>
+  <li class="is-accent">
+    <code>50</code>
+    <small>크기 아래</small>
+  </li>
+  <li class="is-accent">
+    <code>13</code>
+    <small>크기 위</small>
+  </li>
+</ul>
+<p>
+  주소 <code>$89:9B9D</code>(파일 0x49B9D)에 풀면 0x1350 = 4,944바이트가 되는 자료가 있다는 뜻입니다. 타일 배치표(32×32
+  타일맵)의 항목은 파일 <code>0xD95F</code>의 <code>F3 C4 89 00 08</code>, 곧 <code>$89:C4F3</code>에 2,048바이트입니다.
+  아래 위젯은 일본판 롬의 <code>$89:9B9D</code>부터 25바이트를 그대로 옮겨 왔습니다. 「한 단계 풀기」를 눌러 플래그
+  바이트와 복사 항목을 하나씩 따라가 보세요.
+</p>
+<LzssStep initial="kakusei-title" />
+<p>
+  첫 2바이트 <code>50 13</code>이 위 항목의 크기와 같고, 처음 몇 항목은 "시작보다 앞에서 베껴라"라서 0이 나옵니다.
+  그림의 빈 왼쪽 위가 0으로 채워지는 것입니다.
+</p>
+<p>
+  타이틀 그림을 푸는 루틴(<code>$80:9DA7</code>)은 다 푼 뒤에 타일마다 바이트 순서를 한 번 더 바꿉니다. 그래서 압축만
+  풀어서는 왼쪽처럼 줄무늬가 지고, 순서를 바꿔야 오른쪽처럼 제대로 보입니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('title-lzss.webp')}
+    width="1040"
+    height="912"
+    alt="타이틀 그림을 롬에서 꺼낸 결과. 위는 일본판, 아래는 v1.2이고 왼쪽은 압축만 푼 줄무늬 상태, 오른쪽은 바이트 순서를 바꿔 超悟空伝 覚醒編과 초오공전 각성편 로고가 보이는 상태"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>위 일본판, 아래 v1.2. 왼쪽은 압축만 푼 상태, 오른쪽은 순서를 바꾼 상태</figcaption>
+</figure>
+<p>
+  한글 로고를 그린 뒤 다시 압축했더니 원래 3,608바이트가 3,232바이트로 줄어 제자리에 들어갔습니다. 더 길어지면 같은
+  영역의 빈 공간(파일 0x4C801–0x4FFFF)으로 옮기고 위 5바이트 항목을 고치도록 해 두었습니다. 압축한 크기는 그림을 다 그려
+  봐야 알 수 있으니, 넘칠 때 둘 곳을 먼저 정한 것입니다. 돌격편도 형식이 같아 같은 도구를 주소만 바꿔 썼습니다(
+  <a href={`${totsugeki}#making-title-gfx`}>돌격편 노트 5절</a>).
+</p>
+<Deeper title="해제 루틴과 바이트 순서, 건드리지 않은 타일">
+  <ul>
+    <li>
+      해제 루틴은 <code>$80:9CFA</code>입니다. 앞 2바이트가 풀었을 때 크기, 그 뒤로 플래그 바이트 하나와 항목 8개가
+      되풀이됩니다. 플래그는 아래 비트부터 읽고, 1이면 그대로 1바이트, 0이면 16비트 워드 하나로 길이 = (워드 &amp; 0xF)
+      + 3, 거리 = 워드 &gt;&gt; 4입니다. 거리가 출력 시작보다 앞을 가리키면 0으로 읽습니다.
+    </li>
+    <li>
+      <code>$80:9DA7</code>은 같은 해제 뒤에 타일마다 "평면 0의 8줄, 평면 1의 8줄" 순서를 슈퍼 패미컴 2bpp 순서(줄마다
+      두 평면을 번갈아)로 바꿉니다(<a href={common('lzss', 'variants')}>9장의 변형</a>).
+    </li>
+    <li>
+      「DRAGON BALL Z」 로고와 저작권 줄 「(c) BANDAI 1995」는 원본 그대로입니다. 저작권 줄의 © 타일은 두 줄이 같이 쓰기
+      때문에 건드리면 안 됩니다. 로고 아래 가타카나(ドラゴンボール) 줄은 타일맵에서 쓰지 않는 빈 타일(0xFF)로
+      지웠습니다.
+    </li>
+  </ul>
+</Deeper>
+
+<ToolFiles
+  items={[
+    { path: 'krpatch lzss', text: '공통 도구. LZSS 압축·해제' },
+    { path: 'tools/title.py', text: '타이틀 그림 그리기·넣기' },
+  ]}
+/>
+
+<h2 id="making-menus">
+  6. 메뉴·이름·전투 <span class="layer-badge layer-patch">실제 패치에서</span>
+</h2>
+<NoteRelated patch={patch} id="making-menus" />
+<p>
+  대사 밖에도 글자는 많습니다. 메뉴·글자판·상태 창·기술 이름·세이브 메뉴·전투 안내 문구·지명은 v1.1이 한글로 바꿨고,
+  v1.2와 v1.3은 대부분 그대로 두었습니다. 위치는 <a href="#making-map">2절의 표</a>에 있습니다. 「플레이어 체인지」 (
+  <code>$89:9989</code>)처럼 대사와 같은 16비트 문자열을 WRAM 버퍼(<code>$0A00</code>)로 복사해 창에 띄우는 곳도
+  있습니다. 이 절에서는 v1.2와 v1.3이 고친 두 곳, 전투 말풍선과 엔딩 크레딧을 봅니다.
+</p>
+
+<h3 id="making-bubbles">전투 말풍선</h3>
+<p>
+  전투 중에 캐릭터 옆에 뜨는 말풍선은 대사와 따로 있습니다. 대사 ID $1000–$13FF가 <code>$B4:8000</code> 포인터
+  표(1,024개)를 쓰고, 문자열은 <code>$B4:8800</code>부터입니다. 전투 스크립트(뱅크 <code>$B5</code>)의 명령이 이 ID를
+  주고, 명령마다 창 크기가 정해져 있습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -395,229 +939,184 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 <p>
   v1.1이 말풍선을 모두 한글로 바꿨지만 v1.2는 이 뱅크를 고치지 않았습니다. v1.3에서 898개(문자열로는 729개)를 일본어
   원문과 대조해 문자열 443개를 고쳤고, 창 밖으로 넘치던 줄(ID $1022, $10DC, $1194, $11CE)도 창에 맞게 나눴습니다. 여러
-  ID가 한 문자열을 같이 쓰므로 고친 ID는 719개입니다. 마지막 ID $137B–$1381의 7줄은 v1.1이 엔딩 인사와 한글화 참여자
-  이름을 넣은 자리라 그대로 두었습니다.
+  ID가 한 문자열을 같이 쓰므로 고친 ID는 719개이고, 늘어난 185개는 대사처럼 같은 뱅크의 빈 곳으로 옮겼습니다. 마지막 ID
+  $137B–$1381의 7줄은 v1.1이 엔딩 인사와 한글화 참여자 이름을 넣은 자리라 그대로 두었습니다.
+</p>
+<Deeper title="전투 스크립트 명령의 길이">
+  <p>
+    스크립트를 분기까지 따라가려면 명령마다 몇 바이트인지 알아야 합니다. 모르면 인자를 명령으로 읽어 그 뒤가 전부
+    어긋납니다(<a href={ch('text', 'control')}>8장의 제어 코드</a>). 명령 표는 <code>$82:D14C</code>이고 명령 00이
+    끝입니다.
+  </p>
+  <ul>
+    <li>명령 01–03: 3바이트. 뒤 2바이트가 말풍선 ID입니다. 0A·12도 3바이트입니다.</li>
+    <li>명령 04–09·0B: 1바이트, 0C·0D: 2바이트.</li>
+    <li>명령 0E–11: 4바이트. 조건이 맞으면 뒤 2바이트 주소로 건너뜁니다.</li>
+    <li>
+      시작 표 4개는 <code>$82:D099</code>, <code>$82:D0DE</code>, <code>$82:D0EF</code>, <code>$82:D125</code>가 전투
+      번호(<code>$0E2B</code>)로 읽습니다.
+    </li>
+    <li>
+      시험용 줄을 넣어 띄우면 12자 창에서 13번째 글자부터 다음 줄로 넘어가고, 넘친 줄은 창 밖이라 보이지 않습니다.
+    </li>
+  </ul>
+</Deeper>
+
+<h3 id="making-credits">엔딩 크레딧</h3>
+<p>
+  엔딩 크레딧도 대사와 같은 16비트 문자열이고, 이름 줄 21개마다 포인터가 있습니다(<code>$83:949D</code>, 출력 루틴{' '}
+  <code>$83:8669</code>). 「MR. 포포」를 「미스터 포포」로 늘리면서 원래 자리에 줄여 넣지 않고, 일본판에서도 쓰지 않는
+  빈 곳(파일 0x1F510)으로 옮겨 포인터를 고쳤습니다. 제자리에서 글자 수를 바꾸면 가운데 정렬이 틀어집니다.
 </p>
 
 <ToolFiles
   items={[
-    { path: 'tools/dialogue.py', text: '대사 ID로 대사 위치 찾기' },
-    { path: 'tools/extract.py', text: '일본어·한국어 대사 덤프(TSV)' },
-    { path: 'tables/kr-v1.3.txt', text: 'v1.3 글자 코드표' },
     { path: 'tools/bubble_patch.py', text: '전투 말풍선 넣기, 옮기기' },
-    { path: 'tools/check_width.py', text: '창보다 넓은 줄이 있으면 빌드 실패' },
     { path: 'tables/bubbles-v1.3.tsv', text: 'v1.3에서 고친 말풍선 443개' },
-  ]}
-/>
-
-<h2 id="making-font">3. 폰트에 없는 글자</h2>
-<NoteRelated patch={patch} id="making-font" />
-<p>
-  대사 폰트는 16×16 픽셀이고, 8×8 타일 4장으로 나뉘어 들어 있습니다. 롬에 저장된 시트는 한 줄에 타일 16장이라 글자 8개의
-  위 절반이 한 줄, 아래 절반이 그다음 줄입니다. 그래서 0x108–0x10F처럼 아래 절반 줄에 해당하는 코드는 글자로 쓰지
-  않습니다.
-</p>
-<figure class="paper">
-  <ZoomImage
-    src={img('font-sheet.svg')}
-    width="620"
-    height="356"
-    alt="롬의 폰트 시트 네 줄. 파란 줄은 글자 8개의 위 절반, 빨간 줄은 아래 절반이고, 이어 붙이면 슈·가·각·간 같은 글자가 된다"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-<p>
-  v1.1 폰트에는 대사를 고치며 필요해진 글자 몇 개가 없었습니다. 그래서 어떤 대사에서도 쓰지 않는 글자 자리를 찾아
-  Galmuri11 폰트로 깨·꽉·꾼·닿·렁·롭·벅·빡·뻐·셋·씻 11자를 그려 넣었습니다. 아래는 그렇게 넣은 「깨」입니다.
-</p>
-<figure class="paper narrow">
-  <ZoomImage
-    src={img('glyph-kkae.svg')}
-    width="520"
-    height="412"
-    alt="대사 폰트 코드 0x123에 그려 넣은 「깨」를 16×16 픽셀 격자와 줄마다의 바이트 값으로 나타낸 그림"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-<p>
-  글자 표를 그대로 믿으면 안 된다는 것도 배웠습니다. v1.1 글자 표에는 922번이 「렁」이라고 적혀 있었지만 실제 그림은
-  「렇」이었습니다. 지금은 표의 글자와 롬의 그림을 대조해서 씁니다.
-</p>
-
-<ToolFiles
-  items={[
-    { path: 'tools/font.py', text: '대사 폰트 글자 읽기' },
-    { path: 'tools/usedsheet.py', text: '대사에 쓰인 글자 목록' },
-    { path: 'tools/dialogue_patch.py', text: '대사 넣기, 옮기기, 새 글자 그리기' },
-  ]}
-/>
-
-<h2 id="making-relocate">4. 늘어난 대사는 같은 뱅크 안으로</h2>
-<NoteRelated patch={patch} id="making-relocate" />
-<p>
-  포인터는 2바이트라 뱅크 번호 없이 같은 뱅크 안의 주소만 가리킵니다. 그래서 고친 대사가 원래보다 길면 다른 뱅크로는 못
-  보내고, 같은 뱅크의 빈 공간으로 옮긴 뒤 포인터만 고칩니다. 여러 ID가 한 문자열을 같이 가리키는 경우도 있어서, 그런
-  문자열은 제자리에서 고치지 않고 새 자리에 따로 씁니다.
-</p>
-<p>
-  고친 782줄 중 432줄이 이렇게 옮겨졌습니다(v1.3 빌드 기준). v1.1 대사는 일본어보다 짧아 뱅크마다 끝쪽에 0xFF가 남아
-  있었고, 옮긴 대사는 그 자리와 다른 대사가 비우고 간 자리에 들어갔습니다.
-</p>
-<div class="table-wrap" tabindex="0">
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">뱅크</th>
-        <th scope="col">옮긴 줄</th>
-        <th scope="col">빌드 뒤 남은 빈 곳</th>
-      </tr>
-    </thead>
-    <tbody>
-      {relocated.map(r => (
-        <tr>
-          <td>
-            <code>{r.bank}</code>
-          </td>
-          <td>{r.moved}</td>
-          <td>{r.free}바이트</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-<p>
-  일본판, v1.1, v1.2 롬을 바이트 단위로 비교해 뱅크마다 바뀐 곳을 표시하면 이렇습니다. 대사 말고도 v1.1은 메뉴, 지명,
-  크레딧, 전투 말풍선($B4)까지 한글로 바꿨고, v1.2는 대사 8뱅크와 타이틀, 새 글자, 아래 5절의 두 곳을 고쳤습니다. v1.3은
-  v1.2에서 대사 뱅크 $98·$9B·$9C, 말풍선 뱅크 $B4, 암호 화면의 표($81·$83·$84), 새 글자 4자($B7), 헤더 체크섬이
-  바뀌었습니다.
-</p>
-<figure class="paper">
-  <ZoomImage
-    src={img('rom-map.svg')}
-    width="860"
-    height="432"
-    alt="2MB 롬을 뱅크 64칸으로 그린 지도. $98–$9F가 대사, $B6–$B7이 폰트, $89가 타이틀 그림이고, v1.1이 메뉴·지명·크레딧·전투 말풍선을 바꾼 $80–$84·$88·$B4가 초록, v1.2가 되살린 $83:F3AF와 $88:FFAE가 빨간 줄로 표시돼 있다"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-
-<ToolFiles
-  items={[
-    { path: 'tools/dialogue_patch.py', text: '대사 넣기, 옮기기, 새 글자 그리기' },
-    { path: 'tables/dialogue-v1.3.tsv', text: '고친 대사 782줄(v1.3 줄바꿈)' },
-  ]}
-/>
-
-<h2 id="making-bugfix">5. 우주선이 맵 밖을 헤매던 이유</h2>
-<NoteRelated patch={patch} id="making-bugfix" />
-<p>
-  v1.1은 길어진 한글 크레딧과 지명 문자열을 0xFF가 이어진 곳에 넣었습니다. 비어 있다고 생각했기 때문입니다. 그런데
-  0xFF가 시작되는 자리가 사실은 바로 앞 데이터의 끝 표시(<code>FF FF</code>)였습니다. 두 곳이 이렇게 덮였습니다.
-</p>
-<ul class="notes">
-  <li>
-    <code>$88:FFAE</code>: 맵 이동 경로 레코드의 끝 표시와 그 뒤 레코드 하나. 이동 루틴이 지명 문자열 바이트를 경로로
-    읽어서 우주선이 맵 밖으로 나갔습니다.
-  </li>
-  <li>
-    <code>$83:F3AF</code>: 컷신 캐릭터 X 좌표 표의 끝 표시. 캐릭터가 엉뚱한 좌표 쪽으로 미끄러져 갔습니다.
-  </li>
-</ul>
-<figure class="paper">
-  <ZoomImage
-    src={img('overwrite.svg')}
-    width="812"
-    height="252"
-    alt="파일 0x47FA8부터 16바이트. 일본판은 경로 레코드와 끝 표시 FFFF 뒤가 비어 있고, v1.1은 끝 표시부터 한글 지명으로 덮였고, v1.2는 원래 바이트를 되살리고 지명을 뒤로 밀었다"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-<p>
-  v1.2는 원래 바이트를 되살리고, 그 자리에 있던 문자열을 뒤로 민 다음, 그 문자열을 가리키는 포인터를 같은 만큼
-  고쳤습니다. 위 롬 지도의 빨간 줄이 이 두 곳입니다. 이제 빈 공간을 쓸 때는 앞뒤에 여유를 두고, 일본판 원본에서도 그
-  자리가 0xFF였는지 확인합니다.
-</p>
-
-<ToolFiles items={[{ path: 'tools/fix_overwrites.py', text: 'v1.1이 덮어쓴 데이터 되살리기' }]} />
-
-<h2 id="making-title-gfx">6. 압축된 타이틀 그림</h2>
-<NoteRelated patch={patch} id="making-title-gfx" />
-<p>
-  타이틀 로고는 롬에 LZSS로 압축돼 있습니다. 앞에서 나온 것과 같은 내용이 또 나오면 바이트를 다시 적지 않고 "몇 바이트
-  앞에서 몇 바이트를 베껴라" 라고만 적는 방식입니다. 플래그 바이트 하나가 뒤따르는 항목 8개의 종류를 아래 비트부터 알려
-  줍니다. 1이면 바이트 1개를 그대로, 0이면 2바이트짜리 "베껴라" 명령입니다. 일본판 타이틀 그림의 첫머리를 실제로 풀어
-  보면 이렇습니다.
-</p>
-<pre tabindex="0"><code>50 13      풀면 0x1350 = 4,944바이트
-DC         플래그 11011100 → 아래 비트부터 0 0 1 1 1 0 1 1
-2F 01      베끼기: 길이 0xF+3 = 18, 거리 18 → 시작보다 앞이라 0으로 18바이트
-F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
-01 0F 3F   그대로 세 바이트
-89 00      베끼기: 길이 12, 거리 8 → 방금 쓴 8바이트를 겹쳐 가며 반복
-1F FF      그대로 두 바이트</code></pre>
-<p>
-  타이틀 그림을 푸는 루틴($80:9DA7)은 다 푼 뒤에 타일마다 바이트 순서를 한 번 더 바꿉니다. 그래서 압축만 풀어서는
-  왼쪽처럼 줄무늬가 지고, 순서를 바꿔야 오른쪽처럼 제대로 보입니다.
-</p>
-<figure class="paper">
-  <ZoomImage
-    src={img('title-lzss.webp')}
-    width="1040"
-    height="912"
-    alt="타이틀 그림을 롬에서 꺼낸 결과. 위는 일본판, 아래는 v1.2이고 왼쪽은 압축만 푼 줄무늬 상태, 오른쪽은 바이트 순서를 바꿔 超悟空伝 覚醒編과 초오공전 각성편 로고가 보이는 상태"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-  <figcaption>위 일본판, 아래 v1.2. 왼쪽은 압축만 푼 상태, 오른쪽은 순서를 바꾼 상태</figcaption>
-</figure>
-<p>
-  한글 로고를 그린 뒤 다시 압축했더니 원래 3,608바이트가 3,232바이트로 줄어 제자리에 들어갔습니다. 더 길어지면 같은
-  영역의 빈 공간(파일 0x4C801–0x4FFFF)으로 옮기고 위치 정보를 고치도록 해 두었습니다. 「DRAGON BALL Z」 로고와 저작권
-  줄은 원본 그대로입니다. 저작권 줄의 © 타일은 두 줄이 같이 쓰기 때문입니다.
-</p>
-
-<ToolFiles
-  items={[
-    { path: 'krpatch lzss', text: '공통 도구. LZSS 압축·해제' },
-    { path: 'tools/title.py', text: '타이틀 그림 그리기·넣기' },
-  ]}
-/>
-
-<h2 id="making-credits">7. 엔딩 크레딧과 세이브</h2>
-<NoteRelated patch={patch} id="making-credits" />
-<p>
-  엔딩 크레딧도 대사와 같은 16비트 문자열이고, 이름 줄마다 포인터가 있습니다($83:949D). 「MR. 포포」를 「미스터 포포」로
-  늘리면서 원래 자리에 줄여 넣지 않고 빈 공간으로 옮겨 포인터를 고쳤습니다. 제자리에서 글자 수를 바꾸면 가운데 정렬이
-  틀어집니다.
-</p>
-<p>
-  v1.2와 v1.3 모두 세이브 구조는 건드리지 않아 v1.1 세이브를 그대로 쓸 수 있습니다. 함께 배포한 100% 세이브 파일에서
-  깨진 슬롯을 지울 때는 슬롯 본체만이 아니라 요약 정보 두 곳(0x800대, 0x860대)도 같이 지워야 했습니다.
-</p>
-
-<ToolFiles
-  items={[
     { path: 'tools/credits.py', text: '엔딩 크레딧 고치기' },
     { path: 'lua/crjump.lua', text: 'Mesen 2용. 엔딩 크레딧 바로 보기' },
   ]}
 />
 
-<h2 id="making-password">8. 돌격편에서 넘어오는 암호</h2>
+<h2 id="making-save">
+  7. 세이브·암호 <span class="layer-badge layer-patch">실제 패치에서</span>
+</h2>
+<NoteRelated patch={patch} id="making-save" />
+<h3>세이브(SRAM)</h3>
+<p>
+  세이브는 카트리지의 8KB SRAM에 들어 있고, 에뮬레이터에서는 .srm 파일입니다. 칸은 셋이고, 칸마다 본체 하나와 요약 정보
+  두 곳을 씁니다. 빈 곳은 0x60으로 채워져 있습니다. 함께 배포한 100% 세이브 파일은 둘째 칸만 남긴 파일이라 이렇게
+  보입니다.
+</p>
+<Figure caption="배포한 100% 세이브의 SRAM. 둘째 칸만 본체와 요약 두 곳이 채워져 있습니다" max={560}>
+  <svg viewBox="0 0 360 226" role="img" aria-labelledby="kk-sram-t kk-sram-d">
+    <title id="kk-sram-t">SRAM 세이브 칸 배치</title>
+    <desc id="kk-sram-d">
+      본체는 0x100, 0x300, 0x500에 0x134바이트씩, 요약은 0x800부터 0x20 간격으로 0x13바이트, 0x860부터 0x20 간격으로
+      0x0C바이트다. 배포한 세이브는 둘째 칸 본체 0x300, 요약 0x820과 0x880만 채워져 있고 0x880은 Gokuden2nd로 시작한다.
+      나머지는 0x60이다.
+    </desc>
+    {[
+      ['0x100', '1칸 본체 (비어 있음)', false],
+      ['0x300', '2칸 본체 0x134바이트', true],
+      ['0x500', '3칸 본체 (비어 있음)', false],
+    ].map(([at, label, used], i) => (
+      <>
+        <text class="dg-mono" x="8" y={30 + i * 38}>
+          {at}
+        </text>
+        <rect
+          class:list={[used ? 'dg-accent' : 'dg-cell', !used && 'dg-dash']}
+          x="96"
+          y={10 + i * 38}
+          width="256"
+          height="30"
+          rx="5"
+        />
+        <text class="dg-text" x="224" y={30 + i * 38} text-anchor="middle">
+          {label}
+        </text>
+      </>
+    ))}
+    {[
+      ['0x800', '요약 A', ['', '0x13바이트', '']],
+      ['0x860', '요약 B', ['', 'Gokuden2nd', '']],
+    ].map(([at, name, cells], row) => (
+      <>
+        <text class="dg-mono" x="8" y={162 + row * 44}>
+          {at}
+        </text>
+        <text class="dg-small" x="8" y={178 + row * 44}>
+          {name}, 0x20씩
+        </text>
+        {(cells as string[]).map((c, i) => (
+          <>
+            <rect
+              class:list={[i === 1 ? 'dg-accent' : 'dg-cell', i !== 1 && 'dg-dash']}
+              x={96 + i * 88}
+              y={144 + row * 44}
+              width="80"
+              height="30"
+              rx="5"
+            />
+            <text class="dg-small" x={136 + i * 88} y={164 + row * 44} text-anchor="middle">
+              {c || `${i + 1}칸`}
+            </text>
+          </>
+        ))}
+      </>
+    ))}
+    <text class="dg-small" x="96" y="134">
+      요약은 칸마다 두 곳
+    </text>
+  </svg>
+</Figure>
+<p>
+  요약 B는 문자열 <code>Gokuden2nd</code>(<code>47 6F 6B 75 64 65 6E 32 6E 64</code>)에 체크값 2바이트가 붙은
+  12바이트입니다. 그래서 깨진 칸을 지울 때는 본체만 0x60으로 채우면 안 되고, 요약 두 곳도 같이 지워야 했습니다. v1.2와
+  v1.3 모두 세이브 구조는 건드리지 않아 v1.1 세이브를 그대로 쓸 수 있습니다.
+</p>
+
+<h3 id="making-password">돌격편에서 넘어오는 암호</h3>
 <NoteRelated patch={patch} id="making-password" />
 <p>
   돌격편 엔딩에 나오는 50자 암호를 각성편의 새 게임 → 암호 화면에 넣으면 돌격편에서 정한 이름과 기록을 이어받습니다.
   검사 코드(<code>$83:A1F8</code>)는 빈칸을 뺀 글자를 두 자씩 끊어, <code>$83:A60E</code>의 256쌍 표에서 같은 쌍을 찾아
-  1바이트로 바꿉니다. 23바이트의 합(16비트)이 마지막 두 쌍이 나타내는 값과 같으면 통과입니다.
+  그 순번을 1바이트로 바꿉니다. 앞 23쌍이 23바이트이고, 그 합(16비트)이 마지막 두 쌍이 나타내는 값과 같으면 통과입니다.
+  v1.3의 쌍 표에서 순번 0은 「가녕」, 순번 1은 「성너」입니다.
 </p>
+<Figure caption="암호 글자 두 자가 1바이트가 됩니다. 마지막 두 쌍은 앞 23바이트의 합입니다" max={560}>
+  <svg viewBox="0 0 360 176" role="img" aria-labelledby="kk-pw-t kk-pw-d">
+    <title id="kk-pw-t">암호 쌍 표 읽기</title>
+    <desc id="kk-pw-d">
+      입력한 암호를 두 자씩 끊는다. 가녕은 쌍 표의 순번 00, 성너는 순번 01이다. 이렇게 23바이트를 만들고, 24·25번째 쌍이
+      나타내는 합계와 23바이트의 합이 같으면 통과한다.
+    </desc>
+    <text class="dg-small" x="8" y="16">
+      입력한 암호(빈칸 뺌), 두 자씩
+    </text>
+    <rect class="dg-warm" x="8" y="24" width="80" height="36" rx="5"></rect>
+    <text class="dg-text dg-bold" x="48" y="47" text-anchor="middle">
+      가 녕
+    </text>
+    <rect class="dg-cool" x="96" y="24" width="80" height="36" rx="5"></rect>
+    <text class="dg-text dg-bold" x="136" y="47" text-anchor="middle">
+      성 너
+    </text>
+    <text class="dg-text" x="194" y="47" text-anchor="middle">
+      …
+    </text>
+    <rect class="dg-cell" x="212" y="24" width="140" height="36" rx="5"></rect>
+    <text class="dg-small" x="282" y="46" text-anchor="middle">
+      24·25번째 쌍
+    </text>
+    <path class="dg-arrow" d="M48 62V90" marker-end="url(#dg-arrowhead)"></path>
+    <path class="dg-arrow" d="M136 62V90" marker-end="url(#dg-arrowhead)"></path>
+    <path class="dg-arrow" d="M282 62V90" marker-end="url(#dg-arrowhead)"></path>
+
+    <rect class="dg-accent" x="8" y="92" width="80" height="32" rx="5"></rect>
+    <text class="dg-mono dg-bold" x="48" y="113" text-anchor="middle">
+      00
+    </text>
+    <rect class="dg-accent" x="96" y="92" width="80" height="32" rx="5"></rect>
+    <text class="dg-mono dg-bold" x="136" y="113" text-anchor="middle">
+      01
+    </text>
+    <text class="dg-text" x="194" y="113" text-anchor="middle">
+      …
+    </text>
+    <rect class="dg-accent" x="212" y="92" width="140" height="32" rx="5"></rect>
+    <text class="dg-small" x="282" y="113" text-anchor="middle">
+      합계 아래·위 바이트
+    </text>
+    <text class="dg-small" x="8" y="148">
+      순번은 $83:A60E 쌍 표에서 찾습니다.
+    </text>
+    <text class="dg-small" x="8" y="166">
+      앞 23바이트의 합(16비트)이 합계와 같으면 통과
+    </text>
+  </svg>
+</Figure>
 <p>
   입력 칸이 넣는 코드는 <code>$81:8D56</code>(히라가나 85칸)과 <code>$81:8E00</code>(가타카나 85칸)에, 화면에 그리는
   격자는 <code>$84:A3E0</code>과 <code>$84:A4D0</code>에 따로 있습니다. v1.1은 칸과 격자를 한글 코드로 바꾸면서 쌍 표는
@@ -627,10 +1126,10 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
 <p>
   v1.3은 돌격편 v1.1 롬의 쌍 표(<code>$B7:F09F</code>)와 각성편 쌍 표를 같은 자리끼리 맞춰 암호 글자 152개를 찾았습니다.
   각 글자가 돌격편 화면에서 어떤 한글로 보이는지는 돌격편 폰트를 픽셀로 그려 읽었습니다. 그 한글을 각성편 코드 하나로
-  정해 쌍 표, 입력 칸, 격자에 모두 넣었습니다. 돌격편에서 넘어온 이름을 바꾸는 표(
-  <code>$83:AD58</code> → <code>$83:AEB0</code>)도 v1.1이 37번째 글자부터 한 칸씩 밀려 있어 같은 방식으로 맞췄습니다.
-  딩·렉·창은 v1.1이 격자용으로 그려 둔 자리(0x2D1, 0x2D2, 0x2D4)를 쓰고, 폰트에 없던 뎀·띠 2자는 새로 그려 넣었습니다.
-  새 게임의 이름 입력 화면도 같은 칸과 격자를 써서, 이름 입력 글자판의 배치도 함께 바뀌었습니다.
+  정해 쌍 표, 입력 칸, 격자에 모두 넣었습니다. 돌격편에서 넘어온 이름을 바꾸는 표(<code>$83:AD58</code> →{' '}
+  <code>$83:AEB0</code>)도 v1.1이 37번째 글자부터 한 칸씩 밀려 있어 같은 방식으로 맞췄습니다. 딩·렉·창은 v1.1이
+  격자용으로 그려 둔 자리(0x2D1, 0x2D2, 0x2D4)를 쓰고, 폰트에 없던 뎀·띠 2자는 새로 그려 넣었습니다. 새 게임의 이름 입력
+  화면도 같은 칸과 격자를 써서, 이름 입력 글자판의 배치도 함께 바뀌었습니다.
 </p>
 <figure class="paper">
   <ZoomImage
@@ -672,48 +1171,50 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
   </table>
 </div>
 <p>
-  같은 화면은 글자 암호도 받습니다. 검사 코드보다 먼저 <code>$83:A408</code>이 입력을 문장 6개(
-  <code>$83:B008</code> 등)와 비교합니다. v1.1은 이 문장을 「체력을늘려줘신룡」처럼 한글로 바꿔 두었는데, v1.3이 칸을
-  다시 배치하면서 룡·션·싶·플·해·회 6자가 격자에서 빠질 뻔해 남는 칸에 넣었습니다. 여섯 문장은 v1.2처럼 그대로 칠 수
-  있습니다.
+  같은 화면은 글자 암호도 받습니다. 검사 코드보다 먼저 <code>$83:A408</code>이 입력을 문장 6개(<code>$83:B008</code>
+  등)와 비교합니다. v1.1은 이 문장을 「체력을늘려줘신룡」처럼 한글로 바꿔 두었는데, v1.3이 칸을 다시 배치하면서
+  룡·션·싶·플·해·회 6자가 격자에서 빠질 뻔해 남는 칸에 넣었습니다. 여섯 문장은 v1.2처럼 그대로 칠 수 있습니다.
 </p>
 <p>
   v1.3은 여기에 「손오공은사이어인」을 더했습니다. 돌격편 한글패치 엔딩이 보여 주는 암호이고, 8자만 치고 입력완료를
-  누르면 됩니다. <code>$83:A408</code>이 문장을 못 찾고 끝나는 자리(<code>$83:A4D0</code>)에서 새 루틴(
-  <code>$83:FE00</code>)으로 넘어가 이 문장과 비교하고, 맞으면 데이터 암호를 통과했을 때와 같은 값을 넣습니다. 시작
-  체력·전투력은 <code>$83:A313</code>과 같은 값입니다. 플레이 시간 0시간 2분은 정할 근거가 없어 임의로 고른 값이고,
-  돌격편 디버그 엔딩 암호에 든 값을 빌렸습니다. 이름은 암호에서 가져오지 않아 이름 입력 화면에 각성편 기본 이름이
-  나옵니다.
+  누르면 됩니다. <code>$83:A408</code>이 문장을 못 찾고 끝나는 자리(<code>$83:A4D0</code>)를 새 루틴(
+  <code>$83:FE00</code>)으로 건너가게 바꿔(<a href={ch('hooking', 'jump')}>6장의 후킹</a>) 이 문장과 비교하고, 맞으면
+  데이터 암호를 통과했을 때와 같은 값을 넣습니다. 시작 체력·전투력은 <code>$83:A313</code>과 같은 값입니다. 플레이 시간
+  0시간 2분은 정할 근거가 없어 임의로 고른 값이고, 돌격편 디버그 엔딩 암호에 든 값을 빌렸습니다. 이름은 암호에서
+  가져오지 않아 이름 입력 화면에 각성편 기본 이름이 나옵니다.
 </p>
-<p>
-  기술 15번(<code>$0D2E</code> 비트 15)은 각성편 기술습득표의 손오공 파워기술 「거북선인류최종오의」입니다. 이 비트만
-  켜고 기술습득표를 열면 이 줄만 밝게 나옵니다. 돌격편에서 이 기술(돌격편 v1.1 이름 「무천류 최종오의」,{' '}
-  <code>$0D99</code> 비트 9)을 켜는 명령은 카린탑에서 초신수를 마시는 장면 스크립트(<code>$B3:DB07</code>) 한
-  곳뿐입니다. 「마신다」를 고르면 유도 에네르기파·초에네르기파·에네르기파 공격을 익히고, 이벤트 플래그 0x96이 켜져 있을
-  때만 이어서 이 기술을 익힙니다. 플래그 0x96은 펭귄 마을에서 아라레가 내는 퀴즈에서 세 번째 답(일본판 「ほひょ！？」,
-  돌격편 한글패치 「PERFECTACLE」)을 고르면 켜지고, 퀴즈를 시작할 때마다 지워집니다(
-  <code>$B6:BEF1</code>, <code>$B6:BF0E</code>). 그래서 돌격편을 끝까지 깨도 이 기술이 없을 수 있습니다.
-  「손오공은사이어인」은 돌격편을 빠짐없이 마친 상태를 대신하는 암호라 이 기술을 익힌 것으로 두었습니다.
-</p>
+<Deeper title="기술 15번이 켜지는 조건, 원작의 어긋남, 같은 모양 글자">
+  <p>
+    기술 15번(<code>$0D2E</code> 비트 15)은 각성편 기술습득표의 손오공 파워기술 「거북선인류최종오의」입니다. 이 비트만
+    켜고 기술습득표를 열면 이 줄만 밝게 나옵니다. 돌격편에서 이 기술(돌격편 v1.1 이름 「무천류 최종오의」,{' '}
+    <code>$0D99</code>
+    비트 9)을 켜는 명령은 카린탑에서 초신수를 마시는 장면 스크립트(<code>$B3:DB07</code>) 한 곳뿐입니다. 「마신다」를
+    고르면 유도 에네르기파·초에네르기파·에네르기파 공격을 익히고, 이벤트 플래그 0x96이 켜져 있을 때만 이어서 이 기술을
+    익힙니다. 플래그 0x96은 펭귄 마을에서 아라레가 내는 퀴즈에서 세 번째 답(일본판 「ほひょ！？」, 돌격편 한글패치
+    「PERFECTACLE」)을 고르면 켜지고, 퀴즈를 시작할 때마다 지워집니다(<code>$B6:BEF1</code>, <code>$B6:BF0E</code>).
+    그래서 돌격편을 끝까지 깨도 이 기술이 없을 수 있습니다. 「손오공은사이어인」은 돌격편을 빠짐없이 마친 상태를
+    대신하는 암호라 이 기술을 익힌 것으로 두었습니다.
+  </p>
+  <p>
+    이 암호를 일본판끼리 옮겨도 안 들어간다는 기록이 있었는데, 원작의 어긋남 때문이었습니다. 돌격편은 0x227(ぺ,
+    히라가나)을 쓰고 각성편 쌍 표는 같은 자리에 가타카나 ペ를 씁니다. 화면에서는 똑같이 보여서 히라가나로 치면 틀립니다.
+    돌격편이 り를 쓰는 3자리(값 0x4C, 0x73, 0x7B)도 각성편은 リ로 받습니다. 한글패치는 v1.3에서 쌍 표를 돌격편 쌍 표와
+    같은 자리끼리 맞춰 새로 썼기 때문에, 돌격편 화면의 ぺ(성)와 り(디)를 그대로 치면 통과합니다.
+  </p>
+  <p>
+    돌격편 v1.1 화면에서는 서로 다른 암호 글자가 같은 모양으로 보이는 경우도 있었습니다. つ와 へ는 둘 다 「나」, も와
+    ら는 둘 다 「등」, ル와 ォ는 둘 다 「지」, わ·を·ん은 모두 「러」입니다. v1.3은 돌격편 글자 표가 원래 정한 대로 へ는
+    「다」, も는 「동」, ル는 「저」, を는 「레」, ん은 「렉」으로 보여 주고, 돌격편도 v1.2에서 같은 대응으로 고쳐 이
+    글자를 서로 다르게 그립니다. 두 게임이 함께 쓰는 대응표는 패치 소스의 <code>tables/totsugeki-password.tsv</code>에
+    있습니다.
+  </p>
+</Deeper>
 <p>
   확인은 돌격편 디버그 메뉴의 엔딩에서 나오는 암호로 했습니다. 돌격편 v1.1 화면에 보이는 글자를 그대로 찾아 누르면
   v1.3은 이름 입력 화면으로 넘어가고, v1.2는 「건」 칸이 없어 틀린 암호가 됩니다. 이름이 「스서인레다」가 되도록 직접
   만든 암호도 v1.3에서 통과했고, 이름 화면에 그대로 「스서인레다」가 나왔습니다. 「손오공은사이어인」은 이름 화면에 기본
   이름 「엑소버드」로 넘어가고, 이름을 정한 뒤의 장면 순서는 디버그 엔딩 암호와 같았습니다. 메모리에서 달라진 것은
   이름과 기술 15번뿐이었습니다. 한 글자 모자란 「손오공은사이어」는 틀린 암호입니다.
-</p>
-<p>
-  이 암호를 일본판끼리 옮겨도 안 들어간다는 기록이 있었는데, 원작의 어긋남 때문이었습니다. 돌격편은 0x227(ぺ,
-  히라가나)을 쓰고 각성편 쌍 표는 같은 자리에 가타카나 ペ를 씁니다. 화면에서는 똑같이 보여서 히라가나로 치면 틀립니다.
-  돌격편이 り를 쓰는 3자리(값 0x4C, 0x73, 0x7B)도 각성편은 リ로 받습니다. 한글패치는 v1.3에서 쌍 표를 돌격편 쌍 표와
-  같은 자리끼리 맞춰 새로 썼기 때문에, 돌격편 화면의 ぺ(성)와 り(디)를 그대로 치면 통과합니다.
-</p>
-<p>
-  돌격편 v1.1 화면에서는 서로 다른 암호 글자가 같은 모양으로 보이는 경우도 있었습니다. つ와 へ는 둘 다 「나」, も와 ら는
-  둘 다 「등」, ル와 ォ는 둘 다 「지」, わ·を·ん은 모두 「러」입니다. v1.3은 돌격편 글자 표가 원래 정한 대로 へ는
-  「다」, も는 「동」, ル는 「저」, を는 「레」, ん은 「렉」으로 보여 주고, 돌격편도 v1.2에서 같은 대응으로 고쳐 이
-  글자를 서로 다르게 그립니다. 두 게임이 함께 쓰는 대응표는 패치 소스의 <code>tables/totsugeki-password.tsv</code>에
-  있습니다.
 </p>
 
 <ToolFiles
@@ -723,18 +1224,171 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
   ]}
 />
 
-<h2 id="making-testing">9. 확인은 에뮬레이터가</h2>
-<NoteRelated patch={patch} id="making-testing" />
+<h2 id="making-unique">
+  8. 게임 고유 문제 <span class="layer-badge layer-patch">실제 패치에서</span>
+</h2>
+<NoteRelated patch={patch} id="making-bugfix" />
+<p>
+  각성편만의 큰 문제는 v1.1이 남긴 진행 버그였습니다. 돌격편 암호를 받게 한 일은 <a href="#making-password">7절</a>에
+  있습니다.
+</p>
+<h3 id="making-bugfix">우주선이 맵 밖을 헤매던 이유</h3>
+<p>
+  v1.1에는 우주선이 맵 밖으로 나가 진행이 막히는 버그가 있었습니다. 대사가 아니라 데이터가 깨진 것이었습니다. v1.1은
+  길어진 한글 크레딧과 지명 문자열을 0xFF가 이어진 곳에 넣었습니다. 비어 있다고 생각했기 때문입니다. 그런데 0xFF가
+  시작되는 자리가 사실은 바로 앞 데이터의 끝 표시(<code>FF FF</code>)였습니다. 두 곳이 이렇게 덮였습니다.
+</p>
 <ul class="notes">
   <li>
-    Mesen 2와 Lua 스크립트로 디버그 메뉴에서 장면을 시작하고, 버튼을 눌러 대사를 넘기며 화면을 저장합니다. 중간의 DBZ
-    퀴즈도 스크립트가 넘깁니다.
+    <code>$88:FFAE</code>(파일 0x47FAE): 맵 이동 경로 레코드(<code>$88:FFAA</code>)의 끝 표시와 그 뒤 레코드(
+    <code>$88:FFB0</code>) 하나. 이동 루틴이 지명 문자열 바이트를 경로로 읽어서 우주선이 맵 밖으로 나갔습니다.
   </li>
   <li>
-    대사 포인터 표 8개와 말풍선 표($B4:8000)를 읽는 순간을 감시해 어느 프레임에 어떤 대사 ID가 떴는지, 어느 코드가
-    읽었는지 기록하고, 그 프레임을 찾아 찍습니다.
+    <code>$83:F3AF</code>(파일 0x1F3AF): 컷신 캐릭터 X 좌표 표의 끝 표시. 캐릭터가 엉뚱한 좌표(x = 0x2A5) 쪽으로
+    미끄러져 갔습니다.
   </li>
-  <li>위 비교 화면은 모두 이렇게 실제 장면에서 찍었습니다. 포인터를 억지로 바꿔 만든 화면은 쓰지 않았습니다.</li>
+</ul>
+<figure class="paper">
+  <ZoomImage
+    src={img('overwrite.svg')}
+    width="812"
+    height="252"
+    alt="파일 0x47FA8부터 16바이트. 일본판은 경로 레코드와 끝 표시 FFFF 뒤가 비어 있고, v1.1은 끝 표시부터 한글 지명으로 덮였고, v1.2는 원래 바이트를 되살리고 지명을 뒤로 밀었다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>파일 0x47FA8부터 16바이트: 일본판, v1.1, v1.2</figcaption>
+</figure>
+<p>
+  v1.2는 원래 바이트를 되살리고, 그 자리에 있던 문자열을 뒤로 민 다음, 그 문자열을 가리키는 포인터를 같은 만큼
+  고쳤습니다. 2절 롬 지도의 빨간 줄이 이 두 곳입니다. 대사 8뱅크의 한글 대사는 v1.1에서도 각 뱅크 안에 들어 있었고,
+  문제는 대사 밖의 문자열이었습니다. 이제 빈 공간을 쓸 때는 앞뒤에 여유를 두고, 일본판 원본에서도 그 자리가 0xFF였는지
+  확인합니다(<a href={ch('hooking', 'space')}>6장의 빈 공간 찾기</a>).
+</p>
+<Deeper title="덮인 자리를 읽는 코드와 옮긴 문자열의 포인터">
+  <ul>
+    <li>
+      <code>$83:F3AF</code>의 좌표 표는 <code>$83:E44F</code>와 <code>$83:E755</code>가 읽습니다. 이 자리에 v1.1이 넣은
+      것은 엔딩 크레딧 문자열이고, 포인터는 <code>$83:9009</code>/<code>900B</code>/<code>900D</code>,{' '}
+      <code>$83:94AB</code>/<code>94C5</code>입니다.
+    </li>
+    <li>
+      <code>$88:FFAE</code>의 경로 레코드는 경로 포인터 표 <code>$88:FC80</code>에서 찾아갑니다. 이 자리에 들어간 지명
+      문자열의 포인터는 <code>$88:800C</code>/<code>8018</code>/<code>801C</code>/<code>8048</code>입니다.
+    </li>
+  </ul>
+</Deeper>
+
+<ToolFiles items={[{ path: 'tools/fix_overwrites.py', text: 'v1.1이 덮어쓴 데이터 되살리기' }]} />
+
+<h2 id="making-testing">
+  9. 확인 방법 <span class="layer-badge layer-try">직접 해 보기</span>
+</h2>
+<NoteRelated patch={patch} id="making-testing" />
+<p>
+  고친 대사가 실제 장면에서 제대로 뜨는지 보려면 그 장면까지 가야 합니다. 처음부터 플레이하는 대신 일본판 롬에 남아 있던
+  개발자용 디버그 메뉴로 장면을 바로 시작하고, Mesen 2의 Lua 스크립트로 버튼을 눌러 대사를 넘기며 화면과 대사 ID를
+  기록했습니다(<a href={ch('emulator', 'lua')}>12장의 Lua 스크립트</a>).
+</p>
+
+<h3 id="making-debug-menu">디버그 메뉴를 여는 두 바이트</h3>
+<NoteRelated patch={patch} id="making-debug-menu" />
+<p>
+  전원을 켠 직후 실행되는 코드(<code>$80:805C</code>, 파일 <code>0x5C</code>)의 바이트를 어셈블리로 읽으면 이렇습니다(
+  <a href={ch('assembly', 'branch')}>5장의 분기</a>).
+</p>
+<div class="table-wrap" tabindex="0">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">바이트</th>
+        <th scope="col">어셈블리</th>
+        <th scope="col">뜻</th>
+      </tr>
+    </thead>
+    <tbody>
+      {opcodes.map(o => (
+        <tr>
+          <td>
+            <code>{o.bytes}</code>
+          </td>
+          <td>
+            <code>{o.asm}</code>
+          </td>
+          <td class="wrap">{o.text}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p>첫 두 바이트를 아무 일도 안 하는 명령 두 개(NOP NOP)로 바꾸면 건너뛰지 않고 디버그 메뉴로 들어갑니다.</p>
+<ul class="byte-strip" aria-label="파일 0x5C의 80 0C를 EA EA로 바꿉니다">
+  <li class="is-warm">
+    <code>80</code>
+    <small>BRA</small>
+  </li>
+  <li class="is-warm">
+    <code>0C</code>
+    <small>12바이트 뒤로</small>
+  </li>
+  <li>
+    <code>→</code>
+    <small>바꾸면</small>
+  </li>
+  <li class="is-accent">
+    <code>EA</code>
+    <small>NOP</small>
+  </li>
+  <li class="is-accent">
+    <code>EA</code>
+    <small>NOP</small>
+  </li>
+</ul>
+<p>
+  노트 맨 위 그림이 그렇게 연 메뉴입니다. ADVENTURE / BATTLE / SOUND가 있고, ADVENTURE에는 시나리오 선택, 플래그 편집,
+  메시지·얼굴·맵·배경 보기가 있습니다. ADVENTURE에서 スタート를 누르면 WRAM <code>$7E:029C</code>에 든 장면 번호부터
+  시작하고, 맵도 그 장면에 맞게 불러옵니다(맵 번호 <code>$02A0</code>, 표 <code>$80:C67B</code>). 장면 진행 플래그가
+  초기화된 상태로 시작하므로 일반 대화 장면은 실제 플레이와 같게 나옵니다. 돌격편도 부팅 코드의 BRA(<code>80 04</code>
+  )를 NOP 두 개로 바꾸면 디버그 메뉴가 나옵니다(<a href={`${totsugeki}#making-testing`}>돌격편 노트 9절</a>).
+</p>
+
+<h3>장면을 띄우고 대사 ID 기록하기</h3>
+<ul class="notes">
+  <li>
+    디버그 메뉴를 켠 롬에서 430프레임째 <code>$7E:029C</code>에 장면 번호를 넣고 A로 시작합니다. 장면 중간의 DBZ 퀴즈는
+    X로 넘깁니다.
+  </li>
+  <li>
+    대사 포인터 표 8개와 말풍선 표(<code>$B4:8000</code>)를 읽는 순간을 감시해 「프레임, 대사 ID, 대사인지 말풍선인지,
+    읽은 코드 주소」를 한 줄씩 적습니다. 주소는 읽은 명령의 다음 명령 주소로 남습니다. 대사 표는 <code>$83:BB0A</code>·
+    <code>$83:BADA</code>·<code>$83:BAC0</code>·<code>$83:BA56</code>이, 말풍선 표는 <code>$82:D1A0</code>(명령 01)과{' '}
+    <code>$82:D20A</code>(명령 02/03)가 읽었습니다.
+  </li>
+  <li>
+    그 기록에서 원하는 대사가 뜬 프레임을 찾아 화면을 찍습니다. 패치 페이지의 비교 화면은 모두 이렇게 실제 장면에서
+    찍었고, 포인터를 억지로 바꿔 만든 화면은 쓰지 않았습니다.
+  </li>
+  <li>
+    창 폭 시험은 예외로, 대사 ID $200(나레이션)과 $201(얼굴)의 포인터를 <code>$99</code>의 빈 곳으로 돌려 시험용 줄을
+    넣고 장면 $000을 시작해 띄웠습니다.
+  </li>
+</ul>
+<Deeper title="Mesen 2 Lua 스크립트를 쓰며 알게 된 것">
+  <ul>
+    <li>버튼 입력은 inputPolled 이벤트에서 넣어야 게임이 읽습니다.</li>
+    <li>세이브스테이트 저장·불러오기는 exec 콜백 안에서만 됩니다.</li>
+    <li>Lua 콜백 오류는 조용히 실패합니다. pcall로 감싸고 메모리 종류 인자를 정확히 줘야 합니다.</li>
+    <li>Lua로 쓴 SRAM은 저장되지 않아, 세이브 파일은 Mesen 2의 세이브 폴더에 직접 복사했습니다.</li>
+    <li>
+      Lua에서 파일을 쓰려면 Mesen 설정의 AllowIoOsAccess를 켜야 합니다. 테스트 모드는 약 100초에 끝나, 30,000프레임
+      실행은 28,000프레임 무렵까지 기록됩니다.
+    </li>
+  </ul>
+</Deeper>
+
+<h3>376개 장면 회귀</h3>
+<ul class="notes">
   <li>
     디버그 메뉴의 장면 376개를 하나씩 시작해 12,000프레임 동안 A를 40프레임마다 누르고, 뜬 대사 ID의 순서를 일본판과
     비교합니다. 마지막 화면만 보는 것이 아니라 그 장면에서 나온 대사 순서 전체를 봅니다.
@@ -742,22 +1396,26 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
   <li>
     v1.2는 342개 장면이 일본판과 순서가 같았습니다. 다른 34개 중 30개는 전투가 시작된 뒤부터 갈렸습니다. 대사 길이가
     달라 버튼이 눌리는 순간이 바뀌면 전투 결과가 달라지기 때문입니다. 나머지는 오반이 공룡에게 쫓기는
-    장면($045–$047)에서 같은 대사가 반복되는 횟수, 그리고 12,000프레임 안에 v1.2가 대사 4개를 더 본 장면($052) 입니다.
+    장면($045–$047)에서 같은 대사가 반복되는 횟수, 그리고 12,000프레임 안에 v1.2가 대사 4개를 더 본 장면($052)입니다.
   </li>
   <li>
     v1.3은 360개 장면이 v1.2와 같았습니다. 다른 16개는 모두 전투가 시작된 뒤 한쪽이 아직 전투 중이라 대사가 덜 나온
-    경우였고, 이 16개를 30,000프레임으로 다시 돌리니 13개가 같아졌습니다. 남은 3개(0x01D, 0x01E, 0x11D)는 같은 입력에도
+    경우였고, 이 16개를 30,000프레임으로 다시 돌리니 13개가 같아졌습니다. 남은 3개($01D, $01E, $11D)는 같은 입력에도
     한쪽이 전투를 더 오래 끄는 경우입니다. 일본판과는 348개가 같습니다. 「손오공은사이어인」을 더한 최종 빌드는 6개마다
     하나씩 고른 63개 장면을 다시 돌려 직전 결과와 63개 모두 같은 것을 확인했습니다.
   </li>
   <li>빌드 결과가 늘 같은 CRC32(B9F14962)인지 확인합니다.</li>
 </ul>
+
+<h3>여러 에뮬레이터</h3>
 <p>
-  libretro 코어를 직접 불러 쓰는 작은 프로그램을 만들어, Mesen 2와 같은 입력을 여러 에뮬레이터에 넣었습니다. 새
-  게임(헤더 없는 롬과 헤더 있는 롬), 함께 배포한 100% 세이브로 이어하기, 디버그 메뉴로 띄운 나레이션(장면 $084)과 전투
-  말풍선(장면 $00A), 돌격편 디버그 엔딩 암호와 「손오공은사이어인」, 틀린 문장, 「체력을늘려줘신룡」 입력을
-  일본판·v1.2와 비교했습니다. 메모리를 읽을 수 있는 코어에서는 장면 번호가 바뀌는 순서가 일본판과 같았고, 같은 프레임의
-  화면도 같은 대사였습니다. 코어마다 다른 것은 글자가 찍히는 타이밍 몇 프레임뿐이었습니다.
+  libretro 코어를 직접 불러 쓰는 작은 프로그램을 만들어, Mesen 2와 같은 입력을 여러 에뮬레이터에 넣었습니다(
+  <a href={ch('emulator', 'cores')}>12장의 여러 코어</a>). 새 게임(헤더 없는 롬과 헤더 있는 롬), 함께 배포한 100%
+  세이브로 이어하기, 디버그 메뉴로 띄운 나레이션(장면 $084)과 전투 말풍선(장면 $00A), 돌격편 디버그 엔딩 암호와
+  「손오공은사이어인」, 틀린 문장, 「체력을늘려줘신룡」 입력을 일본판·v1.2와 비교했습니다. 메모리를 읽을 수 있는
+  코어에서는 장면 번호가 바뀌는 순서가 일본판과 같았고, 같은 프레임의 화면도 같은 대사였습니다. 코어마다 다른 것은
+  글자가 찍히는 타이밍 몇 프레임과 화면 높이뿐이었습니다. 메모리 주소를 알려 주지 않는 bsnes는 Pro Action Replay 치트로
+  40프레임 동안 장면 번호를 넣었습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -780,52 +1438,67 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
 
 <ToolFiles
   items={[
-    { path: 'lua/dbgscene.lua', text: 'Mesen 2용. 디버그 메뉴로 원하는 장면 시작' },
+    { path: 'lua/dbgscene.lua', text: 'Mesen 2용. 디버그 메뉴로 원하는 장면 시작, 대사 ID 기록' },
     { path: 'lib.lua (krpatch snes lua)', text: 'Mesen 2 스크립트 공용 함수(버튼 입력, 세이브스테이트)' },
     { path: 'script.lua (krpatch snes lua)', text: 'Mesen 2에서 호환성 입력 스크립트 재생' },
     { path: 'krpatch snes run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
-    { path: 'compat/run_all.sh', text: '에뮬레이터마다 새 게임·이어하기·나레이션·말풍선 비교' },
+    { path: 'compat/run_all.sh', text: '에뮬레이터마다 새 게임·이어하기·나레이션·말풍선·암호 비교' },
   ]}
 />
 
-<h2 id="making-next">10. 다음 사람에게</h2>
+<h2 id="making-next">
+  10. 다음 사람에게 <span class="layer-badge layer-patch">실제 패치에서</span>
+</h2>
 <NoteRelated patch={patch} id="making-next" />
-<p>아래는 v1.3에 남은 것과, 이어서 작업할 때 알아 둘 것입니다.</p>
+<p>v1.3에 남은 것과, 이어서 작업할 때 알아 둘 것입니다.</p>
+
+<h3>확인하지 못한 것</h3>
 <ul class="notes">
   <li>
-    마지막 말풍선 7줄(ID $137B–$1381)은 v1.1이 일본어 대사 대신 엔딩 인사와 한글화 참여자 이름을 넣은 자리라 원문과
-    다릅니다. v1.3도 그대로 두었습니다.
-  </li>
-  <li>
     어느 전투 스크립트도 부르지 않는 말풍선 306개는 실제로 뜨는지 확인하지 못했습니다. 창 크기를 알 수 없어, 일본어
-    원문이 3줄 이하면 12자 × 3줄, 4줄 이상이면 8자 × 5줄 창에 맞췄습니다. 일본어 원문부터 어느 창에도 맞지 않는 4개(ID
-    0x10AF, 0x10C6, 0x11CF, 0x11FD)는 폭 검사에서 경고만 냅니다.
-  </li>
-  <li>
-    말풍선 글자는 대사 빌드가 만든 글자 표만 씁니다. 말풍선에만 쓰인 글자 자리는 대사 빌드가 빈 자리로 볼 수 있으니, 새
-    글자를 더 넣을 때는 그 글자가 말풍선에 쓰였는지 먼저 확인하세요.
+    원문이 3줄 이하면 12자 × 3줄, 4줄 이상이면 8자 × 5줄 창에 맞췄습니다.
   </li>
   <li>
     돌격편에서 초신수를 마시지 않아도 엔딩까지 갈 수 있는지는 확인하지 않았습니다. 기술 15번의 조건은 스크립트와 명령
     처리 코드를 읽어 찾은 것이고, 돌격편을 직접 플레이해 확인하지는 않았습니다.
   </li>
   <li>
+    돌격편을 실제로 끝까지 플레이한 세이브가 없어, 확인한 데이터 암호는 디버그 메뉴 엔딩 암호와 직접 만든 암호 두
+    개뿐입니다.
+  </li>
+  <li>
     376개 장면 회귀는 각 장면을 12,000프레임까지만 돌렸고, 전투는 입력 타이밍에 따라 결과가 달라져 끝까지 같은 순서로
     비교하지 못했습니다.
   </li>
+  <li>bsnes-hd beta와 Beetle Supafaust에서는 디버그 메뉴 장면을 판정하지 못했습니다(9절 표).</li>
+</ul>
+
+<h3>알려진 한계</h3>
+<ul class="notes">
   <li>
-    남은 빈 공간은 대사 뱅크마다 위 표의 값, 말풍선 뱅크 <code>$B4</code>의 3,669바이트, 타이틀용으로 비워 둔 파일
-    0x4C801–0x4FFFF(14,335바이트), 크레딧 뒤 파일 0x1F53C–0x1FFFF(2,756바이트)입니다. 뒤의 두 곳은 일본판에서도
-    0xFF입니다.
+    마지막 말풍선 7줄(ID $137B–$1381)은 v1.1이 일본어 대사 대신 엔딩 인사와 한글화 참여자 이름을 넣은 자리라 원문과
+    다릅니다. v1.3도 그대로 두었습니다.
+  </li>
+  <li>일본어 원문부터 어느 창에도 맞지 않는 말풍선 4개(ID $10AF, $10C6, $11CF, $11FD)는 폭 검사에서 경고만 냅니다.</li>
+  <li>
+    말풍선 글자는 대사 빌드가 만든 글자 표만 씁니다. 말풍선에만 쓰인 글자 자리는 대사 빌드가 빈 자리로 볼 수 있으니, 새
+    글자를 더 넣을 때는 그 글자가 말풍선에 쓰였는지 먼저 확인하세요.
+  </li>
+  <li>
+    남은 빈 공간은 <a href="#making-map">2절의 표</a>에 있습니다.
   </li>
   <li>
     타이틀 로고 폰트(BM 영성체)는 macOS 시스템 폰트 경로에서 읽습니다. 다른 환경에서는 <code>tools/title.py</code>의{' '}
-    <code>TITLE_FONT</code>를 바꿔야 합니다.
+    <code>TITLE_FONT</code>를 바꿔야 같은 롬이 나옵니다.
   </li>
+</ul>
+
+<h3>쓴 도구</h3>
+<ul class="notes">
   <li>
-    쓴 도구는 Python 3.9.6, Pillow 11.3.0, Mesen 2.1.1(macOS)입니다. 패치 소스를 다시 빌드해 CRC32 B9F14962를
-    확인했습니다.
+    Python 3.9.6, Pillow 11.3.0, Mesen 2.1.1(macOS). 이 버전으로 패치 소스를 다시 빌드해 CRC32 B9F14962를 확인했습니다.
   </li>
+  <li>공통 명령(IPS, 체크섬, LZSS, libretro 실행, Mesen 2 공용 Lua)은 kr-patch-toolkit의 krpatch에서 가져옵니다.</li>
 </ul>
 
 <ToolFiles
@@ -837,12 +1510,13 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
   ]}
 />
 
-<h2 id="making-tools">11. 패치 소스 파일</h2>
+<h2 id="making-tools">
+  11. 패치 소스 파일 <span class="layer-badge layer-try">직접 해 보기</span>
+</h2>
 <NoteRelated patch={patch} id="making-tools" />
 <p>
   같은 엔진을 쓰는 <a href={`${TOTSUGEKI_PATCH.path}/`}>초오공전 돌격편</a>을 분석할 때도 주소만 바꾸면 대부분 쓸 수
-  있습니다. 돌격편에서 찾은 주소는 그 페이지의 <a href={`${TOTSUGEKI_PATCH.path}/#making`}>{SECTION_TITLES.making}</a>에
-  있습니다.
+  있습니다. 돌격편에서 찾은 주소는 <a href={totsugeki}>돌격편 노트</a>에 있습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -870,7 +1544,7 @@ F0 00      베끼기: 길이 3, 거리 15 → 0 세 바이트
 </div>
 <p>
   <a href={source}>패치 소스</a>의 게임 폴더에 일본판 원본을 넣고 빌드 스크립트를 돌리면 아래 순서로 v1.3과 같은 롬이
-  나옵니다.
+  나옵니다(<a href={common('rom-patch', 'ips')}>0장의 IPS</a>).
 </p>
 <ol class="flow">
   {buildSteps.map(step => (
