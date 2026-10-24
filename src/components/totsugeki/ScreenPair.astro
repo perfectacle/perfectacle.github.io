@@ -1,0 +1,39 @@
+---
+import ZoomImage from '../kr-patch/ZoomImage.astro';
+
+interface Props {
+  /** Screenshots under the patch page's images/patch/, all 256×224 game captures. */
+  shots: { src: string; label: string; alt: string }[];
+  caption: string;
+}
+
+const { shots, caption } = Astro.props;
+---
+
+<figure class="paper screen-pair">
+  <div class="screen-pair-grid">
+    {shots.map(s => (
+      <div class="screen-pair-item">
+        <ZoomImage src={s.src} width="256" height="224" alt={s.alt} loading="lazy" decoding="async" />
+        <p class="screen-pair-label">{s.label}</p>
+      </div>
+    ))}
+  </div>
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+  .screen-pair-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+  }
+
+  .screen-pair-label {
+    margin: 4px 0 0;
+    color: var(--fg-muted);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-align: center;
+  }
+</style>

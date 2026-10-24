@@ -4,7 +4,7 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import RunScript from '../../../../components/romhacking/RunScript.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
-import { TOOLKIT_README_KO, chapterBySlug, chapterPath } from '../../../../components/romhacking/chapters.ts';
+import { TOOLKIT_README_KO, chapterBySlug, chapterPath, notePath } from '../../../../components/romhacking/chapters.ts';
 
 const MESEN = 'https://github.com/SourMesen/Mesen2/blob/master';
 const TOOLKIT = 'https://github.com/perfectacle/kr-patch-toolkit/blob/main';
@@ -625,7 +625,7 @@ const cores = [
   </p>
   <h3>돌격편: 대사 번호를 읽는 순간을 감시하기, 창 폭 시험</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/#making-testing`}>돌격편</a>은 대사를 띄울 때마다 대사 번호로 창 정보(
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-testing`}>돌격편</a>은 대사를 띄울 때마다 대사 번호로 창 정보(
     <code>$8E:C9BA</code> + 번호×2)를 읽습니다. 이 범위에 읽기 콜백을 걸면 어떤 대사가 몇 번째로 나왔는지 기록됩니다.
     시나리오 256개를 8000프레임씩 돌려 일본판과 한글패치의 대사 번호 순서를 비교했고, 순서가 다르거나 먼저 멈춘
     시나리오는 없었습니다. 한 줄에 들어가는 글자 수는 <code>lua/wintest.lua</code>로 시험했습니다. 시험용 줄을 넣은 롬을
