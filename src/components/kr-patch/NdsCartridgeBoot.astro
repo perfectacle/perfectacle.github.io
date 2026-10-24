@@ -1,0 +1,304 @@
+<script>
+  // Clicking a game card plays a short boot scene before following the link: the card flies over an open
+  // Nintendo DS Lite and slides down behind the lid into the slot at the back, the console clicks, and both
+  // screens light up with the game's title screens before everything fades to black. The link stays a plain
+  // link, so modified clicks, reduced motion and browsers without Web Animations navigate as usual.
+  const CONSOLE = '/games/kr-patches/catalogue/nintendo-ds-lite.webp';
+  // Points measured on the console photo (914×759): the top edge of the lid, which hides the card as it goes
+  // into the slot behind it, and the four corners (top left, top right, bottom right, bottom left) of each screen.
+  const PHOTO = { width: 914, height: 759 };
+  const LID = { from: [282, 8], to: [904, 168] } as const;
+  const CARD_WIDTH = 150;
+  type Point = readonly [number, number];
+  const TOP: readonly Point[] = [
+    [449, 89],
+    [735, 166],
+    [639, 362],
+    [351, 280],
+  ];
+  const BOTTOM: readonly Point[] = [
+    [292, 373],
+    [582, 461],
+    [480, 619],
+    [186, 529],
+  ];
+
+  const cards = document.querySelectorAll<HTMLAnchorElement>('a.nds-card');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let booting = false;
+  let photo: HTMLImageElement | undefined;
+
+  const loadPhoto = () => {
+    if (!photo) {
+      photo = new Image();
+      photo.src = CONSOLE;
+    }
+    return photo;
+  };
+  const wait = (animation: Animation) => animation.finished.catch(() => undefined);
+  const pause = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  /** CSS matrix3d that maps a w×h element (origin at its top left) onto the quad, in rig pixels. */
+  const quad = (w: number, h: number, [p0, p1, p2, p3]: Point[]) => {
+    const [x0, y0] = p0 as Point;
+    const [x1, y1] = p1 as Point;
+    const [x2, y2] = p2 as Point;
+    const [x3, y3] = p3 as Point;
+    const dx1 = x1 - x2;
+    const dx2 = x3 - x2;
+    const dx3 = x0 - x1 + x2 - x3;
+    const dy1 = y1 - y2;
+    const dy2 = y3 - y2;
+    const dy3 = y0 - y1 + y2 - y3;
+    const den = dx1 * dy2 - dx2 * dy1;
+    const g = (dx3 * dy2 - dx2 * dy3) / den;
+    const k = (dx1 * dy3 - dx3 * dy1) / den;
+    const a = x1 - x0 + g * x1;
+    const b = x3 - x0 + k * x3;
+    const d = y1 - y0 + g * y1;
+    const e = y3 - y0 + k * y3;
+    return `matrix3d(${a / w}, ${d / w}, 0, ${g / w}, ${b / h}, ${e / h}, 0, ${k / h}, 0, 0, 1, 0, ${x0}, ${y0}, 0, 1)`;
+  };
+
+  const boot = async (card: HTMLAnchorElement) => {
+    booting = true;
+    const href = card.href;
+    const go = () => window.location.assign(href);
+    const source = card.querySelector<HTMLElement>('.ds-cartridge');
+    if (!source) return go();
+    const title = card.querySelector('h2')?.textContent?.trim() ?? '';
+
+    const stage = document.createElement('div');
+    stage.className = 'ds-boot-stage';
+    stage.setAttribute('aria-hidden', 'true');
+    stage.innerHTML = `
+      <div class="ds-boot-rig">
+        <img class="ds-boot-console" src="${CONSOLE}" width="${PHOTO.width}" height="${PHOTO.height}" alt="" />
+        <div class="ds-boot-screen"><img alt="" width="256" height="192" /></div>
+        <div class="ds-boot-screen"><img alt="" width="256" height="192" /></div>
+      </div>
+      <div class="ds-boot-curtain"></div>`;
+    const status = document.createElement('p');
+    status.className = 'sr-only';
+    status.setAttribute('role', 'status');
+    status.textContent = `${title} 페이지로 이동합니다`;
+    const rig = stage.querySelector<HTMLElement>('.ds-boot-rig');
+    const screens = [...stage.querySelectorAll<HTMLElement>('.ds-boot-screen')];
+    const curtain = stage.querySelector<HTMLElement>('.ds-boot-curtain');
+    if (!rig || !curtain || screens.length !== 2) return go();
+    screens.forEach((screen, i) => {
+      const img = screen.querySelector('img');
+      if (img) img.src = source.dataset[i === 0 ? 'top' : 'bottom'] ?? '';
+    });
+    document.body.append(stage, status);
+    stage.addEventListener('click', go, { once: true });
+    document.addEventListener('keydown', event => {
+      if (['Enter', ' ', 'Escape'].includes(event.key)) {
+        event.preventDefault();
+        go();
+      }
+    });
+
+    const box = rig.getBoundingClientRect();
+    const scale = box.width / PHOTO.width;
+    const at = ([x, y]: Point): Point => [x * scale, y * scale];
+    screens.forEach((screen, i) => {
+      screen.style.transform = quad(256, 192, (i === 0 ? TOP : BOTTOM).map(at));
+    });
+
+    // The card flies inside the rig, under the photo, so the lid covers it as it slides into the slot.
+    const from = source.getBoundingClientRect();
+    const cart = source.cloneNode(true) as HTMLElement;
+    cart.classList.add('ds-boot-cart');
+    const start = { x: from.left - box.left, y: from.top - box.top };
+    Object.assign(cart.style, {
+      left: `${start.x}px`,
+      top: `${start.y}px`,
+      width: `${from.width}px`,
+      height: `${from.height}px`,
+    });
+    const runX = LID.to[0] - LID.from[0];
+    const runY = LID.to[1] - LID.from[1];
+    const angle = Math.atan2(runY, runX);
+    const size = (CARD_WIDTH * scale) / from.width;
+    const cos = size * Math.cos(angle);
+    const sin = size * Math.sin(angle);
+    const [mx, my] = at([(LID.from[0] + LID.to[0]) / 2, (LID.from[1] + LID.to[1]) / 2]);
+    // Bottom centre of the card on the lid's edge, then `sink` of its height further down behind the lid.
+    const placed = (sink: number) => {
+      const e = mx - start.x - (cos * from.width) / 2 + sin * from.height * (1 - sink);
+      const f = my - start.y - (sin * from.width) / 2 - cos * from.height * (1 - sink);
+      return `matrix(${cos}, ${sin}, ${-sin}, ${cos}, ${e}, ${f})`;
+    };
+    rig.prepend(cart);
+    source.style.visibility = 'hidden';
+
+    stage.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 280, easing: 'ease-out' });
+    rig.querySelector('.ds-boot-console')?.animate(
+      [
+        { opacity: 0, transform: 'translateY(32px)' },
+        { opacity: 1, transform: 'none' },
+      ],
+      { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' },
+    );
+    if (photo && !photo.complete) await Promise.race([photo.decode().catch(() => undefined), pause(800)]);
+
+    await wait(
+      cart.animate(
+        [
+          { transform: 'matrix(1, 0, 0, 1, 0, 0)' },
+          { transform: placed(-0.5), offset: 0.75 },
+          { transform: placed(-0.25) },
+        ],
+        { duration: 820, easing: 'cubic-bezier(.45,.05,.25,1)', fill: 'forwards' },
+      ),
+    );
+    cart.getAnimations().forEach(animation => animation.cancel());
+    cart.style.transform = placed(1.05);
+    await wait(
+      cart.animate([{ transform: placed(-0.25) }, { transform: placed(1.05) }], {
+        duration: 260,
+        easing: 'cubic-bezier(.6,0,.9,.6)',
+      }),
+    );
+    rig.animate([{ translate: '0 0' }, { translate: '0 3px' }, { translate: '0 0' }], {
+      duration: 150,
+      easing: 'steps(3)',
+    });
+
+    await pause(260);
+    await Promise.all(
+      screens.map((screen, i) =>
+        wait(
+          screen.animate(
+            [
+              { opacity: 0, filter: 'brightness(4) saturate(0)' },
+              { opacity: 1, filter: 'brightness(4) saturate(0)', offset: 0.25 },
+              { opacity: 1, filter: 'brightness(1) saturate(1)' },
+            ],
+            { duration: 620, delay: i * 90, easing: 'ease-out', fill: 'forwards' },
+          ),
+        ),
+      ),
+    );
+    const [tx, ty] = at([505, 360]);
+    rig.style.transformOrigin = `${tx}px ${ty}px`;
+    rig.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }], {
+      duration: 1100,
+      easing: 'cubic-bezier(.4,0,.2,1)',
+      fill: 'forwards',
+    });
+    await pause(850);
+    await wait(
+      curtain.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 450, easing: 'ease-in', fill: 'forwards' }),
+    );
+    go();
+  };
+
+  for (const card of cards) {
+    card.addEventListener('pointerenter', loadPhoto, { once: true });
+    card.addEventListener('focus', loadPhoto, { once: true });
+    card.addEventListener('click', event => {
+      if (
+        booting ||
+        reducedMotion.matches ||
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey ||
+        typeof Element.prototype.animate !== 'function'
+      )
+        return;
+      event.preventDefault();
+      loadPhoto();
+      void boot(card);
+    });
+  }
+
+  // Coming back through the back/forward cache restores the page mid-scene; reset it.
+  window.addEventListener('pageshow', event => {
+    if (!event.persisted) return;
+    booting = false;
+    document.querySelectorAll('.ds-boot-stage, .ds-boot-stage + .sr-only').forEach(node => node.remove());
+    for (const cartridge of document.querySelectorAll<HTMLElement>('.nds-card .ds-cartridge'))
+      cartridge.style.visibility = '';
+  });
+</script>
+
+<style is:global>
+  .ds-boot-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 55%, #23252e, #050608 70%);
+    cursor: pointer;
+  }
+
+  .ds-boot-rig {
+    position: relative;
+    width: min(92vw, 760px, calc((100vh - 48px) * 914 / 759));
+    aspect-ratio: 914 / 759;
+  }
+
+  .ds-boot-console {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ds-boot-cart {
+    position: absolute;
+    z-index: 1;
+    margin: 0;
+    transform-origin: 0 0;
+    transition: none;
+  }
+
+  .ds-boot-screen {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    width: 256px;
+    height: 192px;
+    transform-origin: 0 0;
+    opacity: 0;
+    background: #000;
+  }
+
+  .ds-boot-screen img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+
+  /* The LCD's own glow and a faint grid, so the screens sit in the photo rather than on top of it. */
+  .ds-boot-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, rgb(0 0 0 / 12%) 0 1px, transparent 1px 2px),
+      linear-gradient(160deg, rgb(255 255 255 / 10%), transparent 45%);
+    box-shadow: 0 0 24px rgb(160 190 255 / 25%);
+    pointer-events: none;
+  }
+
+  .ds-boot-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 6;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+  }
+</style>

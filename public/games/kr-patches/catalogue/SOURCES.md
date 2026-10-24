@@ -9,9 +9,11 @@
 | `sprites/dixie-kong.webp` | Donkey Kong Country 2: Diddy's Kong Quest / SNES | [Sprite Database: Dixie Kong](https://spritedatabase.net/file/7654), David “Tonberry2K” Hurley | [Dixie.gif](https://www.spritedatabase.net/files/snes/376/Sprite/Dixie.gif) | 35 × 36 |
 | `sprites/ryu.webp` | Super Street Fighter II / SNES | [Sprite Database: Ryu](https://spritedatabase.net/file/31727), KUSANAGI | [SSFII_Ryu.png](https://spritedatabase.net/files/snes/2426/Sprite/SSFII_Ryu.png) | 43 × 81 |
 | `super-mario-rpg-title.webp` | Super Mario RPG 한글패치 v1.1 / SFC | Mesen 직접 실행 캡처 | 배포 중인 v1.1 IPS를 검증된 일본판 원본에 적용해 실행 | 256 × 224 |
+| `labels/ghost-trick.webp` | Ghost Trick 일본판 카드 라벨 / NDS | 일본판 카드(NTR-BGTJ-JPN) 실물 사진 | 라벨을 원근 보정해 펴고 색을 맞춘 뒤 일본어 제목(ゴースト トリック)만 지움 | 900 × 945 |
 
 - Mega Man X3, Super Street Fighter II의 게임·캐릭터·스프라이트: © CAPCOM.
 - Donkey Kong Country 2의 게임·캐릭터·스프라이트: © Nintendo / Rare.
+- Ghost Trick 카드 라벨과 타이틀 화면: © CAPCOM. 라벨의 그림, 상표, 형번, © 표기는 원작 그대로입니다.
 - Super Mario RPG 타이틀 화면: © Nintendo / SQUARE. Mesen의 `--testrunner`로 배포 중인 한글패치 v1.1을 직접 실행했습니다. `inputPolled` 콜백에서 900~909프레임에 Start를 입력한 뒤 1080프레임의 화면을 `emu.takeScreenshot()`으로 캡처하고 무손실 WebP로 저장했습니다. 로컬 ROM은 저장소에 포함하지 않습니다.
 - Sprite Database는 게임 자료의 권리가 원저작자·권리자에게 있으며 개인적·비상업적 사용을 위해 제공한다고 안내합니다. 시트 제공자는 게임 그래픽의 권리자와 별개입니다.
 - 출처 확인 및 다운로드: 2026-10-22.

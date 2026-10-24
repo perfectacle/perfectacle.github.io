@@ -235,6 +235,50 @@ test('choosing a cartridge opens the game page at once when motion is reduced', 
   expect(await page.evaluate(() => sessionStorage.getItem('booted'))).toBeNull();
 });
 
+test('a Nintendo DS card wears its label and boots both screens before opening the game page', async ({ page }) => {
+  await page.goto(KR_PATCH_NDS_PATH);
+  const card = page.locator(`main a[href="${GHOST_TRICK_PATCH.path}/"]`);
+  const label = card.locator('.ds-cartridge-label img');
+  await expect(label).toHaveAttribute('src', '/games/kr-patches/catalogue/labels/ghost-trick.webp');
+  await expect
+    .poll(() => label.evaluate((image: HTMLImageElement) => image.complete && image.naturalWidth === 900))
+    .toBe(true);
+  await card.click();
+  const stage = page.locator('.ds-boot-stage[aria-hidden="true"]');
+  await expect(stage).toBeVisible();
+  await expect(page.getByRole('status')).toHaveText('고스트 트릭 페이지로 이동합니다');
+  await expect(stage.locator('.ds-boot-cart')).toBeAttached();
+  await expect(card.locator('.ds-cartridge')).toBeHidden();
+  const screens = stage.locator('.ds-boot-screen img');
+  await expect(screens.nth(0)).toHaveAttribute('src', GHOST_TRICK_PATCH.titleScreen);
+  await expect(screens.nth(1)).toHaveAttribute('src', `${GHOST_TRICK_PATCH.path}/images/title-bottom.webp`);
+  await expect(page).toHaveURL(`${GHOST_TRICK_PATCH.path}/`);
+  await page.goBack();
+  await expect(page).toHaveURL(KR_PATCH_NDS_PATH);
+  await expect(page.locator('.ds-boot-stage')).toHaveCount(0);
+  await expect(card.locator('.ds-cartridge')).toBeVisible();
+});
+
+test('the Nintendo DS boot scene can be skipped and is left out when motion is reduced', async ({ page }) => {
+  const game = `${GHOST_TRICK_PATCH.path}/`;
+  await page.goto(KR_PATCH_NDS_PATH);
+  await page.locator(`main a[href="${game}"]`).click();
+  await expect(page.locator('.ds-boot-stage')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page).toHaveURL(game, { timeout: 1000 });
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(KR_PATCH_NDS_PATH);
+  await page.evaluate(() =>
+    new MutationObserver(() => {
+      if (document.querySelector('.ds-boot-stage')) sessionStorage.setItem('booted', 'yes');
+    }).observe(document.body, { childList: true }),
+  );
+  await page.locator(`main a[href="${game}"]`).click();
+  await expect(page).toHaveURL(game);
+  expect(await page.evaluate(() => sessionStorage.getItem('booted'))).toBeNull();
+});
+
 test('patch box explains why a file cannot be patched', async ({ page }) => {
   await page.goto(GAME);
   const input = page.locator('.patch-box input[type=file]');
