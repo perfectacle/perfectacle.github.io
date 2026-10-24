@@ -14,7 +14,7 @@ import {
 const post = (body: string) => ({ body }) as Post;
 
 describe('paginate', () => {
-  it('splits into pages of 10 like Hexo', () => {
+  it('splits into pages of 10', () => {
     const pages = paginate(Array.from({ length: 222 }, (_, i) => i));
     expect(pages).toHaveLength(23);
     expect(pages.at(-1)).toHaveLength(2);
@@ -26,7 +26,7 @@ describe('paginate', () => {
 });
 
 describe('pagePath', () => {
-  it('uses Hexo page/N/ paths with page 1 at the base', () => {
+  it('uses page/N/ paths with page 1 at the base', () => {
     expect(pagePath('/tags/JS/', 1)).toBe('/tags/JS/');
     expect(pagePath('/tags/JS/', 3)).toBe('/tags/JS/page/3/');
   });

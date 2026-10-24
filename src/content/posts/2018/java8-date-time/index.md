@@ -49,7 +49,7 @@ public class LocalDateTimeTest {
 
 ## ZoneOffset
 UTC 기준으로 시간(Time Offset)을 나타낸 것이라고 보면 된다.  
-우리나라는 KST를 사용하는데 KST는 [UTC](/2018/09/26/date-and-time/#UTC-Coordinated-Universal-Time)보다 9시간이 빠르므로 UTC +09:00으로 표기한다.  
+우리나라는 KST를 사용하는데 KST는 [UTC](/2018/09/26/date-and-time/#utccoordinated-universal-time)보다 9시간이 빠르므로 UTC +09:00으로 표기한다.  
 ZoneOffset은 ZoneId의 자식 클래스이다.
 
 ```java

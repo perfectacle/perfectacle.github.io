@@ -16,7 +16,7 @@ export const listPostDirs = (root = POSTS_ROOT): string[] => visibleDirs(root).f
 
 const urlCache = new Map<string, string>();
 
-/** `/YYYY/MM/DD/<slug>/` taken literally from the frontmatter `date`, as Hexo did. */
+/** `/YYYY/MM/DD/<slug>/` taken literally from the frontmatter `date`. */
 export function postUrlOf(postDir: string): string {
   const cached = urlCache.get(postDir);
   if (cached) return cached;

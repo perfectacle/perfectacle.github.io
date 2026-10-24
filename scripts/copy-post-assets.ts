@@ -1,5 +1,5 @@
-// Copies each post's original files to /YYYY/MM/DD/<slug>/<file>, the URLs the Hexo build served
-// (external sites and og:image still point here), then moves the optimized copies Astro writes to /_astro/
+// Copies each post's original files to /YYYY/MM/DD/<slug>/<file>
+// (external sites and og:image point here), then moves the optimized copies Astro writes to /_astro/
 // next to them, so everything a post shows lives under the post's own URL.
 import { copyFile, cp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';

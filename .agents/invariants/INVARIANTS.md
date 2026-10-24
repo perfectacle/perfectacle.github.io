@@ -2,13 +2,13 @@
 
 이 저장소가 지키는 규칙의 목록이다. 이 파일에는 규칙의 요지와 **소유자**(규칙 본문이 있는 스킬의 절)만 있다. 본문·이유·예외는 소유자에서 읽는다. 규칙을 바꿀 때는 소유자 한 곳만 고치고, 이 표의 요지가 달라졌으면 이 줄도 고친다.
 
-## URL·호환 — 옛 Hexo 블로그의 주소와 앵커, 댓글을 깨지 않는다
+## URL — 발행된 주소와 댓글을 깨지 않는다
 
 | ID     | 요지                                                                                                           | 소유자                                                                       |
 | ------ | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | URL-01 | 글 URL 은 `/YYYY/MM/DD/<폴더명>/`, 날짜는 frontmatter `date` 그대로. 발행된 글의 `date`·폴더명은 바꾸지 않는다 | [write-post §URL-01](../skills/write-post/SKILL.md#url-01--글-url)           |
-| URL-02 | 태그·카테고리 slug 와 본문 heading id 는 hexo-util slugize 규칙                                                | [site-code §URL-02](../skills/site-code/SKILL.md#url-02--slug-와-heading-id) |
-| URL-03 | Hexo 시절 페이지(`tests/fixtures/legacy-paths.txt` 의 모든 경로)는 항상 존재                                   | [site-code §URL-03](../skills/site-code/SKILL.md#url-03--옛-주소-계약)       |
+| URL-02 | 태그·카테고리 slug 와 본문 heading id 는 Astro 기본 규칙(github-slugger)                                       | [site-code §URL-02](../skills/site-code/SKILL.md#url-02--slug-와-heading-id) |
+| URL-03 | 발행된 페이지(`tests/fixtures/published-paths.txt` 의 모든 경로)는 항상 존재                                   | [site-code §URL-03](../skills/site-code/SKILL.md#url-03--발행된-주소-계약)   |
 | CMT-01 | 댓글은 Waline 이 글 경로(`/2022/06/06/slug/`)로 묶는다. 이 경로를 바꾸지 않는다                                | [site-code §CMT-01](../skills/site-code/SKILL.md#cmt-01--댓글-경로)          |
 
 ## 콘텐츠

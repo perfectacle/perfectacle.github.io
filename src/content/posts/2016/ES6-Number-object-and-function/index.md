@@ -8,13 +8,13 @@ tags: [Number]
 [(ES6) 숫자형](/2016/12/23/ES6-Number-type/)을 보고 이 글을 보는 걸 추천한다.
 
 ## 목차
-* [Number 객체(Global 객체)](#Number-객체-Global-객체)  
-  * [Properties](#Properties)  
-  * [Methods](#Methods)  
-* [Number 함수](#Number-함수)  
+* [Number 객체(Global 객체)](#number-객체global-객체)  
+  * [Properties](#properties)  
+  * [Methods](#methods)  
+* [Number 함수](#number-함수)  
   * [함수](#함수)  
   * [생성자](#생성자)
-* [Number ↔ String](#Number-↔-String)
+* [Number ↔ String](#number--string)
 
 ## Number 객체(Global 객체)
 ES5까지 Number 객체는 거의 [래퍼 객체](http://noritersand.tistory.com/536)의 역할만을 수행했다.  
@@ -31,15 +31,15 @@ console.dir(Number);
 
 ### Properties
 `*` 표시는 ES6에서 새로 추가됨.
-* [Number.POSITIVE_INFINITY](#Number-POSITIVE-INFINITY-Number-NEGATIVE-INFINITY-Number-NaN)  
-* [Number.NEGATIVE_INFINITY](#Number-POSITIVE-INFINITY-Number-NEGATIVE-INFINITY-Number-NaN)  
-* [Number.NaN](#Number-POSITIVE-INFINITY-Number-NEGATIVE-INFINITY-Number-NaN)  
-* [Number.MIN_VALUE](#Number-MIN-VALUE-Number-MAX-VALUE)  
-* [Number.MAX_VALUE](#Number-MIN-VALUE-Number-MAX-VALUE)  
-* [Number.MIN_SAFE_INTEGER](#Number-MIN-SAFE-INTEGER-Number-MAX-SAFE-INTEGER) `*`  
-* [Number.MAX_SAFE_INTEGER](#Number-MIN-SAFE-INTEGER-Number-MAX-SAFE-INTEGER) `*`   
-* [Number.EPSILON](#Number-EPSILON) `*`
-* [Number.prototype](#Number-prototype)
+* [Number.POSITIVE_INFINITY](#numberpositive_infinity--numbernegative_infinity--numbernan)  
+* [Number.NEGATIVE_INFINITY](#numberpositive_infinity--numbernegative_infinity--numbernan)  
+* [Number.NaN](#numberpositive_infinity--numbernegative_infinity--numbernan)  
+* [Number.MIN_VALUE](#numbermin_value--numbermax_value)  
+* [Number.MAX_VALUE](#numbermin_value--numbermax_value)  
+* [Number.MIN_SAFE_INTEGER](#numbermin_safe_integer---numbermax_safe_integer-) `*`  
+* [Number.MAX_SAFE_INTEGER](#numbermin_safe_integer---numbermax_safe_integer-) `*`   
+* [Number.EPSILON](#numberepsilon-) `*`
+* [Number.prototype](#numberprototype)
 
 표준 프로퍼티들은 상수이다.  
 즉 변경이 불가능하다.  
@@ -190,18 +190,18 @@ console.log(12.0.lastNum()); // 2
 
 ### Methods
 `*` 표시는 ES6에서 새로 추가됨.  
-* [Number.isFinite()](#Number-isFinite) `*`  
-* [Number.isInteger()](#Number-isInteger) `*`  
-* [Number.isNaN()](#Number-isNaN) `*`  
-* [Number.isSafeInteger()](#Number-isSafeInteger) `*`  
-* [Number.parseInt()](#Number-parseInt) `*`  
-* [Number.parseFloat()](#Number-parseFloat) `*`  
-* [Number.prototype.toFixed()](#Number-prototype-toFixed-Number-prototype-toPrecision)  
-* [Number.prototype.toPrecision()](#Number-prototype-toFixed-Number-prototype-toPrecision)  
-* [Number.prototype.toExponential()](#Number-prototype-toExponential)  
-* [Number.prototype.toString()](#Number-prototype-toString)  
-* [Number.prototype.valueOf()](#Number-prototype-valueOf)
-* [Number.prototype.toLocaleString()](#Number-prototype-toLocaleString)
+* [Number.isFinite()](#numberisfinite-) `*`  
+* [Number.isInteger()](#numberisinteger-) `*`  
+* [Number.isNaN()](#numberisnan-) `*`  
+* [Number.isSafeInteger()](#numberissafeinteger-) `*`  
+* [Number.parseInt()](#numberparseint-) `*`  
+* [Number.parseFloat()](#numberparsefloat-) `*`  
+* [Number.prototype.toFixed()](#numberprototypetofixed--numberprototypetoprecision)  
+* [Number.prototype.toPrecision()](#numberprototypetofixed--numberprototypetoprecision)  
+* [Number.prototype.toExponential()](#numberprototypetoexponential)  
+* [Number.prototype.toString()](#numberprototypetostring)  
+* [Number.prototype.valueOf()](#numberprototypevalueof)
+* [Number.prototype.toLocaleString()](#numberprototypetolocalestring)
 
 메소드는 수정 가능하다.  
 ```javascript

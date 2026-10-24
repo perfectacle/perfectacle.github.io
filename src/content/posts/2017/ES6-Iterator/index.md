@@ -56,7 +56,7 @@ Symbol.iterator() 메소드를 눈 씻고 찾아볼 수가 없다.
 ![](./iterable.webp)
 인터페이스이기 때문에 객체가 가져야하는 키와 그 키가 가져야하는 값을 명시하고 있다.  
 * 가져야하는 키: Symbol.iterator(well-known symbol 중 하나)
-* 키(Symbol.iterator): 함수인데 반환 값은 [Iterator 인터페이스](#Iterator-Interface)를 준수한 객체가 오면 된다.
+* 키(Symbol.iterator): 함수인데 반환 값은 [Iterator 인터페이스](#iterator-interface)를 준수한 객체가 오면 된다.
 ```javascript
 // Iterable 인터페이스를 준수한 obj 객체
 const IterableObject = {
@@ -70,7 +70,7 @@ const IterableObject = {
 ![](./iterator.webp)
 인터페이스이기 때문에 객체가 가져야하는 키와 그 키가 가져야하는 값을 명시하고 있다.  
 * 가져야하는 키: next라는 키를 가진다.  
-* 키(next)가 가져야할 값: 함수인데 반환 값은 [IteratorResult 인터페이스](#IteratorResult-Interface)를 준수한 객체이다.  
+* 키(next)가 가져야할 값: 함수인데 반환 값은 [IteratorResult 인터페이스](#iteratorresult-interface)를 준수한 객체이다.  
 ```javascript
 // Iterator 인터페이스를 준수한 IteratorObject 객체.
 const IteratorObject = {

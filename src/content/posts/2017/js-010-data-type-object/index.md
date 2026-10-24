@@ -35,7 +35,7 @@ seriesOrder: 12
 
 자바스크립트에서 자료형은 크게 두 가지로 나뉜다.  
 1. [원시값](/2017/07/01/js-009-data-type-primitive-value/)  
-2. [객체](#객체-Object)  
+2. [객체](#객체object)  
 
 하나 하나 파헤쳐보자.  
 

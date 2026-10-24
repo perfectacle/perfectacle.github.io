@@ -3,7 +3,7 @@ import { toString } from 'mdast-util-to-string';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
-import { slugize } from './slugize.ts';
+import { slug } from 'github-slugger';
 import { postUrl } from './post-url.ts';
 
 export type Post = CollectionEntry<'posts'>;
@@ -42,8 +42,8 @@ export const postPath = (post: Post) => {
   return postUrl(y, m, d, postSlug(post));
 };
 
-export const tagPath = (t: string) => `/tags/${slugize(t)}/`;
-export const categoryPath = (cats: string[]) => `/categories/${cats.map(slugize).join('/')}/`;
+export const tagPath = (t: string) => `/tags/${slug(t)}/`;
+export const categoryPath = (cats: string[]) => `/categories/${cats.map(c => slug(c)).join('/')}/`;
 
 let cache: Post[] | undefined;
 export async function getPosts(): Promise<Post[]> {
@@ -64,7 +64,7 @@ export async function getLatestPost(): Promise<Post> {
   return latest;
 }
 
-/** Page-number path under a base, using Hexo's `page/N/` scheme. */
+/** Page-number path under a base: `page/N/`, with page 1 at the base itself. */
 export const pagePath = (base: string, n: number) => (n === 1 ? base : `${base}page/${n}/`);
 
 /** First real paragraph of the post as plain text (markdown parsed, so `1~2년` or `snake_case` survive). */
@@ -106,10 +106,10 @@ export async function getTags(): Promise<TagInfo[]> {
   const map = new Map<string, TagInfo>();
   for (const post of await getPosts()) {
     for (const name of post.data.tags) {
-      const slug = slugize(name);
-      const info = map.get(slug) ?? { name, slug, posts: [] };
+      const key = slug(name);
+      const info = map.get(key) ?? { name, slug: key, posts: [] };
       if (!info.posts.includes(post)) info.posts.push(post);
-      map.set(slug, info);
+      map.set(key, info);
     }
   }
   return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
