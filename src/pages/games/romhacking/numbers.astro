@@ -5,6 +5,7 @@ import Figure from '../../../components/romhacking/Figure.astro';
 import BulbByte from '../../../components/romhacking/BulbByte.astro';
 import { toBinary, toHex } from '../../../lib/numbers.ts';
 import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
+import { notePath } from '../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -323,9 +324,9 @@ const hexTable = Array.from({ length: 16 }, (_, n) => n);
   </h2>
   <h3>헤더 바이트 하나에 정보 두 개</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a> 롬의 파일 0x7FD5에는 <code>$30</code>이 있습니다. 2진수로{' '}
-    <code>{toBinary(0x30)}</code>입니다. 이 바이트는 칸마다 뜻이 따로 있어서, 오른쪽 네 칸 <code>0000</code>은 "LoROM
-    방식" (4장), 비트 4(16의 자리)는 "FastROM(빠른 롬)"을 뜻합니다. 같은 LoROM이지만 FastROM을 쓰지 않는{' '}
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-basics`}>돌격편</a> 롬의 파일 0x7FD5에는 <code>$30</code>이 있습니다.
+    2진수로 <code>{toBinary(0x30)}</code>입니다. 이 바이트는 칸마다 뜻이 따로 있어서, 오른쪽 네 칸 <code>0000</code>은
+    "LoROM 방식" (4장), 비트 4(16의 자리)는 "FastROM(빠른 롬)"을 뜻합니다. 같은 LoROM이지만 FastROM을 쓰지 않는{' '}
     <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>는 <code>$20</code>입니다. 「비트 켜고 끄기」에서 비트 4만 꺼 보면
     $30이 $20이 됩니다.
   </p>
@@ -372,7 +373,7 @@ const hexTable = Array.from({ length: 16 }, (_, n) => n);
         </tr>
         <tr>
           <th scope="row">
-            <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a> 일본판
+            <a href={`${notePath(SMRPG_PATCH)}#making-save`}>슈퍼 마리오 RPG</a> 일본판
           </th>
           <td>
             <code>$4575</code>

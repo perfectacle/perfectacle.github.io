@@ -4,6 +4,7 @@ import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import EndianScale from '../../../components/romhacking/EndianScale.astro';
 import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
+import { notePath } from '../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -213,9 +214,9 @@ const references = [
   </h2>
   <h3>대사 포인터 표</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>은 대사 번호마다 2바이트 포인터를 표에 적어 둡니다. 대사 $006의
-    포인터는 파일 0x14000C에 있고, 바이트는 <code>FE 85</code>입니다. 거꾸로 읽으면 <code>$85FE</code>, 곧 같은 뱅크의{' '}
-    <code>$A8:85FE</code>(파일 0x1405FE)에 대사가 있습니다.
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-dialogue`}>돌격편</a>은 대사 번호마다 2바이트 포인터를 표에 적어
+    둡니다. 대사 $006의 포인터는 파일 0x14000C에 있고, 바이트는 <code>FE 85</code>입니다. 거꾸로 읽으면{' '}
+    <code>$85FE</code>, 곧 같은 뱅크의 <code>$A8:85FE</code>(파일 0x1405FE)에 대사가 있습니다.
   </p>
   <ul class="byte-strip" aria-label="파일 0x14000C의 포인터">
     <li class="is-cool">
@@ -239,14 +240,14 @@ const references = [
   </p>
   <h3>헤더 체크섬</h3>
   <p>
-    <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a> 일본판 헤더의 체크섬은 <code>$4575</code>이고, 롬에는{' '}
-    <code>75 45</code>로 들어 있습니다. 「바이트 순서 보기」의 처음 값이 이 숫자입니다.
+    <a href={`${notePath(SMRPG_PATCH)}#making-save`}>슈퍼 마리오 RPG</a> 일본판 헤더의 체크섬은 <code>$4575</code>이고,
+    롬에는 <code>75 45</code>로 들어 있습니다. 「바이트 순서 보기」의 처음 값이 이 숫자입니다.
   </p>
   <h3>한 게임 안의 두 순서</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a> 한글패치의 첫 문장 「여름의 해질녘.」은 파일 0x100018부터{' '}
-    <code>01 D8</code>(여) <code>04 85</code>(름) …처럼 글자마다 2바이트 빅 엔디안이고, 대본 시작 주소 표는 3바이트 리틀
-    엔디안입니다. 일본판 대본은 아예 바이트가 아닌 비트 단위로 압축되어 있었는데, 이것은 10장에서 다룹니다.
+    <a href={`${notePath(OTOGIRISOU_PATCH)}#making-script`}>제절초</a> 한글패치의 첫 문장 「여름의 해질녘.」은 파일
+    0x100018부터 <code>01 D8</code>(여) <code>04 85</code>(름) …처럼 글자마다 2바이트 빅 엔디안이고, 대본 시작 주소 표는
+    3바이트 리틀 엔디안입니다. 일본판 대본은 아예 바이트가 아닌 비트 단위로 압축되어 있었는데, 이것은 10장에서 다룹니다.
   </p>
 
   <h2 id="try">

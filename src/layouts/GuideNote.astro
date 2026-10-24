@@ -2,6 +2,7 @@
 import Base from './Base.astro';
 import Comments from '../components/Comments.astro';
 import ImagePreview from '../components/kr-patch/ImagePreview.astro';
+import GuideCrumbs from '../components/romhacking/GuideCrumbs.astro';
 import GuideSide from '../components/romhacking/GuideSide.astro';
 import TermPreview from '../components/romhacking/TermPreview.astro';
 import '../styles/romhacking.css';
@@ -24,7 +25,6 @@ import {
   chaptersForNote,
   notePath,
 } from '../components/romhacking/chapters.ts';
-import { GLOSSARY_PATH } from '../components/romhacking/glossary.ts';
 import { processGuideHtml } from '../components/romhacking/guide-html.ts';
 
 interface Props {
@@ -48,13 +48,6 @@ const trail = [
 const body = processGuideHtml(await Astro.slots.render('default'));
 // Notes number their sections in the heading; the contents lists are numbered already.
 const headings = body.headings.map(h => ({ ...h, text: h.text.replace(/^\d+\.\s*/, '') }));
-const sideLinks = [
-  { href: GUIDE_PATH, label: `${GUIDE_TITLE} 차례` },
-  { href: `${patch.path}/`, label: `${patch.title} 한글패치` },
-  ...(prev ? [{ href: notePath(prev), kind: '← 이전 노트', rel: 'prev' as const, label: prev.title }] : []),
-  ...(next ? [{ href: notePath(next), kind: '다음 노트 →', rel: 'next' as const, label: next.title }] : []),
-  { href: GLOSSARY_PATH, label: '용어집' },
-];
 ---
 
 <Base title={`${title} - ${GUIDE_TITLE}`} description={description} jsonLd={[breadcrumbs(SITE, trail)]}>
@@ -75,17 +68,7 @@ const sideLinks = [
           </marker>
         </defs>
       </svg>
-      <nav class="guide-crumbs" aria-label="현재 위치" data-pagefind-ignore>
-        <ol>
-          <li>
-            <a href={GUIDE_PATH}>{GUIDE_TITLE}</a>
-          </li>
-          <li>
-            <a href={`${GUIDE_PATH}#notes`}>롬 분석 노트</a>
-          </li>
-          <li aria-current="page">{patch.title}</li>
-        </ol>
-      </nav>
+      <GuideCrumbs here={{ kind: 'note', patch }} />
       <article data-pagefind-body>
         <header class="guide-head">
           <p class="guide-kicker" data-pagefind-ignore>
@@ -183,7 +166,7 @@ const sideLinks = [
 
       <Comments path={path} />
     </div>
-    <GuideSide label="이 노트에서" headings={headings} links={sideLinks} />
+    <GuideSide label="이 노트에서" headings={headings} />
   </div>
   <TermPreview terms={body.terms} />
   <ImagePreview />

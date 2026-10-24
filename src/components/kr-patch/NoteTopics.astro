@@ -1,0 +1,25 @@
+---
+import { notePath } from '../romhacking/chapters';
+import type { KrPatch } from '../../lib/kr-patches';
+
+interface Props {
+  patch: KrPatch;
+  /** Sections of the ROM analysis note, each by its heading id. */
+  topics: { id: string; label: string }[];
+}
+
+const { patch, topics } = Astro.props;
+---
+
+<nav class="making-topics" aria-labelledby="making-topics-title">
+  <p id="making-topics-title" class="making-topics-title">
+    이 노트에서 다루는 것
+  </p>
+  <ul>
+    {topics.map(t => (
+      <li>
+        <a href={`${notePath(patch)}#${t.id}`}>{t.label}</a>
+      </li>
+    ))}
+  </ul>
+</nav>

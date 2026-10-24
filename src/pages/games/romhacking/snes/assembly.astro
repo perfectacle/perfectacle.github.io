@@ -4,6 +4,7 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import CpuStep from '../../../../components/romhacking/CpuStep.astro';
 import { SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -476,8 +477,8 @@ const modes = [
   </h2>
   <h3>두 바이트로 디버그 메뉴 열기(돌격편)</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>은 전원을 켜면 도는 루프 안에 개발자용 디버그 메뉴를 부르는 코드가
-    남아 있고, 바로 앞의 <code>BRA</code>가 늘 그것을 건너뜁니다.
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-testing`}>돌격편</a>은 전원을 켜면 도는 루프 안에 개발자용 디버그
+    메뉴를 부르는 코드가 남아 있고, 바로 앞의 <code>BRA</code>가 늘 그것을 건너뜁니다.
   </p>
   <pre tabindex="0"><code>$80:8061  80 04        BRA $8067     ; 다음 명령에서 4바이트 앞으로 건너뜀
 $80:8063  22 B0 86 82  JSL $8286B0   ; 디버그 메뉴 (늘 건너뜀)
@@ -494,8 +495,8 @@ $C1:06AF  F0 01        BEQ $C106B2   ; 0이면 RTS를 건너뛰어 메뉴로
 $C1:06B1  60           RTS           ; 아니면 그냥 돌아감</code></pre>
   <p>
     제품판에서는 결과가 0이 아니라 늘 <code>RTS</code>로 돌아갑니다. <code>F0</code>(BEQ)을 <code>80</code>(BRA)으로
-    바꾸면 조건 없이 RTS를 건너뛰어 <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a>의 전투 중 Start로 메뉴가
-    열립니다. 롬 해킹의 많은 일이 이렇게 "분기 하나 바꾸기"입니다.
+    바꾸면 조건 없이 RTS를 건너뛰어 <a href={`${notePath(SMRPG_PATCH)}#making-debug`}>슈퍼 마리오 RPG</a>의 전투 중
+    Start로 메뉴가 열립니다. 롬 해킹의 많은 일이 이렇게 "분기 하나 바꾸기"입니다.
   </p>
   <h3>줄바꿈 판단(돌격편)</h3>
   <pre tabindex="0"><code>$B7:9846  CLC / ADC $0208     ; 이번 글자 폭 + 지금 x 위치

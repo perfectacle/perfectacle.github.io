@@ -3,6 +3,7 @@ import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -552,28 +553,30 @@ $E2:03F5 + $0025 = $E2:041A         문자열 1B 07 20 1D 07 1D 22 21 00</code><
   </h2>
   <h3>돌격편: 뱅크 아홉 개, 뱅크마다 다시 채우기</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a> 대사 5,370줄은 번호 범위에 따라 뱅크 아홉 곳에 나뉘어 있고, 뱅크마다
-    2바이트 포인터 표가 있습니다. v1.1은 뱅크마다 일본어 문자열 영역 전체를 처음부터 다시 채우고, 똑같은 문자열은 하나만
-    두었습니다. 뱅크 <code>$A8</code>은 일본판 문자열 영역 31,520바이트 가운데 27,164바이트를 씁니다.
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-dialogue`}>돌격편</a> 대사 5,370줄은 번호 범위에 따라 뱅크 아홉 곳에
+    나뉘어 있고, 뱅크마다 2바이트 포인터 표가 있습니다. v1.1은 뱅크마다 일본어 문자열 영역 전체를 처음부터 다시 채우고,
+    똑같은 문자열은 하나만 두었습니다. 뱅크 <code>$A8</code>은 일본판 문자열 영역 31,520바이트 가운데 27,164바이트를
+    씁니다.
   </p>
   <h3>각성편: 안 들어가는 줄만 같은 뱅크 끝으로</h3>
   <p>
-    <a href={`${KAKUSEI_PATCH.path}/`}>각성편</a>은 같은 엔진이라 글자 하나가 2바이트, 포인터도 2바이트입니다. v1.3은
-    고친 782줄 가운데 제자리에 들어가지 않는 432줄을 같은 뱅크 끝의 빈 곳(FF)으로 옮기고 포인터만 고쳤습니다. 빌드
-    뒤에도 뱅크마다 2,500–4,800바이트가 남습니다.
+    <a href={`${notePath(KAKUSEI_PATCH)}#making-relocate`}>각성편</a>은 같은 엔진이라 글자 하나가 2바이트, 포인터도
+    2바이트입니다. v1.3은 고친 782줄 가운데 제자리에 들어가지 않는 432줄을 같은 뱅크 끝의 빈 곳(FF)으로 옮기고 포인터만
+    고쳤습니다. 빌드 뒤에도 뱅크마다 2,500–4,800바이트가 남습니다.
   </p>
   <h3>제절초: 1MB 롬을 2MB로 늘려 대본을 통째로</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a> 일본판 대본은 압축된 비트열이라 한국어를 끼워 넣을 수 없었습니다.
-    한글패치 v1.0은 롬을 2MB로 늘려 기호마다 2바이트인 대본을 <code>$20:8000</code>부터 새로 두고, 읽는 루틴(
+    <a href={`${notePath(OTOGIRISOU_PATCH)}#making-script`}>제절초</a> 일본판 대본은 압축된 비트열이라 한국어를 끼워
+    넣을 수 없었습니다. 한글패치 v1.0은 롬을 2MB로 늘려 기호마다 2바이트인 대본을 <code>$20:8000</code>부터 새로 두고,
+    읽는 루틴(
     <code>$02:C156</code> 등)을 2바이트 읽기로 바꿨습니다. v1.1 대본은 <code>$20:8000</code>–<code>$35:AF66</code>
     입니다.
   </p>
   <h3>슈퍼 마리오 RPG: 이름을 실행 중에 채우기</h3>
   <p>
-    <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a> v1.0은 아이템 이름을 대사 본문에 영문으로 직접 적었습니다.
-    v1.1은 본문에서 이름을 빼고 이름 넣기 코드 <code>$1B</code>로 바꿨습니다. 이름과 조사는 실행 중에 채워지므로, 이름
-    길이에 따른 가운데 정렬도 실행 중에 계산합니다.
+    <a href={`${notePath(SMRPG_PATCH)}#making-names-in-dialogue`}>슈퍼 마리오 RPG</a> v1.0은 아이템 이름을 대사 본문에
+    영문으로 직접 적었습니다. v1.1은 본문에서 이름을 빼고 이름 넣기 코드 <code>$1B</code>로 바꿨습니다. 이름과 조사는
+    실행 중에 채워지므로, 이름 길이에 따른 가운데 정렬도 실행 중에 계산합니다.
   </p>
 
   <h2 id="try">

@@ -11,11 +11,10 @@ const KNOWN_BROKEN = new Set([
   // Table of contents entry for chapter 6, which was never written.
   '/2018/03/31/tcp-ip-book-index-6/#6장-보안',
 ]);
-// Demo pages copied verbatim from public/ are not part of the blog and keep their own link structure.
+// Demo pages copied verbatim from public/ are not part of the blog and keep their own link structure. Match the files
+// themselves, not their top-level folders: public/games/ also holds assets of the generated /games/ pages.
 const STANDALONE = new Set(
-  readdirSync('public', { withFileTypes: true })
-    .filter(e => e.isDirectory())
-    .map(e => e.name),
+  readdirSync('public', { recursive: true, encoding: 'utf8' }).filter(f => f.endsWith('.html')),
 );
 
 const fileFor = (urlPath: string): string => {
@@ -50,7 +49,7 @@ const decodeEntities = (s: string) =>
 const problems: string[] = [];
 const pages = readdirSync(DIST, { recursive: true, encoding: 'utf8' })
   .filter(f => f.endsWith('.html'))
-  .filter(f => !STANDALONE.has(f.split('/')[0] ?? ''));
+  .filter(f => !STANDALONE.has(f));
 
 for (const page of pages) {
   const pageUrl = '/' + page.replace(/index\.html$/, '');

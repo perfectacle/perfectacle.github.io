@@ -4,6 +4,7 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import CpuStep from '../../../../components/romhacking/CpuStep.astro';
 import { SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -318,17 +319,18 @@ const regs = [
   </h2>
   <h3>전원을 켜면 어디부터 실행하나</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a> 롬의 파일 0x7FFC에는 <code>00 80</code>, 곧 <code>$8000</code>이
-    있습니다. 이 자리를 <strong>리셋 벡터</strong>라고 하며, CPU는 전원을 켜면 에뮬레이션 모드로 <code>$00:8000</code>
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-basics`}>돌격편</a> 롬의 파일 0x7FFC에는 <code>00 80</code>, 곧{' '}
+    <code>$8000</code>이 있습니다. 이 자리를 <strong>리셋 벡터</strong>라고 하며, CPU는 전원을 켜면 에뮬레이션 모드로{' '}
+    <code>$00:8000</code>
     부터 읽기 시작합니다. 같은 헤더의 0x7FEA에 있는 <code>$818D</code>는 NMI 루틴의 주소입니다. NMI는 화면을 한 번 다
     그린 직후마다 불리는데, 게임이 레지스터 <code>$4200</code>의 비트 7을 켜 두었을 때만 옵니다.
   </p>
   <h3>CPU가 둘인 카트리지</h3>
   <p>
-    <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a> 카트리지에는 <strong>SA-1</strong>이라는 CPU가 하나 더
-    있습니다. 본체 CPU(S-CPU)보다 세 배쯤 빠른(10.74MHz) 65c816이라 같은 어셈블리로 짭니다. 두 CPU는 동시에 돌고, 이
-    게임은 필드 메뉴를 본체 CPU에, 전투 메뉴를 SA-1에 맡기도록 만들어졌습니다. 그래서 아이템 이름 하나를 한글로 바꾸려
-    해도 두 길을 따로 고쳐야 했습니다.
+    <a href={`${notePath(SMRPG_PATCH)}#making-basics`}>슈퍼 마리오 RPG</a> 카트리지에는 <strong>SA-1</strong>이라는
+    CPU가 하나 더 있습니다. 본체 CPU(S-CPU)보다 세 배쯤 빠른(10.74MHz) 65c816이라 같은 어셈블리로 짭니다. 두 CPU는
+    동시에 돌고, 이 게임은 필드 메뉴를 본체 CPU에, 전투 메뉴를 SA-1에 맡기도록 만들어졌습니다. 그래서 아이템 이름 하나를
+    한글로 바꾸려 해도 두 길을 따로 고쳐야 했습니다.
   </p>
 
   <h2 id="try">

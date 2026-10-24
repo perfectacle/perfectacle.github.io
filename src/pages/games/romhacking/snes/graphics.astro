@@ -4,6 +4,7 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import TileBytes from '../../../../components/romhacking/TileBytes.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 import { toBinary, toHex } from '../../../../lib/numbers.ts';
 import { SAMPLE_GLYPH, decode, encode, shadowed } from '../../../../lib/snes-tiles.ts';
 
@@ -635,12 +636,12 @@ const strategies = [
   </h2>
   <h3>돌격편: 쓰지 않던 코드 범위에 512칸</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>의 글자 코드는 범위에 따라 시트가 정해집니다. <code>$100</code>–
-    <code>$4FF</code>는 8×16 가나 자리, <code>$500</code>–<code>$BEF</code>는 16×16 한자 자리입니다. v1.0은 한자 850칸과
-    가나 160칸에 한글을 그려 1,010자를 썼고, 재번역한 v1.1에는 213자를 새로 그려야 했습니다. 그중 37자는 더는 쓰지 않게
-    된 옛 칸에 그리고, 나머지 176자를 위해 6장의 <code>JML</code> 후킹으로 원래 쓰지 않던 <code>$C00</code>–
-    <code>$FFF</code>를 열고, 4KB씩 여덟 곳의 빈 공간을 블록으로 이었습니다. 블록 하나가 128코드(글자 64개)라 모두
-    512자입니다.
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-font`}>돌격편</a>의 글자 코드는 범위에 따라 시트가 정해집니다.{' '}
+    <code>$100</code>–<code>$4FF</code>는 8×16 가나 자리, <code>$500</code>–<code>$BEF</code>는 16×16 한자 자리입니다.
+    v1.0은 한자 850칸과 가나 160칸에 한글을 그려 1,010자를 썼고, 재번역한 v1.1에는 213자를 새로 그려야 했습니다. 그중
+    37자는 더는 쓰지 않게 된 옛 칸에 그리고, 나머지 176자를 위해 6장의 <code>JML</code> 후킹으로 원래 쓰지 않던{' '}
+    <code>$C00</code>–<code>$FFF</code>를 열고, 4KB씩 여덟 곳의 빈 공간을 블록으로 이었습니다. 블록 하나가 128코드(글자
+    64개)라 모두 512자입니다.
   </p>
   <Figure caption="코드 $CE5 「쫓」이 블록 표를 거쳐 CPU 주소 $84:FAA0이 되는 과정" max={600}>
     <svg viewBox="0 0 360 214" role="img" aria-labelledby="blk-t blk-d">
@@ -688,10 +689,10 @@ const strategies = [
 
   <h3>제절초: 그룹 표가 꽉 차 있었다</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a> 폰트는 크기가 같은 글자끼리 묶은 그룹 표(<code>$00:F4AC</code>)로
-    찾습니다. 한 칸이 5바이트이고, 표 바로 뒤에 다른 데이터가 있어 58칸이 한계인데 일본판과 v1.0이 58칸을 다 썼습니다.
-    v1.1은 아무 데서도 쓰지 않는 168자를 이웃 그룹과 같은 크기의 빈 글자로 바꿔 45칸으로 합치고, 새 글자 75자를 3칸으로
-    더해 48칸으로 맞췄습니다.
+    <a href={`${notePath(OTOGIRISOU_PATCH)}#making-new-glyphs`}>제절초</a> 폰트는 크기가 같은 글자끼리 묶은 그룹 표(
+    <code>$00:F4AC</code>)로 찾습니다. 한 칸이 5바이트이고, 표 바로 뒤에 다른 데이터가 있어 58칸이 한계인데 일본판과
+    v1.0이 58칸을 다 썼습니다. v1.1은 아무 데서도 쓰지 않는 168자를 이웃 그룹과 같은 크기의 빈 글자로 바꿔 45칸으로
+    합치고, 새 글자 75자를 3칸으로 더해 48칸으로 맞췄습니다.
   </p>
   <Figure caption="그룹 표 첫 칸 05 92 00 80 2C 읽기" max={600}>
     <svg viewBox="0 0 360 200" role="img" aria-labelledby="grp-t grp-d">
@@ -755,9 +756,9 @@ const strategies = [
 
   <h3>슈퍼 마리오 RPG: VRAM 256칸에 다 못 넣는 이름</h3>
   <p>
-    <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a>의 메뉴 글자는 1바이트 코드이고, 메뉴를 열면 256글자 전부가
-    VRAM에 올라가 있습니다. v1.0이 $20–$FF를 빈칸 없이 다 써서 아이템 이름에 필요한 한글을 더 넣을 수 없었습니다. 롬
-    용량이 아니라 "1바이트 코드 = VRAM에 늘 올라가 있는 256칸" 구조가 막고 있었던 것입니다.
+    <a href={`${notePath(SMRPG_PATCH)}#making-menu-font`}>슈퍼 마리오 RPG</a>의 메뉴 글자는 1바이트 코드이고, 메뉴를
+    열면 256글자 전부가 VRAM에 올라가 있습니다. v1.0이 $20–$FF를 빈칸 없이 다 써서 아이템 이름에 필요한 한글을 더 넣을
+    수 없었습니다. 롬 용량이 아니라 "1바이트 코드 = VRAM에 늘 올라가 있는 256칸" 구조가 막고 있었던 것입니다.
   </p>
   <Figure caption="메뉴 폰트에 없는 글자는 VRAM의 임시 칸 128개 가운데 하나를 받아 그때그때 올립니다." max={600}>
     <svg viewBox="0 0 360 230" role="img" aria-labelledby="slot-t slot-d">
@@ -825,9 +826,9 @@ const strategies = [
 
   <h3>각성편: 아무도 쓰지 않는 글자 자리</h3>
   <p>
-    <a href={`${KAKUSEI_PATCH.path}/`}>각성편</a> v1.2에 새로 필요한 글자는 11자뿐이었습니다. 어떤 대사에서도 쓰지 않는
-    글리프 자리를 골라 그 위에 그렸습니다. 예를 들어 코드 <code>$123</code>은 v1.1까지 「겄」이었는데 v1.2부터
-    「깨」입니다.
+    <a href={`${notePath(KAKUSEI_PATCH)}#making-font`}>각성편</a> v1.2에 새로 필요한 글자는 11자뿐이었습니다. 어떤
+    대사에서도 쓰지 않는 글리프 자리를 골라 그 위에 그렸습니다. 예를 들어 코드 <code>$123</code>은 v1.1까지
+    「겄」이었는데 v1.2부터 「깨」입니다.
   </p>
 
   <h2 id="try">

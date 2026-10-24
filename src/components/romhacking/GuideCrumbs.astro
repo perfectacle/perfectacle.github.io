@@ -1,0 +1,453 @@
+---
+import { KR_PATCH_LIST_PATH, type KrPatch } from '../../lib/kr-patches.ts';
+import {
+  GUIDE_CHAPTERS,
+  GUIDE_PATH,
+  NOTE_GAME,
+  NOTE_PATCHES,
+  chapterLabel,
+  chapterPath,
+  chaptersForNote,
+  noteHref,
+  noteLabel,
+  notePath,
+  readyChapters,
+  type GuideChapter,
+} from './chapters.ts';
+import { GLOSSARY_PATH } from './glossary.ts';
+
+type Here =
+  | { kind: 'index' }
+  | { kind: 'glossary' }
+  | { kind: 'chapter'; chapter: GuideChapter }
+  | { kind: 'note'; patch: KrPatch };
+
+interface Props {
+  here: Here;
+}
+
+interface MenuItem {
+  href?: string | undefined;
+  label: string;
+  /** Muted line under the label. */
+  hint?: string | undefined;
+  current?: boolean;
+  /** A second, smaller link on the same row. */
+  side?: { href: string; label: string };
+}
+
+interface MenuGroup {
+  title?: string;
+  items: MenuItem[];
+}
+
+interface Crumb {
+  href: string;
+  label: string;
+  /** Shown instead of the label on phones, so the whole trail fits on one line. */
+  short?: string;
+  current?: boolean;
+  menu?: { name: string; groups: MenuGroup[] } | undefined;
+}
+
+const { here } = Astro.props;
+
+const top: Crumb = {
+  href: GUIDE_PATH,
+  label: '롬 해킹',
+  current: here.kind === 'index',
+  menu: {
+    name: '롬 해킹',
+    groups: [
+      {
+        items: [
+          { href: `${GUIDE_PATH}#chapters`, label: '기초 가이드', hint: `${readyChapters().length}장, 0장부터 차례로` },
+          { href: `${GUIDE_PATH}#notes`, label: '롬 분석 노트', hint: `한글패치 ${NOTE_PATCHES.length}개의 롬 기록` },
+          { href: `${GUIDE_PATH}#note-grid`, label: '장 × 게임 노트', hint: '장마다 각 게임 노트의 해당 절' },
+          { href: GLOSSARY_PATH, label: '용어집', hint: '가나다순 용어와 설명 장', current: here.kind === 'glossary' },
+          { href: KR_PATCH_LIST_PATH, label: '한글패치 목록', hint: '패치 내려받기와 롬에 바로 적용' },
+        ],
+      },
+    ],
+  },
+};
+
+const chapterMenu = (current?: GuideChapter): MenuGroup[] => [
+  {
+    items: GUIDE_CHAPTERS.map(c => ({
+      href: c.ready ? chapterPath(c) : undefined,
+      label: `${chapterLabel(c)} ${c.title}`,
+      hint: c.ready ? undefined : '준비 중',
+      current: c === current,
+    })),
+  },
+];
+
+const notesMenu = (current?: KrPatch): MenuGroup[] => [
+  {
+    items: NOTE_PATCHES.map(p => ({
+      href: notePath(p),
+      label: p.title,
+      current: p === current,
+      side: { href: `${p.path}/`, label: '한글패치' },
+    })),
+  },
+];
+
+const crumbs: Crumb[] = [top];
+if (here.kind === 'glossary') crumbs.push({ href: GLOSSARY_PATH, label: '용어집', current: true });
+if (here.kind === 'chapter') {
+  const { chapter } = here;
+  crumbs.push({
+    href: `${GUIDE_PATH}#chapters`,
+    label: '기초 가이드',
+    short: '가이드',
+    menu: { name: '기초 가이드', groups: chapterMenu(chapter) },
+  });
+  crumbs.push({
+    href: chapterPath(chapter),
+    label: `${chapterLabel(chapter)} ${chapter.title}`,
+    short: chapterLabel(chapter),
+    current: true,
+    menu: chapter.notes.length
+      ? {
+          name: `${chapterLabel(chapter)} 관련 노트`,
+          groups: [
+            {
+              title: '이 장의 개념을 쓴 노트',
+              items: chapter.notes.map(n => ({ href: noteHref(n), label: noteLabel(n) })),
+            },
+          ],
+        }
+      : undefined,
+  });
+}
+if (here.kind === 'note') {
+  const { patch } = here;
+  crumbs.push({
+    href: `${GUIDE_PATH}#notes`,
+    label: '롬 분석 노트',
+    short: '노트',
+    menu: { name: '롬 분석 노트', groups: notesMenu(patch) },
+  });
+  const chapters = chaptersForNote(patch);
+  crumbs.push({
+    href: notePath(patch),
+    label: patch.title,
+    short: NOTE_GAME[patch.theme],
+    current: true,
+    menu: {
+      name: `${NOTE_GAME[patch.theme]} 관련 페이지`,
+      groups: [
+        {
+          items: [{ href: `${patch.path}/`, label: `${patch.title} 한글패치`, hint: '패치 내려받기와 롬에 바로 적용' }],
+        },
+        {
+          title: '이 노트의 개념을 설명하는 장',
+          items: chapters.map(c => ({ href: chapterPath(c), label: `${chapterLabel(c)} ${c.title}` })),
+        },
+      ],
+    },
+  });
+}
+---
+
+<nav class="gcrumbs" aria-label="현재 위치" data-pagefind-ignore>
+  <ol>
+    {crumbs.map((c, i) => (
+      <li class:list={['gcrumb', { 'is-current': c.current }]}>
+        {c.current ? (
+          <span class="gcrumb-name" aria-current="page">
+            <span class:list={{ 'gcrumb-full': c.short }}>{c.label}</span>
+            {c.short && <span class="gcrumb-short">{c.short}</span>}
+          </span>
+        ) : (
+          <a class="gcrumb-name" href={c.href} aria-label={c.short ? c.label : undefined}>
+            <span class:list={{ 'gcrumb-full': c.short }}>{c.label}</span>
+            {c.short && <span class="gcrumb-short">{c.short}</span>}
+          </a>
+        )}
+        {c.menu && (
+          <>
+            <button
+              type="button"
+              class="gcrumb-toggle"
+              aria-expanded="false"
+              aria-controls={`gcrumb-menu-${i}`}
+              aria-label={`${c.menu.name} 펼치기`}
+              hidden
+            >
+              <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">
+                <path
+                  d="M2.5 4.5 6 8l3.5-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+            <div class="gcrumb-menu" id={`gcrumb-menu-${i}`} hidden>
+              {c.menu.groups
+                .filter(g => g.items.length > 0)
+                .map(g => (
+                  <div class="gcrumb-group">
+                    {g.title && <p class="gcrumb-group-title">{g.title}</p>}
+                    <ul>
+                      {g.items.map(item => (
+                        <li class:list={{ 'is-current': item.current }}>
+                          {item.href ? (
+                            <a href={item.href} aria-current={item.current ? 'page' : undefined}>
+                              {item.label}
+                              {item.hint && <small>{item.hint}</small>}
+                            </a>
+                          ) : (
+                            <span class="gcrumb-off">
+                              {item.label}
+                              {item.hint && <small>{item.hint}</small>}
+                            </span>
+                          )}
+                          {item.side && (
+                            <a class="gcrumb-side" href={item.side.href}>
+                              {item.side.label}
+                            </a>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+            </div>
+          </>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .gcrumbs {
+    position: relative;
+    z-index: 20;
+    margin: 0 0 20px;
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+  }
+  .gcrumbs > ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .gcrumb {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .gcrumb + .gcrumb::before {
+    content: '/' / '';
+    margin: 0 8px;
+    color: var(--border);
+  }
+  .gcrumb-name {
+    color: inherit;
+  }
+  a.gcrumb-name {
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 3px;
+  }
+  a.gcrumb-name:hover {
+    color: var(--accent);
+  }
+  .gcrumb.is-current .gcrumb-name {
+    color: var(--fg);
+    font-weight: 600;
+  }
+  .gcrumb-short {
+    display: none;
+  }
+  .gcrumb-toggle {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin-left: 2px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--fg-muted);
+    cursor: pointer;
+  }
+  .gcrumb-toggle[hidden] {
+    display: none;
+  }
+  .gcrumb-toggle:hover,
+  .gcrumb-toggle[aria-expanded='true'] {
+    border-color: var(--border);
+    background: var(--bg-soft);
+    color: var(--accent);
+  }
+  .gcrumb-toggle[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+  }
+  .gcrumb-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: max-content;
+    min-width: 240px;
+    max-width: min(380px, calc(100vw - 32px));
+    max-height: min(70vh, 520px);
+    overflow-y: auto;
+    padding: 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg);
+    box-shadow: 0 8px 28px rgb(0 0 0 / 0.14);
+  }
+  .gcrumb-menu[hidden] {
+    display: none;
+  }
+  .gcrumb-group + .gcrumb-group {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+  .gcrumb-group-title {
+    margin: 4px 10px 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--fg-muted);
+  }
+  .gcrumb-menu ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .gcrumb-menu li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gcrumb-menu li > a:first-child,
+  .gcrumb-off {
+    flex: 1;
+    display: block;
+    padding: 7px 10px;
+    border-radius: 6px;
+    color: var(--fg);
+    line-height: 1.4;
+    text-decoration: none;
+  }
+  .gcrumb-off {
+    color: var(--fg-muted);
+  }
+  .gcrumb-menu small {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+  }
+  .gcrumb-menu a:hover,
+  .gcrumb-menu a:focus-visible {
+    background: var(--bg-soft);
+    color: var(--accent);
+  }
+  .gcrumb-menu li.is-current > a:first-child {
+    box-shadow: inset 3px 0 0 var(--accent);
+    background: var(--bg-soft);
+    font-weight: 600;
+  }
+  .gcrumb-side {
+    flex: none;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-decoration: none;
+  }
+  /* Phones: the trail keeps to one line with short names, and every menu spans the trail's width so it stays on screen. */
+  @media (max-width: 640px) {
+    .gcrumb {
+      position: static;
+    }
+    .gcrumb-full {
+      display: none;
+    }
+    .gcrumb-short {
+      display: inline;
+    }
+    .gcrumb-toggle {
+      width: 36px;
+      height: 36px;
+    }
+    .gcrumb-menu {
+      left: 0;
+      right: 0;
+      width: auto;
+      min-width: 0;
+      max-width: none;
+    }
+  }
+</style>
+
+<script>
+  // Without scripts the toggles stay hidden and every step is a plain link to its page.
+  const toggles = [...document.querySelectorAll<HTMLButtonElement>('.gcrumb-toggle')];
+  const menuOf = (b: HTMLButtonElement) => document.getElementById(b.getAttribute('aria-controls') ?? '');
+  const linksOf = (b: HTMLButtonElement) => [...(menuOf(b)?.querySelectorAll<HTMLAnchorElement>('a') ?? [])];
+  const close = (b: HTMLButtonElement, focus = false) => {
+    if (b.getAttribute('aria-expanded') !== 'true') return;
+    b.setAttribute('aria-expanded', 'false');
+    menuOf(b)?.setAttribute('hidden', '');
+    if (focus) b.focus();
+  };
+  const open = (b: HTMLButtonElement) => {
+    toggles.forEach(o => o !== b && close(o));
+    b.setAttribute('aria-expanded', 'true');
+    menuOf(b)?.removeAttribute('hidden');
+  };
+  for (const b of toggles) {
+    b.hidden = false;
+    b.addEventListener('click', () => (b.getAttribute('aria-expanded') === 'true' ? close(b) : open(b)));
+    b.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowDown') return;
+      e.preventDefault();
+      open(b);
+      (linksOf(b).find(a => a.getAttribute('aria-current')) ?? linksOf(b)[0])?.focus();
+    });
+    const menu = menuOf(b);
+    menu?.addEventListener('keydown', e => {
+      const links = linksOf(b);
+      const i = links.indexOf(document.activeElement as HTMLAnchorElement);
+      const step = { ArrowDown: 1, ArrowUp: -1 }[e.key];
+      if (step) {
+        e.preventDefault();
+        links[(i + step + links.length) % links.length]?.focus();
+      } else if (e.key === 'Home' || e.key === 'End') {
+        e.preventDefault();
+        (e.key === 'Home' ? links[0] : links.at(-1))?.focus();
+      }
+    });
+    // Tabbing past the last link leaves the menu, so it closes behind the focus.
+    menu?.addEventListener('focusout', e => {
+      const to = e.relatedTarget as Node | null;
+      if (to && !menu.contains(to) && to !== b) close(b);
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const b = toggles.find(t => t.getAttribute('aria-expanded') === 'true');
+    if (b) close(b, true);
+  });
+  document.addEventListener('click', e => {
+    const t = e.target as Node;
+    for (const b of toggles) if (!b.contains(t) && !menuOf(b)?.contains(t)) close(b);
+  });
+</script>

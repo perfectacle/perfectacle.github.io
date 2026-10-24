@@ -1464,12 +1464,22 @@ h4.pixel {
 
 /* On a patch page the note is a teaser: its intro and a link to the full note in the ROM hacking guide. The intro is
    long reading, so it sits on a solid panel; the link stands beside the heading where the section starts. */
-.making-teaser > .lead {
+.making-teaser > :is(.lead, .making-topics) {
   max-inline-size: 46rem;
   padding: 18px 22px;
   border-radius: 10px;
   background: var(--panel);
   line-height: 1.85;
+}
+
+.making-topics-title {
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.making-topics ul {
+  margin: 0;
+  padding-inline-start: 1.2em;
 }
 
 .making-head {

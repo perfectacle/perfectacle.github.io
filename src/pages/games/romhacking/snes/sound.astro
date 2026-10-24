@@ -4,7 +4,7 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import ApuPorts from '../../../../components/romhacking/ApuPorts.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH } from '../../../../lib/kr-patches.ts';
-import { TOOLKIT_README_KO, chapterBySlug, chapterPath } from '../../../../components/romhacking/chapters.ts';
+import { TOOLKIT_README_KO, chapterBySlug, chapterPath, notePath } from '../../../../components/romhacking/chapters.ts';
 
 const FULLSNES = 'https://problemkaputt.de/fullsnes.htm';
 const SNESDEV = 'https://snes.nesdev.org/wiki';
@@ -653,9 +653,10 @@ const probes = [
 
   <h3>제절초: 대본의 소리 코드에서 부르는 함수</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>는 대본 속 제어 코드로 음악과 효과음을 냅니다. 소리 코드{' '}
-    <code>{'{39}'}</code>를 처리하는 게임 코드가 A에 소리 번호를 넣고 <code>$00:CD60</code>을 부릅니다. 9바이트마다 놓인{' '}
-    <code>$00:CD69</code>, <code>$00:CD72</code>, <code>$00:CD7B</code>, <code>$00:CD84</code>도 같은 모양(
+    <a href={`${notePath(OTOGIRISOU_PATCH)}#making-readers`}>제절초</a>는 대본 속 제어 코드로 음악과 효과음을 냅니다.
+    소리 코드 <code>{'{39}'}</code>를 처리하는 게임 코드가 A에 소리 번호를 넣고 <code>$00:CD60</code>을 부릅니다.
+    9바이트마다 놓인 <code>$00:CD69</code>, <code>$00:CD72</code>, <code>$00:CD7B</code>, <code>$00:CD84</code>도 같은
+    모양(
     <code>PHP</code>, <code>REP #$30</code>, <code>PHA</code>, <code>LDA #값</code>, <code>BRA</code>)의 입구로, 각자
     다른 16비트 값을 A에 넣고 뒤쪽 코드로 건너뜁니다. 멈추는 코드 <code>{'{3B}'}</code>·<code>{'{3C}'}</code>는{' '}
     <code>$00:CD45</code>·<code>$00:CD4E</code>를 부릅니다.

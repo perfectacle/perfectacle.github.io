@@ -4,6 +4,7 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import BankMap from '../../../../components/romhacking/BankMap.astro';
 import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -345,9 +346,10 @@ const systemAreas = [
   </h2>
   <h3>돌격편: 대사는 뱅크 밖으로 못 나간다</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>(LoROM)은 대사 5,370줄을 아홉 개 뱅크에 나눠 두고, 뱅크마다 2바이트
-    포인터 표를 둡니다. 대사 $006의 포인터는 <code>$A8:8000 + $006 × 2 = $A8:800C</code>, 파일로는{' '}
-    <code>0x28 × 0x8000 + 0x000C = 0x14000C</code>입니다. 「CPU 주소 → 파일 오프셋 계산기」의 처음 값이 이 주소입니다.
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-dialogue`}>돌격편</a>(LoROM)은 대사 5,370줄을 아홉 개 뱅크에 나눠
+    두고, 뱅크마다 2바이트 포인터 표를 둡니다. 대사 $006의 포인터는 <code>$A8:8000 + $006 × 2 = $A8:800C</code>,
+    파일로는 <code>0x28 × 0x8000 + 0x000C = 0x14000C</code>입니다. 「CPU 주소 → 파일 오프셋 계산기」의 처음 값이 이
+    주소입니다.
   </p>
   <p>
     포인터가 2바이트라 대사는 자기 뱅크(32KB) 안에서만 옮길 수 있습니다. 한국어 번역이 일본어보다 길어져도 다른 뱅크로
@@ -355,16 +357,17 @@ const systemAreas = [
   </p>
   <h3>슈퍼 마리오 RPG: 4MB를 넘기지 않은 이유</h3>
   <p>
-    <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a>는 SA-1 카트리지입니다. 새 한글 이름 표는 <code>$E2:B400</code>
+    <a href={`${notePath(SMRPG_PATCH)}#making-address`}>슈퍼 마리오 RPG</a>는 SA-1 카트리지입니다. 새 한글 이름 표는{' '}
+    <code>$E2:B400</code>
     (파일 0x22B400)에 있습니다. 롬을 4MB보다 키우면 실행 중에 창의 블록을 바꿔야 하는데, 두 CPU가 동시에 돌아서 바꾸는
     사이 다른 쪽이 엉뚱한 블록을 읽을 수 있습니다. 그래서 롬을 늘리지 않고 원래 비어 있던 공간만 썼습니다.
   </p>
   <h3>제절초: 뱅크를 넘는 대본과 세이브 RAM</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>(LoROM) 한글패치 대본은 <code>$20:8000</code>부터 이어지고, 뱅크 끝{' '}
-    <code>$XX:FFFF</code>를 넘으면 읽는 코드가 다음 뱅크의 <code>$8000</code>으로 건너갑니다. LoROM은 뱅크마다 위쪽 반만
-    롬이라 파일에서는 끊김 없이 이어진 바이트입니다. 세이브 데이터는 LoROM의 세이브 RAM 자리인 <code>$70:0000</code>–{' '}
-    <code>$70:1FFF</code>(8KB)에 있습니다.
+    <a href={`${notePath(OTOGIRISOU_PATCH)}#making-map`}>제절초</a>(LoROM) 한글패치 대본은 <code>$20:8000</code>부터
+    이어지고, 뱅크 끝 <code>$XX:FFFF</code>를 넘으면 읽는 코드가 다음 뱅크의 <code>$8000</code>으로 건너갑니다. LoROM은
+    뱅크마다 위쪽 반만 롬이라 파일에서는 끊김 없이 이어진 바이트입니다. 세이브 데이터는 LoROM의 세이브 RAM 자리인{' '}
+    <code>$70:0000</code>– <code>$70:1FFF</code>(8KB)에 있습니다.
   </p>
 
   <h2 id="try">

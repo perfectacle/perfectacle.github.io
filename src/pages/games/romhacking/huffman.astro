@@ -4,7 +4,7 @@ import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import HuffmanCode from '../../../components/romhacking/HuffmanCode.astro';
 import { OTOGIRISOU_PATCH } from '../../../lib/kr-patches.ts';
-import { chapterBySlug, chapterPath } from '../../../components/romhacking/chapters.ts';
+import { chapterBySlug, chapterPath, notePath } from '../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -373,12 +373,12 @@ const noWalk = [
   </h2>
   <h3>제절초 일본판: 대본 전체가 허프만 비트열</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a> 일본판은 대본 전체를 허프만 부호로 이어 붙인 비트열 하나로
-    넣었습니다. 기준점은 <code>$15:E401</code>(파일 0xAE401)이고, 바이트마다 아래 비트부터 읽습니다. 크기는 약 246만
-    비트, 바이트로 30만 바이트쯤입니다. 기호는 <code>$000</code>–<code>$FFF</code>가 글자(폰트 번호), <code>$1000</code>
-    –<code>$1046</code>이 제어 코드입니다. 리프에는 이 밖에 <code>$1176</code>이 하나 있는데, 대본 전체를 처음부터 읽어
-    보면 글자나 제어 코드로는 한 번도 나오지 않고 선택지 코드 <code>{'{1A}'}</code>의 첫 인자(보기 수와 표시 조건을 묶은
-    값)로 한 번 쓰입니다. 인자도 같은 허프만 부호로 적혀 있기 때문입니다.
+    <a href={`${notePath(OTOGIRISOU_PATCH)}#making-script`}>제절초</a> 일본판은 대본 전체를 허프만 부호로 이어 붙인
+    비트열 하나로 넣었습니다. 기준점은 <code>$15:E401</code>(파일 0xAE401)이고, 바이트마다 아래 비트부터 읽습니다.
+    크기는 약 246만 비트, 바이트로 30만 바이트쯤입니다. 기호는 <code>$000</code>–<code>$FFF</code>가 글자(폰트 번호),{' '}
+    <code>$1000</code>–<code>$1046</code>이 제어 코드입니다. 리프에는 이 밖에 <code>$1176</code>이 하나 있는데, 대본
+    전체를 처음부터 읽어 보면 글자나 제어 코드로는 한 번도 나오지 않고 선택지 코드 <code>{'{1A}'}</code>의 첫 인자(보기
+    수와 표시 조건을 묶은 값)로 한 번 쓰입니다. 인자도 같은 허프만 부호로 적혀 있기 때문입니다.
   </p>
   <p>
     트리는 위 「더 깊이」의 두 표이고 루트는 오프셋 <code>$0B6C</code>입니다. 이 트리를 끝까지 따라가 세어 보면 리프가

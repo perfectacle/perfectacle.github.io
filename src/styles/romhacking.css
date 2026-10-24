@@ -57,31 +57,6 @@
   }
 }
 
-.guide-crumbs {
-  margin: 0 0 20px;
-  font-size: 0.875rem;
-  color: var(--fg-muted);
-}
-.guide-crumbs ol {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.guide-crumbs li + li::before {
-  content: '›' / '';
-  margin: 0 8px;
-  color: var(--fg-muted);
-}
-.guide-crumbs a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--border);
-  text-underline-offset: 3px;
-}
-
 .guide-head {
   margin-bottom: 28px;
 }

@@ -26,7 +26,14 @@ export interface NoteLink {
   patch: KrPatch;
   /** `making` for the whole note, or one of the note's section headings. */
   id: string;
+  /** What the section shows, without the game's name: lists that mix games add it with `noteLabel`. */
   label: string;
+}
+
+/** A game whose note has nothing for a chapter, and why, so the empty cell in the index table explains itself. */
+export interface NoteGap {
+  patch: KrPatch;
+  why: string;
 }
 
 export interface ToolLink {
@@ -44,10 +51,13 @@ export interface GuideChapter {
   /** Unwritten chapters appear in the map without a link. */
   ready: boolean;
   notes: NoteLink[];
+  /** Every game without a note link above. */
+  gaps?: NoteGap[];
   tools: ToolLink[];
 }
 
 const note = (patch: KrPatch, id: string, label: string): NoteLink => ({ patch, id, label });
+const gap = (patch: KrPatch, why: string): NoteGap => ({ patch, why });
 
 export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
@@ -59,15 +69,15 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       '롬은 카트리지 칩을 통째로 옮긴 파일이고, 패치는 바뀐 곳만 적은 파일입니다. IPS 형식을 바이트 단위로 읽어 봅니다.',
     ready: true,
     notes: [
-      note(TOTSUGEKI_PATCH, 'making-about', '돌격편: 일본판 위에 v1.0·v1.1·v1.2를 쌓은 순서'),
-      note(TOTSUGEKI_PATCH, 'making-tools', '돌격편: 패치 소스 파일과 빌드 순서'),
-      note(OTOGIRISOU_PATCH, 'making', '제절초: 1MB 롬을 2MB로 늘린 한글패치'),
-      note(KAKUSEI_PATCH, 'making-about', '각성편: v1.1 위에 쌓은 v1.2·v1.3'),
-      note(KAKUSEI_PATCH, 'making-tools', '각성편: 패치 소스 파일과 빌드 순서'),
-      note(SMRPG_PATCH, 'making-about', '슈퍼 마리오 RPG: v1.0 위에 덧씌운 v1.1·v1.2'),
-      note(SMRPG_PATCH, 'making-tools', '슈퍼 마리오 RPG: 패치 소스 파일과 빌드 순서'),
-      note(OTOGIRISOU_PATCH, 'making-about', '제절초: 버전마다 고친 곳'),
-      note(OTOGIRISOU_PATCH, 'making-tools', '제절초: v1.0 IPS 위에 다시 빌드하기'),
+      note(TOTSUGEKI_PATCH, 'making-about', '일본판 위에 v1.0·v1.1·v1.2를 쌓은 순서'),
+      note(TOTSUGEKI_PATCH, 'making-tools', '패치 소스 파일과 빌드 순서'),
+      note(OTOGIRISOU_PATCH, 'making', '1MB 롬을 2MB로 늘린 한글패치'),
+      note(KAKUSEI_PATCH, 'making-about', 'v1.1 위에 쌓은 v1.2·v1.3'),
+      note(KAKUSEI_PATCH, 'making-tools', '패치 소스 파일과 빌드 순서'),
+      note(SMRPG_PATCH, 'making-about', 'v1.0 위에 덧씌운 v1.1·v1.2'),
+      note(SMRPG_PATCH, 'making-tools', '패치 소스 파일과 빌드 순서'),
+      note(OTOGIRISOU_PATCH, 'making-about', '버전마다 고친 곳'),
+      note(OTOGIRISOU_PATCH, 'making-tools', 'v1.0 IPS 위에 다시 빌드하기'),
     ],
     tools: [{ command: 'krpatch ips', anchor: 'ips-ips-패치-생성적용' }],
   },
@@ -79,9 +89,10 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     summary: '비트 여덟 개가 바이트 하나입니다. 2진수와 16진수, 음수와 체크섬까지 숫자를 읽는 법을 익힙니다.',
     ready: true,
     notes: [
-      note(TOTSUGEKI_PATCH, 'making-basics', '돌격편: 롬 헤더 바이트 읽기'),
-      note(KAKUSEI_PATCH, 'making-save', '각성편: 암호의 16비트 합계'),
-      note(OTOGIRISOU_PATCH, 'making-save', '제절초: 세이브 슬롯의 체크섬'),
+      note(TOTSUGEKI_PATCH, 'making-basics', '롬 헤더 바이트 읽기'),
+      note(KAKUSEI_PATCH, 'making-save', '암호의 16비트 합계'),
+      note(OTOGIRISOU_PATCH, 'making-save', '세이브 슬롯의 체크섬'),
+      note(SMRPG_PATCH, 'making-save', '세이브 슬롯을 지키는 16비트 체크섬'),
     ],
     tools: [{ command: 'krpatch snes checksum', anchor: 'snes-checksum-헤더-체크섬-확인수정' }],
   },
@@ -93,11 +104,12 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     summary: '2바이트 숫자를 메모리에 놓을 때 어느 쪽 바이트를 먼저 적을까요? 롬에서 주소가 거꾸로 보이는 이유입니다.',
     ready: true,
     notes: [
-      note(TOTSUGEKI_PATCH, 'making-dialogue', '돌격편: 대사는 뱅크 밖으로 못 나간다'),
-      note(OTOGIRISOU_PATCH, 'making-script', '제절초: 대본'),
-      note(KAKUSEI_PATCH, 'making-save', '각성편: 합계를 아래·위 바이트로 적는 암호'),
-      note(KAKUSEI_PATCH, 'making-dialogue', '각성편: 거꾸로 적힌 글자 코드와 포인터'),
-      note(OTOGIRISOU_PATCH, 'making-save', '제절초: 세이브의 24비트 위치'),
+      note(TOTSUGEKI_PATCH, 'making-dialogue', '대사는 뱅크 밖으로 못 나간다'),
+      note(OTOGIRISOU_PATCH, 'making-script', '대본'),
+      note(KAKUSEI_PATCH, 'making-save', '합계를 아래·위 바이트로 적는 암호'),
+      note(KAKUSEI_PATCH, 'making-dialogue', '거꾸로 적힌 글자 코드와 포인터'),
+      note(OTOGIRISOU_PATCH, 'making-save', '세이브의 24비트 위치'),
+      note(SMRPG_PATCH, 'making-dialogue', '뱅크 머리말과 포인터를 거꾸로 읽기'),
     ],
     tools: [{ command: 'krpatch diff', anchor: 'diff-두-파일이-다른-바이트-범위' }],
   },
@@ -110,8 +122,13 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       'CPU는 명령을 한 줄씩 읽어 실행하는 일꾼입니다. 슈퍼 패미컴의 65c816이 가진 레지스터와 8/16비트 전환을 봅니다.',
     ready: true,
     notes: [
-      note(SMRPG_PATCH, 'making-basics', '슈퍼 마리오 RPG: CPU가 둘, S-CPU와 SA-1'),
-      note(SMRPG_PATCH, 'making-battle', '슈퍼 마리오 RPG: 전투 메뉴는 SA-1이 따로 그린다'),
+      note(SMRPG_PATCH, 'making-basics', 'CPU가 둘, S-CPU와 SA-1'),
+      note(SMRPG_PATCH, 'making-battle', '전투 메뉴는 SA-1이 따로 그린다'),
+    ],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
+      gap(KAKUSEI_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
+      gap(OTOGIRISOU_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
     ],
     tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
   },
@@ -124,13 +141,13 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       '$80:8000은 "80번 책의 8000쪽"입니다. LoROM·HiROM·SA-1이 롬 파일을 CPU 주소에 어떻게 펼치는지 계산해 봅니다.',
     ready: true,
     notes: [
-      note(TOTSUGEKI_PATCH, 'making-dialogue', '돌격편: 대사는 뱅크 밖으로 못 나간다'),
-      note(TOTSUGEKI_PATCH, 'making-map', '돌격편: 롬 지도와 LoROM 주소'),
-      note(SMRPG_PATCH, 'making-map', '슈퍼 마리오 RPG: 롬 지도와 주소 읽는 법'),
-      note(OTOGIRISOU_PATCH, 'making-basics', '제절초: 배경지식'),
-      note(KAKUSEI_PATCH, 'making-basics', '각성편: 주소 읽는 법'),
-      note(KAKUSEI_PATCH, 'making-map', '각성편: 롬 지도'),
-      note(OTOGIRISOU_PATCH, 'making-map', '제절초: 세 롬의 뱅크 지도'),
+      note(TOTSUGEKI_PATCH, 'making-dialogue', '대사는 뱅크 밖으로 못 나간다'),
+      note(TOTSUGEKI_PATCH, 'making-map', '롬 지도와 LoROM 주소'),
+      note(SMRPG_PATCH, 'making-map', '롬 지도와 주소 읽는 법'),
+      note(OTOGIRISOU_PATCH, 'making-basics', '배경지식'),
+      note(KAKUSEI_PATCH, 'making-basics', '주소 읽는 법'),
+      note(KAKUSEI_PATCH, 'making-map', '롬 지도'),
+      note(OTOGIRISOU_PATCH, 'making-map', '세 롬의 뱅크 지도'),
     ],
     tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
   },
@@ -142,11 +159,11 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     summary: 'LDA·STA·분기·JSR을 하나씩 읽고, 패치 노트에 나온 코드 조각을 직접 해석합니다.',
     ready: true,
     notes: [
-      note(TOTSUGEKI_PATCH, 'making-testing', '돌격편: 디버그 메뉴를 여는 두 바이트'),
-      note(SMRPG_PATCH, 'making-basics', '슈퍼 마리오 RPG: 전투 디버그 메뉴를 여는 한 바이트'),
-      note(KAKUSEI_PATCH, 'making-debug-menu', '각성편: 디버그 메뉴를 여는 두 바이트'),
-      note(OTOGIRISOU_PATCH, 'making-unique', '제절초: 후킹 지점의 원래 바이트와 바꾼 바이트'),
-      note(OTOGIRISOU_PATCH, 'making-select', '제절초: Select를 보게 바꾼 5바이트'),
+      note(TOTSUGEKI_PATCH, 'making-testing', '디버그 메뉴를 여는 두 바이트'),
+      note(SMRPG_PATCH, 'making-basics', '전투 디버그 메뉴를 여는 한 바이트'),
+      note(KAKUSEI_PATCH, 'making-debug-menu', '디버그 메뉴를 여는 두 바이트'),
+      note(OTOGIRISOU_PATCH, 'making-unique', '후킹 지점의 원래 바이트와 바꾼 바이트'),
+      note(OTOGIRISOU_PATCH, 'making-select', 'Select를 보게 바꾼 5바이트'),
     ],
     tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
   },
@@ -159,18 +176,18 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       '원래 코드 몇 바이트를 점프 명령으로 바꿔 새 코드로 건너갔다 돌아오게 합니다. 덮어쓴 명령을 다시 실행하는 법과 빈 공간 찾기까지 다룹니다.',
     ready: true,
     notes: [
-      note(OTOGIRISOU_PATCH, 'making-wordwrap', '제절초: 단어 단위 줄바꿈'),
-      note(TOTSUGEKI_PATCH, 'making-font-ext', '돌격편: 글자 칸을 512개 늘리기'),
-      note(TOTSUGEKI_PATCH, 'making-menus', '돌격편: 습득·완료 표시를 두 글자로 바꾼 루틴'),
-      note(SMRPG_PATCH, 'making-slots', '슈퍼 마리오 RPG: 필요한 글자만 올리는 임시 칸'),
-      note(SMRPG_PATCH, 'making-unique', '슈퍼 마리오 RPG: 메뉴 폰트에 없는 글자 띄우기'),
-      note(SMRPG_PATCH, 'making-menus', '슈퍼 마리오 RPG: 새 이름 표를 읽게 하는 후킹'),
-      note(SMRPG_PATCH, 'making-ui', '슈퍼 마리오 RPG: 원판부터 어색했던 화면'),
-      note(OTOGIRISOU_PATCH, 'making-space', '제절초: 코드를 둔 자리'),
-      note(KAKUSEI_PATCH, 'making-bugfix', '각성편: 우주선이 맵 밖을 헤매던 이유'),
-      note(KAKUSEI_PATCH, 'making-map', '각성편: 남은 빈 공간'),
-      note(KAKUSEI_PATCH, 'making-password', '각성편: 새 암호 문장으로 건너가는 루틴'),
-      note(OTOGIRISOU_PATCH, 'making-unique', '제절초: 원작에 없던 기능 끼워 넣기'),
+      note(OTOGIRISOU_PATCH, 'making-wordwrap', '단어 단위 줄바꿈'),
+      note(TOTSUGEKI_PATCH, 'making-font-ext', '글자 칸을 512개 늘리기'),
+      note(TOTSUGEKI_PATCH, 'making-menus', '습득·완료 표시를 두 글자로 바꾼 루틴'),
+      note(SMRPG_PATCH, 'making-slots', '필요한 글자만 올리는 임시 칸'),
+      note(SMRPG_PATCH, 'making-unique', '메뉴 폰트에 없는 글자 띄우기'),
+      note(SMRPG_PATCH, 'making-menus', '새 이름 표를 읽게 하는 후킹'),
+      note(SMRPG_PATCH, 'making-ui', '원판부터 어색했던 화면'),
+      note(OTOGIRISOU_PATCH, 'making-space', '코드를 둔 자리'),
+      note(KAKUSEI_PATCH, 'making-bugfix', '우주선이 맵 밖을 헤매던 이유'),
+      note(KAKUSEI_PATCH, 'making-map', '남은 빈 공간'),
+      note(KAKUSEI_PATCH, 'making-password', '새 암호 문장으로 건너가는 루틴'),
+      note(OTOGIRISOU_PATCH, 'making-unique', '원작에 없던 기능 끼워 넣기'),
     ],
     tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
   },
@@ -183,16 +200,16 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       '화면은 8×8 타일을 이어 붙인 그림입니다. 타일 바이트를 비트평면으로 읽는 법과 팔레트, 한글 수천 자를 좁은 폰트 칸에 넣는 방법을 봅니다.',
     ready: true,
     notes: [
-      note(TOTSUGEKI_PATCH, 'making-font', '돌격편: 폰트 칸이 모자랐다'),
-      note(TOTSUGEKI_PATCH, 'making-font-ext', '돌격편: 글자 칸을 512개 늘리기'),
-      note(TOTSUGEKI_PATCH, 'making-save', '돌격편: 헷갈리던 8px 암호 글자 다시 그리기'),
-      note(OTOGIRISOU_PATCH, 'making-font', '제절초: 글자표를 눈으로 읽게 하기'),
-      note(SMRPG_PATCH, 'making-font', '슈퍼 마리오 RPG: 메뉴 폰트와 대사 폰트, 왜 v1.0은 이름을 영문으로 뒀나'),
-      note(SMRPG_PATCH, 'making-gfx', '슈퍼 마리오 RPG: 새로 그린 그림은 글자뿐'),
-      note(SMRPG_PATCH, 'making-slots', '슈퍼 마리오 RPG: 필요한 글자만 올리는 임시 칸'),
-      note(KAKUSEI_PATCH, 'making-font', '각성편: 폰트에 없는 글자'),
-      note(KAKUSEI_PATCH, 'making-gfx', '각성편: 타이틀 그림의 타일 순서'),
-      note(OTOGIRISOU_PATCH, 'making-gfx', '제절초: DMA로 그대로 보내는 v1.0 그래픽'),
+      note(TOTSUGEKI_PATCH, 'making-font', '폰트 칸이 모자랐다'),
+      note(TOTSUGEKI_PATCH, 'making-font-ext', '글자 칸을 512개 늘리기'),
+      note(TOTSUGEKI_PATCH, 'making-save', '헷갈리던 8px 암호 글자 다시 그리기'),
+      note(OTOGIRISOU_PATCH, 'making-font', '글자표를 눈으로 읽게 하기'),
+      note(SMRPG_PATCH, 'making-font', '메뉴 폰트와 대사 폰트, 왜 v1.0은 이름을 영문으로 뒀나'),
+      note(SMRPG_PATCH, 'making-gfx', '새로 그린 그림은 글자뿐'),
+      note(SMRPG_PATCH, 'making-slots', '필요한 글자만 올리는 임시 칸'),
+      note(KAKUSEI_PATCH, 'making-font', '폰트에 없는 글자'),
+      note(KAKUSEI_PATCH, 'making-gfx', '타이틀 그림의 타일 순서'),
+      note(OTOGIRISOU_PATCH, 'making-gfx', 'DMA로 그대로 보내는 v1.0 그래픽'),
     ],
     tools: [
       { command: 'krpatch snes tiles', anchor: 'snes-tiles-planar-타일-렌더링' },
@@ -208,17 +225,17 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       '글자표는 숫자와 글자의 사전, 포인터 표는 목차입니다. 제어 코드와 이어진 대본, 번역이 길어졌을 때 옮길 자리를 봅니다.',
     ready: true,
     notes: [
-      note(TOTSUGEKI_PATCH, 'making-dialogue', '돌격편: 대사는 뱅크 밖으로 못 나간다'),
-      note(TOTSUGEKI_PATCH, 'making-menus', '돌격편: 대사 밖의 포인터 표 열 개'),
-      note(TOTSUGEKI_PATCH, 'making-unique', '돌격편: 이벤트 표 끝의 숨은 205번째 줄'),
-      note(KAKUSEI_PATCH, 'making-dialogue', '각성편: 대사가 롬에 들어 있는 모양'),
-      note(KAKUSEI_PATCH, 'making-relocate', '각성편: 늘어난 대사는 같은 뱅크 안으로'),
-      note(OTOGIRISOU_PATCH, 'making-script', '제절초: 대사가 들어 있는 방식'),
-      note(SMRPG_PATCH, 'making-dialogue', '슈퍼 마리오 RPG: 두 단계 포인터와 대사 속 아이템 이름'),
-      note(SMRPG_PATCH, 'making-particles', '슈퍼 마리오 RPG: 조사 자동 선택'),
-      note(KAKUSEI_PATCH, 'making-menus', '각성편: 전투 말풍선과 엔딩 크레딧'),
-      note(KAKUSEI_PATCH, 'making-password', '각성편: 두 글자를 1바이트로 읽는 암호 쌍 표'),
-      note(OTOGIRISOU_PATCH, 'making-menus', '제절초: 선택지와 이름 입력 화면'),
+      note(TOTSUGEKI_PATCH, 'making-dialogue', '대사는 뱅크 밖으로 못 나간다'),
+      note(TOTSUGEKI_PATCH, 'making-menus', '대사 밖의 포인터 표 열 개'),
+      note(TOTSUGEKI_PATCH, 'making-unique', '이벤트 표 끝의 숨은 205번째 줄'),
+      note(KAKUSEI_PATCH, 'making-dialogue', '대사가 롬에 들어 있는 모양'),
+      note(KAKUSEI_PATCH, 'making-relocate', '늘어난 대사는 같은 뱅크 안으로'),
+      note(OTOGIRISOU_PATCH, 'making-script', '대사가 들어 있는 방식'),
+      note(SMRPG_PATCH, 'making-dialogue', '두 단계 포인터와 대사 속 아이템 이름'),
+      note(SMRPG_PATCH, 'making-particles', '조사 자동 선택'),
+      note(KAKUSEI_PATCH, 'making-menus', '전투 말풍선과 엔딩 크레딧'),
+      note(KAKUSEI_PATCH, 'making-password', '두 글자를 1바이트로 읽는 암호 쌍 표'),
+      note(OTOGIRISOU_PATCH, 'making-menus', '선택지와 이름 입력 화면'),
     ],
     tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
   },
@@ -231,8 +248,12 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       'RLE는 "같은 바이트를 몇 번", LZSS는 "몇 칸 앞에서 몇 바이트"로 데이터를 줄입니다. 플래그 바이트와 거리·길이를 실제 롬 바이트로 풀어 봅니다.',
     ready: true,
     notes: [
-      note(KAKUSEI_PATCH, 'making-title-gfx', '각성편: 압축된 타이틀 그림'),
-      note(TOTSUGEKI_PATCH, 'making-gfx', '돌격편: 압축된 타이틀 글자 층'),
+      note(KAKUSEI_PATCH, 'making-title-gfx', '압축된 타이틀 그림'),
+      note(TOTSUGEKI_PATCH, 'making-gfx', '압축된 타이틀 글자 층'),
+    ],
+    gaps: [
+      gap(SMRPG_PATCH, '압축된 그림을 바꾸지 않았습니다. 새로 그린 글자는 압축하지 않은 그대로 들어갑니다.'),
+      gap(OTOGIRISOU_PATCH, '압축된 것은 그림이 아니라 일본판 대본이고, 형식은 허프만입니다(10장).'),
     ],
     tools: [{ command: 'krpatch lzss', anchor: 'lzss-lzss-코덱' }],
   },
@@ -244,7 +265,12 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     summary:
       '자주 나오는 글자에 짧은 비트를 주는 압축입니다. 트리를 만들어 부호를 얻고, 제절초 일본판 대본의 비트열을 한 비트씩 읽어 봅니다.',
     ready: true,
-    notes: [note(OTOGIRISOU_PATCH, 'making-script', '제절초: 대사가 들어 있는 방식')],
+    notes: [note(OTOGIRISOU_PATCH, 'making-script', '대사가 들어 있는 방식')],
+    gaps: [
+      gap(SMRPG_PATCH, '대사는 글자마다 1바이트나 2바이트 코드로 적혀 있습니다.'),
+      gap(TOTSUGEKI_PATCH, '대사는 글자마다 2바이트 코드로 적혀 있습니다.'),
+      gap(KAKUSEI_PATCH, '대사는 글자마다 2바이트 코드로 적혀 있습니다.'),
+    ],
     tools: [],
   },
   {
@@ -256,14 +282,14 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       '롬을 늘리면 헤더의 크기 바이트, 미러, 체크섬이 함께 바뀝니다. 매핑마다 늘릴 수 있는 한계와, 늘리지 않고 자리를 만드는 방법을 봅니다.',
     ready: true,
     notes: [
-      note(OTOGIRISOU_PATCH, 'making', '제절초: 1MB 롬을 2MB로 늘린 한글패치'),
-      note(OTOGIRISOU_PATCH, 'making-space', '제절초: 코드를 둔 자리'),
-      note(OTOGIRISOU_PATCH, 'making-map', '제절초: 크기 바이트를 고치지 않았던 v1.0'),
-      note(SMRPG_PATCH, 'making-space', '슈퍼 마리오 RPG: 롬을 4MB보다 키우지 않은 이유'),
-      note(SMRPG_PATCH, 'making-save', '슈퍼 마리오 RPG: 세이브 슬롯과 체크섬'),
-      note(KAKUSEI_PATCH, 'making-bugfix', '각성편: 우주선이 맵 밖을 헤매던 이유'),
-      note(KAKUSEI_PATCH, 'making-map', '각성편: 롬을 늘리지 않고 넣은 자리'),
-      note(TOTSUGEKI_PATCH, 'making-map', '돌격편: 롬을 늘리지 않고 빈 곳에 넣기'),
+      note(OTOGIRISOU_PATCH, 'making', '1MB 롬을 2MB로 늘린 한글패치'),
+      note(OTOGIRISOU_PATCH, 'making-space', '코드를 둔 자리'),
+      note(OTOGIRISOU_PATCH, 'making-map', '크기 바이트를 고치지 않았던 v1.0'),
+      note(SMRPG_PATCH, 'making-space', '롬을 4MB보다 키우지 않은 이유'),
+      note(SMRPG_PATCH, 'making-save', '세이브 슬롯과 체크섬'),
+      note(KAKUSEI_PATCH, 'making-bugfix', '우주선이 맵 밖을 헤매던 이유'),
+      note(KAKUSEI_PATCH, 'making-map', '롬을 늘리지 않고 넣은 자리'),
+      note(TOTSUGEKI_PATCH, 'making-map', '롬을 늘리지 않고 빈 곳에 넣기'),
     ],
     tools: [{ command: 'krpatch snes checksum', anchor: 'snes-checksum-헤더-체크섬-확인수정' }],
   },
@@ -276,17 +302,17 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       '중단점으로 "어디서 읽나"를 잡고, 입력 스크립트로 같은 장면을 되풀이해 찍고, 정확도가 다른 여러 에뮬레이터에서 같은 결과가 나오는지 봅니다.',
     ready: true,
     notes: [
-      note(OTOGIRISOU_PATCH, 'making-lap2', '제절초: 2회차에 멈추던 이유'),
-      note(OTOGIRISOU_PATCH, 'making-testing', '제절초: 확인은 에뮬레이터가'),
-      note(SMRPG_PATCH, 'making-testing', '슈퍼 마리오 RPG: 확인은 에뮬레이터가'),
-      note(SMRPG_PATCH, 'making-next', '슈퍼 마리오 RPG: 확인하지 않은 것과 알려진 한계'),
-      note(TOTSUGEKI_PATCH, 'making-testing', '돌격편: 확인은 에뮬레이터가'),
-      note(TOTSUGEKI_PATCH, 'making-unique', '돌격편: 이벤트 표 문제를 장면마다 재현'),
-      note(TOTSUGEKI_PATCH, 'making-next', '돌격편: 확인하지 않은 것과 알려진 한계'),
-      note(KAKUSEI_PATCH, 'making-testing', '각성편: 확인은 에뮬레이터가'),
-      note(KAKUSEI_PATCH, 'making-debug-menu', '각성편: 디버그 메뉴를 여는 두 바이트'),
-      note(KAKUSEI_PATCH, 'making-next', '각성편: 확인하지 못한 것'),
-      note(OTOGIRISOU_PATCH, 'making-next', '제절초: 확인하지 못한 것과 알려진 한계'),
+      note(OTOGIRISOU_PATCH, 'making-lap2', '2회차에 멈추던 이유'),
+      note(OTOGIRISOU_PATCH, 'making-testing', '확인은 에뮬레이터가'),
+      note(SMRPG_PATCH, 'making-testing', '확인은 에뮬레이터가'),
+      note(SMRPG_PATCH, 'making-next', '확인하지 않은 것과 알려진 한계'),
+      note(TOTSUGEKI_PATCH, 'making-testing', '확인은 에뮬레이터가'),
+      note(TOTSUGEKI_PATCH, 'making-unique', '이벤트 표 문제를 장면마다 재현'),
+      note(TOTSUGEKI_PATCH, 'making-next', '확인하지 않은 것과 알려진 한계'),
+      note(KAKUSEI_PATCH, 'making-testing', '확인은 에뮬레이터가'),
+      note(KAKUSEI_PATCH, 'making-debug-menu', '디버그 메뉴를 여는 두 바이트'),
+      note(KAKUSEI_PATCH, 'making-next', '확인하지 못한 것'),
+      note(OTOGIRISOU_PATCH, 'making-next', '확인하지 못한 것과 알려진 한계'),
     ],
     tools: [
       { command: 'krpatch snes run', anchor: 'snes-run-헤드리스-libretro-실행기' },
@@ -303,9 +329,16 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       '본체 CPU와 따로 도는 소리 전용 CPU(SPC700)와 음원 칩(S-DSP), 둘이 값을 주고받는 포트 $2140–$2143을 봅니다.',
     ready: true,
     notes: [
-      note(OTOGIRISOU_PATCH, 'making-scene-music', '제절초: 장으로 옮길 때 배경과 음악'),
-      note(OTOGIRISOU_PATCH, 'making-readers', '제절초: 대본을 읽는 손이 셋'),
-      note(SMRPG_PATCH, 'making-slots', '슈퍼 마리오 RPG: 필요한 글자만 올리는 임시 칸'),
+      note(OTOGIRISOU_PATCH, 'making-scene-music', '장으로 옮길 때 배경과 음악'),
+      note(OTOGIRISOU_PATCH, 'making-readers', '대본을 읽는 손이 셋'),
+      note(SMRPG_PATCH, 'making-slots', '필요한 글자만 올리는 임시 칸'),
+    ],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '버전마다 바꾼 곳에 소리가 없어 노트에서 다루지 않습니다.'),
+      gap(
+        KAKUSEI_PATCH,
+        '버전마다 바꾼 곳에 소리가 없어 노트에서 다루지 않습니다. 곡 표와 곡 재생 함수는 이 장 본문에 있습니다.',
+      ),
     ],
     tools: [{ command: 'krpatch snes lua', anchor: 'snes-lua-mesen-2-스크립트' }],
   },
@@ -316,7 +349,21 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: '소리 ② 게임 음악 뽑아 끊김 없이 반복하기',
     summary: '곡 하나만 나오게 해서 녹음하고, 반복 구간을 찾아 이음매를 다듬어 웹에서 끊김 없이 반복 재생합니다.',
     ready: true,
-    notes: [note(OTOGIRISOU_PATCH, 'making-scene-music', '제절초: 장으로 옮길 때 배경과 음악')],
+    notes: [note(OTOGIRISOU_PATCH, 'making-scene-music', '장으로 옮길 때 배경과 음악')],
+    gaps: [
+      gap(
+        SMRPG_PATCH,
+        '노트에 음악을 다룬 절이 없습니다. 패치 페이지에서 나오는 배경 음악을 이 장의 방법으로 만들었습니다.',
+      ),
+      gap(
+        TOTSUGEKI_PATCH,
+        '노트에 음악을 다룬 절이 없습니다. 패치 페이지에서 나오는 배경 음악을 이 장의 방법으로 만들었습니다.',
+      ),
+      gap(
+        KAKUSEI_PATCH,
+        '노트에 음악을 다룬 절이 없습니다. 패치 페이지에서 나오는 배경 음악을 이 장의 방법으로 만들었습니다.',
+      ),
+    ],
     tools: [
       { command: 'krpatch audio', anchor: 'audio-녹음에서-반복-재생용-파일-만들기' },
       { command: 'krpatch snes run --wav', anchor: 'snes-run-헤드리스-libretro-실행기' },
@@ -349,6 +396,27 @@ export const notePath = (patch: KrPatch) => `${NOTES_PATH}${noteSlug(patch)}/`;
 export const NOTE_PATCHES = KR_PATCHES;
 
 export const noteHref = (n: NoteLink) => (n.id === 'making' ? notePath(n.patch) : `${notePath(n.patch)}#${n.id}`);
+
+/** The short name the guide calls each game by in lists that mix games. */
+export const NOTE_GAME: Record<KrPatch['theme'], string> = {
+  smrpg: '슈퍼 마리오 RPG',
+  gokuden: '돌격편',
+  kakusei: '각성편',
+  otogirisou: '제절초',
+};
+
+export const noteLabel = (n: NoteLink) => `${NOTE_GAME[n.patch.theme]}: ${n.label}`;
+
+/** Written chapters by game: each cell holds that game's note sections for the chapter, or why there are none. */
+export const noteGrid = () =>
+  readyChapters().map(chapter => ({
+    chapter,
+    cells: NOTE_PATCHES.map(patch => ({
+      patch,
+      notes: chapter.notes.filter(n => n.patch === patch),
+      gap: chapter.gaps?.find(g => g.patch === patch)?.why,
+    })),
+  }));
 
 /** Written chapters whose ideas a note section uses: the reverse of each chapter's `notes`. */
 export const chaptersForNote = (patch: KrPatch, id?: string) =>

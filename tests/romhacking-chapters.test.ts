@@ -5,7 +5,9 @@ import {
   GUIDE_CHAPTERS,
   chapterPath,
   neighbours,
+  noteGrid,
   noteHref,
+  noteLabel,
   readyChapters,
   toolHref,
 } from '../src/components/romhacking/chapters.ts';
@@ -48,4 +50,21 @@ test('note and toolkit links point at real anchors', () => {
       expect(decodeURIComponent(toolHref(t).split('#')[1] ?? '')).toBe(t.anchor);
     }
   }
+});
+
+test('every chapter-by-game cell links note sections or says why it is empty, never both', () => {
+  for (const { chapter, cells } of noteGrid()) {
+    for (const cell of cells) {
+      const where = `${chapter.slug} × ${cell.patch.theme}`;
+      expect(cell.notes.length > 0 !== Boolean(cell.gap), where).toBe(true);
+    }
+    expect(new Set(chapter.gaps?.map(g => g.patch)).size, chapter.slug).toBe(chapter.gaps?.length ?? 0);
+  }
+});
+
+test('mixed lists name the game once, so labels leave it out', () => {
+  for (const c of readyChapters())
+    for (const n of c.notes) {
+      expect(n.label, noteLabel(n)).not.toMatch(/^[^:]+: /);
+    }
 });

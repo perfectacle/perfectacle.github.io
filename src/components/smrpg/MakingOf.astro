@@ -1,6 +1,7 @@
 ---
 import { SECTION_TITLES } from '../../lib/patch-sections';
 import MakingIntro from './MakingIntro.astro';
+import NoteTopics from '../kr-patch/NoteTopics.astro';
 import { notePath } from '../romhacking/chapters';
 import type { KrPatch } from '../../lib/kr-patches';
 
@@ -9,6 +10,14 @@ interface Props {
 }
 
 const { patch } = Astro.props;
+const topics = [
+  { id: 'making-map', label: '롬 지도와 SA-1 주소 읽는 법' },
+  { id: 'making-dialogue', label: '두 단계 포인터로 대사 찾기' },
+  { id: 'making-menu-font', label: '메뉴 글자 256칸과 v1.0이 이름을 영문으로 둔 이유' },
+  { id: 'making-slots', label: '필요한 글자만 그때그때 올리는 임시 칸' },
+  { id: 'making-battle', label: 'SA-1이 따로 그리는 전투 메뉴' },
+  { id: 'making-testing', label: '디버그 메뉴와 에뮬레이터로 확인하기' },
+];
 ---
 
 <section id="making" class="section page-width making-teaser" aria-labelledby="making-title">
@@ -23,4 +32,5 @@ const { patch } = Astro.props;
     </a>
   </div>
   <MakingIntro patch={patch} />
+  <NoteTopics patch={patch} topics={topics} />
 </section>
