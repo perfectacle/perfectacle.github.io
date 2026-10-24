@@ -1,0 +1,216 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import Figure from '../../../../components/romhacking/Figure.astro';
+import DsMemoryMap from '../../../../components/romhacking/DsMemoryMap.astro';
+import { GHOST_TRICK_PATCH } from '../../../../lib/kr-patches.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+
+const references = [
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dstechnicaldata',
+    label: 'GBATEK, DS Technical Data',
+    note: 'ARM946E-S 66MHz와 ARM7TDMI 33MHz, 메인 RAM 4MB, WRAM·TCM·캐시 크기',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dsmemorymaps',
+    label: 'GBATEK, DS Memory Maps',
+    note: 'ARM9·ARM7 메모리 지도, 공유 WRAM, 정해진 장치가 없는 자리와 미러',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dsinterrupts',
+    label: 'GBATEK, DS Interrupts',
+    note: '0x04000208 IME의 비트 0이 모든 인터럽트를 끄고 켠다는 점',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dscartridgeheader',
+    label: 'GBATEK, DS Cartridge Header',
+    note: '헤더의 프로그램 위치·시작 주소·RAM 주소·크기 칸, 헤더가 메인 RAM 0x027FFE00에 올라간다는 점',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#armcpuoverview',
+    label: 'GBATEK, ARM CPU Overview',
+    note: 'ARM 명령 4바이트와 Thumb 명령 2바이트, 레지스터 r0–r15와 CPSR',
+  },
+];
+const note = notePath(GHOST_TRICK_PATCH);
+const ram = [
+  {
+    from: '0x02000000',
+    to: '0x020D2117',
+    name: 'ARM9 프로그램',
+    sub: '시작 주소 0x02000800. 압축을 푼 뒤',
+    cls: 'dg-accent',
+  },
+  { from: '0x020D1A80', to: '0x020F1E5F', name: 'BSS', sub: '0으로 비워 두고 쓰는 변수 자리', cls: 'dg-paper' },
+  { from: '0x020F1E60', to: '…', name: '오버레이 자리', sub: '오버레이 7개가 번갈아(BSS 바로 뒤)', cls: 'dg-cool' },
+  { from: '0x02380000', to: '0x023A642B', name: 'ARM7 프로그램', sub: '시작 주소 0x02380000', cls: 'dg-warm' },
+  { from: '0x027FFE00', to: '0x027FFF6F', name: '카드 헤더 사본', sub: '전원을 켤 때 0x170바이트', cls: 'dg-cell' },
+];
+---
+
+<GuideChapter platform="nds" slug="cpu" references={references}>
+  <h2 id="two">
+    CPU가 둘 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    슈퍼 패미콤에서 게임 코드를 돌린 CPU는 65c816 하나였습니다(<a href={chapterHref(3)}>3장</a>). DS에는 CPU가 둘
+    있습니다. 게임을 돌리는 <strong>ARM9</strong>(ARM946E-S, 66MHz)와 소리·터치·무선을 맡는 <strong>ARM7</strong>
+    (ARM7TDMI, 33MHz)입니다. 둘은 각자 자기 BIOS와 장치 레지스터를 보고, 메인 RAM 4MB는 함께 씁니다.
+  </p>
+  <p>
+    카드 헤더에는 두 CPU의 프로그램이 따로 적혀 있습니다(<a href={`${chapterHref(15)}#header`}>15장</a>). 전원을 켜면
+    본체가 두 프로그램을 헤더에 적힌 RAM 주소로 옮기고, 각 CPU를 헤더의 시작 주소에서 출발시킵니다. 그 뒤로 둘은 메인
+    RAM의 약속한 자리와 서로 주고받는 레지스터로 일을 나눕니다.
+  </p>
+
+  <h2 id="arm-thumb">
+    ARM과 Thumb: 명령 하나 4바이트와 2바이트 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    두 CPU 모두 32비트 ARM 계열입니다. 레지스터는 32비트짜리 16개(r0–r15)이고, r13은 스택 위치(SP), r14는 돌아갈
+    주소(LR), r15는 다음에 읽을 명령 쪽을 가리키는 PC입니다. 계산 결과가 0인지, 음수인지 같은 표시는 상태 레지스터
+    CPSR에 모입니다. 65c816처럼 8비트·16비트를 오가는 일은 없습니다.
+  </p>
+  <p>
+    명령은 두 벌입니다. <strong>ARM 명령</strong>은 하나가 4바이트이고, <strong>Thumb 명령</strong>은 자주 쓰는 것만
+    추린 2바이트짜리입니다. Thumb는 코드가 작아지는 대신 할 수 있는 일이 조금 줄어듭니다. 어느 쪽으로 읽을지는 CPU가
+    지금 어느 상태인지가 정하고, <code>BX</code>처럼 상태를 바꾸는 분기 명령이 목적지 주소의 맨 아래 비트로
+    정합니다(1이면 Thumb). 보통 분기 <code>B</code>·<code>BL</code>은 상태를 바꾸지 않습니다. 그래서 같은 바이트도
+    ARM으로 읽느냐 Thumb로 읽느냐에 따라 전혀 다른 명령이 됩니다. 명령 하나하나를 읽는 법은 다음 장에서 다룹니다.
+  </p>
+  <Figure caption="고스트 트릭 ARM9 프로그램의 첫 명령. 4바이트를 작은 자리부터 적은 ARM 명령입니다." max={600}>
+    <svg viewBox="0 0 360 120" role="img" aria-labelledby="ins-t ins-d">
+      <title id="ins-t">ARM 명령 하나</title>
+      <desc id="ins-d">
+        롬의 바이트 01 C3 A0 E3을 작은 자리부터 읽으면 0xE3A0C301이고, ARM 명령 mov r12, #0x4000000이다.
+      </desc>
+      <text class="dg-small" x="8" y="16">
+        롬 바이트
+      </text>
+      {['01', 'C3', 'A0', 'E3'].map((b, i) => (
+        <>
+          <rect class="dg-cell" x={8 + i * 46} y="24" width="40" height="32" rx="4" />
+          <text class="dg-mono" x={28 + i * 46} y="45" text-anchor="middle">
+            {b}
+          </text>
+        </>
+      ))}
+      <path class="dg-arrow" d="M196 40h24" marker-end="url(#dg-arrowhead)"></path>
+      <rect class="dg-warm" x="226" y="24" width="126" height="32" rx="4"></rect>
+      <text class="dg-mono" x="289" y="45" text-anchor="middle">
+        0xE3A0C301
+      </text>
+      <rect class="dg-accent" x="8" y="74" width="344" height="34" rx="6"></rect>
+      <text class="dg-mono" x="180" y="96" text-anchor="middle">
+        mov r12, #0x4000000
+      </text>
+    </svg>
+  </Figure>
+
+  <h2 id="map">
+    메모리 지도 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    두 CPU는 주소 하나로 RAM과 장치를 모두 가리킵니다. 큰 덩어리는 16MB 단위로 나뉩니다. 메인 RAM은 0x02000000, 장치
+    레지스터(I/O)는 0x04000000, 팔레트는 0x05000000, VRAM은 0x06000000입니다. 같은 주소라도 CPU에 따라 가리키는 것이
+    다를 수 있습니다. 0번지는 ARM9에서는 빠른 코드용 메모리(ITCM), ARM7에서는 BIOS입니다.
+  </p>
+  <DsMemoryMap />
+  <Deeper title="TCM, 캐시, 미러, 정해진 장치가 없는 자리">
+    <p>
+      ARM9 안에는 빠른 메모리 TCM이 있습니다. 코드용 ITCM 32KB는 0번지에, 데이터용 DTCM 16KB는 옮길 수 있는데 처음에는
+      0x027C0000에 있고, 고스트 트릭은 0x027E0000으로 옮겨 씁니다. 코드용 ITCM은 펌웨어 설정으로 0x01FFFFFF까지 되풀이해
+      보여서, 고스트 트릭은 0x01FF8000에 코드를 둡니다. 메인 RAM을 읽을 때는 캐시(코드 8KB, 데이터 4KB)가 끼어 있어서,
+      한 CPU가 메인 RAM에 쓴 값을 다른 CPU가 바로 보려면 캐시를 비워야 할 때가 있습니다.
+    </p>
+    <p>
+      16MB 덩어리 안에서 장치가 차지하지 않은 윗부분은 대개 같은 장치가 되풀이해 보입니다(미러). 메인 RAM 4MB가
+      0x02400000부터 다시 보이는 것이 그 예입니다. 장치가 하나도 없는 덩어리는 읽어도 뜻 없는 값이 나옵니다.
+    </p>
+  </Deeper>
+
+  <h2 id="ghost-trick">
+    고스트 트릭 프로그램이 놓이는 곳 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    고스트 트릭 일본판 헤더는 ARM9 프로그램(롬 0x4000부터 0x80628바이트)을 0x02000000에 올리고 0x02000800에서 시작하라고
+    적습니다. ARM7 프로그램(롬 0x96800부터 0x2642C바이트)은 메인 RAM 위쪽 0x02380000에 올라가 그 자리에서 시작합니다.
+    장면마다 갈아 끼우는 오버레이 7개는 모두 0x020F1E60에 올라갑니다(<a href={`${chapterHref(15)}#overlay`}>15장</a>).
+  </p>
+  <Figure caption="고스트 트릭이 메인 RAM에 프로그램을 놓는 자리. 오버레이 크기는 그때그때 다릅니다." max={600}>
+    <svg viewBox="0 0 360 186" role="img" aria-labelledby="ram-t ram-d">
+      <title id="ram-t">메인 RAM 속 고스트 트릭 프로그램</title>
+      <desc id="ram-d">{ram.map(r => `${r.from}-${r.to} ${r.name}(${r.sub})`).join(', ')}.</desc>
+      {ram.map((r, i) => (
+        <>
+          <rect class={r.cls} x="8" y={8 + i * 44} width="112" height="38" rx="4" />
+          <text class="dg-mono" x="64" y={24 + i * 44} text-anchor="middle">
+            {r.from}
+          </text>
+          <text class="dg-small" x="64" y={39 + i * 44} text-anchor="middle">
+            -{r.to}
+          </text>
+          <text class="dg-text" x="130" y={24 + i * 44}>
+            {r.name}
+          </text>
+          <text class="dg-small" x="130" y={40 + i * 44}>
+            {r.sub}
+          </text>
+        </>
+      ))}
+    </svg>
+  </Figure>
+  <p>
+    다만 ARM9 프로그램은 롬에서 앞 0x4000바이트만 그대로이고, 나머지는 압축(BLZ, 뒤에서부터 푸는 LZ)되어 있습니다.
+    본체가 롬의 0x80628바이트를 RAM에 옮기면, 프로그램 첫머리의 코드가 그 자리에서 압축을 풀어 0x020D2117까지 채웁니다.
+    그래서 RAM 주소에서 0x02000000을 빼고 0x4000을 더해 롬 위치를 얻는 계산은 0x02003FFF까지만 맞습니다. ARM7
+    프로그램에는 압축 정보가 없어서 범위 전체가 그대로 이어집니다. 위의 계산기가 이 범위 안에서만 롬 위치를 알려 줍니다.
+    오버레이도 압축된 채 롬에 있습니다.
+  </p>
+
+  <h2 id="io">
+    장치는 주소로 다룬다 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    화면, 타이머, 인터럽트 같은 장치는 0x04000000부터 있는 I/O 레지스터에 값을 써서 다룹니다. 고스트 트릭의 ARM9와 ARM7
+    프로그램은 둘 다 같은 두 명령으로 시작합니다.
+  </p>
+  <pre tabindex="0"><code>01 C3 A0 E3   mov r12, #0x4000000      ; r12 = 0x04000000
+08 C2 8C E5   str r12, [r12, #0x208]   ; 0x04000208(IME)에 r12를 씀</code></pre>
+  <p>
+    0x04000208은 IME, 모든 인터럽트를 한꺼번에 켜고 끄는 스위치입니다. 비트 0만 뜻이 있어서, 0x04000000을 쓰면 비트 0이
+    0이라 인터럽트가 모두 꺼집니다. 준비가 끝나기 전에 인터럽트가 끼어들지 않게 하는 것입니다. 주소를 담은 레지스터를
+    그대로 값으로 써서 명령 하나를 아꼈습니다.
+  </p>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>고스트 트릭: 코드는 그대로</h3>
+  <p>
+    고스트 트릭 v1.1과 v1.2는 코드를 고치지 않았습니다. ARM9·ARM7 프로그램과 오버레이 7개 모두 일본판과 바이트까지
+    같습니다(<a href={`${note}#making-map`}>노트</a>). 대사·폰트·그림 같은 데이터 파일만 바꿔서 한글패치가 됐습니다.
+    그래도 대사가 어떻게 화면에 나오는지 알아보거나 다음 패치에서 코드를 고치려면 이 장의 지도가 출발점입니다. 다음 두
+    장은 이 프로그램의 실제 코드를 읽고 고치는 법을 다룹니다.
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    롬을 풀면 ARM9 프로그램이 <code>arm9.bin</code>으로 나옵니다. 역어셈블러 capstone(<code>pip install capstone</code>
+    )으로 시작 주소의 명령을 읽습니다.
+  </p>
+  <pre tabindex="0"><code>krpatch nds unpack game.nds work/
+python3 - &lt;&lt;'EOF'
+import capstone
+code = open('work/arm9.bin', 'rb').read()
+md = capstone.Cs(capstone.CS_ARCH_ARM, capstone.CS_MODE_ARM)
+for i in md.disasm(code[0x800:0x808], 0x02000800):
+    print(hex(i.address), i.mnemonic, i.op_str)
+EOF
+# 0x2000800 mov ip, #0x4000000
+# 0x2000804 str ip, [ip, #0x208]</code></pre>
+  <p>capstone은 r12를 다른 이름인 ip로 적습니다.</p>
+</GuideChapter>

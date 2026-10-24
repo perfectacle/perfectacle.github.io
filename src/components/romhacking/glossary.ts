@@ -28,6 +28,7 @@ type Where =
   | 'nds/graphics'
   | 'nds/sound'
   | 'nds/emulator'
+  | 'nds/cpu'
   | 'music-loop';
 
 export interface GlossaryEntry {
@@ -617,6 +618,9 @@ const RAW: [string, string, Where, string, string][] = [
     'libretro에서 마우스처럼 화면 위 한 점을 넘기는 입력 장치. desmume 코어는 DS 터치를 이것으로 받습니다',
   ],
   ['시험 롬', 'test ROM', 'nds/emulator', 'stage', '확인하려고 일부를 바꿔 만든 롬. 배포하지 않습니다'],
+  ['ARM9', 'ARM946E-S', 'nds/cpu', 'two', 'DS에서 게임을 돌리는 CPU. 66MHz'],
+  ['ARM7', 'ARM7TDMI', 'nds/cpu', 'two', 'DS에서 소리·터치·무선을 맡는 CPU. 33MHz'],
+  ['Thumb', 'Thumb', 'nds/cpu', 'arm-thumb', 'ARM CPU가 쓰는 2바이트짜리 명령 모음. 4바이트 ARM 명령과 오가며 씁니다'],
   ['LCP', 'Largest Contentful Paint', 'music-loop', 'web', '첫 화면에서 가장 큰 요소가 그려지기까지의 시간'],
 ];
 
