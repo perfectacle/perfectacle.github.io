@@ -4,16 +4,6 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
 
-const sections = [
-  { id: 'table', label: '글자표: 바이트 값과 글자 대응표' },
-  { id: 'width', label: '1바이트 글자, 2바이트 글자' },
-  { id: 'control', label: '제어 코드: 글자가 아닌 명령' },
-  { id: 'pointers', label: '포인터 표: 대사 번호로 위치 찾기' },
-  { id: 'stream', label: '번호 없이 한 줄로 이어진 대사' },
-  { id: 'grow', label: '번역이 길어지면 어디에 두나' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://github.com/perfectacle/kr-patches/blob/super-mario-rpg-v1.2/snes/super-mario-rpg/data/tbl/korTBL.utf8.tbl',
@@ -89,7 +79,7 @@ const growth = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="text" sections={sections} references={references}>
+<GuideChapter platform="snes" slug="text" references={references}>
   <h2 id="table">
     글자표: 바이트 값과 글자 대응표 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

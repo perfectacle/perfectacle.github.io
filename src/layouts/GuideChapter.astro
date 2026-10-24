@@ -1,6 +1,8 @@
 ---
 import Base from './Base.astro';
 import Comments from '../components/Comments.astro';
+import GuideSide from '../components/romhacking/GuideSide.astro';
+import TermPreview from '../components/romhacking/TermPreview.astro';
 import '../styles/romhacking.css';
 import { SITE } from '../lib/posts.ts';
 import { breadcrumbs } from '../lib/structured-data.ts';
@@ -17,6 +19,7 @@ import {
   type GuidePlatform,
 } from '../components/romhacking/chapters.ts';
 import { GLOSSARY_PATH } from '../components/romhacking/glossary.ts';
+import { processGuideHtml } from '../components/romhacking/guide-html.ts';
 
 export interface Reference {
   href: string;
@@ -28,12 +31,10 @@ export interface Reference {
 interface Props {
   platform: GuidePlatform;
   slug: string;
-  /** Sections for the "이 장에서" list, in page order. */
-  sections: { id: string; label: string }[];
   references: Reference[];
 }
 
-const { platform, slug, sections, references } = Astro.props;
+const { platform, slug, references } = Astro.props;
 const chapter = chapterBySlug(platform, slug);
 const path = chapterPath(chapter);
 const { prev, next } = neighbours(chapter);
@@ -42,128 +43,160 @@ const trail = [
   { name: GUIDE_TITLE, path: GUIDE_PATH },
   { name: `${chapterLabel(chapter)} ${chapter.title}`, path },
 ];
+// The contents lists come from the rendered headings, and glossary terms in the body become preview links.
+const body = processGuideHtml(await Astro.slots.render('default'));
+const sideLinks = [
+  { href: GUIDE_PATH, label: `${GUIDE_TITLE} 차례` },
+  ...(prev
+    ? [
+        {
+          href: chapterPath(prev),
+          kind: '← 이전 장',
+          rel: 'prev' as const,
+          label: `${chapterLabel(prev)} ${prev.title}`,
+        },
+      ]
+    : []),
+  ...(next
+    ? [
+        {
+          href: chapterPath(next),
+          kind: '다음 장 →',
+          rel: 'next' as const,
+          label: `${chapterLabel(next)} ${next.title}`,
+        },
+      ]
+    : []),
+  { href: GLOSSARY_PATH, label: '용어집' },
+];
 ---
 
 <Base title={fullTitle} description={chapter.summary} jsonLd={[breadcrumbs(SITE, trail)]}>
-  <div class="container guide">
-    <svg class="dg-defs" width="0" height="0" aria-hidden="true" focusable="false">
-      <defs>
-        <marker
-          id="dg-arrowhead"
-          viewBox="0 0 10 10"
-          refX="9"
-          refY="5"
-          markerWidth="7"
-          markerHeight="7"
-          orient="auto-start-reverse"
-        >
-          <path class="dg-head" d="M0 0 10 5 0 10Z"></path>
-        </marker>
-      </defs>
-    </svg>
-    <nav class="guide-crumbs" aria-label="현재 위치" data-pagefind-ignore>
-      <ol>
-        <li>
-          <a href={GUIDE_PATH}>{GUIDE_TITLE}</a>
-        </li>
-        {chapter.platform !== 'common' && <li>{PLATFORM_LABEL[chapter.platform]}</li>}
-        <li aria-current="page">{chapterLabel(chapter)}</li>
-      </ol>
-    </nav>
-    <article data-pagefind-body>
-      <header class="guide-head">
-        <p class="guide-kicker" data-pagefind-ignore>
-          <span>{PLATFORM_LABEL[chapter.platform]}</span>
-          <a href={GLOSSARY_PATH}>모르는 용어는 용어집에서</a>
-        </p>
-        <h1 data-pagefind-meta="title">{`${chapterLabel(chapter)} ${chapter.title}`}</h1>
-        <p class="guide-summary">{chapter.summary}</p>
-      </header>
-
-      <nav class="guide-toc" aria-labelledby="toc-title" data-pagefind-ignore>
-        <h2 id="toc-title">이 장에서</h2>
+  <div class="container guide guide-layout">
+    <div class="guide-main">
+      <svg class="dg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+        <defs>
+          <marker
+            id="dg-arrowhead"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="7"
+            markerHeight="7"
+            orient="auto-start-reverse"
+          >
+            <path class="dg-head" d="M0 0 10 5 0 10Z"></path>
+          </marker>
+        </defs>
+      </svg>
+      <nav class="guide-crumbs" aria-label="현재 위치" data-pagefind-ignore>
         <ol>
-          {sections.map(s => (
-            <li>
-              <a href={`#${s.id}`}>{s.label}</a>
-            </li>
-          ))}
+          <li>
+            <a href={GUIDE_PATH}>{GUIDE_TITLE}</a>
+          </li>
+          {chapter.platform !== 'common' && <li>{PLATFORM_LABEL[chapter.platform]}</li>}
+          <li aria-current="page">{chapterLabel(chapter)}</li>
         </ol>
       </nav>
+      <article data-pagefind-body>
+        <header class="guide-head">
+          <p class="guide-kicker" data-pagefind-ignore>
+            <span>{PLATFORM_LABEL[chapter.platform]}</span>
+            <a href={GLOSSARY_PATH}>모르는 용어는 용어집에서</a>
+          </p>
+          <h1 data-pagefind-meta="title">{`${chapterLabel(chapter)} ${chapter.title}`}</h1>
+          <p class="guide-summary">{chapter.summary}</p>
+        </header>
 
-      <div class="prose">
-        <slot />
-      </div>
-
-      <div class="guide-links">
-        {chapter.notes.length > 0 && (
-          <section class="guide-box" aria-labelledby="notes-title">
-            <h2 id="notes-title">
-              <span class="layer-badge layer-patch">실제 패치에서</span> 이 개념이 쓰인 롬 분석 노트
-            </h2>
-            <ul>
-              {chapter.notes.map(n => (
+        <nav class="guide-toc" aria-labelledby="toc-title" data-pagefind-ignore>
+          <h2 id="toc-title">이 장에서</h2>
+          <ol>
+            {body.headings
+              .filter(h => h.depth === 2)
+              .map(h => (
                 <li>
-                  <a href={noteHref(n)}>{n.label}</a>
+                  <a href={`#${h.id}`}>{h.text}</a>
+                </li>
+              ))}
+          </ol>
+        </nav>
+
+        <div class="prose">
+          <Fragment set:html={body.html} />
+        </div>
+
+        <div class="guide-links">
+          {chapter.notes.length > 0 && (
+            <section class="guide-box" aria-labelledby="notes-title">
+              <h2 id="notes-title">
+                <span class="layer-badge layer-patch">실제 패치에서</span> 이 개념이 쓰인 롬 분석 노트
+              </h2>
+              <ul>
+                {chapter.notes.map(n => (
+                  <li>
+                    <a href={noteHref(n)}>{n.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+          {chapter.tools.length > 0 && (
+            <section class="guide-box" aria-labelledby="tools-title">
+              <h2 id="tools-title">
+                <span class="layer-badge layer-try">직접 해 보기</span> kr-patch-toolkit 명령 설명
+              </h2>
+              <ul>
+                {chapter.tools.map(t => (
+                  <li>
+                    <a href={toolHref(t)}>
+                      <code>{t.command}</code>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+          <section class="guide-box" aria-labelledby="refs-title">
+            <h2 id="refs-title">참고 자료</h2>
+            <ul>
+              {references.map(r => (
+                <li>
+                  <a href={r.href}>{r.label}</a> <span class="muted">— {r.note}</span>
                 </li>
               ))}
             </ul>
           </section>
-        )}
-        {chapter.tools.length > 0 && (
-          <section class="guide-box" aria-labelledby="tools-title">
-            <h2 id="tools-title">
-              <span class="layer-badge layer-try">직접 해 보기</span> kr-patch-toolkit 명령 설명
-            </h2>
-            <ul>
-              {chapter.tools.map(t => (
-                <li>
-                  <a href={toolHref(t)}>
-                    <code>{t.command}</code>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-        <section class="guide-box" aria-labelledby="refs-title">
-          <h2 id="refs-title">참고 자료</h2>
-          <ul>
-            {references.map(r => (
-              <li>
-                <a href={r.href}>{r.label}</a> <span class="muted">— {r.note}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
-    </article>
+        </div>
+      </article>
 
-    <nav class="chapter-pager" aria-label="이전·다음 장" data-pagefind-ignore>
-      {prev ? (
-        <a class="prev" href={chapterPath(prev)} rel="prev">
-          <small>← 이전 장</small>
-          {chapterLabel(prev)} {prev.title}
-        </a>
-      ) : (
-        <a class="prev" href={GUIDE_PATH}>
-          <small>← 처음으로</small>
-          {GUIDE_TITLE} 차례
-        </a>
-      )}
-      {next ? (
-        <a class="next" href={chapterPath(next)} rel="next">
-          <small>다음 장 →</small>
-          {chapterLabel(next)} {next.title}
-        </a>
-      ) : (
-        <a class="next" href={GUIDE_PATH}>
-          <small>다음 장은 준비 중 →</small>
-          {GUIDE_TITLE} 차례
-        </a>
-      )}
-    </nav>
+      <nav class="chapter-pager" aria-label="이전·다음 장" data-pagefind-ignore>
+        {prev ? (
+          <a class="prev" href={chapterPath(prev)} rel="prev">
+            <small>← 이전 장</small>
+            {chapterLabel(prev)} {prev.title}
+          </a>
+        ) : (
+          <a class="prev" href={GUIDE_PATH}>
+            <small>← 처음으로</small>
+            {GUIDE_TITLE} 차례
+          </a>
+        )}
+        {next ? (
+          <a class="next" href={chapterPath(next)} rel="next">
+            <small>다음 장 →</small>
+            {chapterLabel(next)} {next.title}
+          </a>
+        ) : (
+          <a class="next" href={GUIDE_PATH}>
+            <small>다음 장은 준비 중 →</small>
+            {GUIDE_TITLE} 차례
+          </a>
+        )}
+      </nav>
 
-    <Comments path={path} />
+      <Comments path={path} />
+    </div>
+    <GuideSide label="이 장에서" headings={body.headings} links={sideLinks} />
   </div>
+  <TermPreview terms={body.terms} />
 </Base>

@@ -5,13 +5,6 @@ import Figure from '../../../../components/romhacking/Figure.astro';
 import BankMap from '../../../../components/romhacking/BankMap.astro';
 import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
 
-const sections = [
-  { id: 'books', label: '64KB짜리 책 256권' },
-  { id: 'mapping', label: 'CPU 주소와 파일 오프셋은 다르다' },
-  { id: 'system', label: '뱅크 아래쪽 반: WRAM과 레지스터' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://problemkaputt.de/fullsnes.htm#snesmemorymap',
@@ -51,7 +44,7 @@ const systemAreas = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="banks" sections={sections} references={references}>
+<GuideChapter platform="snes" slug="banks" references={references}>
   <h2 id="books">
     뱅크: 주소를 64KB씩 나눈 묶음 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

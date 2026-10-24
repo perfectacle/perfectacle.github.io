@@ -1,3 +1,4 @@
+import { slug } from 'github-slugger';
 import { GUIDE_PATH, chapterBySlug, chapterLabel, chapterPath, type GuideChapter } from './chapters.ts';
 
 /**
@@ -597,3 +598,7 @@ export function glossaryGroups() {
 
 export const entryHref = (e: GlossaryEntry) => `${chapterPath(e.chapter)}#${e.anchor}`;
 export const entryChapterLabel = (e: GlossaryEntry) => `${chapterLabel(e.chapter)} ${e.chapter.title}`;
+
+/** Anchor of an entry on the glossary page; guide pages link their terms here. */
+export const termId = (e: GlossaryEntry) => `term-${slug(e.term)}`;
+export const termHref = (e: GlossaryEntry) => `${GLOSSARY_PATH}#${termId(e)}`;

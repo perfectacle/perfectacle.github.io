@@ -6,17 +6,6 @@ import RunScript from '../../../../components/romhacking/RunScript.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
 import { TOOLKIT_README_KO, chapterBySlug, chapterPath } from '../../../../components/romhacking/chapters.ts';
 
-const sections = [
-  { id: 'why', label: '왜 에뮬레이터로 확인하나' },
-  { id: 'breakpoints', label: '중단점으로 "어디서 읽나" 잡기' },
-  { id: 'viewers', label: '메모리·그림 보기와 추적 기록' },
-  { id: 'lua', label: 'Lua로 확인을 자동으로' },
-  { id: 'headless', label: '화면 없이 돌리기: 입력 스크립트' },
-  { id: 'cores', label: '여러 에뮬레이터에서 같은 입력 돌리기' },
-  { id: 'hardware', label: '실기에서만 알 수 있는 것' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const MESEN = 'https://github.com/SourMesen/Mesen2/blob/master';
 const TOOLKIT = 'https://github.com/perfectacle/kr-patch-toolkit/blob/main';
 const PATCHES = 'https://github.com/perfectacle/kr-patches/blob/main/snes';
@@ -184,7 +173,7 @@ const cores = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="emulator" sections={sections} references={references}>
+<GuideChapter platform="snes" slug="emulator" references={references}>
   <h2 id="why">
     왜 에뮬레이터로 확인하나 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

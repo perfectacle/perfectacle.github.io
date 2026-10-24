@@ -1,0 +1,372 @@
+---
+import type { GuideHeading } from './guide-html.ts';
+
+export interface SideLink {
+  href: string;
+  label: string;
+  /** Short word before the label, such as 「이전 장」. */
+  kind?: string;
+  rel?: 'prev' | 'next';
+}
+
+interface Props {
+  /** Accessible name of the contents, shared with the list above the body on narrow screens. */
+  label: string;
+  headings: GuideHeading[];
+  links: SideLink[];
+}
+
+const { label, headings, links } = Astro.props;
+---
+
+<div class="guide-side" data-pagefind-ignore>
+  <nav class="gside-toc" aria-label={label}>
+    <p class="gside-title" aria-hidden="true">
+      {label}
+    </p>
+    <ol class="gtoc">
+      {headings.map(h => (
+        <li class={`d${h.depth}`}>
+          <a href={`#${h.id}`}>{h.text}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+  <nav class="gside-links" aria-label="바로 가기">
+    <ul>
+      {links.map(l => (
+        <li>
+          <a href={l.href} rel={l.rel}>
+            {l.kind && <small>{l.kind}</small>}
+            {l.label}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a href="#main">↑ 맨 위로</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<button
+  type="button"
+  class="gside-open"
+  aria-haspopup="dialog"
+  aria-controls="gside-sheet"
+  aria-label="목차 열기"
+  data-pagefind-ignore
+>
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+    <path
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"
+    ></path>
+  </svg>
+</button>
+<dialog id="gside-sheet" class="gside-sheet" aria-labelledby="gside-sheet-title" data-pagefind-ignore>
+  <div class="gside-sheet-head">
+    <p id="gside-sheet-title" class="gside-title">
+      {label}
+    </p>
+    <button type="button" class="gside-close" aria-label="목차 닫기">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"></path>
+      </svg>
+    </button>
+  </div>
+  <ol class="gtoc">
+    {headings.map(h => (
+      <li class={`d${h.depth}`}>
+        <a href={`#${h.id}`}>{h.text}</a>
+      </li>
+    ))}
+  </ol>
+  <ul class="gside-sheet-links">
+    {links.map(l => (
+      <li>
+        <a href={l.href}>
+          {l.kind && <small>{l.kind}</small>}
+          {l.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</dialog>
+
+<style>
+  .guide-side {
+    display: none;
+  }
+  /* Wide screens: the contents and the way around sit beside the body, which keeps its width. */
+  @media (min-width: 1280px) {
+    .guide-side {
+      position: sticky;
+      top: 84px;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 110px);
+      padding-left: 16px;
+      border-left: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .gside-toc {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .gside-toc .gtoc {
+      position: relative;
+      overflow-y: auto;
+      min-height: 0;
+    }
+    .gside-open {
+      display: none !important;
+    }
+  }
+  .gside-title {
+    margin: 0 0 6px;
+    color: var(--fg);
+    font-weight: 700;
+  }
+  .gtoc {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .gtoc li {
+    padding: 3px 0;
+    line-height: 1.45;
+  }
+  .gtoc .d3 {
+    padding-left: 14px;
+  }
+  .gtoc a {
+    color: var(--fg-muted);
+  }
+  .gtoc a[aria-current] {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .gtoc a:hover {
+    text-decoration: none;
+  }
+  @media (hover: hover) {
+    .gtoc a:hover {
+      color: var(--accent);
+    }
+  }
+  .gside-links {
+    flex: none;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .gside-links ul,
+  .gside-sheet-links {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .gside-links a,
+  .gside-sheet-links a {
+    display: block;
+    color: var(--fg-muted);
+    line-height: 1.4;
+  }
+  .gside-links a:hover,
+  .gside-sheet-links a:hover {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .gside-links small,
+  .gside-sheet-links small {
+    display: block;
+    font-size: 0.75rem;
+  }
+
+  .gside-open {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 15;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--fg-muted);
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.08);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+  }
+  .gside-open.show {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .gside-open:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .gside-sheet {
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    max-width: 640px;
+    max-height: 75vh;
+    margin: 0 auto;
+    padding: 4px 20px max(16px, env(safe-area-inset-bottom));
+    border: 1px solid var(--border);
+    border-bottom: 0;
+    border-radius: 16px 16px 0 0;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .gside-sheet::backdrop {
+    background: rgb(0 0 0 / 0.45);
+  }
+  .gside-sheet-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .gside-sheet-head .gside-title {
+    margin: 0;
+  }
+  .gside-close {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--fg-muted);
+    cursor: pointer;
+  }
+  .gside-sheet .gtoc li {
+    padding-block: 0;
+  }
+  .gside-sheet .gtoc a,
+  .gside-sheet-links a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 44px;
+  }
+  .gside-sheet-links {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .gside-open {
+      transition:
+        opacity 0.2s,
+        transform 0.2s,
+        visibility 0.2s;
+    }
+    .gside-sheet[open] {
+      animation: gside-in 0.2s ease-out;
+    }
+    @keyframes gside-in {
+      from {
+        transform: translateY(24px);
+        opacity: 0;
+      }
+    }
+  }
+</style>
+
+<script>
+  // Marks the section being read in every contents list; the side list scrolls itself to keep that line in view.
+  const lists = [...document.querySelectorAll<HTMLOListElement>('.gtoc')];
+  const links = new Map<string, HTMLAnchorElement[]>();
+  for (const a of lists.flatMap(l => [...l.querySelectorAll('a')])) {
+    const id = decodeURIComponent(a.hash.slice(1));
+    links.set(id, [...(links.get(id) ?? []), a]);
+  }
+  const side = document.querySelector<HTMLElement>('.gside-toc .gtoc');
+  const observer = new IntersectionObserver(
+    entries => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        document.querySelectorAll('.gtoc a[aria-current]').forEach(a => a.removeAttribute('aria-current'));
+        for (const a of links.get(e.target.id) ?? []) {
+          a.setAttribute('aria-current', 'location');
+          if (side?.contains(a) && side.scrollHeight > side.clientHeight)
+            side.scrollTop = a.offsetTop - side.clientHeight / 2;
+        }
+      }
+    },
+    { rootMargin: '-70px 0px -70% 0px' },
+  );
+  for (const id of links.keys()) {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  }
+
+  // Narrow screens: a floating button opens the contents as a bottom sheet once the page head has scrolled away,
+  // and steps aside at the footer so it never covers the footer links.
+  const opener = document.querySelector<HTMLButtonElement>('.gside-open');
+  const sheet = document.querySelector<HTMLDialogElement>('#gside-sheet');
+  const head = document.querySelector('.guide-head');
+  const footer = document.querySelector('.site-footer');
+  if (opener && sheet) {
+    let pastHead = !head;
+    let atFooter = false;
+    const update = () => opener.classList.toggle('show', pastHead && !atFooter);
+    if (head)
+      new IntersectionObserver(([e]) => {
+        pastHead = !!e && !e.isIntersecting && e.boundingClientRect.top < 0;
+        update();
+      }).observe(head);
+    if (footer)
+      new IntersectionObserver(([e]) => {
+        atFooter = !!e?.isIntersecting;
+        update();
+      }).observe(footer);
+    update();
+    opener.setAttribute('aria-expanded', 'false');
+    opener.addEventListener('click', () => {
+      sheet.showModal();
+      opener.setAttribute('aria-expanded', 'true');
+      sheet.querySelector('.gtoc a[aria-current]')?.scrollIntoView({ block: 'center' });
+    });
+    sheet.addEventListener('close', () => opener.setAttribute('aria-expanded', 'false'));
+    sheet.querySelector('.gside-close')?.addEventListener('click', () => sheet.close());
+    // A click on the backdrop lands on the <dialog> itself.
+    sheet.addEventListener('click', e => {
+      if (e.target === sheet) sheet.close();
+    });
+    sheet.querySelectorAll<HTMLAnchorElement>('.gtoc a').forEach(a =>
+      a.addEventListener('click', e => {
+        const target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+        if (!target) return;
+        e.preventDefault();
+        // Closing hands focus back to the button, so the jump and the focus move come after it.
+        sheet.close();
+        location.hash = a.hash;
+        target.tabIndex = -1;
+        target.focus({ preventScroll: true });
+      }),
+    );
+  }
+</script>

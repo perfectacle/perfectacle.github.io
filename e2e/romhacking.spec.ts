@@ -7,7 +7,7 @@ import {
   notePath,
   readyChapters,
 } from '../src/components/romhacking/chapters.ts';
-import { GLOSSARY, GLOSSARY_PATH, entryHref } from '../src/components/romhacking/glossary.ts';
+import { GLOSSARY, GLOSSARY_PATH, entryHref, termId } from '../src/components/romhacking/glossary.ts';
 import { KR_PATCHES, KR_PATCH_LIST_PATH, KR_PATCH_TOOLKIT_URL, sourceUrl } from '../src/lib/kr-patches.ts';
 
 const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...KR_PATCHES.map(notePath), GLOSSARY_PATH];
@@ -586,6 +586,7 @@ test('glossary index jumps to each initial and every entry links to a real secti
   await page.getByRole('link', { name: '용어집', exact: true }).first().click();
   await expect(page).toHaveURL(GLOSSARY_PATH);
   await expect(page.locator('.gl-entry')).toHaveCount(GLOSSARY.length);
+  for (const e of GLOSSARY) await expect(page.locator(`.gl-entry[id="${termId(e)}"]`)).toHaveCount(1);
   const index = page.getByRole('navigation', { name: '초성 색인' });
   await index.getByRole('link', { name: 'ㅂ', exact: true }).click();
   await expect(page).toHaveURL(/#initial-b$/);
@@ -724,4 +725,111 @@ test('seam widget moves its cursor without animation for reduced motion and neve
   const cursor = page.locator('[data-seam-lab] [data-cursor]');
   expect(await cursor.evaluate(e => getComputedStyle(e).transitionDuration)).toBe('0s');
   await expect(page.locator('[data-seam-lab]').getByRole('button', { name: '들어 보기' })).toBeVisible();
+});
+
+const TEXT = '/games/romhacking/snes/text/';
+const SMRPG_NOTE = '/games/romhacking/snes/notes/super-mario-rpg/';
+
+test('wide screens keep the contents beside the body and mark the section being read', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await page.goto(TEXT);
+  const toc = page.getByRole('navigation', { name: '이 장에서' });
+  await expect(toc).toBeVisible();
+  const hashes = await toc.locator('a').evaluateAll(links => links.map(a => (a as HTMLAnchorElement).hash));
+  // The h2 list above the body is the narrow-screen copy; the side list adds the h3 under each.
+  expect(hashes.length).toBeGreaterThan(await page.locator('.guide-toc li').count());
+  for (const hash of hashes) await expect(page.locator(`[id="${decodeURIComponent(hash.slice(1))}"]`)).toHaveCount(1);
+  await toc.locator('a[href="#pointers"]').click();
+  await expect(toc.locator('a[aria-current="location"]')).toHaveAttribute('href', '#pointers');
+  await expect(toc).toBeInViewport();
+  const jump = page.getByRole('navigation', { name: '바로 가기' });
+  await expect(jump.getByRole('link', { name: '용어집' })).toHaveAttribute('href', GLOSSARY_PATH);
+  await expect(jump.getByRole('link', { name: /롬 해킹 기초 차례/ })).toHaveAttribute('href', GUIDE_PATH);
+  await expect(jump.locator('a[rel="prev"]')).toHaveCount(1);
+  await expect(jump.locator('a[rel="next"]')).toHaveCount(1);
+
+  await page.goto(SMRPG_NOTE);
+  await expect(
+    page.getByRole('navigation', { name: '이 노트에서' }).getByRole('link', { name: '배경지식' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('navigation', { name: '바로 가기' }).getByRole('link', { name: /한글패치$/ }),
+  ).toHaveAttribute('href', '/games/kr-patches/sfc/super-mario-rpg/');
+  await noHorizontalOverflow(page);
+});
+
+test('phones open the contents from a floating button', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto(TEXT);
+  await expect(page.getByRole('navigation', { name: '이 장에서' })).toBeVisible();
+  const open = page.getByRole('button', { name: '목차 열기' });
+  await expect(open).toBeHidden();
+  await page.locator('#width').scrollIntoViewIfNeeded();
+  await open.click();
+  const sheet = page.getByRole('dialog', { name: '이 장에서' });
+  await expect(sheet).toBeVisible();
+  await expect(sheet.getByRole('link', { name: '용어집' })).toHaveAttribute('href', GLOSSARY_PATH);
+  await sheet.locator('a[href="#try"]').click();
+  await expect(sheet).toBeHidden();
+  await expect(page).toHaveURL(/#try$/);
+  await expect(page.locator('#try')).toBeFocused();
+});
+
+test('glossary terms in the body show a preview card on hover and focus, and lead to the glossary', async ({
+  page,
+  hasTouch,
+}) => {
+  test.skip(hasTouch, 'touch has its own test');
+  await page.goto(TEXT);
+  const term = page.locator('.prose a.term').first();
+  const href = await term.getAttribute('href');
+  expect(href).toMatch(/^\/games\/romhacking\/glossary\/#term-/);
+  const card = page.locator('#term-card');
+  await term.hover();
+  await expect(card).toBeVisible();
+  await expect(card.getByRole('link', { name: '설명 장 보기' })).toHaveAttribute('href', /^\/games\/romhacking\/.+#.+/);
+  await expect(card.getByRole('link', { name: '용어사전에서 보기' })).toHaveAttribute('href', new RegExp(`${href}$`));
+  await expect(term).toHaveAttribute('aria-describedby', 'term-card');
+  await page.mouse.move(0, 0);
+  await expect(card).toBeHidden();
+
+  await term.focus();
+  await expect(card).toBeVisible();
+  await page.keyboard.press('Tab');
+  await expect(card.getByRole('link', { name: '설명 장 보기' })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(card).toBeHidden();
+  await expect(term).toBeFocused();
+
+  await term.click();
+  await expect(page).toHaveURL(href ?? '');
+  const id = decodeURIComponent((href ?? '').split('#')[1] ?? '');
+  await expect(page.locator(`[id="${id}"]`)).toBeInViewport();
+});
+
+test('on touch the first tap on a term shows its card and a link in the card navigates', async ({ page, hasTouch }) => {
+  test.skip(!hasTouch, 'needs a touch screen');
+  await page.goto(SMRPG_NOTE);
+  const term = page.locator('.prose a.term').first();
+  await term.scrollIntoViewIfNeeded();
+  await term.tap();
+  const card = page.locator('#term-card');
+  await expect(card).toBeVisible();
+  await expect(page).toHaveURL(SMRPG_NOTE);
+  await noHorizontalOverflow(page);
+  await card.getByRole('link', { name: '용어사전에서 보기' }).tap();
+  await expect(page).toHaveURL(/\/glossary\/#term-/);
+});
+
+test('without scripts terms are plain links to the glossary', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto(TEXT);
+  const term = page.locator('.prose a.term').first();
+  await expect(term).toHaveAttribute('href', /^\/games\/romhacking\/glossary\/#term-/);
+  await term.hover();
+  await expect(page.locator('#term-card')).toHaveCount(0);
+  await term.click();
+  await expect(page).toHaveURL(/\/glossary\/#term-/);
+  await context.close();
 });

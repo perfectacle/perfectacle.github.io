@@ -4,15 +4,6 @@ import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
 
-const sections = [
-  { id: 'why', label: '코드 사이에 끼워 넣을 수는 없다' },
-  { id: 'jump', label: '다른 뱅크의 코드를 불렀다 돌아오기: JSL과 RTL' },
-  { id: 'restore', label: '덮어쓴 명령 다시 실행하기' },
-  { id: 'preserve', label: '레지스터와 플래그를 그대로 돌려주기' },
-  { id: 'space', label: '새 코드를 둘 빈 공간' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf',
@@ -42,7 +33,7 @@ const references = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="hooking" sections={sections} references={references}>
+<GuideChapter platform="snes" slug="hooking" references={references}>
   <h2 id="why">
     코드 사이에 끼워 넣을 수는 없다 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

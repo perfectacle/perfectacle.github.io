@@ -1,0 +1,186 @@
+---
+import { entryHref, termId, type GlossaryEntry } from './glossary.ts';
+
+interface Props {
+  /** Entries linked on this page. */
+  terms: GlossaryEntry[];
+}
+
+const { terms } = Astro.props;
+// [term, original, meaning, chapter section], keyed by the glossary anchor the links point at.
+const data = Object.fromEntries(terms.map(e => [termId(e), [e.term, e.en ?? '', e.meaning, entryHref(e)]]));
+---
+
+{terms.length > 0 && (
+  <script type="application/json" id="term-data" set:html={JSON.stringify(data).replaceAll('<', '\\u003c')} />
+)}
+
+<style is:global>
+  .prose a.term {
+    color: inherit;
+    text-decoration: underline dotted;
+    text-decoration-color: var(--fg-muted);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+  .prose a.term:hover,
+  .prose a.term[aria-describedby] {
+    color: var(--accent);
+    text-decoration-color: currentColor;
+  }
+  .term-card {
+    position: fixed;
+    z-index: 30;
+    display: block;
+    width: min(320px, calc(100vw - 32px));
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    box-shadow: 0 6px 24px rgb(0 0 0 / 0.14);
+    color: var(--fg);
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: left;
+    text-indent: 0;
+    white-space: normal;
+  }
+  .term-card[hidden] {
+    display: none;
+  }
+  .term-card .tc-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 8px;
+    align-items: baseline;
+  }
+  .term-card .tc-term {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .term-card .tc-en {
+    color: var(--fg-muted);
+    font-size: 0.8rem;
+  }
+  .term-card .tc-meaning {
+    display: block;
+    margin: 4px 0 8px;
+  }
+  .term-card .tc-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 14px;
+  }
+  .term-card .tc-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  @media (pointer: coarse) {
+    .term-card .tc-links a {
+      min-height: 44px;
+    }
+  }
+</style>
+
+<script>
+  // Preview card for glossary links. Hover or keyboard focus shows it; on touch the first tap shows it and a link in
+  // the card (or a second tap) navigates. The card sits right after its link so Tab reaches the card's links next.
+  type Entry = [term: string, en: string, meaning: string, chapter: string];
+  const source = document.getElementById('term-data');
+  const data: Record<string, Entry> = source ? JSON.parse(source.textContent ?? '{}') : {};
+
+  const card = document.createElement('span');
+  card.className = 'term-card';
+  card.id = 'term-card';
+  card.hidden = true;
+  card.innerHTML =
+    '<span class="tc-head"><strong class="tc-term"></strong><span class="tc-en" lang="en"></span></span>' +
+    '<span class="tc-meaning"></span>' +
+    '<span class="tc-links"><a class="tc-chapter">설명 장 보기</a><a class="tc-glossary">용어사전에서 보기</a></span>';
+  const part = <T extends HTMLElement>(sel: string) => card.querySelector(sel) as T;
+  let current: HTMLAnchorElement | null = null;
+  let hideTimer = 0;
+  let lastPointer = '';
+
+  const place = () => {
+    if (!current) return;
+    const r = current.getBoundingClientRect();
+    const w = card.offsetWidth;
+    const h = card.offsetHeight;
+    const left = Math.min(Math.max(8, r.left), innerWidth - w - 8);
+    const below = r.bottom + 8 + h <= innerHeight || r.top - 8 - h < 0;
+    card.style.left = `${left}px`;
+    card.style.top = `${below ? r.bottom + 6 : r.top - 6 - h}px`;
+  };
+  const show = (a: HTMLAnchorElement) => {
+    clearTimeout(hideTimer);
+    if (current === a) return;
+    const entry = data[decodeURIComponent(a.hash.slice(1))];
+    if (!entry) return;
+    hide();
+    const [term, en, meaning, chapter] = entry;
+    part('.tc-term').textContent = term;
+    part('.tc-en').textContent = en;
+    part('.tc-meaning').textContent = meaning;
+    part<HTMLAnchorElement>('.tc-chapter').href = chapter;
+    part('.tc-glossary').setAttribute('href', a.getAttribute('href') ?? '');
+    a.after(card);
+    a.setAttribute('aria-describedby', card.id);
+    current = a;
+    card.hidden = false;
+    place();
+  };
+  const hide = () => {
+    clearTimeout(hideTimer);
+    current?.removeAttribute('aria-describedby');
+    current = null;
+    card.hidden = true;
+  };
+  const hideSoon = () => {
+    clearTimeout(hideTimer);
+    hideTimer = window.setTimeout(hide, 250);
+  };
+  const termOf = (t: EventTarget | null) => (t instanceof Element ? t.closest<HTMLAnchorElement>('a.term') : null);
+
+  document.addEventListener('pointerdown', e => (lastPointer = e.pointerType), { capture: true });
+  document.addEventListener('pointerover', e => {
+    if (e.pointerType !== 'mouse') return;
+    const a = termOf(e.target);
+    if (a) show(a);
+    else if (card.contains(e.target as Node)) clearTimeout(hideTimer);
+  });
+  document.addEventListener('pointerout', e => {
+    if (e.pointerType !== 'mouse' || !current) return;
+    const to = e.relatedTarget as Node | null;
+    if (to && (current.contains(to) || card.contains(to))) return;
+    if (termOf(e.target) === current || card.contains(e.target as Node)) hideSoon();
+  });
+  document.addEventListener('focusin', e => {
+    const a = termOf(e.target);
+    if (a && lastPointer !== 'touch') show(a);
+    else if (current && !card.contains(e.target as Node)) hide();
+  });
+  document.addEventListener('click', e => {
+    const a = termOf(e.target);
+    if (a && lastPointer === 'touch' && current !== a) {
+      e.preventDefault();
+      show(a);
+    } else if (!a && current && !card.contains(e.target as Node)) hide();
+  });
+  document.addEventListener('keydown', e => {
+    lastPointer = '';
+    if (e.key !== 'Escape' || !current) return;
+    // Focus first: focusing the term would otherwise open the card again.
+    current.focus();
+    hide();
+  });
+  addEventListener('scroll', place, { passive: true });
+  addEventListener('resize', place, { passive: true });
+</script>

@@ -6,16 +6,6 @@ import RomGrow from '../../../../components/romhacking/RomGrow.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
 import { chapterBySlug, chapterPath } from '../../../../components/romhacking/chapters.ts';
 
-const sections = [
-  { id: 'why', label: '왜 롬을 늘리나' },
-  { id: 'header', label: '헤더의 크기 바이트' },
-  { id: 'limits', label: '매핑마다 늘릴 수 있는 한계' },
-  { id: 'mirror', label: '어중간한 크기와 미러, 체크섬' },
-  { id: 'compat', label: '에뮬레이터와 플래시 카트리지' },
-  { id: 'instead', label: '늘리지 않고 자리를 만드는 법' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://problemkaputt.de/fullsnes.htm#snescartridgeromheader',
@@ -116,7 +106,7 @@ const instead = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="expansion" sections={sections} references={references}>
+<GuideChapter platform="snes" slug="expansion" references={references}>
   <h2 id="why">
     왜 롬을 늘리나 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

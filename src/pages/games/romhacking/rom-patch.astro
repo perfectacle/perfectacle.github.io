@@ -4,13 +4,6 @@ import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
 
-const sections = [
-  { id: 'rom', label: '롬은 칩을 통째로 옮긴 파일' },
-  { id: 'patch', label: '패치는 바뀐 곳만 적은 파일' },
-  { id: 'ips', label: 'IPS 패치를 바이트로 읽기' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://zerosoft.zophar.net/ips.php',
@@ -52,7 +45,7 @@ const ips = [
 ];
 ---
 
-<GuideChapter platform="common" slug="rom-patch" sections={sections} references={references}>
+<GuideChapter platform="common" slug="rom-patch" references={references}>
   <h2 id="rom">
     롬은 칩을 통째로 옮긴 파일 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

@@ -5,13 +5,6 @@ import Figure from '../../../components/romhacking/Figure.astro';
 import EndianScale from '../../../components/romhacking/EndianScale.astro';
 import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
 
-const sections = [
-  { id: 'split', label: '큰 숫자는 여러 칸에 나눠 적는다' },
-  { id: 'order', label: '작은 자리부터, 큰 자리부터' },
-  { id: 'reversed', label: '롬에서 주소가 거꾸로 보이는 이유' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf',
@@ -31,7 +24,7 @@ const references = [
 ];
 ---
 
-<GuideChapter platform="common" slug="endian" sections={sections} references={references}>
+<GuideChapter platform="common" slug="endian" references={references}>
   <h2 id="split">
     큰 숫자는 여러 칸에 나눠 적는다 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
