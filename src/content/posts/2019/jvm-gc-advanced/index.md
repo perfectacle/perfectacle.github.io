@@ -36,7 +36,7 @@ Old Generation은 survivor 영역처럼 별도의 메모리 영역이 없다보�
 -XX:+UseSerialGC 파라미터를 주고 실행하면 적용된다.
 
 ### ParallelGC(Young) / ParallelOldGC(Old)
-Java 7~8의 기본 GC이며 [Serial GC](#Serial-GC)의 멀티 코어 판이다.  
+Java 7~8의 기본 GC이며 [Serial GC](#serial-gc)의 멀티 코어 판이다.  
 'Serial GC에서 하던 걸 다수의 코어(및 쓰레드)가 하다보니 더 빠르게 수행하겠구나~'정도로 받아들이고 있다.
 
 둘은 쌍쌍바 같은 녀석이라 -XX:+UseParallelGC 파라미터를 주면 자동으로 -XX:+UseParallelOldGC 파라미터가 활성화되고,
@@ -45,7 +45,7 @@ Java 7~8의 기본 GC이며 [Serial GC](#Serial-GC)의 멀티 코어 판이다.
 ## Tri-color Marking Algorithm
 Tri-color Abstraction으로도 불리는 것 같으며 '자바 최적화'란 책에서는 '삼색 마킹 알고리즘'이라고 번역하였다.  
 Tri라는 접두사는 숫자 3을 의미하며, 총 3가지 색을 써서 마킹하는 알고리듬을 뜻한다.  
-[Mark and Sweep Algorithm](/2019/05/07/jvm-gc-basic/#Mark-and-Sweep-Algorithm)에서는 2가지 색(마킹되었거나, 마킹되지 않았거나)을 쓴 것과 차이점을 지닌다.  
+[Mark and Sweep Algorithm](/2019/05/07/jvm-gc-basic/#mark-and-sweep-algorithm)에서는 2가지 색(마킹되었거나, 마킹되지 않았거나)을 쓴 것과 차이점을 지닌다.  
 이 알고리듬은 동시성 알고리듬과 GC의 정확성을 증명했다는데, 즉 어플리케이션이 멈추지 않으면서 GC를 **동시**에 **정확**하게 쓰기 위해 나온 알고리듬 같다.  
 
 먼저 알고리듬을 알아보기 전에 각각의 색에는 무엇이 있고, 어떤 역할을 하는지 알아보자.  
@@ -150,12 +150,12 @@ ParallelOldGC는 긴 STW를 가지는 대신에 CMS는 짧은 두 번의 STW만 
 
 하지만 Old Generation을 GC하고 있는 와중에 동시에 Eden 영역도 차게 되는데, 이러다 Eden 영역이 꽉찬 경우에는 어떻게 될까?    
 Young Generation을 GC해야하는데 ParNewGC도 STW를 유발하는데 쓰레드 절반은 Minor GC, 쓰레드 절반은 Major GC를 수행하고 있기 때문에 Minor GC는 ParallelGC 보다 느리다.  
-또한 Minor GC 이후에 적당한 나이를 먹은 객체는 Old Generation으로 [승진](/2019/05/07/jvm-gc-basic/#Promotion)시켜야하는데,  
+또한 Minor GC 이후에 적당한 나이를 먹은 객체는 Old Generation으로 [승진](/2019/05/07/jvm-gc-basic/#promotion)시켜야하는데,  
 CMS GC는 메모리 컴팩션을 하지 않기 때문에 메모리 단편화가 발생하기 때문에 ParallelGC 보다 더 적은 객체를 Old Generation으로 승진시킨다.  
 (-XX:InitialTenuringThreshold와 -XX:MaxTenuringThreshold의 기본 값을 좀 높여서 사용하는 걸까...?)
 또한 Old Generation으로 승진시킴과 동시에 Old Generation은 아직 GC 중이기도 하고해서 좀 더 긴밀한 조정을 하게되는데 이것도 ParNewGC와 ParallelGC와의 차이점이다.
 
-또한 객체의 할당률이 급증해서 [조기 승진](/2019/05/07/jvm-gc-basic/#Premature-Promotion)이 일어나기도 하고,  
+또한 객체의 할당률이 급증해서 [조기 승진](/2019/05/07/jvm-gc-basic/#premature-promotion)이 일어나기도 하고,  
 급기야 승진한 객체가 너무 많은 경우에는 Old Generation 조차 꽉차는 경우가 존재한다. (단편화로 인해 연속된 메모리 공간을 확보하지 못하는 것도 한 몫 한다.)  
 이런 경우에는 어쩔 수 없이 CMS GC에서 ParallelOldGC로 바뀌게 되고, STW가 발생한다.
 

@@ -77,13 +77,13 @@ JSON 보다 [YAML의 모델](http://yaml.org/spec/1.2/spec.html#id2763452)이 �
 
 #### 용도
 * 대부분의 웹 기술([AJAX](https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX) 등등)에서 데이터 통신을 위해서 성능을 위한 것인지는 잘 모르겠지만 대부분 JSON을 많이 사용하고,
-[reference](#Anchor-Alias)가 있는 YAML은 복잡한 object 구조를 표현하는데 적합해서, 오프라인에서 data serialization을 위해 더 적합하다.     
-* 파이썬 커뮤니티에서는 `{ } [ ] : ,`과 같은 [Indicator](#Flow-Style-Indicator) 보다는 파이썬 문법과 비슷한 [indent](#Indentation)로 indicate level을 구분하는 YAML을 더 선호하고,
+[reference](#anchor--alias)가 있는 YAML은 복잡한 object 구조를 표현하는데 적합해서, 오프라인에서 data serialization을 위해 더 적합하다.     
+* 파이썬 커뮤니티에서는 `{ } [ ] : ,`과 같은 [Indicator](#flow-style-indicator) 보다는 파이썬 문법과 비슷한 [indent](#indentation)로 indicate level을 구분하는 YAML을 더 선호하고,
 자바스크립트 진영에서는 별도의 파서가 필요없고, Javascript Object와 구조가 유사한 JSON을 선호하는 편이다.  
 
 #### 그 외.    
 * JSON은 주석이 없다.  
-* YAML은 [한 파일에 여러 Document](#Multiple-Documents)를 표현할 수 있다.
+* YAML은 [한 파일에 여러 Document](#multiple-documents)를 표현할 수 있다.
 * > JSON's RFC4627 requires that mappings keys merely “SHOULD” be unique, while YAML insists they “MUST” be.
   Technically, YAML therefore complies with the JSON spec, choosing to treat duplicates as an error.
   In practice, since JSON is silent on the semantics of such duplicates, the only portable JSON files are those with unique keys, which are therefore valid YAML files.
@@ -126,7 +126,7 @@ YAML은 agile 언어의 native data structure와 매치된다.
 YAML directly supports both collections (mappings, sequences) and scalars.
 Support for these common types enables programmers to use their language’s native data structures for YAML manipulation
 
-Perl, Python, Ruby와 같은 agile language에 존재하는 [scalar](#Scalar), [collection](#Collections) 타입을 지원해서,  
+Perl, Python, Ruby와 같은 agile language에 존재하는 [scalar](#scalar), [collection](#collections) 타입을 지원해서,  
 프로그래머가 native data structure를 조작하기가 용이하다.  
 
 > YAML has a consistent model to support generic tools.
@@ -183,11 +183,11 @@ b
 여기서 b와 0 모두 scalar 노드이다.
 
 Scalar의 종류는 아래와 같다.  
-* [Block Styles](#Block-Styles)
+* [Block Styles](#block-styles)
   * [Block Scalar Styles](http://yaml.org/spec/1.2/spec.html#id2793652)  
     * [Literal Style](http://yaml.org/spec/1.2/spec.html#id2795688)
     * [Floded Style](http://yaml.org/spec/1.2/spec.html#id2796251)
-* [Flow Styles](#Flow-Styles)
+* [Flow Styles](#flow-styles)
   * [Flow Scalar Styles](http://yaml.org/spec/1.2/spec.html#id2786942)  
     * [Double-Quoted Style](http://yaml.org/spec/1.2/spec.html#id2787109)
     * [Single-Quoted Style](http://yaml.org/spec/1.2/spec.html#id2788097)
@@ -196,7 +196,7 @@ Scalar의 종류는 아래와 같다.
 ##### Collections
 > When appropriate, it is convenient to consider sequences and mappings together, as collections.
 
-[Sequence](#Sequence)와 [Mapping](#Mapping) 두 개를 합쳐 collections로 퉁친다는 소리 같다.
+[Sequence](#sequence)와 [Mapping](#mapping) 두 개를 합쳐 collections로 퉁친다는 소리 같다.
 
 ###### Sequence
 > The content of a sequence node is an ordered series of zero or more nodes.
@@ -241,8 +241,8 @@ c:
   In general, indentation is defined as a zero or more space characters at the start of a line.
   To maintain portability, tab characters must not be used in indentation, since different systems treat tabs differently.
 
-구조를 표현할 때 [indentation](#Indentation)를 사용한다.  
-라인의 시작점에 존재하는 0개 이상의 [white space character](#White-Space-Characters)에 의해 정의된다.
+구조를 표현할 때 [indentation](#indentation)를 사용한다.  
+라인의 시작점에 존재하는 0개 이상의 [white space character](#white-space-characters)에 의해 정의된다.
 하지만 이식성을 고려해서 Tab키는 사용하면 안 된다.  
 시스템들 사이에서 Tab키를 취급하는 방법이 서로 다르기 때문이다.
 
@@ -257,9 +257,9 @@ ssdd: cc
 # asdf
 ```
 
-mapping node에서 key:value 쌍을 구분짓기 위해 `:`라는 [indicator](#Block-Style-Indicator)를 사용한다.  
-또한 sequence node의 value들을 구분짓기 위해 `-`라는 [indicator](#Block-Style-Indicator)를 사용한다.  
-주석을 표시하기 위해서 `#`라는 [indicator](#Block-Style-Indicator)를 사용한다.
+mapping node에서 key:value 쌍을 구분짓기 위해 `:`라는 [indicator](#block-style-indicator)를 사용한다.  
+또한 sequence node의 value들을 구분짓기 위해 `-`라는 [indicator](#block-style-indicator)를 사용한다.  
+주석을 표시하기 위해서 `#`라는 [indicator](#block-style-indicator)를 사용한다.
 
 ```json
 {
@@ -279,7 +279,7 @@ Flow style은 JSON의 확장 정도로 생각하면 된다.
 
 > flow styles, using explicit indicators rather than indentation to denote scope
 
-flow style은 socope를 나타내기 위해 [indentation](#Indentation) 보다 [indicator](#Flow-Style-Indicator) 문자를 사용한다.
+flow style은 socope를 나타내기 위해 [indentation](#indentation) 보다 [indicator](#flow-style-indicator) 문자를 사용한다.
 ```yaml
 {
 asdf: qwer,
@@ -342,7 +342,7 @@ b-alias: *name
 Directives는 YAML Processor에게 `어떻게 해석해라`라고 지시하는 것이다.  
 YAML의 버전을 명시하는 [YAML Directive](http://yaml.org/spec/1.2/spec.html#directive/YAML/)와
 [node tags](http://yaml.org/spec/1.2/spec.html#tag//)를 명시하는 [TAG Directive](http://yaml.org/spec/1.2/spec.html#directive/TAG/)가 있다.  
-맨 첫 번째 줄의 % [Indicator](#Common-Indicator)를 통해 표시한다.
+맨 첫 번째 줄의 % [Indicator](#common-indicator)를 통해 표시한다.
 ```yaml
 %YAML 1.2
 ```
@@ -356,8 +356,8 @@ YAML의 버전을 명시하는 [YAML Directive](http://yaml.org/spec/1.2/spec.ht
   This also serves to signal the start of a document if no directives are present.
   Three dots ( “...”) indicate the end of a document without starting a new one, for use in communication channels.
   
-`---` [Indicator](#Common-Indicator)로 [Directive](#Directives)와 Documnet content를 구분지을 수 있고, document content의 시작이라는 신호도 된다.  
-`...` [Indicator](#Common-Indicator)로 [Directive](#Directives)와 Document content를 구분지을 수 있고, document content의 끝이라는 신호도 된다.
+`---` [Indicator](#common-indicator)로 [Directive](#directives)와 Documnet content를 구분지을 수 있고, document content의 시작이라는 신호도 된다.  
+`...` [Indicator](#common-indicator)로 [Directive](#directives)와 Document content를 구분지을 수 있고, document content의 끝이라는 신호도 된다.
 
 ```yaml
 %YAML 1.2 # Directive
@@ -429,8 +429,8 @@ spring:
   In general, indentation is defined as a zero or more space characters at the start of a line.
   To maintain portability, tab characters must not be used in indentation, since different systems treat tabs differently.
 
-[Block Style](#Block-Styles)의 구조는 들여쓰기에 의해 결정된다.  
-라인의 시작점에 존재하는 0개 이상의 [white space character](#White-Space-Characters)에 의해 정의된다.
+[Block Style](#block-styles)의 구조는 들여쓰기에 의해 결정된다.  
+라인의 시작점에 존재하는 0개 이상의 [white space character](#white-space-characters)에 의해 정의된다.
 하지만 이식성을 고려해서 Tab키는 사용하면 안 된다.  
 시스템들 사이에서 Tab키를 취급하는 방법이 서로 다르기 때문이다.
 
@@ -443,7 +443,7 @@ s-indent(n) ::= s-space × n
   All sibling nodes must use the exact same indentation level. 
   However the content of each sibling node may be further indented independently.
 
-[Block Style](#Block-Styles)의 구조는 이전 라인보다 더 적은 들여쓰기가 있는 라인을 만나면 끝난다.  
+[Block Style](#block-styles)의 구조는 이전 라인보다 더 적은 들여쓰기가 있는 라인을 만나면 끝난다.  
 각각의 노드는 부모 노드보다 더 많은 들여쓰기를 써야만 한다.  
 모든 형제 노드는 같은 들여쓰기 레벨을 써야만 한다.  
 하지만 각 형제 노드의 내용들은 독립적이다.
@@ -458,7 +458,7 @@ s-white ::= s-space | s-tab
 
 #### Indicator
 ##### Block Style Indicator
-`-`: [Block Style](#Block-Styles)에서 [sequence node](#Sequence)임을 나타내는 문자
+`-`: [Block Style](#block-styles)에서 [sequence node](#sequence)임을 나타내는 문자
 ``` 
 c-sequence-entry    ::= “-”
 ```
@@ -472,7 +472,7 @@ c-sequence-entry    ::= “-”
 ["a", "b"]
 ```
 
-`:`: [Block Style](#Block-Styles)에서 [mapping node](#Mapping)의 value임을 나타내는 문자
+`:`: [Block Style](#block-styles)에서 [mapping node](#mapping)의 value임을 나타내는 문자
 ```
 c-mapping-value ::= “:”
 ```
@@ -485,7 +485,7 @@ a: b
 {"a": "b"}
 ```
 
-`?`: [Block Style](#Block-Styles)에서 [mapping node](#Mapping)의 key임을 알리는 문자
+`?`: [Block Style](#block-styles)에서 [mapping node](#mapping)의 key임을 알리는 문자
 ```
 c-mapping-key   ::= “?”
 ```
@@ -500,12 +500,12 @@ c-mapping-key   ::= “?”
 ```
 
 ##### Flow Style Indicator
-`{`: [Flow Style](#Flow-Styles)에서 [mapping node](#Mapping)의 시작을 알리는 문자
+`{`: [Flow Style](#flow-styles)에서 [mapping node](#mapping)의 시작을 알리는 문자
 ```
 c-mapping-start ::= “{”
 ```
 
-`}`: [Flow Style](#Flow-Styles)에서 [mapping node](#Mapping)의 끝을 알리는 문자
+`}`: [Flow Style](#flow-styles)에서 [mapping node](#mapping)의 끝을 알리는 문자
 ```
 c-mapping-end ::= “}”
 ```
@@ -522,12 +522,12 @@ a: b
 }
 ```
 
-`[`: [Flow Style](#Flow-Styles)에서 [sequence node](#Sequence)의 시작을 알리는 문자
+`[`: [Flow Style](#flow-styles)에서 [sequence node](#sequence)의 시작을 알리는 문자
 ```
 c-sequence-start ::= “[”
 ```
 
-`]`: [Flow Style](#Flow-Styles)에서 [sequence node](#Sequence)의 끝을 알리는 문자
+`]`: [Flow Style](#flow-styles)에서 [sequence node](#sequence)의 끝을 알리는 문자
 ```
 c-sequence-end ::= “]”
 ```
@@ -540,7 +540,7 @@ c-sequence-end ::= “]”
 ["a", "b"]
 ```
 
-`,`: [Flow Style](#Flow-Styles)에서 [collection node](#Collections)의 끝을 알리는 문자
+`,`: [Flow Style](#flow-styles)에서 [collection node](#collections)의 끝을 알리는 문자
 ```
 c-collect-entry ::= “,”
 ```
@@ -576,12 +576,12 @@ c-comment   ::= “#”
 {"a": "b"}
 ```
 
-`&`: node의 [anchor property](#Anchor-Alias)를 나타내는 문자
+`&`: node의 [anchor property](#anchor--alias)를 나타내는 문자
 ```
 c-anchor    ::= “&”
 ```
 
-`*`: [alias node](#Anchor-Alias)를 나타내는 문자
+`*`: [alias node](#anchor--alias)를 나타내는 문자
 ```
 c-anchor    ::= “&”
 ```
@@ -596,7 +596,7 @@ anchor: value
 alias: value
 ```
 
-`%`: [Directive](#Directives) Line 임을 나타내는 문자
+`%`: [Directive](#directives) Line 임을 나타내는 문자
 ```
 c-directive ::= “%”
 ```
@@ -609,7 +609,7 @@ c-directive ::= “%”
 %TAG !yaml! tag:yaml.org,2002:
 ```
 
-`---`: [Directive](#Directives) Line이 끝나고 Document content의 시작을 알리는 문자  
+`---`: [Directive](#directives) Line이 끝나고 Document content의 시작을 알리는 문자  
 ```
 c-directives-end    ::= “-” “-” “-”
 ```
@@ -620,7 +620,7 @@ c-directives-end    ::= “-” “-” “-”
 asdf: qwer
 ```
 
-`,,,`: Document content가 끝나고 [Directive](#Directives) Line과 구분을 짓는 문자
+`,,,`: Document content가 끝나고 [Directive](#directives) Line과 구분을 짓는 문자
 ```
 c-document-end  ::= “.” “.” “.”
 ```

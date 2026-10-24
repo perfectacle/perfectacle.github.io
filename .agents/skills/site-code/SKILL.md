@@ -1,11 +1,11 @@
 ---
 name: site-code
-description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, src/styles, astro.config.ts, scripts)를 바꿀 때. Hexo 호환 장치(slug·heading id·URL 계약·댓글 경로)와 변경 후 검증, 화면 변경 확인 방법.
+description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, src/styles, astro.config.ts, scripts)를 바꿀 때. slug·heading id·URL 계약·댓글 경로 규칙과 변경 후 검증, 화면 변경 확인 방법.
 ---
 
 # 사이트 코드 바꾸기
 
-이 스킬이 URL-02, URL-03, CMT-01 의 정본이다. 이 블로그는 Hexo 에서 Astro 로 옮겨 왔고, 옛 주소·앵커·댓글을 그대로 유지하는 장치가 코드 곳곳에 있다. 그 장치를 건드리는 변경이 가장 위험하다.
+이 스킬이 URL-02, URL-03, CMT-01 의 정본이다. 발행된 주소와 댓글 경로를 깨는 변경이 가장 위험하다.
 
 ## 절차
 
@@ -27,22 +27,20 @@ description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, s
 
 ### URL-02 — slug 와 heading id
 
-태그·카테고리 URL slug 와 본문 heading id 는 hexo-util 의 slugize 규칙을 따른다(`src/lib/slugize.ts`, `src/lib/rehype-hexo-heading-ids.ts`). 대소문자를 유지하고(`Babel` 과 `babel` 은 다른 태그), 특수문자는 `-` 로 바꾸고, 같은 heading 이 반복되면 `-1`, `-2` 를 붙인다.
+태그·카테고리 URL slug 와 본문 heading id 는 Astro 기본 규칙(github-slugger)을 따른다. heading id 는 Astro 가 붙이고, 태그·카테고리 slug 는 `src/lib/posts.ts` 의 `tagPath`·`categoryPath` 가 같은 `slug()` 로 만든다. 소문자로 바꾸고(`Babel` 과 `babel` 은 한 태그), 공백은 `-` 로, 나머지 특수문자는 지우고, 같은 heading 이 반복되면 `-1`, `-2` 를 붙인다.
 
-- 이유: 외부 링크와 다른 글이 이 slug·앵커로 걸려 있다.
-- smartypants 는 `dashes: 'oldschool'`(Hexo 와 같이 `--` → en dash) 이다. heading id 에 들어가므로 바꾸지 않는다.
-- 확인: `pnpm test`(slugize·heading id 테스트), `pnpm verify:dist`(내부 앵커가 실제 id 를 가리키는지).
-- 저장소 주인이 명시적으로 바꾸라고 할 때만 바꾼다. 영향받는 주소는 PR 본문에 적는다. slugize 를 쓰는 곳은 `grep -rln slugize src scripts` 로 찾는다.
+- 이유: 다른 글과 외부 링크가 이 slug·앵커로 걸려 있다. 둘이 같은 규칙이어야 글을 쓸 때 앵커를 예측할 수 있다.
+- 확인: `pnpm test`(태그·카테고리 경로 테스트), `pnpm verify:dist`(내부 앵커가 실제 id 를 가리키는지).
+- 규칙을 바꾸면 글 본문 앵커 링크를 함께 고친다. 영향받는 주소는 PR 본문에 적는다.
 
-### URL-03 — 옛 주소 계약
+### URL-03 — 발행된 주소 계약
 
-`tests/fixtures/legacy-paths.txt` 의 모든 경로(Hexo 시절 페이지·피드)는 빌드 결과에 항상 있어야 한다. 라우트·페이지네이션(10개씩, `page/N/`)·아카이브(연/월) 구조를 바꿀 때 이 계약을 깨지 않는다.
+`tests/fixtures/published-paths.txt` 의 모든 경로(글·아카이브·목록 페이지·피드·`public/` 파일)는 빌드 결과에 항상 있어야 한다. 라우트·페이지네이션(10개씩, `page/N/`)·아카이브(연/월) 구조를 바꿀 때 이 계약을 깨지 않는다.
 
 - 확인: `pnpm build && pnpm verify:urls`.
 - 리다이렉트는 두지 않는다. 글 URL 은 바꾸지 않으므로 필요 없고([URL-01](../write-post/SKILL.md#url-01--글-url)), 태그·카테고리를 없애거나 이름을 바꾸면 옛 주소는 404 가 되도록 둔다. 이때 그 주소를 이 목록에서 빼고 PR 본문에 적는다. 저장소 주인이 정한 방침이다.
 - `public/` 의 데모 페이지·검색엔진 소유 확인 파일도 이 계약에 들어 있다. 쓰지 않는 것처럼 보여도 지우지 않는다. 지우거나 옮기는 것은 저장소 주인이 정할 때만 하고, 태그·카테고리처럼 목록에서 빼고 PR 본문에 적는다. 광고는 달지 않으므로 `ads.txt` 는 두지 않는다.
 - 새 데모·예제 파일은 `public/lab/<이름>/` 아래에 둔다. 사이트 루트 이름을 차지하지 않아 나중에 만드는 페이지와 겹치지 않는다.
-- macOS 는 파일시스템이 대소문자를 구분하지 않아 `tags/Babel` 과 `tags/babel` 이 로컬에서 한 폴더로 겹쳐 보인다. 둘 다 생성되는지는 빌드 로그나 CI(Linux)로 확인한다.
 
 ### CMT-01 — 댓글 경로
 

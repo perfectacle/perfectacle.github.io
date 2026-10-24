@@ -10,7 +10,7 @@ tags: [Debugging, Performance, Source Map]
 1. [들어가기에 앞서](#들어가기에-앞서)
 2. [소스맵](#소스맵)
 3. [devtool](#devtool)
-4. [마치며...](#마치며…)
+4. [마치며...](#마치며)
 
 ## 들어가기에 앞서
 이 포스트에서는 [웹팩](/2016/11/18/Module-bundling-with-Webpck/)에 대한 기초 내용을 설명하지 않는다.  

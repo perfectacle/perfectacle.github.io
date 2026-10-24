@@ -48,7 +48,7 @@ class ControllerAdvice {
       1. Read Timeout의 의미는 각 응답 패킷 사이의 Timeout을 의미한다.
       2. 응답 패킷이 계속해서 잘 오다가 특정 패킷 하나만 Read Timeout을 초과하더라도 Read Timeout이 발생한다.
       3. 클라이언트 측에서 Read Timeout이 발생해서 소켓을 종료한 이후에도 `서버 측에서 응답 패킷을 보내면 ClientAbortException이 발생한다`. 
-2. [ClientAbortException을 해결하려면?](#ClientAbortException을-해결하려면)
+2. [ClientAbortException을 해결하려면?](#clientabortexception을-해결하려면)
 3. 프로세스(메인 함수)가 종료되더라도 Passive Close로부터 FIN 패킷을 받지 않으면 클라이언트/서버의 소켓은 닫히지 않는다. (오동작을 막기 위해 대기하는 것으로 알고 있음.)
    하지만 Passive Close로부터 FIN 패킷이 아닌 다른 패킷이 오면 Active Close에서는 RST 패킷을 보낸 후 소켓을 닫는다. 
    60초(OS마다 다르지만 tcp_fin_timeout(대다수의 리눅스는 60로초 설정됨) 만큼) 동안 대기 후에도 Passive Close에게 아무런 패킷이 오지 않으면 Active Close는 RST 패킷을 보내고 소켓을 닫는다.

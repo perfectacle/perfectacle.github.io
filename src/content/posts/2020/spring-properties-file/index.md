@@ -72,7 +72,7 @@ localProperties는 Properties라는 자바 표준 API를 사용하고 있기 때
 
 일단 [ISO 8859-1](https://ko.wikipedia.org/wiki/ISO/IEC_8859-1)은 문자열 관련 인코딩 표준인데 영어/숫자나 기본적인 특수문자(공백, 느낌표 등등)들만 지원한다고 생각하면 편하다.
 또한 line-oriented format이기 때문에 한 줄 마다 key and element pair가 구성이 된다.
-한 줄이 어떤 식으로 구성되는지는 [load(Reader reader](#load-Reader-reader)) 메서드를 참고하면 된다.
+한 줄이 어떤 식으로 구성되는지는 [load(Reader reader](#loadreader-reader)) 메서드를 참고하면 된다.
 
 
 #### [load(Reader reader)](https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html#load-java.io.Reader-)

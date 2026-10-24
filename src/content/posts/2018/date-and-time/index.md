@@ -29,7 +29,7 @@ Time Zone과 Time Standard인 게 차이라는데...
 
 ### Time Zone
 세계에는 다양한 Time Zone이 존재한다.  
-우선 우리나라에서 사용하는 KST(Korea Standard Timezone), 하와이에서 사용하는 HST(Hawaii Standard Time), UK 등등에서 사용하는 [GMT](#GMT-Greenwich-Mean-Time) 등등이 있다.
+우선 우리나라에서 사용하는 KST(Korea Standard Timezone), 하와이에서 사용하는 HST(Hawaii Standard Time), UK 등등에서 사용하는 [GMT](#gmtgreenwich-mean-time) 등등이 있다.
 
 #### GMT(Greenwich Mean Time)
 > GMT is a time zone officially used in some European and African countries.  
@@ -70,7 +70,7 @@ GMT는(아마 다른 타임존들도 동일할 것이다.) 지구의 자전(dail
   https://www.timeanddate.com/time/aboututc.html 
 
 1884년에 UT(24시간 시스템의 기본)가 만들어졌다.  
-이 때 선정된 표준 시간(Time Standard)이 [GMT](#GMT-Greenwich-Mean-Time)이다.  
+이 때 선정된 표준 시간(Time Standard)이 [GMT](#gmtgreenwich-mean-time)이다.  
 
 #### GMT에서 UTC로...
 > In 1960, the International Radio Consultative Committee formalized the concept of UTC, and it was put into practice the year after.
@@ -158,6 +158,6 @@ KST는 UTC에 9시간을 더한 시간으로 **UTC +9** 와 같이 표기하고 
 2018-09-26T00:10:13+09:00
 2018-09-25T15:10:13+00:00  
 2018-09-25T15:10:13Z
-여기서 T는 날짜와 시간의 구분자(delimiter)이고, Z는 [Zulu Time](#Zulu-Time)을 의미한다.  
+여기서 T는 날짜와 시간의 구분자(delimiter)이고, Z는 [Zulu Time](#zulu-time)을 의미한다.  
 
 꼭 날짜와 시간을 함께 표시할 필요는 없고 날짜만 표기해도 ISO 8601 표준을 준수했다고 볼 수 있다.

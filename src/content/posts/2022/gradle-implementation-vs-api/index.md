@@ -7,7 +7,7 @@ date: 2022-03-12 19:43:25
 
 3줄 요약
 1. [implementation](#implementation)을 사용하자
-2. implementation을 사용하더라도 라이브러리를 사용하는 [consumer 측의 runtimeClassPath에 추가되기 때문에 런타임 의존성 충돌](#%EA%B7%B8%EB%9F%BC-implementation%EB%A7%8C-%EC%93%B0%EB%A9%B4-%EB%A7%8C%EC%82%AC-OK%EC%9D%BC%EA%B9%8C)이 발생할 수 있으니 의존성은 최대한 적게 추가하자.
+2. implementation을 사용하더라도 라이브러리를 사용하는 [consumer 측의 runtimeClassPath에 추가되기 때문에 런타임 의존성 충돌](#그럼-implementation만-쓰면-만사-ok일까)이 발생할 수 있으니 의존성은 최대한 적게 추가하자.
 3. [api](#api)가 필요한 건지 100번 고민하고 설계가 잘못된 건 아닌지 의심해 본 후 api를 사용한다. (api는 consumer의 compile/runtimeClassPath에 모두 추가된다.)
 
 ## 들어가기에 앞서

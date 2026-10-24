@@ -8,12 +8,12 @@ tags: [Symbol]
 
 ## 목차
 * [들어가기에 앞서](#들어가기에-앞서)  
-  * [원시값(Primitive Value)](#원시값-Primitive-Value)  
-  * [객체(Object)](#객체-Object)  
-* [Symbol의 특성](#Symbol의-특성)  
-* [Symbol의 탄생 배경](#Symbol의-탄생-배경)  
-* [Symbol의 사용 사례](#Symbol의-사용-사례)  
-* [Symbol 파헤치기](#Symbol-파헤치기)
+  * [원시값(Primitive Value)](#원시값primitive-value)  
+  * [객체(Object)](#객체object)  
+* [Symbol의 특성](#symbol의-특성)  
+* [Symbol의 탄생 배경](#symbol의-탄생-배경)  
+* [Symbol의 사용 사례](#symbol의-사용-사례)  
+* [Symbol 파헤치기](#symbol-파헤치기)
 * [프로퍼티의 은닉화?](#프로퍼티의-은닉화)
 
 ## 들어가기에 앞서
@@ -58,7 +58,7 @@ console.log(Number.isNaN(NaN)); // true
 isNaN은 NaN인지 아닌지 구하기 위한 함수이며, ES6 들어서 Number.isNaN()과 Object.is() 메소드가 생겼다.  
 isNaN과 Number.isNaN의 차이는 후자는 타입 검사(number인지 아닌지)까지 한다는 것이다.  
 아래 링크를 통해 예제로 확인해보자.  
-[Number.prototype.isNaN()](/2016/12/24/ES6-Number-object-and-function/#Number-isNaN)  
+[Number.prototype.isNaN()](/2016/12/24/ES6-Number-object-and-function/#numberisnan-)  
 
 하지만 typeof null을 개선하면 레거시 코드들이 문제가 있는지 아직도 고쳐지지 않았다.  
 아래 링크를 참조해서 누가 번역을 해주면 고마울 것 같다.  

@@ -1,4 +1,6 @@
 import type { Root } from 'hast';
+// Declares hast's `raw` node type; nothing else in the project imports it.
+import type {} from 'remark-rehype';
 import { visit } from 'unist-util-visit';
 
 // Posts embed YouTube as raw <iframe> HTML. Each iframe pulls ~80KB+ of player script on page load,

@@ -35,18 +35,18 @@ seriesOrder: 11
 더 딥하게 알고 싶은 사람은 정적 타입의 언어(C, Java 등등)을 공부해보자.
 
 자바스크립트에서 자료형은 크게 두 가지로 나뉜다.  
-1. [원시값](#원시값-Primitive-Value)  
+1. [원시값](#원시값primitive-value)  
 2. [객체](/2017/07/01/js-010-data-type-object/)  
 
 하나 하나 파헤쳐보자.  
 
 ### 원시값(Primitive Value)
 원시값에는 6가지 유형이 있다.  
-1. [boolean](#부울-Boolean)  
+1. [boolean](#부울boolean)  
 2. [number](/2016/12/23/ES6-Number-type/)  
-3. [string](#문자열-String)  
-4. [null](#Null)  
-5. [undefined](#Undefined)  
+3. [string](#문자열string)  
+4. [null](#null)  
+5. [undefined](#undefined)  
 6. [Symbol](/2017/04/16/ES6-Symbol/)(ES2015에서 새로 생김)  
 
 그리고 이 원시값에는 다음과 같은 특징이 있다.  

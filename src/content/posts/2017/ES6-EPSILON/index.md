@@ -11,7 +11,7 @@ date: 2017-08-04 09:25:57
 ![](./thumb.webp)  
 
 ## 들어가기에 앞서
-1. [Number.EPSILON](/2016/12/24/ES6-Number-object-and-function/#Number-EPSILON)이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.  
+1. [Number.EPSILON](/2016/12/24/ES6-Number-object-and-function/#numberepsilon-)이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.  
 2. [부동소수점](http://thrillfighter.tistory.com/349)이 뭔지 모르는 사람은 해당 링크를 참조하고 오자.  
 
 ## 자바스크립트에서 숫자의 자료형은?

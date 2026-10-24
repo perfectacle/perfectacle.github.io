@@ -3,7 +3,6 @@ import { fileURLToPath } from 'node:url';
 import { unified } from '@astrojs/markdown-remark';
 import remarkBreaks from 'remark-breaks';
 import rehypeExternalLinks from 'rehype-external-links';
-import { rehypeHexoHeadingIds } from './src/lib/rehype-hexo-heading-ids.ts';
 import { remarkPostLinks } from './src/lib/remark-post-links.ts';
 import { rehypeYoutubeFacade } from './src/lib/rehype-youtube-facade.ts';
 import { rehypePostImages } from './src/lib/rehype-post-images.ts';
@@ -13,17 +12,14 @@ import { prepareImageCache } from './src/lib/image-cache.ts';
 
 function markdownProcessor(optimize: boolean) {
   return unified({
-    // Posts were written against Hexo's marked renderer, where a single newline is a line break.
+    // Posts are written with a single newline meaning a line break.
     remarkPlugins: [remarkBreaks, remarkPostLinks],
     rehypePlugins: [
-      rehypeHexoHeadingIds,
       rehypeYoutubeFacade,
       [rehypePostImages, { optimize }],
       rehypeCodeBlocks,
       [rehypeExternalLinks, { target: '_blank', rel: ['external', 'nofollow', 'noopener', 'noreferrer'] }],
     ],
-    // marked (Hexo) made `--` an en dash; heading anchors include it.
-    smartypants: { dashes: 'oldschool' },
   });
 }
 
