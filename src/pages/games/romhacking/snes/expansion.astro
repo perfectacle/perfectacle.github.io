@@ -165,7 +165,7 @@ const instead = [
           </td>
           <td>2¹¹KB = 2MB</td>
           <td>1MB 초과–2MB</td>
-          <td>돌격편·각성편, 제절초 한글판 v1.1부터</td>
+          <td>돌격편·각성편, 제절초 한글패치 v1.1부터</td>
         </tr>
         <tr>
           <td>
@@ -187,7 +187,7 @@ const instead = [
     </table>
   </div>
   <p>
-    제절초 한글판 v1.0은 롬을 1MB에서 2MB로 늘리면서 이 바이트를 <code>0A</code>(1MB) 그대로 두었고, 체크섬도 일본판
+    제절초 한글패치 v1.0은 롬을 1MB에서 2MB로 늘리면서 이 바이트를 <code>0A</code>(1MB) 그대로 두었고, 체크섬도 일본판
     값으로 남아 있었습니다. 게임은 에뮬레이터에서 돌았지만 헤더가 파일과 맞지 않는 롬이었습니다. v1.1이 크기 바이트를{' '}
     <code>0B</code>로 고치고 체크섬을 다시 계산했습니다. 롬을 늘린 뒤에는 이 두 가지를 꼭 함께 고칩니다.
   </p>
@@ -343,7 +343,7 @@ const instead = [
       에뮬레이터·플래시 카트리지마다 지원이 다를 수 있습니다.
     </li>
     <li>
-      <strong>여러 에뮬레이터에서 돌려 봅니다.</strong> 제절초 한글판 v1.2는 libretro 코어 다섯 가지(bsnes, bsnes-hd,
+      <strong>여러 에뮬레이터에서 돌려 봅니다.</strong> 제절초 한글패치 v1.2는 libretro 코어 다섯 가지(bsnes, bsnes-hd,
       snes9x, snes9x2010, Beetle Supafaust)와 Mesen 2에서 새 게임과 세이브 이어하기를 확인했습니다. 함께 돌린 Mesen-S
       코어는 일본판 원본도 실행되지 않아 판정하지 못했고, 실제 기계와 플래시 카트리지에서는 시험하지 않았다고 분석
       문서에 적어 두었습니다. 확인한 범위를 이렇게 적어 두는 것이 다음 사람에게 도움이 됩니다.
@@ -378,11 +378,11 @@ const instead = [
   </h2>
   <h3>제절초: 1MB LoROM을 2MB로</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>는 1MB LoROM입니다. 한글판 v1.0은 압축을 버린 69만 바이트짜리 대본을
-    넣으려고 롬을 2MB로 늘렸습니다(<a href={HUFFMAN}>10장</a>). 1MB LoROM은 뱅크 <code>$00</code>–<code>$1F</code>를
-    쓰고, 늘린 1MB는 바로 다음 <code>$20</code>–<code>$3F</code>에 나타납니다. 그전까지 앞 1MB의 미러가 보이던
-    자리입니다. 대본은 <code>$20:8000</code>부터 놓였고, v1.1 대본은 <code>$35:AF66</code>에서 끝나 <code>$36</code>–
-    <code>$3F</code>는 아직 0으로 비어 있습니다.
+    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>는 1MB LoROM입니다. 한글패치 v1.0은 압축을 버린 69만 바이트짜리
+    대본을 넣으려고 롬을 2MB로 늘렸습니다(<a href={HUFFMAN}>10장</a>). 1MB LoROM은 뱅크 <code>$00</code>–
+    <code>$1F</code>를 쓰고, 늘린 1MB는 바로 다음 <code>$20</code>–<code>$3F</code>에 나타납니다. 그전까지 앞 1MB의
+    미러가 보이던 자리입니다. 대본은 <code>$20:8000</code>부터 놓였고, v1.1 대본은 <code>$35:AF66</code>에서 끝나{' '}
+    <code>$36</code>–<code>$3F</code>는 아직 0으로 비어 있습니다.
   </p>
   <p>
     앞에서 본 대로 v1.0은 크기 바이트와 체크섬을 고치지 않았고, v1.1이 크기 바이트를 <code>0A</code>에서 <code>0B</code>
@@ -393,7 +393,7 @@ const instead = [
   <p>
     <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a>는 SA-1 카트리지라 매핑상으로는 8MB까지 늘릴 수 있습니다. 하지만
     4MB 너머를 읽으려면 실행 중에 Super MMC 창을 바꿔야 하고, 이 게임은 S-CPU와 SA-1이 동시에 롬을 읽습니다. 한쪽이 창을
-    바꾸는 사이 다른 쪽이 원래 블록을 읽으면 오동작하므로, 한글판은 롬을 원래 크기 4MB로 두고 원본에서도 0이나{' '}
+    바꾸는 사이 다른 쪽이 원래 블록을 읽으면 오동작하므로, 한글패치는 롬을 원래 크기 4MB로 두고 원본에서도 0이나{' '}
     <code>FF</code>로 비어 있던 곳(<code>$C3:F000</code>, <code>$E2:B400</code>, <code>$E4:9D00</code> 등)만 썼습니다.
   </p>
   <h3>돌격편·각성편: 2MB 안에서</h3>
@@ -410,7 +410,7 @@ const instead = [
     직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
   </h2>
   <p>
-    <code>krpatch snes checksum</code>은 헤더의 체크섬을 확인하고, 틀리면 1로 끝납니다. 제절초 일본판, 한글판 v1.0,
+    <code>krpatch snes checksum</code>은 헤더의 체크섬을 확인하고, 틀리면 1로 끝납니다. 제절초 일본판, 한글패치 v1.0,
     v1.2를 차례로 확인해 봅니다.
   </p>
   <pre tabindex="0"><code>$ krpatch snes checksum otogirisou-j.sfc

@@ -94,7 +94,7 @@ for (const patch of KR_PATCHES) {
         fingerprint: patch.spec.original,
       },
       {
-        name: `한글판 v${patch.version}`,
+        name: `한글패치 v${patch.version}`,
         size: formatBytes(patchedSize(patch.spec)),
         fingerprint: patch.spec.patched,
       },
@@ -285,7 +285,7 @@ test('catalogue lists every game page', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(CATALOGUE);
   await expect(page.locator('header')).toHaveCount(0);
-  await expect(page.getByText('한글판 만들기', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('한글패치 하기', { exact: true })).toHaveCount(0);
   for (const text of [
     '게임을 고르면 한글패치를 바로 적용할 수 있습니다.',
     'SFC · GAME SELECT',
@@ -328,7 +328,7 @@ test('Super Mario RPG guide leads with its title screen', async ({ page }) => {
   await page.goto(GAME);
   const screen = page.locator('.hero-shot img');
   await expect(screen).toHaveAttribute('src', '/games/kr-patches/catalogue/super-mario-rpg-title.webp');
-  await expect(screen).toHaveAttribute('alt', '슈퍼 마리오 RPG 한글판 타이틀 화면');
+  await expect(screen).toHaveAttribute('alt', '슈퍼 마리오 RPG 한글패치 타이틀 화면');
 });
 
 test('Totsugeki-hen groups its cast like Kakusei-hen, ending with Piccolo Daimao', async ({ page }) => {
@@ -785,7 +785,7 @@ test('Super Gokuden: Kakusei-hen patch box tells it apart from Totsugeki-hen', a
     mimeType: 'application/octet-stream',
     buffer: Buffer.from(korean),
   });
-  await expect(page.locator('.patch-status')).toContainText('예전에 나온 한글판 롬파일입니다');
+  await expect(page.locator('.patch-status')).toContainText('예전에 나온 한글패치 롬파일입니다');
 });
 
 for (const patch of KR_PATCHES) {
@@ -825,7 +825,7 @@ test('Otogirisou patch box wants the 1 MB original and turns away a 2 MB Korean 
     mimeType: 'application/octet-stream',
     buffer: Buffer.from(korean),
   });
-  await expect(status).toContainText('예전에 나온 한글판 롬파일입니다');
+  await expect(status).toContainText('예전에 나온 한글패치 롬파일입니다');
   await expect(status).not.toContainText('v1.');
 });
 

@@ -135,7 +135,7 @@ const latestOverview =
 ---
 
 <PatchBook
-  title={`${patch.title} 한글판`}
+  title={`${patch.title} 한글패치`}
   trail={trail(patch)}
   description={patchDescription(patch)}
   sections={sectionsOf(['korean', 'story', 'play', 'secrets', 'patch-notes', 'making'])}
@@ -147,7 +147,7 @@ const latestOverview =
     <div class="hero-copy">
       <p class="label">{releaseLabel(patch)}</p>
       <h1 id="title" class="pixel">
-        {patch.title} 한글판
+        {patch.title} 한글패치
       </h1>
       <PatchBox
         ips={downloads(patch).ips}
@@ -166,7 +166,7 @@ const latestOverview =
         src="/games/kr-patches/catalogue/super-mario-rpg-title.webp"
         width="256"
         height="224"
-        alt="슈퍼 마리오 RPG 한글판 타이틀 화면"
+        alt="슈퍼 마리오 RPG 한글패치 타이틀 화면"
         fetchpriority="high"
       />
     </figure>
@@ -181,7 +181,7 @@ const latestOverview =
       <li>메뉴·상점·아이템 설명</li>
       <li>전투 명령·적 이름·필살기 설명</li>
     </ul>
-    <Speech speaker={GUIDE}>같은 장면을 같은 입력으로 찍어서 일본판과 한글판을 나란히 놓았어요.</Speech>
+    <Speech speaker={GUIDE}>같은 장면을 같은 입력으로 찍어서 일본판과 한글패치를 나란히 놓았어요.</Speech>
     {compareGroups.map(group => (
       <CompareGroup
         group={group}
@@ -632,7 +632,7 @@ const latestOverview =
                 alt: '회복 아이템의 효과를 설명하는 v1.0 화면',
               },
             ]}
-            caption="첫 한글판 화면"
+            caption="첫 한글패치 화면"
           />
         </ReleaseItem>
       </ReleaseDetails>

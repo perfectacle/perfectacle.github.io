@@ -58,7 +58,7 @@ const krPatch = (patch: Omit<KrPatch, 'version' | 'released' | 'stem'>): KrPatch
 
 /** Search and link-preview text: what the game is and what reads in Korean, then how to get it. */
 export const patchDescription = (patch: KrPatch) =>
-  `${patch.card.summary} 일본판 롬파일을 고르면 이 페이지에서 바로 한글판(v${patch.version})을 만듭니다.`;
+  `${patch.card.summary} 일본판 롬파일을 고르면 이 페이지에서 바로 한글패치(v${patch.version})를 적용합니다.`;
 
 /** One release of a patch; throws for a version the patch never had, so a page cannot show a stray release. */
 export const releaseOf = (patch: KrPatch, version: string) => {

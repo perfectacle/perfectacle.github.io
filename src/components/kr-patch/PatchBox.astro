@@ -28,7 +28,7 @@ const { ips, spec, version, output, speaker } = Astro.props;
     </li>
     <li>
       <strong>선택하면 자동 패치</strong>
-      <span>아래에서 파일을 고르면 확인 후 한글판으로 바꿔 저장합니다.</span>
+      <span>아래에서 파일을 고르면 확인 후 한글패치를 적용해 저장합니다.</span>
     </li>
     <li>
       <strong>저장한 파일로 실행</strong>
@@ -119,7 +119,7 @@ const { ips, spec, version, output, speaker } = Astro.props;
     };
 
     const make = async (patch: Patch, source: Uint8Array, allowUnverified: boolean) => {
-      show('한글판을 만드는 중입니다. 잠시만 기다려 주세요.');
+      show('한글패치를 적용하는 중입니다. 잠시만 기다려 주세요.');
       let ipsBytes: Uint8Array;
       try {
         const response = await fetch(box.dataset['ips'] ?? '');
@@ -146,7 +146,7 @@ const { ips, spec, version, output, speaker } = Astro.props;
         show(
           error instanceof Error
             ? error.message
-            : '한글판을 만들지 못했습니다. 페이지를 새로 고친 뒤 다시 시도해 주세요.',
+            : '한글패치를 적용하지 못했습니다. 페이지를 새로 고친 뒤 다시 시도해 주세요.',
         );
       }
     };
@@ -196,7 +196,7 @@ const { ips, spec, version, output, speaker } = Astro.props;
           return;
         case 'old-korean':
           show(
-            `${verdict.version ? `이전 버전(${verdict.version})` : '예전에 나온'} 한글판 롬파일입니다. 새 버전은 패치하지 않은 일본판 롬파일에 적용해야 하니 일본판 롬파일을 골라 주세요.`,
+            `${verdict.version ? `이전 버전(${verdict.version})` : '예전에 나온'} 한글패치 롬파일입니다. 새 버전은 패치하지 않은 일본판 롬파일에 적용해야 하니 일본판 롬파일을 골라 주세요.`,
           );
           return;
         case 'already-korean':

@@ -184,7 +184,7 @@ const latestOverview =
 ---
 
 <PatchBook
-  title={`${patch.title} 한글판`}
+  title={`${patch.title} 한글패치`}
   trail={trail(patch)}
   description={patchDescription(patch)}
   sections={sectionsOf(['changes', 'story', 'cast', 'play', 'battle-system', 'scenes', 'patch-notes', 'making'])}
@@ -195,7 +195,7 @@ const latestOverview =
     <div class="hero-copy">
       <p class="label">{releaseLabel(patch)}</p>
       <h1 id="title" class="pixel">
-        {patch.title} 한글판
+        {patch.title} 한글패치
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
         <LatestRelease slot="intro" patch={patch} overview={latestOverview} />
@@ -381,7 +381,7 @@ const latestOverview =
         <ReleaseItem
           more={{
             href: `${KAKUSEI_PATCH.path}/#${releaseOf(KAKUSEI_PATCH, '1.3').id}`,
-            label: '각성편 한글판에서 이어서 하기',
+            label: '각성편 한글패치에서 이어서 하기',
           }}
         >
           <ul>
@@ -742,7 +742,7 @@ const latestOverview =
       </ReleaseDetails>
     </PatchRelease>
     <PatchRelease patch={patch} version="1.0">
-      <p class="release-overview">드래곤볼 Z 초오공전 돌격편의 첫 한글판입니다.</p>
+      <p class="release-overview">드래곤볼 Z 초오공전 돌격편의 첫 한글패치입니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
           <ul>
@@ -761,7 +761,7 @@ const latestOverview =
                 alt: '드래곤볼 Z 초오공전 돌격편 v1.0에서 물고기를 잡으려는 오공',
               },
             ]}
-            caption="첫 한글판 화면"
+            caption="첫 한글패치 화면"
           />
         </ReleaseItem>
       </ReleaseDetails>
