@@ -183,7 +183,10 @@ test('catalogue opens the game page, which leads with the patch box and plays no
   expect(html).not.toContain('cafe.naver.com/hansicgu');
   expect(html).not.toContain('blog.naver.com');
   await expect(page.locator('audio, video, canvas, iframe')).toHaveCount(0);
-  await expect(page.locator(`a[href$=".ips"]`)).toHaveAttribute('download', '');
+  const ips = page.locator(`a[href$=".ips"]`);
+  // The patch tool fold plus one per release in the patch notes.
+  await expect(ips).toHaveCount(1 + SMRPG_PATCH.releases.length);
+  for (const link of await ips.all()) await expect(link).toHaveAttribute('download', '');
 });
 
 test('choosing a cartridge boots it in the console before opening the game page', async ({ page }) => {

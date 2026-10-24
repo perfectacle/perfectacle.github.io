@@ -139,7 +139,9 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
   <section id="korean" class="section page-width" aria-labelledby="korean-title">
     <p class="label chapter-mark">{chapter('korean').mark}</p>
     <h2 id="korean-title" class="pixel">
-      {SECTION_TITLES.korean}
+      <a class="heading-link" href="#korean">
+        {SECTION_TITLES.korean}
+      </a>
     </h2>
     <ul class="checklist frame">
       <li>모든 문장과 선택지</li>
@@ -154,7 +156,9 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
   <section id="features" class="section page-width" aria-labelledby="features-title">
     <p class="label chapter-mark">{chapter('features').mark}</p>
     <h2 id="features-title" class="pixel">
-      {SECTION_TITLES.features}
+      <a class="heading-link" href="#features">
+        {SECTION_TITLES.features}
+      </a>
     </h2>
     <p>
       제절초는 선택지에 따라 결말이 여러 개로 갈리지만, 원작에는 읽은 곳으로 되돌아가는 기능이 없어 다른 엔딩을 보려면
@@ -190,7 +194,9 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
   <section id="story" class="section page-width" aria-labelledby="story-title">
     <p class="label chapter-mark">{chapter('story').mark}</p>
     <h2 id="story-title" class="pixel">
-      {SECTION_TITLES.story}
+      <a class="heading-link" href="#story">
+        {SECTION_TITLES.story}
+      </a>
     </h2>
     <div class="story">
       <div class="story-copy">
@@ -233,7 +239,9 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
   <section id="play" class="section page-width" aria-labelledby="play-title">
     <p class="label chapter-mark">{chapter('play').mark}</p>
     <h2 id="play-title" class="pixel">
-      {SECTION_TITLES.play}
+      <a class="heading-link" href="#play">
+        {SECTION_TITLES.play}
+      </a>
     </h2>
     <div class="play-list">
       {play.map(item => (
@@ -258,7 +266,9 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
     <p class="label chapter-mark">{chapter('patch-notes').mark}</p>
     <h2 id="patch-notes-title" class="pixel">
-      {SECTION_TITLES['patch-notes']}
+      <a class="heading-link" href="#patch-notes">
+        {SECTION_TITLES['patch-notes']}
+      </a>
     </h2>
     <PatchRelease patch={patch} version="1.2">
       <p class="release-overview">{latestOverview}</p>

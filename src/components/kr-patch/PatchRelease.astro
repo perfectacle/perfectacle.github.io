@@ -1,4 +1,5 @@
 ---
+import { statSync } from 'node:fs';
 import { releaseOf, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
@@ -8,21 +9,34 @@ interface Props {
 
 const { patch, version } = Astro.props;
 const release = releaseOf(patch, version);
+const kb = Math.ceil(statSync(`public${release.ips}`).size / 1024);
 ---
 
 <article class="patch-release" aria-labelledby={release.id} data-release={release.id}>
-  <h3 id={release.id} class="pixel">
-    v{release.version}
-    {release.latest && ' · 최신 버전'}
-  </h3>
-  <p class="section-note release-meta">
-    <time datetime={release.date}>{release.dateText}</time>
-    <button type="button" class="release-share" aria-describedby={release.id}>
-      링크 복사
-    </button>
-  </p>
+  <div class="release-head">
+    <h3 id={release.id} class="pixel">
+      <a class="heading-link" href={`#${release.id}`}>
+        v{release.version}
+        {release.latest && ' · 최신 버전'}
+      </a>
+    </h3>
+    <time class="section-note" datetime={release.date}>
+      {release.dateText}
+    </time>
+  </div>
+  <a class="release-download" href={release.ips} download>
+    <svg class="floppy" viewBox="0 0 16 16" width="32" height="32" aria-hidden="true" shape-rendering="crispEdges">
+      <path fill="currentColor" d="M1 1h12l2 2v12H1z" />
+      <path fill="#10131c" d="M4 1h7v5H4zM3 9h10v6H3z" />
+      <path fill="currentColor" d="M8 2h2v3H8z" />
+      <path fill="currentColor" opacity="0.5" d="M4 10h8v1H4zm0 2h8v1H4z" />
+    </svg>
+    <span class="release-download-text">
+      <strong>v{release.version} 패치 파일 받기</strong>
+      <small>IPS 파일 · {kb.toLocaleString('ko-KR')}KB</small>
+    </span>
+  </a>
   <slot />
-  <p class="release-share-status sr-only" role="status" aria-live="polite"></p>
 </article>
 
 <script>
@@ -42,35 +56,13 @@ const release = releaseOf(patch, version);
   for (const release of releases) {
     const id = release.dataset['release'] ?? '';
     const details = release.querySelector('details');
-    const share = release.querySelector<HTMLButtonElement>('.release-share');
-    const status = release.querySelector<HTMLElement>('.release-share-status');
-    if (!details || !share || !status) continue;
+    if (!details) continue;
 
     // Opening a version puts its address in the bar, so copying the page address shares these notes open.
     details.addEventListener('toggle', () => {
       if (details.open && location.hash !== `#${id}`) history.replaceState(history.state, '', `#${id}`);
       if (!details.open && location.hash === `#${id}`)
         history.replaceState(history.state, '', location.pathname + location.search);
-    });
-
-    let reset = 0;
-    share.addEventListener('click', async () => {
-      details.open = true;
-      const url = new URL(`#${id}`, location.href).href;
-      let done = '링크를 복사했습니다';
-      try {
-        await navigator.clipboard.writeText(url);
-      } catch {
-        history.replaceState(history.state, '', `#${id}`);
-        done = '주소창의 링크를 복사해 주세요';
-      }
-      share.textContent = done === '링크를 복사했습니다' ? '복사했습니다' : '주소창에서 복사';
-      status.textContent = done;
-      clearTimeout(reset);
-      reset = window.setTimeout(() => {
-        share.textContent = '링크 복사';
-        status.textContent = '';
-      }, 2500);
     });
   }
 
@@ -88,31 +80,60 @@ const release = releaseOf(patch, version);
 </script>
 
 <style>
-  .release-meta {
+  .release-head {
     display: flex;
     flex-wrap: wrap;
     gap: 8px 16px;
     align-items: center;
   }
 
-  .release-share {
-    min-height: 44px;
-    padding: 0 14px;
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    background: transparent;
+  .release-head h3 {
+    margin: 0;
+  }
+
+  .release-head time {
+    margin: 0;
+  }
+
+  .release-download {
+    display: inline-flex;
+    justify-self: start;
+    width: fit-content;
+    gap: 12px;
+    align-items: center;
+    margin-block: 4px;
+    padding: 10px 18px 10px 12px;
+    border: 2px solid var(--accent);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
     color: var(--accent);
-    font: inherit;
-    font-size: 0.875rem;
-    cursor: pointer;
+    text-decoration: none;
   }
 
-  .release-share:hover {
-    background: color-mix(in srgb, var(--accent) 16%, transparent);
+  .release-download:hover {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
   }
 
-  .release-share:focus-visible {
+  .release-download:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
+  }
+
+  .floppy {
+    flex: none;
+  }
+
+  .release-download-text {
+    display: grid;
+    line-height: 1.4;
+  }
+
+  .release-download-text strong {
+    font-size: 1rem;
+  }
+
+  .release-download-text small {
+    color: var(--muted);
+    font-size: 0.8125rem;
   }
 </style>

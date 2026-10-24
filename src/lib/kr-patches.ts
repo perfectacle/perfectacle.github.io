@@ -60,6 +60,10 @@ const krPatch = (patch: Omit<KrPatch, 'version' | 'released' | 'stem'>): KrPatch
 export const patchDescription = (patch: KrPatch) =>
   `${patch.card.summary} 일본판 롬파일을 고르면 이 페이지에서 바로 한글패치(v${patch.version})를 적용합니다.`;
 
+/** IPS of one release, kept for every version so players can still get an older patch. */
+export const releaseIps = (patch: Pick<KrPatch, 'path' | 'fileBase'>, version: string) =>
+  `${patch.path}/downloads/${patch.fileBase}_v${version.replaceAll('.', '_')}.ips`;
+
 /** One release of a patch; throws for a version the patch never had, so a page cannot show a stray release. */
 export const releaseOf = (patch: KrPatch, version: string) => {
   const release = patch.releases.find(r => r.version === version);
@@ -68,6 +72,7 @@ export const releaseOf = (patch: KrPatch, version: string) => {
   return {
     ...release,
     id: `release-${version.replaceAll('.', '-')}`,
+    ips: releaseIps(patch, version),
     latest: release === patch.releases[0],
     dateText: `${year}년 ${month}월 ${day}일`,
   };

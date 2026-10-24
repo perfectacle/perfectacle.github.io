@@ -16,7 +16,9 @@ const { patch, mark } = Astro.props;
 <section id="making" class="section page-width making-teaser" aria-labelledby="making-title">
   <p class="label chapter-mark">{mark}</p>
   <h2 id="making-title" class="pixel">
-    {SECTION_TITLES.making}
+    <a class="heading-link" href="#making">
+      {SECTION_TITLES.making}
+    </a>
   </h2>
   <MakingIntro patch={patch} />
   <p>

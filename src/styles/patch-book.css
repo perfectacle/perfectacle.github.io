@@ -225,6 +225,23 @@ main:focus {
     0 6px 0 rgb(0 0 0 / 35%);
 }
 
+/* A heading links to its own anchor, so clicking it puts a shareable address in the bar. */
+.heading-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.heading-link:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.heading-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
 /* The menu's pointing hand appears beside whatever the player is about to choose. */
 .pointer {
   position: relative;
@@ -489,31 +506,43 @@ h1.pixel {
 .file-checksums,
 .manual {
   min-width: 0;
-  border-top: 1px solid var(--muted);
   font-size: 0.8125rem;
 }
 
-/* The folds at the foot of the patch box read as one list: only the first draws the rule, and the rest sit close
-   under it instead of a full grid gap apart. */
+/* The folds at the foot of the patch box are rows of one list: each title is a full-width bar with its arrow at the
+   right, so it reads as something to press, and the rows sit close together under the privacy note. */
 .file-checksums + .manual,
 .manual + .manual {
-  margin-top: -12px;
-  border-top: 0;
+  margin-top: -6px;
 }
 
-:is(.file-checksums, .manual) + .manual > summary {
-  padding-top: 6px;
-}
-
-.file-checksums summary,
-.manual summary {
-  padding-block: 10px 2px;
-  color: var(--muted);
+:is(.file-checksums, .manual) > summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 700;
   cursor: pointer;
 }
 
+:is(.file-checksums, .manual) > summary:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+:is(.file-checksums, .manual) > summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 :is(.file-checksums, .manual)[open] > summary {
-  color: var(--ink);
+  border-color: var(--accent);
 }
 
 /* An open fold hangs off a rule of its own, so its text never runs into the next fold's title. */
