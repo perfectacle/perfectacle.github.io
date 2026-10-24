@@ -36,6 +36,7 @@ description: 사이트 UI 문구(버튼·라벨·aria-label·안내문·검색 �
 | build output               | 빌드 결과물                                                 |
 | merge, PR, CI, push, alias | 영어 그대로(머지, PR, CI, push, alias)                      |
 | 제품 이름                  | 원어 그대로(GitHub, GitHub Pages, YouTube, JavaScript, RSS) |
+| Super Famicom / SNES       | 슈퍼 패미콤(「패미컴」 금지). 줄임말·주소·식별자는 SFC      |
 
 ## 확인
 

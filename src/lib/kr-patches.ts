@@ -206,13 +206,13 @@ const releaseTag = (patch: KrPatch) => `${patch.path.slice(patch.path.lastIndexO
 export const analysisUrl = (patch: KrPatch) =>
   `https://github.com/perfectacle/kr-patches/blob/${releaseTag(patch)}/snes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/docs/ANALYSIS.md`;
 
-/** e.g. `슈퍼 패미컴 · 1996 · 한글패치 v1.1`. */
+/** e.g. `슈퍼 패미콤 · 1996 · 한글패치 v1.1`. */
 export const releaseLabel = (patch: KrPatch, prefix = '한글패치 ') =>
-  `슈퍼 패미컴 · ${patch.year}년 발매 · ${prefix}v${patch.version} (${patch.released})`;
+  `슈퍼 패미콤 · ${patch.year}년 발매 · ${prefix}v${patch.version} (${patch.released})`;
 
 export const trail = (patch: KrPatch) => [
   { name: '한글패치', path: KR_PATCH_LIST_PATH },
-  { name: '슈퍼 패미컴', path: KR_PATCH_SFC_PATH },
+  { name: '슈퍼 패미콤', path: KR_PATCH_SFC_PATH },
   { name: patch.title, path: `${patch.path}/` },
 ];
 

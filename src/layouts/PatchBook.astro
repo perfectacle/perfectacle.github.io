@@ -31,7 +31,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
 // Every page has an og.png beside it, drawn from the title screens at build time.
 const preview = {
   src: `${Astro.url.pathname}og.png`,
-  alt: patch ? `${patch.title} 타이틀 화면` : '한글패치로 즐기는 슈퍼 패미컴 게임들의 타이틀 화면',
+  alt: patch ? `${patch.title} 타이틀 화면` : '한글패치로 즐기는 슈퍼 패미콤 게임들의 타이틀 화면',
   ...(patch ? OG_SIZE.game : OG_SIZE.catalogue),
 };
 const imageUrl = new URL(preview.src, Astro.site).href;

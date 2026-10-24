@@ -21,7 +21,7 @@ test('chapters are numbered 0..n in order with unique paths', () => {
 
 test('platform-independent chapters sit directly under the guide, console chapters under their platform', () => {
   expect(chapterPath({ platform: 'common', slug: 'endian' })).toBe('/games/romhacking/endian/');
-  expect(chapterPath({ platform: 'snes', slug: 'banks' })).toBe('/games/romhacking/snes/banks/');
+  expect(chapterPath({ platform: 'sfc', slug: 'banks' })).toBe('/games/romhacking/sfc/banks/');
 });
 
 test('every written chapter has a page and the unwritten ones do not', () => {
@@ -44,7 +44,7 @@ test('previous and next skip unwritten chapters', () => {
 test('note and toolkit links point at real anchors', () => {
   for (const c of readyChapters()) {
     for (const n of c.notes)
-      expect(noteHref(n)).toMatch(/^\/games\/romhacking\/snes\/notes\/[a-z-]+\/(#making-[a-z0-9-]+)?$/);
+      expect(noteHref(n)).toMatch(/^\/games\/romhacking\/sfc\/notes\/[a-z-]+\/(#making-[a-z0-9-]+)?$/);
     for (const t of c.tools) {
       expect(toolHref(t)).toContain('README.ko.md#');
       expect(decodeURIComponent(toolHref(t).split('#')[1] ?? '')).toBe(t.anchor);

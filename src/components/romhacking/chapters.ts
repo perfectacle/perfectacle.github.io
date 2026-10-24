@@ -18,9 +18,9 @@ export const GUIDE_TITLE = '롬 해킹 기초';
 export const TOOLKIT_README_KO = KR_PATCH_TOOLKIT_URL;
 
 /** `common` chapters apply to any console; the rest live under `/games/romhacking/<platform>/`. */
-export type GuidePlatform = 'common' | 'snes' | 'nds';
+export type GuidePlatform = 'common' | 'sfc' | 'nds';
 
-export const PLATFORM_LABEL: Record<GuidePlatform, string> = { common: '공통', snes: '슈퍼 패미컴', nds: '닌텐도 DS' };
+export const PLATFORM_LABEL: Record<GuidePlatform, string> = { common: '공통', sfc: '슈퍼 패미콤', nds: '닌텐도 DS' };
 
 export interface NoteLink {
   patch: KrPatch;
@@ -116,10 +116,10 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
     order: 3,
     slug: 'cpu',
-    platform: 'snes',
+    platform: 'sfc',
     title: 'CPU와 65c816',
     summary:
-      'CPU는 명령을 한 줄씩 읽어 실행하는 일꾼입니다. 슈퍼 패미컴의 65c816이 가진 레지스터와 8/16비트 전환을 봅니다.',
+      'CPU는 명령을 한 줄씩 읽어 실행하는 일꾼입니다. 슈퍼 패미콤의 65c816이 가진 레지스터와 8/16비트 전환을 봅니다.',
     ready: true,
     notes: [
       note(SMRPG_PATCH, 'making-basics', 'CPU가 둘, S-CPU와 SA-1'),
@@ -135,7 +135,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
     order: 4,
     slug: 'banks',
-    platform: 'snes',
+    platform: 'sfc',
     title: '주소와 뱅크',
     summary:
       '$80:8000은 "80번 책의 8000쪽"입니다. LoROM·HiROM·SA-1이 롬 파일을 CPU 주소에 어떻게 펼치는지 계산해 봅니다.',
@@ -154,7 +154,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
     order: 5,
     slug: 'assembly',
-    platform: 'snes',
+    platform: 'sfc',
     title: '어셈블리 기초',
     summary: 'LDA·STA·분기·JSR을 하나씩 읽고, 패치 노트에 나온 코드 조각을 직접 해석합니다.',
     ready: true,
@@ -170,7 +170,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
     order: 6,
     slug: 'hooking',
-    platform: 'snes',
+    platform: 'sfc',
     title: '후킹',
     summary:
       '원래 코드 몇 바이트를 점프 명령으로 바꿔 새 코드로 건너갔다 돌아오게 합니다. 덮어쓴 명령을 다시 실행하는 법과 빈 공간 찾기까지 다룹니다.',
@@ -194,7 +194,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
     order: 7,
     slug: 'graphics',
-    platform: 'snes',
+    platform: 'sfc',
     title: '그림과 글자',
     summary:
       '화면은 8×8 타일을 이어 붙인 그림입니다. 타일 바이트를 비트평면으로 읽는 법과 팔레트, 한글 수천 자를 좁은 폰트 칸에 넣는 방법을 봅니다.',
@@ -219,7 +219,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
     order: 8,
     slug: 'text',
-    platform: 'snes',
+    platform: 'sfc',
     title: '대사는 어떻게 저장되나',
     summary:
       '글자표는 숫자와 글자의 사전, 포인터 표는 목차입니다. 제어 코드와 이어진 대본, 번역이 길어졌을 때 옮길 자리를 봅니다.',
@@ -276,7 +276,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
     order: 11,
     slug: 'expansion',
-    platform: 'snes',
+    platform: 'sfc',
     title: '롬 확장',
     summary:
       '롬을 늘리면 헤더의 크기 바이트, 미러, 체크섬이 함께 바뀝니다. 매핑마다 늘릴 수 있는 한계와, 늘리지 않고 자리를 만드는 방법을 봅니다.',
@@ -296,7 +296,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
     order: 12,
     slug: 'emulator',
-    platform: 'snes',
+    platform: 'sfc',
     title: '에뮬레이터로 확인',
     summary:
       '중단점으로 "어디서 읽나"를 잡고, 입력 스크립트로 같은 장면을 되풀이해 찍고, 정확도가 다른 여러 에뮬레이터에서 같은 결과가 나오는지 봅니다.',
@@ -323,8 +323,8 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
   {
     order: 13,
     slug: 'sound',
-    platform: 'snes',
-    title: '소리 ① 슈퍼 패미컴 사운드 구조',
+    platform: 'sfc',
+    title: '소리 ① 슈퍼 패미콤 사운드 구조',
     summary:
       '본체 CPU와 따로 도는 소리 전용 CPU(SPC700)와 음원 칩(S-DSP), 둘이 값을 주고받는 포트 $2140–$2143을 봅니다.',
     ready: true,
@@ -397,7 +397,7 @@ export const neighbours = (chapter: GuideChapter) => {
 };
 
 /** Each game's ROM analysis note lives in the guide, next to the chapters that explain its ideas. */
-export const NOTES_PATH = `${GUIDE_PATH}snes/notes/`;
+export const NOTES_PATH = `${GUIDE_PATH}sfc/notes/`;
 export const noteSlug = (patch: KrPatch) => patch.path.slice(patch.path.lastIndexOf('/') + 1);
 export const notePath = (patch: KrPatch) => `${NOTES_PATH}${noteSlug(patch)}/`;
 export const NOTE_PATCHES = KR_PATCHES;

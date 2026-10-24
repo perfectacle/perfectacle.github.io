@@ -1,5 +1,5 @@
 ---
-import { MAPPERS, formatCpu, hex, type MapperName } from '../../lib/snes-mapper.ts';
+import { MAPPERS, formatCpu, hex, type MapperName } from '../../lib/sfc-mapper.ts';
 import { MAPPER_LABEL, bankShape, explain, regionLabel } from './bank-map.ts';
 
 const mapper: MapperName = 'lorom';
@@ -135,7 +135,7 @@ const banks = Array.from({ length: 256 }, (_, i) => i);
 </section>
 
 <script>
-  import { MAPPERS, formatCpu, hex, parseCpu, parseOffset, region, type MapperName } from '../../lib/snes-mapper.ts';
+  import { MAPPERS, formatCpu, hex, parseCpu, parseOffset, region, type MapperName } from '../../lib/sfc-mapper.ts';
   import { MAPPER_LABEL, bankShape, explain, regionLabel } from './bank-map.ts';
 
   for (const root of document.querySelectorAll<HTMLElement>('[data-bank-map]')) {

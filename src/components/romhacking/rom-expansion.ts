@@ -1,5 +1,5 @@
-import { MAPPERS, hex, type MapperName } from '../../lib/snes-mapper.ts';
-import { checksumParts, mirrorOffset, sizeByte, sizeOfByte } from '../../lib/snes-header.ts';
+import { MAPPERS, hex, type MapperName } from '../../lib/sfc-mapper.ts';
+import { checksumParts, mirrorOffset, sizeByte, sizeOfByte } from '../../lib/sfc-header.ts';
 
 /** What the "롬 크기를 늘리면 바뀌는 것" widget draws. HiROM past 4 MB becomes ExHiROM. */
 export type BoardKind = 'lorom' | 'hirom' | 'sa1';

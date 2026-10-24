@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { bankShape, explain, regionLabel } from '../src/components/romhacking/bank-map.ts';
-import { MAPPERS } from '../src/lib/snes-mapper.ts';
+import { MAPPERS } from '../src/lib/sfc-mapper.ts';
 
 describe('explain', () => {
   test('ends with the same offset as toOffset for every mapper', () => {

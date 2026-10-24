@@ -112,13 +112,13 @@ const references = [
     note: '디버그 메뉴로 장면 띄우기, 장면 376개 회귀, 코어별 결과',
   },
 ];
-const ASSEMBLY = chapterPath(chapterBySlug('snes', 'assembly'));
-const BANKS = chapterPath(chapterBySlug('snes', 'banks'));
-const GRAPHICS = chapterPath(chapterBySlug('snes', 'graphics'));
-const TEXT = chapterPath(chapterBySlug('snes', 'text'));
-const HOOKING = chapterPath(chapterBySlug('snes', 'hooking'));
+const ASSEMBLY = chapterPath(chapterBySlug('sfc', 'assembly'));
+const BANKS = chapterPath(chapterBySlug('sfc', 'banks'));
+const GRAPHICS = chapterPath(chapterBySlug('sfc', 'graphics'));
+const TEXT = chapterPath(chapterBySlug('sfc', 'text'));
+const HOOKING = chapterPath(chapterBySlug('sfc', 'hooking'));
 const LZSS = chapterPath(chapterBySlug('common', 'lzss'));
-const EXPANSION = chapterPath(chapterBySlug('snes', 'expansion'));
+const EXPANSION = chapterPath(chapterBySlug('sfc', 'expansion'));
 
 const viewers = [
   {
@@ -179,7 +179,7 @@ const cores = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="emulator" references={references}>
+<GuideChapter platform="sfc" slug="emulator" references={references}>
   <h2 id="why">
     왜 에뮬레이터로 확인하나 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
@@ -424,7 +424,7 @@ const cores = [
     파일을 직접 불러 화면 없이 한 프레임씩 돌리면서, 입력 스크립트대로 버튼을 누르고 스크린샷과 메모리 덤프를 남깁니다.
   </p>
   <p>
-    입력 스크립트는 한 줄에 명령 하나이고, 맨 앞 숫자는 전원을 켠 뒤 몇 번째 프레임인지입니다. 슈퍼 패미컴은 1초에 약
+    입력 스크립트는 한 줄에 명령 하나이고, 맨 앞 숫자는 전원을 켠 뒤 몇 번째 프레임인지입니다. 슈퍼 패미콤은 1초에 약
     60프레임을 그리므로 600은 약 10초 뒤입니다. 툴킷의 Lua 스크립트{' '}
     <a href={toolkitFileUrl(`${TOOLKIT_LUA}script.lua`)}>
       <code>script.lua</code>
@@ -545,7 +545,7 @@ const cores = [
     판은 snes9x와 bsnes 코어에서 A를 누르는 동안 초록이 나왔지만, Mesen 2에서는 끝까지 파랑이었습니다.
   </p>
   <p>
-    원인은 롬 쪽에 있었습니다. 슈퍼 패미컴은 화면을 다 그리고 수직 귀선 기간이 시작되면 컨트롤러 16비트를 하드웨어가
+    원인은 롬 쪽에 있었습니다. 슈퍼 패미콤은 화면을 다 그리고 수직 귀선 기간이 시작되면 컨트롤러 16비트를 하드웨어가
     자동으로 읽어(자동 컨트롤러 읽기) <code>$4218</code>–<code>$4219</code>에 넣는데, 이 읽기는 수직 귀선이 시작되고
     조금 뒤에 시작해 4224마스터 사이클 동안 이어집니다. 읽는 동안은 <code>$4212</code>의 비트 0이 1입니다. 시험 롬은 NMI
     첫머리에서 "비트 0이 0이 될 때까지"만 기다렸는데, NMI가 너무 일러서 자동 읽기가 아직 시작도 안 한 순간이었습니다.
@@ -591,7 +591,7 @@ const cores = [
     실기에서만 알 수 있는 것 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    에뮬레이터를 여럿 돌려도 실제 슈퍼 패미컴(실기)과 같다는 보장은 없습니다. 특히 아래는 에뮬레이터마다 다르게
+    에뮬레이터를 여럿 돌려도 실제 슈퍼 패미콤(실기)과 같다는 보장은 없습니다. 특히 아래는 에뮬레이터마다 다르게
     처리하거나 실기에서도 정해지지 않은 부분입니다.
   </p>
   <ul>

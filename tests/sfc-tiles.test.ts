@@ -10,7 +10,7 @@ import {
   shadowed,
   tileSize,
   type Bpp,
-} from '../src/lib/snes-tiles.ts';
+} from '../src/lib/sfc-tiles.ts';
 
 // Cases copied from kr-patch-toolkit tests/test_gfx.py so the tile widget reads bytes the way `krpatch snes tiles`
 // does.

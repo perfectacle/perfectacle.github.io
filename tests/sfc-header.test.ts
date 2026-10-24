@@ -7,8 +7,8 @@ import {
   roundUpPow2,
   sizeByte,
   sizeOfByte,
-} from '../src/lib/snes-header.ts';
-import { MAPPERS } from '../src/lib/snes-mapper.ts';
+} from '../src/lib/sfc-header.ts';
+import { MAPPERS } from '../src/lib/sfc-mapper.ts';
 
 const MB = 0x100000;
 const KB = 0x400;

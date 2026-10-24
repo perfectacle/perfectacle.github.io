@@ -21,7 +21,7 @@ const base = patch.path;
 const img = (name: string) => `${base}/images/making/${name}`;
 const source = sourceUrl(patch);
 const totsugeki = notePath(TOTSUGEKI_PATCH);
-const ch = (slug: string, hash = '') => `/games/romhacking/snes/${slug}/${hash && `#${hash}`}`;
+const ch = (slug: string, hash = '') => `/games/romhacking/sfc/${slug}/${hash && `#${hash}`}`;
 const common = (slug: string, hash = '') => `/games/romhacking/${slug}/${hash && `#${hash}`}`;
 
 const versions = [
@@ -349,8 +349,8 @@ const buildSteps = [
 <h3 id="making-basics">주소 읽는 법</h3>
 <NoteRelated patch={patch} id="making-basics" />
 <p>
-  <code>0xCA9BE</code> 같은 파일 오프셋은 롬 파일을 처음부터 센 위치이고, <code>$99:A9BE</code> 같은 SNES 주소는 CPU가
-  보는 <code>뱅크:주소</code>입니다. 이 게임은 LoROM이라 뱅크마다 뒤쪽 32KB($8000–$FFFF)에만 롬이 보입니다(
+  <code>0xCA9BE</code> 같은 파일 오프셋은 롬 파일을 처음부터 센 위치이고, <code>$99:A9BE</code> 같은 슈퍼 패미콤 주소는
+  CPU가 보는 <code>뱅크:주소</code>입니다. 이 게임은 LoROM이라 뱅크마다 뒤쪽 32KB($8000–$FFFF)에만 롬이 보입니다(
   <a href={ch('banks', 'mapping')}>4장의 LoROM</a>). 그래서 다음처럼 바꿉니다.
 </p>
 <pre tabindex="0"><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
@@ -871,7 +871,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
       + 3, 거리 = 워드 &gt;&gt; 4입니다. 거리가 출력 시작보다 앞을 가리키면 0으로 읽습니다.
     </li>
     <li>
-      <code>$80:9DA7</code>은 같은 해제 뒤에 타일마다 "평면 0의 8줄, 평면 1의 8줄" 순서를 슈퍼 패미컴 2bpp 순서(줄마다
+      <code>$80:9DA7</code>은 같은 해제 뒤에 타일마다 "평면 0의 8줄, 평면 1의 8줄" 순서를 슈퍼 패미콤 2bpp 순서(줄마다
       두 평면을 번갈아)로 바꿉니다(<a href={common('lzss', 'variants')}>9장의 변형</a>).
     </li>
     <li>

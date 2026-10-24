@@ -12,7 +12,7 @@ import {
 } from '../../../../lib/kr-patches.ts';
 import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
 import { toBinary, toHex } from '../../../../lib/numbers.ts';
-import { SAMPLE_GLYPH, decode, encode, shadowed } from '../../../../lib/snes-tiles.ts';
+import { SAMPLE_GLYPH, decode, encode, shadowed } from '../../../../lib/sfc-tiles.ts';
 
 const references = [
   {
@@ -133,12 +133,12 @@ const strategies = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="graphics" references={references}>
+<GuideChapter platform="sfc" slug="graphics" references={references}>
   <h2 id="tiles">
     화면은 8×8 타일을 이어 붙인 그림 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    슈퍼 패미컴은 화면을 픽셀 하나하나로 기억하지 않습니다. 가로세로 8픽셀짜리 작은 그림인 <strong>타일</strong>을 미리
+    슈퍼 패미콤은 화면을 픽셀 하나하나로 기억하지 않습니다. 가로세로 8픽셀짜리 작은 그림인 <strong>타일</strong>을 미리
     만들어 두고, "이 칸에는 몇 번 타일"이라고 적은 <strong>타일맵</strong>으로 화면을 채웁니다. 256×224픽셀 화면이라면
     타일 32×28칸입니다. 같은 타일을 여러 칸에 쓸 수 있어서 메모리가 훨씬 적게 듭니다. 욕실 타일을 붙이는 것과
     비슷합니다.
@@ -637,7 +637,7 @@ const strategies = [
     <h3>평면을 반씩 묶어 두는 경우</h3>
     <p>
       어떤 게임은 2bpp 타일을 "평면 0의 8줄, 그다음 평면 1의 8줄"로 묶어 압축해 둡니다. 돌격편 타이틀 그림이 이런
-      경우로, 압축을 푼 뒤 <code>$81:DFEB</code>가 타일마다 줄 순서를 SNES 형식으로 되돌립니다. 툴킷의{' '}
+      경우로, 압축을 푼 뒤 <code>$81:DFEB</code>가 타일마다 줄 순서를 슈퍼 패미콤 형식으로 되돌립니다. 툴킷의{' '}
       <code>planar_to_snes</code>·<code>snes_to_planar</code>가 같은 변환입니다.
     </p>
   </Deeper>

@@ -1,7 +1,7 @@
 /**
- * SNES planar tiles ↔ pixel colour indices, ported from kr-patch-toolkit (`kr_patch/snes/tiles.py`) so the guide's
+ * SFC planar tiles ↔ pixel colour indices, ported from kr-patch-toolkit (`kr_patch/snes/tiles.py`) so the guide's
  * tile widget shows the bytes `krpatch snes tiles` reads. Keep the layout identical to the toolkit:
- * `tests/snes-tiles.test.ts` runs the toolkit's own cases.
+ * `tests/sfc-tiles.test.ts` runs the toolkit's own cases.
  *
  * 1bpp tiles are one byte per row. 2/4/8bpp tiles store bitplanes in pairs: each pair is `rows` words (low plane,
  * high plane per row), and the pairs follow each other.
