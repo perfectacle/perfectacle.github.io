@@ -108,7 +108,7 @@ const chapter = (id: string) => {
   return { mark: found.mark };
 };
 
-const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고, 책갈피와 되감기를 개선했습니다.';
+const latestOverview = '이름 입력을 자음·모음을 골라 조합하는 한 페이지 화면으로 바꿨습니다.';
 ---
 
 <PatchBook
@@ -270,8 +270,50 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
         {SECTION_TITLES['patch-notes']}
       </a>
     </h2>
-    <PatchRelease patch={patch} version="1.2">
+    <PatchRelease patch={patch} version="1.3">
       <p class="release-overview">{latestOverview}</p>
+      <ReleaseDetails>
+        <ReleaseItem>
+          <ul>
+            <li>
+              음절을 10쪽에서 찾아 고르던 한글 이름 입력을, 자음과 모음을 골라 글자를 만드는 한 페이지 화면으로
+              바꿨습니다. 자판은 두벌식 배열이고 쌍자음은 윗줄에 있습니다. 「한글」 버튼을 맨 위로 올려 처음부터 자판이
+              열립니다.
+            </li>
+            <li>
+              폰트에 없어 넣을 수 없던 글자도 이름에 쓸 수 있습니다(완성형 2,350자). 받침 뒤에 모음을 넣으면 받침이 다음
+              글자로 넘어가고, B 버튼은 마지막으로 넣은 자음이나 모음을 하나씩 지웁니다.
+            </li>
+            <li>커서는 빈칸을 건너뛰고, Start 버튼은 커서를 END로 옮깁니다. END에서 A를 눌러야 입력이 끝납니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            panels={[
+              {
+                label: 'v1.2',
+                src: `${base}/images/releases/v1-3/name-entry-v1-2.webp`,
+                alt: 'v1.2 이름 입력. 음절이 늘어선 한글 1쪽에서 김기남을 골랐다',
+              },
+              {
+                label: 'v1.3',
+                src: `${base}/images/releases/v1-3/name-entry-v1-3.webp`,
+                alt: 'v1.3 이름 입력. 두벌식 자모 자판으로 펭귄을 만들었다',
+              },
+            ]}
+            caption="이름 입력 화면. 「펭」·「귄」은 v1.2 폰트에 없던 글자입니다."
+          />
+        </ReleaseItem>
+        <ReleaseItem>
+          <ul>
+            <li>
+              이전 버전 세이브를 그대로 이어서 할 수 있습니다. 다만 v1.3에서 새로 쓸 수 있게 된 글자를 넣은 이름은 이전
+              버전 패치에서 깨져 보입니다.
+            </li>
+          </ul>
+        </ReleaseItem>
+      </ReleaseDetails>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.2">
+      <p class="release-overview">플로차트·장 목록·엔딩 목록을 추가하고, 책갈피와 되감기를 개선했습니다.</p>
       <ReleaseDetails>
         <ReleaseItem more={{ href: '#feature-flowchart', label: '플로차트 사용법 보기' }}>
           <ul>

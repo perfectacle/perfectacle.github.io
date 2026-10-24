@@ -6,8 +6,8 @@ import Deeper from '../romhacking/Deeper.astro';
 import Figure from '../romhacking/Figure.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import MakingSources from '../kr-patch/MakingSources.astro';
-import { chapterBySlug, chapterPath, type GuidePlatform } from '../romhacking/chapters';
-import { analysisUrl, sourceFileUrl, sourceUrl, type KrPatch } from '../../lib/kr-patches';
+import { chapterBySlug, chapterPath, notePath, type GuidePlatform } from '../romhacking/chapters';
+import { analysisUrl, SMRPG_PATCH, sourceFileUrl, sourceUrl, type KrPatch } from '../../lib/kr-patches';
 import SourceFile from '../kr-patch/SourceFile.astro';
 
 interface Props {
@@ -233,6 +233,11 @@ const toolMap = [
   { job: '편의 기능 코드', files: ['asm/qol.asm'], section: 'menu' },
   { job: '플로차트', files: ['tools/flow.py', 'asm/flow.asm'], section: 'flowchart' },
   {
+    job: '자모 이름 입력',
+    files: ['tools/namefont.py', 'asm/nameentry.asm', 'tools/build-v1.3.sh'],
+    section: 'name-entry',
+  },
+  {
     job: '화면 찍기·비교',
     files: ['lua/pages.lua', 'lua/name.lua', 'lua/jumpsave.py', 'tools/patchnote.py'],
     section: 'testing',
@@ -259,6 +264,7 @@ const sectionTitles: Record<string, string> = {
   retranslate: '3. 대사 · 재번역',
   font: '4. 글자',
   wordwrap: '4. 글자 · 줄바꿈',
+  'name-entry': '6. 메뉴·이름 · 자모 이름 입력',
   'save-compat': '7. 세이브 · 옛 세이브',
   menu: '8. 고유 문제 · 메뉴',
   flowchart: '8. 고유 문제 · 플로차트',
@@ -278,7 +284,8 @@ const unverified = [
 
 const limits = [
   '선택지 화면에 한 번에 보이는 보기는 5개까지입니다. 6개를 넣으면 화면이 깨집니다. 장 목록을 한 쪽에 3개씩 나눈 이유입니다.',
-  '폰트 그룹 표는 58칸이 한계이고 지금 48칸을 씁니다. 새 글자를 넣을 칸은 10개 남았습니다.',
+  '폰트 그룹 표는 58칸이 한계이고 지금 49칸을 씁니다. 새 글자를 넣을 칸은 9개 남았습니다.',
+  'v1.3에서 새로 쓸 수 있게 된 글자(코드 1689 이후)를 넣은 이름을 v1.2 이하 패치로 열면, 그 글자는 그룹 표 뒤의 데이터를 그룹으로 읽어 깨져 보입니다.',
   '폰트 디코더는 줄마다 3바이트를 읽고 뱅크 $20으로 넘어가지 못합니다. 그룹 데이터 뒤에 2바이트 여유를 두고, 뱅크 $1F 뒤쪽에는 새 그룹 데이터만 두는 것이 안전해 보입니다(추정).',
   '글자표의 ㅗ·ㅜ·ㅡ는 꼭지가 1픽셀이라, 드물게 쓰는 글자에 오독이 남아 있을 수 있습니다(추정).',
   'しおり 단계가 0인 옛 장 이동 시험용 세이브로 대본 5,904줄 갈래에서 이어하면 그 선택지의 보기가 모두 가려져 $00:0000으로 폭주합니다. v1.1도 같고, 정상 플레이로는 갈 수 없는 상태입니다.',
@@ -289,7 +296,8 @@ const freeSpace = [
   { range: '$1A:96D1–$1A:FFFF', note: '편의 기능 코드 뒤' },
   { range: '$1C:E628–$1D:FFFF', note: '플로차트 데이터 뒤부터 뱅크 하나 넘게' },
   { range: '$18:81D0–$18:FFFF', note: '세이브 호환 코드 뒤' },
-  { range: '$35:AF67–$3F:FFFF', note: '대본 뒤. 대본이 늘어날 자리' },
+  { range: '$35:AF67–$35:FFFF', note: '대본 뒤. 대본이 늘어날 자리' },
+  { range: '$36:FA80–$3F:FFFF', note: 'v1.3 이름 글자와 코드 뒤' },
 ];
 
 const v10Uploads = [
@@ -320,7 +328,7 @@ const toolVersions = [
 </h2>
 <NoteRelated patch={patch} id="making-about" />
 <p>
-  제절초는 글과 그림, 소리로 이야기를 읽어 가는 사운드 노벨입니다. 한글패치는 세 번 나왔고, 버전마다 롬의 다른 곳을
+  제절초는 글과 그림, 소리로 이야기를 읽어 가는 사운드 노벨입니다. 한글패치는 네 번 나왔고, 버전마다 롬의 다른 곳을
   고쳤습니다.
 </p>
 <ul class="notes">
@@ -340,6 +348,10 @@ const toolVersions = [
     <a href={`${base}/#feature-ending-list`}>엔딩 목록</a>, <a href={`${base}/#feature-flowchart`}>플로차트</a>,{' '}
     <a href={`${base}/#feature-rewind`}>되감은 페이지의 노란 글씨</a>를 엔진에 끼워 넣었습니다(
     <a href="#making-unique">8절</a>).
+  </li>
+  <li>
+    <strong>v1.3</strong>: 이름 입력의 한글 쪽을 자음과 모음을 골라 조합하는 한 쪽으로 바꾸고, 폰트에 없던 음절
+    1,034자와 자모 51자를 더해 완성형 2,350자로 이름을 지을 수 있게 했습니다(<a href="#making-name-entry">6절</a>).
   </li>
 </ul>
 <p>
@@ -468,9 +480,10 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <NoteRelated patch={patch} id="making-space" />
 <p>
   v1.1과 v1.2의 코드와 표는 모두 v1.0이 일본판 대사를 0으로 지운 자리에 들어갔습니다. 롬을 더 늘리지 않아도 됐습니다.
-  WRAM은 6,000프레임을 플레이하며 게임이 쓰는 곳을 모두 기록한 뒤, 한 번도 쓰이지 않은 곳만 골라 메뉴 버퍼와 플로차트
-  작업 공간으로 썼습니다. 빈 공간을 찾는 일반적인 방법은{' '}
-  <a href={guide('sfc', 'hooking', 'space')}>6장 「새 코드를 둘 빈 공간」</a>에 있습니다.
+  v1.3의 새 글자 약 16KB와 이름 입력 코드는 그 자리에 다 들어가지 않아, v1.0이 늘린 1MB 가운데 대본 뒤의 빈 뱅크{' '}
+  <code>$36</code>에 두었습니다(<a href="#making-name-entry">6절</a>). WRAM은 6,000프레임을 플레이하며 게임이 쓰는 곳을
+  모두 기록한 뒤, 한 번도 쓰이지 않은 곳만 골라 메뉴 버퍼와 플로차트 작업 공간으로 썼습니다. 빈 공간을 찾는 일반적인
+  방법은 <a href={guide('sfc', 'hooking', 'space')}>6장 「새 코드를 둘 빈 공간」</a>에 있습니다.
 </p>
 <figure class="paper">
   <ZoomImage
@@ -866,7 +879,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   글자를 넣을 자리도 문제였습니다. 그룹 표 바로 뒤에 다른 데이터가 있어 그룹은 58개가 한계이고 v1.0이 58개를 다
   썼습니다. 아무 데서도 쓰지 않는 채움 글자를 이웃 그룹과 같은 크기의 빈 글자로 바꿔 그룹을 합치니 45개로 줄었고, 새
-  글자 75자를 3개 그룹으로 더해도 48개라 자리가 남았습니다.
+  글자 75자를 3개 그룹으로 더해도 48개라 자리가 남았습니다. v1.3은 이름에 쓸 글자를 그룹 하나로 더해 49개를 씁니다.
 </p>
 <figure class="paper">
   <ZoomImage
@@ -1018,7 +1031,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     <strong>이름 입력 화면</strong>: 고를 글자를 늘어놓은 표(<code>$02:A990–$02:B03F</code>)가 대사와 같은 글자 코드를
     씁니다. 그래서 v1.1은 v1.0의 코드와 글자 대응을 하나도 바꾸지 않고, 쓰지 않는 코드만 골라 비웠습니다(
     <a href="#making-new-glyphs">4절</a>). 대본의 <code>{'{20}'}</code>을 만나면 엔진이 이 이름을 기호 버퍼($5F)에 끼워
-    넣어 대사처럼 찍습니다.
+    넣어 대사처럼 찍습니다. v1.3은 한글 쪽을 자모 자판으로 바꿨습니다(<a href="#making-name-entry">아래</a>).
   </li>
   <li>
     <strong>책갈피(しおり) 화면</strong>: 세이브 슬롯을 고르는 화면입니다. v1.2는 슬롯을 그리는 루틴을 후킹해 둘째 줄에
@@ -1031,6 +1044,51 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   만든 방법이라, <a href={guide('sfc', 'text', 'control')}>8장 「제어 코드: 글자가 아닌 명령」</a>을 먼저 보면 읽기
   쉽습니다.
 </p>
+
+<h3 id="making-name-entry">자모로 조합하는 이름 입력 (v1.3)</h3>
+<NoteRelated patch={patch} id="making-name-entry" />
+<p>
+  v1.2까지 이름 입력의 한글 쪽은 음절 50자씩 10쪽이었습니다. 폰트에 있는 음절만 고를 수 있고, 원하는 글자가 몇 쪽에
+  있는지 넘겨 가며 찾아야 했습니다. v1.3은 한글 쪽을 두벌식 자판 한 쪽으로 바꾸고, 자음과 모음을 고르면 글자가 조합되게
+  했습니다.
+</p>
+<ul class="notes">
+  <li>
+    <strong>글자</strong>: 이름은 대사에도 찍히므로 대사 폰트에 글자가 있어야 합니다. 폰트에 없는 완성형 음절 1,034자와
+    호환 자모 51자를 그룹 하나(코드 1689–2773, 11×11)로 더했습니다. 약 16KB인데 뱅크 <code>$1F</code>에 남은 곳은 약
+    11KB라, 늘린 쪽의 빈 뱅크 <code>$36</code>에 두었습니다. 디코더는 뱅크를 <code>$1F</code>로 고정해 두었으므로(
+    <code>$00:A56C</code>의 <code>LDA #$1F / STA $16</code>) 이 4바이트를 <code>JSL</code>로 바꿔, 49번째 그룹부터는
+    뱅크 <code>$36</code>을 고르게 했습니다. 새 글자만 Galmuri11로 그렸습니다. 한글 전부를 Galmuri로 바꾸는 안도
+    비교했지만, 본문은 v1.0 글자가 더 잘 읽혀서 그대로 두었습니다.
+  </li>
+  <li>
+    <strong>조합</strong>: 이름은 전처럼 대사 폰트 코드의 열이라 세이브 형식이 그대로입니다. 지금 만드는 음절은 늘
+    이름의 마지막 코드이고, 넣은 자모마다 (초성, 중성, 종성) 상태를 WRAM <code>$7F:E000</code>에 쌓아 B 버튼이 자모
+    하나씩 되돌립니다. 음절 번호를 완성형 2,350자 표에서 이진 탐색해 코드로 바꿉니다. 받침 뒤에 모음이 오면 받침이 다음
+    글자로 넘어가고, 완성형 밖이 되는 모음은 무시하며, 완성형 밖이 되는 받침은 앞 글자를 확정하고 새 글자로 시작합니다.
+    쓰기는 모두 원래 화면의 루틴(<code>$02:B334</code>, 코드를 붙이고 이름 칸에 그림)을 거칩니다.
+  </li>
+  <li>
+    <strong>화면</strong>: 메뉴 번호가 곧 쪽 번호라, 쪽 포인터 표(<code>$02:B18E</code>, <code>$02:B849</code>)의 0번과
+    2번을 맞바꿔 「한글」을 맨 위로 올리고 처음부터 자판이 열리게 했습니다. 「한글 ◀ 1 ▶」의 화살표는 글자가 아니라 BG1
+    책 그림(런 길이 타일맵 <code>$07:E4CD</code>)의 타일이라, 그 4바이트를 버튼 면 타일로 바꿨습니다. 커서는 빈칸을
+    건너뛰고, Start는 바로 끝내지 않고 커서를 END로 옮깁니다.
+  </li>
+  <li>
+    <strong>확인</strong>: <a href={`${notePath(SMRPG_PATCH)}#making-name-entry`}>슈퍼 마리오 RPG v1.3</a>에서 파일 선택
+    화면이 이름 입력 창의 테두리 타일을 덮은 일이 있어, 같은 일이 없는지 따로 봤습니다. 세이브가 있을 때와 없을 때 이름
+    입력 화면의 VRAM을 비교하니 v1.2와 같은 차이만 있었습니다. v1.3은 VRAM에 새로 올리는 것이 없기 때문입니다. 바꾼 책
+    그림 타일맵은 이름 입력 화면에서만 읽혔고, 메뉴·플로차트 시나리오의 화면과 대본 위치도 v1.2와 같았습니다.
+  </li>
+</ul>
+<ToolFiles
+  patch={patch}
+  items={[
+    { path: 'tools/namefont.py', text: '새 글자 그룹, 자모 쪽 배치, 조합에 쓰는 표 만들기' },
+    { path: 'asm/nameentry.asm', text: '디코더 뱅크 후킹, 자모 조합, 커서 이동과 Start' },
+    { path: 'tools/build-v1.3.sh', text: 'v1.2 빌드 위에 v1.3 만들기' },
+  ]}
+/>
 
 <h2 id="making-save">
   7. 세이브·암호 <span class="layer-badge layer-easy">쉽게</span>
