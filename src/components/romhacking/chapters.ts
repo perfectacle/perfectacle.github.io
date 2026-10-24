@@ -60,7 +60,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     ready: true,
     notes: [
       note(TOTSUGEKI_PATCH, 'making-tools', '돌격편: 패치 소스 파일과 빌드 순서'),
-      note(OTOGIRISOU_PATCH, 'making', '제절초: 1MB 롬을 2MB로 늘린 한글판'),
+      note(OTOGIRISOU_PATCH, 'making', '제절초: 1MB 롬을 2MB로 늘린 한글패치'),
     ],
     tools: [{ command: 'krpatch ips', anchor: 'ips-ips-패치-생성적용' }],
   },
@@ -216,7 +216,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       '롬을 늘리면 헤더의 크기 바이트, 미러, 체크섬이 함께 바뀝니다. 매핑마다 늘릴 수 있는 한계와, 늘리지 않고 자리를 만드는 방법을 봅니다.',
     ready: true,
     notes: [
-      note(OTOGIRISOU_PATCH, 'making', '제절초: 1MB 롬을 2MB로 늘린 한글판'),
+      note(OTOGIRISOU_PATCH, 'making', '제절초: 1MB 롬을 2MB로 늘린 한글패치'),
       note(OTOGIRISOU_PATCH, 'making-space', '제절초: 코드를 둔 자리'),
       note(SMRPG_PATCH, 'making-space', '슈퍼 마리오 RPG: 롬을 4MB보다 키우지 않은 이유'),
       note(KAKUSEI_PATCH, 'making-bugfix', '각성편: 우주선이 맵 밖을 헤매던 이유'),

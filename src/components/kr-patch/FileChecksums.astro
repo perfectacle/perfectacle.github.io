@@ -10,7 +10,7 @@ interface Props {
 const { spec, version } = Astro.props;
 const files = [
   { name: '일본판 원본', size: spec.size, fingerprint: spec.original },
-  { name: `한글판 v${version}`, size: patchedSize(spec), fingerprint: spec.patched },
+  { name: `한글패치 v${version}`, size: patchedSize(spec), fingerprint: spec.patched },
 ];
 ---
 

@@ -157,7 +157,7 @@ const latestOverview =
 ---
 
 <PatchBook
-  title={`${patch.title} 한글판`}
+  title={`${patch.title} 한글패치`}
   trail={trail(patch)}
   description={patchDescription(patch)}
   sections={sectionsOf(['changes', 'story', 'cast', 'play', 'battle-system', 'endings', 'patch-notes', 'making'])}
@@ -168,7 +168,7 @@ const latestOverview =
     <div class="hero-copy">
       <p class="label">{releaseLabel(patch)}</p>
       <h1 id="title" class="pixel">
-        {patch.title} 한글판
+        {patch.title} 한글패치
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
         <LatestRelease slot="intro" patch={patch} overview={latestOverview} />
@@ -323,7 +323,7 @@ const latestOverview =
             <li>전투 말풍선 문자열 443개(대사 ID 719개)를 원문에 맞게 고쳤습니다.</li>
             <li>말풍선 밖으로 넘치던 줄을 창 크기에 맞게 나눴습니다.</li>
             <li>돌격편 엔딩의 암호 「손오공은사이어인」을 입력하면 돌격편을 마친 상태로 시작합니다.</li>
-            <li>돌격편 한글판의 50자 암호도 화면에 보이는 글자 그대로 입력하면 이어지도록 고쳤습니다.</li>
+            <li>돌격편 한글패치의 50자 암호도 화면에 보이는 글자 그대로 입력하면 이어지도록 고쳤습니다.</li>
             <li>
               돌격편 이름을 각성편 글자로 옮기는 표가 37번째 글자부터 밀려 있어 이름이 다른 글자로 바뀌던 문제를
               고쳤습니다. v1.2는 데이터 암호를 키로 칠 수 없어서(256가지 바이트 값 중 11가지만 입력 가능), 비교 화면의
@@ -391,7 +391,7 @@ const latestOverview =
       </ReleaseDetails>
     </PatchRelease>
     <PatchRelease patch={patch} version="1.0">
-      <p class="release-overview">드래곤볼 Z 초오공전 각성편의 첫 한글판입니다.</p>
+      <p class="release-overview">드래곤볼 Z 초오공전 각성편의 첫 한글패치입니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
           <ul>
@@ -411,7 +411,7 @@ const latestOverview =
                 alt: '계왕성에서 전투력과 체력 중 고르는 선택지',
               },
             ]}
-            caption="첫 한글판 화면"
+            caption="첫 한글패치 화면"
           />
         </ReleaseItem>
       </ReleaseDetails>

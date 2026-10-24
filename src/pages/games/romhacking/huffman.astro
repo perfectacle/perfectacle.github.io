@@ -412,21 +412,21 @@ const noWalk = [
     뒤 <code>$02:C0A1</code>에서 LoROM 주소로 바꿉니다. 시나리오 시작 주소 표(<code>$02:A627</code>)도 비트 위치이고,
     세이브 파일의 "어디까지 읽었나"도 바이트 주소에 바이트 안의 비트 번호를 더해 적습니다.
   </p>
-  <h3>한글판 v1.0: 압축 대신 기호마다 2바이트</h3>
+  <h3>한글패치 v1.0: 압축 대신 기호마다 2바이트</h3>
   <p>
-    한글판 v1.0은 허프만 비트열을 버리고 기호마다 2바이트(큰 자리 먼저)로 적은 대본을 새로 넣었습니다. 읽는 루틴은{' '}
+    한글패치 v1.0은 허프만 비트열을 버리고 기호마다 2바이트(큰 자리 먼저)로 적은 대본을 새로 넣었습니다. 읽는 루틴은{' '}
     <code>$02:C156</code>을 "허프만 트리 따라가기"에서 "2바이트 읽기"로 바꿨고, <code>$02:C087</code>·
     <code>$02:C106</code>에서 비트 위치를 주소로 바꾸던 계산을 건너뜁니다. 점프 인자도 비트 위치 대신 3바이트 LoROM
     주소(작은 자리 먼저)가 됐습니다. 같은 첫 문장 「여름의 해질녘.」과 줄바꿈은 기호 9개, 18바이트(144비트)입니다.
   </p>
   <div class="table-scroll" tabindex="0" role="region" aria-labelledby="ver-caption">
     <table>
-      <caption id="ver-caption">일본판과 한글판 v1.0의 대본 비교</caption>
+      <caption id="ver-caption">일본판과 한글패치 v1.0의 대본 비교</caption>
       <thead>
         <tr>
           <th scope="col"></th>
           <th scope="col">일본판</th>
-          <th scope="col">한글판 v1.0</th>
+          <th scope="col">한글패치 v1.0</th>
         </tr>
       </thead>
       <tbody>

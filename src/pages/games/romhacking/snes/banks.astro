@@ -368,7 +368,7 @@ const systemAreas = [
   </p>
   <h3>제절초: 뱅크를 넘는 대본과 세이브 RAM</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>(LoROM) 한글판 대본은 <code>$20:8000</code>부터 이어지고, 뱅크 끝{' '}
+    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>(LoROM) 한글패치 대본은 <code>$20:8000</code>부터 이어지고, 뱅크 끝{' '}
     <code>$XX:FFFF</code>를 넘으면 읽는 코드가 다음 뱅크의 <code>$8000</code>으로 건너갑니다. LoROM은 뱅크마다 위쪽 반만
     롬이라 파일에서는 끊김 없이 이어진 바이트입니다. 세이브 데이터는 LoROM의 세이브 RAM 자리인 <code>$70:0000</code>–{' '}
     <code>$70:1FFF</code>(8KB)에 있습니다.

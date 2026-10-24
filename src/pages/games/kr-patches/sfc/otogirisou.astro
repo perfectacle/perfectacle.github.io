@@ -54,7 +54,7 @@ const features = [
     image: 'flow-endings',
     alt: '본 엔딩 1개 중 「돌아본 얼굴」이 보이고 나머지는 아직 보지 않음인 엔딩 목록',
     title: '엔딩 목록',
-    text: '플로차트에서 X를 누르면 대본에 있는 엔딩 18개 중 본 엔딩의 제목이 나옵니다. 원작에는 엔딩 제목이 없어 한글판에서 붙였고, 아직 못 본 엔딩은 「아직 보지 않음」으로 남습니다.',
+    text: '플로차트에서 X를 누르면 대본에 있는 엔딩 18개 중 본 엔딩의 제목이 나옵니다. 원작에는 엔딩 제목이 없어 한글패치에서 붙였고, 아직 못 본 엔딩은 「아직 보지 않음」으로 남습니다.',
   },
   {
     id: 'feature-bookmark',
@@ -112,7 +112,7 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
 ---
 
 <PatchBook
-  title={`${patch.title} 한글판`}
+  title={`${patch.title} 한글패치`}
   trail={trail(patch)}
   description={patchDescription(patch)}
   sections={sectionsOf(['korean', 'features', 'story', 'play', 'patch-notes', 'making'])}
@@ -123,7 +123,7 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
     <div class="hero-copy">
       <p class="label">{releaseLabel(patch)}</p>
       <h1 id="title" class="pixel">
-        {patch.title} 한글판
+        {patch.title} 한글패치
       </h1>
       <PatchBox ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
         <LatestRelease slot="intro" patch={patch} overview={latestOverview} />
@@ -147,7 +147,7 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
       <li>띄어쓰기에 맞춘 줄바꿈</li>
       <li>장 제목과 엔딩 제목</li>
     </ul>
-    <p class="section-note">같은 장면을 일본판과 한글판에서 찍어 나란히 놓았습니다.</p>
+    <p class="section-note">같은 장면을 일본판과 한글패치에서 찍어 나란히 놓았습니다.</p>
     <ComparePairs pairs={otogirisouPairs} base={base} versions={JAPANESE_AND_KOREAN} visible={VISIBLE_PAIRS} />
   </section>
 
@@ -448,7 +448,7 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
       </ReleaseDetails>
     </PatchRelease>
     <PatchRelease patch={patch} version="1.0">
-      <p class="release-overview">제절초의 첫 한글판입니다.</p>
+      <p class="release-overview">제절초의 첫 한글패치입니다.</p>
       <ReleaseDetails>
         <ReleaseItem>
           <ul>
@@ -473,7 +473,7 @@ const latestOverview = '플로차트·장 목록·엔딩 목록을 추가하고,
                 alt: '제절초 꽃 이름의 유래를 묻는 v1.0 대사 화면',
               },
             ]}
-            caption="첫 한글판 화면"
+            caption="첫 한글패치 화면"
           />
         </ReleaseItem>
       </ReleaseDetails>

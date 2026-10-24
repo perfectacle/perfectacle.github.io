@@ -33,7 +33,7 @@ export interface Version {
 /** For pages that set the Japanese original beside the Korean patch. */
 export const JAPANESE_AND_KOREAN: Version[] = [
   { key: 'jp', label: '일본판' },
-  { key: 'ko', label: '한글판' },
+  { key: 'ko', label: '한글패치' },
 ];
 
 /** One cell of a patch-note figure: a version (or step) label above its screen. */

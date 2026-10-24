@@ -61,7 +61,7 @@ const title = {
 
   <div class="novel-menu" data-menu="end" hidden>
     <a class="pointer" href="#title" data-enter>
-      저택에 들어간다 — 한글판 만들기
+      저택에 들어간다 — 한글패치 하기
     </a>
     <button class="pointer" type="button" data-to-title>
       타이틀로
@@ -255,7 +255,7 @@ const title = {
       if (state === 'end') return endMenu.querySelector<HTMLElement>('a')?.focus();
       if (at < pages.length - 1) return go(at + 1);
       show('end');
-      live.textContent = '저택 앞에 섰습니다. 한글판을 만들어 이어서 읽거나 타이틀로 돌아갈 수 있습니다.';
+      live.textContent = '저택 앞에 섰습니다. 한글패치를 적용해 이어서 읽거나 타이틀로 돌아갈 수 있습니다.';
       endMenu.querySelector<HTMLElement>('a')?.focus();
     };
 
