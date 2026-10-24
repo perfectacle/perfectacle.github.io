@@ -40,6 +40,7 @@ const MUSIC = '/games/romhacking/music-loop/';
 const NDS_FS = '/games/romhacking/nds/filesystem/';
 const NDS_TEXT = '/games/romhacking/nds/text/';
 const NDS_GFX = '/games/romhacking/nds/graphics/';
+const NDS_SOUND = '/games/romhacking/nds/sound/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -315,6 +316,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
     NDS_FS,
     NDS_TEXT,
     NDS_GFX,
+    NDS_SOUND,
   ]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
@@ -374,6 +376,11 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(po.locator('[data-score]')).toHaveText(/^\d+$/);
   await expect(po.locator('[data-glyph]')).toHaveCount(4);
   await expect(po.locator('select').first()).toBeHidden();
+  await page.goto(NDS_SOUND);
+  const ss = page.locator('[data-sseq-steps]');
+  await expect(ss.locator('[data-list] li')).toHaveCount(32);
+  await expect(ss.locator('[data-now]')).toContainText('명령 32개');
+  await expect(ss.getByRole('button', { name: '다음 명령' })).toBeHidden();
   await page.goto(MUSIC);
   const seam = page.locator('[data-seam-lab]');
   await expect(seam.locator('[data-out="score"]')).toHaveText('0.887');
@@ -639,6 +646,28 @@ test('pixel order widget redraws the glyphs and scores the chosen order', async 
   await expect(widget.locator('[data-error]')).toBeHidden();
   await expect(widget.locator('[data-order]')).toHaveText('6, 4, 0, 2');
   await expect(widget.locator('[data-glyph]').first().locator('rect').first()).toBeAttached();
+  await noHorizontalOverflow(page);
+});
+
+test('SSEQ widget reads one command at a time and moves the cursor on the score', async ({ page }) => {
+  await page.goto(NDS_SOUND);
+  const widget = page.locator('[data-sseq-steps]');
+  await expect(widget).toHaveClass(/is-live/);
+  const next = widget.getByRole('button', { name: '다음 명령' });
+  await next.click();
+  await expect(widget.locator('li.is-current')).toContainText('쓰는 트랙 표시 0x01FF');
+  for (let i = 0; i < 15; i++) await next.click();
+  await expect(widget.locator('li.is-current')).toContainText('음 C4(60), 세기 100, 길이 767틱');
+  await expect(widget.locator('[data-now]')).toContainText('0틱');
+  await next.click();
+  await next.click();
+  await next.click();
+  await expect(widget.locator('li.is-current')).toContainText('음 C5');
+  await expect(widget.locator('[data-now]')).toContainText('192틱(3.43초)');
+  await expect(widget.locator('rect.is-on')).toHaveCount(3);
+  await expect(widget.locator('[data-cursor]')).toHaveAttribute('visibility', 'visible');
+  await widget.getByRole('button', { name: '처음으로' }).click();
+  await expect(widget.locator('li.is-current')).toHaveCount(0);
   await noHorizontalOverflow(page);
 });
 

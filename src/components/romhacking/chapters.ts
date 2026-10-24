@@ -363,7 +363,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
         KAKUSEI_PATCH,
         '버전마다 바꾼 곳에 소리가 없어 노트에서 다루지 않습니다. 곡 표와 곡 재생 함수는 이 장 본문에 있습니다.',
       ),
-      gap(GHOST_TRICK_PATCH, 'DS의 소리 구조는 이 장과 다릅니다. 음악은 SDAT 시퀀스로 들어 있습니다(14장).'),
+      gap(GHOST_TRICK_PATCH, 'DS의 소리 구조는 이 장과 다릅니다. 음악은 SDAT 시퀀스로 들어 있습니다(18장).'),
     ],
     tools: [{ command: 'krpatch sfc lua', anchor: 'sfc-lua-mesen-2mesence-스크립트' }],
   },
@@ -468,6 +468,23 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       gap(SMRPG_PATCH, '슈퍼 패미콤 게임의 타일과 폰트는 7장에서 다룹니다.'),
     ],
     tools: [{ command: 'krpatch linear', anchor: 'linear-선형-비트맵' }],
+  },
+  {
+    order: 18,
+    slug: 'sound',
+    platform: 'nds',
+    title: '소리 ③ 닌텐도 DS 사운드 구조',
+    summary:
+      'DS의 소리는 ARM7이 채널 16개로 울립니다. 음악 파일 SDAT의 악보(SSEQ)·악기 표·파형을 따라가고, 악보의 명령 바이트를 하나씩 읽어 틱이 시간이 되는 과정을 봅니다.',
+    ready: true,
+    notes: [note(GHOST_TRICK_PATCH, 'making-bgm', 'SSEQ 시퀀스를 합성해 만든 반복 음악')],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '슈퍼 패미콤의 소리 구조는 13장에서 다룹니다.'),
+      gap(KAKUSEI_PATCH, '슈퍼 패미콤의 소리 구조는 13장에서 다룹니다.'),
+      gap(OTOGIRISOU_PATCH, '슈퍼 패미콤의 소리 구조는 13장에서 다룹니다.'),
+      gap(SMRPG_PATCH, '슈퍼 패미콤의 소리 구조는 13장에서 다룹니다.'),
+    ],
+    tools: [{ command: 'krpatch nds unpack', anchor: 'nds-unpack-nds-pack-파일시스템을-폴더로-다시-롬으로' }],
   },
 ];
 

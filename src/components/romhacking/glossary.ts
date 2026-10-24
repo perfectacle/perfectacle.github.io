@@ -26,6 +26,7 @@ type Where =
   | 'nds/filesystem'
   | 'nds/text'
   | 'nds/graphics'
+  | 'nds/sound'
   | 'music-loop';
 
 export interface GlossaryEntry {
@@ -592,6 +593,21 @@ const RAW: [string, string, Where, string, string][] = [
     'DS에서 타일과 팔레트로 2D 화면을 그리는 회로. A·B 둘이 화면을 하나씩 맡습니다',
   ],
   ['선형 비트맵', 'linear bitmap', 'nds/graphics', 'fonts', '8×8 타일로 자르지 않고 픽셀을 한 줄씩 늘어놓은 그림'],
+  [
+    'SDAT',
+    'sound data archive',
+    'nds/sound',
+    'sdat',
+    '닌텐도 DS 게임이 소리를 모아 두는 파일. 악보·악기 표·파형이 함께 들어 있습니다',
+  ],
+  [
+    'SSEQ',
+    'sound sequence',
+    'nds/sound',
+    'sseq',
+    'DS의 악보 형식. 트랙마다 음표·쉼표·악기 같은 명령 바이트가 줄지어 있습니다',
+  ],
+  ['틱', 'tick', 'nds/sound', 'sseq', '악보의 시간 단위. DS의 SSEQ는 4분음표 하나가 48틱입니다'],
   ['LCP', 'Largest Contentful Paint', 'music-loop', 'web', '첫 화면에서 가장 큰 요소가 그려지기까지의 시간'],
 ];
 

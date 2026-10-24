@@ -1,0 +1,206 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import Figure from '../../../../components/romhacking/Figure.astro';
+import SseqSteps from '../../../../components/romhacking/SseqSteps.astro';
+import { GHOST_TRICK_PATCH, analysisUrl, sourceFileUrl } from '../../../../lib/kr-patches.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+
+const references = [
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dssound',
+    label: 'GBATEK, DS Sound',
+    note: '채널 16개, 채널마다 PCM8·PCM16·IMA-ADPCM, 사각파는 8–13번, 잡음은 14–15번, 소리 레지스터는 ARM7 쪽',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dssoundfilessdatsounddataarchive',
+    label: 'GBATEK, DS Sound Files - SDAT',
+    note: 'SYMB·INFO·FAT·FILE 블록과 시퀀스·악기 표 정보 칸의 형식',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dssoundfilessseqsoundsequence',
+    label: 'GBATEK, DS Sound Files - SSEQ',
+    note: '명령 바이트 표, 4분음표 48틱, ARM7 타이머(64 × 2,728클록)마다 템포를 더해 240을 넘으면 한 틱 진행',
+  },
+  {
+    href: sourceFileUrl(GHOST_TRICK_PATCH, 'tools/sseq_render.py'),
+    label: 'kr-patches, 고스트 트릭 tools/sseq_render.py',
+    note: '이 곡이 쓰는 명령과 악기 종류, 엔벨로프·음량 계산, IMA-ADPCM 풀기',
+  },
+  {
+    href: analysisUrl(GHOST_TRICK_PATCH),
+    label: 'kr-patches, 고스트 트릭 docs/ANALYSIS.md 7장',
+    note: 'BGM054_B의 도입·반복 틱, 녹음과 합성의 반복 길이 차이',
+  },
+];
+const note = notePath(GHOST_TRICK_PATCH);
+const blocks = [
+  { kind: 'SSEQ', count: '51', text: '시퀀스(악보). 곡 하나에 하나' },
+  { kind: 'SSAR', count: '2', text: '시퀀스 묶음. 효과음처럼 짧은 시퀀스 여럿' },
+  { kind: 'SBNK', count: '537', text: '악기 표(뱅크). 악기 번호마다 어느 파형을 어떤 음 높이·엔벨로프로 울릴지' },
+  { kind: 'SWAR', count: '2', text: '파형 묶음. 실제 소리 표본' },
+];
+---
+
+<GuideChapter platform="nds" slug="sound" references={references}>
+  <h2 id="arm7">
+    소리는 ARM7이 맡는다 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    슈퍼 패미콤은 소리 전용 CPU(SPC700)가 따로 있고, 본체 CPU와는 포트 네 개로만 주고받았습니다(
+    <a href={chapterHref(13)}>13장</a>). DS는 두 CPU 가운데 ARM7이 소리를 맡습니다. 소리 칩의 레지스터는 ARM7에서만
+    보이고, ARM7에서 도는 사운드 드라이버가 악보를 읽어 채널마다 「이 주소의 표본을 이 높이와 음량으로 울려라」를 적어
+    넣습니다.
+  </p>
+  <p>
+    DS의 소리 채널은 16개입니다. 채널마다 메모리의 표본을 8비트·16비트 PCM이나 IMA-ADPCM(4비트 압축)으로 읽어 울리고,
+    8–13번은 사각파, 14–15번은 잡음도 낼 수 있습니다. 게임 음악의 음 하나는 그때 비어 있는 채널 하나에 걸립니다.
+  </p>
+
+  <h2 id="sdat">
+    음악 파일 SDAT <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    닌텐도 SDK로 만든 게임은 소리를 대개 <code>.sdat</code> 파일 하나에 모아 둡니다. 고스트 트릭은{' '}
+    <code>sound_data.sdat</code>(15,257,056바이트)입니다. 파일 안에도 15장의 롬처럼 이름 표(SYMB), 정보 표(INFO), 위치
+    표(FAT), 내용(FILE)이 있어서, 곡 이름으로 정보를 찾고 정보 표의 파일 번호로 내용을 찾습니다.
+  </p>
+  <div class="table-wrap" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">종류</th>
+          <th scope="col">고스트 트릭</th>
+          <th scope="col">하는 일</th>
+        </tr>
+      </thead>
+      <tbody>
+        {blocks.map(b => (
+          <tr>
+            <th scope="row">{b.kind}</th>
+            <td>{b.count}개</td>
+            <td class="wrap">{b.text}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    한글패치 페이지의 배경 음악은 37번 시퀀스 <code>SEQ_GHOST_BGM054_B</code>입니다. 정보 표의 이 곡 칸은 「파일 37번,
+    악기 표 534번, 음량 127」을 가리킵니다. 곡을 울리려면 악보(SSEQ), 악기 표(SBNK), 그 악기 표가 가리키는 파형
+    묶음(SWAR) 셋이 모두 필요합니다.
+  </p>
+  <Figure caption="곡 하나를 울리려면 SDAT 안의 세 가지를 차례로 따라갑니다." max={600}>
+    <svg viewBox="0 0 360 120" role="img" aria-labelledby="sd-t sd-d">
+      <title id="sd-t">악보, 악기 표, 파형</title>
+      <desc id="sd-d">
+        SSEQ 악보의 음표가 악기 번호와 음 높이를 정하고, SBNK 악기 표가 그 악기의 파형과 엔벨로프를 정하고, SWAR 파형
+        묶음의 표본이 소리 채널로 간다.
+      </desc>
+      <rect class="dg-accent" x="8" y="20" width="100" height="56" rx="8"></rect>
+      <text class="dg-text dg-bold" x="58" y="44" text-anchor="middle">
+        SSEQ
+      </text>
+      <text class="dg-small" x="58" y="64" text-anchor="middle">
+        악보: 언제 어느 음
+      </text>
+      <rect class="dg-cool" x="130" y="20" width="100" height="56" rx="8"></rect>
+      <text class="dg-text dg-bold" x="180" y="44" text-anchor="middle">
+        SBNK
+      </text>
+      <text class="dg-small" x="180" y="64" text-anchor="middle">
+        악기: 파형·엔벨로프
+      </text>
+      <rect class="dg-warm" x="252" y="20" width="100" height="56" rx="8"></rect>
+      <text class="dg-text dg-bold" x="302" y="44" text-anchor="middle">
+        SWAR
+      </text>
+      <text class="dg-small" x="302" y="64" text-anchor="middle">
+        파형: 소리 표본
+      </text>
+      <path class="dg-arrow" d="M110 48h16" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M232 48h16" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="180" y="104" text-anchor="middle">
+        → 빈 소리 채널에 걸어 울림
+      </text>
+    </svg>
+  </Figure>
+
+  <h2 id="sseq">
+    악보 SSEQ: 명령 바이트의 줄 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    SSEQ는 MIDI를 바꿔 만든 악보입니다. 트랙마다 명령 바이트가 줄지어 있고, 첫 바이트가 0x00–0x7F면 음표(그 값이 음
+    높이, 60이 가운데 도), 0x80이면 쉼표, 그 밖은 악기 바꾸기·음량·팬·템포 같은 명령입니다. 시간은 틱으로 세고, 4분음표
+    하나가 48틱입니다.
+  </p>
+  <p>
+    이 곡은 트랙마다 처음에 <code>C7 00</code>(폴리)을 둡니다. 이 설정에서는 음표 명령이 「이 길이만큼 울려라」만 적고
+    바로 다음 명령으로 넘어가서, 시간을 넘기는 것은 쉼표뿐입니다(<code>C7 01</code> 모노에서는 음표가 제 길이만큼
+    기다립니다). 그래서 음표 둘을 이어 적으면 화음이 되고, 그 뒤의 쉼표 192틱이 한 마디를 넘깁니다. 길이 값은 7비트씩
+    나눠 적고, 위 비트가 1이면 다음 바이트가 이어집니다. <code>85 7F</code>는 5 × 128 + 127 = 767틱입니다.
+  </p>
+  <SseqSteps />
+  <p>
+    첫 트랙은 <code>FE FF 01</code>로 트랙 0–8을 쓴다고 알리고, <code>93</code> 명령 여덟 번으로 트랙 1–8이 시작할
+    위치를 정합니다. 그 뒤 템포 70, 악기 0번을 고르고 음을 적기 시작합니다. 트랙 아홉 개가 같은 틱을 세며 나란히
+    진행합니다.
+  </p>
+  <Deeper title="틱이 실제 시간이 되기까지">
+    <p>
+      시퀀서는 ARM7 타이머로 약 5.21ms마다 깨어납니다(33,513,982Hz ÷ (64 × 2,728) ≈ 191.96Hz). 깨어날 때마다 템포 값을
+      더하고, 합이 240 이상이 되면 240을 빼고 악보를 한 틱 진행합니다. 템포 70이면 1초에 191.96 × 70 ÷ 240 ≈
+      55.99틱입니다.
+    </p>
+    <p>
+      BGM054_B는 모든 트랙이 도입 4,608틱 뒤 3,072틱을 되풀이합니다. 박자로 계산하면 3,072 ÷ 48 = 64박, 템포 70에서
+      54.857초인데, 실제 타이머로는 3,072 × 240 ÷ (70 × 191.956) ≈ 54.870초입니다. 반복 구간을 표본 단위로 맞출 때는 이
+      13ms 차이가 커서, 합성 도구는 실제 타이머 값을 씁니다.
+    </p>
+    <p>
+      음의 세기 변화는 악기마다 정한 엔벨로프(어택·디케이·서스테인·릴리스)를 같은 주기로 갱신해 만듭니다. 고스트 트릭의
+      이 곡이 쓰는 악기 종류는 표본 하나로 모든 음을 내는 것(종류 1, 흔히 PCM 악기라 부름), 음 높이마다 다른 표본(드럼
+      세트, 0x10), 음역을 나눠 표본을 바꾸는 것(키 분할, 0x11) 세 가지입니다. 「PCM」은 악기 종류의 이름일 뿐이고,
+      표본의 저장 형식은 모두 IMA-ADPCM입니다.
+    </p>
+  </Deeper>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>고스트 트릭: 소리는 바꾸지 않았다</h3>
+  <p>
+    v1.1과 v1.2 모두 <code>sound_data.sdat</code>를 일본판과 바이트까지 같게 둡니다. 번역에 소리를 고칠 일이 없었습니다.
+  </p>
+  <h3>한글패치 페이지의 배경 음악: 녹음 대신 합성</h3>
+  <p>
+    다른 게임 페이지는 에뮬레이터 소리를 녹음해 반복 구간을 찾았습니다(<a href={chapterHref(14)}>14장</a>). 이 곡은
+    녹음으로는 이음매가 맞지 않았습니다. 녹음본은 반복할 때마다 소리가 조금씩 달랐고, 녹음에서 상관으로 잡은 반복 길이는
+    55.51초로 실제 54.87초와 달랐습니다. 반복 한 바퀴가 시퀀서 갱신 주기로 10,532.57번이라 정수가 아니어서, 회차마다
+    틱과 엔벨로프 갱신이 어긋나는 것도 이유일 수 있습니다.
+  </p>
+  <p>
+    그래서 위의 형식대로 악보·악기 표·파형을 직접 읽어 합성했습니다. 반복 한 바퀴가 정수 개 표본이 되게 틱 간격을
+    맞추니, 도입부 음의 꼬리가 사라진 뒤로는 첫 반복과 둘째 반복이 표본 하나까지 같아졌습니다. 그 첫 지점(83.59초)을
+    반복 시작으로 두었습니다(
+    <a href={`${note}#making-bgm`}>노트</a>). 곡 후보를 고를 때는 정보 표의 모든 곡 칸을 한 곡으로 바꾸고 효과음 음량을
+    0으로 만든 시험 롬을 곡마다 만들어 녹음했습니다.
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    SDAT를 꺼내고 kr-patches 저장소의 고스트 트릭 도구로 곡을 합성합니다. <code>nds/ghost-trick</code> 폴더에서 툴킷과
+    numpy가 깔린 파이썬(저장소 README의 <code>../../.venv/bin/python</code>)으로 실행합니다.
+  </p>
+  <pre tabindex="0"><code>krpatch nds unpack game.nds work/
+../../.venv/bin/python tools/sseq_render.py work/data/sound_data.sdat 37 bgm054_b.wav --intro 4608 --loop 3072
+# 같은 이름의 .json 에 loopStart·loopEnd(초)가 적힌다</code></pre>
+  <p>
+    곡 하나만 효과음 없이 나오는 시험 롬을 만들어 200초를 녹음하는 도구도 있습니다. 결과는{' '}
+    <code>out/37_SEQ_GHOST_BGM054_B.wav</code>입니다. desmume libretro 코어를 README대로 <code>compat/cores/</code>에
+    빌드해 두어야 합니다.
+  </p>
+  <pre tabindex="0"><code>../../.venv/bin/python tools/bgm_dump.py game.nds out/ 37 --quiet</code></pre>
+</GuideChapter>
