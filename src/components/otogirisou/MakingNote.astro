@@ -2,8 +2,11 @@
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import MakingIntro from './MakingIntro.astro';
 import NoteRelated from '../romhacking/NoteRelated.astro';
+import Deeper from '../romhacking/Deeper.astro';
+import Figure from '../romhacking/Figure.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import MakingSources from '../kr-patch/MakingSources.astro';
+import { chapterBySlug, chapterPath, type GuidePlatform } from '../romhacking/chapters';
 import { sourceUrl, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
@@ -14,6 +17,8 @@ const { patch } = Astro.props;
 const base = patch.path;
 const img = (name: string) => `${base}/images/making/${name}`;
 const source = sourceUrl(patch);
+const guide = (platform: GuidePlatform, slug: string, hash = '') =>
+  `${chapterPath(chapterBySlug(platform, slug))}${hash && `#${hash}`}`;
 
 const memories = [
   {
@@ -54,12 +59,129 @@ const codes = [
   { code: '{39}…{3D}', text: '음악·효과음 재생과 정지' },
 ];
 
+// The first sentence of the v1.0 script at file 0x100018 (docs/ANALYSIS.md 3장).
+const firstLine = [
+  { bytes: '01 D8', ch: '여' },
+  { bytes: '04 85', ch: '름' },
+  { bytes: '01 CF', ch: '의' },
+  { bytes: '04 DF', ch: '공백' },
+  { bytes: '04 95', ch: '해' },
+  { bytes: '01 BA', ch: '질' },
+  { bytes: '01 B9', ch: '녘' },
+  { bytes: '05 C7', ch: '.' },
+  { bytes: '10 00', ch: '{00}', control: true },
+];
+
+// Scenario start table $02:A627 in v1.2, three little-endian LoROM addresses (docs/ANALYSIS.md 3장).
+const starts = [
+  { n: '0', bytes: '00 80 20', addr: '$20:8000' },
+  { n: '1', bytes: '95 D3 2E', addr: '$2E:D395' },
+  { n: '2', bytes: 'A8 EA 25', addr: '$25:EAA8' },
+];
+
+// Glyph 「여」 (code $1D8) from the v1.1 font in bank $1F, read with tools/font.py: 11 rows of 9 bits.
+const glyphRows = [
+  '011110001',
+  '100001001',
+  '100001111',
+  '100001001',
+  '100001001',
+  '100001001',
+  '100001111',
+  '100001001',
+  '100001001',
+  '011110001',
+  '000000001',
+];
+
+// Banks of the three ROMs (docs/ANALYSIS.md 1장 롬 지도), drawn 4.3px per 32KB bank.
+const bankX = (bank: number) => 78 + bank * 4.3;
+const romRows = [
+  {
+    label: '일본판',
+    size: '1MB',
+    segs: [
+      { from: 0x00, to: 0x15, cls: 'dg-cool' },
+      { from: 0x15, to: 0x1f, cls: 'dg-warm' },
+      { from: 0x1f, to: 0x20, cls: 'dg-cell' },
+    ],
+  },
+  {
+    label: 'v1.0',
+    size: '2MB',
+    segs: [
+      { from: 0x00, to: 0x15, cls: 'dg-cool' },
+      { from: 0x15, to: 0x1f, cls: 'dg-cell dg-dash' },
+      { from: 0x1f, to: 0x20, cls: 'dg-cell' },
+      { from: 0x20, to: 0x36, cls: 'dg-warm' },
+      { from: 0x36, to: 0x40, cls: 'dg-cell dg-dash' },
+    ],
+  },
+  {
+    label: 'v1.2',
+    size: '2MB',
+    segs: [
+      { from: 0x00, to: 0x15, cls: 'dg-cool' },
+      { from: 0x15, to: 0x1f, cls: 'dg-accent' },
+      { from: 0x1f, to: 0x20, cls: 'dg-cell' },
+      { from: 0x20, to: 0x36, cls: 'dg-warm' },
+      { from: 0x36, to: 0x40, cls: 'dg-cell dg-dash' },
+    ],
+  },
+];
+const romLegend = [
+  { cls: 'dg-cool', text: '프로그램·그림' },
+  { cls: 'dg-warm', text: '대본' },
+  { cls: 'dg-cell', text: '폰트($1F)' },
+  { cls: 'dg-accent', text: 'v1.1·v1.2 코드와 표' },
+  { cls: 'dg-cell dg-dash', text: '0' },
+];
+
+// SRAM $70:0000-$70:1FFF (docs/ANALYSIS.md 2장·6장). Slots are 0x5E3 bytes from $70:0020.
+const sram = [
+  { at: '$70:0000', text: '헤더 32바이트. 덮어쓰면 게임이 슬롯을 지웁니다', cls: 'dg-cell' },
+  { at: '$70:0020', text: '슬롯 0 · 플레이 중 작업 사본', cls: 'dg-cool' },
+  { at: '$70:0603', text: '슬롯 1', cls: 'dg-warm' },
+  { at: '$70:0BE6', text: '슬롯 2', cls: 'dg-warm' },
+  { at: '$70:11C9', text: '슬롯 3 · $70:17AB까지', cls: 'dg-warm' },
+  { at: '$70:1800', text: 'v1.2 기록 · 표식 $514C, 슬롯마다 16바이트', cls: 'dg-accent' },
+  { at: '$70:1850', text: '쓰지 않음 · $70:1FFF까지', cls: 'dg-cell dg-dash' },
+];
+
+const slotFields = [
+  { at: '$700024', text: '회차' },
+  { at: '$700026', text: '골라 본 선택지 수' },
+  { at: '$700028', text: '페이지 수' },
+  { at: '$70002A–$7003D5', text: '되감기용 페이지 시작 위치, 4바이트씩 235개까지' },
+  { at: '$7003D6–', text: '대본 변수 0x1A4바이트. 아래 3비트가 값, 위 5비트가 고른 보기' },
+  { at: '$7005AC', text: '이어서 읽을 위치 (24비트). $7005AF는 바이트 안 비트 번호' },
+  { at: '$7005B5', text: 'v1.1 표식 $C311 (게임은 쓰지 않던 2바이트)' },
+  { at: '$7005D5', text: '주인공 이름' },
+];
+
 const recordLayout = [
   { offset: '+0', size: '4바이트', text: '이번 회차에 읽은 장 (장 하나가 1비트)' },
   { offset: '+4', size: '4바이트', text: '지금까지 읽은 장' },
   { offset: '+8', size: '4바이트', text: '본 엔딩' },
   { offset: '+12', size: '1바이트', text: '마지막으로 읽은 장 (책갈피에 표시)' },
   { offset: '+13', size: '2바이트', text: '장에 들어갈 때의 갈래 변수와 그 유무' },
+];
+
+// Hook points as built (docs/ANALYSIS.md 5장 "후킹 지점 전체"): original Japanese bytes and the v1.2 bytes.
+const hooks = [
+  { at: '$00:A777', from: 'C2 30 18 AD 83 1A', to: '22 00 80 1E…', what: '단어 단위 줄바꿈' },
+  { at: '$02:A54F', from: 'A5 13 9F AF 05 70', to: '22 00 80 18…', what: '새 슬롯에 v1.1 표식' },
+  { at: '$02:A83B', from: 'AD 5D 00 8F B1 05', to: '22 13 80 18…', what: '자동 저장 때 표식' },
+  { at: '$02:A6D3', from: 'AF AC 05 70', to: '22 22 80 18', what: '옛 세이브 위치 변환' },
+  { at: '$00:9CF9', from: 'A5 CC 29 00 80', to: '22 45 84 1A EA', what: '입력 대기 중 Select → 플로차트' },
+  { at: '$02:A79C', from: 'AD BF 1B 0A 0A', to: '22 B7 83 1A EA', what: '읽은 장 기록, 메뉴 안 자동 저장 건너뜀' },
+  { at: '$02:C120', from: 'A5 10 85 52', to: '5C D2 83 1A', what: '점프할 때 메뉴 값 되돌리기' },
+  { at: '$02:A56F', from: 'C2 30 29 FF 00', to: '22 97 82 1A EA', what: '새 회차 = 엔딩 기록' },
+  { at: '$02:A4D1', from: '29 FF 00 85 30', to: '22 65 82 1A EA', what: '새 슬롯 기록 초기화' },
+  { at: '$01:F3BB', from: 'C2 30 AD BF 1B', to: '22 4C 80 1A EA', what: '되감기 들어갈 때 노란 글씨' },
+  { at: '$01:F421', from: 'A9 C0 00 8D 2D 0A', to: '22 5B 80 1A EA EA', what: '되감기 나올 때 색 되돌리기' },
+  { at: '$02:B955', from: '20 6B B9 20 89 B9 …', to: '22 87 80 1A EA…', what: '책갈피 화면에 마지막 장 제목' },
+  { at: '$00:CE3F', from: '22 00 80 02', to: '22 14 80 1A', what: '켤 때 SRAM 기록 초기화' },
 ];
 
 const debugSteps = [
@@ -129,33 +251,36 @@ const toolMap = [
 ];
 
 const sectionTitles: Record<string, string> = {
-  script: '2. 대사',
-  lap2: '3. 2회차 멈춤',
-  'a-wait': '4. A 버튼',
-  font: '5. 글자표',
-  wordwrap: '6. 줄바꿈',
-  retranslate: '7. 재번역',
-  'save-compat': '8. 옛 세이브',
-  menu: '11. 메뉴',
-  flowchart: '14. 플로차트',
-  readers: '10. 대본 읽는 손',
-  'scene-music': '12. 배경과 음악',
-  testing: '17. 확인',
-  next: '18. 다음 사람에게',
+  script: '3. 대사',
+  lap2: '3. 대사 · 2회차 멈춤',
+  'a-wait': '3. 대사 · A 버튼',
+  retranslate: '3. 대사 · 재번역',
+  font: '4. 글자',
+  wordwrap: '4. 글자 · 줄바꿈',
+  'save-compat': '7. 세이브 · 옛 세이브',
+  menu: '8. 고유 문제 · 메뉴',
+  flowchart: '8. 고유 문제 · 플로차트',
+  readers: '8. 고유 문제 · 대본 읽는 손',
+  'scene-music': '8. 고유 문제 · 배경과 음악',
+  testing: '9. 확인 방법',
+  next: '10. 다음 사람에게',
 };
 
 const unverified = [
   '실기(실제 슈퍼 패미컴, 플래시 카트리지)에서 돌려 본 기록은 작업 노트에 없습니다. 위 에뮬레이터 결과가 전부입니다.',
   '줄 수, 입력 대기, 점프는 도구로 모든 갈래를 계산했습니다. 화면으로 확인한 것은 장 30개의 첫 화면, 시나리오 3개를 3만 프레임씩 진행한 결과, 1~4회차 시작입니다.',
-  'WRAM 빈 곳은 쓰기 감시를 돌린 장면에서만 확인했습니다(16절). 감시에 걸리지 않은 장면이 그곳을 쓸 가능성은 남아 있습니다.',
+  'WRAM 빈 곳은 쓰기 감시를 돌린 장면에서만 확인했습니다(2절 「코드를 둔 자리」). 감시에 걸리지 않은 장면이 그곳을 쓸 가능성은 남아 있습니다.',
   '태스크 1($1989)이 소리를 미리 준비하는 태스크라는 것은 동작을 보고 한 해석입니다. 원작 개발 의도는 확인할 수 없습니다.',
   '{23}·{24}가 읽던 장면 표와 개수 표는 가리키는 주소가 0으로 지워져 있어, 원래 어떤 장면을 고를 수 있었는지는 알 수 없습니다.',
 ];
 
-const v10Uploads = [
-  { n: '1', rom: '$16:8000', size: '0x1200', vram: '$5700', when: '켠 직후' },
-  { n: '2', rom: '$16:A67B', size: '0x580', vram: '$4840', when: '책갈피 화면 앞' },
-  { n: '3', rom: '$16:AC7B', size: '0x1C0', vram: '$4330', when: '이름 입력 화면 앞' },
+const limits = [
+  '선택지 화면에 한 번에 보이는 보기는 5개까지입니다. 6개를 넣으면 화면이 깨집니다. 장 목록을 한 쪽에 3개씩 나눈 이유입니다.',
+  '폰트 그룹 표는 58칸이 한계이고 지금 48칸을 씁니다. 새 글자를 넣을 칸은 10개 남았습니다.',
+  '폰트 디코더는 줄마다 3바이트를 읽고 뱅크 $20으로 넘어가지 못합니다. 그룹 데이터 뒤에 2바이트 여유를 두고, 뱅크 $1F 뒤쪽에는 새 그룹 데이터만 두는 것이 안전해 보입니다(추정).',
+  '글자표의 ㅗ·ㅜ·ㅡ는 꼭지가 1픽셀이라, 드물게 쓰는 글자에 오독이 남아 있을 수 있습니다(추정).',
+  'しおり 단계가 0인 옛 장 이동 시험용 세이브로 대본 5,904줄 갈래에서 이어하면 그 선택지의 보기가 모두 가려져 $00:0000으로 폭주합니다. v1.1도 같고, 정상 플레이로는 갈 수 없는 상태입니다.',
+  'Mesen-S 코어는 일본판 원본까지 바로 종료해서, 이 패치가 그 코어에서 도는지는 판정하지 못했습니다.',
 ];
 
 const freeSpace = [
@@ -163,6 +288,12 @@ const freeSpace = [
   { range: '$1C:E628–$1D:FFFF', note: '플로차트 데이터 뒤부터 뱅크 하나 넘게' },
   { range: '$18:81D0–$18:FFFF', note: '세이브 호환 코드 뒤' },
   { range: '$35:AF67–$3F:FFFF', note: '대본 뒤. 대본이 늘어날 자리' },
+];
+
+const v10Uploads = [
+  { n: '1', rom: '$16:8000', size: '0x1200', vram: '$5700', when: '켠 직후' },
+  { n: '2', rom: '$16:A67B', size: '0x580', vram: '$4840', when: '책갈피 화면 앞' },
+  { n: '3', rom: '$16:AC7B', size: '0x1C0', vram: '$4330', when: '이름 입력 화면 앞' },
 ];
 
 const toolVersions = [
@@ -182,9 +313,44 @@ const toolVersions = [
   toolkit="IPS·체크섬·역어셈블러·문자 인식·libretro 실행과 Lua 스크립트"
 />
 
-<h2 id="making-basics">1. 배경지식</h2>
+<h2 id="making-about">
+  1. 이 노트에서 <span class="layer-badge layer-easy">쉽게</span>
+</h2>
+<NoteRelated patch={patch} id="making-about" />
+<p>
+  제절초는 글과 그림, 소리로 이야기를 읽어 가는 사운드 노벨입니다. 한글패치는 세 번 나왔고, 버전마다 롬의 다른 곳을
+  고쳤습니다.
+</p>
+<ul class="notes">
+  <li>
+    <strong>v1.0 (2016)</strong>: 압축된 일본어 대본을 버리고 롬을 1MB에서 2MB로 늘려 한국어 대본을 넣었습니다(
+    <a href="#making-map">2절</a>, <a href="#making-script">3절</a>).
+  </li>
+  <li>
+    <strong>v1.1</strong>: v1.0의 버그를 롬에서 원인을 찾아 고쳤습니다. <a href="#making-lap2">2회차 멈춤</a>,
+    <a href="#making-a-wait">A 버튼 없이 넘어가는 화면</a>, <a href="#making-wordwrap">단어 중간에서 끊기는 줄</a>이고,
+    대본을 <a href="#making-retranslate">원문과 대조해 다시 다듬고</a>
+    <a href="#making-font">새 글자 75자</a>를 그려 넣었습니다. <a href="#making-save-compat">옛 세이브도 이어서</a>
+    읽을 수 있습니다.
+  </li>
+  <li>
+    <strong>v1.2</strong>: 원작에 없던 <a href={`${base}/#feature-chapter-list`}>장 목록</a>,
+    <a href={`${base}/#feature-ending-list`}>엔딩 목록</a>, <a href={`${base}/#feature-flowchart`}>플로차트</a>,
+    <a href={`${base}/#feature-rewind`}>되감은 페이지의 노란 글씨</a>를 엔진에 끼워 넣었습니다(
+    <a href="#making-unique">8절</a>).
+  </li>
+</ul>
+<p>
+  처음 읽는다면 가이드의 <a href={guide('common', 'rom-patch')}>0장 롬과 패치</a>,
+  <a href={guide('snes', 'banks')}>4장 주소와 뱅크</a>, <a href={guide('snes', 'text')}>8장 대사는 어떻게 저장되나</a>를
+  먼저 보면 이 노트의 주소와 바이트가 읽힙니다. 일본판 대본의 압축은{' '}
+  <a href={guide('common', 'huffman')}>10장 허프만</a>이, v1.2 기능을 끼워 넣은 방법은{' '}
+  <a href={guide('snes', 'hooking')}>6장 후킹</a>이 처음부터 설명합니다.
+</p>
+
+<h3 id="making-basics">배경지식</h3>
 <NoteRelated patch={patch} id="making-basics" />
-<h3>게임기 안의 메모리</h3>
+<h4>게임기 안의 메모리</h4>
 <div class="table-wrap" tabindex="0">
   <table>
     <thead>
@@ -208,18 +374,186 @@ const toolVersions = [
   </table>
 </div>
 
-<h3>주소 읽는 법</h3>
+<h4>주소 읽는 법</h4>
 <p>
   <code>$15:E401</code> 같은 SNES 주소는 CPU가 보는 <code>뱅크:주소</code>이고, <code>0xAE401</code> 같은 파일 오프셋은
-  롬 파일을 처음부터 센 위치입니다. 이 게임(LoROM)은 뱅크 하나가 롬의 32KB를 비춥니다.
+  롬 파일을 처음부터 센 위치입니다. 이 게임(LoROM)은 뱅크 하나가 롬의 32KB를 비춥니다. 계산은
+  <a href={guide('snes', 'banks', 'mapping')}>4장 「CPU 주소와 파일 오프셋은 다르다」</a>의 위젯으로 직접 해 볼 수 있고,
+  예에 이 주소가 들어 있습니다.
 </p>
 <pre tabindex="0"><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
 $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 
-<h3>대본은 글자와 명령의 줄</h3>
+<h4>후킹</h4>
 <p>
-  사운드 노벨의 대본은 글자 사이사이에 명령(제어 코드)이 섞인 하나의 긴 줄입니다. 게임은 이 줄을 앞에서부터 읽으며
-  글자는 화면에 찍고 명령은 실행합니다. 아래 표기는 이 글에서 쓰는 형식입니다.
+  원래 코드 사이에는 새 기능을 넣을 자리가 없습니다. 그래서 원래 코드의 한 지점을 "새 코드로 가라" 는 명령으로 덮어쓰고,
+  새 코드는 롬의 빈 공간에 둡니다. v1.1과 v1.2는 이런 지점을 스무 곳 넘게 바꿨습니다. 어셈블리 소스는 asar로 롬에
+  덮어씁니다. <a href={guide('snes', 'hooking', 'jump')}>6장 「다른 뱅크의 코드를 불렀다 돌아오기」</a>가 이 게임의
+  줄바꿈 후킹을 예로 설명합니다.
+</p>
+<pre tabindex="0"><code>org $009CF9      ; 입력 대기 중 X(되감기)를 확인하던 자리를
+    JSL SelCheck ; Select도 확인하는 새 코드로 보낸다</code></pre>
+
+<h2 id="making-map">
+  2. 롬 지도 <span class="layer-badge layer-easy">쉽게</span>
+</h2>
+<NoteRelated patch={patch} id="making-map" />
+<p>
+  롬 파일을 32KB씩 잘라 늘어놓으면 어디에 무엇이 있는지 한눈에 보입니다. 일본판은 1MB, 뱅크 32개입니다. 뒤쪽 열 개
+  뱅크에 압축된 대본이, 마지막 뱅크 <code>$1F</code>에 대사 폰트가 있습니다. v1.0은 압축을 풀어 크기가 두 배를 넘는
+  대본을 넣으려고 롬을 2MB로 늘리고, 늘린 뒤쪽 1MB에 한국어 대본을 두었습니다. 일본판 대본 자리는 0으로 비었고,
+  v1.1·v1.2는 그 빈자리에 새 코드와 표를 넣었습니다.
+</p>
+<Figure caption="세 롬을 뱅크(32KB)마다 한 칸으로 늘어놓은 지도. 일본판 대본은 $15:E401부터 시작합니다." max={640}>
+  <svg viewBox="0 0 360 236" role="img" aria-labelledby="map-t map-d">
+    <title id="map-t">일본판, v1.0, v1.2 롬 지도</title>
+    <desc id="map-d">
+      일본판 1MB는 $00–$14 프로그램과 그림, $15–$1E 허프만 대본, $1F 폰트입니다. v1.0 2MB는 같은 앞부분에서 일본판 대본
+      자리를 0으로 비우고, $20–$35에 한국어 대본을 넣고 $36–$3F는 0입니다. v1.2는 v1.0이 비운 $15–$1E 자리에 v1.1과 v1.2
+      코드와 표를 넣었습니다.
+    </desc>
+    {['$00', '$15', '$20', '$36', '$3F'].map(t => {
+      const b = parseInt(t.slice(1), 16) + (t === '$3F' ? 1 : 0);
+      return (
+        <text class="dg-small" x={bankX(b)} y="16" text-anchor={t === '$3F' ? 'end' : 'middle'}>
+          {t}
+        </text>
+      );
+    })}
+    {romRows.map((row, i) => (
+      <>
+        <text class="dg-text dg-bold" x="4" y={44 + i * 54}>
+          {row.label}
+        </text>
+        <text class="dg-small" x="4" y={60 + i * 54}>
+          {row.size}
+        </text>
+        {row.segs.map(s => (
+          <rect
+            class={s.cls}
+            x={bankX(s.from)}
+            y={28 + i * 54}
+            width={bankX(s.to) - bankX(s.from)}
+            height="34"
+            rx="2"
+          />
+        ))}
+      </>
+    ))}
+    <path class="dg-line dg-dash" d={`M${bankX(0x20)} 22V188`}></path>
+    <text class="dg-small" x={bankX(0x20) + 4} y="196">
+      1MB 경계
+    </text>
+    {romLegend.map((l, i) => (
+      <>
+        <rect class={l.cls} x={4 + (i % 3) * 120} y={206 + Math.floor(i / 3) * 16} width="12" height="10" rx="2" />
+        <text class="dg-small" x={20 + (i % 3) * 120} y={215 + Math.floor(i / 3) * 16}>
+          {l.text}
+        </text>
+      </>
+    ))}
+  </svg>
+</Figure>
+<p>
+  롬을 늘리면 헤더의 크기 바이트도 고쳐야 합니다. 헤더(<code>$00:FFC0</code>, 파일 0x7FC0)의 0x7FD7은 롬 크기를 적는
+  자리인데, v1.0은 롬을 2MB로 늘리고도 1MB를 뜻하는 <code>0A</code>를 그대로 두었습니다. v1.1이 2MB를 뜻하는{' '}
+  <code>0B</code>로 고치고 체크섬을 다시 계산했습니다. 크기 바이트와 미러, 체크섬이 왜 함께 바뀌는지는
+  <a href={guide('snes', 'expansion', 'header')}>11장 「헤더의 크기 바이트」</a>에 있고, 그 장의 위젯이 처음부터 이
+  게임의 1MB → 2MB를 보여 줍니다.
+</p>
+
+<h3 id="making-space">코드를 둔 자리</h3>
+<NoteRelated patch={patch} id="making-space" />
+<p>
+  v1.1과 v1.2의 코드와 표는 모두 v1.0이 일본판 대사를 0으로 지운 자리에 들어갔습니다. 롬을 더 늘리지 않아도 됐습니다.
+  WRAM은 6,000프레임을 플레이하며 게임이 쓰는 곳을 모두 기록한 뒤, 한 번도 쓰이지 않은 곳만 골라 메뉴 버퍼와 플로차트
+  작업 공간으로 썼습니다. 빈 공간을 찾는 일반적인 방법은{' '}
+  <a href={guide('snes', 'hooking', 'space')}>6장 「새 코드를 둘 빈 공간」</a>에 있습니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('rom-map.svg')}
+    width="860"
+    height="420"
+    alt="2MB 롬을 뱅크 64칸으로 그린 지도. 일본판 대사가 있던 $15–$1F 자리에 v1.1과 v1.2 코드가 들어가고, 늘린 1MB에 한글 대사가 있다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+</figure>
+<p>
+  v1.0도 같은 자리에 자기 것을 넣었습니다. 0으로 비운 자리 가운데 $16:806A–$16:AE4E만 다른 바이트로 채워져 있는데,
+  v1.0이 넣은 그래픽과 코드입니다. 그래픽은 <a href="#making-gfx">5절</a>에서 봅니다.
+</p>
+<Deeper title="v1.2가 쓰는 WRAM을 최종 롬으로 다시 확인한 방법">
+  <p>
+    장 시작 30곳, 엔딩 직전 18곳에서 이어지는 세이브와 시나리오 3개의 새 게임, 모두 51번을 1만 2천 프레임씩 돌렸습니다.
+    장 시작 세이브에서는 Select, 십자 키, X·Y, A를 섞어 플로차트와 메뉴를 오가게 했고, 나머지는 A를 연타했습니다.
+    세이브는 しおり 단계를 7로 맞춰 숨은 보기까지 모두 보이게 했습니다.
+  </p>
+  <p>
+    패치가 쓰는 구간($7F:C000–$7F:D8FF, $7F:FFE0–$7F:FFEF, $7E:1FF2–$7E:1FF3)에 패치 코드가 아닌 곳에서 쓴 것은 켤 때
+    $0000–$1FFF를 0으로 지우는 루프($00:8030)뿐이었습니다. WRAM 포트($2181–$2183)로 주소를 정하는 쓰기도 없었고, 51번
+    모두 $00:0000–$00:08FF로 뛰는 폭주가 없었습니다. WRAM은 켤 때 값이 정해져 있지 않아서, 패치의 표시는 0/1이 아니라
+    16비트 값(예: 줄바꿈 표시 <code>$5A3C</code>)으로 판정합니다.
+  </p>
+  <ToolFiles
+    items={[
+      { path: 'probe/wrange.lua (krpatch snes lua)', text: '플레이 중 한 번이라도 쓰인 WRAM 영역 기록' },
+      { path: 'probe/wdump.lua (krpatch snes lua)', text: 'WRAM 구간을 파일로 덤프' },
+    ]}
+  />
+</Deeper>
+
+<h3 id="making-free-space">남은 자리</h3>
+<p>
+  v1.2 롬에서 0이 길게 이어진 곳 중 큰 것입니다. 0이 이어졌다고 비어 있다는 뜻은 아닙니다. 표의 일부가 0일 수도 있으니,
+  쓰기 전에 패치 소스가 그 주소를 쓰는지 확인하세요.
+</p>
+<div class="table-wrap" tabindex="0">
+  <table>
+    <tbody>
+      {freeSpace.map(f => (
+        <tr>
+          <td>
+            <code>{f.range}</code>
+          </td>
+          <td class="wrap">{f.note}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<h2 id="making-script">
+  3. 대사 <span class="layer-badge layer-easy">쉽게</span>
+</h2>
+<NoteRelated patch={patch} id="making-script" />
+<p>
+  사운드 노벨의 대본은 글자 사이사이에 명령(제어 코드)이 섞인 하나의 긴 줄입니다. 대사마다 번호를 붙여 포인터 표로 찾는
+  RPG와 달리, 게임은 이 줄을 앞에서부터 읽으며 글자는 화면에 찍고 명령은 실행합니다. 이런 대본의 모양은
+  <a href={guide('snes', 'text', 'stream')}>8장 「번호 없이 한 줄로 이어진 대사」</a>가 이 게임을 예로 설명합니다.
+</p>
+<p>
+  한글패치 대본의 첫 문장을 롬에서 그대로 꺼내 보면 이렇습니다. <code>$20:8018</code>(파일 0x100018)부터 2바이트가 기호
+  하나입니다. 큰 자리 바이트가 먼저 오므로(<a href={guide('common', 'endian')}>2장 엔디안</a>)<code>01 D8</code>은
+  폰트의 472번(<code>$1D8</code>) 글자 「여」이고, <code>$1000</code> 이상은 제어 코드입니다.
+</p>
+<ul
+  class="byte-strip"
+  aria-label={`v1.0 대본 첫 문장 18바이트: ${firstLine.map(f => `${f.bytes} ${f.ch}`).join(', ')}`}
+>
+  {firstLine.map(f => (
+    <li class:list={{ 'is-warm': f.control }}>
+      <code>{f.bytes}</code>
+      <small>{f.ch}</small>
+    </li>
+  ))}
+</ul>
+<p>
+  「여름의 해질녘.」과 줄바꿈이 기호 9개, 18바이트입니다. 마지막 <code>10 00</code>이 줄바꿈 <code>{'{00}'}</code>이고,
+  그 앞 24바이트(파일 0x100000–0x100017)는 음악 페이드 인, 배경, 대본 변수를 정하는 제어 코드 넷입니다. 이 글에서 쓰는
+  제어 코드 표기는 이렇습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -235,29 +569,22 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     </tbody>
   </table>
 </div>
-
-<h3>후킹</h3>
 <p>
-  원래 코드 사이에는 새 기능을 넣을 자리가 없습니다. 그래서 원래 코드의 한 지점을 "새 코드로 가라" 는 명령으로 덮어쓰고,
-  새 코드는 롬의 빈 공간에 둡니다. v1.1과 v1.2는 이런 지점을 스무 곳 넘게 바꿨습니다. 어셈블리 소스는 asar로 롬에
-  덮어씁니다.
+  제어 코드가 무엇이고 인자를 어떻게 읽는지는{' '}
+  <a href={guide('snes', 'text', 'control')}>8장 「제어 코드: 글자가 아닌 명령」</a>에서 이 대본의 첫머리로 풀어 봅니다.
 </p>
-<pre tabindex="0"><code>org $009CF9      ; 입력 대기 중 X(되감기)를 확인하던 자리를
-    JSL SelCheck ; Select도 확인하는 새 코드로 보낸다</code></pre>
 
-<h2 id="making-script">2. 대사가 들어 있는 방식</h2>
-<NoteRelated patch={patch} id="making-script" />
+<h4>일본판은 비트 단위로 압축했다</h4>
 <p>
   일본판은 대사 전체를 허프만 부호로 압축해 비트 단위로 이어 붙였습니다. 자주 나오는 글자일수록 짧은 비트로 적는
   방식이라, 점프 주소도 바이트가 아니라 "기준점에서 몇 번째 비트" 로 적혀 있습니다. v1.0은 압축을 버리고 글자마다
-  2바이트로 적은 대사를 롬 뒤쪽에 새로 늘린 1MB에 넣었습니다. 대신 일본판 대사가 있던 자리는 0으로 비었는데, 이 자리가
-  나중에 v1.1과 v1.2의 코드가 들어갈 곳이 됐습니다.
+  2바이트로 적은 대사를 롬 뒤쪽에 새로 늘린 1MB에 넣었습니다.
 </p>
 <p>
-  대본의 첫 문장을 두 롬에서 그대로 꺼내 보면 차이가 보입니다. 일본판은 기준점(<code>$15:E401</code>)에서 126번째
-  비트부터 「夏の夕暮。」와 줄바꿈이 61비트에 들어 있습니다. 비트를 하나씩 읽어 허프만 트리를 따라 내려가다가 잎에
-  닿으면 글자 하나가 나옵니다. v1.0의 「여름의 해질녘.」은 <code>$20:8018</code>(파일 0x100018)부터 2바이트씩
-  18바이트입니다.
+  같은 첫 문장을 일본판에서 꺼내면, 기준점(<code>$15:E401</code>)에서 126번째 비트부터 「夏の夕暮。」와 줄바꿈이
+  61비트에 들어 있습니다. 비트를 하나씩 읽어 허프만 트리를 따라 내려가다가 잎에 닿으면 글자 하나가 나옵니다. 트리를
+  만드는 법부터 이 비트열을 한 비트씩 읽는 과정까지{' '}
+  <a href={guide('common', 'huffman', 'in-patch')}>10장 「실제 패치에서」</a>에 있습니다.
 </p>
 <figure class="paper">
   <ZoomImage
@@ -272,14 +599,24 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 </figure>
 <p>
   글자마다 길이가 다르니 일본판에서는 "몇 번째 글자" 를 바이트로 셀 수 없습니다. 그래서 점프 주소도 비트 번호입니다. 첫
-  선택지의 첫 보기는 일본판에서 3,109번째 비트, v1.0에서는 <code>$20:8349</code>로 갑니다. 대본 전체는 일본판이 약 30만
+  선택지의 첫 보기는 일본판에서 3,109번째 비트, v1.0에서는 <code>$20:8349</code>로 갑니다. v1.0의 점프 인자는 작은
+  자리부터 적은 3바이트 LoROM 주소라 롬에는 <code>49 83 20</code>으로 들어 있습니다. 대본 전체는 일본판이 약 30만
   바이트, v1.0이 694,995바이트입니다.
 </p>
-<p>
-  먼저 두 형식을 모두 읽는 파서를 만들고 대본을 6,730줄의 텍스트로 꺼냈습니다. 점프 대상이 되는 곳에서 줄을 나눴더니
-  일본어 대본과 한국어 대본이 줄 번호까지 똑같이 맞았습니다. 그다음 꺼낸 대본을 고치지 않고 다시 조립했을 때 v1.0 롬과
-  바이트 단위로 같아지는 것을 확인했습니다. 이게 맞아야 이후의 수정이 다른 곳을 망가뜨리지 않았다고 믿을 수 있습니다.
-</p>
+<Deeper title="두 형식을 읽는 파서와 바이트 단위 왕복 확인">
+  <p>
+    먼저 두 형식을 모두 읽는 파서를 만들고 대본을 6,730줄의 텍스트로 꺼냈습니다. 점프 대상이 되는 곳에서 줄을 나눴더니
+    일본어 대본과 한국어 대본이 줄 번호까지 똑같이 맞았습니다. 6,730줄 모두 제어 코드 열도 같습니다. 그다음 꺼낸 대본을
+    고치지 않고 다시 조립했을 때 v1.0 롬과 바이트 단위로 같아지는 것을 확인했습니다. 이게 맞아야 이후의 수정이 다른 곳을
+    망가뜨리지 않았다고 믿을 수 있습니다.
+  </p>
+  <p>
+    선택지 코드는 인자 수 자리에 <code>0x63</code>이라는 특별한 값이 들어 있습니다. 처리 루틴($00:9DAE)은 기호 3개를
+    읽은 뒤 (첫 기호 &amp; 7) − 1개의 점프 인자를 읽는데, 건너뛰기 루틴($00:A99F)은 기호를 2개만 읽습니다. 파서는 처리
+    루틴 쪽을 따라야 줄이 어긋나지 않습니다. 제어 코드의 분기표는 <code>$00:F390</code>, 인자 표는
+    <code>$00:F41E</code>에 2바이트씩 0x47개 있습니다.
+  </p>
+</Deeper>
 <ToolFiles
   items={[
     { path: 'tools/script.py', text: '일본판 허프만 비트열과 v1.0 2바이트 대사를 둘 다 읽는 파서' },
@@ -292,12 +629,60 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   ]}
 />
 
-<h2 id="making-lap2">3. 2회차에 멈추던 이유</h2>
+<h3 id="making-lap2">2회차에 멈추던 이유</h3>
 <NoteRelated patch={patch} id="making-lap2" />
 <p>
-  게임은 새 회차를 시작할 때 회차 수와 난수로 세 시나리오 중 하나를 고르고, 시작 주소 표($02:A627)에서 그 시나리오의 첫
-  위치를 읽습니다. 2번 시나리오는 2회차부터 뽑힙니다. v1.0은 표의 0번, 1번만 새 대사 위치로 바꾸고 2번은 일본판 값을
-  그대로 둬서, 2번이 뽑히면 엉뚱한 데이터를 대사로 읽었습니다.
+  이 게임에는 대사마다의 포인터 표가 없지만, 대본으로 들어가는 입구를 적은 표가 하나 있습니다. 새 회차를 시작할 때 회차
+  수와 난수로 세 시나리오 중 하나를 고르고, 시작 주소 표(<code>$02:A627</code>, 파일 0x12627)에서 그 시나리오의 첫
+  위치를 읽습니다. 칸마다 3바이트이고, 작은 자리부터 읽으면 대본 안의 주소입니다. 2번 시나리오는 2회차부터 뽑힙니다.
+</p>
+<Figure caption="시작 주소 표 세 칸이 대본의 세 입구를 가리킵니다. 아래는 v1.0의 2번 칸." max={600}>
+  <svg viewBox="0 0 360 244" role="img" aria-labelledby="st-t st-d">
+    <title id="st-t">시작 주소 표 따라가기</title>
+    <desc id="st-d">
+      v1.2의 시작 주소 표 $02:A627은 00 80 20, 95 D3 2E, A8 EA 25 세 칸이고, 작은 자리부터 읽으면 $20:8000, $2E:D395,
+      $25:EAA8로 시나리오 0, 1, 2의 첫 위치입니다. v1.0은 2번 칸이 일본판 값 C0 4B C5 그대로여서, 2번 시나리오가 뽑히면
+      대본이 아닌 곳을 대사로 읽었습니다.
+    </desc>
+    <rect class="dg-paper" x="4" y="4" width="352" height="160" rx="8"></rect>
+    <text class="dg-text dg-bold" x="16" y="26">
+      $02:A627 (v1.2)
+    </text>
+    <text class="dg-text dg-bold" x="214" y="26">
+      대본 안 첫 위치
+    </text>
+    {starts.map((s, i) => (
+      <>
+        <rect class="dg-cool" x="16" y={40 + i * 40} width="124" height="30" rx="4" />
+        <text class="dg-small" x="24" y={60 + i * 40}>
+          {s.n}
+        </text>
+        <text class="dg-mono" x="40" y={60 + i * 40}>
+          {s.bytes}
+        </text>
+        <path class="dg-arrow" d={`M144 ${55 + i * 40}H200`}></path>
+        <path class="dg-head" d={`M200 ${50 + i * 40} 210 ${55 + i * 40} 200 ${60 + i * 40}Z`}></path>
+        <rect class="dg-warm" x="214" y={40 + i * 40} width="130" height="30" rx="4" />
+        <text class="dg-mono" x="222" y={60 + i * 40}>
+          {s.addr}
+        </text>
+      </>
+    ))}
+    <rect class="dg-warm" x="4" y="176" width="352" height="64" rx="8"></rect>
+    <text class="dg-text dg-bold" x="16" y="198">
+      v1.0의 2번 칸: C0 4B C5
+    </text>
+    <text class="dg-small" x="16" y="218">
+      일본판의 비트 위치 그대로입니다. 주소로 읽으면
+    </text>
+    <text class="dg-small" x="16" y="234">
+      대본 밖이라 엉뚱한 데이터를 대사로 읽고 멈춥니다.
+    </text>
+  </svg>
+</Figure>
+<p>
+  v1.0은 표의 0번, 1번만 새 대사 위치로 바꾸고 2번은 일본판 값을 그대로 둬서, 2번이 뽑히면 엉뚱한 데이터를 대사로
+  읽었습니다. 화면이 w로 가득 찬 채 멈춘 것이 그 결과입니다.
 </p>
 <figure class="paper narrow">
   <ZoomImage
@@ -311,8 +696,10 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   />
 </figure>
 <p>
-  번역문은 v1.0에도 들어 있었습니다. 0번 시나리오 끝 바로 다음이 2번 시나리오의 시작이라, 3바이트만 고쳐 넣으면
-  됐습니다. 회차 수를 메모리에서 직접 1, 2, 3으로 바꿔 세 시나리오가 모두 정상으로 시작하는 것을 확인했습니다.
+  번역문은 v1.0에도 들어 있었습니다. 일본판 대사 블록은 0 → 2 → 1 순서라 0번 시나리오 끝 바로 다음이 2번 시나리오의
+  시작이었고, 3바이트만 고쳐 넣으면 됐습니다. 회차 수를 메모리에서 직접 1, 2, 3으로 바꿔 세 시나리오가 모두 정상으로
+  시작하는 것을 확인했습니다. 이렇게 버그를 다시 일으키고 확인하는 과정은{' '}
+  <a href={guide('snes', 'emulator', 'in-patch')}>12장 「실제 패치에서」</a>에 있습니다.
 </p>
 <ToolFiles
   items={[
@@ -321,8 +708,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   ]}
 />
 
-<h2 id="making-a-wait">4. A 버튼 없이 넘어가던 화면</h2>
-<NoteRelated patch={patch} id="making-a-wait" />
+<h3 id="making-a-wait">A 버튼 없이 넘어가던 화면</h3>
 <p>
   엔진은 「」』.?! 같은 문장 끝 글자를 찍으면 알아서 A 버튼을 기다리고, <code>{'{16}'}</code>을 만나도 기다립니다.
   v1.0은 일본어의 「。」를 「…」나 띄어쓰기로 옮기면서 기다림이 빠진 곳과, 자동 대기 바로 뒤에 <code>{'{16}'}</code>이
@@ -353,106 +739,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   ]}
 />
 
-<h2 id="making-font">5. 글자표를 눈으로 읽게 하기</h2>
-<NoteRelated patch={patch} id="making-font" />
-<p>
-  대사를 고치려면 롬 속 글자 번호가 어떤 한글인지 적은 글자표가 있어야 하는데, v1.0의 글자표는 남아 있지 않았습니다.
-  그래서 폰트 1,282자를 그림으로 그려 macOS의 문자 인식(Vision)에 읽혔습니다. 한 글자씩 넣으면 잘 못 읽어서 여러 글자를
-  한 줄로 이어 붙였고, 조건을 바꿔 9번 읽힌 뒤 다수결로 정했습니다. 이 폰트의 ㅇ은 모서리만 빈 사각형이라 문자 인식이
-  ㅁ으로 자주 읽었습니다. 받침과 초성의 모서리 픽셀을 보고 가리는 규칙을 더했습니다. ㅗ·ㅜ의 꼭지는 1픽셀이라 작게 줄인
-  그림에서는 ㅡ와 구별되지 않아서, 남은 의심 글자는 픽셀을 직접 보며 대사 문맥과 맞춰 검수했습니다. 잋→잊, 꿀→훌,
-  뒸→뒀처럼 30자를 바로잡았습니다.
-</p>
-<figure class="paper narrow">
-  <ZoomImage
-    src={img('glyph-mieum.svg')}
-    width="560"
-    height="330"
-    alt="v1.0 폰트의 「마」와 「아」를 픽셀 격자로 그린 그림. 네 모서리 픽셀 하나씩만 다르다"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-<p>
-  재번역으로 새로 필요해진 글자 75자는 v1.0 글자의 부분을 오려 붙이거나 직접 그려서 같은 모양으로 맞췄습니다. 예를 들어
-  「갹」은 「같」의 ㄱ, 「걷」의 ㅓ, 「밑」의 받침 ㅌ을 이어 붙였습니다. 처음에는 자모를 기계적으로 합성해 봤지만, 이미
-  있는 글자로 시험하니 크게 틀린 것이 300자가 넘었습니다. 이 폰트는 글자마다 자모 위치가 조금씩 다르기 때문입니다.
-  Galmuri 폰트로 전부 새로 그리는 안도 나란히 찍어 비교했는데, v1.0 글자가 더 보기 좋아서 그대로 두었습니다. 글자를 넣을
-  자리도 문제였습니다. 폰트는 크기가 같은 글자끼리 묶은 그룹 표로 찾는데, 표 바로 뒤에 다른 데이터가 있어 그룹은 58개가
-  한계이고 v1.0이 58개를 다 썼습니다. 아무 데서도 쓰지 않는 채움 글자를 이웃 그룹과 같은 크기의 빈 글자로 바꿔 그룹을
-  합치니 45개로 줄었고, 새 글자 75자를 3개 그룹으로 더해도 48개라 자리가 남았습니다.
-</p>
-<figure class="paper">
-  <ZoomImage
-    src={img('font-groups.svg')}
-    width="860"
-    height="380"
-    alt="폰트 그룹 표를 칸으로 그린 그림. v1.0은 58칸이 꽉 차서 바로 뒤 $00:F5CE의 줄 끝 문자 목록에 닿아 있고, v1.1과 v1.2는 합친 45칸과 새 글자 3칸을 쓰고 10칸이 빈다. 아래는 첫 칸 05 92 00 80 2C를 517자, 폭 9, $1F:8000, 높이 11로 읽는 법"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-<p>
-  엔진은 표 끝 표시를 따로 보지 않습니다. 글자를 찾는 코드($00:A4F4–$00:A51C)는 첫 칸부터 칸마다 글자 수를 더해 가다가,
-  찾는 코드가 들어가는 칸에서 멈춥니다. 그래서 마지막 그룹보다 큰 코드를 대본에 쓰면 표 뒤의 <code>$00:F5CE</code>{' '}
-  데이터를 그룹 칸으로 읽습니다.
-</p>
-<p>
-  빈 글자로 바꾼 코드는 168개입니다. 대사, 이름 입력 화면의 글자 표, 문자 목록 두 곳 어디에서도 쓰지 않는 코드만
-  골랐습니다. 이름 입력 화면이 대사와 같은 코드를 쓰기 때문에, 어디서든 쓰이는 글자는 코드와 모양을 그대로 두었습니다.
-</p>
-<ToolFiles
-  items={[
-    { path: 'tools/font.py', text: '뱅크 $1F의 가변 폭 폰트와 그룹 표 읽기' },
-    { path: 'tools/fontjson.py', text: '폰트를 krpatch ocr이 읽는 JSON 글리프 묶음으로 꺼내기' },
-    { path: 'krpatch ocr', text: '공통 도구. 글리프를 macOS Vision으로 읽고 ㅁ/ㅇ을 모서리 픽셀로 가리기' },
-    { path: 'tools/glyph_workbench.py', text: 'v1.0 글자 보기, 부분을 오려 붙여 새 글자 만들기' },
-    { path: 'tools/mkfont.py', text: '새 글자와 글자 폭 표 넣기, 폰트 그룹 합치기' },
-    { path: 'tables/newglyphs.json', text: 'v1.1에서 그려 넣은 글자 75자' },
-  ]}
-/>
-
-<h2 id="making-wordwrap">6. 단어 단위 줄바꿈</h2>
-<NoteRelated patch={patch} id="making-wordwrap" />
-<p>
-  일본어는 띄어쓰기가 없어 엔진이 글자 단위로 줄을 바꿔도 자연스럽습니다. 한국어는 「유명/했는데」처럼 단어 중간에서
-  끊기고, 줄 끝 공백이 다음 줄 첫머리로 넘어가 한 칸 들여 쓴 것처럼 보였습니다.
-</p>
-<figure class="paper">
-  <ZoomImage
-    src={img('wordwrap.webp')}
-    width="1064"
-    height="940"
-    alt="왼쪽 v1.0은 단어 중간에서 줄이 끊기고, 오른쪽 v1.1은 단어 단위로 줄이 바뀐다"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-<p>
-  글자를 찍는 루틴($00:A777)을 후킹해, 공백이나 쉼표·마침표 뒤에서 대본의 다음 단어 폭을 미리 재고 줄 끝을 넘으면 먼저
-  줄을 바꾸게 했습니다. 주인공 이름처럼 길이가 그때그때 다른 것도 실행 중에 재므로 맞게 동작합니다. 대신 줄이 늘어나 한
-  화면 9줄을 넘는 페이지가 생깁니다. 대본의 모든 갈래를 따라가며 페이지마다 줄 수를 계산하는 시뮬레이터를 만들어 넘치는
-  54페이지를 찾았고, 기다림이 있는 문장 끝에서 페이지를 나눴습니다.
-</p>
-<p>
-  시뮬레이터와 실제 게임이 어긋난 적도 있습니다. 시뮬레이터로는 맞았는데 비교 화면에서 「그/럴」처럼 끊긴 줄이
-  보였습니다. 마침표·느낌표는 찍히는 순간 엔진이 입력 대기 명령을 버퍼에 끼워 넣는데, 후킹 코드가 그 상태를 "이름을 찍는
-  중" 으로 착각해 단어 폭 재기를 건너뛰고 있었습니다. 또 「!?」가 「! ?」로 벌어지는 곳이 143곳 있었는데, 넓은 「!」
-  글자에 뒤 간격이 들어 있어서였습니다. 이 경우만 좁은 「!」를 쓰게 했습니다.
-</p>
-<ToolFiles
-  items={[
-    { path: 'asm/wordwrap.asm', text: '글자 찍는 루틴($00:A777)을 후킹한 단어 단위 줄바꿈' },
-    { path: 'tools/layout.py', text: '모든 갈래를 따라가며 페이지마다 줄 수 계산 (9줄 초과 찾기)' },
-    { path: 'tools/splitpages.py', text: '9줄 넘는 페이지를 기다림 있는 문장 끝에서 나누기' },
-  ]}
-/>
-
-<h2 id="making-retranslate">7. 원문 대조 재번역</h2>
-<NoteRelated patch={patch} id="making-retranslate" />
+<h3 id="making-retranslate">원문 대조 재번역</h3>
 <p>
   6,730줄을 일본어 원문과 나란히 놓고 다시 다듬었습니다. 새로 번역하지 않고 v1.0 문장을 바탕으로 오역과 누락을
   고쳤습니다. 뱀 여자가 「뱀파이어」가 된 곳, 고사포가 「고주파」가 된 곳, 「나라 미인이라 나미」 대목이 통째로 빠진 곳
@@ -482,14 +769,333 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   ]}
 />
 
-<h2 id="making-save-compat">8. 옛 세이브로 이어하기</h2>
-<NoteRelated patch={patch} id="making-save-compat" />
+<h2 id="making-font">
+  4. 글자 <span class="layer-badge layer-easy">쉽게</span>
+</h2>
+<NoteRelated patch={patch} id="making-font" />
+<p>
+  대사 폰트는 뱅크 <code>$1F</code>에 1bpp(픽셀 하나가 1비트)로 들어 있습니다. 글자마다 폭과 높이가 다를 수 있어서,
+  크기가 같은 글자끼리 묶은 그룹 표(<code>$00:F4AC</code>)로 글자를 찾습니다. 앞 절의 <code>01 D8</code>, 472번 글자
+  「여」는 첫 그룹(폭 9, 높이 11)에 있고, 롬에서 꺼내면 9비트짜리 줄 11개입니다. 1이 글자 색입니다.
+</p>
+<Figure caption="v1.1 폰트의 472번 글자 「여」. 줄마다 9비트, 맨 왼쪽 픽셀이 가장 높은 비트입니다." max={520}>
+  <svg viewBox="0 0 360 176" role="img" aria-labelledby="gl-t gl-d">
+    <title id="gl-t">「여」 글자의 비트</title>
+    <desc id="gl-d">
+      폭 9, 높이 11 격자에 「여」가 그려져 있고, 오른쪽에 줄마다 9비트 값을 적었다. 첫 줄은 011110001, 둘째 줄은
+      100001001, 셋째 줄은 100001111이다. 이응은 모서리만 빈 사각형이다.
+    </desc>
+    {glyphRows.map((row, y) =>
+      [...row].map((bit, x) => (
+        <rect class={bit === '1' ? 'dg-head' : 'dg-cell'} x={8 + x * 14} y={8 + y * 14} width="13" height="13" />
+      )),
+    )}
+    {glyphRows.map((row, y) => (
+      <text class="dg-mono" x="152" y={19 + y * 14}>
+        {row}
+      </text>
+    ))}
+    <text class="dg-small" x="252" y="19">
+      코드 $1D8
+    </text>
+    <text class="dg-small" x="252" y="37">
+      폭 9 · 높이 11
+    </text>
+    <text class="dg-small" x="252" y="55">
+      $1F:96C4 비트 5부터
+    </text>
+  </svg>
+</Figure>
+<p>
+  타일 바이트와 비트평면을 읽는 법은 <a href={guide('snes', 'graphics', 'bitplanes')}>7장 「픽셀 하나에 비트 몇 개」</a>
+  , 이 게임처럼 크기가 다른 1bpp 글자를 묶어 두는 폰트는{' '}
+  <a href={guide('snes', 'graphics', 'hangul')}>7장 「한글 수천 자를 제한된 폰트 칸에 넣기」</a>와 그 장의 「실제
+  패치에서」에 있습니다. 글자를 그리면 엔진은 이 비트를 WRAM <code>$7F:0010</code>부터의 2bpp 글자 레이어에 겹쳐
+  찍습니다. 첫째 평면이 글자, 둘째 평면이 그림자입니다.
+</p>
+<Deeper title="472번 글자를 롬에서 찾는 계산">
+  <p>
+    그룹 표 한 칸은 5바이트입니다. v1.2의 첫 칸 <code>05 92 00 80 2C</code>는 앞 2바이트 <code>$9205</code>의 아래
+    12비트가 글자 수 517, 위 4비트가 폭 9, 다음 2바이트가 시작 주소 <code>$8000</code>(뱅크 $1F 안), 마지막 바이트
+    <code>$2C</code>를 2비트 내리면 높이 11입니다. 코드는 1부터 세므로 첫 그룹이 1–517번입니다.
+  </p>
+  <pre tabindex="0"><code>비트 위치 = (472 − 1) × 폭 9 × 높이 11 = 46,629
+바이트    = 46,629 ÷ 8 = 5,828 (0x16C4), 나머지 5
+→ $1F:8000 + 0x16C4 = $1F:96C4의 비트 5부터 9비트씩 11줄</code></pre>
+  <p>
+    줄과 줄 사이에 바이트 경계가 없습니다. 99비트가 줄줄이 이어지고, 디코더($00:A57F)는 줄마다 3바이트를 읽어 필요한
+    9비트를 잘라 냅니다. 그래서 그룹 데이터 뒤에 2바이트 여유가 있어야 합니다.
+  </p>
+</Deeper>
+
+<h3 id="making-font-table">글자표를 눈으로 읽게 하기</h3>
+<p>
+  대사를 고치려면 롬 속 글자 번호가 어떤 한글인지 적은 글자표가 있어야 하는데, v1.0의 글자표는 남아 있지 않았습니다.
+  그래서 폰트 1,282자를 그림으로 그려 macOS의 문자 인식(Vision)에 읽혔습니다. 한 글자씩 넣으면 잘 못 읽어서 여러 글자를
+  한 줄로 이어 붙였고, 조건을 바꿔 9번 읽힌 뒤 다수결로 정했습니다. 위 「여」처럼 이 폰트의 ㅇ은 모서리만 빈 사각형이라
+  문자 인식이 ㅁ으로 자주 읽었습니다. 받침과 초성의 모서리 픽셀을 보고 가리는 규칙을 더했습니다. ㅗ·ㅜ의 꼭지는
+  1픽셀이라 작게 줄인 그림에서는 ㅡ와 구별되지 않아서, 남은 의심 글자는 픽셀을 직접 보며 대사 문맥과 맞춰 검수했습니다.
+  잋→잊, 꿀→훌, 뒸→뒀처럼 30자를 바로잡았습니다.
+</p>
+<figure class="paper narrow">
+  <ZoomImage
+    src={img('glyph-mieum.svg')}
+    width="560"
+    height="330"
+    alt="v1.0 폰트의 「마」와 「아」를 픽셀 격자로 그린 그림. 네 모서리 픽셀 하나씩만 다르다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+</figure>
+
+<h3 id="making-new-glyphs">새 글자 75자와 그룹 표</h3>
+<p>
+  재번역으로 새로 필요해진 글자 75자는 v1.0 글자의 부분을 오려 붙이거나 직접 그려서 같은 모양으로 맞췄습니다. 예를 들어
+  「갹」은 「같」의 ㄱ, 「걷」의 ㅓ, 「밑」의 받침 ㅌ을 이어 붙였습니다. 처음에는 자모를 기계적으로 합성해 봤지만, 이미
+  있는 글자로 시험하니 크게 틀린 것이 300자가 넘었습니다. 이 폰트는 글자마다 자모 위치가 조금씩 다르기 때문입니다.
+  Galmuri 폰트로 전부 새로 그리는 안도 나란히 찍어 비교했는데, v1.0 글자가 더 보기 좋아서 그대로 두었습니다.
+</p>
+<p>
+  글자를 넣을 자리도 문제였습니다. 그룹 표 바로 뒤에 다른 데이터가 있어 그룹은 58개가 한계이고 v1.0이 58개를 다
+  썼습니다. 아무 데서도 쓰지 않는 채움 글자를 이웃 그룹과 같은 크기의 빈 글자로 바꿔 그룹을 합치니 45개로 줄었고, 새
+  글자 75자를 3개 그룹으로 더해도 48개라 자리가 남았습니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('font-groups.svg')}
+    width="860"
+    height="380"
+    alt="폰트 그룹 표를 칸으로 그린 그림. v1.0은 58칸이 꽉 차서 바로 뒤 $00:F5CE의 줄 끝 문자 목록에 닿아 있고, v1.1과 v1.2는 합친 45칸과 새 글자 3칸을 쓰고 10칸이 빈다. 아래는 첫 칸 05 92 00 80 2C를 517자, 폭 9, $1F:8000, 높이 11로 읽는 법"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+</figure>
+<Deeper title="표 끝 표시가 없는 그룹 표와 빈 글자로 바꾼 168개">
+  <p>
+    엔진은 표 끝 표시를 따로 보지 않습니다. 글자를 찾는 코드($00:A4F4–$00:A51C)는 첫 칸부터 칸마다 글자 수를 더해
+    가다가, 찾는 코드가 들어가는 칸에서 멈춥니다. 그래서 마지막 그룹보다 큰 코드를 대본에 쓰면 표 뒤의
+    <code>$00:F5CE</code> 데이터를 그룹 칸으로 읽습니다. 그 자리는 줄 끝에 매달 수 있는 문자 목록입니다.
+  </p>
+  <p>
+    빈 글자로 바꾼 코드는 168개입니다. 대사, 이름 입력 화면의 글자 표, 문자 목록 두 곳 어디에서도 쓰지 않는 코드만
+    골랐습니다. 이름 입력 화면이 대사와 같은 코드를 쓰기 때문에, 어디서든 쓰이는 글자는 코드와 모양을 그대로 두었습니다.
+    새 글자는 코드 1614–1688에 9×11 33자, 10×11 20자, 11×11 22자로 들어갔습니다.
+  </p>
+</Deeper>
+<ToolFiles
+  items={[
+    { path: 'tools/font.py', text: '뱅크 $1F의 가변 폭 폰트와 그룹 표 읽기' },
+    { path: 'tools/fontjson.py', text: '폰트를 krpatch ocr이 읽는 JSON 글리프 묶음으로 꺼내기' },
+    { path: 'krpatch ocr', text: '공통 도구. 글리프를 macOS Vision으로 읽고 ㅁ/ㅇ을 모서리 픽셀로 가리기' },
+    { path: 'tools/glyph_workbench.py', text: 'v1.0 글자 보기, 부분을 오려 붙여 새 글자 만들기' },
+    { path: 'tools/mkfont.py', text: '새 글자와 글자 폭 표 넣기, 폰트 그룹 합치기' },
+    { path: 'tables/newglyphs.json', text: 'v1.1에서 그려 넣은 글자 75자' },
+  ]}
+/>
+
+<h3 id="making-wordwrap">단어 단위 줄바꿈</h3>
+<NoteRelated patch={patch} id="making-wordwrap" />
+<p>
+  일본어는 띄어쓰기가 없어 엔진이 글자 단위로 줄을 바꿔도 자연스럽습니다. 한국어는 「유명/했는데」처럼 단어 중간에서
+  끊기고, 줄 끝 공백이 다음 줄 첫머리로 넘어가 한 칸 들여 쓴 것처럼 보였습니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('wordwrap.webp')}
+    width="1064"
+    height="940"
+    alt="왼쪽 v1.0은 단어 중간에서 줄이 끊기고, 오른쪽 v1.1은 단어 단위로 줄이 바뀐다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+</figure>
+<p>
+  글자를 찍는 루틴($00:A777)을 후킹해, 공백이나 쉼표·마침표 뒤에서 대본의 다음 단어 폭을 미리 재고 줄 끝을 넘으면 먼저
+  줄을 바꾸게 했습니다. 폭은 v1.1이 새로 넣은 글자 폭 표(<code>$1E:F000</code>, 코드마다 1바이트)에서 읽습니다. 주인공
+  이름처럼 길이가 그때그때 다른 것도 실행 중에 재므로 맞게 동작합니다. 이 후킹의 코드 한 줄 한 줄은
+  <a href={guide('snes', 'hooking', 'jump')}>6장 후킹</a>의 예제입니다.
+</p>
+<p>
+  대신 줄이 늘어나 한 화면 9줄을 넘는 페이지가 생깁니다. 대사창은 왼쪽 여백 12, 줄바꿈 기준 x = 242, 줄 간격 23픽셀이라
+  한 화면이 9줄이고 10번째 줄부터는 잘립니다. 대본의 모든 갈래를 따라가며 페이지마다 줄 수를 계산하는 시뮬레이터를
+  만들어 넘치는 54페이지를 찾았고, 기다림이 있는 문장 끝에서 페이지를 나눴습니다.
+</p>
+<Deeper title="시뮬레이터와 실제 게임이 어긋난 두 곳">
+  <p>
+    시뮬레이터로는 맞았는데 비교 화면에서 「그/럴」처럼 끊긴 줄이 보였습니다. 마침표·느낌표는 찍히는 순간 엔진이 입력
+    대기 명령을 버퍼에 끼워 넣는데, 후킹 코드가 그 상태를 "이름을 찍는 중" 으로 착각해 단어 폭 재기를 건너뛰고
+    있었습니다. 이름을 찍는 중인지 보는 검사를 공백일 때만 하도록 고쳤습니다.
+  </p>
+  <p>
+    또 「!?」가 「! ?」로 벌어지는 곳이 143곳 있었는데, 넓은 「!」 글자에 뒤 간격이 들어 있어서였습니다. 이 경우만 좁은
+    「!」를 쓰게 했습니다.
+  </p>
+</Deeper>
+<ToolFiles
+  items={[
+    { path: 'asm/wordwrap.asm', text: '글자 찍는 루틴($00:A777)을 후킹한 단어 단위 줄바꿈' },
+    { path: 'tools/layout.py', text: '모든 갈래를 따라가며 페이지마다 줄 수 계산 (9줄 초과 찾기)' },
+    { path: 'tools/splitpages.py', text: '9줄 넘는 페이지를 기다림 있는 문장 끝에서 나누기' },
+  ]}
+/>
+
+<h2 id="making-gfx">
+  5. 그림·압축 <span class="layer-badge layer-easy">쉽게</span>
+</h2>
+<NoteRelated patch={patch} id="making-gfx" />
+<p>
+  이 게임에서 압축된 것은 그림이 아니라 일본판 대본입니다(<a href="#making-script">3절</a>). v1.1·v1.2가 롬에 쓴 곳을
+  모두 적은 롬 분석 문서의 목록에는 압축 그림을 풀거나 다시 넣은 곳이 없습니다. 그림을 압축하는 흔한 방식은
+  <a href={guide('common', 'lzss')}>9장 RLE·LZSS</a>에서 다른 게임의 타이틀 그림으로 봅니다.
+</p>
+<p>
+  v1.0이 넣은 그래픽도 압축하지 않았습니다. v1.0은 일본판 코드 7곳($00:B472, $00:C436, $00:C4EC, $00:D585, $02:B521,
+  $02:B54B, $02:BCF9)을 뱅크 $15·$16으로 가는 점프(JML)로 바꿨습니다. 이 후킹들이 $0100에 1~3을 적으면, 화면 갱신
+  후킹($00:C4EC → $15:E499)이 그 번호의 롬 바이트를 DMA로 VRAM에 그대로 보냅니다. 풀어 주는 단계가 없으니 롬에 든
+  바이트가 곧 타일입니다. VRAM에 그림을 올리는 순서는{' '}
+  <a href={guide('snes', 'graphics', 'vram')}>7장 「VRAM과 타일맵, BG 모드」</a>에 있습니다.
+</p>
+<div class="table-wrap" tabindex="0">
+  <table>
+    <caption>v1.0이 VRAM으로 보내는 그래픽</caption>
+    <thead>
+      <tr>
+        <th scope="col">$0100</th>
+        <th scope="col">롬</th>
+        <th scope="col">크기</th>
+        <th scope="col">VRAM</th>
+        <th scope="col">때</th>
+      </tr>
+    </thead>
+    <tbody>
+      {v10Uploads.map(u => (
+        <tr>
+          <td>{u.n}</td>
+          <td>
+            <code>{u.rom}</code>
+          </td>
+          <td>{u.size}</td>
+          <td>
+            <code>{u.vram}</code>
+          </td>
+          <td class="wrap">{u.when}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p>
+  v1.2는 플로차트에 쓰는 4×6 픽셀 글자 17개를 새로 그렸습니다. 타일로 올리지 않고 글자 레이어의 비트맵에 픽셀을 직접
+  찍습니다(<a href="#making-flowchart">8절 「플로차트」</a>). 되감은 페이지의 노란 글씨는 그림이 아니라 팔레트 한 색을
+  바꾼 것입니다(<a href="#making-yellow">8절 「책갈피와 노란 글씨」</a>, 팔레트는
+  <a href={guide('snes', 'graphics', 'palette')}>7장 「색은 팔레트 번호로 고른다」</a>).
+</p>
+
+<h2 id="making-menus">
+  6. 메뉴·이름·전투 <span class="layer-badge layer-easy">쉽게</span>
+</h2>
+<NoteRelated patch={patch} id="making-menus" />
+<p>사운드 노벨이라 전투가 없고, 화면은 대본을 읽는 화면이 거의 전부입니다. 대사 밖의 글자는 세 곳에 있습니다.</p>
+<ul class="notes">
+  <li>
+    <strong>선택지</strong>: 보기 문구도 대본 안에 있습니다. <code>{'{19}'}</code>·<code>{'{1A}'}</code> 뒤에 보기
+    문구와 <code>{'{1C}'}</code>가 이어지고, 보기마다 갈 곳이 붙어 있습니다. 대본을 번역하면 선택지도 함께 번역됩니다.
+    한 번에 보이는 보기는 5개까지입니다.
+  </li>
+  <li>
+    <strong>이름 입력 화면</strong>: 고를 글자를 늘어놓은 표(<code>$02:A990–$02:B03F</code>)가 대사와 같은 글자 코드를
+    씁니다. 그래서 v1.1은 v1.0의 코드와 글자 대응을 하나도 바꾸지 않고, 쓰지 않는 코드만 골라 비웠습니다(
+    <a href="#making-new-glyphs">4절</a>). 대본의 <code>{'{20}'}</code>을 만나면 엔진이 이 이름을 기호 버퍼($5F)에 끼워
+    넣어 대사처럼 찍습니다.
+  </li>
+  <li>
+    <strong>책갈피(しおり) 화면</strong>: 세이브 슬롯을 고르는 화면입니다. v1.2는 슬롯을 그리는 루틴을 후킹해 둘째 줄에
+    마지막으로 읽은 장 제목을 그립니다(<a href="#making-yellow">8절</a>).
+  </li>
+</ul>
+<p>
+  v1.2의 장 목록과 엔딩 목록은 새 화면을 그리지 않고 이 선택지 화면을 그대로 빌려 씁니다. 그 이야기는
+  <a href="#making-menu">8절 「메뉴는 그리지 않고 대본으로 쓴다」</a>에 있습니다. 제어 코드를 하나 새로 달아 메뉴 동작을
+  만든 방법이라, <a href={guide('snes', 'text', 'control')}>8장 「제어 코드: 글자가 아닌 명령」</a>을 먼저 보면 읽기
+  쉽습니다.
+</p>
+
+<h2 id="making-save">
+  7. 세이브·암호 <span class="layer-badge layer-easy">쉽게</span>
+</h2>
+<NoteRelated patch={patch} id="making-save" />
+<p>
+  암호는 없습니다. 카트리지에 배터리가 달린 8KB SRAM이 있어(헤더 0x7FD6 = <code>02</code>, 롬 + SRAM + 배터리) 책갈피를
+  그곳에 저장합니다. SRAM은 CPU 주소 <code>$70:0000</code>부터 보입니다.
+</p>
+<Figure caption="SRAM 8KB의 배치. 슬롯 하나는 0x5E3(1,507)바이트이고, 크기는 비례하지 않게 그렸습니다." max={600}>
+  <svg viewBox="0 0 360 230" role="img" aria-labelledby="sr-t sr-d">
+    <title id="sr-t">SRAM 배치</title>
+    <desc id="sr-d">
+      $70:0000 헤더 32바이트, $70:0020 슬롯 0 작업 사본, $70:0603 슬롯 1, $70:0BE6 슬롯 2, $70:11C9 슬롯 3이
+      $70:17AB까지 이어지고, $70:1800부터 80바이트에 v1.2 기록, $70:1850부터 $70:1FFF까지는 쓰지 않습니다.
+    </desc>
+    {sram.map((s, i) => (
+      <>
+        <text class="dg-mono" x="4" y={24 + i * 31}>
+          {s.at}
+        </text>
+        <rect class={s.cls} x="86" y={6 + i * 31} width="270" height="26" rx="3" />
+        <text class="dg-small" x="94" y={23 + i * 31}>
+          {s.text}
+        </text>
+      </>
+    ))}
+  </svg>
+</Figure>
+<p>
+  게임은 불러올 때 고른 슬롯을 0번으로 복사한 뒤 읽고, 자동 저장할 때는 0번에 쓴 뒤 원래 슬롯으로 복사합니다. 그래서
+  게임 코드가 다루는 주소는 늘 0번 슬롯 기준입니다. 슬롯의 주요 값은 이렇습니다.
+</p>
+<div class="table-wrap" tabindex="0">
+  <table>
+    <caption>0번 슬롯 기준 주소 (n번 슬롯은 n × 0x5E3을 더함)</caption>
+    <tbody>
+      {slotFields.map(f => (
+        <tr>
+          <td>
+            <code>{f.at}</code>
+          </td>
+          <td class="wrap">{f.text}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+<p>
+  슬롯이 깨지지 않았는지는 체크섬으로 봅니다. <code>$700022</code>부터 0x5E1바이트를 모두 더한 값입니다. 체크섬이
+  무엇인지는
+  <a href={guide('common', 'numbers')}>1장 비트·바이트·16진수</a>에, 24비트 위치를 작은 자리부터 적는 이유는
+  <a href={guide('common', 'endian')}>2장 엔디안</a>에 있습니다.
+</p>
+
+<h3 id="making-save-compat">옛 세이브로 이어하기</h3>
 <p>
   세이브에는 "대본의 어디까지 읽었나" 가 롬 주소로 들어 있습니다. 대사를 다시 쓰면 같은 장면의 주소가 모두 달라지므로,
   v1.0이나 일본판 세이브를 그대로 불러오면 엉뚱한 곳을 읽습니다. 그래서 줄마다 옛 주소와 새 주소를 짝지은 변환표(각
   4,854곳)를 롬에 넣고, 세이브를 불러올 때 표에서 찾아 바꾼 뒤 "변환함" 표식을 남기게 했습니다. 일본판 세이브의 이름은
   한글 롬에서 다른 글자로 보이므로 기본 이름 코헤이로 바꿉니다.
 </p>
+<Deeper title="세 가지 세이브를 구분하고 바꾸는 법">
+  <p>
+    위치의 뜻이 롬마다 다릅니다. 일본판은 허프만 비트열의 바이트 주소(뱅크 $15–$1D)에 바이트 안 비트 번호를 더한 것이고,
+    비트 위치로는 (파일 오프셋 − 0xAE401) × 8 + 비트 번호입니다. v1.0·v1.1은 2바이트 대본의 LoROM 주소(뱅크
+    $20–$35)입니다. 그래서 뱅크만 보고 어느 롬의 세이브인지 가릴 수 있습니다.
+  </p>
+  <p>
+    변환표는 v1.0용이 <code>$17:8000</code>, 일본판용이 <code>$19:8000</code>입니다. 2바이트 개수(4,854) 뒤에 (옛
+    24비트, 새 24비트) 짝이 옛 주소 순으로 늘어서 있습니다. 불러올 때 표식이 없으면 이진 탐색으로 "그 위치 이하인 마지막
+    항목" 을 찾아 바꾸고, 표식 <code>$C311</code>을 쓰고 체크섬을 다시 계산합니다.
+  </p>
+</Deeper>
 <ToolFiles
   items={[
     { path: 'tools/savemap.py', text: '옛 대본과 새 대본을 줄마다 맞춰 세이브 위치 변환표 만들기' },
@@ -497,200 +1103,10 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   ]}
 />
 
-<h2 id="making-select">9. v1.2 편의 기능: 빈 버튼 찾기</h2>
-<NoteRelated patch={patch} id="making-select" />
+<h3 id="making-records">읽은 장과 본 엔딩 기록</h3>
 <p>
-  여기부터는 원작에 없는 기능을 엔진에 더한 이야기입니다. 엔딩이 18개인 게임을 처음부터 다시 읽어 가며 모으는 것은
-  고역이라, 같은 춘소프트의 「카마이타치의 밤」에 있는 장 선택을 옮겨 오는 것에서 시작했습니다. 카마이타치의 밤 SFC판을
-  에뮬레이터로 직접 돌려 보고 설명서를 읽어 동작을 맞췄습니다. 처음에는 R로 장 화면을 여는 줄 알았는데, 설명서에 R은
-  쓰지 않는다고 적혀 있었습니다. 앞서 누른 Select가 늦게 반영된 것을 잘못 본 것이었습니다. 나중에 GBA판의 플로차트까지
-  더했습니다.
-</p>
-<p>
-  먼저 기능을 열 버튼이 필요했습니다. 게임이 패드 값을 받아 쓰는 루틴($00:8B9A)을 읽어 보니 Select와 R은 어디서도 쓰지
-  않았습니다. A 버튼 입력 대기 중 X를 누르면 되감기로 가는 자리($00:9CF9)가 있어서, 그 바로 앞을 후킹해 Select를 먼저
-  보게 했습니다.
-</p>
-
-<h2 id="making-readers">10. 대본을 읽는 손이 셋</h2>
-<NoteRelated patch={patch} id="making-readers" />
-<p>
-  장을 고르면 "지금 읽는 위치" 를 그 장의 시작 주소로 바꾸면 될 것 같았습니다. 결과는 무시되거나, 검은 화면에서 영원히
-  멈추는 것이었습니다. 멈춘 화면에서 거꾸로 따라갔습니다. 대본이 메뉴 버퍼의 한 곳에서 서 있었고, 그 자리는 장면 번호가
-  준비되기를 기다리는 배경 명령이었습니다. 그 장면 번호를 쓰는 코드를 감시하니 태스크를 시작하는 루틴이 나왔고, 그
-  태스크를 다시 시작하는 곳이 점프 명령 처리 뒤에 있었습니다. 대본을 읽는 손이 하나가 아니었던 것입니다.
-</p>
-<figure class="paper">
-  <ZoomImage
-    src={img('three-readers.svg')}
-    width="860"
-    height="430"
-    alt="대본을 본문, 배치 미리 읽기, 장면 미리 읽기 셋이 각자 다른 위치에서 읽는 도식"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-<ul class="notes">
-  <li>
-    엔진은 태스크(번갈아 도는 작은 프로그램)를 여러 개 돌립니다. 본문 말고도 줄 나눔을 미리 재는 태스크와, 다음 장면
-    그림을 미리 올려 두는 태스크가 각자의 위치에서 대본을 읽습니다.
-  </li>
-  <li>
-    위치는 네 벌 있고, 엔진은 그중 하나에서 본문 위치를 다시 읽어 옵니다. 하나만 바꾸면 다음 순간 원래 값으로
-    돌아갑니다. 세이브를 불러올 때처럼 네 벌을 모두 써야 합니다.
-  </li>
-  <li>
-    그림에 없는 넷째 사본 $1989는 태스크 1의 위치입니다. 태스크 1은 $00:9B53에서 진입점 $00:CB99로 시작해 대본을 앞서
-    읽습니다. 소리 명령({'{39}'} {'{3D}'} {'{45}'} 등)을 만나면 $00:CCAC가 $01:8007 표의 목록을 사운드 명령
-    버퍼($10A5/$10A6, 잠금 $10A3)로 보냅니다. 선택지·점프·엔딩 같은 코드({'{19}'} {'{1A}'} {'{04}'} {'{05}'} {'{1D}'}{' '}
-    {'{23}'} {'{24}'} {'{43}'} {'{44}'})에 닿으면 위치를 $1989–$198C에 남기고 끝나고, 다음에 시작할 때 $00:CC96이 거기서
-    다시 읽습니다. 소리를 미리 준비해 두는 태스크로 보는데, 이 해석은 추정입니다.
-  </li>
-  <li>
-    본문이 배경 명령에 닿으면 장면 미리 읽기가 그 그림을 준비할 때까지 기다립니다. 장면 미리 읽기가 옛 자리를 읽고
-    있으면 기다리는 그림이 영영 오지 않습니다. 게임은 점프 명령을 실행한 뒤 미리 읽기를 새 위치에서 다시 시작하는
-    루틴($00:9A5A)을 부르는데, 위치를 직접 바꿀 때도 이걸 불러야 했습니다.
-  </li>
-  <li>
-    줄 나눔 태스크는 앞서 읽으면서 $28보다 작은 번호의 명령은 실제로 실행합니다. 처음에 메뉴 동작을 안 쓰는{' '}
-    <code>{'{23}'}</code>에 달았더니 메뉴를 고르기도 전에 미리 실행됐습니다. 그래서 새 명령은 $28 이상인{' '}
-    <code>{'{44}'}</code>로 옮겼고, 점프를 가로채는 후킹은 본문이 읽을 때만 동작하게 했습니다.
-  </li>
-  <li>
-    쓰지 않는 <code>{'{23}'}</code>($00:E13F)과 <code>{'{24}'}</code>($00:E1DD)는 장면 번호를 골라 그리로 가는 디버그
-    기능입니다. <code>{'{23}'}</code>은 $7F:FFF0의 번호 × 14로 표를 읽어 $5F 버퍼에 기호와 <code>{'{24}'}</code>를 넣고,
-    상태를 $1A03 등에 보관하고 $1BB1을 3으로 둡니다. <code>{'{24}'}</code>는 $1BAD를 $FE로 두고, 다음 프레임부터 메인
-    루프의 $00:E1E4가 십자 키로 번호를 바꿉니다(위아래 ±1, 좌우 ±20). A나 B로 나갑니다. 다만 개수 표와 장면 표를
-    가리키는 주소가 0으로 지워져 있어 $00:0000을 읽습니다. 일본판, v1.0, v1.1 대본 어디에도 이 두 코드는 나오지
-    않습니다.
-  </li>
-</ul>
-<ToolFiles
-  items={[
-    { path: 'lua/qol/pcs.lua', text: '프레임마다 CPU가 실행 중인 주소 기록 (어디서 멈췄나)' },
-    {
-      path: 'probe/wtrace.lua (krpatch snes lua)',
-      text: '한 주소에 값을 쓰는 코드의 주소와 값 기록 (누가 바꿨나)',
-    },
-    { path: 'probe/trace.lua (krpatch snes lua)', text: '지정한 코드가 몇 번 실행되는지 세기' },
-    { path: 'probe/watch.lua (krpatch snes lua)', text: '프레임마다 메모리 값 기록' },
-    {
-      path: 'krpatch snes dis',
-      text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러',
-    },
-  ]}
-/>
-
-<h2 id="making-menu">11. 메뉴는 그리지 않고 대본으로 쓴다</h2>
-<NoteRelated patch={patch} id="making-menu" />
-<p>
-  장 목록을 화면에 새로 그리려면 커서, 소리, 입력 처리를 모두 새로 만들어야 합니다. 그 대신 메뉴를 대본으로 써서
-  게임에게 읽혔습니다. 대본에 선택지 명령을 쓰면 게임이 원래 선택지 화면 그대로 보여 주고, 커서와 효과음도 원래 것이
-  나옵니다.
-</p>
-<figure class="paper">
-  <ZoomImage
-    src={img('menu-script.svg')}
-    width="860"
-    height="470"
-    alt="Select를 누르면 WRAM에 메뉴 대본을 쓰고 대본 위치를 그쪽으로 옮기면, 게임의 선택지 코드가 메뉴를 보여 주고 고른 보기의 새 명령이 장으로 점프하는 흐름"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-<figure class="paper narrow">
-  <ZoomImage
-    src={img('menu-page.webp')}
-    width="512"
-    height="448"
-    alt="어디부터 다시 읽을까요 아래 제3장, 지금까지 읽은 모든 장, 엔딩 목록, 돌아가기 보기가 나열된 화면"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-  <figcaption>게임의 선택지 화면이 그대로 메뉴가 됩니다</figcaption>
-</figure>
-<ul class="notes">
-  <li>
-    대본에서 쓰지 않는 명령 번호 <code>{'{44}'}</code>를 "메뉴 동작" 으로 새로 달았습니다. 보기마다 이 명령이 붙어 있어,
-    고르면 장 번호, 다음 쪽, 엔딩 목록, 돌아가기 중 하나를 실행합니다.
-  </li>
-  <li>
-    메뉴 대본은 롬이 아니라 WRAM의 빈 곳에 실행 중에 씁니다. 이번 회차에 읽은 장만 보여야 하기 때문입니다. "다음 쪽" 을
-    고르면 다른 버퍼에 다음 쪽을 쓰고 그쪽으로 넘어갑니다. 지금 읽고 있는 버퍼를 덮어쓰지 않으려고 두 벌을 번갈아
-    씁니다.
-  </li>
-  <li>
-    게임 입장에서는 메뉴도 선택지라서, 고를 때마다 "골라 본 선택지 수" 가 늘고 되감기 기록이 지워지고 자동 저장이
-    일어납니다. 메뉴를 열 때 이 값들을 저장해 두고, 메뉴 밖으로 점프하는 순간 되돌리게 했습니다. 메뉴 안에서는 자동
-    저장도 건너뜁니다.
-  </li>
-  <li>
-    고르자마자 화면 지우기 <code>{'{25}'}</code>를 쓰면, 선택지가 아직 보기를 지우는 중이라 다음 페이지가 멈추는 경우가
-    있었습니다. 앞에 잠깐 멈춤 <code>{'{17:5}'}</code>을 넣었습니다.
-  </li>
-  <li>한 번에 보이는 보기는 5개까지입니다. 6개를 넣으면 화면이 깨져서, 장 목록은 한 쪽에 3개씩 나눴습니다.</li>
-  <li>
-    장 목록은 원작 선택지처럼 지금 장면의 배경 위에 뜹니다. 그래서 장면에 따라 메뉴 위로 눈알 같은 그림이 보이는데,
-    이것은 스프라이트가 아니라 장면 배경(BG2)입니다. 그때 화면의 스프라이트(OAM)는 0개이고, 메인 화면 레이어 값 $0A0E를
-    바꿔 보면 BG2가 켜져 있을 때만 보입니다. 원작의 선택지 화면과 같은 동작이라 그대로 두었습니다.
-  </li>
-</ul>
-<ToolFiles
-  items={[
-    { path: 'asm/qol.asm', text: '장 목록·엔딩 목록·기록·노란 글씨·책갈피 코드와 후킹' },
-    { path: 'tools/qol.py', text: '장 범위와 시작, 엔딩 위치, 메뉴 문자열, 장별 배경·음악 표 만들기' },
-    { path: 'tables/qol-chapters.tsv', text: '장 30개 (번호, 제목, 시작 줄, 갈래)' },
-  ]}
-/>
-
-<h2 id="making-scene-music">12. 장으로 옮길 때 배경과 음악</h2>
-<NoteRelated patch={patch} id="making-scene-music" />
-<p>
-  장 첫 페이지가 배경을 정하지 않는 경우가 많았습니다. 원래 흐름에서는 바로 앞 장면의 배경이 이어지기 때문입니다. 빌드할
-  때 대본을 따라가며 "이 장 시작 직전에 마지막으로 적용된 배경 명령" 을 찾아, 장으로 점프하기 직전에 그 명령을
-  넣었습니다. 시나리오 첫머리의 배경 명령은 아주 천천히 밝아져 10초 가까이 검은 화면이 이어져서, 점프용으로 넣을 때는
-  속도를 바꿔 3초쯤으로 줄였습니다.
-</p>
-<p>
-  사실 대본 점프는 두 번째 방식입니다. 처음에는 세이브를 고쳐 쓰고 게임을 다시 시작하는 방식(웜 재시작)으로 장을
-  옮겼습니다. 그런데 사운드 칩 프로그램이 돌고 있으면 다시 올리는 단계에서 멈췄고, 올리기를 건너뛰면 화면에 줄무늬가
-  생기거나 에뮬레이터마다 다른 곳에서 멈췄습니다. 고치고 고쳐 코어 4개는 통과했지만 snes9x와 Mesen은 끝내 검은 화면에서
-  멈췄습니다. 그래서 이 방식을 버리고 모든 이동을 게임 자신의 대본 점프로 바꿨습니다. 게임이 원래 하는 동작이라
-  에뮬레이터를 가리지 않습니다.
-</p>
-<p>
-  대가로 음악은 직접 챙겨야 했습니다. 게임의 사운드 명령 다섯 개를 후킹해 지금 반복 재생 중인 음악·환경음(57가지)을
-  비트맵으로 기억하게 했습니다. 빌드 때 계산한 "그 장에서 울려야 할 반복음" 과 비교해, 꺼야 할 것은 끄고 켜야 할 것은
-  페이드 인하는 명령을 점프 앞에 넣습니다.
-</p>
-<figure class="paper narrow">
-  <ZoomImage
-    src={`${base}/images/features/jump-ch8.webp`}
-    width="256"
-    height="224"
-    alt="배경 명령이 없는 8장으로 옮겨도 원래 장면인 차고에서 시작한다"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-  <figcaption>첫 페이지에 배경 명령이 없는 8장도 차고 장면에서 시작합니다</figcaption>
-</figure>
-<ToolFiles
-  items={[
-    { path: 'tools/qol.py', text: '장 범위와 시작, 엔딩 위치, 메뉴 문자열, 장별 배경·음악 표 만들기' },
-    { path: 'lua/qol/menujump.sh', text: '장마다 메뉴로 옮겨 첫 화면 찍기' },
-    { path: 'lua/qol/chjump.sh', text: '장 시작으로 바로 옮겨 첫 화면 찍기' },
-  ]}
-/>
-
-<h2 id="making-records">13. 읽은 장과 본 엔딩 기록</h2>
-<NoteRelated patch={patch} id="making-records" />
-<p>
-  기록은 SRAM에서 책갈피 슬롯 4개 뒤의 빈 곳($70:1800)에 둡니다. 맨 앞 2바이트 표식이 없으면 처음 켤 때 초기화합니다.
-  그래서 v1.1, v1.0, 일본판 세이브를 그대로 불러올 수 있습니다.
+  v1.2의 기록은 SRAM에서 책갈피 슬롯 4개 뒤의 빈 곳($70:1800)에 둡니다. 맨 앞 2바이트 표식이 없으면 처음 켤 때
+  초기화합니다. 그래서 v1.1, v1.0, 일본판 세이브를 그대로 불러올 수 있습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -730,12 +1146,281 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   ]}
 />
 
-<h2 id="making-flowchart">14. 플로차트</h2>
-<NoteRelated patch={patch} id="making-flowchart" />
+<h2 id="making-unique">
+  8. 게임 고유 문제 <span class="layer-badge layer-patch">실제 패치에서</span>
+</h2>
+<NoteRelated patch={patch} id="making-unique" />
+<p>
+  여기부터는 원작에 없는 기능을 엔진에 더한 v1.2 이야기입니다. 엔딩이 18개인 게임을 처음부터 다시 읽어 가며 모으는 것은
+  고역이라, 같은 춘소프트의 「카마이타치의 밤」에 있는 장 선택을 옮겨 오는 것에서 시작했습니다. 기능 하나를 넣을 때마다
+  새 문제가 나왔고, 아래 절들은 그 흐름을 따라갑니다.
+</p>
+<ol class="flow">
+  <li>
+    <a href="#making-select">기능을 열 버튼을 찾고</a>
+  </li>
+  <li>
+    <a href="#making-readers">대본 위치를 바꾸려다 대본을 읽는 손이 셋인 것을 알고</a>
+  </li>
+  <li>
+    <a href="#making-menu">메뉴를 대본으로 써서 게임에게 읽히고</a>
+  </li>
+  <li>
+    <a href="#making-scene-music">장으로 옮길 때 배경과 음악을 맞추고</a>
+  </li>
+  <li>
+    <a href="#making-flowchart">플로차트를 글자 레이어에 직접 그리고</a>
+  </li>
+  <li>
+    <a href="#making-yellow">책갈피 화면과 되감기 글자색을 바꿨습니다</a>
+  </li>
+</ol>
+<p>
+  모두 <a href={guide('snes', 'hooking')}>6장 후킹</a>의 방법으로 원래 코드 몇 바이트를 새 코드로 가는 점프로 바꾼
+  것입니다. 점프 명령과 돌아오는 명령의 짝은{' '}
+  <a href={guide('snes', 'assembly', 'subroutine')}>5장 「서브루틴: JSR과 RTS」</a>에 있습니다.
+</p>
+<Deeper title="v1.1·v1.2의 후킹 지점 전체 (원래 바이트와 바꾼 바이트)">
+  <div class="table-wrap" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">주소</th>
+          <th scope="col">일본판</th>
+          <th scope="col">v1.2</th>
+          <th scope="col">하는 일</th>
+        </tr>
+      </thead>
+      <tbody>
+        {hooks.map(h => (
+          <tr>
+            <td>
+              <code>{h.at}</code>
+            </td>
+            <td>
+              <code>{h.from}</code>
+            </td>
+            <td>
+              <code>{h.to}</code>
+            </td>
+            <td class="wrap">{h.what}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    <code>22</code>는 JSL(먼 곳 호출), <code>5C</code>는 JML(먼 곳 점프), <code>EA</code>는 NOP입니다. 덮어쓴 바이트가
+    점프보다 길면 남는 자리를 NOP으로 채웁니다. 이 밖에 제어 코드 분기표(<code>$00:F390</code> + 코드 × 2)의 칸도
+    바꿨습니다. <code>{'{44}'}</code>는 <code>$00:FAB0</code>의 중계 코드를 거쳐 메뉴 동작으로, <code>{'{39}'}</code>–
+    <code>{'{3D}'}</code>는 반복음을 기록한 뒤 원래 처리로 갑니다. 분기표는 2바이트 주소라 뱅크 $00 안에 중계 코드를
+    둬야 합니다(<a href={guide('snes', 'hooking', 'space')}>6장 「새 코드를 둘 빈 공간」</a>).
+  </p>
+</Deeper>
+
+<h3 id="making-select">빈 버튼 찾기</h3>
+<NoteRelated patch={patch} id="making-select" />
+<p>
+  카마이타치의 밤 SFC판을 에뮬레이터로 직접 돌려 보고 설명서를 읽어 동작을 맞췄습니다. 처음에는 R로 장 화면을 여는 줄
+  알았는데, 설명서에 R은 쓰지 않는다고 적혀 있었습니다. 앞서 누른 Select가 늦게 반영된 것을 잘못 본 것이었습니다. 나중에
+  GBA판의 플로차트까지 더했습니다.
+</p>
+<p>
+  먼저 기능을 열 버튼이 필요했습니다. 게임이 패드 값을 받아 쓰는 루틴($00:8B9A)을 읽어 보니 Select와 R은 어디서도 쓰지
+  않았습니다. A 버튼 입력 대기 중 X를 누르면 되감기로 가는 자리($00:9CF9)가 있어서, 그 바로 앞을 후킹해 Select를 먼저
+  보게 했습니다. 원래 바이트 <code>A5 CC 29 00 80</code>(<code>LDA $CC</code> · <code>AND #$8000</code>)을
+  <code>22 45 84 1A EA</code>(<code>JSL $1A:8445</code> · <code>NOP</code>)로 바꾼 것입니다. 이 명령들을 읽는 법은
+  <a href={guide('snes', 'assembly')}>5장 어셈블리 기초</a>에 있습니다.
+</p>
+
+<h3 id="making-readers">대본을 읽는 손이 셋</h3>
+<NoteRelated patch={patch} id="making-readers" />
+<p>
+  장을 고르면 "지금 읽는 위치" 를 그 장의 시작 주소로 바꾸면 될 것 같았습니다. 결과는 무시되거나, 검은 화면에서 영원히
+  멈추는 것이었습니다. 멈춘 화면에서 거꾸로 따라갔습니다. 대본이 메뉴 버퍼의 한 곳에서 서 있었고, 그 자리는 장면 번호가
+  준비되기를 기다리는 배경 명령이었습니다. 그 장면 번호를 쓰는 코드를 감시하니 태스크를 시작하는 루틴이 나왔고, 그
+  태스크를 다시 시작하는 곳이 점프 명령 처리 뒤에 있었습니다. 대본을 읽는 손이 하나가 아니었던 것입니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('three-readers.svg')}
+    width="860"
+    height="430"
+    alt="대본을 본문, 배치 미리 읽기, 장면 미리 읽기 셋이 각자 다른 위치에서 읽는 도식"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+</figure>
+<ul class="notes">
+  <li>
+    엔진은 태스크(번갈아 도는 작은 프로그램)를 여러 개 돌립니다. 본문 말고도 줄 나눔을 미리 재는 태스크와, 다음 장면
+    그림을 미리 올려 두는 태스크가 각자의 위치에서 대본을 읽습니다.
+  </li>
+  <li>
+    위치는 네 벌($195B, $1972, $1989, $19A0) 있고, 엔진은 그중 $195B에서 본문 위치를 다시 읽어 옵니다. 하나만 바꾸면
+    다음 순간 원래 값으로 돌아갑니다. 세이브를 불러올 때처럼 네 벌을 모두 써야 합니다.
+  </li>
+  <li>
+    본문이 배경 명령에 닿으면 장면 미리 읽기가 그 그림을 준비할 때까지 기다립니다. 장면 미리 읽기가 옛 자리를 읽고
+    있으면 기다리는 그림이 영영 오지 않습니다. 게임은 점프 명령을 실행한 뒤 미리 읽기를 새 위치에서 다시 시작하는
+    루틴($00:9A5A)을 부르는데, 위치를 직접 바꿀 때도 이걸 불러야 했습니다.
+  </li>
+  <li>
+    줄 나눔 태스크는 앞서 읽으면서 $28보다 작은 번호의 명령은 실제로 실행합니다. 처음에 메뉴 동작을 안 쓰는{' '}
+    <code>{'{23}'}</code>에 달았더니 메뉴를 고르기도 전에 미리 실행됐습니다. 그래서 새 명령은 $28 이상인{' '}
+    <code>{'{44}'}</code>로 옮겼고, 점프를 가로채는 후킹은 본문이 읽을 때만 동작하게 했습니다.
+  </li>
+</ul>
+<Deeper title="넷째 사본을 쓰는 태스크 1과 쓰지 않는 디버그 코드 {23}·{24}">
+  <p>
+    그림에 없는 넷째 사본 $1989는 태스크 1의 위치입니다. 태스크 1은 $00:9B53에서 진입점 $00:CB99로 시작해 대본을 앞서
+    읽습니다. 소리 명령({'{39}'} {'{3D}'} {'{45}'} 등)을 만나면 $00:CCAC가 $01:8007 표의 목록을 사운드 명령
+    버퍼($10A5/$10A6, 잠금 $10A3)로 보냅니다. 선택지·점프·엔딩 같은 코드({'{19}'} {'{1A}'} {'{04}'} {'{05}'} {'{1D}'}{' '}
+    {'{23}'} {'{24}'} {'{43}'} {'{44}'})에 닿으면 위치를 $1989–$198C에 남기고 끝나고, 다음에 시작할 때 $00:CC96이 거기서
+    다시 읽습니다. 소리를 미리 준비해 두는 태스크로 보는데, 이 해석은 추정입니다. 본체 CPU가 소리 칩에 명령을 보내는
+    구조는 <a href={guide('snes', 'sound', 'commands')}>13장 「곡 번호와 효과음 번호 보내기」</a>에 있습니다.
+  </p>
+  <p>
+    쓰지 않는 <code>{'{23}'}</code>($00:E13F)과 <code>{'{24}'}</code>($00:E1DD)는 장면 번호를 골라 그리로 가는 디버그
+    기능입니다. <code>{'{23}'}</code>은 $7F:FFF0의 번호 × 14로 표를 읽어 $5F 버퍼에 기호와 <code>{'{24}'}</code>를 넣고,
+    상태를 $1A03 등에 보관하고 $1BB1을 3으로 둡니다. <code>{'{24}'}</code>는 $1BAD를 $FE로 두고, 다음 프레임부터 메인
+    루프의 $00:E1E4가 십자 키로 번호를 바꿉니다(위아래 ±1, 좌우 ±20). A나 B로 나갑니다. 다만 개수 표와 장면 표를
+    가리키는 주소가 0으로 지워져 있어 $00:0000을 읽습니다. 일본판, v1.0, v1.1 대본 어디에도 이 두 코드는 나오지
+    않습니다.
+  </p>
+</Deeper>
+<ToolFiles
+  items={[
+    { path: 'lua/qol/pcs.lua', text: '프레임마다 CPU가 실행 중인 주소 기록 (어디서 멈췄나)' },
+    {
+      path: 'probe/wtrace.lua (krpatch snes lua)',
+      text: '한 주소에 값을 쓰는 코드의 주소와 값 기록 (누가 바꿨나)',
+    },
+    { path: 'probe/trace.lua (krpatch snes lua)', text: '지정한 코드가 몇 번 실행되는지 세기' },
+    { path: 'probe/watch.lua (krpatch snes lua)', text: '프레임마다 메모리 값 기록' },
+    {
+      path: 'krpatch snes dis',
+      text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러',
+    },
+  ]}
+/>
+
+<h3 id="making-menu">메뉴는 그리지 않고 대본으로 쓴다</h3>
+<p>
+  장 목록을 화면에 새로 그리려면 커서, 소리, 입력 처리를 모두 새로 만들어야 합니다. 그 대신 메뉴를 대본으로 써서
+  게임에게 읽혔습니다. 대본에 선택지 명령을 쓰면 게임이 원래 선택지 화면 그대로 보여 주고, 커서와 효과음도 원래 것이
+  나옵니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={img('menu-script.svg')}
+    width="860"
+    height="470"
+    alt="Select를 누르면 WRAM에 메뉴 대본을 쓰고 대본 위치를 그쪽으로 옮기면, 게임의 선택지 코드가 메뉴를 보여 주고 고른 보기의 새 명령이 장으로 점프하는 흐름"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+</figure>
+<figure class="paper narrow">
+  <ZoomImage
+    src={img('menu-page.webp')}
+    width="512"
+    height="448"
+    alt="어디부터 다시 읽을까요 아래 제3장, 지금까지 읽은 모든 장, 엔딩 목록, 돌아가기 보기가 나열된 화면"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>게임의 선택지 화면이 그대로 메뉴가 됩니다</figcaption>
+</figure>
+<ul class="notes">
+  <li>
+    대본에서 쓰지 않는 명령 번호 <code>{'{44}'}</code>를 "메뉴 동작" 으로 새로 달았습니다. 보기마다 이 명령이 붙어 있어,
+    고르면 장 번호, 다음 쪽, 엔딩 목록, 돌아가기 중 하나를 실행합니다.
+  </li>
+  <li>
+    메뉴 대본은 롬이 아니라 WRAM의 빈 곳($7F:C000, $7F:C800)에 실행 중에 씁니다. 이번 회차에 읽은 장만 보여야 하기
+    때문입니다. "다음 쪽" 을 고르면 다른 버퍼에 다음 쪽을 쓰고 그쪽으로 넘어갑니다. 지금 읽고 있는 버퍼를 덮어쓰지
+    않으려고 두 벌을 번갈아 씁니다.
+  </li>
+  <li>
+    게임 입장에서는 메뉴도 선택지라서, 고를 때마다 "골라 본 선택지 수" 가 늘고 되감기 기록이 지워지고 자동 저장이
+    일어납니다. 메뉴를 열 때 이 값들을 저장해 두고, 메뉴 밖으로 점프하는 순간 되돌리게 했습니다. 메뉴 안에서는 자동
+    저장도 건너뜁니다.
+  </li>
+  <li>
+    고르자마자 화면 지우기 <code>{'{25}'}</code>를 쓰면, 선택지가 아직 보기를 지우는 중이라 다음 페이지가 멈추는 경우가
+    있었습니다. 앞에 잠깐 멈춤 <code>{'{17:5}'}</code>을 넣었습니다.
+  </li>
+  <li>한 번에 보이는 보기는 5개까지입니다. 6개를 넣으면 화면이 깨져서, 장 목록은 한 쪽에 3개씩 나눴습니다.</li>
+  <li>
+    장 목록은 원작 선택지처럼 지금 장면의 배경 위에 뜹니다. 그래서 장면에 따라 메뉴 위로 눈알 같은 그림이 보이는데,
+    이것은 스프라이트가 아니라 장면 배경(BG2)입니다. 그때 화면의 스프라이트(OAM)는 0개이고, 메인 화면 레이어 값 $0A0E를
+    바꿔 보면 BG2가 켜져 있을 때만 보입니다. 원작의 선택지 화면과 같은 동작이라 그대로 두었습니다.
+  </li>
+</ul>
+<ToolFiles
+  items={[
+    { path: 'asm/qol.asm', text: '장 목록·엔딩 목록·기록·노란 글씨·책갈피 코드와 후킹' },
+    { path: 'tools/qol.py', text: '장 범위와 시작, 엔딩 위치, 메뉴 문자열, 장별 배경·음악 표 만들기' },
+    { path: 'tables/qol-chapters.tsv', text: '장 30개 (번호, 제목, 시작 줄, 갈래)' },
+  ]}
+/>
+
+<h3 id="making-scene-music">장으로 옮길 때 배경과 음악</h3>
+<NoteRelated patch={patch} id="making-scene-music" />
+<p>
+  장 첫 페이지가 배경을 정하지 않는 경우가 많았습니다. 원래 흐름에서는 바로 앞 장면의 배경이 이어지기 때문입니다. 빌드할
+  때 대본을 따라가며 "이 장 시작 직전에 마지막으로 적용된 배경 명령" 을 찾아, 장으로 점프하기 직전에 그 명령을
+  넣었습니다. 시나리오 첫머리의 배경 명령은 아주 천천히 밝아져 10초 가까이 검은 화면이 이어져서, 점프용으로 넣을 때는
+  속도를 바꿔 3초쯤으로 줄였습니다.
+</p>
+<figure class="paper narrow">
+  <ZoomImage
+    src={`${base}/images/features/jump-ch8.webp`}
+    width="256"
+    height="224"
+    alt="배경 명령이 없는 8장으로 옮겨도 원래 장면인 차고에서 시작한다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>첫 페이지에 배경 명령이 없는 8장도 차고 장면에서 시작합니다</figcaption>
+</figure>
+<p>
+  대가로 음악은 직접 챙겨야 했습니다. 게임의 사운드 명령 다섯 개를 후킹해 지금 반복 재생 중인 음악·환경음(57가지)을
+  비트맵으로 기억하게 했습니다. 빌드 때 계산한 "그 장에서 울려야 할 반복음" 과 비교해, 꺼야 할 것은 끄고 켜야 할 것은
+  페이드 인하는 명령을 점프 앞에 넣습니다.
+</p>
+<Deeper title="버린 첫 방식: 세이브를 고쳐 쓰고 다시 시작하기">
+  <p>
+    사실 대본 점프는 두 번째 방식입니다. 처음에는 세이브를 고쳐 쓰고 게임을 다시 시작하는 방식(웜 재시작)으로 장을
+    옮겼습니다. 그런데 사운드 칩 프로그램이 돌고 있으면 리셋 코드($00:8EA0)가 사운드 칩에 프로그램을 다시 올리는
+    단계에서 멈췄고, 올리기를 건너뛰면 화면에 줄무늬가 생기거나 에뮬레이터마다 다른 곳에서 멈췄습니다. 고치고 고쳐 코어
+    4개는 통과했지만 snes9x와 Mesen은 끝내 검은 화면에서 멈췄습니다. 그래서 이 방식을 버리고 모든 이동을 게임 자신의
+    대본 점프로 바꿨습니다. 게임이 원래 하는 동작이라 에뮬레이터를 가리지 않습니다.
+  </p>
+  <p>
+    사운드 칩에 프로그램을 올리는 과정은 <a href={guide('snes', 'sound', 'upload')}>13장 「사운드 드라이버 올리기」</a>
+    에 있습니다.
+  </p>
+</Deeper>
+<ToolFiles
+  items={[
+    { path: 'tools/qol.py', text: '장 범위와 시작, 엔딩 위치, 메뉴 문자열, 장별 배경·음악 표 만들기' },
+    { path: 'lua/qol/menujump.sh', text: '장마다 메뉴로 옮겨 첫 화면 찍기' },
+    { path: 'lua/qol/chjump.sh', text: '장 시작으로 바로 옮겨 첫 화면 찍기' },
+  ]}
+/>
+
+<h3 id="making-flowchart">플로차트</h3>
 <p>
   선택지 382개와 엔딩 18개가 노드입니다. 보기들이 가는 곳을 이어 보면 나무가 아니라 그물입니다. 대부분의 선택지가 나란히
   흐르는 여러 갈래 사이를 오가고, 두 길 이상에서 들어오는 노드가 305개나 됩니다. 아래는 모든 노드를 다 봤을 때의 지도로,
-  흰 상자가 한 화면에 들어가는 양입니다.
+  흰 상자가 한 화면에 들어가는 양입니다. 패치 페이지의 <a href={`${base}/#feature-flowchart`}>플로차트 소개</a>에서 실제
+  화면을 볼 수 있습니다.
 </p>
 <figure class="paper narrow">
   <ZoomImage
@@ -752,39 +1437,43 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   첫 시안은 선택지를 대본 순서대로 한 줄에 꿰어 그렸는데, 분기가 하나도 안 보이는 사슬이 됐습니다. 보기마다 가는 곳을
   세어 보니 3~4곳으로 갈리는 선택지가 292개, 2곳이 46개, 말투만 다르고 같은 곳으로 가는 것이 44개였습니다. 한 화면에 다
-  그리면 선이 엉키므로, GBA판처럼 본 노드만 그리고 장 단위로 나무를 나눴습니다. 번호는 시나리오 시작 세 곳부터 너비
-  우선으로 매겨 형제 노드가 이어진 번호를 갖게 했습니다. 깊이 우선으로 매기면 첫 보기만 따라가도 그물 전체를 돈 뒤에야
-  형제로 돌아와서, 1번의 자식이 2번, 378번, 381번처럼 흩어집니다. 다른 장으로 가는 길은 "→ 장 번호" 상자로 다음 줄에
-  둡니다.
+  그리면 선이 엉키므로, GBA판처럼 본 노드만 그리고 장 단위로 나무를 나눴습니다.
 </p>
-<ul class="notes">
-  <li>
-    "어느 보기를 골랐나" 는 새로 저장하지 않았습니다. 게임이 선택지마다 고른 보기를 이미 세이브 변수의 상위 비트에
-    남기고 있었습니다. 선택지 382개가 변수 380개를 쓰고, 둘이 같이 쓰는 변수는 2개뿐이라 그대로 쓸 수 있었습니다.
-  </li>
-  <li>
-    화면은 배경 레이어를 끄고 글자 레이어만 남긴 뒤, 그 레이어의 비트맵(WRAM)에 상자와 선을 픽셀 단위로 직접 찍습니다.
-    번호와 A–E는 게임 폰트가 너무 커서 4×6 픽셀 글자 17개를 새로 그렸고, 장 제목만 게임 폰트로 씁니다.
-  </li>
-  <li>
-    플로차트가 떠 있는 동안은 입력 대기 후킹 안에서 자체 루프로 돕니다. 매 프레임 글자 레이어를 VRAM에 올리고 화면
-    갱신을 기다립니다. 닫을 때는 버튼을 뗄 때까지 기다리는데, 안 그러면 게임이 그 버튼을 새 입력으로 받아 페이지가 한 장
-    넘어갔습니다.
-  </li>
-  <li>
-    A를 누르면 그 선택지가 있는 페이지의 처음으로 갑니다. 메뉴와 같은 방식으로 화면 지우기, 배경, 음악, 점프 명령을
-    대본으로 써서 게임에게 읽힙니다.
-  </li>
-  <li>
-    스포일러를 줄이려고 아직 지나지 않은 노드는 그리지도, 커서로 가지도, 미니맵에 점을 찍지도 않습니다. 다만 지나간
-    선택지는 고르지 않은 보기 글자도 보여 주고 고른 보기만 노랗게 칠해서, "여기서 다른 걸 골라 볼 수 있다" 는 것까지만
-    알게 했습니다.
-  </li>
-  <li>
-    상자가 6개 이하인 줄은 가운데에 놓고, 그보다 긴 줄만 왼쪽부터 놓고 좌우로 스크롤합니다. 위아래로 움직이면 화면에서
-    가로 위치가 가장 가까운 상자로 갑니다.
-  </li>
-</ul>
+<Deeper title="번호 매기기, 그리기, 입력, 스포일러">
+  <ul class="notes">
+    <li>
+      번호는 시나리오 시작 세 곳부터 너비 우선으로 매겨 형제 노드가 이어진 번호를 갖게 했습니다. 깊이 우선으로 매기면 첫
+      보기만 따라가도 그물 전체를 돈 뒤에야 형제로 돌아와서, 1번의 자식이 2번, 378번, 381번처럼 흩어집니다. 다른 장으로
+      가는 길은 "→ 장 번호" 상자로 다음 줄에 둡니다.
+    </li>
+    <li>
+      "어느 보기를 골랐나" 는 새로 저장하지 않았습니다. 게임이 선택지마다 고른 보기를 이미 세이브 변수의 상위 비트에
+      남기고 있었습니다. 선택지 382개가 변수 380개를 쓰고, 둘이 같이 쓰는 변수는 2개뿐이라 그대로 쓸 수 있었습니다.
+    </li>
+    <li>
+      화면은 배경 레이어를 끄고 글자 레이어만 남긴 뒤, 그 레이어의 비트맵(WRAM)에 상자와 선을 픽셀 단위로 직접 찍습니다.
+      번호와 A–E는 게임 폰트가 너무 커서 4×6 픽셀 글자 17개를 새로 그렸고, 장 제목만 게임 폰트로 씁니다.
+    </li>
+    <li>
+      플로차트가 떠 있는 동안은 입력 대기 후킹 안에서 자체 루프로 돕니다. 매 프레임 글자 레이어를 VRAM에 올리고 화면
+      갱신을 기다립니다. 닫을 때는 버튼을 뗄 때까지 기다리는데, 안 그러면 게임이 그 버튼을 새 입력으로 받아 페이지가 한
+      장 넘어갔습니다.
+    </li>
+    <li>
+      A를 누르면 그 선택지가 있는 페이지의 처음으로 갑니다. 메뉴와 같은 방식으로 화면 지우기, 배경, 음악, 점프 명령을
+      대본으로 써서 게임에게 읽힙니다.
+    </li>
+    <li>
+      스포일러를 줄이려고 아직 지나지 않은 노드는 그리지도, 커서로 가지도, 미니맵에 점을 찍지도 않습니다. 다만 지나간
+      선택지는 고르지 않은 보기 글자도 보여 주고 고른 보기만 노랗게 칠해서, "여기서 다른 걸 골라 볼 수 있다" 는 것까지만
+      알게 했습니다.
+    </li>
+    <li>
+      상자가 6개 이하인 줄은 가운데에 놓고, 그보다 긴 줄만 왼쪽부터 놓고 좌우로 스크롤합니다. 위아래로 움직이면 화면에서
+      가로 위치가 가장 가까운 상자로 갑니다.
+    </li>
+  </ul>
+</Deeper>
 <ToolFiles
   items={[
     { path: 'tools/flow.py', text: '플로차트 노드와 장별 행 배치 만들기' },
@@ -792,18 +1481,18 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   ]}
 />
 
-<h2 id="making-yellow">15. 책갈피와 노란 글씨</h2>
-<NoteRelated patch={patch} id="making-yellow" />
+<h3 id="making-yellow">책갈피와 노란 글씨</h3>
 <p>
   X로 되감아 본 페이지를 노란 글씨로 보이게 하는 것은 의외로 간단했습니다. 글자는 팔레트의 한 색으로 찍히므로, 되감기에
-  들어갈 때 그 색을 노랑으로 바꾸고 나올 때 되돌리면 됩니다. 팔레트는 화면 갱신 틈에만 바꿀 수 있어 게임의 팔레트 사본을
-  고친 뒤 "다음 틈에 올려라" 표시를 켭니다. 책갈피 화면은 슬롯을 그리는 루틴을 후킹해, 장 기록이 있는 슬롯은 둘째 줄에
-  페이지 수 대신 마지막으로 읽은 장 제목을 게임 폰트로 그립니다.
+  들어갈 때 그 색을 노랑으로 바꾸고 나올 때 되돌리면 됩니다. 팔레트는 화면 갱신 틈에만 바꿀 수 있어 게임의 팔레트
+  사본(글자색은 <code>$0C9B</code>)을 고친 뒤 "다음 틈에 올려라" 표시를 켭니다. 책갈피 화면은 슬롯을 그리는 루틴을
+  후킹해, 장 기록이 있는 슬롯은 둘째 줄에 페이지 수 대신 마지막으로 읽은 장 제목을 게임 폰트로 그립니다.
 </p>
 <p>
   여기서도 한 번 검은 화면에 멈췄습니다. 65c816은 돌아오는 명령이 두 가지(RTS, RTL)라 부를 때와 같은 짝으로 돌아가야
   하는데, 먼 곳에서 불린 코드(JSL)가 가까운 호출용 루틴(RTS로 끝남)으로 그냥 뛰어가 버려 엉뚱한 주소로 돌아갔습니다.
-  짝을 맞추는 중간 단계를 두어 고쳤습니다.
+  짝을 맞추는 중간 단계를 두어 고쳤습니다. 이 짝이 왜 중요한지는{' '}
+  <a href={guide('snes', 'hooking', 'restore')}>6장 「덮어쓴 명령 다시 실행하기」</a>에 있습니다.
 </p>
 <ToolFiles
   items={[
@@ -812,79 +1501,15 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   ]}
 />
 
-<h2 id="making-space">16. 코드를 둔 자리</h2>
-<NoteRelated patch={patch} id="making-space" />
-<p>
-  v1.1과 v1.2의 코드와 표는 모두 v1.0이 일본판 대사를 0으로 지운 자리에 들어갔습니다. 롬을 더 늘리지 않아도 됐습니다.
-  WRAM은 6,000프레임을 플레이하며 게임이 쓰는 곳을 모두 기록한 뒤, 한 번도 쓰이지 않은 곳만 골라 메뉴 버퍼와 플로차트
-  작업 공간으로 썼습니다.
-</p>
-<p>
-  v1.0도 같은 자리에 자기 것을 넣었습니다. 0으로 비운 자리 가운데 $16:806A–$16:AE4E만 다른 바이트로 채워져 있는데,
-  v1.0이 넣은 그래픽과 코드입니다. v1.0은 일본판 코드 7곳($00:B472, $00:C436, $00:C4EC, $00:D585, $02:B521, $02:B54B,
-  $02:BCF9)을 이 근처로 가는 점프(JML)로 바꿨고, $15:E401–$15:E52A 부근도 v1.0 코드입니다. 이 후킹들이 $0100에 1~3을
-  적으면, 화면 갱신 후킹($00:C4EC → $15:E499)이 그 번호의 그래픽을 VRAM으로 보냅니다.
-</p>
-<div class="table-wrap" tabindex="0">
-  <table>
-    <caption>v1.0이 VRAM으로 보내는 그래픽</caption>
-    <thead>
-      <tr>
-        <th scope="col">$0100</th>
-        <th scope="col">롬</th>
-        <th scope="col">크기</th>
-        <th scope="col">VRAM</th>
-        <th scope="col">때</th>
-      </tr>
-    </thead>
-    <tbody>
-      {v10Uploads.map(u => (
-        <tr>
-          <td>{u.n}</td>
-          <td>
-            <code>{u.rom}</code>
-          </td>
-          <td>{u.size}</td>
-          <td>
-            <code>{u.vram}</code>
-          </td>
-          <td class="wrap">{u.when}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-<p>
-  v1.2가 쓰는 WRAM은 최종 롬으로 다시 확인했습니다. 장 시작 30곳, 엔딩 직전 18곳에서 이어지는 세이브와 시나리오 3개의 새
-  게임, 모두 51번을 1만 2천 프레임씩 돌렸습니다. 장 시작 세이브에서는 Select, 십자 키, X·Y, A를 섞어 플로차트와 메뉴를
-  오가게 했고, 나머지는 A를 연타했습니다. 세이브는 しおり 단계를 7로 맞춰 숨은 보기까지 모두 보이게 했습니다. 패치가
-  쓰는 구간($7F:C000–$7F:D8FF, $7F:FFE0–$7F:FFEF, $7E:1FF2–$7E:1FF3)에 패치 코드가 아닌 곳에서 쓴 것은 켤 때
-  $0000–$1FFF를 0으로 지우는 루프($00:8030)뿐이었습니다. WRAM 포트($2181–$2183)로 주소를 정하는 쓰기도 없었고, 51번 모두
-  $00:0000–$00:08FF로 뛰는 폭주가 없었습니다.
-</p>
-<figure class="paper">
-  <ZoomImage
-    src={img('rom-map.svg')}
-    width="860"
-    height="420"
-    alt="2MB 롬을 뱅크 64칸으로 그린 지도. 일본판 대사가 있던 $15–$1F 자리에 v1.1과 v1.2 코드가 들어가고, 늘린 1MB에 한글 대사가 있다"
-    loading="lazy"
-    decoding="async"
-    smooth
-  />
-</figure>
-<ToolFiles
-  items={[
-    { path: 'probe/wrange.lua (krpatch snes lua)', text: '플레이 중 한 번이라도 쓰인 WRAM 영역 기록' },
-    { path: 'probe/wdump.lua (krpatch snes lua)', text: 'WRAM 구간을 파일로 덤프' },
-  ]}
-/>
-
-<h2 id="making-testing">17. 확인은 에뮬레이터가</h2>
+<h2 id="making-testing">
+  9. 확인 방법 <span class="layer-badge layer-try">직접 해 보기</span>
+</h2>
 <NoteRelated patch={patch} id="making-testing" />
 <p>
-  Mesen 2의 테스트 모드와 Lua 스크립트로 버튼 입력을 재생하고, 원하는 순간의 화면과 메모리를 저장했습니다. 멈춤을 찾을
-  때는 이 순서가 가장 빨랐습니다.
+  Mesen 2의 테스트 모드와 Lua 스크립트로 버튼 입력을 재생하고, 원하는 순간의 화면과 메모리를 저장했습니다. 손으로
+  플레이하지 않으니 같은 장면을 몇 번이고 똑같이 다시 볼 수 있습니다. 멈춤을 찾을 때는 이 순서가 가장 빨랐습니다.
+  중단점과 쓰기 감시가 무엇인지는{' '}
+  <a href={guide('snes', 'emulator', 'breakpoints')}>12장 「중단점으로 "어디서 읽나" 잡기」</a>에 있습니다.
 </p>
 <ol class="flow">
   {debugSteps.map(step => (
@@ -898,16 +1523,31 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     깊은 장면은 그 장면 직전에서 이어지는 세이브 파일을 직접 만들어 찍습니다. 비교 화면은 일본판 기본 이름 코헤이로
     찍었습니다.
   </li>
-  <li>
-    libretro 코어를 직접 불러 쓰는 작은 프로그램을 만들어, 같은 입력을 여러 에뮬레이터에 넣고 새 게임, 이어하기, 장
-    목록, 플로차트를 비교했습니다.
-  </li>
-  <li>
-    아래 표는 최종 v1.2(CRC32 2C31A0B2)로 다시 돌린 결과입니다. 코어마다 7가지를 넣었습니다. 새 게임(헤더 없는 롬, 헤더
-    있는 롬), v1.1·v1.0·일본판 세이브로 이어하기, 장 목록, 플로차트입니다. 정상인 코어는 끝까지 같은 장면과 선택지로
-    갔고, 차이는 글자가 찍히는 타이밍 몇 프레임뿐이었습니다. Mesen 2 줄은 그 전에 Mesen 2로 직접 확인한 결과입니다.
-  </li>
+  <li>빌드마다 입력 대기 비교(build/waits.tsv)와 9줄 초과 페이지(build/overflow.tsv)가 0건인지 봅니다.</li>
 </ul>
+<h3 id="making-compat">여러 에뮬레이터에 같은 입력 넣기</h3>
+<p>
+  libretro 코어를 직접 불러 쓰는 작은 프로그램(<code>krpatch snes run</code>)으로 같은 입력을 여러 에뮬레이터에 넣고 새
+  게임, 이어하기, 장 목록, 플로차트를 비교했습니다. 세이브를 불러온 뒤 A를 눌러 가며 화면을 찍는 이어하기 시나리오(
+  <code>compat/s_cont.txt</code>)입니다. 왼쪽 숫자가 프레임이고, 주석은 이 노트에서 붙였습니다.
+</p>
+<pre tabindex="0"><code>1000 start 4        ; 1000프레임에 Start를 4프레임 동안
+1300 a 4            ; 1300프레임에 A
+1500 a 4            ; 1500프레임에 A
+1600 tap a 40 5000  ; 1600프레임부터 5000프레임까지 40프레임마다 A
+500 shot            ; 500프레임에 화면 저장. 5000프레임까지 250프레임마다 같은 줄 19개 …
+5000 end</code></pre>
+<p>
+  실행할 때 <code>--watch 7E0052:3</code>을 붙여 대본 위치(<code>$52</code>–<code>$54</code>, 3절)를 프레임마다
+  기록합니다. 코어마다 이 기록이 같은 순서로 흘러가면 같은 장면과 선택지로 갔다는 뜻입니다. 이 스크립트 형식은
+  <a href={guide('snes', 'emulator', 'headless')}>12장 「화면 없이 돌리기: 입력 스크립트」</a>의 위젯에서 「제절초
+  이어하기」를 골라 한 줄씩 볼 수 있습니다.
+</p>
+<p>
+  아래 표는 최종 v1.2(CRC32 2C31A0B2)로 다시 돌린 결과입니다. 코어마다 7가지를 넣었습니다. 새 게임(헤더 없는 롬, 헤더
+  있는 롬), v1.1·v1.0·일본판 세이브로 이어하기, 장 목록, 플로차트입니다. 정상인 코어는 끝까지 같은 장면과 선택지로 갔고,
+  차이는 글자가 찍히는 타이밍 몇 프레임뿐이었습니다. Mesen 2 줄은 그 전에 Mesen 2로 직접 확인한 결과입니다.
+</p>
 <div class="table-wrap" tabindex="0">
   <table>
     <thead>
@@ -936,12 +1576,15 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   ]}
 />
 
-<h2 id="making-next">18. 다음 사람에게</h2>
+<h2 id="making-next">
+  10. 다음 사람에게 <span class="layer-badge layer-patch">실제 패치에서</span>
+</h2>
 <NoteRelated patch={patch} id="making-next" />
 <p>
   롬 주소와 형식은 패치 소스의 docs/ANALYSIS.md에 모았습니다. 헤더, 메모리 지도, 대본 형식, 제어 코드, 폰트 그룹 표,
   후킹 지점 전체(원래 바이트와 바꾼 바이트), 세이브 형식, 쓴 공간이 들어 있고, 직접 확인한 것은 [실측], 짐작만 한 것은
-  [추정]으로 나눠 적었습니다. 여기에는 확인하지 못한 것과 남은 자리만 적습니다.
+  [추정]으로 나눠 적었습니다. 여기에는 확인하지 못한 것과 알려진 한계, 쓴 도구만 적습니다. 남은 롬 자리는
+  <a href="#making-free-space">2절 「남은 자리」</a>에 있습니다.
 </p>
 <h3>확인하지 못한 것</h3>
 <ul class="notes">
@@ -949,25 +1592,12 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     <li>{u}</li>
   ))}
 </ul>
-<h3>남은 자리</h3>
-<p>
-  v1.2 롬에서 0이 길게 이어진 곳 중 큰 것입니다. 0이 이어졌다고 비어 있다는 뜻은 아닙니다. 표의 일부가 0일 수도 있으니,
-  쓰기 전에 패치 소스가 그 주소를 쓰는지 확인하세요. 폰트 그룹 표에는 빈 칸이 10개 남아 있습니다.
-</p>
-<div class="table-wrap" tabindex="0">
-  <table>
-    <tbody>
-      {freeSpace.map(f => (
-        <tr>
-          <td>
-            <code>{f.range}</code>
-          </td>
-          <td class="wrap">{f.note}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
+<h3>알려진 한계</h3>
+<ul class="notes">
+  {limits.map(l => (
+    <li>{l}</li>
+  ))}
+</ul>
 <h3>쓴 도구</h3>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -984,8 +1614,15 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>글자표를 읽을 때 쓴 문자 인식은 macOS의 Vision이라, krpatch ocr은 macOS에서만 돌아갑니다.</p>
 <ToolFiles items={[{ path: 'docs/ANALYSIS.md', text: '롬 분석 문서. 주소와 형식 전체' }]} />
 
-<h2 id="making-tools">19. 패치 소스 파일</h2>
+<h2 id="making-tools">
+  11. 패치 소스 파일 <span class="layer-badge layer-try">직접 해 보기</span>
+</h2>
 <NoteRelated patch={patch} id="making-tools" />
+<p>
+  빌드는 일본판 롬에 v1.0 IPS를 먼저 적용하고, 그 위에 대본·폰트·어셈블리를 다시 씌운 뒤 새 IPS를 만듭니다. IPS가
+  무엇이고 어떻게 읽는지는 <a href={guide('common', 'rom-patch', 'ips')}>0장 「IPS 패치를 바이트로 읽기」</a>에
+  있습니다. 하는 일마다 파일과 이 노트의 절을 이었습니다.
+</p>
 <div class="table-wrap" tabindex="0">
   <table>
     <thead>
