@@ -9,6 +9,7 @@ import ReleasePairs from '../../../../components/kr-patch/ReleasePairs.astro';
 import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
 import ComparePairs from '../../../../components/kr-patch/ComparePairs.astro';
 import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
+import SaveNote from '../../../../components/kr-patch/SaveNote.astro';
 import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
 import PatchBook from '../../../../layouts/PatchBook.astro';
 import MakingOf from '../../../../components/ghost-trick/MakingOf.astro';
@@ -86,7 +87,7 @@ const play = [
   },
   {
     image: 'countdown',
-    alt: '공원에서 총을 겨눈 두 사람과 죽음까지 남은 시간',
+    alt: '쓰레기장에서 린네에게 총을 겨눈 남자와 「죽음까지 3」 표시',
     title: '운명이 바뀌기까지',
     text: '죽음이 다가오는 동안 남은 시간이 줄어듭니다. 시간 안에 트릭을 이어 운명을 바꾸지 못하면 다시 4분 전으로 돌아가 도전합니다.',
   },
@@ -106,7 +107,7 @@ const gallery = [
   { image: 'restaurant', alt: '레스토랑 키친치킨 안' },
   { image: 'guard', alt: '형무소 교도관실의 교도관' },
   { image: 'minister', alt: '법무부 장관 집무실' },
-  { image: 'park', alt: '밤의 공원에서 누군가를 부르는 사람' },
+  { image: 'park', alt: '밤의 공원에서 「무슨 일이야?」라고 묻는 사람' },
   { image: 'hitman', alt: '모자를 쓴 파란 얼굴의 남자가 웃으며 말하는 장면' },
   { image: 'possess', alt: '빙의하기 문구가 화면을 가로지르는 순간' },
 ];
@@ -132,14 +133,15 @@ const latestOverview =
       <PatchBox platform="nds" ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
         <LatestRelease slot="intro" patch={patch} overview={latestOverview} />
         <ManualPatch patch={patch} />
+        <SaveNote platform="nds" />
       </PatchBox>
     </div>
     <figure class="hero-shot screen">
       <ZoomImage
-        src={`${base}/images/title-screens.webp`}
+        src={`${base}/images/title.webp`}
         width="256"
-        height="384"
-        alt="위 화면에 '고스트 트릭' 한글 로고, 아래 화면에 「처음부터」 단추가 있는 타이틀 화면"
+        height="192"
+        alt="붉은 배경에 GHOST TRICK 로고와 '고스트 트릭' 한글 로고가 있는 타이틀 화면"
         fetchpriority="high"
       />
     </figure>
@@ -308,6 +310,7 @@ const latestOverview =
             </li>
             <li>두 장면 파일에서 1바이트 어긋나 있던 레이블 표를 일본판에 맞게 바로잡았습니다.</li>
             <li>원문에 없던 대사 하나를 지웠습니다.</li>
+            <li>타이틀 화면 아래에 v1.1이 넣었던 안내 문구와 제작자 표기를 지웠습니다.</li>
           </ul>
           <p class="section-note">아래는 같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓은 것입니다.</p>
           <ReleasePairs pairs={ghostTrickV12Pairs} base={base} versions={ghostTrickVersions} />
@@ -322,12 +325,12 @@ const latestOverview =
             <li>대사·수첩·메뉴와 타이틀 로고, 화면 글자를 한국어로 옮겼습니다.</li>
           </ul>
           <ReleaseScreenshot
-            height={384}
+            height={132}
             panels={[
               {
                 label: '타이틀',
-                src: `${base}/images/title-screens.webp`,
-                alt: '한글 로고가 들어간 타이틀 화면',
+                src: `${base}/images/title-logo.webp`,
+                alt: "GHOST TRICK 로고 아래에 들어간 '고스트 트릭' 한글 로고",
               },
             ]}
           />

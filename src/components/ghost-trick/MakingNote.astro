@@ -37,8 +37,8 @@ const versions = [
   {
     name: 'v1.2',
     size: '119,462,534',
-    crc: 'EA51D7F3',
-    text: 'v1.1 롬에서 대사 스크립트를 다시 만든 롬. 일본판에 v1.2 xdelta(3,471,588바이트)를 적용해도 같습니다.',
+    crc: '4C863193',
+    text: 'v1.1 롬에서 대사 스크립트를 다시 만들고 타이틀 화면의 v1.1 문구를 지운 롬. 일본판에 v1.2 xdelta(3,481,673바이트)를 적용해도 같습니다.',
   },
 ];
 
@@ -240,8 +240,7 @@ const unverified = [
   'melonDS DS v1.4.0 코어는 롬을 읽은 뒤 멈춰서 결과를 비교하지 못했습니다.',
   '화면으로 본 것은 패치 노트의 비교 화면과 창 폭 실험, 대표 장면입니다. 4,048개 대사의 줄 폭은 화면이 아니라 tools/check.py의 계산으로 확인했습니다.',
   '창 종류는 장면이 정하는데 check.py는 같은 대사의 일본어 줄 길이로 짐작합니다(3절 「창 폭」). 일본어가 13자 이하인 대사는 모두 좁은 창으로 보고 검사하므로 더 엄격한 쪽이지만, 실제 창과 다를 수 있습니다.',
-  'v1.1에서 만든 세이브로 v1.2를 이어서 해도 되는지는 확인하지 않았습니다. 게임 코드와 세이브 형식은 건드리지 않았습니다.',
-  'cpac_2d.bin, cpac_3d.bin의 그래픽 형식은 2015년 분석을 옮긴 것이라 [추정]입니다. v1.2는 이 파일을 바꾸지 않았습니다.',
+  'cpac_2d.bin, cpac_3d.bin의 묶음 구조는 2015년 분석을 옮긴 것이라 [추정]입니다. v1.2가 직접 확인하고 고친 것은 타이틀 그림(sdt.) 하나입니다.',
 ];
 
 const limits = [
@@ -267,6 +266,7 @@ const toolMap = [
   { job: '빌드 전 검사', files: ['tools/check.py'], section: 'review' },
   { job: '글자표', files: ['tables/jp.tsv', 'tables/low.tsv'], section: 'font' },
   { job: '대사 폰트 꺼내기', files: ['tools/font_store.py'], section: 'font' },
+  { job: '타이틀 문구 지우기', files: ['tools/title.py'], section: 'title' },
   { job: 'v1.2 대본', files: ['tables/v1.2/script.tsv'], section: 'review' },
   { job: '창 폭 실험', files: ['tools/probe.py'], section: 'wrap' },
   { job: '화면 찍기', files: ['tools/play.py', 'tools/stage_rom.py', 'tools/gallery.py'], section: 'testing' },
@@ -281,6 +281,7 @@ const sectionTitles: Record<string, string> = {
   review: '3. 대사 · 전수 대조',
   wrap: '3. 대사 · 창 폭',
   font: '4. 글자',
+  title: '5. 그림·압축 · 타이틀',
   bgm: '8. 고유 문제 · 배경 음악',
   testing: '9. 확인 방법',
   next: '10. 다음 사람에게',
@@ -290,8 +291,8 @@ const sectionTitles: Record<string, string> = {
 const buildSteps = [
   '일본판 롬에 v1.1 xdelta를 적용합니다(krpatch xdelta apply). 폰트와 그래픽은 이 롬의 것을 그대로 씁니다.',
   'tools/check.py가 v1.2 대본을 일본판·v1.1과 맞대어 검사합니다. 문제가 하나라도 있으면 빌드를 멈춥니다.',
-  'tools/build.py가 대사 스크립트마다 일본판 스크립트를 풀어 한국어 대사를 이어 쓰고, 포인터와 레이블을 고쳐 다시 압축합니다. 롬은 kr_patch.nds.rom으로 다시 묶습니다.',
-  '일본판과 결과 롬으로 xdelta를 만듭니다(krpatch xdelta make). 결과 롬은 119,462,534바이트, CRC32 EA51D7F3입니다.',
+  'tools/build.py가 대사 스크립트마다 일본판 스크립트를 풀어 한국어 대사를 이어 쓰고, 포인터와 레이블을 고쳐 다시 압축합니다. 타이틀 그림에서 v1.1 문구를 지운 뒤(tools/title.py), 롬은 kr_patch.nds.rom으로 다시 묶습니다.',
+  '일본판과 결과 롬으로 xdelta를 만듭니다(krpatch xdelta make). 결과 롬은 119,462,534바이트, CRC32 4C863193입니다.',
 ];
 ---
 
@@ -321,7 +322,8 @@ const buildSteps = [
   <li>
     <strong>v1.2</strong>: v1.1 대사 4,048개를 일본판과 맞대어 검수했습니다(<a href="#making-review">3절</a>). v1.1 롬에
     덧쓰지 않고, 일본판 대사 스크립트에 고친 대사를 이어 써서 스크립트 145개와 시스템 파일 2개를 다시 만들었습니다(
-    <a href="#making-repack">3절</a>). 폰트와 그래픽은 v1.1 그대로입니다.
+    <a href="#making-repack">3절</a>). 폰트와 그래픽은 v1.1 그대로이고, 타이틀 화면에 v1.1이 넣은 안내·제작자 문구만
+    지웠습니다(<a href="#making-gfx">5절</a>).
   </li>
 </ul>
 <p>
@@ -489,9 +491,10 @@ const buildSteps = [
   파일이 커지면 원래 자리에 들어가지 않습니다. 툴킷의 <code>kr_patch.nds.rom</code>은 바뀐 파일이 원래 자리(다음
   데이터가 시작하기 전까지)에 들어가면 그 자리에 두고 남는 곳을 채우고, 들어가지 않으면 롬 끝으로 옮깁니다. 헤더 쪽에서
   바뀌는 것은 FAT, 사용 크기(파일이 전보다 뒤까지 갈 때만), 카드 용량, 헤더 CRC-16뿐입니다. v1.2에서 v1.1과 다른 파일은
-  147개이고, 롬 끝으로 옮겨 간 것은 <code>st06/st06_demo100_Expand.xml.lz</code> 하나뿐입니다. 나머지는 다시 압축한
-  크기가 원래 자리에 들어갔습니다. 슈퍼 패미콤에서 롬을 늘릴 때(<a href={guide('sfc', 'expansion')}>11장 롬 확장</a>)와
-  달리 주소 지도를 다시 짤 필요가 없습니다.
+  148개(스크립트 145개, 시스템 파일 2개, 그래픽 묶음 1개)이고, 롬 끝으로 옮겨 간 것은{' '}
+  <code>st06/st06_demo100_Expand.xml.lz</code> 하나뿐입니다. 나머지는 다시 압축한 크기가 원래 자리에 들어갔습니다. 슈퍼
+  패미콤에서 롬을 늘릴 때(<a href={guide('sfc', 'expansion')}>11장 롬 확장</a>)와 달리 주소 지도를 다시 짤 필요가
+  없습니다.
 </p>
 <Deeper title="v1.1 헤더의 사용 크기가 실제보다 작은 것">
   <p>
@@ -852,8 +855,8 @@ SHIFT = (4, 6, 0, 2)
 <p>
   타이틀 로고와 「돌아가기」 같은 화면 글자는 그래픽 묶음 <code>cpac_2d.bin</code>, <code>cpac_3d.bin</code>에 있습니다.
   v1.1이 <code>cpac_2d.bin</code> 묶음 3의 항목 16,508개 가운데 2,695개, <code>cpac_3d.bin</code> 묶음 0의 항목 147개와
-  묶음 3의 26개를 바꿨고, v1.2는 그래픽을 건드리지 않았습니다. 아래 형식은 2015년에 v1.1 그래픽 작업을 하며 분석한 것을
-  옮긴 것이라 [추정]입니다.
+  묶음 3의 26개를 바꿨습니다. v1.2가 바꾼 그래픽은 타이틀 그림 하나입니다(아래 「타이틀 화면의 문구 지우기」). 묶음
+  구조는 2015년에 v1.1 그래픽 작업을 하며 분석한 것을 옮긴 것이라 [추정]입니다.
 </p>
 <ul class="notes">
   <li>
@@ -874,6 +877,36 @@ SHIFT = (4, 6, 0, 2)
   그림을 다시 그릴 일이 생기면 이 형식부터 롬에서 직접 확인해야 합니다. 다시 묶을 때는 묶음 사이의 0 채움을 원본 그대로
   두어야 합니다.
 </p>
+
+<h3 id="making-title">타이틀 화면의 문구 지우기</h3>
+<NoteRelated patch={patch} id="making-title" />
+<p>
+  v1.1은 타이틀 화면 아래에 비영리 배포 안내 두 줄과 제작자 표기를 그려 넣었습니다. v1.2는 이 문구를 지웠습니다. 타이틀
+  위 화면은 <code>cpac_3d.bin</code> 묶음 0의 461번 항목입니다. LZ11을 풀면 <code>sdt.</code>로 시작하는 그림이고, 헤더
+  0x0C부터 픽셀 위치(0x24), 픽셀 크기(0xC000), 팔레트 위치(0xC024), 팔레트 크기(0x200), 가로 256, 세로 192가 4바이트씩
+  적혀 있습니다. 픽셀 하나가 1바이트(8bpp)이고 팔레트는 256색입니다.
+</p>
+<p>
+  v1.1이 문구를 그린 곳은 137–177줄입니다. 그 줄들을 일본판 같은 그림의 픽셀로 되돌리면 배경 무늬가 그대로 이어집니다.
+  일본판에서 쓰인 색은 v1.1 팔레트에 모두 들어 있어, 같은 색의 번호로 바꾸기만 하면 됩니다. 다시 압축한
+  그림(23,995바이트)이 원래 칸(26,204바이트)보다 작아서 다른 항목은 옮기지 않고 크기 칸만 고쳤습니다. 롬 데이터를
+  저장소에 넣지 않도록, 이 작업은 빌드할 때 일본판과 v1.1 롬에서 매번 계산합니다.
+</p>
+<figure class="paper">
+  <ZoomImage
+    src={`${base}/images/title.webp`}
+    width="256"
+    height="192"
+    alt="문구를 지운 v1.2 타이틀. GHOST TRICK 로고와 고스트 트릭 한글 로고 아래에 CAPCOM 저작권 표기만 남았다"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>v1.2 타이틀 위 화면</figcaption>
+</figure>
+<ToolFiles
+  patch={patch}
+  items={[{ path: 'tools/title.py', text: '타이틀 그림의 v1.1 문구를 일본판 픽셀로 되돌리기' }]}
+/>
 
 <h2 id="making-menus">
   6. 메뉴·이름·전투 <span class="layer-badge layer-patch">실제 패치에서</span>
@@ -901,7 +934,13 @@ SHIFT = (4, 6, 0, 2)
 <p>
   이 게임에는 암호가 없습니다. v1.1과 v1.2는 게임 코드를 고치지 않았고 세이브 형식도 바꾸지 않았습니다. 세이브 데이터는
   카드 안 세이브 메모리에 따로 있어서 롬 패치와 상관이 없습니다. 에뮬레이터라면 롬 파일 이름과 같은 이름의 세이브 파일을
-  씁니다. 다만 v1.1 세이브로 v1.2를 이어서 해도 되는지 확인한 기록은 없습니다(<a href="#making-next">10절</a>).
+  씁니다.
+</p>
+<p>
+  desmume 코어로 직접 확인했습니다. 「처음부터」가 제4장에서 시작하는 시험 롬(9절의 <code>tools/stage_rom.py</code>)을
+  v1.1·일본판·v1.2로 하나씩 만들고, v1.1과 일본판에서 남긴 기록을 v1.2에 넣어 「계속해서」로 이어 했습니다. 장 첫머리에
+  게임이 묻는 기록과, 장면 중간에 수첩 화면의 「기록」으로 남긴 기록 모두 같은 장면, 같은 시각에서 이어졌습니다. 장
+  첫머리 기록을 이어 하면 나오는 내레이션도 v1.1 롬에서 이어 한 것과 같았습니다.
 </p>
 
 <h2 id="making-unique">

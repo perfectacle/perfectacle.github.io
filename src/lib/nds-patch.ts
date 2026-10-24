@@ -23,8 +23,12 @@ export const GHOST_TRICK: NdsSpec = {
   header: { title: 'GHOSTTRICK-J', code: 'BGTJ' },
   patchedSize: 119462534,
   original: { crc32: '105DDD9E', md5: '2E0629DBACEF1E5F55BB254377FC0367' },
-  patched: { crc32: 'EA51D7F3', md5: '58A2C288A621337AE7105033472BBF6A' },
-  previous: [{ version: 'v1.1', size: 119459746, crc32: 'D366A4D9', md5: '782D23E4E11767691B85B73E6BFD74EE' }],
+  patched: { crc32: '4C863193', md5: 'BE1AC12137C374226DAD6D8DA9C64745' },
+  previous: [
+    { version: 'v1.1', size: 119459746, crc32: 'D366A4D9', md5: '782D23E4E11767691B85B73E6BFD74EE' },
+    // The first v1.2 build, before the v1.1 notice and credit lines came off the title screen.
+    { version: 'v1.2 첫 배포본', size: 119462534, crc32: 'EA51D7F3', md5: '58A2C288A621337AE7105033472BBF6A' },
+  ],
 };
 
 /** Anything smaller cannot hold an NDS header and the start of the file system. */
