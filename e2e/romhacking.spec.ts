@@ -16,6 +16,7 @@ import {
   TOTSUGEKI_PATCH,
   sourceUrl,
 } from '../src/lib/kr-patches.ts';
+import { encodeFat, encodeFnt } from '../src/lib/nds-fs.ts';
 
 const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...ALL_KR_PATCHES.map(notePath), GLOSSARY_PATH];
 const first = (list: ReturnType<typeof readyChapters>) => {
@@ -36,6 +37,7 @@ const EXPANSION = '/games/romhacking/sfc/expansion/';
 const EMULATOR = '/games/romhacking/sfc/emulator/';
 const SOUND = '/games/romhacking/sfc/sound/';
 const MUSIC = '/games/romhacking/music-loop/';
+const NDS_FS = '/games/romhacking/nds/filesystem/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -297,7 +299,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(page.getByRole('button', { name: '한 줄 실행' }).first()).toBeHidden();
   await page.goto(BANKS);
   await expect(page.locator('[data-bank-map] [data-summary-off]')).toHaveText('0x14000C');
-  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS, LZSS, HUFFMAN, EXPANSION, EMULATOR, SOUND, MUSIC]) {
+  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS, LZSS, HUFFMAN, EXPANSION, EMULATOR, SOUND, MUSIC, NDS_FS]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
     expect(await help.count()).toBeGreaterThan(0);
@@ -341,6 +343,11 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(apu.locator('[data-step]')).toHaveCount(33);
   await expect(apu.locator('.apu-steps')).toContainText('11 2140 CC pc=8380D4');
   await expect(apu.getByRole('button', { name: '다음 줄' })).toBeHidden();
+  await page.goto(NDS_FS);
+  const walk = page.locator('[data-nds-walk]');
+  await expect(walk.locator('[data-steps] li')).toHaveCount(6);
+  await expect(walk.locator('[data-steps] li').last()).toContainText('936바이트');
+  await expect(walk.locator('select')).toBeHidden();
   await page.goto(MUSIC);
   const seam = page.locator('[data-seam-lab]');
   await expect(seam.locator('[data-out="score"]')).toHaveText('0.887');
@@ -496,6 +503,69 @@ test('ROM expansion widget redraws banks, the size byte and the checksum note', 
   await widget.getByLabel('LoROM').check();
   await expect(size).toHaveValue(String(0x400000));
   await expect(size.locator('option[value="8388608"]')).toHaveJSProperty('disabled', true);
+  await noHorizontalOverflow(page);
+});
+
+/** A card ROM small enough to build here: two named files, one of them in a folder. */
+function tinyNds() {
+  const fnt = encodeFnt([
+    { first: 0, items: ['readme.txt', ['data', 0xf001]] },
+    { first: 1, items: ['hello.bin'] },
+  ]);
+  const fat = encodeFat([
+    [0x400, 0x40a],
+    [0x40a, 0x410],
+  ]);
+  const rom = new Uint8Array(0x410);
+  const view = new DataView(rom.buffer);
+  rom.set(new TextEncoder().encode('TINYTEST\0\0\0\0ZZZJ'));
+  view.setUint32(0x40, 0x200, true);
+  view.setUint32(0x44, fnt.length, true);
+  view.setUint32(0x48, 0x300, true);
+  view.setUint32(0x4c, fat.length, true);
+  rom.set(fnt, 0x200);
+  rom.set(fat, 0x300);
+  return Buffer.from(rom);
+}
+
+test('file walk widget follows a chosen file, then reads a ROM the reader opens', async ({ page }) => {
+  await page.goto(NDS_FS);
+  const widget = page.locator('[data-nds-walk]');
+  await expect(widget).toHaveClass(/is-live/);
+  const steps = widget.locator('[data-steps] li');
+  await expect(steps).toHaveCount(6);
+  await expect(steps.last()).toContainText('0x05F56200');
+
+  await widget.getByRole('combobox', { name: /^파일/ }).selectOption('system/system_0000.msg.xml.bin');
+  await expect(widget.locator('[data-path]')).toHaveText('system/system_0000.msg.xml.bin');
+  await expect(steps.nth(2)).toContainText('폴더 이름 12개');
+  await expect(steps.last()).toContainText('227번 칸');
+  await expect(widget.locator('[data-live]')).toContainText('2,304바이트');
+
+  await widget.getByLabel('가진 롬 열기').setInputFiles({
+    name: 'tiny.nds',
+    mimeType: 'application/octet-stream',
+    buffer: tinyNds(),
+  });
+  await expect(widget.locator('[data-rom-name]')).toHaveText('TINYTEST(ZZZJ)');
+  await expect(widget.locator('[data-named]')).toHaveText('2');
+  await expect(widget.locator('[data-path]')).toHaveText('readme.txt');
+  await expect(steps).toHaveCount(4);
+  await widget.getByRole('combobox', { name: /^파일/ }).selectOption('data/hello.bin');
+  await expect(steps.last()).toContainText('6바이트');
+
+  await widget.getByLabel('가진 롬 열기').setInputFiles({
+    name: 'bad.nds',
+    mimeType: 'application/octet-stream',
+    buffer: Buffer.alloc(0x300),
+  });
+  await expect(widget.locator('[data-error]')).toContainText('NDS 롬이 맞는지');
+  await expect(widget.locator('[data-rom-name]')).toHaveText('TINYTEST(ZZZJ)');
+
+  await widget.getByRole('button', { name: '고스트 트릭 일본판으로 돌아가기' }).click();
+  await expect(widget.locator('[data-rom-name]')).toHaveText('GHOSTTRICK-J(BGTJ)');
+  await expect(widget.locator('[data-error]')).toBeHidden();
+  await expect(steps.last()).toContainText('38번 칸');
   await noHorizontalOverflow(page);
 });
 
@@ -922,7 +992,7 @@ test('the trail opens a menu at each step and moves between the guide and the no
     .getByRole('link', { name: /^\d+장 / })
     .first()
     .click();
-  await expect(page).toHaveURL(/\/games\/romhacking\/(sfc\/)?[a-z-]+\/$/);
+  await expect(page).toHaveURL(/\/games\/romhacking\/((sfc|nds)\/)?[a-z-]+\/$/);
 
   await crumbs(page).getByRole('button', { name: '롬 해킹 펼치기' }).click();
   await crumbs(page)

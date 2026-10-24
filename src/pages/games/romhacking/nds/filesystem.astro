@@ -1,0 +1,500 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import Figure from '../../../../components/romhacking/Figure.astro';
+import NdsFileWalk from '../../../../components/romhacking/NdsFileWalk.astro';
+import { GHOST_TRICK_PATCH, analysisUrl, toolkitFileUrl } from '../../../../lib/kr-patches.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+
+const references = [
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dscartridgeheader',
+    label: 'GBATEK, DS Cartridge Header',
+    note: '헤더 칸의 위치와 뜻, 용량 바이트(128KB SHL n), 사용 크기, 로고 CRC(CF56h)와 헤더 CRC의 범위',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dscartridgenitroromandnitroarcfilesystems',
+    label: 'GBATEK, DS Cartridge NitroROM and NitroARC File Systems',
+    note: 'FNT 주 표와 이름 목록, FAT, 오버레이 표의 형식. 본체에는 파일 시스템 기능이 없다는 점',
+  },
+  {
+    href: 'https://github.com/RoadrunnerWMC/ndspy/blob/master/ndspy/code.py',
+    label: 'ndspy, code.py',
+    note: '오버레이 표 마지막 4바이트를 압축된 크기(아래 3바이트)와 표시(위 1바이트, 비트 0이 압축)로 읽는 법',
+  },
+  {
+    href: toolkitFileUrl('src/kr_patch/nds/rom.py'),
+    label: 'kr-patch-toolkit, nds/rom.py',
+    note: '「파일 이름으로 롬 위치 찾기」가 따르는 FNT·FAT 읽기와, 파일이 커질 때 다시 묶는 규칙',
+  },
+  {
+    href: analysisUrl(GHOST_TRICK_PATCH),
+    label: 'kr-patches, 고스트 트릭 docs/ANALYSIS.md',
+    note: '일본판·v1.1·v1.2 롬의 파일 표 비교와 v1.2에서 바뀐 파일',
+  },
+];
+const note = notePath(GHOST_TRICK_PATCH);
+const header = [
+  { at: '0x000', value: 'GHOSTTRICK-J', text: '게임 이름. 대문자 ASCII로 최대 12자이고 남는 칸은 0' },
+  { at: '0x00C', value: 'BGTJ', text: '게임 코드. 카드 라벨 NTR-BGTJ-JPN의 가운데 네 글자이고, 끝 글자 J가 일본판' },
+  {
+    at: '0x014',
+    value: '0A',
+    text: '카드 용량. 128KB를 이 값(10)번 두 배씩 늘린 크기라 0x20000 << 10 = 128MB',
+  },
+  { at: '0x020', value: '0x00004000', text: 'ARM9 프로그램의 롬 위치' },
+  { at: '0x028', value: '0x02000000', text: 'ARM9 프로그램을 올릴 메인 RAM 주소' },
+  { at: '0x02C', value: '0x00080628', text: 'ARM9 프로그램 크기(525,864바이트)' },
+  { at: '0x030', value: '0x00096800', text: 'ARM7 프로그램의 롬 위치. 다음 칸들이 RAM 주소와 크기' },
+  { at: '0x040', value: '0x000BCE00, 0x1654', text: 'FNT(파일 이름 표)의 위치와 크기' },
+  {
+    at: '0x048',
+    value: '0x000BE600, 0x720',
+    text: 'FAT(파일 위치 표)의 위치와 크기. 칸 하나가 8바이트라 파일 228개',
+  },
+  { at: '0x050', value: '0x00084800, 0xE0', text: 'ARM9 오버레이 표. 칸 하나가 32바이트라 오버레이 7개' },
+  { at: '0x068', value: '0x000BEE00', text: '배너(메뉴에 나오는 아이콘과 제목) 위치' },
+  {
+    at: '0x080',
+    value: '0x071191E0',
+    text: '사용 크기. 마지막 파일이 끝나는 곳으로, 그 뒤는 128MB까지 0xFF',
+  },
+  { at: '0x15E', value: 'C8CD', text: '헤더 CRC. 0x000–0x15D를 CRC-16으로 계산한 값' },
+];
+const front = [
+  { from: '0x000000', to: '0x0001FF', name: '카드 헤더', sub: '0x200바이트', cls: 'dg-warm' },
+  { from: '0x000200', to: '0x003FFF', name: '예약 자리', sub: '프로그램도 파일도 없음', cls: 'dg-paper' },
+  { from: '0x004000', to: '0x084627', name: 'ARM9 프로그램', sub: '게임 본체 코드', cls: 'dg-accent' },
+  {
+    from: '0x084800',
+    to: '0x0848DF',
+    name: 'ARM9 오버레이 표',
+    sub: '오버레이 7개의 RAM 주소와 파일 번호',
+    cls: 'dg-cell',
+  },
+  { from: '0x084A00', to: '0x096797', name: '오버레이 0–6', sub: 'FAT 0–6번 파일', cls: 'dg-accent' },
+  { from: '0x096800', to: '0x0BCC2B', name: 'ARM7 프로그램', sub: '소리·터치·무선', cls: 'dg-accent' },
+  { from: '0x0BCE00', to: '0x0BE453', name: 'FNT', sub: '파일 이름 표', cls: 'dg-cool' },
+  { from: '0x0BE600', to: '0x0BED1F', name: 'FAT', sub: '파일 위치 표', cls: 'dg-cool' },
+  { from: '0x0BEE00', to: '0x0BF63F', name: '배너', sub: '아이콘과 제목', cls: 'dg-cell' },
+  { from: '0x0BF800', to: '0x71191DF', name: '데이터 파일 221개', sub: '대사·그림·소리', cls: 'dg-warm' },
+  { from: '0x071191E0', to: '0x07FFFFFF', name: '0xFF 채움', sub: '약 14.9MB', cls: 'dg-paper' },
+];
+---
+
+<GuideChapter platform="nds" slug="filesystem" references={references}>
+  <h2 id="disk">
+    카드 롬은 파일이 든 디스크 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    슈퍼 패미콤의 CPU는 카트리지 롬을 주소로 바로 읽습니다. <code>$80:8000</code>이라고 하면 배선이 그 주소를 롬 칩의 한
+    바이트로 이어 줍니다(<a href={chapterHref(4)}>4장 주소와 뱅크</a>). 그래서 슈퍼 패미콤 롬 해킹은 "이 바이트가 CPU
+    주소로 어디인가"를 계산하는 데서 시작합니다.
+  </p>
+  <p>
+    닌텐도 DS의 CPU는 카드를 주소로 읽지 못합니다. 카드에 "몇 번째 바이트부터 보내 달라"는 명령을 보내고, 받은 바이트를
+    메인 RAM(4MB)에 옮겨 놓은 뒤에 씁니다. 전원을 켜면 본체가 카드 헤더와 두 CPU의 프로그램만 RAM에 올려 줍니다.
+    나머지는 게임이 필요할 때 직접 꺼내 와야 해서, 대부분의 게임은 카드 안에 PC의 디스크처럼 폴더와 파일을 두고 이름으로
+    찾습니다.
+  </p>
+  <Figure caption="슈퍼 패미콤은 롬을 주소로 읽고, DS는 카드에서 파일을 RAM으로 옮겨 와서 읽습니다." max={600}>
+    <svg viewBox="0 0 360 200" role="img" aria-labelledby="disk-t disk-d">
+      <title id="disk-t">슈퍼 패미콤과 DS가 롬을 읽는 방법</title>
+      <desc id="disk-d">
+        위: 슈퍼 패미콤 CPU가 주소 $80:8000으로 롬 칩의 바이트를 바로 읽는다. 아래: DS의 ARM9가 카드에 읽기 명령을 보내
+        파일을 메인 RAM으로 옮긴 뒤 RAM에서 읽는다.
+      </desc>
+      <text class="dg-small" x="8" y="16">
+        슈퍼 패미콤
+      </text>
+      <rect class="dg-accent" x="8" y="24" width="96" height="50" rx="8"></rect>
+      <text class="dg-text dg-bold" x="56" y="54" text-anchor="middle">
+        CPU
+      </text>
+      <rect class="dg-warm" x="248" y="24" width="104" height="50" rx="8"></rect>
+      <text class="dg-text dg-bold" x="300" y="54" text-anchor="middle">
+        롬 칩
+      </text>
+      <path class="dg-arrow" d="M110 49h132" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-mono" x="176" y="42" text-anchor="middle">
+        $80:8000
+      </text>
+      <text class="dg-small" x="176" y="66" text-anchor="middle">
+        주소로 바로 읽기
+      </text>
+      <text class="dg-small" x="8" y="108">
+        닌텐도 DS
+      </text>
+      <rect class="dg-accent" x="8" y="116" width="80" height="50" rx="8"></rect>
+      <text class="dg-text dg-bold" x="48" y="146" text-anchor="middle">
+        ARM9
+      </text>
+      <rect class="dg-cool" x="132" y="116" width="96" height="50" rx="8"></rect>
+      <text class="dg-text dg-bold" x="180" y="138" text-anchor="middle">
+        메인 RAM
+      </text>
+      <text class="dg-small" x="180" y="156" text-anchor="middle">
+        4MB
+      </text>
+      <rect class="dg-warm" x="272" y="116" width="80" height="50" rx="8"></rect>
+      <text class="dg-text dg-bold" x="312" y="138" text-anchor="middle">
+        카드
+      </text>
+      <text class="dg-small" x="312" y="156" text-anchor="middle">
+        폴더와 파일
+      </text>
+      <path class="dg-arrow" d="M268 141h-34" marker-end="url(#dg-arrowhead)"></path>
+      <path class="dg-arrow" d="M128 141h-34" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="250" y="186" text-anchor="middle">
+        ① 파일을 옮겨 오기
+      </text>
+      <text class="dg-small" x="110" y="186" text-anchor="middle">
+        ② RAM에서 읽기
+      </text>
+    </svg>
+  </Figure>
+  <p>
+    그래서 DS 한글패치는 "어느 파일에 대사가 있나"에서 시작합니다. 파일을 꺼내 고치고 다시 넣으면, 게임은 바뀐 파일을
+    이름으로 찾아 읽습니다. 이 장은 롬 안에서 파일 이름이 바이트 위치로 바뀌는 과정을 고스트 트릭 일본판 롬으로
+    따라갑니다.
+  </p>
+
+  <h2 id="header">
+    카드 헤더: 롬의 첫 0x200바이트 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    롬 파일의 맨 앞 0x200바이트는 <strong>카드 헤더</strong>입니다. 게임 이름과 코드, 카드 용량, 두 CPU의 프로그램이
+    롬의 어디에 있고 RAM의 어디에 올라가는지, 파일 표 두 개의 위치가 들어 있습니다. 위치와 크기는 모두 4바이트 리틀
+    엔디안(
+    <a href={chapterHref(2)}>2장</a>)입니다. 고스트 트릭 일본판에서 이 장에 필요한 칸만 골랐습니다.
+  </p>
+  <div class="table-wrap" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">위치</th>
+          <th scope="col">일본판 값</th>
+          <th scope="col">뜻</th>
+        </tr>
+      </thead>
+      <tbody>
+        {header.map(h => (
+          <tr>
+            <td>
+              <code>{h.at}</code>
+            </td>
+            <td>
+              <code>{h.value}</code>
+            </td>
+            <td class="wrap">{h.text}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    헤더가 가리키는 대로 롬 앞쪽을 그리면 아래와 같습니다. 128MB 가운데 프로그램과 표는 앞 0xBF800바이트(약
+    766KB)뿐이고, 나머지는 데이터 파일과 빈 채움입니다.
+  </p>
+  <Figure caption="고스트 트릭 일본판 롬의 배치. 위치는 롬 파일 오프셋입니다." max={600}>
+    <svg viewBox="0 0 360 486" role="img" aria-labelledby="map-t map-d">
+      <title id="map-t">고스트 트릭 일본판 롬 배치</title>
+      <desc id="map-d">{front.map(f => `${f.from}-${f.to} ${f.name}(${f.sub})`).join(', ')}.</desc>
+      {front.map((f, i) => (
+        <>
+          <rect class={f.cls} x="8" y={8 + i * 43} width="112" height="38" rx="4" />
+          <text class="dg-mono" x="64" y={24 + i * 43} text-anchor="middle">
+            {f.from}
+          </text>
+          <text class="dg-small" x="64" y={39 + i * 43} text-anchor="middle">
+            -{f.to}
+          </text>
+          <text class="dg-text" x="130" y={24 + i * 43}>
+            {f.name}
+          </text>
+          <text class="dg-small" x="130" y={40 + i * 43}>
+            {f.sub}
+          </text>
+        </>
+      ))}
+    </svg>
+  </Figure>
+  <p>
+    ARM9는 게임을 돌리는 CPU, ARM7은 소리와 터치, 무선을 맡는 CPU입니다. 두 프로그램과 배너는 이름이 없고 헤더가 직접
+    가리킵니다. FNT·FAT·오버레이 표도 헤더가 직접 가리키는 표입니다. 그 밖의 것은 모두 <strong>FNT</strong>와{' '}
+    <strong>FAT</strong>가 관리하는 파일입니다.
+  </p>
+
+  <h2 id="fnt-fat">
+    이름으로 파일 찾기: FNT와 FAT <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    책에 비유하면 <strong>FNT</strong>(File Name Table, 파일 이름 표)는 목차이고 <strong>FAT</strong>(File Allocation
+    Table, 파일 위치 표)는 쪽수 표입니다. FNT에서 이름을 찾으면 파일 번호가 나오고, FAT에서 그 번호 칸을 읽으면 롬의
+    시작과 끝 위치가 나옵니다.
+  </p>
+  <Figure caption="이름 → 번호 → 위치. 제1장 첫 컷신 대사 파일을 찾는 길입니다." max={600}>
+    <svg viewBox="0 0 360 150" role="img" aria-labelledby="ff-t ff-d">
+      <title id="ff-t">FNT와 FAT로 파일 찾기</title>
+      <desc id="ff-d">
+        이름 st01/st01_demo101_Expand.xml.lz를 FNT에서 따라가면 파일 번호 38이 나오고, FAT 38번 칸을 읽으면 롬 위치
+        0x05F56200부터 0x05F565A8까지가 나온다.
+      </desc>
+      <rect class="dg-cell" x="8" y="10" width="344" height="34" rx="8"></rect>
+      <text class="dg-mono" x="180" y="32" text-anchor="middle">
+        st01/st01_demo101_Expand.xml.lz
+      </text>
+      <path class="dg-arrow" d="M90 46v22" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="100" y="62">
+        FNT: 폴더 st01 → 두 번째 이름
+      </text>
+      <rect class="dg-cool" x="8" y="74" width="140" height="34" rx="8"></rect>
+      <text class="dg-text dg-bold" x="78" y="96" text-anchor="middle">
+        파일 38번
+      </text>
+      <path class="dg-arrow" d="M152 91h44" marker-end="url(#dg-arrowhead)"></path>
+      <text class="dg-small" x="174" y="84" text-anchor="middle">
+        FAT
+      </text>
+      <rect class="dg-warm" x="200" y="74" width="152" height="34" rx="8"></rect>
+      <text class="dg-mono" x="276" y="96" text-anchor="middle">
+        0x05F56200–
+      </text>
+      <text class="dg-small" x="276" y="132" text-anchor="middle">
+        끝 0x05F565A8, 936바이트
+      </text>
+    </svg>
+  </Figure>
+  <p>
+    FNT는 두 부분입니다. 앞쪽 <strong>주 표</strong>는 폴더마다 8바이트로 "이 폴더의 이름 목록이 어디 있고, 첫 파일이 몇
+    번인가"를 적습니다. 폴더 번호는 맨 위 폴더가 <code>F000</code>이고 다음 폴더부터 <code>F001</code>,{' '}
+    <code>F002</code>… 입니다. 뒤쪽 <strong>이름 목록</strong>은 폴더마다 하나씩 있고, 이름 앞에 길이 1바이트를 붙여
+    차례로 적습니다. 파일 번호는 따로 적지 않습니다. 그 폴더의 첫 파일 번호부터 이름이 나오는 순서대로 하나씩
+    늘어납니다.
+  </p>
+  <p>
+    아래에서 다른 파일도 골라 보세요. 기본값은 이 게임 제1장 첫 컷신의 대사 파일입니다. 이 위젯은 고스트 트릭 일본판의
+    이름과 위치를 형식대로 다시 바이트로 만들어 따라가는데, 그렇게 만든 FNT·FAT는 실제 롬의 표와 바이트 하나까지
+    같습니다.
+  </p>
+  <NdsFileWalk />
+
+  <Deeper title="FNT·FAT 형식 전부">
+    <h3>주 표</h3>
+    <p>
+      주 표는 FNT 맨 앞에 폴더 수만큼 8바이트 칸이 이어진 것입니다. 폴더 번호 <code>F0nn</code>의 칸은 FNT +
+      <code>nn</code> × 8에 있습니다.
+    </p>
+    <ul>
+      <li>
+        <code>+0</code> 4바이트: 이 폴더 이름 목록의 위치(FNT 시작에서 센 거리)
+      </li>
+      <li>
+        <code>+4</code> 2바이트: 이 폴더 첫 파일의 번호
+      </li>
+      <li>
+        <code>+6</code> 2바이트: 맨 위 폴더에서는 폴더 수, 다른 폴더에서는 부모 폴더 번호. 고스트 트릭 맨 위 폴더 칸{' '}
+        <code>70 00 00 00 07 00 0E 00</code>은 "이름 목록은 FNT+0x70, 첫 파일 7번, 맨 위 폴더를 포함해 폴더 14개"입니다.
+      </li>
+    </ul>
+    <h3>이름 목록</h3>
+    <p>
+      이름 목록은 길이 바이트와 이름이 이어지다 <code>00</code>에서 끝납니다. 길이 바이트가 <code>01</code>–
+      <code>7F</code>면 그 길이의 파일 이름, <code>81</code>–<code>FF</code>면 0x80을 뺀 길이의 폴더 이름이고, 폴더 이름
+      뒤에는 그 폴더 번호 2바이트가 붙습니다. 이름은 끝에 0을 붙이지 않고 대소문자를 가립니다.
+    </p>
+    <p>
+      맨 위 폴더 목록은 파일 이름 30개(<code>balloon_font.imb</code>부터 <code>timejump_b.mods</code>까지, 7–36번) 뒤에
+      폴더 13개가 옵니다. 폴더는 <code>st01</code>–<code>st07</code>, <code>st09</code>, <code>st11</code>,{' '}
+      <code>st13</code>–<code>st15</code>, <code>system</code>이고, <code>st08</code>·<code>st10</code>·
+      <code>st12</code> 폴더는 없습니다.
+    </p>
+    <h3>FAT</h3>
+    <p>
+      FAT는 파일마다 시작 위치와 끝 위치를 4바이트씩 적은 8바이트 칸을 번호 순서로 늘어놓은 표입니다. 끝 위치는 마지막
+      바이트의 다음 자리라서 끝 − 시작이 크기입니다. 폴더는 FAT 칸이 없습니다. 번호 순서와 롬 안 순서가 같을 필요도
+      없습니다. 고스트 트릭에서 8번 <code>chapter.xml.lz</code>는 0x05F54E00에 있고, 9번 <code>cpac_2d.bin</code>은
+      그보다 앞인 0x000C7800에 있습니다.
+    </p>
+    <h3>이름 없는 파일</h3>
+    <p>
+      FAT 0–6번은 FNT에 이름이 없습니다. 맨 위 폴더의 첫 파일 번호가 0이 아니라 7인 까닭입니다. 이 일곱 개는
+      오버레이이고, 오버레이 표가 번호로 가리킵니다(다음 절).
+    </p>
+  </Deeper>
+
+  <h2 id="overlay">
+    오버레이: 번갈아 올리는 코드 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    메인 RAM 4MB는 그림·소리·대사 데이터와 나눠 써야 해서, 장면마다 쓰지 않는 코드까지 올려 두면 자리가 아깝습니다.
+    그래서 늘 필요한 코드는 ARM9 프로그램에 두고, 장면에 따라 필요한 코드는 <strong>오버레이</strong>로 나눠 같은 RAM
+    자리에 번갈아 올립니다. 고스트 트릭의 ARM9 오버레이 7개는 모두 RAM <code>0x020F1E60</code>에 올라갑니다. 하나를
+    올리면 그 자리에 있던 다른 오버레이는 덮어써집니다.
+  </p>
+  <p>
+    헤더 0x050이 가리키는 <strong>오버레이 표</strong>는 오버레이마다 32바이트입니다. 오버레이 번호, 올릴 RAM 주소와
+    크기, bss(0으로 비워 둘 영역) 크기, 정적 초기화 함수 표의 범위, 그리고 FAT 파일 번호가 들어 있습니다. 오버레이 0은
+    RAM 크기가 0x2460(9,312)바이트인데 FAT 0번 파일은 5,944바이트입니다. 압축되어 들어 있기 때문입니다. 오버레이 0 칸의
+    마지막 4바이트 <code>0x01001738</code>에서 아래 3바이트 0x1738(5,944)이 압축된 크기, 위 1바이트의 비트 0이 압축
+    표시입니다(GBATEK은 이 칸을 예약 칸으로 적고, 이 읽는 법은 ndspy를 따랐습니다). 일곱 개 모두 이 표시가 켜져
+    있습니다.
+  </p>
+  <p>
+    오버레이는 코드라서 대사나 그림만 바꾸는 한글패치는 보통 건드리지 않습니다. 고스트 트릭 v1.1과 v1.2도 오버레이를
+    그대로 뒀습니다. 코드를 고치는 이야기는 나중에 붙일 장에서 다룹니다.
+  </p>
+
+  <h2 id="rebuild">
+    파일이 커지면: 다시 묶기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    번역한 대사 파일은 대개 원래보다 커집니다. 슈퍼 패미콤에서는 늘어난 데이터를 둘 빈 곳을 찾거나 롬을 늘리고, 옮긴
+    자리를 가리키도록 포인터와 코드를 고쳐야 했습니다(<a href={chapterHref(11)}>11장 롬 확장</a>). DS는 게임이 파일을
+    언제나 FAT로 찾으므로, 파일을 어디에 두든 FAT 칸만 고치면 됩니다.
+  </p>
+  <p>kr-patch-toolkit은 파일을 이렇게 다시 넣습니다.</p>
+  <ol>
+    <li>
+      바뀐 파일이 원래 자리(다음 데이터가 시작하기 전까지)에 들어가면 그 자리에 넣습니다. 남는 바이트는 자리 바로 뒤
+      바이트가 0xFF면 0xFF로, 아니면 0x00으로 채웁니다.
+    </li>
+    <li>
+      들어가지 않으면 마지막 파일 끝(사용 크기와 둘 중 뒤쪽) 다음으로 옮깁니다. 시작 위치는 0x200의 배수로 맞추고, 롬에
+      0xFF 채움이 있으면 그 자리를 씁니다. 다른 파일과 바이트를 나눠 쓰는 파일도 이렇게 옮깁니다.
+    </li>
+    <li>FAT의 그 파일 칸을 새 시작·끝으로 고칩니다.</li>
+    <li>
+      파일 끝이 전보다 뒤로 늘어나면 헤더 0x080의 사용 크기를, 롬이 카드 용량보다 커지면 0x014의 용량 바이트를 고칩니다.
+    </li>
+    <li>헤더가 바뀌었으니 0x15E의 헤더 CRC를 다시 계산합니다.</li>
+  </ol>
+  <p>
+    다른 파일은 한 바이트도 움직이지 않습니다. 그래서 고친 롬과 원래 롬의 차이가 작고, 그 차이를 적는 패치도 작아집니다.
+    128MB 롬은 IPS가 고칠 수 있는 16MB(
+    <a href={`${chapterHref(0)}#ips`}>0장</a>)를 넘어서, 고스트 트릭 한글패치는 xdelta 형식을 씁니다(
+    <a href={`${note}#making-xdelta`}>노트</a>).
+  </p>
+
+  <Deeper title="헤더의 두 CRC와 롬 자르기(트리밍)">
+    <h3>헤더 CRC와 로고 CRC</h3>
+    <p>
+      헤더 0x15E의 2바이트는 0x000–0x15D를 CRC-16/MODBUS(다항식 0x8005를 비트 순서로 뒤집은 0xA001, 처음 값 0xFFFF)으로
+      계산한 값입니다. 헤더의 FAT 위치나 사용 크기를 바꾸면 이 값도 다시 계산해야 합니다. 바로 앞 0x15C의 로고 CRC는
+      0x0C0–0x15B의 닌텐도 로고 그림에 대한 값이라 어느 게임이나 <code>CF56</code>으로 같습니다.
+    </p>
+    <h3>사용 크기와 0xFF 채움</h3>
+    <p>
+      카드 칩 크기는 2의 거듭제곱이라 고스트 트릭 일본판 롬은 128MB(134,217,728바이트)입니다. 실제로 쓰는 곳은 사용 크기
+      0x071191E0(118,591,968바이트)까지이고 그 뒤는 모두 0xFF입니다. 롬을 줄이는 도구는 이 뒤를 잘라 냅니다. 잘린 롬도
+      에뮬레이터에서 돌아가고, 0xFF를 다시 붙이면 원래 롬과 같아집니다. 한글패치 페이지의 패처는 잘린 롬을 받으면 이렇게
+      되돌린 뒤 패치합니다.
+    </p>
+    <h3>마지막 파일 뒤의 데이터</h3>
+    <p>
+      다운로드 플레이를 지원하는 게임은 마지막 파일 뒤에 서명이 붙어 있기도 합니다. 툴킷은 마지막 파일 뒤에서
+      0xFF·0x00이 아닌 데이터를 찾으면 그 자리에 두고, 옮기는 파일은 그 뒤에 놓습니다. 고스트 트릭에는 이런 데이터가
+      없습니다.
+    </p>
+  </Deeper>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>고스트 트릭 v1.1: 다시 묶으면서 바뀐 파일 번호</h3>
+  <p>
+    v1.1은 롬을 폴더로 풀어 고친 뒤 다른 도구로 처음부터 다시 묶었습니다(
+    <a href={`${note}#making-rom`}>노트의 「파일 이름으로 찾고 다시 묶기」</a>). 그 도구는 폴더 안 이름을 일본판과 다른
+    순서로 놓았습니다. 일본판은 폴더마다 이름을 바이트 값 순서로 적었고, v1.1은 이름을 대문자로 바꿔 비교한 순서로
+    적었습니다. 둘이 갈리는 것은 <code>_</code>(0x5F)가 든 이름입니다. 소문자 <code>s</code>(0x73)는 <code>_</code>보다
+    뒤지만 대문자 <code>S</code>(0x53)는 앞입니다.
+  </p>
+  <div class="table-wrap" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">번호</th>
+          <th scope="col">일본판</th>
+          <th scope="col">v1.1</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>14</td>
+          <td>
+            <code>font_db.imb</code>
+          </td>
+          <td>
+            <code>fonts2bpp_new.imb</code>
+          </td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>
+            <code>font_info.imb</code>
+          </td>
+          <td>
+            <code>font_db.imb</code>
+          </td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>
+            <code>fonts2bpp_new.imb</code>
+          </td>
+          <td>
+            <code>font_info.imb</code>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    <code>st04</code> 폴더도 같은 까닭으로 <code>_st04_game001_Expand.xml.lz</code>가 맨 앞(114번)에서 맨 뒤(126번)로
+    가고, 그 뒤에 있던 12개가 한 칸씩 앞당겨졌습니다. 나머지 12개 폴더는 두 순서가 같아 번호도 같습니다. 게임은 이름으로
+    찾으므로 번호가 바뀌어도 문제없이 돌지만, 번호로 파일을 가리키는 도구나 메모는 v1.1에서 엉뚱한 파일을 고르게 됩니다.
+  </p>
+  <p>
+    v1.1 도구는 파일 사이에 빈틈 없이 바로 이어 붙였고, 롬 파일도 마지막 파일 끝인 119,459,746바이트에서 끝납니다.
+    그런데 헤더 0x080의 사용 크기는 119,064,012로 실제 끝보다 작게 적혀 있습니다. 사용 크기만큼 잘라 내는 도구로 이 롬을
+    다루면 그 뒤의 파일 31개가 잘리거나 사라집니다(<a href={`${note}#making-rom`}>노트</a>).
+  </p>
+  <h3>고스트 트릭 v1.2: 바뀐 파일만 다시 넣기</h3>
+  <p>
+    v1.2는 v1.1 롬 위에 툴킷으로 다시 묶었습니다. 바뀐 파일은 148개(스크립트 145개, 시스템 파일 2개, 그래픽 묶음
+    1개)이고, 롬 끝으로 옮겨 간 것은 <code>st06/st06_demo100_Expand.xml.lz</code> 하나뿐입니다. 나머지 147개는 바뀐
+    크기가 원래 자리에 들어갔습니다(스크립트는 LZ11로 다시 압축한 크기). 파일 끝이 전보다 뒤로 늘어나 사용 크기가 새
+    끝인 119,462,534로 바뀌었습니다. 파일 번호는 v1.1과 같습니다.
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    헤더와 파일 목록은 <code>krpatch nds info</code>와 <code>krpatch nds ls</code>로 봅니다.
+  </p>
+  <pre tabindex="0"><code>$ krpatch nds info "Ghost Trick (J).nds"
+title GHOSTTRICK-J  code BGTJ  size 0x8000000  used 0x71191e0
+arm9  0x00004000 0x80628
+arm7  0x00096800 0x2642c
+fnt   0x000bce00 0x1654
+fat   0x000be600 0x720
+ovt9  0x00084800 0xe0
+ovt7  0x00000000 0x0
+files 228  named 221  overlays 7+0
+$ krpatch nds ls "Ghost Trick (J).nds" | sed -n '38,39p'
+   37 0x05f55a00       2008  st01/st01_demo100_Expand.xml.lz
+   38 0x05f56200        936  st01/st01_demo101_Expand.xml.lz</code></pre>
+  <p>
+    폴더로 풀어 고친 뒤 다시 묶을 수 있습니다. <code>pack</code>은 원래 롬과 다른 파일만 위의 규칙대로 다시 넣습니다.
+  </p>
+  <pre tabindex="0"><code>krpatch nds unpack game.nds work/
+# work/data/st01/st01_demo101_Expand.xml.lz 를 고친다
+krpatch nds pack game.nds work/ patched.nds</code></pre>
+  <p>Python에서는 이름으로 번호와 바이트를 얻습니다.</p>
+  <pre tabindex="0"><code>&gt;&gt;&gt; from kr_patch.nds.rom import Rom
+&gt;&gt;&gt; rom = Rom(open('game.nds', 'rb').read())
+&gt;&gt;&gt; fid = rom.find('st01/st01_demo101_Expand.xml.lz')
+&gt;&gt;&gt; fid, [hex(x) for x in rom.entries[fid]]
+(38, ['0x5f56200', '0x5f565a8'])</code></pre>
+</GuideChapter>

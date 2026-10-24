@@ -156,12 +156,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-map', '롬 지도'),
       note(OTOGIRISOU_PATCH, 'making-map', '세 롬의 뱅크 지도'),
     ],
-    gaps: [
-      gap(
-        GHOST_TRICK_PATCH,
-        'DS 롬은 파일 시스템으로 나뉘어 있어 주소 대신 파일 이름으로 찾습니다(노트의 롬 구조 절).',
-      ),
-    ],
+    gaps: [gap(GHOST_TRICK_PATCH, 'DS 롬은 파일 시스템으로 나뉘어 있어 주소 대신 파일 이름으로 찾습니다(15장).')],
     tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
@@ -397,6 +392,31 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     tools: [
       { command: 'krpatch audio', anchor: 'audio-녹음에서-반복-재생용-파일-만들기' },
       { command: 'krpatch sfc run --wav', anchor: 'sfc-run-헤드리스-libretro-실행기' },
+    ],
+  },
+  {
+    order: 15,
+    slug: 'filesystem',
+    platform: 'nds',
+    title: '롬과 파일 시스템',
+    summary:
+      'DS 카드 롬은 폴더와 파일이 든 디스크입니다. 카드 헤더에서 두 CPU의 프로그램과 파일 표를 찾고, 파일 이름에서 롬 위치까지 따라가 봅니다.',
+    ready: true,
+    notes: [
+      note(GHOST_TRICK_PATCH, 'making-basics', '주소가 아니라 파일'),
+      note(GHOST_TRICK_PATCH, 'making-map', '카드 헤더와 파일 표 두 개'),
+      note(GHOST_TRICK_PATCH, 'making-rom', '파일 이름으로 찾고 다시 묶기'),
+      note(GHOST_TRICK_PATCH, 'making-xdelta', '0xFF를 잘라 낸 롬 되돌리기'),
+    ],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '슈퍼 패미콤 롬에는 파일 시스템이 없습니다. 데이터는 CPU 주소로 찾습니다(4장).'),
+      gap(KAKUSEI_PATCH, '슈퍼 패미콤 롬에는 파일 시스템이 없습니다. 데이터는 CPU 주소로 찾습니다(4장).'),
+      gap(OTOGIRISOU_PATCH, '슈퍼 패미콤 롬에는 파일 시스템이 없습니다. 데이터는 CPU 주소로 찾습니다(4장).'),
+      gap(SMRPG_PATCH, '슈퍼 패미콤 롬에는 파일 시스템이 없습니다. 데이터는 CPU 주소로 찾습니다(4장).'),
+    ],
+    tools: [
+      { command: 'krpatch nds info', anchor: 'nds-info-nds-ls-헤더와-파일' },
+      { command: 'krpatch nds unpack', anchor: 'nds-unpack-nds-pack-파일시스템을-폴더로-다시-롬으로' },
     ],
   },
 ];
