@@ -42,6 +42,7 @@ const NDS_TEXT = '/games/romhacking/nds/text/';
 const NDS_GFX = '/games/romhacking/nds/graphics/';
 const NDS_SOUND = '/games/romhacking/nds/sound/';
 const NDS_EMU = '/games/romhacking/nds/emulator/';
+const NDS_CPU = '/games/romhacking/nds/cpu/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -319,6 +320,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
     NDS_GFX,
     NDS_SOUND,
     NDS_EMU,
+    NDS_CPU,
   ]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
@@ -388,6 +390,11 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(tp.locator('[data-cmd]')).toHaveText('touch 128 96');
   await expect(tp.locator('[data-py]')).toHaveText('16469 (0x4055)');
   await expect(tp.locator('input').first()).toBeHidden();
+  await page.goto(NDS_CPU);
+  const dm = page.locator('[data-ds-memory]');
+  await expect(dm.locator('[data-region]')).toContainText('메인 RAM');
+  await expect(dm.locator('[data-rom]')).toContainText('0x00004800');
+  await expect(dm.locator('[data-addr]')).toBeHidden();
   await page.goto(MUSIC);
   const seam = page.locator('[data-seam-lab]');
   await expect(seam.locator('[data-out="score"]')).toHaveText('0.887');
@@ -698,6 +705,25 @@ test('touch widget turns a bottom-screen point into libretro pointer values', as
   await expect(widget.locator('[data-error]')).toBeHidden();
   // a click lands within a pixel or two of the middle of the bottom screen
   await expect(widget.locator('[data-cmd]')).toHaveText(/^touch 1[23]\d (9\d|10\d)$/);
+  await noHorizontalOverflow(page);
+});
+
+test('memory map widget names the region for each CPU and leads code back to the ROM', async ({ page }) => {
+  await page.goto(NDS_CPU);
+  const widget = page.locator('[data-ds-memory]');
+  await expect(widget).toHaveClass(/is-live/);
+  await expect(widget.locator('[data-rom]')).toContainText('ARM9 프로그램, 롬 파일 0x00004800');
+  await widget.getByRole('button', { name: /ARM7의 0번지/ }).click();
+  await expect(widget.locator('[data-region]')).toContainText('ARM7 BIOS');
+  await widget.getByLabel('ARM9').check();
+  await expect(widget.locator('[data-region]')).toContainText('ITCM');
+  const input = widget.getByLabel('주소', { exact: true });
+  await input.fill('0x04000208');
+  await expect(widget.locator('[data-region]')).toContainText('I/O 레지스터');
+  await expect(widget.locator('[data-offset]')).toHaveText('+0x208');
+  await input.fill('nope');
+  await expect(input).toHaveAttribute('aria-invalid', 'true');
+  await expect(widget.locator('[data-error]')).toBeVisible();
   await noHorizontalOverflow(page);
 });
 

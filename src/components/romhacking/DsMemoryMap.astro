@@ -1,0 +1,161 @@
+---
+import { CPU_LABEL, hex8, region, romOffset, type Cpu } from './ds-memory.ts';
+
+const cpu: Cpu = 'arm9';
+const addr = 0x02000800;
+const r = region(cpu, addr);
+const rom = romOffset(addr);
+const examples: { label: string; cpu: Cpu; addr: number }[] = [
+  { label: 'ARM9 프로그램 시작', cpu: 'arm9', addr: 0x02000800 },
+  { label: '오버레이가 올라가는 곳', cpu: 'arm9', addr: 0x020f1e60 },
+  { label: 'ARM7 프로그램 시작', cpu: 'arm7', addr: 0x02380000 },
+  { label: '인터럽트 전체 스위치 IME', cpu: 'arm9', addr: 0x04000208 },
+  { label: '팔레트', cpu: 'arm9', addr: 0x05000000 },
+  { label: 'ARM9의 0번지', cpu: 'arm9', addr: 0 },
+  { label: '고스트 트릭 ITCM 코드', cpu: 'arm9', addr: 0x01ff8000 },
+  { label: 'ARM7의 0번지', cpu: 'arm7', addr: 0 },
+];
+---
+
+<section class="widget ds-memory" data-ds-memory data-cpu={cpu} aria-labelledby="ds-memory-title">
+  <h3 class="widget-title" id="ds-memory-title">
+    주소 → 메모리 영역
+  </h3>
+  <p class="widget-help">
+    주소 하나가 어느 CPU에서 무엇을 가리키는지 GBATEK의 메모리 지도로 찾습니다. 고스트 트릭 프로그램 가운데 롬과
+    바이트가 그대로 이어지는 자리면 일본판 롬 파일의 어디인지도 계산합니다.{' '}
+    <span class="live-only">CPU를 고르고 주소를 적거나 예시를 눌러 보세요.</span>
+  </p>
+  <fieldset class="dm-cpus live-only">
+    <legend>CPU</legend>
+    {(['arm9', 'arm7'] as const).map(c => (
+      <label>
+        <input type="radio" name="ds-memory-cpu" value={c} checked={c === cpu} /> {CPU_LABEL[c]}
+      </label>
+    ))}
+  </fieldset>
+  <label class="dm-input live-only">
+    주소
+    <input type="text" value={hex8(addr)} maxlength="10" data-addr aria-describedby="ds-memory-error" />
+  </label>
+  <p class="widget-error live-only" id="ds-memory-error" data-error hidden></p>
+  <div class="dm-examples live-only" role="group" aria-label="예시 주소">
+    {examples.map(e => (
+      <button type="button" class="widget-btn" data-example-cpu={e.cpu} data-example-addr={e.addr}>
+        {e.label} <span class="mono">{hex8(e.addr)}</span>
+      </button>
+    ))}
+  </div>
+  <dl class="readout">
+    <div>
+      <dt>CPU · 주소</dt>
+      <dd>
+        <code data-where>
+          {CPU_LABEL[cpu]} {hex8(addr)}
+        </code>
+      </dd>
+    </div>
+    <div>
+      <dt>영역</dt>
+      <dd data-region>{r ? `${r.name}: ${r.text}` : '정해진 장치가 없는 자리'}</dd>
+    </div>
+    <div>
+      <dt>영역 안 위치</dt>
+      <dd>
+        <code data-offset>{r ? `+0x${(addr - r.start).toString(16).toUpperCase()}` : '—'}</code>
+      </dd>
+    </div>
+    <div>
+      <dt>고스트 트릭 일본판 롬</dt>
+      <dd data-rom>
+        {rom ? `${CPU_LABEL[rom.cpu]} 프로그램, 롬 파일 ${hex8(rom.offset)}` : '롬과 바이트가 그대로 이어지는 범위 밖'}
+      </dd>
+    </div>
+  </dl>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { CPU_LABEL, hex8, parseAddress, region, romOffset, type Cpu } from './ds-memory.ts';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-ds-memory]')) {
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel);
+    const input = q<HTMLInputElement>('[data-addr]');
+    const error = q<HTMLElement>('[data-error]');
+    let cpu = (root.dataset['cpu'] ?? 'arm9') as Cpu;
+    let addr = parseAddress(input?.value ?? '') ?? 0;
+    const text = (sel: string, v: string) => {
+      const el = q<HTMLElement>(sel);
+      if (el) el.textContent = v;
+    };
+    const render = () => {
+      const r = region(cpu, addr);
+      const rom = romOffset(addr);
+      text('[data-where]', `${CPU_LABEL[cpu]} ${hex8(addr)}`);
+      text('[data-region]', r ? `${r.name}: ${r.text}` : '정해진 장치가 없는 자리');
+      text('[data-offset]', r ? `+0x${(addr - r.start).toString(16).toUpperCase()}` : '—');
+      text(
+        '[data-rom]',
+        rom ? `${CPU_LABEL[rom.cpu]} 프로그램, 롬 파일 ${hex8(rom.offset)}` : '롬과 바이트가 그대로 이어지는 범위 밖',
+      );
+      text('[data-live]', `${CPU_LABEL[cpu]} ${hex8(addr)}: ${r ? r.name : '정해진 장치 없음'}`);
+    };
+    const showError = (message: string) => {
+      input?.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (error) {
+        error.hidden = !message;
+        error.textContent = message;
+      }
+    };
+    input?.addEventListener('input', () => {
+      const v = parseAddress(input.value);
+      if (v === null) {
+        showError('주소는 16진수 8자리까지 적어 주세요. 예: 0x02000800');
+        return;
+      }
+      showError('');
+      addr = v;
+      render();
+    });
+    const radios = [...root.querySelectorAll<HTMLInputElement>('input[name="ds-memory-cpu"]')];
+    for (const radio of radios)
+      radio.addEventListener('change', () => {
+        if (!radio.checked) return;
+        cpu = radio.value as Cpu;
+        render();
+      });
+    for (const b of root.querySelectorAll<HTMLButtonElement>('[data-example-addr]'))
+      b.addEventListener('click', () => {
+        cpu = (b.dataset['exampleCpu'] ?? 'arm9') as Cpu;
+        addr = Number(b.dataset['exampleAddr'] ?? 0);
+        for (const radio of radios) radio.checked = radio.value === cpu;
+        if (input) input.value = hex8(addr);
+        showError('');
+        render();
+      });
+    root.classList.add('is-live');
+  }
+</script>
+
+<style is:global>
+  .ds-memory .dm-cpus {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 16px;
+    margin: 0 0 10px;
+    padding: 0;
+    border: 0;
+  }
+  .ds-memory .dm-input {
+    display: grid;
+    gap: 4px;
+    max-width: 14rem;
+    margin: 0 0 8px;
+  }
+  .ds-memory .dm-examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 10px;
+  }
+</style>

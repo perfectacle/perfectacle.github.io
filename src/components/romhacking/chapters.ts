@@ -135,7 +135,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       gap(TOTSUGEKI_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
       gap(KAKUSEI_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
       gap(OTOGIRISOU_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
-      gap(GHOST_TRICK_PATCH, '코드를 고치지 않고 데이터만 바꾼 패치라 CPU를 다룬 절이 없습니다.'),
+      gap(GHOST_TRICK_PATCH, '코드를 고치지 않고 데이터만 바꾼 패치입니다. DS의 두 CPU는 20장에서 다룹니다.'),
     ],
     tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
@@ -508,6 +508,26 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     tools: [
       { command: 'krpatch sfc run(같은 libretro 연결부, 슈퍼 패미콤용)', anchor: 'sfc-run-헤드리스-libretro-실행기' },
     ],
+  },
+  {
+    order: 20,
+    slug: 'cpu',
+    platform: 'nds',
+    title: 'CPU와 메모리',
+    summary:
+      'DS에는 게임을 돌리는 ARM9와 소리·터치를 맡는 ARM7이 있습니다. ARM과 Thumb 두 벌의 명령, 두 CPU의 메모리 지도, 고스트 트릭 프로그램이 메인 RAM에 놓이는 자리를 봅니다.',
+    ready: true,
+    notes: [
+      note(GHOST_TRICK_PATCH, 'making-basics', 'CPU 둘과 메인 RAM 4MB'),
+      note(GHOST_TRICK_PATCH, 'making-map', 'ARM9·ARM7 프로그램과 오버레이는 그대로'),
+    ],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '슈퍼 패미콤의 CPU는 3장에서 다룹니다.'),
+      gap(KAKUSEI_PATCH, '슈퍼 패미콤의 CPU는 3장에서 다룹니다.'),
+      gap(OTOGIRISOU_PATCH, '슈퍼 패미콤의 CPU는 3장에서 다룹니다.'),
+      gap(SMRPG_PATCH, '슈퍼 패미콤의 CPU는 3장에서 다룹니다.'),
+    ],
+    tools: [{ command: 'krpatch nds info', anchor: 'nds-info-nds-ls-헤더와-파일' }],
   },
 ];
 
