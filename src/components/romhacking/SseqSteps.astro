@@ -1,0 +1,219 @@
+---
+import { SAMPLE, decode, noteName, seconds } from './sseq.ts';
+
+const commands = decode(SAMPLE.bytes);
+const notes = commands.filter(c => c.note);
+const keys = notes.map(c => c.note?.key ?? 0);
+const lo = Math.min(...keys);
+const hi = Math.max(...keys);
+const span = Math.max(...commands.map(c => c.tick)) + 192;
+const W = 600;
+const RH = 8;
+const H = (hi - lo + 1) * RH + 24;
+const x = (t: number) => (Math.min(t, span) / span) * (W - 40) + 36;
+const y = (k: number) => (hi - k) * RH + 4;
+const TEMPO = 70;
+const hex = (b: Uint8Array) => [...b].map(v => v.toString(16).toUpperCase().padStart(2, '0')).join(' ');
+---
+
+<section class="widget sseq-steps" data-sseq-steps data-tempo={TEMPO} aria-labelledby="sseq-steps-title">
+  <h3 class="widget-title" id="sseq-steps-title">
+    SSEQ 명령 읽기
+  </h3>
+  <p class="widget-help">
+    고스트 트릭 <code>{SAMPLE.name}</code>(시퀀스 {SAMPLE.index}번) 첫 트랙의 처음 {SAMPLE.bytes.length}바이트를
+    명령으로 읽습니다.{' '}
+    <span class="live-only">
+      「다음 명령」을 누르면 명령 하나를 읽고, 그 명령이 몇 틱째에 실행되는지와 아래 악보 그림의 위치를 보여 줍니다.
+    </span>
+  </p>
+
+  <ol class="ss-list" data-list tabindex="0" aria-label="명령 목록">
+    {commands.map((c, i) => (
+      <li class:list={[`is-${c.kind}`]} data-i={i} data-x={x(c.tick)}>
+        <code class="ss-bytes">{hex(c.bytes)}</code>
+        <span class="ss-text">{c.text}</span>
+        <span class="ss-tick mono">{c.tick}틱</span>
+      </li>
+    ))}
+  </ol>
+
+  <div class="ss-buttons live-only">
+    <button type="button" class="widget-btn is-primary" data-next>
+      다음 명령
+    </button>
+    <button type="button" class="widget-btn" data-reset>
+      처음으로
+    </button>
+  </div>
+  <p class="ss-now" data-now>
+    명령 {commands.length}개, 마지막 명령은 {commands.at(-1)?.tick ?? 0}틱(템포 {TEMPO}에서{' '}
+    {seconds(commands.at(-1)?.tick ?? 0, TEMPO).toFixed(2)}초)에 실행됩니다.
+  </p>
+
+  <svg class="ss-roll" viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="ss-roll-t" data-h={H - 18}>
+    <title id="ss-roll-t">위 명령의 음을 시간과 음 높이로 그린 그림</title>
+    {Array.from({ length: Math.floor(span / 192) + 1 }, (_, b) => (
+      <>
+        <path class="ss-bar" d={`M${x(b * 192)} 0V${H - 18}`} />
+        {b * 192 < span && (
+          <text class="dg-small" x={x(b * 192) + 2} y={H - 4}>
+            {b + 1}마디
+          </text>
+        )}
+      </>
+    ))}
+    {[lo, hi].map(k => (
+      <text class="dg-small" x="2" y={y(k) + RH}>
+        {noteName(k)}
+      </text>
+    ))}
+    {commands.map(
+      (c, i) =>
+        c.note && (
+          <rect
+            class="ss-note"
+            data-i={i}
+            x={x(c.tick)}
+            y={y(c.note.key)}
+            width={Math.max(2, x(c.tick + c.note.duration) - x(c.tick))}
+            height={RH - 1}
+            rx="2"
+          />
+        ),
+    )}
+    <path class="ss-cursor" data-cursor d={`M${x(0)} 0V${H - 18}`} visibility="hidden"></path>
+  </svg>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { SAMPLE, decode, seconds } from './sseq.ts';
+
+  const commands = decode(SAMPLE.bytes);
+  for (const root of document.querySelectorAll<HTMLElement>('[data-sseq-steps]')) {
+    const tempo = Number(root.dataset['tempo'] ?? 120);
+    const items = [...root.querySelectorAll<HTMLElement>('[data-list] li')];
+    const notes = [...root.querySelectorAll<SVGRectElement>('rect[data-i]')];
+    const cursor = root.querySelector<SVGPathElement>('[data-cursor]');
+    const now = root.querySelector<HTMLElement>('[data-now]');
+    const live = root.querySelector<HTMLElement>('[data-live]');
+    const svg = root.querySelector<SVGSVGElement>('svg');
+    const list = root.querySelector<HTMLElement>('[data-list]');
+    let read = 0;
+
+    const render = () => {
+      items.forEach((li, i) => {
+        li.classList.toggle('is-read', i < read);
+        li.classList.toggle('is-current', i === read - 1);
+      });
+      for (const r of notes) r.classList.toggle('is-on', Number(r.dataset['i']) < read);
+      const c = commands[read - 1];
+      const current = items[read - 1];
+      if (cursor) {
+        cursor.setAttribute('visibility', c ? 'visible' : 'hidden');
+        if (current) cursor.setAttribute('d', `M${current.dataset['x'] ?? 0} 0V${svg?.dataset['h'] ?? 0}`);
+      }
+      if (current && list) {
+        // keep the current command visible by scrolling the list only, never the page
+        const box = list.getBoundingClientRect();
+        const item = current.getBoundingClientRect();
+        if (item.top < box.top || item.bottom > box.bottom) list.scrollTop += item.top - box.top - box.height / 2;
+      }
+      const text = c
+        ? `${read}/${commands.length}: ${c.tick}틱(${seconds(c.tick, tempo).toFixed(2)}초), ${c.text}`
+        : '처음으로 돌아갔습니다';
+      if (now) now.textContent = text;
+      if (live) live.textContent = text;
+    };
+
+    root.querySelector('[data-next]')?.addEventListener('click', () => {
+      read = Math.min(read + 1, commands.length);
+      render();
+    });
+    root.querySelector('[data-reset]')?.addEventListener('click', () => {
+      read = 0;
+      render();
+    });
+    root.classList.add('is-live');
+    render();
+  }
+</script>
+
+<style is:global>
+  .sseq-steps .ss-list {
+    display: grid;
+    gap: 4px;
+    max-height: 22rem;
+    margin: 0 0 10px;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+  }
+  .sseq-steps .ss-list li {
+    display: grid;
+    grid-template-columns: minmax(7.5rem, auto) 1fr auto;
+    gap: 2px 10px;
+    align-items: baseline;
+    padding: 4px 8px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 6px;
+  }
+  .sseq-steps .ss-list li.is-note {
+    border-color: var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .sseq-steps .ss-list li.is-rest {
+    border-color: var(--dg-warm);
+    background: var(--dg-warm-soft);
+  }
+  .sseq-steps .ss-list li.is-current {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .sseq-steps .ss-bytes {
+    white-space: nowrap;
+  }
+  .sseq-steps .ss-tick {
+    color: var(--fg-muted);
+    font-size: 0.85em;
+  }
+  .sseq-steps .ss-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 8px;
+  }
+  .sseq-steps .ss-now {
+    margin: 0 0 8px;
+  }
+  .sseq-steps .ss-roll {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .sseq-steps .ss-bar {
+    stroke: var(--dg-line);
+    stroke-width: 1;
+  }
+  .sseq-steps .ss-note {
+    fill: var(--dg-cool-soft);
+    stroke: var(--dg-cool);
+    stroke-width: 1;
+  }
+  .sseq-steps.is-live .ss-note.is-on {
+    fill: var(--dg-cool);
+  }
+  .sseq-steps .ss-cursor {
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+  @media (max-width: 480px) {
+    .sseq-steps .ss-list li {
+      grid-template-columns: 1fr auto;
+    }
+    .sseq-steps .ss-text {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
