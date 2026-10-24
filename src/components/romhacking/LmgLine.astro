@@ -1,0 +1,252 @@
+---
+import { LINES, LINE_AT, charOf, leBytes, shown, tokenize, word } from './lmg-line.ts';
+
+const version = 'v12';
+const tokens = tokenize(LINES[version], w => charOf(version, w), LINE_AT);
+const sample = '{2D:4,0}{08:4}안녕하세요．{01}…반가워요．{FE}';
+---
+
+<section class="widget lmg-line" data-lmg-line aria-labelledby="lmg-line-title">
+  <h3 class="widget-title" id="lmg-line-title">
+    대사 바이트 읽기
+  </h3>
+  <p class="widget-help">
+    고스트 트릭 제1장 컷신 <code>st01_demo101</code>의 첫 대사를 2바이트 값으로 읽습니다.{' '}
+    <span class="live-only">
+      「다음 값」을 누를 때마다 값 하나(제어 코드는 인수까지)를 읽어 아래 「화면에 나오는 글자」 칸에 더합니다. 일본판과
+      한글패치를 바꿔 볼 수 있습니다.
+    </span>
+  </p>
+
+  <fieldset class="ll-versions live-only">
+    <legend>롬</legend>
+    <label>
+      <input type="radio" name="lmg-line-version" value="jp" /> 일본판
+    </label>
+    <label>
+      <input type="radio" name="lmg-line-version" value="v12" checked /> 한글패치 v1.2
+    </label>
+  </fieldset>
+
+  <ol class="ll-tokens" data-tokens>
+    {tokens.map(t => (
+      <li class:list={[`is-${t.kind}`]}>
+        <code class="ll-bytes">{t.words.map(leBytes).join(' ')}</code>
+        <span class="ll-word mono">{t.words.map(word).join(' ')}</span>
+        <span class="ll-text">{t.text}</span>
+      </li>
+    ))}
+  </ol>
+
+  <div class="ll-buttons live-only">
+    <button type="button" class="widget-btn is-primary" data-next>
+      다음 값
+    </button>
+    <button type="button" class="widget-btn" data-all>
+      끝까지
+    </button>
+    <button type="button" class="widget-btn" data-reset>
+      처음으로
+    </button>
+  </div>
+  <p class="ll-screen-title">화면에 나오는 글자</p>
+  <p class="ll-screen" data-screen>
+    {shown(tokens)}
+  </p>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+
+  <div class="ll-encode live-only">
+    <label>
+      직접 적어 보기
+      <textarea rows="2" data-input aria-describedby="lmg-line-error">{sample}</textarea>
+    </label>
+    <p class="widget-error" id="lmg-line-error" data-error hidden></p>
+    <p class="ll-out">
+      값 <span data-count></span>개, <span data-size></span>바이트 <code class="ll-out-bytes" data-out></code>
+    </p>
+  </div>
+</section>
+
+<script>
+  import { LINES, LINE_AT, charOf, encode, leBytes, shown, tokenize, word, type Version } from './lmg-line.ts';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-lmg-line]')) {
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel);
+    const list = q<HTMLOListElement>('[data-tokens]');
+    const screen = q<HTMLElement>('[data-screen]');
+    const live = q<HTMLElement>('[data-live]');
+    let version: Version = 'v12';
+    let tokens = tokenize(LINES[version], w => charOf(version, w), LINE_AT);
+    let read = 0;
+
+    const render = () => {
+      list?.replaceChildren(
+        ...tokens.map((t, i) => {
+          const li = document.createElement('li');
+          li.className = `is-${t.kind}${i < read ? ' is-read' : ''}${i === read - 1 ? ' is-current' : ''}`;
+          const bytes = document.createElement('code');
+          bytes.className = 'll-bytes';
+          bytes.textContent = t.words.map(leBytes).join(' ');
+          const value = document.createElement('span');
+          value.className = 'll-word mono';
+          value.textContent = t.words.map(word).join(' ');
+          const text = document.createElement('span');
+          text.className = 'll-text';
+          text.textContent = t.text;
+          li.append(bytes, value, text);
+          return li;
+        }),
+      );
+      if (screen) screen.textContent = shown(tokens.slice(0, read));
+      const t = tokens[read - 1];
+      if (live)
+        live.textContent = t
+          ? `${read}/${tokens.length}: 0x${t.at.toString(16).toUpperCase()}, ${t.words.map(word).join(' ')}, ${t.text}`
+          : '처음으로 돌아갔습니다';
+    };
+
+    q('[data-next]')?.addEventListener('click', () => {
+      read = Math.min(read + 1, tokens.length);
+      render();
+    });
+    q('[data-all]')?.addEventListener('click', () => {
+      read = tokens.length;
+      render();
+    });
+    q('[data-reset]')?.addEventListener('click', () => {
+      read = 0;
+      render();
+    });
+    for (const radio of root.querySelectorAll<HTMLInputElement>('input[name="lmg-line-version"]')) {
+      radio.addEventListener('change', () => {
+        if (!radio.checked) return;
+        version = radio.value as Version;
+        tokens = tokenize(LINES[version], w => charOf(version, w), LINE_AT);
+        read = 0;
+        render();
+      });
+    }
+
+    const input = q<HTMLTextAreaElement>('[data-input]');
+    const error = q<HTMLElement>('[data-error]');
+    const update = () => {
+      try {
+        const words = encode(input?.value ?? '');
+        if (error) error.hidden = true;
+        input?.setAttribute('aria-invalid', 'false');
+        const text = (sel: string, v: string) => {
+          const el = q<HTMLElement>(sel);
+          if (el) el.textContent = v;
+        };
+        text('[data-count]', String(words.length));
+        text('[data-size]', String(words.length * 2));
+        text('[data-out]', words.map(leBytes).join(' '));
+      } catch (e) {
+        input?.setAttribute('aria-invalid', 'true');
+        if (error) {
+          error.hidden = false;
+          error.textContent = e instanceof Error ? e.message : String(e);
+        }
+      }
+    };
+    input?.addEventListener('input', update);
+    update();
+    root.classList.add('is-live');
+    render();
+  }
+</script>
+
+<style is:global>
+  .lmg-line .ll-versions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 16px;
+    margin: 0 0 10px;
+    padding: 0;
+    border: 0;
+  }
+  .lmg-line .ll-tokens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 10px;
+    padding: 0;
+    list-style: none;
+  }
+  .lmg-line .ll-tokens li {
+    display: grid;
+    gap: 2px;
+    min-width: 3.4em;
+    padding: 4px 6px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 6px;
+    text-align: center;
+  }
+  .lmg-line .ll-tokens li.is-code {
+    border-color: var(--dg-warm);
+    background: var(--dg-warm-soft);
+  }
+  .lmg-line .ll-tokens li.is-unknown {
+    border-style: dashed;
+  }
+  .lmg-line .ll-tokens li.is-read {
+    border-color: var(--accent);
+  }
+  .lmg-line .ll-tokens li.is-current {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .lmg-line .ll-bytes {
+    font-size: 0.8em;
+    white-space: nowrap;
+  }
+  .lmg-line .ll-word {
+    font-size: 0.75em;
+    color: var(--fg-muted);
+    white-space: nowrap;
+  }
+  .lmg-line .ll-text {
+    font-size: 0.85em;
+  }
+  .lmg-line .ll-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px;
+  }
+  .lmg-line .ll-screen-title {
+    margin: 0;
+    font-weight: 600;
+  }
+  .lmg-line .ll-screen {
+    min-height: 3.2em;
+    margin: 4px 0 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--bg);
+    white-space: pre-line;
+  }
+  .lmg-line .ll-encode label {
+    display: grid;
+    gap: 4px;
+  }
+  .lmg-line .ll-encode textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 6px 8px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+    font: inherit;
+    color: var(--fg);
+  }
+  .lmg-line .ll-out {
+    margin: 6px 0 0;
+  }
+  .lmg-line .ll-out-bytes {
+    display: block;
+    margin-top: 4px;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+</style>

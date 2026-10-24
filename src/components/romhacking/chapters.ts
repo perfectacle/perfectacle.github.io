@@ -422,6 +422,32 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       { command: 'krpatch nds unpack', anchor: 'nds-unpack-nds-pack-파일시스템을-폴더로-다시-롬으로' },
     ],
   },
+  {
+    order: 16,
+    slug: 'text',
+    platform: 'nds',
+    title: '대사는 어떻게 저장되나',
+    summary:
+      '고스트 트릭의 대사는 장면 파일 안, 장면 진행 명령 사이에 2바이트 값으로 들어 있습니다. LZ11을 풀고, 글자와 제어 코드를 읽고, 명령 안의 포인터를 따라가 봅니다.',
+    ready: true,
+    notes: [
+      note(GHOST_TRICK_PATCH, 'making-dialogue', '장면 파일 안의 대사'),
+      note(GHOST_TRICK_PATCH, 'making-lz11', 'LZ11로 압축된 스크립트'),
+      note(GHOST_TRICK_PATCH, 'making-script', '1LMG 스크립트의 대사와 포인터'),
+      note(GHOST_TRICK_PATCH, 'making-repack', '묶음 안에서 이어 쓰고 포인터 고치기'),
+      note(GHOST_TRICK_PATCH, 'making-wrap', '창 폭 13자·16자 실측'),
+    ],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '슈퍼 패미콤 롬의 대사는 파일이 아니라 롬 안 주소에 있습니다. 8장에서 다룹니다.'),
+      gap(KAKUSEI_PATCH, '슈퍼 패미콤 롬의 대사는 파일이 아니라 롬 안 주소에 있습니다. 8장에서 다룹니다.'),
+      gap(OTOGIRISOU_PATCH, '슈퍼 패미콤 롬의 대사는 파일이 아니라 롬 안 주소에 있습니다. 8장에서 다룹니다.'),
+      gap(SMRPG_PATCH, '슈퍼 패미콤 롬의 대사는 파일이 아니라 롬 안 주소에 있습니다. 8장에서 다룹니다.'),
+    ],
+    tools: [
+      { command: 'krpatch lz11', anchor: 'lz11-닌텐도-lz10lz11-코덱' },
+      { command: 'krpatch nds unpack', anchor: 'nds-unpack-nds-pack-파일시스템을-폴더로-다시-롬으로' },
+    ],
+  },
 ];
 
 export const chapterPath = (c: Pick<GuideChapter, 'platform' | 'slug'>) =>

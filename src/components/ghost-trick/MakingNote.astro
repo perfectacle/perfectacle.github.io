@@ -92,7 +92,7 @@ const v11Files = [
 
 // First message of st01/st01_demo101 in v1.2, file offset 0x2E0 after LZ11 decompression.
 const firstLine = [
-  { word: 'FF2D 0004 0000', ch: '대사 머리: 창 4, 번호 0', cls: 'is-warm' },
+  { word: 'FF2D 0004 0000', ch: '대사 머리: 첫 값 4, 번호 0', cls: 'is-warm' },
   { word: 'FF08 0004', ch: '말하는 인물', cls: 'is-warm' },
   { word: '00F8 ×5', ch: '……………' },
   { word: 'FF02', ch: '다음 창', cls: 'is-warm' },
@@ -129,7 +129,7 @@ const codes = [
   { code: '{05:x}', text: '글자색. {05:f}가 기본색' },
   { code: '{08:x} {1B:x}', text: '말하는 인물' },
   { code: '{29}…{2A}', text: '수첩 항목으로 이어지는 이름' },
-  { code: '{2D:창,번호}', text: '대사 머리. 대사는 늘 이것으로 시작합니다' },
+  { code: '{2D:첫 값,번호}', text: '대사 머리. 대사는 늘 이것으로 시작합니다. 첫 값이 무엇인지는 확인하지 않았습니다' },
   { code: '{FE}', text: '대사 끝(FFFE)' },
 ];
 
@@ -587,7 +587,7 @@ const buildSteps = [
 <Deeper title="포인터 태그와 「번호로 찾는」 수첩">
   <p>
     포인터 태그(16진수)는 <code>37, 51, 4C, 40, 5D, DB, 5C, 45, 3C, 0, 1, 2, FFFD, FFF4, 228</code>입니다. 대사 머리{' '}
-    <code>{'{2D:창,번호}'}</code>의 번호는 게임이 대사를 찾는 데 쓰지 않습니다. 첫 장면 두 대사의 번호를 바꿔 봐도
+    <code>{'{2D:첫 값,번호}'}</code>의 번호는 게임이 대사를 찾는 데 쓰지 않습니다. 첫 장면 두 대사의 번호를 바꿔 봐도
     화면이 같았습니다. 예외는 수첩(<code>system/database_0000</code>)입니다. 수첩은 번호로 항목을 찾아서, 번호가 틀리면
     그 항목이 나오지 않습니다(<a href="#making-unique">8절</a>).
   </p>

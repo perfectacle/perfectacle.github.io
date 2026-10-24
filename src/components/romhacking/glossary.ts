@@ -24,6 +24,7 @@ type Where =
   | 'sfc/emulator'
   | 'sfc/sound'
   | 'nds/filesystem'
+  | 'nds/text'
   | 'music-loop';
 
 export interface GlossaryEntry {
@@ -567,6 +568,21 @@ const RAW: [string, string, Where, string, string][] = [
     'DS 롬의 파일 위치 표. 파일 번호마다 시작과 끝 위치를 8바이트로 적습니다',
   ],
   ['오버레이', 'overlay', 'nds/filesystem', 'overlay', '필요할 때만 RAM의 같은 자리에 번갈아 올리는 코드 조각'],
+  [
+    'LZ11',
+    'LZ11',
+    'nds/text',
+    'lz11',
+    '닌텐도 DS 게임이 흔히 쓰는 LZSS 압축. 첫 바이트 0x11 뒤에 푼 크기 3바이트가 옵니다',
+  ],
+  ['바이트코드', 'bytecode', 'nds/text', 'lmg', '게임이 값 하나씩 읽어 실행하는 명령의 줄. 장면 진행을 적는 데 씁니다'],
+  [
+    '대사 묶음',
+    'message run',
+    'nds/text',
+    'repack',
+    '앞뒤로 이어 붙은 대사 블록들. 고스트 트릭 한글패치는 이 안에서만 대사를 옮깁니다',
+  ],
   ['LCP', 'Largest Contentful Paint', 'music-loop', 'web', '첫 화면에서 가장 큰 요소가 그려지기까지의 시간'],
 ];
 
