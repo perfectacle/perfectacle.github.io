@@ -167,7 +167,7 @@ export const OTOGIRISOU_PATCH = krPatch({
 });
 
 /** In catalogue order. */
-export const KR_PATCHES = [SMRPG_PATCH, TOTSUGEKI_PATCH, KAKUSEI_PATCH, OTOGIRISOU_PATCH];
+export const KR_PATCHES = [SMRPG_PATCH, OTOGIRISOU_PATCH, TOTSUGEKI_PATCH, KAKUSEI_PATCH];
 
 /** Platform select; each platform then has its own game list. */
 export const KR_PATCH_LIST_PATH = '/games/kr-patches/';
