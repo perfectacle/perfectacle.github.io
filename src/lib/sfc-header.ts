@@ -1,6 +1,6 @@
 /**
- * Internal header size byte and checksum, ported from kr-patch-toolkit (`kr_patch/snes/header.py`) so the ROM expansion
- * widget shows the numbers `krpatch snes checksum` prints. `tests/snes-header.test.ts` runs the toolkit's cases.
+ * Internal header size byte and checksum, ported from kr-patch-toolkit (`kr_patch/sfc/header.py`) so the ROM expansion
+ * widget shows the numbers `krpatch sfc checksum` prints. `tests/sfc-header.test.ts` runs the toolkit's cases.
  *
  * Sizes that are not a power of two are summed the way the cartridge mirrors them: the largest power-of-two part once,
  * then the remainder repeated until it is as big as that part (fullsnes, "ROM Size / Checksum Notes").
@@ -63,7 +63,7 @@ export function mirrorOffset(offset: number, size: number): number {
   }
 }
 
-/** SNES checksum of a headerless image: the low 16 bits of the mirrored sum. */
+/** SFC checksum of a headerless image: the low 16 bits of the mirrored sum. */
 export function checksum(rom: ArrayLike<number>): number {
   let total = 0;
   for (const { start, length, times } of checksumParts(rom.length)) {

@@ -429,7 +429,7 @@ const hexTable = Array.from({ length: 16 }, (_, n) => n);
       <li>
         롬 크기가 2의 거듭제곱이 아니면(예: 3MB) 카트리지가 보여 주는 모양대로 더합니다. 가장 큰 2의 거듭제곱
         부분(2MB)을 한 번, 나머지(1MB)는 그 크기(2MB)가 될 때까지 되풀이해 더합니다. kr-patch-toolkit의{' '}
-        <code>krpatch snes checksum</code>이 이렇게 계산합니다.
+        <code>krpatch sfc checksum</code>이 이렇게 계산합니다.
       </li>
       <li>
         체크섬 자리는 헤더 위치에 따라 다릅니다. LoROM·SA-1은 파일 0x7FDC–0x7FDF, HiROM은 0xFFDC–0xFFDF, ExHiROM은
@@ -455,8 +455,8 @@ const hexTable = Array.from({ length: 16 }, (_, n) => n);
   <p>
     체크섬은 툴킷이 계산해 줍니다. 틀리면 1로 끝나고, <code>--fix</code>를 주면 제자리에 다시 씁니다.
   </p>
-  <pre tabindex="0"><code>krpatch snes checksum game.sfc
-krpatch snes checksum game.sfc --fix</code></pre>
+  <pre tabindex="0"><code>krpatch sfc checksum game.sfc
+krpatch sfc checksum game.sfc --fix</code></pre>
 </GuideChapter>
 
 <style>

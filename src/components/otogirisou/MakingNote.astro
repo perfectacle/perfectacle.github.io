@@ -209,7 +209,7 @@ const toolMap = [
     files: ['tools/script.py', 'tools/dump.py', 'tools/assemble.py'],
     section: 'script',
   },
-  { job: '롬 코드 읽기', files: ['krpatch snes dis'], section: 'script' },
+  { job: '롬 코드 읽기', files: ['krpatch sfc dis'], section: 'script' },
   { job: '2회차 멈춤 수정', files: ['tools/fixes.py', 'lua/lap.lua'], section: 'lap2' },
   { job: 'A 버튼 대기 맞추기', files: ['tools/waits.py', 'tools/fixwaits.py', 'lua/waitdemo.lua'], section: 'a-wait' },
   {
@@ -240,14 +240,14 @@ const toolMap = [
     job: '엔진 추적',
     files: [
       'lua/qol/pcs.lua',
-      'probe/wtrace.lua (krpatch snes lua)',
-      'probe/trace.lua (krpatch snes lua)',
-      'probe/watch.lua (krpatch snes lua)',
+      'probe/wtrace.lua (krpatch sfc lua)',
+      'probe/trace.lua (krpatch sfc lua)',
+      'probe/watch.lua (krpatch sfc lua)',
     ],
     section: 'readers',
   },
   { job: '장 이동 회귀', files: ['lua/qol/menujump.sh', 'lua/qol/chjump.sh'], section: 'scene-music' },
-  { job: '에뮬레이터 호환성', files: ['krpatch snes run', 'compat/run_all.sh'], section: 'testing' },
+  { job: '에뮬레이터 호환성', files: ['krpatch sfc run', 'compat/run_all.sh'], section: 'testing' },
   { job: '롬 분석 문서(주소·형식 전체)', files: ['docs/ANALYSIS.md'], section: 'next' },
 ];
 
@@ -268,7 +268,7 @@ const sectionTitles: Record<string, string> = {
 };
 
 const unverified = [
-  '실기(실제 슈퍼 패미컴, 플래시 카트리지)에서 돌려 본 기록은 작업 노트에 없습니다. 위 에뮬레이터 결과가 전부입니다.',
+  '실기(실제 슈퍼 패미콤, 플래시 카트리지)에서 돌려 본 기록은 작업 노트에 없습니다. 위 에뮬레이터 결과가 전부입니다.',
   '줄 수, 입력 대기, 점프는 도구로 모든 갈래를 계산했습니다. 화면으로 확인한 것은 장 30개의 첫 화면, 시나리오 3개를 3만 프레임씩 진행한 결과, 1~4회차 시작입니다.',
   'WRAM 빈 곳은 쓰기 감시를 돌린 장면에서만 확인했습니다(2절 「코드를 둔 자리」). 감시에 걸리지 않은 장면이 그곳을 쓸 가능성은 남아 있습니다.',
   '태스크 1($1989)이 소리를 미리 준비하는 태스크라는 것은 동작을 보고 한 해석입니다. 원작 개발 의도는 확인할 수 없습니다.',
@@ -343,10 +343,10 @@ const toolVersions = [
 </ul>
 <p>
   처음 읽는다면 가이드의 <a href={guide('common', 'rom-patch')}>0장 롬과 패치</a>,{' '}
-  <a href={guide('snes', 'banks')}>4장 주소와 뱅크</a>, <a href={guide('snes', 'text')}>8장 대사는 어떻게 저장되나</a>를
+  <a href={guide('sfc', 'banks')}>4장 주소와 뱅크</a>, <a href={guide('sfc', 'text')}>8장 대사는 어떻게 저장되나</a>를
   먼저 보면 이 노트의 주소와 바이트가 읽힙니다. 일본판 대본의 압축은{' '}
   <a href={guide('common', 'huffman')}>10장 허프만</a>이, v1.2 기능을 끼워 넣은 방법은{' '}
-  <a href={guide('snes', 'hooking')}>6장 후킹</a>이 처음부터 설명합니다.
+  <a href={guide('sfc', 'hooking')}>6장 후킹</a>이 처음부터 설명합니다.
 </p>
 
 <h3 id="making-basics">배경지식</h3>
@@ -377,9 +377,9 @@ const toolVersions = [
 
 <h4>주소 읽는 법</h4>
 <p>
-  <code>$15:E401</code> 같은 SNES 주소는 CPU가 보는 <code>뱅크:주소</code>이고, <code>0xAE401</code> 같은 파일 오프셋은
-  롬 파일을 처음부터 센 위치입니다. 이 게임(LoROM)은 뱅크 하나가 롬의 32KB를 비춥니다. 계산은{' '}
-  <a href={guide('snes', 'banks', 'mapping')}>4장 「CPU 주소와 파일 오프셋은 다르다」</a>의 위젯으로 직접 해 볼 수 있고,
+  <code>$15:E401</code> 같은 슈퍼 패미콤 주소는 CPU가 보는 <code>뱅크:주소</code>이고, <code>0xAE401</code> 같은 파일
+  오프셋은 롬 파일을 처음부터 센 위치입니다. 이 게임(LoROM)은 뱅크 하나가 롬의 32KB를 비춥니다. 계산은{' '}
+  <a href={guide('sfc', 'banks', 'mapping')}>4장 「CPU 주소와 파일 오프셋은 다르다」</a>의 위젯으로 직접 해 볼 수 있고,
   예에 이 주소가 들어 있습니다.
 </p>
 <pre tabindex="0"><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
@@ -389,7 +389,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   원래 코드 사이에는 새 기능을 넣을 자리가 없습니다. 그래서 원래 코드의 한 지점을 "새 코드로 가라" 는 명령으로 덮어쓰고,
   새 코드는 롬의 빈 공간에 둡니다. v1.1과 v1.2는 이런 지점을 스무 곳 넘게 바꿨습니다. 어셈블리 소스는 asar로 롬에
-  덮어씁니다. <a href={guide('snes', 'hooking', 'jump')}>6장 「다른 뱅크의 코드를 불렀다 돌아오기」</a>가 이 게임의
+  덮어씁니다. <a href={guide('sfc', 'hooking', 'jump')}>6장 「다른 뱅크의 코드를 불렀다 돌아오기」</a>가 이 게임의
   줄바꿈 후킹을 예로 설명합니다.
 </p>
 <pre tabindex="0"><code>org $009CF9      ; 입력 대기 중 X(되감기)를 확인하던 자리를
@@ -459,7 +459,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   롬을 늘리면 헤더의 크기 바이트도 고쳐야 합니다. 헤더(<code>$00:FFC0</code>, 파일 0x7FC0)의 0x7FD7은 롬 크기를 적는
   자리인데, v1.0은 롬을 2MB로 늘리고도 1MB를 뜻하는 <code>0A</code>를 그대로 두었습니다. v1.1이 2MB를 뜻하는{' '}
   <code>0B</code>로 고치고 체크섬을 다시 계산했습니다. 크기 바이트와 미러, 체크섬이 왜 함께 바뀌는지는{' '}
-  <a href={guide('snes', 'expansion', 'header')}>11장 「헤더의 크기 바이트」</a>에 있고, 그 장의 위젯이 처음부터 이
+  <a href={guide('sfc', 'expansion', 'header')}>11장 「헤더의 크기 바이트」</a>에 있고, 그 장의 위젯이 처음부터 이
   게임의 1MB → 2MB를 보여 줍니다.
 </p>
 
@@ -469,7 +469,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   v1.1과 v1.2의 코드와 표는 모두 v1.0이 일본판 대사를 0으로 지운 자리에 들어갔습니다. 롬을 더 늘리지 않아도 됐습니다.
   WRAM은 6,000프레임을 플레이하며 게임이 쓰는 곳을 모두 기록한 뒤, 한 번도 쓰이지 않은 곳만 골라 메뉴 버퍼와 플로차트
   작업 공간으로 썼습니다. 빈 공간을 찾는 일반적인 방법은{' '}
-  <a href={guide('snes', 'hooking', 'space')}>6장 「새 코드를 둘 빈 공간」</a>에 있습니다.
+  <a href={guide('sfc', 'hooking', 'space')}>6장 「새 코드를 둘 빈 공간」</a>에 있습니다.
 </p>
 <figure class="paper">
   <ZoomImage
@@ -501,8 +501,8 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   <ToolFiles
     patch={patch}
     items={[
-      { path: 'probe/wrange.lua (krpatch snes lua)', text: '플레이 중 한 번이라도 쓰인 WRAM 영역 기록' },
-      { path: 'probe/wdump.lua (krpatch snes lua)', text: 'WRAM 구간을 파일로 덤프' },
+      { path: 'probe/wrange.lua (krpatch sfc lua)', text: '플레이 중 한 번이라도 쓰인 WRAM 영역 기록' },
+      { path: 'probe/wdump.lua (krpatch sfc lua)', text: 'WRAM 구간을 파일로 덤프' },
     ]}
   />
 </Deeper>
@@ -534,7 +534,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   사운드 노벨의 대본은 글자 사이사이에 명령(제어 코드)이 섞인 하나의 긴 줄입니다. 대사마다 번호를 붙여 포인터 표로 찾는
   RPG와 달리, 게임은 이 줄을 앞에서부터 읽으며 글자는 화면에 찍고 명령은 실행합니다. 이런 대본의 모양은{' '}
-  <a href={guide('snes', 'text', 'stream')}>8장 「번호 없이 한 줄로 이어진 대사」</a>가 이 게임을 예로 설명합니다.
+  <a href={guide('sfc', 'text', 'stream')}>8장 「번호 없이 한 줄로 이어진 대사」</a>가 이 게임을 예로 설명합니다.
 </p>
 <p>
   한글패치 대본의 첫 문장을 롬에서 그대로 꺼내 보면 이렇습니다. <code>$20:8018</code>(파일 0x100018)부터 2바이트가 기호
@@ -573,7 +573,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 </div>
 <p>
   제어 코드가 무엇이고 인자를 어떻게 읽는지는{' '}
-  <a href={guide('snes', 'text', 'control')}>8장 「제어 코드: 글자가 아닌 명령」</a>에서 이 대본의 첫머리로 풀어 봅니다.
+  <a href={guide('sfc', 'text', 'control')}>8장 「제어 코드: 글자가 아닌 명령」</a>에서 이 대본의 첫머리로 풀어 봅니다.
 </p>
 
 <h4>일본판은 비트 단위로 압축했다</h4>
@@ -626,7 +626,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     { path: 'tools/dump.py', text: '대사를 줄 단위 텍스트로 꺼내기 (점프 대상은 레이블로)' },
     { path: 'tools/assemble.py', text: '텍스트 대본을 다시 롬으로 조립하고 문장부호를 게임 글자로 바꾸기' },
     {
-      path: 'krpatch snes dis',
+      path: 'krpatch sfc dis',
       text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러',
     },
   ]}
@@ -702,7 +702,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   번역문은 v1.0에도 들어 있었습니다. 일본판 대사 블록은 0 → 2 → 1 순서라 0번 시나리오 끝 바로 다음이 2번 시나리오의
   시작이었고, 3바이트만 고쳐 넣으면 됐습니다. 회차 수를 메모리에서 직접 1, 2, 3으로 바꿔 세 시나리오가 모두 정상으로
   시작하는 것을 확인했습니다. 이렇게 버그를 다시 일으키고 확인하는 과정은{' '}
-  <a href={guide('snes', 'emulator', 'in-patch')}>12장 「실제 패치에서」</a>에 있습니다.
+  <a href={guide('sfc', 'emulator', 'in-patch')}>12장 「실제 패치에서」</a>에 있습니다.
 </p>
 <ToolFiles
   patch={patch}
@@ -813,9 +813,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </svg>
 </Figure>
 <p>
-  타일 바이트와 비트평면을 읽는 법은 <a href={guide('snes', 'graphics', 'bitplanes')}>7장 「픽셀 하나에 비트 몇 개」</a>
-  , 이 게임처럼 크기가 다른 1bpp 글자를 묶어 두는 폰트는{' '}
-  <a href={guide('snes', 'graphics', 'hangul')}>7장 「한글 수천 자를 제한된 폰트 칸에 넣기」</a>와 그 장의 「실제
+  타일 바이트와 비트평면을 읽는 법은 <a href={guide('sfc', 'graphics', 'bitplanes')}>7장 「픽셀 하나에 비트 몇 개」</a>,
+  이 게임처럼 크기가 다른 1bpp 글자를 묶어 두는 폰트는{' '}
+  <a href={guide('sfc', 'graphics', 'hangul')}>7장 「한글 수천 자를 제한된 폰트 칸에 넣기」</a>와 그 장의 「실제
   패치에서」에 있습니다. 글자를 그리면 엔진은 이 비트를 WRAM <code>$7F:0010</code>부터의 2bpp 글자 레이어에 겹쳐
   찍습니다. 첫째 평면이 글자, 둘째 평면이 그림자입니다.
 </p>
@@ -923,7 +923,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   글자를 찍는 루틴($00:A777)을 후킹해, 공백이나 쉼표·마침표 뒤에서 대본의 다음 단어 폭을 미리 재고 줄 끝을 넘으면 먼저
   줄을 바꾸게 했습니다. 폭은 v1.1이 새로 넣은 글자 폭 표(<code>$1E:F000</code>, 코드마다 1바이트)에서 읽습니다. 주인공
   이름처럼 길이가 그때그때 다른 것도 실행 중에 재므로 맞게 동작합니다. 이 후킹의 코드 한 줄 한 줄은{' '}
-  <a href={guide('snes', 'hooking', 'jump')}>6장 후킹</a>의 예제입니다.
+  <a href={guide('sfc', 'hooking', 'jump')}>6장 후킹</a>의 예제입니다.
 </p>
 <p>
   대신 줄이 늘어나 한 화면 9줄을 넘는 페이지가 생깁니다. 대사창은 왼쪽 여백 12, 줄바꿈 기준 x = 242, 줄 간격 23픽셀이라
@@ -964,7 +964,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   $02:B54B, $02:BCF9)을 뱅크 $15·$16으로 가는 점프(JML)로 바꿨습니다. 이 후킹들이 $0100에 1~3을 적으면, 화면 갱신
   후킹($00:C4EC → $15:E499)이 그 번호의 롬 바이트를 DMA로 VRAM에 그대로 보냅니다. 풀어 주는 단계가 없으니 롬에 든
   바이트가 곧 타일입니다. VRAM에 그림을 올리는 순서는{' '}
-  <a href={guide('snes', 'graphics', 'vram')}>7장 「VRAM과 타일맵, BG 모드」</a>에 있습니다.
+  <a href={guide('sfc', 'graphics', 'vram')}>7장 「VRAM과 타일맵, BG 모드」</a>에 있습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -999,7 +999,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   v1.2는 플로차트에 쓰는 4×6 픽셀 글자 17개를 새로 그렸습니다. 타일로 올리지 않고 글자 레이어의 비트맵에 픽셀을 직접
   찍습니다(<a href="#making-flowchart">8절 「플로차트」</a>). 되감은 페이지의 노란 글씨는 그림이 아니라 팔레트 한 색을
   바꾼 것입니다(<a href="#making-yellow">8절 「책갈피와 노란 글씨」</a>, 팔레트는{' '}
-  <a href={guide('snes', 'graphics', 'palette')}>7장 「색은 팔레트 번호로 고른다」</a>).
+  <a href={guide('sfc', 'graphics', 'palette')}>7장 「색은 팔레트 번호로 고른다」</a>).
 </p>
 
 <h2 id="making-menus">
@@ -1027,7 +1027,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   v1.2의 장 목록과 엔딩 목록은 새 화면을 그리지 않고 이 선택지 화면을 그대로 빌려 씁니다. 그 이야기는{' '}
   <a href="#making-menu">8절 「메뉴는 그리지 않고 대본으로 쓴다」</a>에 있습니다. 제어 코드를 하나 새로 달아 메뉴 동작을
-  만든 방법이라, <a href={guide('snes', 'text', 'control')}>8장 「제어 코드: 글자가 아닌 명령」</a>을 먼저 보면 읽기
+  만든 방법이라, <a href={guide('sfc', 'text', 'control')}>8장 「제어 코드: 글자가 아닌 명령」</a>을 먼저 보면 읽기
   쉽습니다.
 </p>
 
@@ -1185,9 +1185,9 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   </li>
 </ol>
 <p>
-  모두 <a href={guide('snes', 'hooking')}>6장 후킹</a>의 방법으로 원래 코드 몇 바이트를 새 코드로 가는 점프로 바꾼
+  모두 <a href={guide('sfc', 'hooking')}>6장 후킹</a>의 방법으로 원래 코드 몇 바이트를 새 코드로 가는 점프로 바꾼
   것입니다. 점프 명령과 돌아오는 명령의 짝은{' '}
-  <a href={guide('snes', 'assembly', 'subroutine')}>5장 「서브루틴: JSR과 RTS」</a>에 있습니다.
+  <a href={guide('sfc', 'assembly', 'subroutine')}>5장 「서브루틴: JSR과 RTS」</a>에 있습니다.
 </p>
 <Deeper title="v1.1·v1.2의 후킹 지점 전체 (원래 바이트와 바꾼 바이트)">
   <div class="table-wrap" tabindex="0">
@@ -1223,7 +1223,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     점프보다 길면 남는 자리를 NOP으로 채웁니다. 이 밖에 제어 코드 분기표(<code>$00:F390</code> + 코드 × 2)의 칸도
     바꿨습니다. <code>{'{44}'}</code>는 <code>$00:FAB0</code>의 중계 코드를 거쳐 메뉴 동작으로, <code>{'{39}'}</code>–
     <code>{'{3D}'}</code>는 반복음을 기록한 뒤 원래 처리로 갑니다. 분기표는 2바이트 주소라 뱅크 $00 안에 중계 코드를
-    둬야 합니다(<a href={guide('snes', 'hooking', 'space')}>6장 「새 코드를 둘 빈 공간」</a>).
+    둬야 합니다(<a href={guide('sfc', 'hooking', 'space')}>6장 「새 코드를 둘 빈 공간」</a>).
   </p>
 </Deeper>
 
@@ -1239,7 +1239,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   않았습니다. A 버튼 입력 대기 중 X를 누르면 되감기로 가는 자리($00:9CF9)가 있어서, 그 바로 앞을 후킹해 Select를 먼저
   보게 했습니다. 원래 바이트 <code>A5 CC 29 00 80</code>(<code>LDA $CC</code> · <code>AND #$8000</code>)을{' '}
   <code>22 45 84 1A EA</code>(<code>JSL $1A:8445</code> · <code>NOP</code>)로 바꾼 것입니다. 이 명령들을 읽는 법은{' '}
-  <a href={guide('snes', 'assembly')}>5장 어셈블리 기초</a>에 있습니다.
+  <a href={guide('sfc', 'assembly')}>5장 어셈블리 기초</a>에 있습니다.
 </p>
 
 <h3 id="making-readers">대본을 읽는 손이 셋</h3>
@@ -1288,7 +1288,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     버퍼($10A5/$10A6, 잠금 $10A3)로 보냅니다. 선택지·점프·엔딩 같은 코드({'{19}'} {'{1A}'} {'{04}'} {'{05}'} {'{1D}'}{' '}
     {'{23}'} {'{24}'} {'{43}'} {'{44}'})에 닿으면 위치를 $1989–$198C에 남기고 끝나고, 다음에 시작할 때 $00:CC96이 거기서
     다시 읽습니다. 소리를 미리 준비해 두는 태스크로 보는데, 이 해석은 추정입니다. 본체 CPU가 소리 칩에 명령을 보내는
-    구조는 <a href={guide('snes', 'sound', 'commands')}>13장 「곡 번호와 효과음 번호 보내기」</a>에 있습니다.
+    구조는 <a href={guide('sfc', 'sound', 'commands')}>13장 「곡 번호와 효과음 번호 보내기」</a>에 있습니다.
   </p>
   <p>
     쓰지 않는 <code>{'{23}'}</code>($00:E13F)과 <code>{'{24}'}</code>($00:E1DD)는 장면 번호를 골라 그리로 가는 디버그
@@ -1304,13 +1304,13 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   items={[
     { path: 'lua/qol/pcs.lua', text: '프레임마다 CPU가 실행 중인 주소 기록 (어디서 멈췄나)' },
     {
-      path: 'probe/wtrace.lua (krpatch snes lua)',
+      path: 'probe/wtrace.lua (krpatch sfc lua)',
       text: '한 주소에 값을 쓰는 코드의 주소와 값 기록 (누가 바꿨나)',
     },
-    { path: 'probe/trace.lua (krpatch snes lua)', text: '지정한 코드가 몇 번 실행되는지 세기' },
-    { path: 'probe/watch.lua (krpatch snes lua)', text: '프레임마다 메모리 값 기록' },
+    { path: 'probe/trace.lua (krpatch sfc lua)', text: '지정한 코드가 몇 번 실행되는지 세기' },
+    { path: 'probe/watch.lua (krpatch sfc lua)', text: '프레임마다 메모리 값 기록' },
     {
-      path: 'krpatch snes dis',
+      path: 'krpatch sfc dis',
       text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러',
     },
   ]}
@@ -1414,8 +1414,8 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     대본 점프로 바꿨습니다. 게임이 원래 하는 동작이라 에뮬레이터를 가리지 않습니다.
   </p>
   <p>
-    사운드 칩에 프로그램을 올리는 과정은 <a href={guide('snes', 'sound', 'upload')}>13장 「사운드 드라이버 올리기」</a>
-    에 있습니다.
+    사운드 칩에 프로그램을 올리는 과정은 <a href={guide('sfc', 'sound', 'upload')}>13장 「사운드 드라이버 올리기」</a>에
+    있습니다.
   </p>
 </Deeper>
 <ToolFiles
@@ -1505,13 +1505,13 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   여기서도 한 번 검은 화면에 멈췄습니다. 65c816은 돌아오는 명령이 두 가지(RTS, RTL)라 부를 때와 같은 짝으로 돌아가야
   하는데, 먼 곳에서 불린 코드(JSL)가 가까운 호출용 루틴(RTS로 끝남)으로 그냥 뛰어가 버려 엉뚱한 주소로 돌아갔습니다.
   짝을 맞추는 중간 단계를 두어 고쳤습니다. 이 짝이 왜 중요한지는{' '}
-  <a href={guide('snes', 'hooking', 'restore')}>6장 「덮어쓴 명령 다시 실행하기」</a>에 있습니다.
+  <a href={guide('sfc', 'hooking', 'restore')}>6장 「덮어쓴 명령 다시 실행하기」</a>에 있습니다.
 </p>
 <ToolFiles
   patch={patch}
   items={[
     { path: 'asm/qol.asm', text: '장 목록·엔딩 목록·기록·노란 글씨·책갈피 코드와 후킹' },
-    { path: 'probe/cgram.lua (krpatch snes lua)', text: '팔레트(CGRAM)와 화면 저장' },
+    { path: 'probe/cgram.lua (krpatch sfc lua)', text: '팔레트(CGRAM)와 화면 저장' },
   ]}
 />
 
@@ -1523,7 +1523,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   Mesen 2의 테스트 모드와 Lua 스크립트로 버튼 입력을 재생하고, 원하는 순간의 화면과 메모리를 저장했습니다. 손으로
   플레이하지 않으니 같은 장면을 몇 번이고 똑같이 다시 볼 수 있습니다. 멈춤을 찾을 때는 이 순서가 가장 빨랐습니다.
   중단점과 쓰기 감시가 무엇인지는{' '}
-  <a href={guide('snes', 'emulator', 'breakpoints')}>12장 「중단점으로 "어디서 읽나" 잡기」</a>에 있습니다.
+  <a href={guide('sfc', 'emulator', 'breakpoints')}>12장 「중단점으로 "어디서 읽나" 잡기」</a>에 있습니다.
 </p>
 <ol class="flow">
   {debugSteps.map(step => (
@@ -1541,7 +1541,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 </ul>
 <h3 id="making-compat">여러 에뮬레이터에 같은 입력 넣기</h3>
 <p>
-  libretro 코어를 직접 불러 쓰는 작은 프로그램(<code>krpatch snes run</code>)으로 같은 입력을 여러 에뮬레이터에 넣고 새
+  libretro 코어를 직접 불러 쓰는 작은 프로그램(<code>krpatch sfc run</code>)으로 같은 입력을 여러 에뮬레이터에 넣고 새
   게임, 이어하기, 장 목록, 플로차트를 비교했습니다. 세이브를 불러온 뒤 A를 눌러 가며 화면을 찍는 이어하기 시나리오(
   <a href={sourceFileUrl(patch, 'compat/s_cont.txt')}>
     <code>compat/s_cont.txt</code>
@@ -1558,7 +1558,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   실행할 때 <code>--watch 7E0052:3</code>을 붙여 대본 위치(<code>$52</code>–<code>$54</code>,{' '}
   <a href="#making-script">3절</a>)를 프레임마다 기록합니다. 코어마다 이 기록이 같은 순서로 흘러가면 같은 장면과
   선택지로 갔다는 뜻입니다. 이 스크립트 형식은{' '}
-  <a href={guide('snes', 'emulator', 'headless')}>12장 「화면 없이 돌리기: 입력 스크립트」</a>의 위젯에서 「제절초
+  <a href={guide('sfc', 'emulator', 'headless')}>12장 「화면 없이 돌리기: 입력 스크립트」</a>의 위젯에서 「제절초
   이어하기」를 골라 한 줄씩 볼 수 있습니다.
 </p>
 <p>
@@ -1590,7 +1590,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     { path: 'lua/pages.lua', text: '입력 대기마다 화면을 찍고 대사 위치 기록' },
     { path: 'lua/jumpsave.py', text: '원하는 대사에서 이어지는 세이브 파일 만들기' },
     { path: 'lua/qol/menujump.sh', text: '장마다 메뉴로 옮겨 첫 화면 찍기' },
-    { path: 'krpatch snes run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
+    { path: 'krpatch sfc run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
     { path: 'compat/run_all.sh', text: '코어마다 새 게임·이어하기 비교' },
   ]}
 />

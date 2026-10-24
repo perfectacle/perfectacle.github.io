@@ -12,7 +12,7 @@ import {
 } from '../../../../lib/kr-patches.ts';
 import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
 import { toBinary, toHex } from '../../../../lib/numbers.ts';
-import { SAMPLE_GLYPH, decode, encode, shadowed } from '../../../../lib/snes-tiles.ts';
+import { SAMPLE_GLYPH, decode, encode, shadowed } from '../../../../lib/sfc-tiles.ts';
 
 const references = [
   {
@@ -46,7 +46,7 @@ const references = [
     note: 'CGRAM과 색 0(투명)',
   },
   {
-    href: toolkitFileUrl('src/kr_patch/snes/tiles.py'),
+    href: toolkitFileUrl('src/kr_patch/sfc/tiles.py'),
     label: 'kr-patch-toolkit, tiles.py',
     note: '「타일을 칠하며 바이트 보기」가 옮겨 온 해독·부호화 코드(같은 테스트 사례로 확인)',
   },
@@ -133,12 +133,12 @@ const strategies = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="graphics" references={references}>
+<GuideChapter platform="sfc" slug="graphics" references={references}>
   <h2 id="tiles">
     화면은 8×8 타일을 이어 붙인 그림 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    슈퍼 패미컴은 화면을 픽셀 하나하나로 기억하지 않습니다. 가로세로 8픽셀짜리 작은 그림인 <strong>타일</strong>을 미리
+    슈퍼 패미콤은 화면을 픽셀 하나하나로 기억하지 않습니다. 가로세로 8픽셀짜리 작은 그림인 <strong>타일</strong>을 미리
     만들어 두고, "이 칸에는 몇 번 타일"이라고 적은 <strong>타일맵</strong>으로 화면을 채웁니다. 256×224픽셀 화면이라면
     타일 32×28칸입니다. 같은 타일을 여러 칸에 쓸 수 있어서 메모리가 훨씬 적게 듭니다. 욕실 타일을 붙이는 것과
     비슷합니다.
@@ -280,7 +280,7 @@ const strategies = [
     그래서 2bpp 타일 16바이트는 "0번 줄 평면 0, 0번 줄 평면 1, 1번 줄 평면 0, …" 순서입니다. 4bpp는 이렇게 만든
     16바이트(평면 0·1) 뒤에 평면 2·3이 같은 모양으로 16바이트 더 붙습니다. 아래에서 칸을 눌러 칠해 보면 어느 바이트의
     어느 비트가 바뀌는지 바로 보입니다. 툴킷{' '}
-    <a href={toolkitFileUrl('src/kr_patch/snes/tiles.py')}>
+    <a href={toolkitFileUrl('src/kr_patch/sfc/tiles.py')}>
       <code>tiles.py</code>
     </a>
     를 옮긴 코드라 툴킷과 같은 바이트가 나옵니다.
@@ -637,8 +637,8 @@ const strategies = [
     <h3>평면을 반씩 묶어 두는 경우</h3>
     <p>
       어떤 게임은 2bpp 타일을 "평면 0의 8줄, 그다음 평면 1의 8줄"로 묶어 압축해 둡니다. 돌격편 타이틀 그림이 이런
-      경우로, 압축을 푼 뒤 <code>$81:DFEB</code>가 타일마다 줄 순서를 SNES 형식으로 되돌립니다. 툴킷의{' '}
-      <code>planar_to_snes</code>·<code>snes_to_planar</code>가 같은 변환입니다.
+      경우로, 압축을 푼 뒤 <code>$81:DFEB</code>가 타일마다 줄 순서를 슈퍼 패미콤 형식으로 되돌립니다. 툴킷의{' '}
+      <code>planar_to_sfc</code>·<code>sfc_to_planar</code>가 같은 변환입니다.
     </p>
   </Deeper>
 
@@ -846,19 +846,19 @@ const strategies = [
     직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
   </h2>
   <p>
-    툴킷의 <code>krpatch snes tiles</code>는 파일의 어느 바이트 범위든 타일로 그려 PNG로 저장합니다. 롬, VRAM 덤프,
+    툴킷의 <code>krpatch sfc tiles</code>는 파일의 어느 바이트 범위든 타일로 그려 PNG로 저장합니다. 롬, VRAM 덤프,
     압축을 푼 데이터 모두 됩니다. 한 줄에 16타일씩 그려서 위의 16×16 글자 배치가 그대로 제 모양으로 보입니다.
   </p>
-  <pre tabindex="0"><code>$ krpatch snes tiles totsugeki-k.sfc EF00 1000 block0.png --bpp 2
+  <pre tabindex="0"><code>$ krpatch sfc tiles totsugeki-k.sfc EF00 1000 block0.png --bpp 2
 block0.png
-$ krpatch snes tiles smrpg-k.sfc 242800 1800 menu-font.png --bpp 2 --rows 12
+$ krpatch sfc tiles smrpg-k.sfc 242800 1800 menu-font.png --bpp 2 --rows 12
 menu-font.png</code></pre>
   <p>
     첫 명령은 돌격편 한글패치의 새 글자 블록 0(4KB)을 그립니다. 둘째는 슈퍼 마리오 RPG 한글패치 메뉴 폰트(
     <code>$E4:2800</code>, 코드 256개 × 24바이트)를 8×12 글리프로 그립니다. 코드 <code>$00</code>–<code>$1F</code>{' '}
     자리는 비어 있어서 첫 두 줄은 빈칸이고, <code>$20</code>부터 글자가 나옵니다. <code>--bpp</code>를 일부러 틀리게 줘
     보면 같은 바이트가 알아볼 수 없는 무늬가 되는 것도 볼 수 있습니다. 화면에 나온 그림이 롬 어디에 있는지 모를 때는
-    에뮬레이터에서 VRAM과 CGRAM을 덤프해 <code>krpatch snes bg</code>로 레이어를 그리고, 거기서 쓰는 타일을 롬에서
+    에뮬레이터에서 VRAM과 CGRAM을 덤프해 <code>krpatch sfc bg</code>로 레이어를 그리고, 거기서 쓰는 타일을 롬에서
     찾습니다.
   </p>
 </GuideChapter>

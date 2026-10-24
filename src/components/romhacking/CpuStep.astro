@@ -1,6 +1,6 @@
 ---
 import { FLAG, FLAG_ORDER, Memory, run, startState, type CpuState } from '../../lib/cpu65816.ts';
-import { formatCpu, hex } from '../../lib/snes-mapper.ts';
+import { formatCpu, hex } from '../../lib/sfc-mapper.ts';
 import { CPU_PROGRAMS } from './cpu-programs.ts';
 
 interface Props {
@@ -145,7 +145,7 @@ const widthNote = (s: CpuState) =>
 
 <script>
   import { FLAG, FLAG_ORDER, Memory, startState, step, type CpuState, type StepResult } from '../../lib/cpu65816.ts';
-  import { formatCpu, hex } from '../../lib/snes-mapper.ts';
+  import { formatCpu, hex } from '../../lib/sfc-mapper.ts';
   import { CPU_PROGRAMS } from './cpu-programs.ts';
 
   const ORIGIN = 0x808000;

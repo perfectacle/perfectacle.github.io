@@ -46,7 +46,7 @@ const references = [
 ];
 const ROM_PATCH = chapterPath(chapterBySlug('common', 'rom-patch'));
 const ENDIAN = chapterPath(chapterBySlug('common', 'endian'));
-const GRAPHICS = chapterPath(chapterBySlug('snes', 'graphics'));
+const GRAPHICS = chapterPath(chapterBySlug('sfc', 'graphics'));
 const HUFFMAN = chapterPath(chapterBySlug('common', 'huffman'));
 
 // The first 14 bytes of the Totsugeki-hen title tiles, item by item.
@@ -69,7 +69,7 @@ const titleItems = [
     게임은 왜 압축하나 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    카트리지의 롬 칩은 비쌌습니다. 슈퍼 패미컴 게임은 대개 512KB–4MB였고, 칩이 한 단계 커질 때마다 카트리지 값이
+    카트리지의 롬 칩은 비쌌습니다. 슈퍼 패미콤 게임은 대개 512KB–4MB였고, 칩이 한 단계 커질 때마다 카트리지 값이
     올라갔습니다. 그래서 그림과 대사처럼 덩치 큰 데이터를 줄여서 넣고, 쓸 때 WRAM이나 VRAM에 풀어 놓는 게임이 많습니다.
     줄이는 것을 <strong>압축</strong>, 원래대로 되돌리는 것을 <strong>압축 해제</strong>(풀기)라고 합니다.
   </p>
@@ -444,9 +444,9 @@ const titleItems = [
     <p>
       각성편의 <code>$80:9DA7</code>과 돌격편의 <code>$81:DFE7</code>은 이 루틴을 부른 뒤 풀어 낸 타일마다 바이트 순서를
       바꾸는 일을 하나 더 합니다. 압축 데이터 안에서는 2bpp 타일 하나의 평면 0 여덟 줄과 평면 1 여덟 줄이 따로 모여
-      있고, 해제 뒤에 이것을 <a href={GRAPHICS}>7장</a>의 SNES 순서(줄마다 평면 0, 평면 1)로 엇갈려 놓습니다. 평면별로
-      모아 두면 같은 바이트가 더 길게 이어져 압축에 유리합니다. 그래서 압축만 풀어 타일로 그리면 줄무늬가 보입니다.
-      툴킷의 <code>--planar</code> 옵션이 이 순서 바꾸기를 합니다.
+      있고, 해제 뒤에 이것을 <a href={GRAPHICS}>7장</a>의 슈퍼 패미콤 순서(줄마다 평면 0, 평면 1)로 엇갈려 놓습니다.
+      평면별로 모아 두면 같은 바이트가 더 길게 이어져 압축에 유리합니다. 그래서 압축만 풀어 타일로 그리면 줄무늬가
+      보입니다. 툴킷의 <code>--planar</code> 옵션이 이 순서 바꾸기를 합니다.
     </p>
   </Deeper>
 
@@ -454,7 +454,7 @@ const titleItems = [
     롬에서 압축된 곳과 푸는 코드 찾기 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    화면에 보이는 그림을 <code>krpatch snes tiles</code>로 롬 전체에서 찾아도 나오지 않으면 압축을 의심합니다. 압축된
+    화면에 보이는 그림을 <code>krpatch sfc tiles</code>로 롬 전체에서 찾아도 나오지 않으면 압축을 의심합니다. 압축된
     곳은 헥스 에디터로 보면 몇 가지 티가 납니다.
   </p>
   <ul>
@@ -544,14 +544,14 @@ $ xxd -l 48 title.bin
   <p>
     첫 줄(0x00–0x0F)은 모두 0이고, 둘째 줄 가운데의 <code>01 0F 3F</code>(0x15–0x17)가 위 도구의 그대로 항목 셋입니다.
     그 뒤 12바이트 <code>00 00 00 00 00 01 0F 3F 00 00 00 00</code>(0x18–0x23)이 거리 8짜리 겹치는 복사입니다. 그림으로
-    보려면 <code>--planar</code> 옵션으로 순서를 바꿔 풀고 <code>krpatch snes tiles</code>로 그립니다. 반대로 고친
-    그림은 <code>krpatch lzss encode</code>로 압축합니다.
+    보려면 <code>--planar</code> 옵션으로 순서를 바꿔 풀고 <code>krpatch sfc tiles</code>로 그립니다. 반대로 고친 그림은{' '}
+    <code>krpatch lzss encode</code>로 압축합니다.
   </p>
-  <pre tabindex="0"><code>$ krpatch lzss decode totsugeki-j.sfc 1B9EB1 title-snes.bin --planar
+  <pre tabindex="0"><code>$ krpatch lzss decode totsugeki-j.sfc 1B9EB1 title-sfc.bin --planar
 4960 bytes from 3613 compressed
-$ krpatch snes tiles title-snes.bin 0 1360 title.png --bpp 2
+$ krpatch sfc tiles title-sfc.bin 0 1360 title.png --bpp 2
 title.png
-$ krpatch lzss encode title-snes.bin title.lz --planar
+$ krpatch lzss encode title-sfc.bin title.lz --planar
 3613 bytes from 4960</code></pre>
   <p>
     다시 압축한 <code>title.lz</code>는 원본과 길이는 같지만 바이트는 다릅니다(위 「더 깊이」). 다시 풀어서 같은지

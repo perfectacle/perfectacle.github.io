@@ -74,13 +74,13 @@ const readFirst = [
     label: '0장 롬과 패치',
     why: 'IPS 패치가 무엇을 적는지. 이 패치는 v1.0 IPS 위에 쌓입니다.',
   },
-  { href: guide('snes', 'banks'), label: '4장 주소와 뱅크', why: '$A8:800C 같은 주소를 파일 위치로 바꾸는 법.' },
+  { href: guide('sfc', 'banks'), label: '4장 주소와 뱅크', why: '$A8:800C 같은 주소를 파일 위치로 바꾸는 법.' },
   {
-    href: guide('snes', 'text'),
+    href: guide('sfc', 'text'),
     label: '8장 대사는 어떻게 저장되나',
     why: '글자 코드와 포인터 표. 3절이 이 장의 돌격편 예입니다.',
   },
-  { href: guide('snes', 'graphics'), label: '7장 그림과 글자', why: '2bpp 타일과 가변폭 폰트. 4절의 바탕입니다.' },
+  { href: guide('sfc', 'graphics'), label: '7장 그림과 글자', why: '2bpp 타일과 가변폭 폰트. 4절의 바탕입니다.' },
 ];
 
 const header = [
@@ -357,7 +357,7 @@ const buildSteps: [string, string][] = [
   ['tools/statusmenu1.py', '스토리 현황 목록의 습득·완료 표시를 두 글자로 바꿉니다.'],
   ['tools/pwglyph1.py', '암호 글자 다섯 자리를 다시 그리고 글자 표와 대조합니다.'],
   ['tools/endpw1.py', '엔딩 암호 자리에 「손오공은사이어인」을 넣습니다.'],
-  ['krpatch snes checksum --fix', '헤더 체크섬을 다시 계산합니다.'],
+  ['krpatch sfc checksum --fix', '헤더 체크섬을 다시 계산합니다.'],
   ['krpatch ips make --headered', '헤더 없는 롬용과 512바이트 헤더 롬용 IPS를 만듭니다.'],
 ];
 
@@ -406,15 +406,15 @@ const toolFiles = [
   { name: 'tools/pages1.py', text: '촬영한 화면에서 페이지별 완성 화면 고르기', section: 'testing' },
   { name: 'tools/rgcmp1.py', text: '두 롬의 시나리오별 대사 ID 순서 비교', section: 'testing' },
   { name: 'tools/textdump1.py', text: '모든 텍스트를 코드 목록으로 덤프(버전 간 비교)', section: 'testing' },
-  { name: 'krpatch snes dis', text: '공통 도구. 65c816 역어셈블러', section: 'testing' },
+  { name: 'krpatch sfc dis', text: '공통 도구. 65c816 역어셈블러', section: 'testing' },
   {
-    name: 'krpatch snes run',
+    name: 'krpatch sfc run',
     text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램',
     section: 'testing',
   },
   { name: 'compat/run_all.sh', text: '코어마다 새 게임·이어하기 비교', section: 'testing' },
-  { name: 'script.lua (krpatch snes lua)', text: 'Mesen 2에서 같은 입력 재생', section: 'testing' },
-  { name: 'krpatch snes checksum', text: '공통 도구. 헤더 체크섬 다시 계산', section: 'map' },
+  { name: 'script.lua (krpatch sfc lua)', text: 'Mesen 2에서 같은 입력 재생', section: 'testing' },
+  { name: 'krpatch sfc checksum', text: '공통 도구. 헤더 체크섬 다시 계산', section: 'map' },
   {
     name: 'docs/ANALYSIS.md',
     text: '롬 분석 문서(헤더·메모리·대사와 폰트 형식·후킹 주소·쓴 빈 공간)',
@@ -437,7 +437,7 @@ const sectionTitles: Record<string, string> = {
 };
 
 const sectionTools: Record<string, string[]> = {
-  map: ['krpatch snes checksum'],
+  map: ['krpatch sfc checksum'],
   dialogue: [
     'tools/dialogue1.py',
     'tools/text_patch1.py',
@@ -458,10 +458,10 @@ const sectionTools: Record<string, string[]> = {
     'tools/pages1.py',
     'tools/rgcmp1.py',
     'tools/textdump1.py',
-    'krpatch snes dis',
-    'krpatch snes run',
+    'krpatch sfc dis',
+    'krpatch sfc run',
     'compat/run_all.sh',
-    'script.lua (krpatch snes lua)',
+    'script.lua (krpatch sfc lua)',
   ],
   next: ['docs/ANALYSIS.md'],
 };
@@ -620,7 +620,7 @@ const toolsFor = (section: string) =>
 <p>
   CPU는 롬을 <code>뱅크:주소</code>로 봅니다. 이 게임은 LoROM이라 뱅크마다 뒤쪽 32KB($8000–$FFFF)에만 롬이 보입니다.
   그래서 파일 위치는 다음처럼 계산합니다(
-  <a href={guide('snes', 'banks', 'mapping')}>4장 CPU 주소와 파일 오프셋은 다르다</a>).
+  <a href={guide('sfc', 'banks', 'mapping')}>4장 CPU 주소와 파일 오프셋은 다르다</a>).
 </p>
 <pre tabindex="0"><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
 $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
@@ -684,7 +684,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
   바로 앞의 자료가 <code>0xFFFF</code>를 끝 표시로 쓰고 있을 수 있습니다. 같은 엔진의 각성편 v1.1이 이것을 놓쳐{' '}
   <a href={kakusei('making-bugfix')}>우주선이 맵 밖을 헤매는 버그</a>를 냈습니다. 돌격편은 일본판 원본에서도 0xFF였는지,
   앞의 자료가 그 값을 읽지 않는지 확인한 곳만 썼습니다(
-  <a href={guide('snes', 'hooking', 'space')}>6장 새 코드를 둘 빈 공간</a>).
+  <a href={guide('sfc', 'hooking', 'space')}>6장 새 코드를 둘 빈 공간</a>).
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -710,7 +710,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
 </div>
 <p>
   롬을 늘리지 않고 이렇게 빈 곳을 찾아 쓰는 방법은{' '}
-  <a href={guide('snes', 'expansion', 'instead')}>11장 늘리지 않고 자리를 만드는 법</a>에서, 반대로 1MB 롬을 2MB로 늘린
+  <a href={guide('sfc', 'expansion', 'instead')}>11장 늘리지 않고 자리를 만드는 법</a>에서, 반대로 1MB 롬을 2MB로 늘린
   사례는 <a href={notePath(OTOGIRISOU_PATCH)}>제절초 노트</a>에서 볼 수 있습니다.
 </p>
 
@@ -738,8 +738,8 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
   <a href={sourceFileUrl(patch, 'tables/kr-v1.0.txt')}>
     <code>tables/kr-v1.0.txt</code>
   </a>
-  )를 이어 씁니다. 글자 표와 제어 코드는 <a href={guide('snes', 'text', 'table')}>8장 글자표</a>와{' '}
-  <a href={guide('snes', 'text', 'control')}>제어 코드</a>에서 다룹니다.
+  )를 이어 씁니다. 글자 표와 제어 코드는 <a href={guide('sfc', 'text', 'table')}>8장 글자표</a>와{' '}
+  <a href={guide('sfc', 'text', 'control')}>제어 코드</a>에서 다룹니다.
 </p>
 
 <h3>대사 번호에서 문자열까지</h3>
@@ -753,7 +753,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
   ))}
 </ol>
 <p>
-  이 과정을 그림으로 따라가는 예가 <a href={guide('snes', 'text', 'pointers')}>8장 포인터 표</a>에 있고, 주소를 파일
+  이 과정을 그림으로 따라가는 예가 <a href={guide('sfc', 'text', 'pointers')}>8장 포인터 표</a>에 있고, 주소를 파일
   위치로 바꾸는 계산은 위 <a href="#making-map">2절</a>의 위젯으로 해 볼 수 있습니다.
 </p>
 
@@ -834,7 +834,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
 <p>
   같은 문자열을 여러 ID가 함께 가리키므로, 한 문자열을 제자리에서 고치면 다른 대사까지 같이 바뀔 수 있습니다. 같은
   엔진의 각성편은 다시 채우지 않고 <a href={kakusei('making-relocate')}>안 들어가는 줄만 같은 뱅크 끝으로</a>{' '}
-  옮겼습니다. 두 방법의 차이는 <a href={guide('snes', 'text', 'grow')}>8장 번역이 길어지면 어디에 두나</a>에
+  옮겼습니다. 두 방법의 차이는 <a href={guide('sfc', 'text', 'grow')}>8장 번역이 길어지면 어디에 두나</a>에
   정리했습니다.
 </p>
 
@@ -869,7 +869,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
 </div>
 <p>
   이 게임은 글자마다 폭이 다른 가변폭 폰트를 씁니다(
-  <a href={guide('snes', 'graphics', 'fonts')}>7장 폰트: 고정폭과 가변폭</a>). 줄이 창 폭을 넘으면 엔진이 알아서 줄을
+  <a href={guide('sfc', 'graphics', 'fonts')}>7장 폰트: 고정폭과 가변폭</a>). 줄이 창 폭을 넘으면 엔진이 알아서 줄을
   바꾸는데, 그러면 한 줄이 밀려 페이지가 엉뚱한 곳에서 넘어갑니다. v1.0 롬의 대사를 창마다 실제 폭으로 재 보니 이렇게
   넘치는 줄이 13줄 있었습니다.
 </p>
@@ -1018,7 +1018,7 @@ $B7:9857  CMP $0210           ; $32가 $0210 이상이면 페이지 대기 뒤 �
   글자 그림은 2bpp 타일입니다. 한 픽셀에 비트가 두 개(플레인 0·1)라 네 가지 값을 가집니다. 돌격편 폰트는 글자 픽셀을
   플레인 0만 1(색 1)로, 그 오른쪽·아래·오른쪽 아래의 빈 칸을 두 플레인 모두 1(색 3)로 그려 그림자를 붙입니다. 아래
   위젯은 이 규칙으로 그린 「가」에서 시작합니다. 칸을 눌러 바꾸면 타일 바이트가 따라 바뀝니다(
-  <a href={guide('snes', 'graphics', 'bitplanes')}>7장 픽셀 하나에 비트 몇 개</a>).
+  <a href={guide('sfc', 'graphics', 'bitplanes')}>7장 픽셀 하나에 비트 몇 개</a>).
 </p>
 <TileBytes />
 
@@ -1041,7 +1041,7 @@ $B7:9857  CMP $0210           ; $32가 $0210 이상이면 페이지 대기 뒤 �
 <p>
   한글 음절은 자주 쓰는 것만 해도 2,350자입니다. 1,010칸에는 v1.0 번역문에 쓴 글자만 골라 넣을 수 있었고, 대사를 원문에
   맞춰 다시 옮기니 꽃·쫓·흙처럼 칸에 없는 글자가 필요해졌습니다. 한글을 좁은 폰트 칸에 넣는 여러 방법은{' '}
-  <a href={guide('snes', 'graphics', 'hangul')}>7장 한글 수천 자를 제한된 폰트 칸에 넣기</a>에 있습니다.
+  <a href={guide('sfc', 'graphics', 'hangul')}>7장 한글 수천 자를 제한된 폰트 칸에 넣기</a>에 있습니다.
 </p>
 
 <h3 id="making-font-ext">글자 칸을 512개 늘리기</h3>
@@ -1050,7 +1050,7 @@ $B7:9857  CMP $0210           ; $32가 $0210 이상이면 페이지 대기 뒤 �
   글자를 그리는 코드(<code>$B7:9763</code>)는 코드 범위를 보고 어느 폰트를 읽을지 고릅니다. v1.1은 그중 0x7F0 이상
   코드를 맡는 갈림길(<code>$B7:97BC</code>, 파일 <code>0x1B97BC</code>)의 4바이트를 "새 코드로 가라" 는 명령으로
   덮어썼습니다. 원래 코드 중간에 새 코드를 끼워 넣는 이 방법을 후킹이라고 합니다(
-  <a href={guide('snes', 'hooking', 'jump')}>6장 JSL과 RTL</a>).
+  <a href={guide('sfc', 'hooking', 'jump')}>6장 JSL과 RTL</a>).
 </p>
 <ul class="byte-strip" aria-label="일본판 38 E9 F0 07, v1.1 5C 00 FA B7">
   <li>
@@ -1371,7 +1371,7 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   세이브 장면 대사 12개와 전투 외침 7개는 표가 없습니다. <code>$81</code> 뱅크 코드의 <code>LDA #$xxxx</code> 피연산자가
   곧 문자열 주소라, 문자열을 옮기면 그 명령의 둘째·셋째 바이트를 고칩니다. 도구에는 피연산자 위치(파일{' '}
   <code>0xD85A</code>, <code>0xE300</code> 등)를 목록으로 적어 두었습니다. 이런 포인터는{' '}
-  <a href={guide('snes', 'text', 'pointers')}>8장 포인터 표</a> 아래 「더 깊이」에서도 다룹니다.
+  <a href={guide('sfc', 'text', 'pointers')}>8장 포인터 표</a> 아래 「더 깊이」에서도 다룹니다.
 </p>
 
 <h3>한 칸에 눌러 그린 두 음절</h3>
@@ -1598,7 +1598,7 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   )는 이 다섯 자리를 다·동·레·렉·저로 적고 있어서, v1.2는 그 글자로 다시 그렸습니다. 폭 8px, 1px 획, 그림자 없음으로
   이웃 글자와 같은 방식입니다. 같은 자리를 쓰는 이름 입력 글자판에서 같은 모양이 두 칸 나오지 않게 됐고, 엔딩 스태프
   「디러터」는 원래 뜻대로 「디렉터」가 됐습니다. 그림을 바꾸는 방법은{' '}
-  <a href={guide('snes', 'graphics', 'tiles')}>7장 화면은 8×8 타일을 이어 붙인 그림</a>과 같습니다.
+  <a href={guide('sfc', 'graphics', 'tiles')}>7장 화면은 8×8 타일을 이어 붙인 그림</a>과 같습니다.
 </p>
 <ScreenPair
   shots={[
@@ -1705,8 +1705,8 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
 <p>
   v1.1이 가리키는 <code>$AD:93FA</code>에는 끝 표시 <code>00 00</code>만 있습니다. 같은 0xC0번 장면에서 B를 두 번 눌러
   게임으로 돌아오는 것을 확인했습니다. 표 끝의 숨은 항목처럼 포인터가 아닌 값을 포인터로 읽는 곳은{' '}
-  <a href={guide('snes', 'text', 'pointers')}>8장 포인터 표</a>를 읽을 때도 조심할 점입니다. 장면마다 같은 입력을 넣어
-  재현한 방법은 <a href={guide('snes', 'emulator', 'lua')}>12장 Lua로 확인을 자동으로</a>에 있습니다.
+  <a href={guide('sfc', 'text', 'pointers')}>8장 포인터 표</a>를 읽을 때도 조심할 점입니다. 장면마다 같은 입력을 넣어
+  재현한 방법은 <a href={guide('sfc', 'emulator', 'lua')}>12장 Lua로 확인을 자동으로</a>에 있습니다.
 </p>
 
 <ToolFiles patch={patch} items={toolsFor('event-list')} />
@@ -1724,7 +1724,7 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
 <p>
   리셋 뒤 계속 도는 루프의 한 부분(<code>$80:8061</code>, 파일 <code>0x61</code>)을 보겠습니다. 어셈블리는 CPU가
   실행하는 명령을 사람이 읽는 이름으로 적은 것이고, 롬 안에서는 그냥 바이트입니다(
-  <a href={guide('snes', 'assembly', 'branch')}>5장 분기와 반복</a>).
+  <a href={guide('sfc', 'assembly', 'branch')}>5장 분기와 반복</a>).
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -1806,18 +1806,18 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
 </ul>
 <p>
   "어디서 읽나" 를 잡는 감시와 같은 입력을 되풀이하는 스크립트는{' '}
-  <a href={guide('snes', 'emulator', 'breakpoints')}>12장 중단점</a>과{' '}
-  <a href={guide('snes', 'emulator', 'lua')}>Lua로 확인을 자동으로</a>에서 다룹니다. 각성편도 같은 방법으로
-  확인했습니다(<a href={kakusei('making-testing')}>각성편 노트의 확인 절</a>).
+  <a href={guide('sfc', 'emulator', 'breakpoints')}>12장 중단점</a>과{' '}
+  <a href={guide('sfc', 'emulator', 'lua')}>Lua로 확인을 자동으로</a>에서 다룹니다. 각성편도 같은 방법으로 확인했습니다(
+  <a href={kakusei('making-testing')}>각성편 노트의 확인 절</a>).
 </p>
 
 <h3>여러 에뮬레이터에서 같은 입력</h3>
 <p>
   libretro 코어를 직접 불러 쓰는 작은 프로그램으로 같은 입력을 여러 에뮬레이터에 넣었습니다(
-  <a href={guide('snes', 'emulator', 'cores')}>12장 여러 에뮬레이터에서 같은 입력 돌리기</a>). 새 게임은 이름 입력부터
-  첫 장면과 필드까지 1만 6천 프레임, 이어하기는 v1.0에서 만든 세이브를 불러 대사가 이어지는 데까지 봤습니다. 롬은
-  일본판, v1.0, v1.1, v1.2와 헤더 붙은 v1.1·v1.2 여섯 가지입니다. v1.2는 이름 입력 글자판 다섯 칸이 바뀐 것 말고는 모든
-  코어에서 v1.1과 같은 화면이었습니다.
+  <a href={guide('sfc', 'emulator', 'cores')}>12장 여러 에뮬레이터에서 같은 입력 돌리기</a>). 새 게임은 이름 입력부터 첫
+  장면과 필드까지 1만 6천 프레임, 이어하기는 v1.0에서 만든 세이브를 불러 대사가 이어지는 데까지 봤습니다. 롬은 일본판,
+  v1.0, v1.1, v1.2와 헤더 붙은 v1.1·v1.2 여섯 가지입니다. v1.2는 이름 입력 글자판 다섯 칸이 바뀐 것 말고는 모든 코어에서
+  v1.1과 같은 화면이었습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -1844,14 +1844,14 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
 </p>
 <Deeper title="직접 돌려 보기: 명령">
   <p>디버그 메뉴를 연 롬과 패치 소스의 Lua 스크립트로 시나리오 $10을 돌리고 이벤트 표 문제를 재현하는 명령입니다.</p>
-  <pre tabindex="0"><code>export LIBDIR=$(krpatch snes lua)
+  <pre tabindex="0"><code>export LIBDIR=$(krpatch sfc lua)
 TARGET=10 SHOTS=1 SHOT_DIR=out Mesen --testrunner debug.smc lua/scenario.lua
 TARGET=c0 SHOT_DIR=out Mesen --testrunner debug.smc lua/eventlist.lua
 python3 tools/pages1.py out 0142          # 대사 0142의 페이지마다 완성된 프레임
 python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</code></pre>
   <p>
     디버그 메뉴를 부르는 코드를 툴킷 역어셈블러로 읽으면 위 표가 그대로 나옵니다:{' '}
-    <code>krpatch snes dis super-gokuden-jp.smc 808061 3 --mapper lorom</code>.
+    <code>krpatch sfc dis super-gokuden-jp.smc 808061 3 --mapper lorom</code>.
   </p>
 </Deeper>
 
@@ -1868,9 +1868,9 @@ python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</
 <h3>확인하지 않은 것</h3>
 <ul class="notes">
   <li>
-    실제 슈퍼 패미컴과 플래시 카트리지에서 돌려 본 기록은 없습니다. 에뮬레이터 결과는 <a href="#making-testing">9절</a>
-    에 있고, 실기에서만 드러나는 문제는{' '}
-    <a href={guide('snes', 'emulator', 'hardware')}>12장 실기에서만 알 수 있는 것</a>을 보세요.
+    실제 슈퍼 패미콤과 플래시 카트리지에서 돌려 본 기록은 없습니다. 에뮬레이터 결과는 <a href="#making-testing">9절</a>
+    에 있고, 실기에서만 드러나는 문제는 <a href={guide('sfc', 'emulator', 'hardware')}>12장 실기에서만 알 수 있는 것</a>
+    을 보세요.
   </li>
   <li>
     창 정보 첫 바이트가 FE인 대사 347줄은 얼굴 창과 같은 128px로 잡히지만, 얼굴 그림을 부르는 루틴을 건너뛴다는 것만

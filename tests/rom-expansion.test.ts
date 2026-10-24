@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { cells, mapperFor, report } from '../src/components/romhacking/rom-expansion.ts';
-import { computeChecksum } from '../src/lib/snes-header.ts';
-import { MAPPERS } from '../src/lib/snes-mapper.ts';
+import { computeChecksum } from '../src/lib/sfc-header.ts';
+import { MAPPERS } from '../src/lib/sfc-mapper.ts';
 
 const MB = 0x100000;
 const kinds = (list: ReturnType<typeof cells>) => list.map(c => c.kind[0]).join('');

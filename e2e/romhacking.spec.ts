@@ -25,16 +25,16 @@ const first = (list: ReturnType<typeof readyChapters>) => {
 };
 const NUMBERS = '/games/romhacking/numbers/';
 const ENDIAN = '/games/romhacking/endian/';
-const BANKS = '/games/romhacking/snes/banks/';
-const CPU = '/games/romhacking/snes/cpu/';
-const ASSEMBLY = '/games/romhacking/snes/assembly/';
-const HOOKING = '/games/romhacking/snes/hooking/';
-const GRAPHICS = '/games/romhacking/snes/graphics/';
+const BANKS = '/games/romhacking/sfc/banks/';
+const CPU = '/games/romhacking/sfc/cpu/';
+const ASSEMBLY = '/games/romhacking/sfc/assembly/';
+const HOOKING = '/games/romhacking/sfc/hooking/';
+const GRAPHICS = '/games/romhacking/sfc/graphics/';
 const LZSS = '/games/romhacking/lzss/';
 const HUFFMAN = '/games/romhacking/huffman/';
-const EXPANSION = '/games/romhacking/snes/expansion/';
-const EMULATOR = '/games/romhacking/snes/emulator/';
-const SOUND = '/games/romhacking/snes/sound/';
+const EXPANSION = '/games/romhacking/sfc/expansion/';
+const EMULATOR = '/games/romhacking/sfc/emulator/';
+const SOUND = '/games/romhacking/sfc/sound/';
 const MUSIC = '/games/romhacking/music-loop/';
 
 const noHorizontalOverflow = async (page: Page) =>
@@ -109,11 +109,11 @@ test('chapters key comments by their own path and link the patch notes and toolk
   await expect(page.locator('#waline')).toHaveAttribute('data-path', BANKS);
   await expect(
     page.locator(
-      '.guide-links a[href="/games/romhacking/snes/notes/dragon-ball-z-super-gokuden-totsugeki/#making-dialogue"]',
+      '.guide-links a[href="/games/romhacking/sfc/notes/dragon-ball-z-super-gokuden-totsugeki/#making-dialogue"]',
     ),
   ).toHaveCount(1);
   await expect(
-    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/README.ko.md#snes-dis"]'),
+    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.4.0/README.ko.md#sfc-dis"]'),
   ).toHaveCount(1);
 });
 
@@ -282,10 +282,10 @@ test('tile painting widget paints pixels with the keyboard and reads typed bytes
 test('the hooking chapter links the word-wrap note and the toolkit', async ({ page }) => {
   await page.goto(HOOKING);
   await expect(
-    page.locator('.guide-links a[href="/games/romhacking/snes/notes/otogirisou/#making-wordwrap"]'),
+    page.locator('.guide-links a[href="/games/romhacking/sfc/notes/otogirisou/#making-wordwrap"]'),
   ).toHaveCount(1);
   await expect(
-    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/README.ko.md#snes-dis"]'),
+    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.4.0/README.ko.md#sfc-dis"]'),
   ).toHaveCount(1);
 });
 
@@ -501,7 +501,7 @@ test('ROM expansion widget redraws banks, the size byte and the checksum note', 
 
 for (const patch of KR_PATCHES) {
   test(`${patch.title} ROM analysis note lives in the guide and links both ways`, async ({ page }) => {
-    const note = `/games/romhacking/snes/notes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/`;
+    const note = `/games/romhacking/sfc/notes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/`;
     await page.goto(`${patch.path}/`);
     const read = page.locator('#making').getByRole('link', { name: '노트 읽기' });
     await expect(read).toHaveAttribute('href', note);
@@ -524,7 +524,7 @@ for (const patch of KR_PATCHES) {
     await expect(making.getByRole('link', { name: 'kr-patch-toolkit' })).toHaveAttribute('href', KR_PATCH_TOOLKIT_URL);
     await expect(making.getByRole('link', { name: /롬 분석 문서/ })).toHaveAttribute(
       'href',
-      new RegExp(`/blob/[^/]+-v${patch.version.replace('.', '\\.')}/snes/.+/docs/ANALYSIS\\.md$`),
+      new RegExp(`/blob/[^/]+-v${patch.version.replace('.', '\\.')}/sfc/.+/docs/ANALYSIS\\.md$`),
     );
     for (const img of await page.locator('.note-body img').all()) {
       await img.scrollIntoViewIfNeeded();
@@ -765,8 +765,8 @@ test('seam widget moves its cursor without animation for reduced motion and neve
   await expect(page.locator('[data-seam-lab]').getByRole('button', { name: '들어 보기' })).toBeVisible();
 });
 
-const TEXT = '/games/romhacking/snes/text/';
-const SMRPG_NOTE = '/games/romhacking/snes/notes/super-mario-rpg/';
+const TEXT = '/games/romhacking/sfc/text/';
+const SMRPG_NOTE = '/games/romhacking/sfc/notes/super-mario-rpg/';
 
 test('wide screens keep the contents beside the body and mark the section being read', async ({ page }) => {
   await page.setViewportSize({ width: 1600, height: 900 });
@@ -910,7 +910,7 @@ test('the trail opens a menu at each step and moves between the guide and the no
     .getByRole('link', { name: /^돌격편: / })
     .first()
     .click();
-  await expect(page).toHaveURL(/\/games\/romhacking\/snes\/notes\/dragon-ball-z-super-gokuden-totsugeki\/#making-/);
+  await expect(page).toHaveURL(/\/games\/romhacking\/sfc\/notes\/dragon-ball-z-super-gokuden-totsugeki\/#making-/);
 
   await crumbs(page).getByRole('button', { name: '롬 분석 노트 펼치기' }).click();
   const notes = crumbs(page).locator('.gcrumb-menu:visible');
@@ -922,7 +922,7 @@ test('the trail opens a menu at each step and moves between the guide and the no
     .getByRole('link', { name: /^\d+장 / })
     .first()
     .click();
-  await expect(page).toHaveURL(/\/games\/romhacking\/(snes\/)?[a-z-]+\/$/);
+  await expect(page).toHaveURL(/\/games\/romhacking\/(sfc\/)?[a-z-]+\/$/);
 
   await crumbs(page).getByRole('button', { name: '롬 해킹 펼치기' }).click();
   await crumbs(page)

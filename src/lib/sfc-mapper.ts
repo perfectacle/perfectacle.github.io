@@ -1,7 +1,7 @@
 /**
- * SNES CPU address ↔ headerless ROM file offset, ported from kr-patch-toolkit (`kr_patch/snes/mapper.py`) so the
+ * SFC CPU address ↔ headerless ROM file offset, ported from kr-patch-toolkit (`kr_patch/sfc/mapper.py`) so the
  * guide's bank map shows the numbers the toolkit commands use. Keep the formulas identical to the toolkit:
- * `tests/snes-mapper.test.ts` runs the toolkit's own cases.
+ * `tests/sfc-mapper.test.ts` runs the toolkit's own cases.
  *
  * `toOffset` is permissive like the toolkit: it masks the address the way the board decodes it and does not reject
  * addresses that land on RAM or I/O. `region` says what the console actually puts at an address.

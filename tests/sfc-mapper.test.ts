@@ -10,10 +10,10 @@ import {
   parseOffset,
   region,
   type Mapper,
-} from '../src/lib/snes-mapper.ts';
+} from '../src/lib/sfc-mapper.ts';
 
 // Copied from kr-patch-toolkit tests/test_rom.py (test_mapper_to_offset, test_mapper_round_trip) so the guide's
-// bank map gives the same answers as `krpatch snes dis --mapper ...`.
+// bank map gives the same answers as `krpatch sfc dis --mapper ...`.
 const TOOLKIT_CASES: [Mapper, [number, number][]][] = [
   [
     LOROM,

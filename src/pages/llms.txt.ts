@@ -27,7 +27,7 @@ export async function GET() {
 ## 한글패치
 
 - [한글패치 목록](${SITE.url}/games/kr-patches/): 일본어로만 나온 게임의 한국어 패치
-${KR_PATCHES.map(p => `- [${p.title} 한글패치](${SITE.url}${p.path}/): 일본판 슈퍼 패미컴 게임 파일을 고르면 브라우저에서 한글패치(v${p.version})를 적용해 저장한다`).join('\n')}
+${KR_PATCHES.map(p => `- [${p.title} 한글패치](${SITE.url}${p.path}/): 일본판 슈퍼 패미콤 게임 파일을 고르면 브라우저에서 한글패치(v${p.version})를 적용해 저장한다`).join('\n')}
 - [롬 해킹 기초](${SITE.url}/games/romhacking/): 한글패치를 만든 지식을 16진수·엔디안·65c816·뱅크·어셈블리 순서로 처음부터 설명하는 가이드
 
 ## 카테고리

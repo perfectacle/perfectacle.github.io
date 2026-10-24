@@ -1,5 +1,5 @@
 /**
- * Input scripts of `krpatch snes run`, ported from kr-patch-toolkit (`kr_patch/snes/script.py`) so the guide's script
+ * Input scripts of `krpatch sfc run`, ported from kr-patch-toolkit (`kr_patch/sfc/script.py`) so the guide's script
  * reader accepts and rejects exactly what the toolkit does. Error messages are the toolkit's own, word for word, and
  * `tests/run-script.test.ts` checks every case in `tests/fixtures/krpatch-run-scripts.json`, which the toolkit's parser
  * produced.
@@ -158,7 +158,7 @@ function buttons(spec: string, n: number): number[] {
   return [...ids].sort((x, y) => x - y);
 }
 
-/** Parses a script the way `kr_patch.snes.script.parse` does, throwing ScriptError with the toolkit's message. */
+/** Parses a script the way `kr_patch.sfc.script.parse` does, throwing ScriptError with the toolkit's message. */
 export function parseScript(text: string): RunScript {
   const commands: ScriptCommand[] = [];
   let end: bigint | undefined;

@@ -142,7 +142,7 @@ test('the patch hub lets you pick Super Famicom and keeps Nintendo DS locked', a
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(HUB);
   const menu = page.getByRole('navigation', { name: '기종 고르기' });
-  const sfc = menu.getByRole('link', { name: /슈퍼 패미컴/ });
+  const sfc = menu.getByRole('link', { name: /슈퍼 패미콤/ });
   await expect(sfc).toHaveAttribute('href', CATALOGUE);
   const nds = menu.locator('[aria-disabled="true"]');
   await expect(nds).toContainText('닌텐도 DS');
@@ -167,7 +167,7 @@ test('choosing Super Famicom switches the monitor off before opening its list', 
   await page.keyboard.press('Escape');
   await page
     .getByRole('navigation', { name: '기종 고르기' })
-    .getByRole('link', { name: /슈퍼 패미컴/ })
+    .getByRole('link', { name: /슈퍼 패미콤/ })
     .click();
   await expect(page.locator('.system.is-chosen')).toHaveCount(1);
   await expect(page).toHaveURL(CATALOGUE);
@@ -430,7 +430,7 @@ for (const [width, visible] of [
     await page.setViewportSize({ width, height: 900 });
     await page.goto(CATALOGUE);
     const heading = page.locator('.console-heading');
-    await expect(heading.getByRole('heading', { level: 1, name: '슈퍼 패미컴' })).toBeVisible();
+    await expect(heading.getByRole('heading', { level: 1, name: '슈퍼 패미콤' })).toBeVisible();
     await expect(heading.getByRole('link', { name: '기종 고르기' })).toHaveAttribute('href', HUB);
     const controller = heading.locator('svg.sfc-controller');
     if (visible) await expect(controller).toBeVisible();
@@ -800,7 +800,7 @@ for (const patch of KR_PATCHES) {
     await expect(making.locator('details')).toHaveCount(0);
     await expect(making.getByRole('link', { name: '노트 읽기' })).toHaveAttribute(
       'href',
-      `/games/romhacking/snes/notes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/`,
+      `/games/romhacking/sfc/notes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/`,
     );
     expect(await page.locator('a[href$=".zip"]').count()).toBe(0);
   });
@@ -962,7 +962,7 @@ for (const path of [HUB, CATALOGUE, ...KR_PATCHES.map(patch => `${patch.path}/`)
 test('tab titles name each page once before the site name', async ({ page }) => {
   const titles: [string, string][] = [
     [HUB, '한글패치'],
-    [CATALOGUE, '슈퍼 패미컴 | 한글패치'],
+    [CATALOGUE, '슈퍼 패미콤 | 한글패치'],
     ...KR_PATCHES.map(patch => [`${patch.path}/`, `${patch.title} | 한글패치`] as [string, string]),
   ];
   for (const [path, title] of titles) {
@@ -972,7 +972,7 @@ test('tab titles name each page once before the site name', async ({ page }) => 
   // A shared card shows no site name in some messengers, so its title still says what the page offers.
   const cards: [string, string][] = [
     [HUB, '한글패치'],
-    [CATALOGUE, '슈퍼 패미컴 | 한글패치'],
+    [CATALOGUE, '슈퍼 패미콤 | 한글패치'],
     [OTOGIRI, `${OTOGIRISOU_PATCH.title} 한글패치`],
   ];
   for (const [path, title] of cards) {

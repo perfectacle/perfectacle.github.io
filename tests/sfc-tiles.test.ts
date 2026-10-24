@@ -10,9 +10,9 @@ import {
   shadowed,
   tileSize,
   type Bpp,
-} from '../src/lib/snes-tiles.ts';
+} from '../src/lib/sfc-tiles.ts';
 
-// Cases copied from kr-patch-toolkit tests/test_gfx.py so the tile widget reads bytes the way `krpatch snes tiles`
+// Cases copied from kr-patch-toolkit tests/test_gfx.py so the tile widget reads bytes the way `krpatch sfc tiles`
 // does.
 
 /** A diagonal with every colour index of the depth (the toolkit's `_pattern`). */
@@ -54,7 +54,7 @@ describe('toolkit cases', () => {
   });
 });
 
-// Bytes printed by kr_patch.snes.tiles.encode for the guide's sample glyph.
+// Bytes printed by kr_patch.sfc.tiles.encode for the guide's sample glyph.
 test('the sample glyph encodes like the toolkit', () => {
   const pix = shadowed(SAMPLE_GLYPH);
   expect(pix.map(r => r.join(''))).toEqual([

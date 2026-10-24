@@ -1,4 +1,4 @@
-import { MAPPERS, hex, region, type MapperName, type RegionArea } from '../../lib/snes-mapper.ts';
+import { MAPPERS, hex, region, type MapperName, type RegionArea } from '../../lib/sfc-mapper.ts';
 
 export const MAPPER_LABEL: Record<MapperName, string> = {
   lorom: 'LoROM',

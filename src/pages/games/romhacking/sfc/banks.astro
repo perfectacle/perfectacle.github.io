@@ -28,7 +28,7 @@ const references = [
     note: 'LoROM·HiROM 지도 그림',
   },
   {
-    href: toolkitFileUrl('src/kr_patch/snes/mapper.py'),
+    href: toolkitFileUrl('src/kr_patch/sfc/mapper.py'),
     label: 'kr-patch-toolkit, mapper.py',
     note: '「CPU 주소 → 파일 오프셋 계산기」가 옮겨 온 변환 공식(같은 테스트 사례로 확인)',
   },
@@ -45,7 +45,7 @@ const systemAreas = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="banks" references={references}>
+<GuideChapter platform="sfc" slug="banks" references={references}>
   <h2 id="books">
     뱅크: 주소를 64KB씩 나눈 묶음 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
@@ -210,8 +210,8 @@ const systemAreas = [
     <code>$C1:2345</code>라면 ($C1 − $C0) × $10000 + $2345 = 파일 <code>0x012345</code>입니다.
   </p>
   <p>
-    아래 계산기는 kr-patch-toolkit의 <code>krpatch snes dis</code>와 같은 공식을 쓰고, 툴킷의 테스트 사례로 결과가
-    같은지 확인했습니다. 다른 뱅크 번호와 주소도 넣어 보세요.
+    아래 계산기는 kr-patch-toolkit의 <code>krpatch sfc dis</code>와 같은 공식을 쓰고, 툴킷의 테스트 사례로 결과가 같은지
+    확인했습니다. 다른 뱅크 번호와 주소도 넣어 보세요.
   </p>
   <BankMap />
 
@@ -376,10 +376,10 @@ const systemAreas = [
   <p>
     역어셈블러에는 CPU 주소를 줍니다. 매핑은 헤더를 읽어 고르고(<code>auto</code>), 직접 정할 수도 있습니다.
   </p>
-  <pre tabindex="0"><code>krpatch snes dis game.sfc 81AC4C 20 --mapper lorom --m16   # 돌격편: 16비트 대사 ID로 뱅크를 고르는 루틴
-krpatch snes dis smrpg.sfc C08000 --mapper sa1</code></pre>
+  <pre tabindex="0"><code>krpatch sfc dis game.sfc 81AC4C 20 --mapper lorom --m16   # 돌격편: 16비트 대사 ID로 뱅크를 고르는 루틴
+krpatch sfc dis smrpg.sfc C08000 --mapper sa1</code></pre>
   <p>Python에서는 매핑 객체로 두 방향 변환을 할 수 있습니다.</p>
-  <pre tabindex="0"><code>&gt;&gt;&gt; from kr_patch.snes import mapper
+  <pre tabindex="0"><code>&gt;&gt;&gt; from kr_patch.sfc import mapper
 &gt;&gt;&gt; lo = mapper.LoROM()
 &gt;&gt;&gt; hex(lo.to_offset(0xA8800C))
 '0x14000c'

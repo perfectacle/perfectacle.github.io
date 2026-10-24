@@ -78,8 +78,8 @@ const references = [
     note: 'SPC 파일: 0x100바이트 머리(SPC700 레지스터, ID666 태그), 0x100부터 64KB RAM, 0x10100부터 DSP 레지스터 128바이트, 0x101C0부터 IPL 자리 RAM 64바이트',
   },
   {
-    href: toolkitFileUrl('src/kr_patch/snes/lua/probe/apuports.lua'),
-    label: 'kr-patch-toolkit 0.2.0, snes/lua/probe의 apuports.lua, voices.lua, calls.lua',
+    href: toolkitFileUrl('src/kr_patch/sfc/lua/probe/apuports.lua'),
+    label: 'kr-patch-toolkit 0.4.0, sfc/lua/probe의 apuports.lua, voices.lua, calls.lua',
     note: '이 장의 기록을 남긴 방법. 이 장의 각성편 기록은 같은 방식의 이전 스크립트로 남긴 것입니다',
   },
   {
@@ -88,10 +88,10 @@ const references = [
     note: '대본의 소리 코드({39}–{3D})를 처리하는 게임 코드가 $00:CD60·$00:CD69·$00:CD45·$00:CD4E를 부르는 모양',
   },
 ];
-const ASSEMBLY = chapterPath(chapterBySlug('snes', 'assembly'));
-const BANKS = chapterPath(chapterBySlug('snes', 'banks'));
-const HOOKING = chapterPath(chapterBySlug('snes', 'hooking'));
-const EMULATOR = chapterPath(chapterBySlug('snes', 'emulator'));
+const ASSEMBLY = chapterPath(chapterBySlug('sfc', 'assembly'));
+const BANKS = chapterPath(chapterBySlug('sfc', 'banks'));
+const HOOKING = chapterPath(chapterBySlug('sfc', 'hooking'));
+const EMULATOR = chapterPath(chapterBySlug('sfc', 'emulator'));
 const NUMBERS = chapterPath(chapterBySlug('common', 'numbers'));
 const ENDIAN = chapterPath(chapterBySlug('common', 'endian'));
 const LZSS = chapterPath(chapterBySlug('common', 'lzss'));
@@ -142,12 +142,12 @@ const probes = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="sound" references={references}>
+<GuideChapter platform="sfc" slug="sound" references={references}>
   <h2 id="two-cpus">
     소리는 따로 도는 작은 컴퓨터가 냅니다 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    지금까지 본 65c816(S-CPU)은 게임 코드를 돌리고 화면을 그리게 하지만, 소리를 직접 내지는 못합니다. 슈퍼 패미컴 안에는
+    지금까지 본 65c816(S-CPU)은 게임 코드를 돌리고 화면을 그리게 하지만, 소리를 직접 내지는 못합니다. 슈퍼 패미콤 안에는
     소리만 맡는 작은 컴퓨터가 따로 있습니다. 이 묶음을 흔히 APU(오디오 처리 장치)라고 부르고, 안에는 셋이 들어 있습니다.
   </p>
   <ul>
@@ -172,7 +172,7 @@ const probes = [
   </p>
   <Figure caption="S-CPU는 포트 네 개로만 소리 쪽과 이어집니다. ARAM과 S-DSP는 소리 쪽 안에 있습니다." max={560}>
     <svg viewBox="0 0 360 340" role="img" aria-labelledby="apu-t apu-d">
-      <title id="apu-t">슈퍼 패미컴의 소리 구조</title>
+      <title id="apu-t">슈퍼 패미콤의 소리 구조</title>
       <desc id="apu-d">
         S-CPU와 롬이 위에 있다. S-CPU는 포트 $2140–$2143에 쓰고 읽는다. 포트의 다른 쪽은 SPC700에서 $F4–$F7로 보인다.
         SPC700은 64KB ARAM에 있는 사운드 드라이버를 실행하고 S-DSP 레지스터를 바꾼다. S-DSP는 ARAM의 샘플과 에코 버퍼를
@@ -714,7 +714,7 @@ const probes = [
   </h2>
   <p>
     kr-patch-toolkit 0.2.0에는 이 장의 기록을 남기는 Mesen 2 Lua 스크립트 세 개가 들어 있습니다. 모두 버튼 입력은{' '}
-    <a href={toolkitFileUrl('src/kr_patch/snes/lua/boot.lua')}>
+    <a href={toolkitFileUrl('src/kr_patch/sfc/lua/boot.lua')}>
       <code>boot.lua</code>
     </a>
     로 처리하므로, 게임을 켜고 정한 프레임(<code>MAXF</code>, 기본 1500)까지 돌린 뒤 <code>SHOT_DIR</code>에 결과를
@@ -751,7 +751,7 @@ const probes = [
       </tbody>
     </table>
   </div>
-  <pre tabindex="0"><code>$ L=$(krpatch snes lua)
+  <pre tabindex="0"><code>$ L=$(krpatch sfc lua)
 $ mkdir -p out/apu
 $ LIBDIR=$L SHOT_DIR=$PWD/out/apu MAXF=600 EVERY=0 \
     Mesen --testrunner $PWD/game.sfc $L/probe/apuports.lua
@@ -763,10 +763,10 @@ $ head -4 out/apu/apuports.txt</code></pre>
     <code>프레임 주소 값 PB:PC</code>이고, PC는 위 도구에서 본 것처럼 쓴 명령의 다음 주소입니다. 그 주소로 롬을
     역어셈블합니다.
   </p>
-  <pre tabindex="0"><code>$ krpatch snes dis game.sfc 838000 20</code></pre>
+  <pre tabindex="0"><code>$ krpatch sfc dis game.sfc 838000 20</code></pre>
   <p>
     곡 번호를 넘겨받는 함수의 주소를 찾았다면{' '}
-    <a href={toolkitFileUrl('src/kr_patch/snes/lua/probe/calls.lua')}>
+    <a href={toolkitFileUrl('src/kr_patch/sfc/lua/probe/calls.lua')}>
       <code>calls.lua</code>
     </a>
     로 불릴 때마다 A를 적어 봅니다. 여러 주소는 쉼표로 잇습니다.
@@ -778,13 +778,13 @@ $ LIBDIR=$L SHOT_DIR=$PWD/out/voices MAXF=3000 EVERY=0 VSTEP=6 \
   <p>
     <code>calls.txt</code>의 <code>ret=</code>은 스택에 있는 돌아갈 주소입니다. <code>JSL</code>로 들어왔을 때만 뱅크
     바이트가 의미가 있습니다(<a href={`${HOOKING}#jump`}>6장</a>).{' '}
-    <a href={toolkitFileUrl('src/kr_patch/snes/lua/probe/voices.lua')}>
+    <a href={toolkitFileUrl('src/kr_patch/sfc/lua/probe/voices.lua')}>
       <code>voices.lua</code>
     </a>
     는 Mesen 2가 상태에 담는 이름(
     <code>spc.dsp.voices[0].envVolume</code>)을 읽으므로, 이름이 다른 판에서는 그 사실을 알리며 멈춥니다. 스크립트마다
     받는 환경 변수는 파일 첫 줄들에 적혀 있고, 전체 목록은 툴킷 README의{' '}
-    <a href={`${TOOLKIT_README_KO}#${encodeURIComponent('snes-lua-mesen-2-스크립트')}`}>snes lua</a> 절에 있습니다.
+    <a href={`${TOOLKIT_README_KO}#${encodeURIComponent('sfc-lua-mesen-2mesence-스크립트')}`}>sfc lua</a> 절에 있습니다.
   </p>
   <p class="muted">
     이 장의 기록은 Mesen 2.1.1에서 툴킷 스크립트와 같은 방식의 이전 스크립트로 남긴 것입니다. 롬 주소는 각성편·제절초

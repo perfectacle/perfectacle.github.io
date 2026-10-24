@@ -2,7 +2,14 @@
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
-import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import {
+  KAKUSEI_PATCH,
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  TOTSUGEKI_PATCH,
+  patchFileUrl,
+  releaseTag,
+} from '../../../../lib/kr-patches.ts';
 import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
@@ -27,14 +34,14 @@ const references = [
     note: '네 패치가 쓴 65c816 어셈블러. org로 덮어쓸 주소를 정하고 assert로 범위를 확인합니다',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patches/blob/otogirisou-v1.2/snes/otogirisou/asm/wordwrap.asm',
+    href: patchFileUrl(OTOGIRISOU_PATCH, releaseTag(OTOGIRISOU_PATCH, '1.2'), 'asm/wordwrap.asm'),
     label: 'kr-patches, otogirisou/asm/wordwrap.asm',
     note: '이 장의 예제인 제절초 단어 단위 줄바꿈 후킹 소스',
   },
 ];
 ---
 
-<GuideChapter platform="snes" slug="hooking" references={references}>
+<GuideChapter platform="sfc" slug="hooking" references={references}>
   <h2 id="why">
     코드 사이에 끼워 넣을 수는 없다 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
@@ -769,19 +776,19 @@ WordWrap:
     일본판과 한글패치를 같은 주소에서 역어셈블해 비교하면 후킹 지점이 바로 보입니다. 아래는 제절초 일본판과 한글패치
     v1.2를 툴킷으로 읽은 결과입니다.
   </p>
-  <pre tabindex="0"><code>$ krpatch snes dis otogirisou.sfc 00A777 4 --mapper lorom --m16 --x16
+  <pre tabindex="0"><code>$ krpatch sfc dis otogirisou.sfc 00A777 4 --mapper lorom --m16 --x16
 00:A777  c2 30        REP #$30
 00:A779  18           CLC
 00:A77A  ad 83 1a     LDA $1A83
 00:A77D  6d 7f 1a     ADC $1A7F
 
-$ krpatch snes dis otogirisou-k.sfc 00A777 4 --mapper lorom --m16 --x16
+$ krpatch sfc dis otogirisou-k.sfc 00A777 4 --mapper lorom --m16 --x16
 00:A777  22 00 80 1e  JSL $1E8000
 00:A77B  ea           NOP
 00:A77C  ea           NOP
 00:A77D  6d 7f 1a     ADC $1A7F
 
-$ krpatch snes dis otogirisou-k.sfc 1E80B2 4 --mapper lorom --m16 --x16
+$ krpatch sfc dis otogirisou-k.sfc 1E80B2 4 --mapper lorom --m16 --x16
 1E:80B2  c2 30        REP #$30
 1E:80B4  18           CLC
 1E:80B5  ad 83 1a     LDA $1A83

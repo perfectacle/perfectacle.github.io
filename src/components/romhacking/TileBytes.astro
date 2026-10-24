@@ -1,6 +1,6 @@
 ---
 import { toBinary, toHex } from '../../lib/numbers.ts';
-import { SAMPLE_GLYPH, encode, planeBits, planeByte, previewColor, shadowed } from '../../lib/snes-tiles.ts';
+import { SAMPLE_GLYPH, encode, planeBits, planeByte, previewColor, shadowed } from '../../lib/sfc-tiles.ts';
 
 // The page starts on the 2bpp sample glyph; scripts take over from the same numbers.
 const bpp = 2;
@@ -156,7 +156,7 @@ const formats = [
     shadowed,
     tileSize,
     type Bpp,
-  } from '../../lib/snes-tiles.ts';
+  } from '../../lib/sfc-tiles.ts';
 
   const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?: string) => {
     const e = document.createElement(tag);

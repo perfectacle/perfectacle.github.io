@@ -7,8 +7,8 @@ import {
   roundUpPow2,
   sizeByte,
   sizeOfByte,
-} from '../src/lib/snes-header.ts';
-import { MAPPERS } from '../src/lib/snes-mapper.ts';
+} from '../src/lib/sfc-header.ts';
+import { MAPPERS } from '../src/lib/sfc-mapper.ts';
 
 const MB = 0x100000;
 const KB = 0x400;
@@ -61,7 +61,7 @@ const noise = (size: number) => {
   return out;
 };
 
-// Values printed by kr_patch.snes.header.checksum and header.compute for those bytes.
+// Values printed by kr_patch.sfc.header.checksum and header.compute for those bytes.
 test.each([
   [512 * KB, 'lorom', 0xf530, 0xf4ab],
   [1536 * KB, 'lorom', 0x08c0, 0x083b],
