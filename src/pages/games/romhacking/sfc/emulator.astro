@@ -205,7 +205,9 @@ const cores = [
   <p>
     이 장은 네 한글패치에서 주로 쓴 Mesen 2를 예로 듭니다. 디버거와 Lua 스크립트가 함께 들어 있는 에뮬레이터입니다. 원래
     저장소는 2.1.1(2025년 7월)이 마지막 판이고 2026년 6월 보관되었으며, 지금은 MesenCE라는 이름으로 이어서 개발되고
-    있습니다. 이 장의 메뉴 이름과 Lua 함수는 패치를 만들 때 쓴 2.1.1 기준입니다.
+    있습니다. 이 장의 메뉴 이름과 Lua 함수는 패치를 만들 때 쓴 2.1.1 기준입니다. MesenCE 2.2.1에서도 이 장의 Lua
+    스크립트와 네 패치의 확인을 다시 돌려 같은 결과를 얻었습니다. 실행 파일 이름이 그대로 <code>Mesen</code>이라 명령도
+    같고, 설정과 세이브는 <code>MesenCE</code> 폴더에 따로 둡니다.
   </p>
 
   <h2 id="breakpoints">
@@ -410,6 +412,20 @@ const cores = [
           <code>script.lua</code>
         </a>
         는 <code>WATCH_WRAM</code>을 씁니다.
+      </li>
+      <li>
+        <strong>두 실행을 비교할 때는 켤 때 RAM 값을 고정합니다.</strong> 기본값이 무작위라 같은 판으로 다시 돌려도 수천
+        프레임 뒤의 결과가 갈릴 수 있습니다. 설정 파일은 그대로 두고 명령줄에{' '}
+        <code>--snes.ramPowerOnState=AllZeros --snes.enableRandomPowerOnState=false</code>를 붙이면 그 실행만 0으로
+        채웁니다.
+      </li>
+      <li>
+        <strong>프레임 끝에서 찍은 스크린샷은 가끔 한 프레임 전 화면입니다.</strong> 같은 세이브스테이트에서 다시 찍어도
+        생겨서, 판정은 화면보다 메모리 덤프나 대사 ID 기록으로 하는 편이 확실합니다.
+      </li>
+      <li>
+        <strong>세이브스테이트는 Mesen 2에서 만듭니다.</strong> Mesen 2가 만든 상태는 MesenCE에서 그대로 불러와지지만,
+        MesenCE가 만든 상태를 Mesen 2에서 불러오면 결과가 달라졌습니다.
       </li>
     </ul>
   </Deeper>

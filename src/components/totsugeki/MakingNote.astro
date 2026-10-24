@@ -341,6 +341,11 @@ const regression = [
 
 const emulators = [
   { name: 'Mesen 2', result: '정상. 이어하기에서 나온 대사 ID 순서가 일본판·v1.0·v1.1·v1.2(헤더 있음/없음) 모두 같음' },
+  {
+    name: 'MesenCE 2.2.1',
+    result:
+      '정상. 새 게임·이어하기, 디버그 시나리오 64개, 이벤트 표 문제 재현, 엔딩 암호에서 대사 ID 기록이 Mesen 2와 같음',
+  },
   { name: 'bsnes, bsnes-hd beta', result: '정상' },
   { name: 'snes9x, snes9x2010', result: '정상. snes9x2010도 이어하기 대사 ID 순서가 여섯 롬 모두 같음' },
   {
@@ -1838,7 +1843,7 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   </table>
 </div>
 <p>
-  Mesen-S를 뺀 여섯 개 모두 멈추거나 화면이 깨진 곳은 없었습니다. 헤더 있는 롬과 없는 롬은 libretro 코어 다섯 개에서
+  Mesen-S를 뺀 일곱 개 모두 멈추거나 화면이 깨진 곳은 없었습니다. 헤더 있는 롬과 없는 롬은 libretro 코어 다섯 개에서
   찍은 화면이 픽셀까지 같았습니다. 이어하기는 대사가 끝나면 검은 화면이 이어지는데, 일본판도 모든 에뮬레이터에서 같은
   곳에서 같은 화면이 나와 패치와는 관계없습니다.
 </p>
