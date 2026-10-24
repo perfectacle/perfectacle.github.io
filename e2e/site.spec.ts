@@ -831,7 +831,7 @@ for (const game of PATCH_GUIDES) {
     const patch = KR_PATCHES.find(p => `${p.path}/` === path);
     if (!patch) throw new Error(`Missing patch data for ${game}`);
     const headings = patch.releases.map((r, i) => `v${r.version}${i === 0 ? ' · 최신 버전' : ''}`);
-    await expect(notes.locator('.patch-release > h3')).toHaveText(headings);
+    await expect(notes.locator('.release-head > h3')).toHaveText(headings);
     await expect(notes.locator('time')).toHaveCount(headings.length);
     for (const { version, date } of patch.releases) {
       const id = `release-${version.replaceAll('.', '-')}`;
@@ -889,11 +889,6 @@ for (const game of PATCH_GUIDES) {
   });
 
   test(`${game} patch notes open from a shared link and lead to the patch box`, async ({ page }) => {
-    await page.addInitScript(() => {
-      Object.defineProperty(navigator, 'clipboard', {
-        value: { writeText: async (text: string) => void ((window as unknown as { copied: string }).copied = text) },
-      });
-    });
     const releases = page.locator('#patch-notes .patch-release');
     await page.goto(path);
     const ids = await releases.evaluateAll(nodes => nodes.map(node => node.querySelector('h3')?.id ?? ''));
@@ -917,10 +912,12 @@ for (const game of PATCH_GUIDES) {
     await current.locator('summary').click();
     await expect(page).toHaveURL(new RegExp(`#${latest}$`));
 
-    await shared.locator('.release-share').click();
-    await expect(shared.locator('.release-share')).toHaveText('복사했습니다');
-    expect(await page.evaluate(() => (window as unknown as { copied: string }).copied)).toBe(
-      new URL(`${path}#${older}`, page.url()).href,
+    // Each version title links to itself, so its address can be copied and shared from the bar.
+    await shared.locator('h3 a').click();
+    await expect(page).toHaveURL(new RegExp(`#${older}$`));
+    await expect(shared.locator('a[download]')).toHaveAttribute(
+      'href',
+      new RegExp(`_v${older.slice(8).replace('-', '_')}\\.ips$`),
     );
 
     await current.locator('.release-next').click();

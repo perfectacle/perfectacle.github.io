@@ -174,7 +174,9 @@ const latestOverview =
 
   <section id="korean" class="section page-width" aria-labelledby="korean-title">
     <h2 id="korean-title" class="pixel">
-      {SECTION_TITLES.korean}
+      <a class="heading-link" href="#korean">
+        {SECTION_TITLES.korean}
+      </a>
     </h2>
     <ul class="checklist frame">
       <li>모든 대사와 이름</li>
@@ -195,7 +197,9 @@ const latestOverview =
 
   <section id="story" class="section page-width" aria-labelledby="story-title">
     <h2 id="story-title" class="pixel">
-      {SECTION_TITLES.story}
+      <a class="heading-link" href="#story">
+        {SECTION_TITLES.story}
+      </a>
     </h2>
     <p>
       1996년, 스퀘어가 개발하고 닌텐도가 발매한 슈퍼 패미컴 RPG입니다.
@@ -251,7 +255,9 @@ const latestOverview =
 
   <section id="play" class="section page-width" aria-labelledby="play-title">
     <h2 id="play-title" class="pixel">
-      {SECTION_TITLES.play}
+      <a class="heading-link" href="#play">
+        {SECTION_TITLES.play}
+      </a>
     </h2>
     <div class="play-list">
       {play.map(item => (
@@ -287,7 +293,9 @@ const latestOverview =
 
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
     <h2 id="patch-notes-title" class="pixel">
-      {SECTION_TITLES['patch-notes']}
+      <a class="heading-link" href="#patch-notes">
+        {SECTION_TITLES['patch-notes']}
+      </a>
     </h2>
     <PatchRelease patch={patch} version="1.2">
       <p class="release-overview">{latestOverview}</p>

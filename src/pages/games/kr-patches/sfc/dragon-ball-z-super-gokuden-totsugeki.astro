@@ -216,7 +216,9 @@ const latestOverview =
 
   <section id="changes" class="section page-width" aria-labelledby="changes-title">
     <h2 id="changes-title" class="pixel">
-      {SECTION_TITLES.changes}
+      <a class="heading-link" href="#changes">
+        {SECTION_TITLES.changes}
+      </a>
     </h2>
     <p>
       소년 오공의 모험을 대사와 선택지부터 타이틀·메뉴까지 한국어로 즐길 수 있습니다. 전투 대사와 적 이름도 한국어로
@@ -232,7 +234,9 @@ const latestOverview =
 
   <section id="story" class="section page-width" aria-labelledby="story-title">
     <h2 id="story-title" class="pixel">
-      {SECTION_TITLES.story}
+      <a class="heading-link" href="#story">
+        {SECTION_TITLES.story}
+      </a>
     </h2>
     <div class="story">
       <div class="story-copy">
@@ -296,7 +300,9 @@ const latestOverview =
 
   <section id="cast" class="section page-width" aria-labelledby="cast-title">
     <h2 id="cast-title" class="pixel">
-      {SECTION_TITLES.cast}
+      <a class="heading-link" href="#cast">
+        {SECTION_TITLES.cast}
+      </a>
     </h2>
     <div class="cast-groups">
       {castGroups.map(group => (
@@ -326,7 +332,9 @@ const latestOverview =
 
   <section id="play" class="section page-width" aria-labelledby="play-title">
     <h2 id="play-title" class="pixel">
-      {SECTION_TITLES.play}
+      <a class="heading-link" href="#play">
+        {SECTION_TITLES.play}
+      </a>
     </h2>
     <div class="play-list">
       {play.map(item => (
@@ -353,7 +361,9 @@ const latestOverview =
 
   <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
     <h2 id="patch-notes-title" class="pixel">
-      {SECTION_TITLES['patch-notes']}
+      <a class="heading-link" href="#patch-notes">
+        {SECTION_TITLES['patch-notes']}
+      </a>
     </h2>
     <PatchRelease patch={patch} version="1.2">
       <p class="release-overview">{latestOverview}</p>
