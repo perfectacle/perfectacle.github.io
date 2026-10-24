@@ -1,0 +1,20 @@
+---
+import GuideNote from '../../../../../layouts/GuideNote.astro';
+import GhostTrickNote from '../../../../../components/ghost-trick/MakingNote.astro';
+import { NDS_PATCHES, type NdsPatch } from '../../../../../lib/kr-patches.ts';
+import { noteSlug } from '../../../../../components/romhacking/chapters.ts';
+
+export function getStaticPaths() {
+  return NDS_PATCHES.map(patch => ({ params: { game: noteSlug(patch) }, props: { patch } }));
+}
+
+const { patch } = Astro.props as { patch: NdsPatch };
+const notes = {
+  'ghost-trick': GhostTrickNote,
+};
+const Note = notes[patch.theme];
+---
+
+<GuideNote patch={patch}>
+  <Note patch={patch} />
+</GuideNote>

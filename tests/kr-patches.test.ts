@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ALL_KR_PATCHES,
+  GHOST_TRICK_PATCH,
   KAKUSEI_PATCH,
   KR_PATCHES,
   analysisUrl,
   downloads,
   formatBytes,
+  releaseLabel,
   releaseOf,
   sourceUrl,
+  trail,
 } from '../src/lib/kr-patches.ts';
 
 describe('kr-patches', () => {
@@ -25,6 +29,24 @@ describe('kr-patches', () => {
     );
   });
 
+  it('points the Nintendo DS patch at its nds/ folder and release tag', () => {
+    expect(sourceUrl(GHOST_TRICK_PATCH)).toBe(
+      'https://github.com/perfectacle/kr-patches/blob/main/nds/ghost-trick/README.ko.md',
+    );
+    expect(analysisUrl(GHOST_TRICK_PATCH)).toBe(
+      'https://github.com/perfectacle/kr-patches/blob/ghost-trick-v1.2/nds/ghost-trick/docs/ANALYSIS.md',
+    );
+    expect(releaseLabel(GHOST_TRICK_PATCH)).toMatch(/^닌텐도 DS · 2010년 발매 · 한글패치 v1\.2 /);
+    expect(trail(GHOST_TRICK_PATCH)[1]).toEqual({ name: '닌텐도 DS', path: '/games/kr-patches/nds/' });
+  });
+
+  it('serves xdelta patches for the Nintendo DS', () => {
+    expect(downloads(GHOST_TRICK_PATCH).ips).toBe(
+      '/games/kr-patches/nds/ghost-trick/downloads/Ghost_Trick_K_v1_2.xdelta',
+    );
+    expect(releaseOf(GHOST_TRICK_PATCH, '1.1').ips).toMatch(/_v1_1\.xdelta$/);
+  });
+
   it('serves only the IPS patches from the blog', () => {
     for (const patch of KR_PATCHES) {
       expect(
@@ -37,15 +59,18 @@ describe('kr-patches', () => {
 });
 
 describe('patch releases', () => {
-  it.each(KR_PATCHES.map(patch => [patch.title, patch] as const))('%s lists its releases newest first', (_, patch) => {
-    const dates = patch.releases.map(r => r.date);
-    expect(dates).toEqual([...dates].sort().reverse());
-    const versions = patch.releases.map(r => r.version);
-    expect(versions).toEqual([...versions].sort((a, b) => b.localeCompare(a, 'en', { numeric: true })));
-    expect(new Set(patch.releases.map(r => r.version)).size).toBe(patch.releases.length);
-  });
+  it.each(ALL_KR_PATCHES.map(patch => [patch.title, patch] as const))(
+    '%s lists its releases newest first',
+    (_, patch) => {
+      const dates = patch.releases.map(r => r.date);
+      expect(dates).toEqual([...dates].sort().reverse());
+      const versions = patch.releases.map(r => r.version);
+      expect(versions).toEqual([...versions].sort((a, b) => b.localeCompare(a, 'en', { numeric: true })));
+      expect(new Set(patch.releases.map(r => r.version)).size).toBe(patch.releases.length);
+    },
+  );
 
-  it.each(KR_PATCHES.map(patch => [patch.title, patch] as const))(
+  it.each(ALL_KR_PATCHES.map(patch => [patch.title, patch] as const))(
     '%s takes its version, date and file name from the newest release',
     (_, patch) => {
       const [latest] = patch.releases;

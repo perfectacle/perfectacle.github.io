@@ -1,7 +1,9 @@
 import {
+  ALL_KR_PATCHES,
+  GHOST_TRICK_PATCH,
   KAKUSEI_PATCH,
   KR_PATCH_TOOLKIT_URL,
-  KR_PATCHES,
+  PLATFORMS,
   OTOGIRISOU_PATCH,
   SMRPG_PATCH,
   TOTSUGEKI_PATCH,
@@ -78,6 +80,8 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(SMRPG_PATCH, 'making-tools', '패치 소스 파일과 빌드 순서'),
       note(OTOGIRISOU_PATCH, 'making-about', '버전마다 고친 곳'),
       note(OTOGIRISOU_PATCH, 'making-tools', 'v1.0 IPS 위에 다시 빌드하기'),
+      note(GHOST_TRICK_PATCH, 'making-xdelta', '128MB 롬과 xdelta 패치'),
+      note(GHOST_TRICK_PATCH, 'making-about', 'v1.1 xdelta 위에 다시 만든 v1.2'),
     ],
     tools: [{ command: 'krpatch ips', anchor: 'ips-ips-패치-생성적용' }],
   },
@@ -93,6 +97,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-save', '암호의 16비트 합계'),
       note(OTOGIRISOU_PATCH, 'making-save', '세이브 슬롯의 체크섬'),
       note(SMRPG_PATCH, 'making-save', '세이브 슬롯을 지키는 16비트 체크섬'),
+      note(GHOST_TRICK_PATCH, 'making-font', '픽셀 네 개가 든 2비트 바이트'),
     ],
     tools: [{ command: 'krpatch sfc checksum', anchor: 'sfc-checksum-헤더-체크섬-확인수정' }],
   },
@@ -110,6 +115,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-dialogue', '거꾸로 적힌 글자 코드와 포인터'),
       note(OTOGIRISOU_PATCH, 'making-save', '세이브의 24비트 위치'),
       note(SMRPG_PATCH, 'making-dialogue', '뱅크 머리말과 포인터를 거꾸로 읽기'),
+      note(GHOST_TRICK_PATCH, 'making-script', 'u16 글자와 u32 포인터'),
     ],
     tools: [{ command: 'krpatch diff', anchor: 'diff-두-파일이-다른-바이트-범위' }],
   },
@@ -129,6 +135,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       gap(TOTSUGEKI_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
       gap(KAKUSEI_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
       gap(OTOGIRISOU_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
+      gap(GHOST_TRICK_PATCH, '코드를 고치지 않고 데이터만 바꾼 패치라 CPU를 다룬 절이 없습니다.'),
     ],
     tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
@@ -149,6 +156,12 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-map', '롬 지도'),
       note(OTOGIRISOU_PATCH, 'making-map', '세 롬의 뱅크 지도'),
     ],
+    gaps: [
+      gap(
+        GHOST_TRICK_PATCH,
+        'DS 롬은 파일 시스템으로 나뉘어 있어 주소 대신 파일 이름으로 찾습니다(노트의 롬 구조 절).',
+      ),
+    ],
     tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
@@ -165,6 +178,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(OTOGIRISOU_PATCH, 'making-unique', '후킹 지점의 원래 바이트와 바꾼 바이트'),
       note(OTOGIRISOU_PATCH, 'making-select', 'Select를 보게 바꾼 5바이트'),
     ],
+    gaps: [gap(GHOST_TRICK_PATCH, '코드를 고치지 않았습니다. 바뀐 것은 대사·폰트·그림 데이터뿐입니다.')],
     tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
@@ -189,6 +203,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-password', '새 암호 문장으로 건너가는 루틴'),
       note(OTOGIRISOU_PATCH, 'making-unique', '원작에 없던 기능 끼워 넣기'),
     ],
+    gaps: [gap(GHOST_TRICK_PATCH, '코드를 고치지 않았습니다. 길어진 대사는 같은 묶음 안에서 다시 배치합니다.')],
     tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
@@ -210,6 +225,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-font', '폰트에 없는 글자'),
       note(KAKUSEI_PATCH, 'making-gfx', '타이틀 그림의 타일 순서'),
       note(OTOGIRISOU_PATCH, 'making-gfx', 'DMA로 그대로 보내는 v1.0 그래픽'),
+      note(GHOST_TRICK_PATCH, 'making-font', '2bpp 대사 폰트의 픽셀 순서 찾기'),
     ],
     tools: [
       { command: 'krpatch sfc tiles', anchor: 'sfc-tiles-planar-타일-렌더링' },
@@ -236,6 +252,9 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-menus', '전투 말풍선과 엔딩 크레딧'),
       note(KAKUSEI_PATCH, 'making-password', '두 글자를 1바이트로 읽는 암호 쌍 표'),
       note(OTOGIRISOU_PATCH, 'making-menus', '선택지와 이름 입력 화면'),
+      note(GHOST_TRICK_PATCH, 'making-script', '1LMG 스크립트의 대사 블록과 포인터'),
+      note(GHOST_TRICK_PATCH, 'making-repack', '길어진 대사를 묶음 안에서 다시 배치하기'),
+      note(GHOST_TRICK_PATCH, 'making-wrap', '창 폭 13자·16자 실측'),
     ],
     tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
@@ -250,6 +269,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     notes: [
       note(KAKUSEI_PATCH, 'making-title-gfx', '압축된 타이틀 그림'),
       note(TOTSUGEKI_PATCH, 'making-gfx', '압축된 타이틀 글자 층'),
+      note(GHOST_TRICK_PATCH, 'making-lz11', 'LZ11로 압축된 스크립트'),
     ],
     gaps: [
       gap(SMRPG_PATCH, '압축된 그림을 바꾸지 않았습니다. 새로 그린 글자는 압축하지 않은 그대로 들어갑니다.'),
@@ -270,6 +290,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       gap(SMRPG_PATCH, '대사는 글자마다 1바이트나 2바이트 코드로 적혀 있습니다.'),
       gap(TOTSUGEKI_PATCH, '대사는 글자마다 2바이트 코드로 적혀 있습니다.'),
       gap(KAKUSEI_PATCH, '대사는 글자마다 2바이트 코드로 적혀 있습니다.'),
+      gap(GHOST_TRICK_PATCH, '허프만 압축을 쓰지 않습니다. 스크립트는 LZ11로 압축되어 있습니다(9장).'),
     ],
     tools: [],
   },
@@ -290,6 +311,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-bugfix', '우주선이 맵 밖을 헤매던 이유'),
       note(KAKUSEI_PATCH, 'making-map', '롬을 늘리지 않고 넣은 자리'),
       note(TOTSUGEKI_PATCH, 'making-map', '롬을 늘리지 않고 빈 곳에 넣기'),
+      note(GHOST_TRICK_PATCH, 'making-rom', '커진 파일을 롬 끝으로 옮기고 파일 표 고치기'),
     ],
     tools: [{ command: 'krpatch sfc checksum', anchor: 'sfc-checksum-헤더-체크섬-확인수정' }],
   },
@@ -313,6 +335,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-debug-menu', '디버그 메뉴를 여는 두 바이트'),
       note(KAKUSEI_PATCH, 'making-next', '확인하지 못한 것'),
       note(OTOGIRISOU_PATCH, 'making-next', '확인하지 못한 것과 알려진 한계'),
+      note(GHOST_TRICK_PATCH, 'making-testing', 'libretro 코어로 장면을 되풀이해 찍기'),
     ],
     tools: [
       { command: 'krpatch sfc run', anchor: 'sfc-run-헤드리스-libretro-실행기' },
@@ -339,6 +362,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
         KAKUSEI_PATCH,
         '버전마다 바꾼 곳에 소리가 없어 노트에서 다루지 않습니다. 곡 표와 곡 재생 함수는 이 장 본문에 있습니다.',
       ),
+      gap(GHOST_TRICK_PATCH, 'DS의 소리 구조는 이 장과 다릅니다. 음악은 SDAT 시퀀스로 들어 있습니다(14장).'),
     ],
     tools: [{ command: 'krpatch sfc lua', anchor: 'sfc-lua-mesen-2mesence-스크립트' }],
   },
@@ -349,7 +373,10 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     title: '소리 ② 게임 음악 뽑아 끊김 없이 반복하기',
     summary: '곡 하나만 나오게 해서 녹음하고, 반복 구간을 찾아 이음매를 다듬어 웹에서 끊김 없이 반복 재생합니다.',
     ready: true,
-    notes: [note(OTOGIRISOU_PATCH, 'making-scene-music', '장으로 옮길 때 배경과 음악')],
+    notes: [
+      note(OTOGIRISOU_PATCH, 'making-scene-music', '장으로 옮길 때 배경과 음악'),
+      note(GHOST_TRICK_PATCH, 'making-bgm', '녹음 대신 시퀀스를 합성해 만든 루프'),
+    ],
     gaps: [
       gap(
         SMRPG_PATCH,
@@ -396,11 +423,11 @@ export const neighbours = (chapter: GuideChapter) => {
   return { prev: ready[i - 1], next: ready[i + 1] };
 };
 
-/** Each game's ROM analysis note lives in the guide, next to the chapters that explain its ideas. */
-export const NOTES_PATH = `${GUIDE_PATH}sfc/notes/`;
+/** Each game's ROM analysis note lives in the guide under its console, next to the chapters that explain its ideas. */
+export const notesPath = (patch: KrPatch) => `${GUIDE_PATH}${PLATFORMS[patch.platform].folder}/notes/`;
 export const noteSlug = (patch: KrPatch) => patch.path.slice(patch.path.lastIndexOf('/') + 1);
-export const notePath = (patch: KrPatch) => `${NOTES_PATH}${noteSlug(patch)}/`;
-export const NOTE_PATCHES = KR_PATCHES;
+export const notePath = (patch: KrPatch) => `${notesPath(patch)}${noteSlug(patch)}/`;
+export const NOTE_PATCHES = ALL_KR_PATCHES;
 
 export const noteHref = (n: NoteLink) => (n.id === 'making' ? notePath(n.patch) : `${notePath(n.patch)}#${n.id}`);
 
@@ -410,6 +437,7 @@ export const NOTE_GAME: Record<KrPatch['theme'], string> = {
   gokuden: '돌격편',
   kakusei: '각성편',
   otogirisou: '제절초',
+  'ghost-trick': '고스트 트릭',
 };
 
 export const noteLabel = (n: NoteLink) => `${NOTE_GAME[n.patch.theme]}: ${n.label}`;

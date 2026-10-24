@@ -7,14 +7,22 @@ interface Props {
 }
 
 const { patch } = Astro.props;
-const { spec } = patch;
 const { ips } = downloads(patch);
-const korean = patchedSize(spec);
-const tools = [
-  { name: 'Floating IPS', href: 'https://github.com/Alcaro/Flips', note: 'Windows·Linux' },
-  { name: 'Lunar IPS', href: 'https://fusoya.eludevisibility.org/lips/', note: 'Windows' },
-  { name: 'ROM Patcher JS', href: 'https://www.marcrobledo.com/RomPatcher.js/', note: '웹 브라우저, 폰에서도 됨' },
-];
+const nds = patch.platform === 'nds';
+const size = patch.spec.size;
+const korean = nds ? patch.spec.patchedSize : patchedSize(patch.spec);
+const kind = nds ? 'xdelta' : 'IPS';
+const tools = nds
+  ? [
+      { name: 'ROM Patcher JS', href: 'https://www.marcrobledo.com/RomPatcher.js/', note: '웹 브라우저, 폰에서도 됨' },
+      { name: 'Delta Patcher', href: 'https://github.com/marco-calautti/DeltaPatcher', note: 'Windows·macOS·Linux' },
+      { name: 'xdelta3', href: 'https://github.com/jmacd/xdelta', note: '명령줄' },
+    ]
+  : [
+      { name: 'Floating IPS', href: 'https://github.com/Alcaro/Flips', note: 'Windows·Linux' },
+      { name: 'Lunar IPS', href: 'https://fusoya.eludevisibility.org/lips/', note: 'Windows' },
+      { name: 'ROM Patcher JS', href: 'https://www.marcrobledo.com/RomPatcher.js/', note: '웹 브라우저, 폰에서도 됨' },
+    ];
 ---
 
 <details class="manual">
@@ -22,10 +30,11 @@ const tools = [
   <div class="manual-body">
     <p>
       <a href={ips} download>
-        IPS 파일
+        {kind} 파일
       </a>
-      을 받아 아래 패치 도구로 일본판 원본 롬파일 {formatBytes(spec.size)}에 적용하세요.
-      {korean !== spec.size && ` 패치하면 파일이 ${megabytes(spec, korean)}로 늘어납니다.`}
+      을 받아 아래 패치 도구로 일본판 원본 롬파일 {formatBytes(size)}에 적용하세요.
+      {!nds && korean !== size && ` 패치하면 파일이 ${megabytes(patch.spec, korean)}로 늘어납니다.`}
+      {nds && ` 패치한 파일은 ${formatBytes(korean)}입니다.`}
     </p>
     <ul class="downloads">
       {tools.map(tool => (
@@ -38,8 +47,8 @@ const tools = [
       ))}
     </ul>
     <p class="manual-note">
-      롬파일 크기가 {formatBytes(spec.size)}가 아니면 이 IPS로는 제대로 패치되지 않습니다. 그럴 때는 위 버튼으로 파일을
-      고르면 알아서 맞춰 패치합니다.
+      롬파일 크기가 {formatBytes(size)}가 아니면 이 {kind}로는 제대로 패치되지 않습니다.
+      {nds && ' 트리밍한 롬파일도 마찬가지입니다.'} 그럴 때는 위 버튼으로 파일을 고르면 알아서 맞춰 패치합니다.
     </p>
   </div>
 </details>

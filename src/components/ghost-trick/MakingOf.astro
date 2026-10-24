@@ -1,0 +1,36 @@
+---
+import { SECTION_TITLES } from '../../lib/patch-sections';
+import MakingIntro from './MakingIntro.astro';
+import NoteTopics from '../kr-patch/NoteTopics.astro';
+import { notePath } from '../romhacking/chapters';
+import type { KrPatch } from '../../lib/kr-patches';
+
+interface Props {
+  patch: KrPatch;
+}
+
+const { patch } = Astro.props;
+const topics = [
+  { id: 'making-xdelta', label: '128MB 롬과 xdelta 패치' },
+  { id: 'making-rom', label: '파일 이름으로 찾고 다시 묶기' },
+  { id: 'making-script', label: '1LMG 스크립트의 대사와 포인터' },
+  { id: 'making-wrap', label: '창 폭 13자·16자 실측' },
+  { id: 'making-font', label: '바이트 하나에 픽셀 넷, 2bpp 대사 폰트' },
+  { id: 'making-bgm', label: '녹음 대신 합성한 배경 음악' },
+];
+---
+
+<section id="making" class="section page-width making-teaser" aria-labelledby="making-title">
+  <div class="making-head">
+    <h2 id="making-title" class="pixel">
+      <a class="heading-link" href="#making">
+        {SECTION_TITLES.making}
+      </a>
+    </h2>
+    <a class="making-open" href={notePath(patch)}>
+      노트 읽기 <span aria-hidden="true">→</span>
+    </a>
+  </div>
+  <MakingIntro patch={patch} />
+  <NoteTopics patch={patch} topics={topics} />
+</section>

@@ -1390,6 +1390,75 @@ h4.pixel {
   font-size: 0.75em;
 }
 
+/* Ghost Trick: white rounded message windows with black text over the red Ghost World. */
+
+[data-theme='ghost-trick'] {
+  --ink: #f2f0f5;
+  --muted: #b9b4c6;
+  --accent: #ff5a3c;
+  --link: #ff9a7a;
+  --panel: rgb(14 10 24 / 86%);
+  --dialog-ink: #111;
+}
+
+[data-theme='ghost-trick'] body {
+  isolation: isolate;
+  background: #0b0d1a;
+}
+
+[data-theme='ghost-trick'] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgb(11 13 26 / 78%), rgb(11 13 26 / 92%)),
+    url('/games/kr-patches/nds/ghost-trick/images/background.webp') center / cover no-repeat;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+[data-theme='ghost-trick'] .frame {
+  border: 2px solid rgb(255 90 60 / 55%);
+  border-image: none;
+  border-radius: 10px;
+}
+
+[data-theme='ghost-trick'] .dialog {
+  background: #fff;
+  border: 2px solid #111;
+  border-radius: 12px;
+  box-shadow: 0 4px 0 rgb(0 0 0 / 45%);
+}
+
+[data-theme='ghost-trick'] .drop-zone:hover,
+[data-theme='ghost-trick'] .drop-zone.dragging,
+[data-theme='ghost-trick'] .drop-zone:focus-within {
+  background: rgb(255 90 60 / 14%);
+}
+
+[data-theme='ghost-trick'] .portrait {
+  border-radius: 10px;
+  box-shadow: 0 0 0 3px #111;
+  object-fit: cover;
+}
+
+.scene-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 256px), 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.scene-gallery .screen {
+  margin: 0;
+}
+
+[data-theme='ghost-trick'] .checklist li::before {
+  content: '◆ ';
+  color: var(--accent);
+}
+
 .feature h3 {
   margin-top: 12px;
 }

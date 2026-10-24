@@ -25,6 +25,14 @@ vi.setConfig({ testTimeout: 30000 });
 const encode = (text: string) => new TextEncoder().encode(text);
 const patch = (...records: number[]) => new Uint8Array([...encode('PATCH'), ...records, ...encode('EOF')]);
 
+it('matches node MD5 at the padding block boundaries', () => {
+  for (const length of [55, 56, 63, 64, 65, 119, 120, 128, 1000]) {
+    const bytes = Uint8Array.from({ length }, (_, i) => (i * 7 + 3) & 255);
+    expect(md5(bytes)).toBe(createHash('md5').update(bytes).digest('hex').toUpperCase());
+    expect(md5(bytes.subarray(1))).toBe(createHash('md5').update(bytes.subarray(1)).digest('hex').toUpperCase());
+  }
+});
+
 it('computes standard CRC32 check values', () => {
   expect(crc32(encode(''))).toBe('00000000');
   expect(crc32(encode('123456789'))).toBe('CBF43926');

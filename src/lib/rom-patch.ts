@@ -124,17 +124,20 @@ const sineTable = Int32Array.from({ length: 64 }, (_, i) => Math.floor(2 ** 32 *
 
 // RFC 1321 MD5 is needed to compare the published ROM fingerprints; Web Crypto does not offer MD5.
 export function md5(bytes: Uint8Array): string {
-  const padded = new Uint8Array(Math.ceil((bytes.length + 9) / 64) * 64);
-  padded.set(bytes);
-  padded[bytes.length] = 0x80;
-  const view = new DataView(padded.buffer);
-  view.setUint32(padded.length - 8, (bytes.length * 8) >>> 0, true);
-  view.setUint32(padded.length - 4, Math.floor(bytes.length / 0x20000000), true);
+  // Whole blocks are read in place; only the padded tail is copied, so a 128 MB ROM is not duplicated.
+  const whole = bytes.length - (bytes.length % 64);
+  const tail = new Uint8Array(bytes.length % 64 < 56 ? 64 : 128);
+  tail.set(bytes.subarray(whole));
+  tail[bytes.length - whole] = 0x80;
+  const tailView = new DataView(tail.buffer);
+  tailView.setUint32(tail.length - 8, (bytes.length * 8) >>> 0, true);
+  tailView.setUint32(tail.length - 4, Math.floor(bytes.length / 0x20000000), true);
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let a0 = 0x67452301;
   let b0 = 0xefcdab89;
   let c0 = 0x98badcfe;
   let d0 = 0x10325476;
-  for (let offset = 0; offset < padded.length; offset += 64) {
+  const block = (source: DataView, offset: number) => {
     let a = a0,
       b = b0,
       c = c0,
@@ -144,7 +147,7 @@ export function md5(bytes: Uint8Array): string {
       const f =
         round === 0 ? (b & c) | (~b & d) : round === 1 ? (d & b) | (~d & c) : round === 2 ? b ^ c ^ d : c ^ (b | ~d);
       const word = round === 0 ? i : round === 1 ? (5 * i + 1) % 16 : round === 2 ? (3 * i + 5) % 16 : (7 * i) % 16;
-      const sum = (a + f + (sineTable[i] ?? 0) + view.getInt32(offset + word * 4, true)) | 0;
+      const sum = (a + f + (sineTable[i] ?? 0) + source.getInt32(offset + word * 4, true)) | 0;
       const shift = shifts[round * 4 + (i % 4)] ?? 0;
       a = d;
       d = c;
@@ -155,7 +158,9 @@ export function md5(bytes: Uint8Array): string {
     b0 = (b0 + b) | 0;
     c0 = (c0 + c) | 0;
     d0 = (d0 + d) | 0;
-  }
+  };
+  for (let offset = 0; offset < whole; offset += 64) block(view, offset);
+  for (let offset = 0; offset < tail.length; offset += 64) block(tailView, offset);
   const result = new DataView(new ArrayBuffer(16));
   [a0, b0, c0, d0].forEach((word, i) => result.setInt32(i * 4, word, true));
   return Array.from(new Uint8Array(result.buffer), byte => byte.toString(16).padStart(2, '0'))
@@ -325,13 +330,17 @@ export function isOtherArchive(bytes: Uint8Array, name = ''): boolean {
 
 const romName = /\.(sfc|smc|fig|swc)$/i;
 
+/** The single SNES ROM in a zip; see `extractFromZip`. */
+export const extractRomFromZip = (spec: RomSpec, zip: Uint8Array) =>
+  extractFromZip(zip, (name, size) => romName.test(name) || size === spec.size || size === spec.size + COPIER_HEADER);
+
 /**
- * Pulls the single ROM out of a zip using the browser's built-in inflater.
+ * Pulls the one entry `isRom` accepts out of a zip using the browser's built-in inflater.
  * Returns undefined when the archive needs to be opened by hand (no ROM, several ROMs, encryption, other methods).
  */
-export async function extractRomFromZip(
-  spec: RomSpec,
+export async function extractFromZip(
   zip: Uint8Array,
+  isRom: (name: string, size: number) => boolean,
 ): Promise<{ name: string; bytes: Uint8Array } | undefined> {
   const view = new DataView(zip.buffer, zip.byteOffset, zip.byteLength);
   let end = -1;
@@ -358,9 +367,7 @@ export async function extractRomFromZip(
       local: view.getUint32(cursor + 42, true),
       name: decoder.decode(zip.subarray(cursor + 46, cursor + 46 + nameLength)),
     };
-    if (romName.test(entry.name) || entry.size === spec.size || entry.size === spec.size + COPIER_HEADER) {
-      candidates.push(entry);
-    }
+    if (isRom(entry.name, entry.size)) candidates.push(entry);
     cursor += 46 + nameLength + view.getUint16(cursor + 30, true) + view.getUint16(cursor + 32, true);
   }
   const entry = candidates.length === 1 ? candidates[0] : undefined;

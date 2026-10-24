@@ -1,6 +1,6 @@
 import { chromium, expect, test } from '@playwright/test';
 import lighthouse from 'lighthouse';
-import { KR_PATCHES, KR_PATCH_LIST_PATH, KR_PATCH_SFC_PATH } from '../src/lib/kr-patches.ts';
+import { ALL_KR_PATCHES, KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, KR_PATCH_SFC_PATH } from '../src/lib/kr-patches.ts';
 
 // Auto-merged dependency updates must not quietly make the site slower or heavier.
 // Byte budgets are deterministic and strict. Timing comes from Lighthouse's simulated mobile throttling,
@@ -16,8 +16,9 @@ const PAGES: Record<string, { scriptKb: number; tbtMs?: number }> = {
   '/search/': { scriptKb: 60 },
   [KR_PATCH_LIST_PATH]: { scriptKb: 5 },
   [KR_PATCH_SFC_PATH]: { scriptKb: 5 },
+  [KR_PATCH_NDS_PATH]: { scriptKb: 5 },
   // The patch logic loads only after a file is picked; the first view ships just the patch box wiring.
-  ...Object.fromEntries(KR_PATCHES.map(patch => [`${patch.path}/`, { scriptKb: 5 }])),
+  ...Object.fromEntries(ALL_KR_PATCHES.map(patch => [`${patch.path}/`, { scriptKb: 5 }])),
   '/games/romhacking/': { scriptKb: 60 },
   // Widget pages: each widget's script is bundled with the page; the CPU stepper carries the small interpreter.
   '/games/romhacking/numbers/': { scriptKb: 60 },

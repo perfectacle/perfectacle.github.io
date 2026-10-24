@@ -6,6 +6,7 @@
     "src/components/totsugeki",
     "src/components/kakusei",
     "src/components/otogirisou",
+    "src/components/ghost-trick",
     "src/lib"
   ],
   "files": ["src/layouts/PatchBook.astro", "src/styles/patch-book.css", "src/styles/patch-catalogue.css"],

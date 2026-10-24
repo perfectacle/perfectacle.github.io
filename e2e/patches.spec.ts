@@ -1,10 +1,15 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator } from '@playwright/test';
+import { notePath } from '../src/components/romhacking/chapters.ts';
 import {
+  ALL_KR_PATCHES,
+  GHOST_TRICK_PATCH,
   KAKUSEI_PATCH,
   KR_PATCHES,
   KR_PATCH_LIST_PATH,
+  KR_PATCH_NDS_PATH,
   KR_PATCH_SFC_PATH,
+  NDS_PATCHES,
   OTOGIRISOU_PATCH,
   SMRPG_PATCH,
   TOTSUGEKI_PATCH,
@@ -39,7 +44,7 @@ async function loadSpriteImage(sprite: Locator) {
   });
 }
 
-for (const path of [HUB, CATALOGUE, ...KR_PATCHES.map(patch => `${patch.path}/`)]) {
+for (const path of [HUB, CATALOGUE, KR_PATCH_NDS_PATH, ...ALL_KR_PATCHES.map(patch => `${patch.path}/`)]) {
   for (const colorScheme of ['light', 'dark'] as const) {
     test(`${path} guide works in ${colorScheme}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme });
@@ -71,7 +76,7 @@ for (const path of [HUB, CATALOGUE, ...KR_PATCHES.map(patch => `${patch.path}/`)
 
 const GAME = `${SMRPG_PATCH.path}/`;
 
-for (const patch of KR_PATCHES) {
+for (const patch of ALL_KR_PATCHES) {
   test(`${patch.title} exposes the original and latest Korean file checksums without crowding the patch box`, async ({
     page,
   }) => {
@@ -95,7 +100,7 @@ for (const patch of KR_PATCHES) {
       },
       {
         name: `한글패치 v${patch.version}`,
-        size: formatBytes(patchedSize(patch.spec)),
+        size: formatBytes(patch.platform === 'nds' ? patch.spec.patchedSize : patchedSize(patch.spec)),
         fingerprint: patch.spec.patched,
       },
     ]) {
@@ -138,28 +143,27 @@ test('the patch hub boot text can be skipped', async ({ page }) => {
   await expect(page.locator('[data-crt]')).toHaveAttribute('data-state', 'ready');
 });
 
-test('the patch hub lets you pick Super Famicom and keeps Nintendo DS locked', async ({ page }) => {
+test('the patch hub lets you pick Super Famicom or Nintendo DS with the keyboard', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(HUB);
   const menu = page.getByRole('navigation', { name: '기종 고르기' });
   const sfc = menu.getByRole('link', { name: /슈퍼 패미콤/ });
+  const nds = menu.getByRole('link', { name: /닌텐도 DS/ });
   await expect(sfc).toHaveAttribute('href', CATALOGUE);
-  const nds = menu.locator('[aria-disabled="true"]');
-  await expect(nds).toContainText('닌텐도 DS');
-  await expect(nds).toContainText('준비 중');
-  await expect(menu.locator('a')).toHaveCount(1);
+  await expect(nds).toHaveAttribute('href', KR_PATCH_NDS_PATH);
+  await expect(nds).toContainText(`${NDS_PATCHES.length}종`);
+  await expect(menu.locator('[aria-disabled="true"]')).toHaveCount(0);
   await sfc.focus();
   await page.keyboard.press('ArrowDown');
   await expect(nds).toBeFocused();
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('status')).toHaveText('닌텐도 DS는 아직 준비 중입니다');
-  await expect(page).toHaveURL(HUB);
-  await page.keyboard.press('ArrowUp');
-  await expect(sfc).toBeFocused();
-  await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(CATALOGUE);
+  await expect(page).toHaveURL(KR_PATCH_NDS_PATH);
   await page.getByRole('link', { name: '기종 고르기' }).click();
   await expect(page).toHaveURL(HUB);
+  await page.keyboard.press('Escape');
+  await menu.getByRole('link', { name: /슈퍼 패미콤/ }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(CATALOGUE);
 });
 
 test('choosing Super Famicom switches the monitor off before opening its list', async ({ page }) => {
@@ -243,6 +247,34 @@ test('patch box explains why a file cannot be patched', async ({ page }) => {
     buffer: Buffer.alloc(4 * 1024 * 1024),
   });
   await expect(status).toContainText('다른 게임 롬파일');
+});
+
+test('the Nintendo DS patch box takes .nds files and tells other games and regions apart', async ({ page }) => {
+  await page.goto(`${GHOST_TRICK_PATCH.path}/`);
+  const input = page.locator('.patch-box input[type=file]');
+  const status = page.locator('.patch-status');
+  await expect(input).toHaveAttribute('accept', '.nds,.zip');
+  await expect(page.locator('.patch-steps')).toContainText('.nds 파일');
+  await input.setInputFiles({ name: 'photo.nds', mimeType: 'application/octet-stream', buffer: Buffer.alloc(1024) });
+  await expect(status).toContainText('너무 작습니다');
+  const header = (title: string, code: string) => {
+    const rom = Buffer.alloc(0x10000);
+    rom.write(title, 0, 'ascii');
+    rom.write(code, 12, 'ascii');
+    return rom;
+  };
+  await input.setInputFiles({
+    name: 'other.nds',
+    mimeType: 'application/octet-stream',
+    buffer: header('OTHER GAME', 'ABCJ'),
+  });
+  await expect(status).toContainText('다른 게임 롬파일');
+  await input.setInputFiles({
+    name: 'usa.nds',
+    mimeType: 'application/octet-stream',
+    buffer: header('GHOSTTRICK-J', 'BGTE'),
+  });
+  await expect(status).toContainText('해외판');
 });
 
 test('the story introduces each companion in the order they join', async ({ page }) => {
@@ -791,17 +823,14 @@ test('Super Gokuden: Kakusei-hen patch box tells it apart from Totsugeki-hen', a
   await expect(page.locator('.patch-status')).toContainText('예전에 나온 한글패치 롬파일입니다');
 });
 
-for (const patch of KR_PATCHES) {
+for (const patch of ALL_KR_PATCHES) {
   test(`${patch.title} leaves the full ROM analysis note to the guide`, async ({ page }) => {
     await page.goto(`${patch.path}/`);
     expect(await page.content()).not.toContain('cafe.naver.com/hansicgu');
     const making = page.locator('#making');
     await expect(making.locator('.paper img')).toHaveCount(1);
     await expect(making.locator('details')).toHaveCount(0);
-    await expect(making.getByRole('link', { name: '노트 읽기' })).toHaveAttribute(
-      'href',
-      `/games/romhacking/sfc/notes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/`,
-    );
+    await expect(making.getByRole('link', { name: '노트 읽기' })).toHaveAttribute('href', notePath(patch));
     expect(await page.locator('a[href$=".zip"]').count()).toBe(0);
   });
 }
@@ -865,7 +894,7 @@ test('Otogirisou title menu only starts the novel; the page menu lists the secti
   await expect(page.locator('[data-menu="title"] a')).toHaveText(['처음부터 읽기']);
 });
 
-for (const patch of KR_PATCHES) {
+for (const patch of ALL_KR_PATCHES) {
   test(`${patch.title} opens every screenshot and diagram in the preview`, async ({ page }) => {
     await page.goto(`${patch.path}/`);
     // Portraits are face sprites, the endings player and its list play videos, and the sound novel turns its pages.
@@ -895,7 +924,7 @@ for (const patch of KR_PATCHES) {
 for (const width of [1280, 1920]) {
   test(`game screens render at whole-number scales at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
-    for (const patch of KR_PATCHES) {
+    for (const patch of ALL_KR_PATCHES) {
       await page.goto(`${patch.path}/`);
       await page.evaluate(() => document.querySelectorAll('details').forEach(d => (d.open = true)));
       const off = await page
@@ -937,7 +966,7 @@ for (const patch of KR_PATCHES) {
   });
 }
 
-for (const path of [HUB, CATALOGUE, ...KR_PATCHES.map(patch => `${patch.path}/`)]) {
+for (const path of [HUB, CATALOGUE, KR_PATCH_NDS_PATH, ...ALL_KR_PATCHES.map(patch => `${patch.path}/`)]) {
   test(`${path} previews as its title screens in a large PNG`, async ({ page, request }) => {
     await page.goto(path);
     const meta = (property: string) => page.locator(`meta[property="${property}"]`).getAttribute('content');
