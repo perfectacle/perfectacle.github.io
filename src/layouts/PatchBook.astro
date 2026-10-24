@@ -4,6 +4,8 @@ import Analytics from '../components/Analytics.astro';
 import SectionNav from '../components/kr-patch/SectionNav.astro';
 import ImagePreview from '../components/kr-patch/ImagePreview.astro';
 import Bgm from '../components/kr-patch/Bgm.astro';
+import Comments from '../components/Comments.astro';
+import { SECTION_TITLES } from '../lib/patch-sections.ts';
 import { SITE } from '../lib/posts.ts';
 import { KR_PATCH_SFC_PATH, KR_PATCH_SITE_TITLE, KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
 import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
@@ -84,9 +86,16 @@ const ogTitle = patch ? title : fullTitle;
         </nav>
       </header>
     )}
-    {sections.length > 0 && <SectionNav sections={sections} />}
+    {sections.length > 0 && (
+      <SectionNav sections={patch ? [...sections, { id: 'comments', label: SECTION_TITLES.comments }] : sections} />
+    )}
     <main id="main" tabindex="-1">
       <slot />
+      {patch && (
+        <div class="patch-comments page-width">
+          <Comments path={`${patch.path}/`} />
+        </div>
+      )}
     </main>
     {theme !== 'sfc' && <ImagePreview />}
     {patch && <Bgm patch={patch} />}
