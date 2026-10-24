@@ -41,6 +41,20 @@
 .guide {
   max-width: calc(var(--content) + 2 * var(--gutter));
 }
+/* The guide's trail sits right under the site header and sticks there, so it looks the same before and after
+   scrolling, and a jump to a section clears both. */
+html:has(.gcrumbs) main {
+  padding-top: 0;
+}
+html:has(.gcrumbs) {
+  --guide-crumbs-h: 45px;
+  scroll-padding-top: calc(var(--site-header-h) + var(--guide-crumbs-h) + 16px);
+}
+@media (max-width: 640px) {
+  html:has(.gcrumbs) {
+    --guide-crumbs-h: 53px;
+  }
+}
 .guide-main {
   min-width: 0;
 }

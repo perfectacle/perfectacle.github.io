@@ -226,18 +226,39 @@ if (here.kind === 'note') {
 </nav>
 
 <style>
+  /* Sticks under the site header and stays below it in the stacking order, so the header's border never runs
+     through the trail. Its background and bottom line reach the screen edges through shadows, which unlike a wider
+     box never make the page scroll sideways. */
   .gcrumbs {
-    position: relative;
-    z-index: 20;
-    margin: 0 0 20px;
+    position: sticky;
+    top: var(--site-header-h);
+    z-index: 9;
+    box-sizing: border-box;
+    height: var(--guide-crumbs-h);
+    margin: 0 0 28px;
+    display: flex;
+    align-items: center;
     font-size: 0.875rem;
     color: var(--fg-muted);
   }
+  /* The backdrop is its own layer: clipping the trail itself would also cut off the menus that open below it. */
+  .gcrumbs::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--bg);
+    box-shadow:
+      0 0 0 100vmax var(--bg),
+      0 1px 0 100vmax var(--border);
+    clip-path: inset(0 -100vmax -1px);
+    pointer-events: none;
+  }
   .gcrumbs > ol {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
-    gap: 2px 0;
+    min-width: 0;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -245,7 +266,13 @@ if (here.kind === 'note') {
   .gcrumb {
     position: relative;
     display: flex;
+    flex: none;
     align-items: center;
+    min-width: 0;
+  }
+  /* A long chapter title gives way first, so the trail keeps one line. */
+  .gcrumb:last-child {
+    flex: 0 1 auto;
   }
   .gcrumb + .gcrumb::before {
     content: '/' / '';
@@ -253,7 +280,11 @@ if (here.kind === 'note') {
     color: var(--border);
   }
   .gcrumb-name {
+    overflow: hidden;
+    min-width: 0;
     color: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   a.gcrumb-name {
     text-decoration: underline;
@@ -302,7 +333,7 @@ if (here.kind === 'note') {
     width: max-content;
     min-width: 240px;
     max-width: min(380px, calc(100vw - 32px));
-    max-height: min(70vh, 520px);
+    max-height: min(520px, calc(100svh - var(--site-header-h) - var(--guide-crumbs-h) - 16px));
     overflow-y: auto;
     padding: 6px;
     border: 1px solid var(--border);
