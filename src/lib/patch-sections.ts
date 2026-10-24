@@ -15,6 +15,7 @@ export const SECTION_TITLES = {
   secrets: '놓치기 쉬운 즐길 거리',
   'patch-notes': '패치 노트',
   making: '롬 분석 노트',
+  comments: '댓글',
 } as const;
 
 export type SectionId = keyof typeof SECTION_TITLES;

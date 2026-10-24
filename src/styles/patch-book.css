@@ -1600,3 +1600,40 @@ h4.pixel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Comments at the foot of a game page. The shared comment box reads the blog's colour tokens; here they follow the
+   game's theme, on a solid panel so the form stays readable over the patterned background. */
+.patch-comments {
+  --fg: var(--ink);
+  --fg-muted: var(--muted);
+  --bg: #10131c;
+  --bg-soft: color-mix(in srgb, var(--ink) 8%, #10131c);
+  --border: color-mix(in srgb, var(--ink) 25%, transparent);
+  --accent-fg: #111;
+  --accent-soft: color-mix(in srgb, var(--accent) 20%, transparent);
+  --radius: 6px;
+  --font-sans: var(--body);
+  --font-mono: var(--mono);
+}
+
+.patch-comments .comments {
+  margin-top: 48px;
+  padding: 20px 24px 24px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.patch-comments .comments > h2 {
+  margin: 0 0 16px;
+  color: var(--accent);
+  font: 24px/1.5 var(--pixel);
+  font-synthesis: none;
+}
+
+@media (max-width: 559px) {
+  .patch-comments .comments {
+    padding: 16px;
+  }
+}

@@ -46,6 +46,7 @@ description: 사이트 코드(src/lib, src/pages, src/components, src/layouts, s
 
 댓글은 Waline 이 글 경로(`/2022/06/06/slug/`)를 키로 묶는다(`src/components/Comments.astro` 의 `path`). Disqus 시절 댓글도 이 경로로 옮겨 넣었다. Disqus 는 앞 슬래시 없는 경로(`2022/06/06/slug/`)를 identifier 로 썼고, 이관할 때 이 값을 글 경로로 맞췄다.
 
+- 한글패치 게임 페이지는 `PatchBook` 이 그 패치의 페이지 경로(`${patch.path}/`, 예: `/games/kr-patches/sfc/super-mario-rpg/`)를 넘긴다. `kr-patches.ts` 의 `path` 를 바꾸면 그 페이지의 댓글도 함께 끊긴다.
 - 이유: 경로가 바뀌면 그 글의 댓글 스레드가 통째로 안 보인다.
 - `path` 를 `location.pathname` 같은 런타임 값으로 바꾸지 않는다. 쿼리나 끝 슬래시 차이로 스레드가 갈라진다.
 - 확인: `pnpm test:e2e` 의 댓글 테스트가 서버에 보낸 `path` 를 검사한다.

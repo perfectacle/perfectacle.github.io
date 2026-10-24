@@ -980,3 +980,17 @@ test('tab titles name each page once before the site name', async ({ page }) => 
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', title);
   }
 });
+
+for (const patch of KR_PATCHES) {
+  test(`${patch.title} keeps its comment thread under its own page path, at the end of the page`, async ({ page }) => {
+    await page.goto(`${patch.path}/`);
+    // Waline keys a thread by this path; a runtime value would split threads over a trailing slash or query.
+    await expect(page.locator('#waline')).toHaveAttribute('data-path', `${patch.path}/`);
+    const nav = page.getByRole('navigation', { name: '페이지 내 이동', exact: true });
+    await expect(nav.locator('a[href="#comments"]')).toHaveText('댓글');
+    const order = await page
+      .locator('main')
+      .evaluate(main => [...main.querySelectorAll('#making, #comments')].map(node => node.id));
+    expect(order).toEqual(['making', 'comments']);
+  });
+}
