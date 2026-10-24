@@ -25,6 +25,7 @@ type Where =
   | 'sfc/sound'
   | 'nds/filesystem'
   | 'nds/text'
+  | 'nds/graphics'
   | 'music-loop';
 
 export interface GlossaryEntry {
@@ -583,6 +584,14 @@ const RAW: [string, string, Where, string, string][] = [
     'repack',
     '앞뒤로 이어 붙은 대사 블록들. 고스트 트릭 한글패치는 이 안에서만 대사를 옮깁니다',
   ],
+  [
+    '2D 엔진',
+    '2D engine',
+    'nds/graphics',
+    'tiles',
+    'DS에서 타일과 팔레트로 2D 화면을 그리는 회로. A·B 둘이 화면을 하나씩 맡습니다',
+  ],
+  ['선형 비트맵', 'linear bitmap', 'nds/graphics', 'fonts', '8×8 타일로 자르지 않고 픽셀을 한 줄씩 늘어놓은 그림'],
   ['LCP', 'Largest Contentful Paint', 'music-loop', 'web', '첫 화면에서 가장 큰 요소가 그려지기까지의 시간'],
 ];
 

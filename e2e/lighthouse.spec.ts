@@ -33,6 +33,7 @@ const PAGES: Record<string, { scriptKb: number; tbtMs?: number }> = {
   '/games/romhacking/music-loop/': { scriptKb: 60 },
   '/games/romhacking/nds/filesystem/': { scriptKb: 60 },
   '/games/romhacking/nds/text/': { scriptKb: 60 },
+  '/games/romhacking/nds/graphics/': { scriptKb: 60 },
   '/games/romhacking/glossary/': { scriptKb: 60 },
 };
 const MIN_SCORE = { performance: 0.8, accessibility: 0.95, 'best-practices': 0.95, seo: 0.95 };

@@ -39,6 +39,7 @@ const SOUND = '/games/romhacking/sfc/sound/';
 const MUSIC = '/games/romhacking/music-loop/';
 const NDS_FS = '/games/romhacking/nds/filesystem/';
 const NDS_TEXT = '/games/romhacking/nds/text/';
+const NDS_GFX = '/games/romhacking/nds/graphics/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -313,6 +314,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
     MUSIC,
     NDS_FS,
     NDS_TEXT,
+    NDS_GFX,
   ]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
@@ -367,6 +369,11 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(lmg.locator('[data-screen]')).toContainText('당신에 대해．');
   await expect(lmg.locator('[data-tokens] li').first()).toContainText('2D FF 04 00 00 00');
   await expect(lmg.getByRole('button', { name: '다음 값' })).toBeHidden();
+  await page.goto(NDS_GFX);
+  const po = page.locator('[data-pixel-order]');
+  await expect(po.locator('[data-score]')).toHaveText(/^\d+$/);
+  await expect(po.locator('[data-glyph]')).toHaveCount(4);
+  await expect(po.locator('select').first()).toBeHidden();
   await page.goto(MUSIC);
   const seam = page.locator('[data-seam-lab]');
   await expect(seam.locator('[data-out="score"]')).toHaveText('0.887');
@@ -613,6 +620,25 @@ test('dialogue byte widget reads one value at a time in both ROMs and encodes ty
   await input.fill('漢');
   await expect(input).toHaveAttribute('aria-invalid', 'true');
   await expect(widget.locator('[data-error]')).toContainText('글자표에 없습니다');
+  await noHorizontalOverflow(page);
+});
+
+test('pixel order widget redraws the glyphs and scores the chosen order', async ({ page }) => {
+  await page.goto(NDS_GFX);
+  const widget = page.locator('[data-pixel-order]');
+  await expect(widget).toHaveClass(/is-live/);
+  await expect(widget.locator('[data-order]')).toHaveText('6, 4, 2, 0');
+  const msb = Number(await widget.locator('[data-score]').textContent());
+  await widget.getByRole('button', { name: /게임의 순서/ }).click();
+  await expect(widget.locator('[data-score]')).toHaveText('299');
+  await expect(widget.locator('[data-rank]')).toHaveText('1');
+  expect(msb).toBeGreaterThan(299);
+  await widget.getByRole('combobox', { name: '픽셀 1' }).selectOption({ label: '비트 5–4' });
+  await expect(widget.locator('[data-error]')).toBeVisible();
+  await widget.getByRole('combobox', { name: '픽셀 0' }).selectOption({ label: '비트 7–6' });
+  await expect(widget.locator('[data-error]')).toBeHidden();
+  await expect(widget.locator('[data-order]')).toHaveText('6, 4, 0, 2');
+  await expect(widget.locator('[data-glyph]').first().locator('rect').first()).toBeAttached();
   await noHorizontalOverflow(page);
 });
 

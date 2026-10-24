@@ -1,0 +1,232 @@
+---
+import { GAME_ORDER, GLYPHS, H, W, decode, orderLabel, ranked, roughness } from './pixel-order.ts';
+
+const start = [6, 4, 2, 0];
+const list = ranked();
+const rank = (order: readonly number[]) => list.findIndex(r => orderLabel(r.order) === orderLabel(order)) + 1;
+const fields = [
+  { bit: 6, label: '비트 7–6' },
+  { bit: 4, label: '비트 5–4' },
+  { bit: 2, label: '비트 3–2' },
+  { bit: 0, label: '비트 1–0' },
+];
+const P = 5;
+---
+
+<section class="widget pixel-order" data-pixel-order aria-labelledby="pixel-order-title">
+  <h3 class="widget-title" id="pixel-order-title">
+    2비트 픽셀 순서 맞추기
+  </h3>
+  <p class="widget-help">
+    바이트 안 2비트 칸을 고른 순서대로 픽셀에 놓아, 고스트 트릭 한글패치 대화창 폰트의 「고」「스」「트」「릭」 네
+    글자를 그립니다.{' '}
+    <span class="live-only">
+      픽셀마다 어느 2비트를 쓸지 골라 보세요. 가로로 이웃한 픽셀 값의 차이를 모두 더한 값이 작을수록 획이 매끄럽게
+      이어집니다.
+    </span>
+  </p>
+
+  <div class="po-selects live-only" role="group" aria-label="바이트 안 픽셀 순서">
+    {[0, 1, 2, 3].map(x => (
+      <label>
+        픽셀 {x}
+        <select data-x={x}>
+          {fields.map(f => (
+            <option value={f.bit} selected={f.bit === start[x]}>
+              {f.label}
+            </option>
+          ))}
+        </select>
+      </label>
+    ))}
+  </div>
+  <div class="po-presets live-only">
+    <button type="button" class="widget-btn" data-preset="6,4,2,0">
+      위 비트부터(6, 4, 2, 0)
+    </button>
+    <button type="button" class="widget-btn" data-preset="4,6,0,2">
+      게임의 순서(4, 6, 0, 2)
+    </button>
+  </div>
+  <p class="widget-error live-only" data-error hidden></p>
+
+  <div class="po-glyphs" data-glyphs>
+    {GLYPHS.map(g => (
+      <figure>
+        <svg viewBox={`0 0 ${W * P} ${H * P}`} role="img" aria-label={`${g.char} 글리프`} data-glyph>
+          {decode(g.bytes, start).flatMap((row, y) =>
+            row.map((v, x) => (v ? <rect class={`po-${v}`} x={x * P} y={y * P} width={P} height={P} /> : null)),
+          )}
+        </svg>
+        <figcaption>
+          {g.char} <span class="mono">0x{g.id.toString(16).toUpperCase()}</span>
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+  <p class="po-score">
+    순서 <code data-order>{orderLabel(start)}</code>: 가로 이웃 픽셀 차이의 합{' '}
+    <strong data-score>{roughness(GLYPHS, start)}</strong>, 24가지 가운데 <span data-rank>{rank(start)}</span>번째로
+    작음
+  </p>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+
+  <details class="po-all">
+    <summary>24가지 순서의 점수</summary>
+    <div class="table-wrap" tabindex="0">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">순위</th>
+            <th scope="col">픽셀 0–3의 비트 위치</th>
+            <th scope="col">차이의 합</th>
+          </tr>
+        </thead>
+        <tbody>
+          {list.map((r, i) => (
+            <tr class:list={{ 'is-game': orderLabel(r.order) === orderLabel(GAME_ORDER) }}>
+              <td>{i + 1}</td>
+              <td>
+                <code>{orderLabel(r.order)}</code>
+              </td>
+              <td>{r.score}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<script>
+  import { GLYPHS, H, W, decode, orderLabel, ranked, roughness } from './pixel-order.ts';
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const P = 5;
+  const list = ranked();
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-pixel-order]')) {
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel);
+    const selects = [...root.querySelectorAll<HTMLSelectElement>('select[data-x]')];
+    const svgs = [...root.querySelectorAll<SVGSVGElement>('[data-glyph]')];
+    const error = q<HTMLElement>('[data-error]');
+    const text = (sel: string, v: string) => {
+      const el = q<HTMLElement>(sel);
+      if (el) el.textContent = v;
+    };
+
+    const render = () => {
+      const order = selects.map(s => Number(s.value));
+      const dup = new Set(order).size !== order.length;
+      for (const s of selects) s.setAttribute('aria-invalid', dup ? 'true' : 'false');
+      if (error) {
+        error.hidden = !dup;
+        error.textContent = dup ? '네 픽셀에 서로 다른 2비트 칸을 하나씩 골라 주세요.' : '';
+      }
+      if (dup) return;
+      GLYPHS.forEach((g, i) => {
+        const svg = svgs[i];
+        if (!svg) return;
+        const rects: SVGRectElement[] = [];
+        decode(g.bytes, order).forEach((row, y) =>
+          row.forEach((v, x) => {
+            if (!v) return;
+            const r = document.createElementNS(NS, 'rect');
+            r.setAttribute('class', `po-${v}`);
+            r.setAttribute('x', String(x * P));
+            r.setAttribute('y', String(y * P));
+            r.setAttribute('width', String(P));
+            r.setAttribute('height', String(P));
+            rects.push(r);
+          }),
+        );
+        svg.replaceChildren(...rects);
+        svg.setAttribute('viewBox', `0 0 ${W * P} ${H * P}`);
+      });
+      const score = roughness(GLYPHS, order);
+      const rank = list.findIndex(r => orderLabel(r.order) === orderLabel(order)) + 1;
+      text('[data-order]', orderLabel(order));
+      text('[data-score]', String(score));
+      text('[data-rank]', String(rank));
+      text('[data-live]', `순서 ${orderLabel(order)}, 차이의 합 ${score}, ${rank}위`);
+    };
+
+    for (const s of selects) s.addEventListener('change', render);
+    for (const b of root.querySelectorAll<HTMLButtonElement>('[data-preset]')) {
+      b.addEventListener('click', () => {
+        (b.dataset['preset'] ?? '').split(',').forEach((v, i) => {
+          const s = selects[i];
+          if (s) s.value = v;
+        });
+        render();
+      });
+    }
+    root.classList.add('is-live');
+  }
+</script>
+
+<style is:global>
+  .pixel-order .po-selects {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+    gap: 8px 12px;
+    margin: 0 0 10px;
+  }
+  .pixel-order .po-selects label {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+  .pixel-order .po-selects select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    padding: 4px 8px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .pixel-order .po-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 10px;
+  }
+  .pixel-order .po-glyphs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .pixel-order .po-glyphs figure {
+    margin: 0;
+    text-align: center;
+  }
+  .pixel-order .po-glyphs svg {
+    display: block;
+    width: 64px;
+    height: 96px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 4px;
+    background: var(--bg);
+  }
+  .pixel-order .po-1 {
+    fill: var(--fg);
+    fill-opacity: 0.3;
+  }
+  .pixel-order .po-2 {
+    fill: var(--fg);
+    fill-opacity: 0.6;
+  }
+  .pixel-order .po-3 {
+    fill: var(--fg);
+  }
+  .pixel-order .po-score {
+    margin: 10px 0 0;
+  }
+  .pixel-order .po-all {
+    margin-top: 10px;
+  }
+  .pixel-order tr.is-game td {
+    font-weight: 700;
+  }
+</style>
