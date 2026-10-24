@@ -43,7 +43,8 @@ const versions = [
   { name: '일본판 원본', text: '4MB, SA-1 카트리지. 이 노트의 모든 주소는 여기 기준입니다.', cls: 'dg-cell' },
   { name: 'v1.0 (IPS)', text: '대사·메뉴는 한글, 아이템·필살기·적 이름은 영문', cls: 'dg-cell' },
   { name: 'v1.1', text: '이름 한글(아이템 165·필살기 27·적 232)', cls: 'dg-warm' },
-  { name: 'v1.2', text: '전투 메시지·이름 띠, 글자 코드 충돌을 고침', cls: 'dg-accent' },
+  { name: 'v1.2', text: '전투 메시지·이름 띠, 글자 코드 충돌을 고침', cls: 'dg-warm' },
+  { name: 'v1.3', text: '이름 입력을 자모 조합식 한 페이지 화면으로', cls: 'dg-accent' },
 ];
 
 const firstReads = [
@@ -200,6 +201,11 @@ const files = {
     },
     { path: 'test/banner_ids.lua', text: '이름 띠 번호를 바꿔 띄우고 그린 글자 코드 기록' },
     { path: 'tools/py/check_banner.py', text: '기록한 글자 코드를 이름과 대조' },
+    {
+      path: 'src/name_entry.asm',
+      text: 'NeInit·NeInput(자모 격자와 입력), NeJamo(조합), NeFly·NeLanded(날아가는 글자), NeDrawName·FsPutName(이름 입력·파일 선택의 이름)',
+    },
+    { path: 'tools/py/name_entry.py', text: '이름 글리프 2,401자, 음절 번호 표, 자모 표, 격자 생성' },
   ],
   testing: [
     {
@@ -308,11 +314,11 @@ const allFiles = Object.entries(files)
   덧씌웠습니다. 그래서 어디를 바꿨는지 말하려면 v1.0이 무엇을 남겼는지부터 봐야 합니다.
 </p>
 <Figure caption="버전마다 무엇을 바꿨나. 아래로 갈수록 앞 버전 위에 덧씌운 것입니다." max={600}>
-  <svg viewBox="0 0 360 236" role="img" aria-labelledby="smrpg-ver-t smrpg-ver-d">
-    <title id="smrpg-ver-t">일본판에서 v1.2까지</title>
+  <svg viewBox="0 0 360 296" role="img" aria-labelledby="smrpg-ver-t smrpg-ver-d">
+    <title id="smrpg-ver-t">일본판에서 v1.3까지</title>
     <desc id="smrpg-ver-d">
       일본판 원본 위에 v1.0 IPS가 대사와 메뉴를 한글로 바꿨고 이름은 영문으로 두었다. v1.1이 이름을 한글로 바꿨고,
-      v1.2가 전투 메시지와 이름 띠, 글자 코드 충돌을 고쳤다.
+      v1.2가 전투 메시지와 이름 띠, 글자 코드 충돌을 고쳤고, v1.3이 이름 입력을 자모 조합식으로 바꿨다.
     </desc>
     {versions.map((v, i) => (
       <>
@@ -334,7 +340,8 @@ const allFiles = Object.entries(files)
   v1.0에서 이름만 영문이었던 이유는 롬 용량이 아니라 메뉴 화면이 글자를 다루는 방식이었습니다(
   <a href="#making-font">4절</a>). v1.1은 그 방식을 바꾸는 코드를 게임에 끼워 넣었고(<a href="#making-unique">8절</a>),
   이름이 대사에 들어가는 곳도 모두 다시 만들었습니다(<a href="#making-dialogue">3절</a>). v1.2는 v1.1이 놓친 전투
-  메시지와 글자 충돌을 고쳤습니다. 세 버전 모두 롬 크기는 원본과 같은 4MB이고 세이브 구조도 그대로입니다.
+  메시지와 글자 충돌을 고쳤고, v1.3은 이름 입력을 자모로 조합하는 화면으로 바꿨습니다(
+  <a href="#making-name-entry">8절</a>). 네 버전 모두 롬 크기는 원본과 같은 4MB이고 세이브 구조도 그대로입니다.
 </p>
 <h3>먼저 읽으면 좋은 장</h3>
 <ul class="notes">
@@ -1354,6 +1361,56 @@ $C1:06AF → 0x01 × 0x10000 + 0x06AF = 0x0106AF</code></pre>
     새 코드는 <code>$E2:FDE2–$E2:FF6C</code>와 <code>$C1:56BB–56BE</code>, <code>$C1:56F2–56F5</code>(원래 루틴이 남긴
     자리)에, 변수와 띠 문자열은 패치 변수 영역 안의 WRAM <code>$7E:1100–$7E:112E</code>에 두었습니다.
   </p>
+</Deeper>
+
+<h3 id="making-name-entry">v1.3: 자모로 조합하는 이름 입력</h3>
+<p>
+  v1.2까지의 이름 입력은 메뉴 폰트에 있는 음절 160자를 두 페이지에 늘어놓고 고르는 화면이었습니다. 일본판의 히라가나
+  페이지와 가타카나 페이지 자리에 음절을 나눠 담은 것이라, 원하는 글자를 찾기 어렵고 폰트에 없는 음절은 이름에 쓸 수
+  없었습니다. v1.3은 이 화면을 자음과 모음을 골라 음절을 만드는 한 페이지로 바꿨습니다. 자판은 포켓몬스터 DS·3DS
+  한국어판처럼 두벌식 배열을 격자에 옮기고, 쌍자음은 Shift 자리인 윗줄에 두었습니다.
+</p>
+<figure class="paper narrow">
+  <ZoomImage
+    src={`${base}/images/releases/v1-3/name-entry.webp`}
+    width="630"
+    height="920"
+    alt="위는 v1.2, 아래는 v1.3 이름 입력 화면. 음절 표가 두벌식 자모 자판으로 바뀌었다"
+    loading="lazy"
+    decoding="async"
+    smooth
+  />
+  <figcaption>위 v1.2, 아래 v1.3</figcaption>
+</figure>
+<p>
+  이름은 세이브에 8바이트로 남습니다. 메뉴 폰트에 있는 음절은 예전처럼 1바이트로 적어 이전 세이브의 이름과 같게 두고,
+  폰트에 없는 음절과 자모만 2바이트로 적었습니다. 그런 글자는 완성형 2,350자를 1bpp로 그려 롬의 빈 곳에 넣고, 이름이
+  보이는 두 화면(이름 입력과 파일 선택)에서 <a href="#making-slots">임시 칸</a>에 올려 그립니다.
+</p>
+<Deeper title="조합 규칙과 두 화면의 임시 칸">
+  <ul>
+    <li>
+      지금 만드는 음절은 넣은 자모마다 상태(초성, 중성, 종성)를 하나씩 쌓아 둡니다. B 버튼은 이 상태를 하나 꺼내므로
+      「각 → 가 → ㄱ」처럼 자모 단위로 지워집니다.
+    </li>
+    <li>
+      음절 번호 (초성 × 21 + 중성) × 28 + 종성을 정렬한 2,350개 표에서 이진 탐색합니다. 모음이 붙어 표에 없는 음절이
+      되면(쌰) 효과음으로 거절하고, 받침이 붙어 없는 음절이 되면(똠) 앞 음절을 확정하고 새 초성으로 시작합니다.
+    </li>
+    <li>
+      이름 입력 화면의 BG2는 VRAM <code>$8000</code>부터만 써서 필드 메뉴와 같은 임시 칸(<code>$6000–$7FFF</code>)을 쓸
+      수 있었습니다. 파일 선택 화면은 이름을 BG3에 2bpp로 그리고 BG1이 그 칸을 배관 그림에 써서, BG3 메뉴 폰트 바로 뒤의
+      16글자 자리를 따로 잡았습니다.
+    </li>
+    <li>
+      고른 키가 이름 칸으로 날아가는 연출은 원판 루틴(<code>$C3:434F</code>)에 스프라이트 타일만 채워 넘겨 그대로
+      씁니다. 착지할 때(<code>$C3:452D</code>) 이름을 그립니다.
+    </li>
+    <li>
+      korTBL2 표의 문장 부호 줄은 실제 그림과 달라서(<code>$21</code>은 아이콘), 숫자·기호 칸은 그림을 보고 고른 코드를
+      그대로 적었습니다.
+    </li>
+  </ul>
 </Deeper>
 
 <ToolFiles patch={patch} items={files.unique} />
