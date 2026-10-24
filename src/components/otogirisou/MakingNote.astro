@@ -193,6 +193,7 @@ const debugSteps = [
 
 const emulators = [
   { name: 'Mesen 2', result: '정상 (1~4회차, 모든 세이브 종류 이어하기)' },
+  { name: 'MesenCE 2.2.1', result: '정상 (회차를 바꿔 시작, 이어하기, 장 목록, 플로차트). 대사 순서가 Mesen 2와 같음' },
   { name: 'bsnes', result: '정상 (7가지 모두)' },
   { name: 'bsnes-hd beta', result: '정상 (7가지 모두). 화면을 224줄이 아닌 216줄로 내보냄' },
   { name: 'snes9x, snes9x2010', result: '정상 (7가지 모두)' },
@@ -1564,7 +1565,8 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 <p>
   아래 표는 최종 v1.2(CRC32 2C31A0B2)로 다시 돌린 결과입니다. 코어마다 7가지를 넣었습니다. 새 게임(헤더 없는 롬, 헤더
   있는 롬), v1.1·v1.0·일본판 세이브로 이어하기, 장 목록, 플로차트입니다. 정상인 코어는 끝까지 같은 장면과 선택지로 갔고,
-  차이는 글자가 찍히는 타이밍 몇 프레임뿐이었습니다. Mesen 2 줄은 그 전에 Mesen 2로 직접 확인한 결과입니다.
+  차이는 글자가 찍히는 타이밍 몇 프레임뿐이었습니다. Mesen 2 줄은 그 전에 Mesen 2로 직접 확인한 결과이고, MesenCE 줄은
+  나중에 Mesen 2와 같은 입력을 나란히 넣어 비교한 결과입니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
