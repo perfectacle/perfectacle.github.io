@@ -1,0 +1,236 @@
+---
+import { SAMPLE, SAMPLE_PATH, fileGroups, walkSteps } from './nds-walk.ts';
+import { hex } from '../../lib/nds-fs.ts';
+
+const groups = fileGroups(SAMPLE);
+const steps = walkSteps(SAMPLE, SAMPLE_PATH);
+const named = groups.reduce((n, g) => n + g.paths.length, 0);
+---
+
+<section class="widget nds-walk" data-nds-walk aria-labelledby="nds-walk-title">
+  <h3 class="widget-title" id="nds-walk-title">
+    파일 이름으로 롬 위치 찾기
+  </h3>
+  <p class="widget-help">
+    고스트 트릭 일본판의 FNT와 FAT로 파일 이름에서 롬 위치까지 따라갑니다.{' '}
+    <span class="live-only">
+      파일을 고르면 단계가 바뀝니다. 가진 롬을 열면 그 롬의 표로 따라갑니다. 롬은 이 브라우저 안에서만 읽고 어디로도
+      보내지 않습니다.
+    </span>
+  </p>
+
+  <div class="nw-controls live-only">
+    <label>
+      파일
+      <select data-file>
+        {groups.map(g => (
+          <optgroup label={g.folder ? `${g.folder}/` : '맨 위 폴더'}>
+            {g.paths.map(p => (
+              <option value={p} selected={p === SAMPLE_PATH}>
+                {p}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+    </label>
+    <label class="nw-open">
+      가진 롬 열기
+      <input type="file" accept=".nds,application/octet-stream" data-rom aria-describedby="nds-walk-error" />
+    </label>
+    <button type="button" class="widget-btn" data-sample hidden>
+      고스트 트릭 일본판으로 돌아가기
+    </button>
+  </div>
+  <p class="widget-error live-only" id="nds-walk-error" data-error hidden></p>
+
+  <p class="nw-rom">
+    <span data-rom-name>
+      {SAMPLE.header.title}({SAMPLE.header.code})
+    </span>
+    , 이름 있는 파일 <span data-named>{named}</span>개 중{' '}
+    <code class="nw-path" data-path>
+      {SAMPLE_PATH}
+    </code>
+  </p>
+  <ol class="nw-steps" data-steps>
+    {steps.map(s => (
+      <li>
+        <p class="nw-where">
+          <span>{s.where}</span> <code>0x{hex(s.at, 8)}</code>
+        </p>
+        <code class="nw-bytes">{s.bytes}</code>
+        <p class="nw-text">{s.text}</p>
+      </li>
+    ))}
+  </ol>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { HEADER_SIZE, hex, parseFnt, parseHeader } from '../../lib/nds-fs.ts';
+  import { SAMPLE, SAMPLE_PATH, fileGroups, walkSteps, type WalkRom } from './nds-walk.ts';
+
+  /** Larger tables than any retail card has mean the header is not an NDS header. */
+  const MAX_TABLE = 0x100000;
+
+  async function readRom(file: File): Promise<WalkRom> {
+    const header = parseHeader(new Uint8Array(await file.slice(0, HEADER_SIZE).arrayBuffer()));
+    for (const [name, [off, size]] of [
+      ['FNT', header.fnt],
+      ['FAT', header.fat],
+    ] as const) {
+      if (!size || size > MAX_TABLE || off < HEADER_SIZE || off + size > file.size)
+        throw new Error(`헤더의 ${name} 위치가 파일 밖을 가리킵니다. NDS 롬이 맞는지 확인해 주세요.`);
+    }
+    const slice = async ([off, size]: [number, number]) =>
+      new Uint8Array(await file.slice(off, off + size).arrayBuffer());
+    const rom = { header, fnt: await slice(header.fnt), fat: await slice(header.fat) };
+    parseFnt(rom.fnt);
+    return rom;
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-nds-walk]')) {
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel);
+    const select = q<HTMLSelectElement>('[data-file]');
+    const input = q<HTMLInputElement>('[data-rom]');
+    const back = q<HTMLButtonElement>('[data-sample]');
+    const error = q<HTMLElement>('[data-error]');
+    const live = q<HTMLElement>('[data-live]');
+    const text = (sel: string, value: string) => {
+      const el = q<HTMLElement>(sel);
+      if (el) el.textContent = value;
+    };
+    let rom = SAMPLE;
+
+    const showError = (message: string) => {
+      input?.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (error) {
+        error.hidden = !message;
+        error.textContent = message;
+      }
+    };
+
+    const render = (path: string) => {
+      const steps = walkSteps(rom, path);
+      text('[data-path]', path);
+      q('[data-steps]')?.replaceChildren(
+        ...steps.map(s => {
+          const li = document.createElement('li');
+          const where = document.createElement('p');
+          where.className = 'nw-where';
+          const label = document.createElement('span');
+          label.textContent = s.where;
+          const at = document.createElement('code');
+          at.textContent = `0x${hex(s.at, 8)}`;
+          where.append(label, ' ', at);
+          const bytes = document.createElement('code');
+          bytes.className = 'nw-bytes';
+          bytes.textContent = s.bytes;
+          const p = document.createElement('p');
+          p.className = 'nw-text';
+          p.textContent = s.text;
+          li.append(where, bytes, p);
+          return li;
+        }),
+      );
+      if (live) live.textContent = `${path}: ${steps.at(-1)?.text ?? ''}`;
+    };
+
+    const load = (next: WalkRom, path?: string) => {
+      const groups = fileGroups(next);
+      const first = path ?? groups[0]?.paths[0];
+      if (!first) throw new Error('이름 있는 파일이 없는 롬입니다.');
+      rom = next;
+      select?.replaceChildren(
+        ...groups.map(g => {
+          const group = document.createElement('optgroup');
+          group.label = g.folder ? `${g.folder}/` : '맨 위 폴더';
+          group.append(...g.paths.map(p => new Option(p, p, false, p === first)));
+          return group;
+        }),
+      );
+      text('[data-rom-name]', `${next.header.title}(${next.header.code})`);
+      text('[data-named]', String(groups.reduce((n, g) => n + g.paths.length, 0)));
+      if (back) back.hidden = next === SAMPLE;
+      render(first);
+    };
+
+    select?.addEventListener('change', () => render(select.value));
+    input?.addEventListener('change', async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        load(await readRom(file));
+        showError('');
+      } catch (e) {
+        showError(e instanceof Error ? e.message : String(e));
+      }
+    });
+    back?.addEventListener('click', () => {
+      if (input) input.value = '';
+      showError('');
+      load(SAMPLE, SAMPLE_PATH);
+    });
+    root.classList.add('is-live');
+  }
+</script>
+
+<style>
+  .nw-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items: end;
+    margin: 0 0 10px;
+  }
+  .nw-controls label {
+    display: grid;
+    flex: 1 1 16rem;
+    gap: 4px;
+    min-width: 0;
+  }
+  .nw-controls select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    padding: 4px 8px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .nw-open input {
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .nw-rom {
+    margin: 0 0 8px;
+  }
+  .nw-path {
+    overflow-wrap: anywhere;
+  }
+  .nw-steps {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding-left: 2.2em;
+  }
+  .nw-steps li p {
+    margin: 0;
+  }
+  .nw-where {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 8px;
+    font-weight: 600;
+  }
+  .nw-bytes {
+    display: block;
+    margin: 4px 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+  .nw-text {
+    color: var(--fg-muted);
+  }
+</style>

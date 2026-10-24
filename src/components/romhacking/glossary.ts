@@ -23,6 +23,7 @@ type Where =
   | 'sfc/expansion'
   | 'sfc/emulator'
   | 'sfc/sound'
+  | 'nds/filesystem'
   | 'music-loop';
 
 export interface GlossaryEntry {
@@ -544,6 +545,28 @@ const RAW: [string, string, Where, string, string][] = [
     '브라우저에서 소리를 메모리에 풀어 두고 다루는 API. 반복 구간을 정할 수 있음',
   ],
   ['자동재생', 'autoplay', 'music-loop', 'web', '사용자가 누르기 전에 소리를 내는 재생. 브라우저가 막을 수 있음'],
+  [
+    '카드 헤더',
+    'card header',
+    'nds/filesystem',
+    'header',
+    'DS 롬의 첫 0x200바이트. 게임 이름과 코드, 두 CPU 프로그램과 파일 표의 위치를 적어 둔 곳',
+  ],
+  [
+    'FNT',
+    'File Name Table',
+    'nds/filesystem',
+    'fnt-fat',
+    'DS 롬의 파일 이름 표. 폴더와 이름을 따라가면 파일 번호가 나옵니다',
+  ],
+  [
+    'FAT',
+    'File Allocation Table',
+    'nds/filesystem',
+    'fnt-fat',
+    'DS 롬의 파일 위치 표. 파일 번호마다 시작과 끝 위치를 8바이트로 적습니다',
+  ],
+  ['오버레이', 'overlay', 'nds/filesystem', 'overlay', '필요할 때만 RAM의 같은 자리에 번갈아 올리는 코드 조각'],
   ['LCP', 'Largest Contentful Paint', 'music-loop', 'web', '첫 화면에서 가장 큰 요소가 그려지기까지의 시간'],
 ];
 
@@ -551,7 +574,7 @@ const collator = new Intl.Collator('ko');
 
 export const GLOSSARY: GlossaryEntry[] = RAW.map(([term, en, where, anchor, meaning]) => {
   const [a, b] = where.split('/');
-  const chapter = b ? chapterBySlug(a as 'sfc', b) : chapterBySlug('common', a ?? '');
+  const chapter = b ? chapterBySlug(a as 'sfc' | 'nds', b) : chapterBySlug('common', a ?? '');
   // Meanings that end in a full sentence get a period; noun phrases stay bare.
   return { term, ...(en ? { en } : {}), meaning: meaning.endsWith('다') ? `${meaning}.` : meaning, chapter, anchor };
 }).sort((x, y) => collator.compare(x.term, y.term));

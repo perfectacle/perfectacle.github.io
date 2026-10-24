@@ -30,7 +30,7 @@ import {
 import { GLOSSARY, GLOSSARY_PATH } from '../../../components/romhacking/glossary.ts';
 
 const description =
-  '한글패치를 만들며 쓴 롬 해킹 지식을 처음부터 풀어 쓴 가이드입니다. 16진수와 엔디안부터 65c816 어셈블리, 뱅크와 매핑, 후킹, 타일과 폰트, 대사 형식, 압축과 롬 확장, 에뮬레이터로 확인하는 법, 사운드 구조와 게임 음악을 끊김 없이 반복하는 법까지 그림과 직접 만져 보는 도구로 배웁니다.';
+  '한글패치를 만들며 쓴 롬 해킹 지식을 처음부터 풀어 쓴 가이드입니다. 16진수와 엔디안부터 65c816 어셈블리, 뱅크와 매핑, 후킹, 타일과 폰트, 대사 형식, 압축과 롬 확장, 에뮬레이터로 확인하는 법, 사운드 구조와 게임 음악을 끊김 없이 반복하는 법, 닌텐도 DS 롬의 파일 시스템까지 그림과 직접 만져 보는 도구로 배웁니다.';
 const first = GUIDE_CHAPTERS.find(c => c.ready);
 ---
 
@@ -129,8 +129,8 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
 
         <h2 id="chapters">차례</h2>
         <p>
-          공통 장은 어느 게임기에나 해당하고, 슈퍼 패미콤 장은 그 게임기에 맞춘 내용입니다. 닌텐도 DS 장은 나중에
-          붙입니다.
+          공통 장은 어느 게임기에나 해당하고, 슈퍼 패미콤 장과 닌텐도 DS 장은 그 게임기에 맞춘 내용입니다. 닌텐도 DS
+          장은 15장부터 하나씩 늘려 갑니다.
         </p>
         <ol class="chapter-map" start="0">
           {GUIDE_CHAPTERS.map(c => (
