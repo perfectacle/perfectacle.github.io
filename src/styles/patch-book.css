@@ -1108,7 +1108,7 @@ h4.pixel {
 }
 
 /* Section titles are window name tabs, not web headings. */
-[data-theme='smrpg'] .section > h2.pixel {
+[data-theme='smrpg'] :is(.section, .making-head) > h2.pixel {
   justify-self: start;
   padding: 8px 16px;
   border-radius: 8px;
@@ -1462,11 +1462,25 @@ h4.pixel {
   text-align: center;
 }
 
-/* On a patch page the note is a teaser: its intro and a link to the full note in the ROM hacking guide. It reads like
-   the other sections, straight on the page background. */
+/* On a patch page the note is a teaser: its intro and a link to the full note in the ROM hacking guide. The intro is
+   long reading, so it sits on a solid panel; the link stands beside the heading where the section starts. */
 .making-teaser > .lead {
   max-inline-size: 46rem;
+  padding: 18px 22px;
+  border-radius: 10px;
+  background: var(--panel);
   line-height: 1.85;
+}
+
+.making-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: center;
+}
+
+.making-head > h2 {
+  margin: 0;
 }
 
 .making-open {

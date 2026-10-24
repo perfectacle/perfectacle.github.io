@@ -12,15 +12,15 @@ const { patch } = Astro.props;
 ---
 
 <section id="making" class="section page-width making-teaser" aria-labelledby="making-title">
-  <h2 id="making-title" class="pixel">
-    <a class="heading-link" href="#making">
-      {SECTION_TITLES.making}
-    </a>
-  </h2>
-  <MakingIntro patch={patch} />
-  <p>
+  <div class="making-head">
+    <h2 id="making-title" class="pixel">
+      <a class="heading-link" href="#making">
+        {SECTION_TITLES.making}
+      </a>
+    </h2>
     <a class="making-open" href={notePath(patch)}>
       노트 읽기 <span aria-hidden="true">→</span>
     </a>
-  </p>
+  </div>
+  <MakingIntro patch={patch} />
 </section>
