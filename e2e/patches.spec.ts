@@ -79,7 +79,7 @@ for (const patch of KR_PATCHES) {
     const details = page.locator('.patch-box .file-checksums');
     const summary = details.locator('summary');
     await expect(details).not.toHaveAttribute('open');
-    await expect(summary).toHaveText('롬파일 크기·해시 보기');
+    await expect(summary).toHaveText('원본 롬파일 크기·해시 보기');
     await expect(details.getByRole('heading', { name: '일본판 원본', exact: true })).toBeHidden();
     await summary.focus();
     await page.keyboard.press('Enter');
