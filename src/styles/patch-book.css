@@ -1439,19 +1439,16 @@ h4.pixel {
   bottom: 4px;
 }
 
-/* "How it was made" sections shared by the patch pages. */
-
-.paper {
-  padding: 8px;
-  background: var(--panel);
-  border-radius: 8px;
-  box-shadow: 0 4px 0 rgb(0 0 0 / 35%);
-}
+/* "How it was made" sections shared by the patch pages: a picture sits like the game screens elsewhere on the page,
+   with no panel around it. */
 
 .paper img {
   display: block;
   width: 100%;
   height: auto;
+  box-shadow:
+    0 0 0 3px #000,
+    0 6px 0 rgb(0 0 0 / 35%);
 }
 
 .paper.narrow {
@@ -1465,13 +1462,10 @@ h4.pixel {
   text-align: center;
 }
 
-/* Notes are long reading: they sit on a solid panel instead of the patterned page background. */
-/* On a patch page the note is a teaser: its intro and a link to the full note in the ROM hacking guide. */
+/* On a patch page the note is a teaser: its intro and a link to the full note in the ROM hacking guide. It reads like
+   the other sections, straight on the page background. */
 .making-teaser > .lead {
   max-inline-size: 46rem;
-  padding: 18px 22px;
-  border-radius: 10px;
-  background: var(--panel);
   line-height: 1.85;
 }
 
@@ -1482,15 +1476,14 @@ h4.pixel {
   padding: 12px 22px;
   border: 2px solid var(--accent);
   border-radius: 10px;
-  background: var(--panel);
-  color: var(--ink);
+  color: var(--accent);
   font-weight: 700;
   text-decoration: none;
 }
 
 .making-open:hover,
 .making-open:focus-visible {
-  background: color-mix(in srgb, var(--accent) 18%, var(--panel));
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 /* The boot scene on the patch list ends on black; let the next page fade in from it. */
