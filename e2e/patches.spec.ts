@@ -955,3 +955,21 @@ for (const path of [HUB, CATALOGUE, ...KR_PATCHES.map(patch => `${patch.path}/`)
     if (patch) expect(await meta('og:description')).toContain(patch.card.summary);
   });
 }
+
+test('tab titles name each page once before the site name', async ({ page }) => {
+  const titles: [string, string][] = [
+    [HUB, '한글패치'],
+    [CATALOGUE, '슈퍼 패미컴 | 한글패치'],
+    ...KR_PATCHES.map(patch => [`${patch.path}/`, `${patch.title} | 한글패치`] as [string, string]),
+  ];
+  for (const [path, title] of titles) {
+    await page.goto(path);
+    await expect(page).toHaveTitle(title);
+  }
+  // A shared card shows no site name in some messengers, so its title still says what the page offers.
+  await page.goto(OTOGIRI);
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+    'content',
+    `${OTOGIRISOU_PATCH.title} 한글패치`,
+  );
+});

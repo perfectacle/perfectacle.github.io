@@ -33,7 +33,9 @@ const preview = {
   ...(patch ? OG_SIZE.game : OG_SIZE.catalogue),
 };
 const imageUrl = new URL(preview.src, Astro.site).href;
-const fullTitle = title === KR_PATCH_SITE_TITLE ? title : `${title} | ${KR_PATCH_SITE_TITLE}`;
+// A game page's heading already says 한글패치, so the tab names the game alone before the site name.
+const tabTitle = patch?.title ?? title;
+const fullTitle = tabTitle === KR_PATCH_SITE_TITLE ? tabTitle : `${tabTitle} | ${KR_PATCH_SITE_TITLE}`;
 ---
 
 <!doctype html>
