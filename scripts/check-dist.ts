@@ -1,6 +1,6 @@
 // Integrity of the built site: every internal link and asset resolves, every `#anchor` exists on its page,
 // and the feed and sitemap are well-formed and point at real pages.
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join, posix } from 'node:path';
 import { SyntaxValidator } from 'fast-xml-validator';
 
@@ -23,6 +23,10 @@ const fileFor = (urlPath: string): string => {
   if (path.endsWith('/')) return join(DIST, path, 'index.html');
   return posix.extname(path) ? join(DIST, path) : join(DIST, path, 'index.html');
 };
+
+// existsSync ignores case on macOS, but GitHub Pages serves paths case-sensitively.
+const distFiles = new Set(readdirSync(DIST, { recursive: true, encoding: 'utf8' }).map(f => join(DIST, f)));
+const exists = (file: string) => distFiles.has(file);
 
 const idCache = new Map<string, Set<string>>();
 const idsOf = (file: string): Set<string> => {
@@ -66,7 +70,7 @@ for (const page of pages) {
     const target = url.pathname + url.hash;
     if (KNOWN_BROKEN.has(decodeURIComponent(target))) continue;
     const file = fileFor(url.pathname);
-    if (!existsSync(file)) {
+    if (!exists(file)) {
       problems.push(`${pageUrl}: ${attr} → ${target} (missing)`);
       continue;
     }
@@ -87,7 +91,7 @@ for (const xml of ['sitemap.xml', 'atom.xml']) {
   for (const [, loc = ''] of text.matchAll(/<loc>([^<]+)<\/loc>|<link href="([^"]+)"\/>/g)) {
     const url = new URL(decodeEntities(loc || ''), SITE);
     const file = fileFor(url.pathname);
-    if (!existsSync(file)) problems.push(`${xml}: ${url.pathname} (missing)`);
+    if (!exists(file)) problems.push(`${xml}: ${url.pathname} (missing)`);
     // A redirect in astro.config.ts silently replaces a real page that has the same path.
     else if (file.endsWith('.html') && readFileSync(file, 'utf8').includes('http-equiv="refresh"')) {
       problems.push(`${xml}: ${url.pathname} (replaced by a redirect)`);
