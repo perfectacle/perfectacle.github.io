@@ -750,9 +750,10 @@ const buildSteps = [
 </h2>
 <NoteRelated patch={patch} id="making-font" />
 <p>
-  대사에 쓰는 글자 번호 하나를 폰트 세 개가 함께 씁니다. 대화창의 <code>fonts2bpp_new.imb</code>, 말풍선의{' '}
-  <code>balloon_font.imb</code>, 그리고 <code>font_db.imb</code>입니다. v1.1은 세 폰트를 모두 3,203자로 맞추고 번호를
-  이렇게 나눴습니다.
+  대사 폰트는 셋입니다. 대화창의 <code>fonts2bpp_new.imb</code>, 말풍선의 <code>balloon_font.imb</code>, 그리고{' '}
+  <code>font_db.imb</code>입니다. 일본판에서 셋은 0x00–0x3F(숫자와 영문)만 같고, <code>font_db.imb</code>는 0x40부터
+  다른 글자(악센트 붙은 라틴 문자)입니다. v1.1은 세 폰트를 모두 3,203자로 맞추고, 한글을 세 폰트의 같은 번호에 그려
+  번호를 이렇게 나눴습니다.
 </p>
 <ul class="notes">
   <li>

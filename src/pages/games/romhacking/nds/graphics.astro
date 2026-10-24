@@ -1,0 +1,237 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import Figure from '../../../../components/romhacking/Figure.astro';
+import PixelOrder from '../../../../components/romhacking/PixelOrder.astro';
+import { GHOST_TRICK_PATCH, analysisUrl, sourceFileUrl, toolkitFileUrl } from '../../../../lib/kr-patches.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+
+const references = [
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#lcdvramcharacterdata',
+    label: 'GBATEK, LCD VRAM Character Data',
+    note: '8×8 타일 하나가 4bpp면 32바이트, 8bpp면 64바이트이고, 4bpp는 바이트의 아래 4비트가 왼쪽 픽셀이라는 점',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#lcdcolorpalettes',
+    label: 'GBATEK, LCD Color Palettes',
+    note: '색 하나 2바이트(빨강·초록·파랑 5비트씩), BG·OBJ 팔레트가 각각 512바이트·256색, 0번 색은 투명',
+  },
+  {
+    href: toolkitFileUrl('src/kr_patch/linear.py'),
+    label: 'kr-patch-toolkit, linear.py',
+    note: '타일이 아니라 한 줄씩 저장한 비트맵을 lsb·msb 순서로 그리는 명령',
+  },
+  {
+    href: sourceFileUrl(GHOST_TRICK_PATCH, 'tools/font_store.py'),
+    label: 'kr-patches, 고스트 트릭 tools/font_store.py',
+    note: '대화창 폰트 16×24 2bpp와 픽셀 순서 SHIFT = (4, 6, 0, 2)',
+  },
+  {
+    href: analysisUrl(GHOST_TRICK_PATCH),
+    label: 'kr-patches, 고스트 트릭 docs/ANALYSIS.md',
+    note: '폰트 세 개의 크기와 글자 수, 글자 번호 나누기, 타이틀 그림 sdt. 헤더',
+  },
+];
+const note = notePath(GHOST_TRICK_PATCH);
+const fonts = [
+  {
+    file: 'fonts2bpp_new.imb',
+    use: '대화창',
+    shape: '16×24, 2bpp, 글자당 96바이트',
+    jp: '1,350자(129,600바이트)',
+    kr: '3,203자(307,488바이트)',
+  },
+  {
+    file: 'font_db.imb',
+    use: '모름(확인하지 않음)',
+    shape: '16×16, 4bpp, 글자당 128바이트',
+    jp: '256자(32,768바이트)',
+    kr: '3,203자(409,984바이트)',
+  },
+  {
+    file: 'balloon_font.imb',
+    use: '말풍선',
+    shape: '16×16, 4bpp, 글자당 128바이트',
+    jp: '256자(32,768바이트)',
+    kr: '3,203자(409,984바이트)',
+  },
+];
+// One row of a 4bpp tile: pixels 1 2 3 4 5 6 7 8 with colours 1, 2, 3, 4, 5, 6, 7, 8.
+const row = [1, 2, 3, 4, 5, 6, 7, 8];
+const packed = [0, 2, 4, 6].map(i => `${row[i + 1]?.toString(16)}${row[i]?.toString(16)}`.toUpperCase());
+---
+
+<GuideChapter platform="nds" slug="graphics" references={references}>
+  <h2 id="tiles">
+    DS의 2D 그림도 타일과 팔레트 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    DS에는 2D 엔진(2D 그림을 그리는 회로)이 A·B 둘 있어 화면을 하나씩 맡습니다(어느 쪽이 위 화면인지는 바꿀 수
+    있습니다). 원리는 슈퍼 패미콤과 같습니다(
+    <a href={chapterHref(7)}>7장</a>). 화면은 주로 8×8픽셀 타일을 이어 붙여 그리고(타일 없이 픽셀을 줄줄이 놓는 비트맵
+    화면 모드도 있습니다), 타일의 픽셀은 색 번호를, 팔레트는 그 번호가 실제로 무슨 색인지를 정합니다. 색 하나는
+    2바이트로 빨강·초록·파랑을 5비트씩 적고, 팔레트의 0번 색은 투명입니다.
+  </p>
+  <p>
+    다른 점은 픽셀을 바이트에 담는 방법입니다. 슈퍼 패미콤은 비트평면이라 한 픽셀의 비트가 여러 바이트에 흩어집니다.
+    DS는 한 픽셀의 비트를 한 바이트 안에 붙여 담습니다. 4bpp(16색)면 바이트 하나에 픽셀 둘, 아래 4비트가 왼쪽
+    픽셀입니다. 8bpp(256색)면 바이트 하나가 픽셀 하나입니다. 그래서 타일 한 줄을 헥스 에디터로 보면 색 번호가 거의
+    그대로 보입니다.
+  </p>
+  <Figure
+    caption="색 번호 1–8인 픽셀 여덟 개를 DS 4bpp로 담으면 4바이트입니다. 바이트마다 왼쪽 픽셀이 아래 4비트입니다."
+    max={600}
+  >
+    <svg viewBox="0 0 360 150" role="img" aria-labelledby="pk-t pk-d">
+      <title id="pk-t">DS 4bpp 타일 한 줄</title>
+      <desc id="pk-d">
+        색 번호 1, 2, 3, 4, 5, 6, 7, 8인 픽셀 여덟 개가 바이트 넷({packed.map(b => `0x${b}`).join(', ')})으로 담긴다. 앞
+        픽셀이 바이트의 아래 4비트, 뒤 픽셀이 위 4비트다.
+      </desc>
+      <text class="dg-small" x="8" y="16">
+        픽셀(색 번호)
+      </text>
+      {row.map((c, i) => (
+        <>
+          <rect class="dg-cell" x={8 + i * 43} y="24" width="38" height="34" rx="4" />
+          <text class="dg-mono" x={27 + i * 43} y="46" text-anchor="middle">
+            {c}
+          </text>
+        </>
+      ))}
+      <text class="dg-small" x="8" y="90">
+        바이트
+      </text>
+      {packed.map((b, i) => (
+        <>
+          <path class="dg-arrow" d={`M${27 + i * 86} 60 L${51 + i * 86} 96`} />
+          <path class="dg-arrow" d={`M${70 + i * 86} 60 L${55 + i * 86} 96`} />
+          <rect class="dg-warm" x={14 + i * 86} y="98" width="78" height="34" rx="4" />
+          <text class="dg-mono" x={53 + i * 86} y="120" text-anchor="middle">
+            {b}
+          </text>
+        </>
+      ))}
+      <text class="dg-small" x="8" y="146">
+        예: 색 1·2인 첫 두 픽셀 → 위 4비트 2, 아래 4비트 1 → 0x21
+      </text>
+    </svg>
+  </Figure>
+
+  <h2 id="game-format">
+    게임이 정한 그림 형식 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    롬 안의 그림이 늘 하드웨어 타일 그대로 들어 있지는 않습니다. 게임은 그림을 자기 형식으로 담아 두고, 화면에 낼 때
+    VRAM에 맞게 옮겨 놓습니다. 그래서 그림 파일을 고치려면 그 게임의 형식부터 알아야 합니다.
+  </p>
+  <p>
+    고스트 트릭의 타이틀 위 화면은 그래픽 묶음 <code>cpac_3d.bin</code> 안의 한 항목입니다. LZ11(
+    <a href={`${chapterHref(16)}#lz11`}>16장</a>)을 풀면 <code>sdt.</code>로 시작하는 그림이 나옵니다. 헤더 0x0C부터
+    4바이트씩 픽셀 위치(0x24), 픽셀 크기(0xC000), 팔레트 위치(0xC024), 팔레트 크기(0x200), 가로 256, 세로 192가 적혀
+    있습니다. 픽셀 하나가 1바이트(8bpp)라 256 × 192 = 0xC000바이트이고, 팔레트는 256색 × 2바이트 = 0x200바이트입니다.
+    타일로 자르지 않고 한 줄씩 늘어놓은 그림입니다(<a href={`${note}#making-title`}>노트</a>).
+  </p>
+
+  <h2 id="fonts">
+    폰트: 글자 하나 = 그림 한 장 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    대사의 2바이트 값(<a href={`${chapterHref(16)}#words`}>16장</a>)은 폰트 파일에서 몇 번째 그림인지를 가리킵니다.
+    고스트 트릭에는 대사 폰트가 세 개 있습니다. 일본판에서 셋은 0x00–0x3F(숫자와 영문)만 같고, 그 뒤는 다릅니다.
+    대화창·말풍선 폰트는 0x40부터 히라가나인데 <code>font_db.imb</code>는 악센트 붙은 라틴 문자입니다. 한글패치 v1.1은
+    세 폰트의 0x12C–0xA59에 같은 한글을 같은 순서로 그려, 한글 번호는 어느 폰트에서나 같은 글자가 되게 했습니다.
+  </p>
+  <div class="table-wrap" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">파일</th>
+          <th scope="col">쓰는 곳</th>
+          <th scope="col">글자 모양</th>
+          <th scope="col">일본판</th>
+          <th scope="col">한글패치</th>
+        </tr>
+      </thead>
+      <tbody>
+        {fonts.map(f => (
+          <tr>
+            <th scope="row">
+              <code>{f.file}</code>
+            </th>
+            <td>{f.use}</td>
+            <td class="wrap">{f.shape}</td>
+            <td class="wrap">{f.jp}</td>
+            <td class="wrap">{f.kr}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    세 폰트 모두 8×8 타일이 아니라 글자 하나를 한 줄씩 늘어놓은 비트맵(선형 비트맵)입니다. 대화창 폰트는 16픽셀 한 줄이
+    2bpp로 4바이트, 24줄이라 글자 하나가 96바이트입니다. 글자 번호 × 96이 그 글자의 위치라 「가」(0x12C)는 0x7080에
+    있습니다. 대사를 읽던 글자표와 폰트 그림 순서가 같은 번호를 쓰므로, 둘 중 하나만 바꾸면 엉뚱한 글자가 나옵니다.
+  </p>
+
+  <h2 id="order">
+    2비트 픽셀 넷의 순서 찾기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    2bpp면 바이트 하나에 픽셀 넷이 들어갑니다. 어느 2비트가 몇 번째 픽셀인지는 게임이 정하기 나름입니다. DS 하드웨어의
+    4bpp처럼 아래 비트부터일 수도, 반대일 수도 있습니다. 고스트 트릭 대화창 폰트는 둘 다 아닙니다. 위 4비트가 앞 두
+    픽셀이고, 4비트 안에서는 아래 2비트가 먼저라, 픽셀 0–3이 비트 4, 6, 0, 2에서 시작합니다.
+  </p>
+  <p>
+    순서는 그려 보면 압니다. 글자는 굵은 획이라 순서가 맞으면 가로로 이웃한 픽셀 값이 비슷하게 이어지고, 틀리면 획이
+    세로 줄무늬로 갈라집니다. 아래에서 순서를 바꿔 보세요. 처음 순서(위 비트부터)는 툴킷{' '}
+    <code>krpatch linear --order msb</code>와 같습니다.
+  </p>
+  <PixelOrder />
+  <Deeper title="24가지를 모두 그려 고르는 법">
+    <p>
+      2비트 칸 넷을 픽셀 넷에 놓는 방법은 4! = 24가지입니다. 사람이 보고 고를 수도 있지만, 「가로로 이웃한 픽셀 값
+      차이의 합」처럼 매끄러움을 숫자로 재면 폰트 전체로 확인할 수 있습니다. 한글 2,350자 전체로 재도 (4, 6, 0, 2)가
+      가장 작고, 다음 순서(2, 0, 6, 4)보다 약 5% 작습니다. 위젯의 네 글자만으로 재면 2위는 (4, 0, 6, 2)로 다릅니다. 찾은
+      순서로 픽셀을 읽는 식은 이렇습니다.
+    </p>
+    <pre tabindex="0"><code>pixel(x, y) = (data[글자 × 96 + y × 4 + x ÷ 4] &gt;&gt; SHIFT[x mod 4]) &amp; 3
+SHIFT = (4, 6, 0, 2)</code></pre>
+    <p>
+      2비트는 네 단계라 바탕(0)과 글자(3) 사이에 중간 농도 둘(1, 2)을 써서 획 가장자리를 부드럽게 합니다. 16×16 4bpp인{' '}
+      <code>font_db.imb</code>와 <code>balloon_font.imb</code>는 DS 하드웨어처럼 아래 4비트가 앞 픽셀이라{' '}
+      <code>--order lsb</code>로 바로 그려집니다.
+    </p>
+  </Deeper>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>고스트 트릭 v1.1: 폰트 세 개를 3,203자로 늘리기</h3>
+  <p>
+    일본판 대화창 폰트는 1,350자, 나머지 두 폰트는 256자였습니다. v1.1은 세 폰트를 모두 3,203자로 맞추고 0x12C부터 한글
+    2,350자를 KS X 1001 순서로 그렸습니다(<a href={`${note}#making-font`}>노트</a>). 폰트 파일이 커졌으니 롬을 다시 묶을
+    때 자리를 옮겨야 했습니다(<a href={chapterHref(15)}>15장</a>). 0xA5A부터의 553자는 v1.2 대본에서는 쓰지 않습니다.
+  </p>
+  <h3>고스트 트릭 v1.2: 그림은 하나만</h3>
+  <p>
+    v1.2는 폰트를 v1.1 그대로 두고, 그림은 타이틀 위 화면 하나만 고쳤습니다. v1.1이 137–177줄에 그려 넣은 안내 문구를
+    일본판 같은 그림의 픽셀로 되돌렸습니다. v1.1이 팔레트를 바꾸지 않아서 팔레트는 그대로 두고 픽셀의 색 번호만
+    바꿨습니다(<a href={`${note}#making-title`}>노트</a>).
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>4bpp 폰트는 툴킷으로 바로 그립니다. 대화창 폰트는 lsb·msb 어느 쪽으로 그려도 줄무늬가 생깁니다.</p>
+  <pre tabindex="0"><code>krpatch nds unpack game.nds work/
+krpatch linear work/data/font_db.imb font_db.png --size 16x16 --bpp 4 --order lsb --count 256
+krpatch linear work/data/fonts2bpp_new.imb wrong.png --size 16x24 --bpp 2 --order msb --count 256</code></pre>
+  <p>대화창 폰트는 찾은 순서로 직접 읽습니다. 한글패치 롬이면 0x12C는 「가」입니다.</p>
+  <pre tabindex="0"><code>&gt;&gt;&gt; data = open('work/data/fonts2bpp_new.imb', 'rb').read()
+&gt;&gt;&gt; SHIFT = (4, 6, 0, 2)
+&gt;&gt;&gt; glyph = 0x12C
+&gt;&gt;&gt; for y in range(24):
+...     print(''.join(' .:#'[(data[glyph * 96 + y * 4 + x // 4] &gt;&gt; SHIFT[x % 4]) &amp; 3] for x in range(16)))</code></pre>
+</GuideChapter>

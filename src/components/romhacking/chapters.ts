@@ -448,6 +448,27 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       { command: 'krpatch nds unpack', anchor: 'nds-unpack-nds-pack-파일시스템을-폴더로-다시-롬으로' },
     ],
   },
+  {
+    order: 17,
+    slug: 'graphics',
+    platform: 'nds',
+    title: '그림과 글자',
+    summary:
+      'DS의 2D 그림도 타일과 팔레트지만 픽셀을 바이트에 붙여 담습니다. 게임이 정한 그림 형식과 폰트를 읽고, 2비트 픽셀 넷의 순서를 그려 보며 찾습니다.',
+    ready: true,
+    notes: [
+      note(GHOST_TRICK_PATCH, 'making-font', '폰트 세 개와 2bpp 픽셀 순서 4, 6, 0, 2'),
+      note(GHOST_TRICK_PATCH, 'making-gfx', '그래픽 묶음 cpac_2d·cpac_3d'),
+      note(GHOST_TRICK_PATCH, 'making-title', '타이틀 그림 sdt.의 문구 지우기'),
+    ],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '슈퍼 패미콤 게임의 타일과 폰트는 7장에서 다룹니다.'),
+      gap(KAKUSEI_PATCH, '슈퍼 패미콤 게임의 타일과 폰트는 7장에서 다룹니다.'),
+      gap(OTOGIRISOU_PATCH, '슈퍼 패미콤 게임의 타일과 폰트는 7장에서 다룹니다.'),
+      gap(SMRPG_PATCH, '슈퍼 패미콤 게임의 타일과 폰트는 7장에서 다룹니다.'),
+    ],
+    tools: [{ command: 'krpatch linear', anchor: 'linear-선형-비트맵' }],
+  },
 ];
 
 export const chapterPath = (c: Pick<GuideChapter, 'platform' | 'slug'>) =>
