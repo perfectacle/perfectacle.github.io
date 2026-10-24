@@ -16,6 +16,12 @@ const latin = (s: string) => [...s].map(c => c.charCodeAt(0));
 /** The first 14 bytes of the Totsugeki-hen title tiles ($B7:9EB1, file 0x1B9EB1), as `krpatch lzss decode` reads them. */
 export const TITLE_EXCERPT = [0x60, 0x13, 0xdc, 0x2f, 0x01, 0xf0, 0x00, 0x01, 0x0f, 0x3f, 0x89, 0x00, 0x1f, 0xff];
 
+/** The first 25 bytes (two flag groups) of the Kakusei-hen title tiles ($89:9B9D, file 0x49B9D) in the Japanese ROM. */
+export const KAKUSEI_TITLE_EXCERPT = [
+  0x50, 0x13, 0xdc, 0x2f, 0x01, 0xf0, 0x00, 0x01, 0x0f, 0x3f, 0x89, 0x00, 0x1f, 0xff, 0xdb, 0xf8, 0x80, 0x83, 0x00,
+  0xff, 0xff, 0xd1, 0x02, 0xf8, 0xfe,
+];
+
 export const LZSS_SAMPLES: LzssSample[] = [
   {
     id: 'haha',
@@ -37,6 +43,13 @@ export const LZSS_SAMPLES: LzssSample[] = [
     bytes: TITLE_EXCERPT,
     partial: true,
     note: '실제 롬의 $B7:9EB1부터 14바이트입니다. 풀면 4,960바이트가 되는 데이터의 첫 38바이트만 나옵니다. 출력 시작보다 앞을 가리키는 복사는 0을 읽습니다.',
+  },
+  {
+    id: 'kakusei-title',
+    label: '각성편 타이틀 그림 첫머리',
+    bytes: KAKUSEI_TITLE_EXCERPT,
+    partial: true,
+    note: '각성편 일본판 롬의 $89:9B9D부터 25바이트, 플래그 바이트 두 개 분량입니다. 풀면 4,944바이트가 되는 데이터의 첫 54바이트만 나옵니다.',
   },
 ];
 

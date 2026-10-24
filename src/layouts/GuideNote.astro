@@ -60,6 +60,21 @@ const sideLinks = [
 <Base title={`${title} - ${GUIDE_TITLE}`} description={description} jsonLd={[breadcrumbs(SITE, trail)]}>
   <div class="container guide note guide-layout">
     <div class="guide-main">
+      <svg class="dg-defs" width="0" height="0" aria-hidden="true" focusable="false">
+        <defs>
+          <marker
+            id="dg-arrowhead"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="7"
+            markerHeight="7"
+            orient="auto-start-reverse"
+          >
+            <path class="dg-head" d="M0 0 10 5 0 10Z"></path>
+          </marker>
+        </defs>
+      </svg>
       <nav class="guide-crumbs" aria-label="현재 위치" data-pagefind-ignore>
         <ol>
           <li>

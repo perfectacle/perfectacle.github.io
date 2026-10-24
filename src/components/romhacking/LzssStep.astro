@@ -3,9 +3,14 @@ import { trace } from '../../lib/lzss.ts';
 import { toHex } from '../../lib/numbers.ts';
 import { LZSS_SAMPLES, MAX_INPUT, charOf, describe } from './lzss-samples.ts';
 
-// Without scripts the widget shows the first sample fully decoded, with every step written out.
-const sample = LZSS_SAMPLES[0];
-if (!sample) throw new Error('no LZSS sample');
+interface Props {
+  /** Sample to open on; the first one when left out. */
+  initial?: string;
+}
+
+// Without scripts the widget shows the opening sample fully decoded, with every step written out.
+const sample = Astro.props.initial ? LZSS_SAMPLES.find(s => s.id === Astro.props.initial) : LZSS_SAMPLES[0];
+if (!sample) throw new Error(`Unknown LZSS sample ${Astro.props.initial}`);
 const t = trace(sample.bytes, 0, sample.partial);
 const roleOf = (i: number) => {
   const s = t.steps.find(st => i >= st.at && i < st.at + (st.kind === 'size' || st.kind === 'copy' ? 2 : 1));
@@ -14,7 +19,7 @@ const roleOf = (i: number) => {
 const ROLE_LABEL = { size: '크기', flags: '플래그', literal: '그대로', copy: '복사' } as const;
 ---
 
-<section class="widget lzss-step" data-lzss aria-labelledby="lzss-title">
+<section class="widget lzss-step" data-lzss={sample.id} aria-labelledby="lzss-title">
   <h3 class="widget-title" id="lzss-title">
     LZSS 압축 한 단계씩 풀기
   </h3>
@@ -29,9 +34,9 @@ const ROLE_LABEL = { size: '크기', flags: '플래그', literal: '그대로', c
   <div class="lz-controls live-only">
     <fieldset>
       <legend>예</legend>
-      {LZSS_SAMPLES.map((s, i) => (
+      {LZSS_SAMPLES.map(s => (
         <label>
-          <input type="radio" name="lzss-sample" value={s.id} checked={i === 0} /> {s.label}
+          <input type="radio" name="lzss-sample" value={s.id} checked={s.id === sample.id} /> {s.label}
         </label>
       ))}
     </fieldset>
@@ -356,7 +361,7 @@ const ROLE_LABEL = { size: '크기', flags: '플래그', literal: '그대로', c
       stepBtn?.focus();
     });
 
-    const first = LZSS_SAMPLES[0];
+    const first = LZSS_SAMPLES.find(s => s.id === root.dataset['lzss']) ?? LZSS_SAMPLES[0];
     if (first) load(first.bytes, first.partial, first.note);
     root.classList.add('is-live');
   }
