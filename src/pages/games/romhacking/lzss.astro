@@ -454,7 +454,7 @@ const titleItems = [
     롬에서 압축된 곳과 푸는 코드 찾기 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    화면에 보이는 그림을 <code>krpatch snes tiles</code>로 롬 전체에서 찾아도 나오지 않으면 압축을 의심합니다. 압축된
+    화면에 보이는 그림을 <code>krpatch sfc tiles</code>로 롬 전체에서 찾아도 나오지 않으면 압축을 의심합니다. 압축된
     곳은 헥스 에디터로 보면 몇 가지 티가 납니다.
   </p>
   <ul>
@@ -544,12 +544,12 @@ $ xxd -l 48 title.bin
   <p>
     첫 줄(0x00–0x0F)은 모두 0이고, 둘째 줄 가운데의 <code>01 0F 3F</code>(0x15–0x17)가 위 도구의 그대로 항목 셋입니다.
     그 뒤 12바이트 <code>00 00 00 00 00 01 0F 3F 00 00 00 00</code>(0x18–0x23)이 거리 8짜리 겹치는 복사입니다. 그림으로
-    보려면 <code>--planar</code> 옵션으로 순서를 바꿔 풀고 <code>krpatch snes tiles</code>로 그립니다. 반대로 고친
-    그림은 <code>krpatch lzss encode</code>로 압축합니다.
+    보려면 <code>--planar</code> 옵션으로 순서를 바꿔 풀고 <code>krpatch sfc tiles</code>로 그립니다. 반대로 고친 그림은{' '}
+    <code>krpatch lzss encode</code>로 압축합니다.
   </p>
   <pre tabindex="0"><code>$ krpatch lzss decode totsugeki-j.sfc 1B9EB1 title-sfc.bin --planar
 4960 bytes from 3613 compressed
-$ krpatch snes tiles title-sfc.bin 0 1360 title.png --bpp 2
+$ krpatch sfc tiles title-sfc.bin 0 1360 title.png --bpp 2
 title.png
 $ krpatch lzss encode title-sfc.bin title.lz --planar
 3613 bytes from 4960</code></pre>

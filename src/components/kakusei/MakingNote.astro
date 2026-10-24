@@ -222,11 +222,11 @@ const toolFiles = [
   { file: 'lua/', text: 'Mesen 2 스크립트: 디버그 메뉴 장면 시작, 크레딧 바로 보기', section: 'testing' },
   { file: 'compat/', text: 'Mesen 2와 libretro 코어에 같은 입력을 넣어 비교', section: 'testing' },
   {
-    file: 'krpatch snes run',
+    file: 'krpatch sfc run',
     text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램',
     section: 'testing',
   },
-  { file: 'krpatch snes checksum', text: '공통 도구. 롬 헤더 체크섬 다시 계산', section: 'tools' },
+  { file: 'krpatch sfc checksum', text: '공통 도구. 롬 헤더 체크섬 다시 계산', section: 'tools' },
   { file: 'krpatch ips', text: '공통 도구. IPS 적용·생성', section: 'tools' },
   { file: 'tables/', text: '일본판·v1.1·v1.3 글자 표, 고친 대사 782줄, 고친 말풍선 443개', section: 'dialogue' },
   { file: 'docs/ANALYSIS.md', text: '롬 분석 문서(주소·형식 전체)', section: 'map' },
@@ -1449,9 +1449,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
   patch={patch}
   items={[
     { path: 'lua/dbgscene.lua', text: 'Mesen 2용. 디버그 메뉴로 원하는 장면 시작, 대사 ID 기록' },
-    { path: 'lib.lua (krpatch snes lua)', text: 'Mesen 2 스크립트 공용 함수(버튼 입력, 세이브스테이트)' },
-    { path: 'script.lua (krpatch snes lua)', text: 'Mesen 2에서 호환성 입력 스크립트 재생' },
-    { path: 'krpatch snes run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
+    { path: 'lib.lua (krpatch sfc lua)', text: 'Mesen 2 스크립트 공용 함수(버튼 입력, 세이브스테이트)' },
+    { path: 'script.lua (krpatch sfc lua)', text: 'Mesen 2에서 호환성 입력 스크립트 재생' },
+    { path: 'krpatch sfc run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
     { path: 'compat/run_all.sh', text: '에뮬레이터마다 새 게임·이어하기·나레이션·말풍선·암호 비교' },
   ]}
 />

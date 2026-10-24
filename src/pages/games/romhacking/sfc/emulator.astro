@@ -77,13 +77,13 @@ const references = [
     note: 'retro_run(한 프레임 실행), retro_get_memory_data(WRAM 내주기), retro_cheat_set',
   },
   {
-    href: toolkitFileUrl('src/kr_patch/snes/script.py'),
-    label: 'kr-patch-toolkit, snes/script.py와 libretro.py',
+    href: toolkitFileUrl('src/kr_patch/sfc/script.py'),
+    label: 'kr-patch-toolkit, sfc/script.py와 libretro.py',
     note: '입력 스크립트 규칙, 프레임을 세는 방법, WRAM 포인터가 없는 코어에서 poke를 Pro Action Replay 치트로 거는 방법. 이 장의 도구는 script.py의 결과로 만든 사례 80개로 같은 결과를 내는지 시험합니다',
   },
   {
-    href: toolkitFileUrl('src/kr_patch/snes/lua/lib.lua'),
-    label: 'kr-patch-toolkit, snes/lua/',
+    href: toolkitFileUrl('src/kr_patch/sfc/lua/lib.lua'),
+    label: 'kr-patch-toolkit, sfc/lua/',
     note: 'lib.lua(입력은 inputPolled에서, 세이브스테이트는 실행 콜백으로 미룸), script.lua, probe/*.lua',
   },
   {
@@ -145,7 +145,7 @@ const viewers = [
 
 const probes = [
   { file: 'lib.lua', text: '스크린샷, 세이브스테이트 저장·불러오기, 메모리 덤프, 버튼 입력을 돕는 공통 함수' },
-  { file: 'script.lua', text: 'krpatch snes run과 같은 입력 스크립트를 같은 규칙으로 Mesen 2에서 재생' },
+  { file: 'script.lua', text: 'krpatch sfc run과 같은 입력 스크립트를 같은 규칙으로 Mesen 2에서 재생' },
   { file: 'boot.lua', text: '전원을 켜고 정한 간격으로 버튼을 누르며 일정 프레임마다 스크린샷' },
   { file: 'probe/trace.lua', text: '정한 주소가 실행될 때마다 횟수와 레지스터, 원하는 메모리 값을 기록' },
   { file: 'probe/wtrace.lua', text: '정한 WRAM 주소에 쓰는 순간의 프레임, 쓴 코드 주소(PC), 값을 기록' },
@@ -348,7 +348,7 @@ const cores = [
     켜 두어야 합니다.
   </p>
   <p>
-    kr-patch-toolkit에는 네 패치에서 공통으로 쓴 Lua 스크립트가 들어 있습니다. <code>krpatch snes lua</code>가 그 폴더를
+    kr-patch-toolkit에는 네 패치에서 공통으로 쓴 Lua 스크립트가 들어 있습니다. <code>krpatch sfc lua</code>가 그 폴더를
     알려 주고, 스크립트는 환경 변수로 설정을 받습니다.
   </p>
   <div class="table-scroll" tabindex="0" role="region" aria-labelledby="probe-caption">
@@ -418,9 +418,9 @@ const cores = [
     화면 없이 돌리기: 입력 스크립트 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    Lua 스크립트는 Mesen 2에서만 돕니다. 같은 확인을 다른 에뮬레이터에서도 하려고 툴킷에는 <code>krpatch snes run</code>
+    Lua 스크립트는 Mesen 2에서만 돕니다. 같은 확인을 다른 에뮬레이터에서도 하려고 툴킷에는 <code>krpatch sfc run</code>
     을 두었습니다. libretro는 여러 에뮬레이터를 같은 함수 모양(한 프레임 돌리기, 메모리 내주기, 치트 넣기 등)으로 감싼
-    규격이고, 그 규격으로 만든 에뮬레이터 파일을 <strong>코어</strong>라고 합니다. <code>krpatch snes run</code>은 코어
+    규격이고, 그 규격으로 만든 에뮬레이터 파일을 <strong>코어</strong>라고 합니다. <code>krpatch sfc run</code>은 코어
     파일을 직접 불러 화면 없이 한 프레임씩 돌리면서, 입력 스크립트대로 버튼을 누르고 스크린샷과 메모리 덤프를 남깁니다.
   </p>
   <p>
@@ -506,7 +506,7 @@ const cores = [
 
   <Deeper title="프레임을 세는 방법과 WRAM을 내주지 않는 코어">
     <p>
-      <code>krpatch snes run</code>은 프레임 0에서 시작해 "그 프레임에 누를 버튼을 정하고, 한 프레임 돌리고, 프레임 수를
+      <code>krpatch sfc run</code>은 프레임 0에서 시작해 "그 프레임에 누를 버튼을 정하고, 한 프레임 돌리고, 프레임 수를
       1 올린 뒤, 그 프레임 번호의 poke·덤프·스크린샷을 처리"하기를 end까지 되풀이합니다. 그래서 <code>100 a 30</code>의
       A는 101번째로 돌리는 프레임부터 게임에 보이고, <code>shot</code>·<code>dump</code>·<code>poke</code>를 0이나 음수
       프레임에 두면 실행되지 않습니다.
@@ -522,8 +522,8 @@ const cores = [
     <p>
       코어는 프로세스 안에 전역 상태를 갖고 있어서 한 프로세스에서 스크립트 하나만 돌립니다. 여러 시나리오는 셸
       스크립트로 하나씩 돌리고, 실행마다 결과를 한 줄씩 모읍니다. 툴킷의{' '}
-      <a href={toolkitFileUrl('examples/snes/run_all.sh')}>
-        <code>examples/snes/run_all.sh</code>
+      <a href={toolkitFileUrl('examples/sfc/run_all.sh')}>
+        <code>examples/sfc/run_all.sh</code>
       </a>
       와 각 패치의 <code>compat/run_all.sh</code>가 그 모양입니다.
     </p>
@@ -734,9 +734,9 @@ open(sys.argv[1], "wb").write(rom)`}</code></pre>
     <code>.so</code>, Windows는 <code>.dll</code>).
   </p>
   <pre tabindex="0"><code>$ python3 mkrom.py test.sfc
-$ krpatch snes checksum test.sfc --fix
+$ krpatch sfc checksum test.sfc --fix
 checksum 9D17
-$ krpatch snes run cores/snes9x_libretro.dylib test.sfc out/snes9x demo.txt --watch 7E0010:2
+$ krpatch sfc run cores/snes9x_libretro.dylib test.sfc out/snes9x demo.txt --watch 7E0010:2
 OK 300
 Map_LoROMMap
 $ ls out/snes9x
@@ -755,7 +755,7 @@ $ tail -1 out/snes9x/wram.log
     </a>
     를 씁니다. 경로는 절대 경로로 줍니다.
   </p>
-  <pre tabindex="0"><code>$ krpatch snes run cores/bsnes_libretro.dylib test.sfc out/bsnes demo.txt --watch 7E0010:2
+  <pre tabindex="0"><code>$ krpatch sfc run cores/bsnes_libretro.dylib test.sfc out/bsnes demo.txt --watch 7E0010:2
 OK 300
 $ krpatch shotcmp out/snes9x out/bsnes
 end.png: same
@@ -763,8 +763,8 @@ f00060.png: same
 f00110.png: same
 f00202.png: same
 $ mkdir -p out/mesen2
-$ LIBDIR=$(krpatch snes lua) SCRIPT=$PWD/demo.txt SHOT_DIR=$PWD/out/mesen2 WATCH_WRAM=7E0010:2 \
-    Mesen --testrunner $PWD/test.sfc $(krpatch snes lua)/script.lua
+$ LIBDIR=$(krpatch sfc lua) SCRIPT=$PWD/demo.txt SHOT_DIR=$PWD/out/mesen2 WATCH_WRAM=7E0010:2 \
+    Mesen --testrunner $PWD/test.sfc $(krpatch sfc lua)/script.lua
 $ krpatch shotcmp out/snes9x out/mesen2
 end.png: same
 f00060.png: same
@@ -775,7 +775,7 @@ f00202.png: diff px=57344 bbox=0,0,256,224</code></pre>
     2에서는 202프레임 화면 전체(256×224 = 57,344픽셀)가 다릅니다. 앞에서 본 대로 poke가 화면에 늦게 나와 아직 파랑이기
     때문이고, 끝 화면은 같습니다. 화면 높이가 다른 bsnes-hd beta는 <code>--box</code>로 같은 범위만 비교합니다.
   </p>
-  <pre tabindex="0"><code>$ krpatch snes run cores/bsnes_hd_beta_libretro.dylib test.sfc out/bsnes-hd demo.txt
+  <pre tabindex="0"><code>$ krpatch sfc run cores/bsnes_hd_beta_libretro.dylib test.sfc out/bsnes-hd demo.txt
 OK 300
 $ krpatch shotcmp out/snes9x out/bsnes-hd
 end.png: size (256, 224) != (256, 216)
@@ -802,11 +802,11 @@ $ xxd -s 0x10 -l 4 out/mesen2/wram_240.bin
     스크립트를 틀리게 적으면 툴킷은 실행 전에 거부하고 2로 끝납니다. 위 도구의 「틀린 예: end 뒤의 명령」을{' '}
     <code>bad.txt</code>로 저장해 넣은 결과입니다.
   </p>
-  <pre tabindex="0"><code>$ krpatch snes run cores/snes9x_libretro.dylib test.sfc out/x bad.txt
+  <pre tabindex="0"><code>$ krpatch sfc run cores/snes9x_libretro.dylib test.sfc out/x bad.txt
 krpatch: error: line 2: frame is after 'end' at frame 300</code></pre>
   <p>
     명령마다 자세한 설명은 툴킷 README의{' '}
-    <a href={`${TOOLKIT_README_KO}#${encodeURIComponent('snes-run-헤드리스-libretro-실행기')}`}>snes run</a> 절에
+    <a href={`${TOOLKIT_README_KO}#${encodeURIComponent('sfc-run-헤드리스-libretro-실행기')}`}>sfc run</a> 절에
     있습니다. 여기서 만든 롬에 일부러 버그를 다시 넣어 보는 것도 좋은 연습입니다. 첫째 대기 줄(<code>F0 F9</code>로
     끝나는 줄)을 지우고 다시 만들면, snes9x에서는 초록이 나오고 Mesen 2에서는 나오지 않는 것을 직접 볼 수 있습니다.
     디버거의 이벤트 뷰어에서 <code>$4218</code>을 읽는 순간과 자동 읽기 구간을 견주어 보세요.

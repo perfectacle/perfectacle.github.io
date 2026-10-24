@@ -16,7 +16,7 @@ const BLOG = 'https://github.com/perfectacle/perfectacle.github.io/blob/main';
 const references = [
   {
     href: toolkitFileUrl('src/kr_patch/audio/loop.py'),
-    label: 'kr-patch-toolkit 0.2.0, audio의 loop.py, analysis.py, loudness.py',
+    label: 'kr-patch-toolkit 0.4.0, audio의 loop.py, analysis.py, loudness.py',
     note: '이음매 점수(모든 채널을 한 신호로 본 정규화 상호상관), 가장 이른 이음매와 최고 점수 이음매, equal-gain(sin²)과 equal-power(sin·cos) 크로스페이드, 꼬리, 스펙트럼 플럭스로 하는 이음매 검사, 로그 스펙트럼 자기 유사도로 주기 찾기, BS.1770 통합 음량',
   },
   {
@@ -244,13 +244,13 @@ const peaks = [
   <p>
     스피커에서 나오는 소리를 마이크로 녹음하면 잡음과 방 울림이 들어갑니다. 에뮬레이터는 S-DSP가 만든 소리를 숫자로
     내주므로, 그 숫자를 그대로 파일에 적는 것이 가장 깨끗합니다. <a href={`${EMULATOR}#headless`}>12장</a>의{' '}
-    <code>krpatch snes run</code>에 <code>--wav</code>를 주면 libretro 코어가 내는 소리를 16비트 스테레오 WAV로 씁니다.
+    <code>krpatch sfc run</code>에 <code>--wav</code>를 주면 libretro 코어가 내는 소리를 16비트 스테레오 WAV로 씁니다.
   </p>
   <pre tabindex="0"><code>$ cat idle.txt
 600 shot
 1200 shot
 18000 end
-$ krpatch snes run cores/bsnes_libretro.dylib song07.sfc out/k07 idle.txt --wav out/k07/audio.wav</code></pre>
+$ krpatch sfc run cores/bsnes_libretro.dylib song07.sfc out/k07 idle.txt --wav out/k07/audio.wav</code></pre>
   <p>
     18,000프레임은 약 5분입니다. bsnes 코어는 48,000Hz로 소리를 냅니다. snes9x 코어는 32,040.5Hz라고 알려 주는데, WAV
     머리에는 정수만 적을 수 있어 32,040Hz가 적힙니다. 이 블로그의 녹음은 모두 bsnes 코어로 했고, Mesen-S 코어는 켜자마자

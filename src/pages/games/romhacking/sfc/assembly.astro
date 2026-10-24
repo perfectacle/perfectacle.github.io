@@ -513,12 +513,12 @@ $B7:9851  INC $32 ×2          ; 크면 다음 줄로</code></pre>
     직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
   </h2>
   <p>위의 두 코드는 툴킷 역어셈블러로 그대로 볼 수 있습니다. 분기 주소는 뱅크까지 붙여 24비트로 나옵니다.</p>
-  <pre tabindex="0"><code>$ krpatch snes dis totsugeki.sfc 808061 3 --mapper lorom
+  <pre tabindex="0"><code>$ krpatch sfc dis totsugeki.sfc 808061 3 --mapper lorom
 80:8061  80 04        BRA $808067
 80:8063  22 b0 86 82  JSL $8286B0
 80:8067  22 00 80 82  JSL $828000
 
-$ krpatch snes dis smrpg.sfc C106A9 4 --mapper sa1
+$ krpatch sfc dis smrpg.sfc C106A9 4 --mapper sa1
 C1:06A9  af ae ff 00  LDA $00FFAE
 C1:06AD  05 80        ORA $80
 C1:06AF  f0 01        BEQ $C106B2

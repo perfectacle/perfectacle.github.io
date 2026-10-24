@@ -209,7 +209,7 @@ const toolMap = [
     files: ['tools/script.py', 'tools/dump.py', 'tools/assemble.py'],
     section: 'script',
   },
-  { job: '롬 코드 읽기', files: ['krpatch snes dis'], section: 'script' },
+  { job: '롬 코드 읽기', files: ['krpatch sfc dis'], section: 'script' },
   { job: '2회차 멈춤 수정', files: ['tools/fixes.py', 'lua/lap.lua'], section: 'lap2' },
   { job: 'A 버튼 대기 맞추기', files: ['tools/waits.py', 'tools/fixwaits.py', 'lua/waitdemo.lua'], section: 'a-wait' },
   {
@@ -240,14 +240,14 @@ const toolMap = [
     job: '엔진 추적',
     files: [
       'lua/qol/pcs.lua',
-      'probe/wtrace.lua (krpatch snes lua)',
-      'probe/trace.lua (krpatch snes lua)',
-      'probe/watch.lua (krpatch snes lua)',
+      'probe/wtrace.lua (krpatch sfc lua)',
+      'probe/trace.lua (krpatch sfc lua)',
+      'probe/watch.lua (krpatch sfc lua)',
     ],
     section: 'readers',
   },
   { job: '장 이동 회귀', files: ['lua/qol/menujump.sh', 'lua/qol/chjump.sh'], section: 'scene-music' },
-  { job: '에뮬레이터 호환성', files: ['krpatch snes run', 'compat/run_all.sh'], section: 'testing' },
+  { job: '에뮬레이터 호환성', files: ['krpatch sfc run', 'compat/run_all.sh'], section: 'testing' },
   { job: '롬 분석 문서(주소·형식 전체)', files: ['docs/ANALYSIS.md'], section: 'next' },
 ];
 
@@ -501,8 +501,8 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   <ToolFiles
     patch={patch}
     items={[
-      { path: 'probe/wrange.lua (krpatch snes lua)', text: '플레이 중 한 번이라도 쓰인 WRAM 영역 기록' },
-      { path: 'probe/wdump.lua (krpatch snes lua)', text: 'WRAM 구간을 파일로 덤프' },
+      { path: 'probe/wrange.lua (krpatch sfc lua)', text: '플레이 중 한 번이라도 쓰인 WRAM 영역 기록' },
+      { path: 'probe/wdump.lua (krpatch sfc lua)', text: 'WRAM 구간을 파일로 덤프' },
     ]}
   />
 </Deeper>
@@ -626,7 +626,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     { path: 'tools/dump.py', text: '대사를 줄 단위 텍스트로 꺼내기 (점프 대상은 레이블로)' },
     { path: 'tools/assemble.py', text: '텍스트 대본을 다시 롬으로 조립하고 문장부호를 게임 글자로 바꾸기' },
     {
-      path: 'krpatch snes dis',
+      path: 'krpatch sfc dis',
       text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러',
     },
   ]}
@@ -1304,13 +1304,13 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   items={[
     { path: 'lua/qol/pcs.lua', text: '프레임마다 CPU가 실행 중인 주소 기록 (어디서 멈췄나)' },
     {
-      path: 'probe/wtrace.lua (krpatch snes lua)',
+      path: 'probe/wtrace.lua (krpatch sfc lua)',
       text: '한 주소에 값을 쓰는 코드의 주소와 값 기록 (누가 바꿨나)',
     },
-    { path: 'probe/trace.lua (krpatch snes lua)', text: '지정한 코드가 몇 번 실행되는지 세기' },
-    { path: 'probe/watch.lua (krpatch snes lua)', text: '프레임마다 메모리 값 기록' },
+    { path: 'probe/trace.lua (krpatch sfc lua)', text: '지정한 코드가 몇 번 실행되는지 세기' },
+    { path: 'probe/watch.lua (krpatch sfc lua)', text: '프레임마다 메모리 값 기록' },
     {
-      path: 'krpatch snes dis',
+      path: 'krpatch sfc dis',
       text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러',
     },
   ]}
@@ -1511,7 +1511,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   patch={patch}
   items={[
     { path: 'asm/qol.asm', text: '장 목록·엔딩 목록·기록·노란 글씨·책갈피 코드와 후킹' },
-    { path: 'probe/cgram.lua (krpatch snes lua)', text: '팔레트(CGRAM)와 화면 저장' },
+    { path: 'probe/cgram.lua (krpatch sfc lua)', text: '팔레트(CGRAM)와 화면 저장' },
   ]}
 />
 
@@ -1541,7 +1541,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
 </ul>
 <h3 id="making-compat">여러 에뮬레이터에 같은 입력 넣기</h3>
 <p>
-  libretro 코어를 직접 불러 쓰는 작은 프로그램(<code>krpatch snes run</code>)으로 같은 입력을 여러 에뮬레이터에 넣고 새
+  libretro 코어를 직접 불러 쓰는 작은 프로그램(<code>krpatch sfc run</code>)으로 같은 입력을 여러 에뮬레이터에 넣고 새
   게임, 이어하기, 장 목록, 플로차트를 비교했습니다. 세이브를 불러온 뒤 A를 눌러 가며 화면을 찍는 이어하기 시나리오(
   <a href={sourceFileUrl(patch, 'compat/s_cont.txt')}>
     <code>compat/s_cont.txt</code>
@@ -1590,7 +1590,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     { path: 'lua/pages.lua', text: '입력 대기마다 화면을 찍고 대사 위치 기록' },
     { path: 'lua/jumpsave.py', text: '원하는 대사에서 이어지는 세이브 파일 만들기' },
     { path: 'lua/qol/menujump.sh', text: '장마다 메뉴로 옮겨 첫 화면 찍기' },
-    { path: 'krpatch snes run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
+    { path: 'krpatch sfc run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
     { path: 'compat/run_all.sh', text: '코어마다 새 게임·이어하기 비교' },
   ]}
 />

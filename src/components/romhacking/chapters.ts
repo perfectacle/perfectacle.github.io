@@ -94,7 +94,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(OTOGIRISOU_PATCH, 'making-save', '세이브 슬롯의 체크섬'),
       note(SMRPG_PATCH, 'making-save', '세이브 슬롯을 지키는 16비트 체크섬'),
     ],
-    tools: [{ command: 'krpatch snes checksum', anchor: 'snes-checksum-헤더-체크섬-확인수정' }],
+    tools: [{ command: 'krpatch sfc checksum', anchor: 'sfc-checksum-헤더-체크섬-확인수정' }],
   },
   {
     order: 2,
@@ -130,7 +130,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       gap(KAKUSEI_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
       gap(OTOGIRISOU_PATCH, '노트에 CPU 구조를 다룬 절이 없습니다. 명령을 하나씩 읽는 예는 5장에 있습니다.'),
     ],
-    tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
+    tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
     order: 4,
@@ -149,7 +149,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-map', '롬 지도'),
       note(OTOGIRISOU_PATCH, 'making-map', '세 롬의 뱅크 지도'),
     ],
-    tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
+    tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
     order: 5,
@@ -165,7 +165,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(OTOGIRISOU_PATCH, 'making-unique', '후킹 지점의 원래 바이트와 바꾼 바이트'),
       note(OTOGIRISOU_PATCH, 'making-select', 'Select를 보게 바꾼 5바이트'),
     ],
-    tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
+    tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
     order: 6,
@@ -189,7 +189,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-password', '새 암호 문장으로 건너가는 루틴'),
       note(OTOGIRISOU_PATCH, 'making-unique', '원작에 없던 기능 끼워 넣기'),
     ],
-    tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
+    tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
     order: 7,
@@ -212,8 +212,8 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(OTOGIRISOU_PATCH, 'making-gfx', 'DMA로 그대로 보내는 v1.0 그래픽'),
     ],
     tools: [
-      { command: 'krpatch snes tiles', anchor: 'snes-tiles-planar-타일-렌더링' },
-      { command: 'krpatch snes bg', anchor: 'snes-bg-snes-bgrefs-vramcgram-덤프에서-bg-레이어' },
+      { command: 'krpatch sfc tiles', anchor: 'sfc-tiles-planar-타일-렌더링' },
+      { command: 'krpatch sfc bg', anchor: 'sfc-bg-sfc-bgrefs-vramcgram-덤프에서-bg-레이어' },
     ],
   },
   {
@@ -237,7 +237,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-password', '두 글자를 1바이트로 읽는 암호 쌍 표'),
       note(OTOGIRISOU_PATCH, 'making-menus', '선택지와 이름 입력 화면'),
     ],
-    tools: [{ command: 'krpatch snes dis', anchor: 'snes-dis-65c816-코드-디스어셈블' }],
+    tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
     order: 9,
@@ -291,7 +291,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-map', '롬을 늘리지 않고 넣은 자리'),
       note(TOTSUGEKI_PATCH, 'making-map', '롬을 늘리지 않고 빈 곳에 넣기'),
     ],
-    tools: [{ command: 'krpatch snes checksum', anchor: 'snes-checksum-헤더-체크섬-확인수정' }],
+    tools: [{ command: 'krpatch sfc checksum', anchor: 'sfc-checksum-헤더-체크섬-확인수정' }],
   },
   {
     order: 12,
@@ -315,8 +315,8 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(OTOGIRISOU_PATCH, 'making-next', '확인하지 못한 것과 알려진 한계'),
     ],
     tools: [
-      { command: 'krpatch snes run', anchor: 'snes-run-헤드리스-libretro-실행기' },
-      { command: 'krpatch snes lua', anchor: 'snes-lua-mesen-2-스크립트' },
+      { command: 'krpatch sfc run', anchor: 'sfc-run-헤드리스-libretro-실행기' },
+      { command: 'krpatch sfc lua', anchor: 'sfc-lua-mesen-2mesence-스크립트' },
       { command: 'krpatch shotcmp', anchor: 'shotcmp-contact-스크린샷을-텍스트로' },
     ],
   },
@@ -340,7 +340,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
         '버전마다 바꾼 곳에 소리가 없어 노트에서 다루지 않습니다. 곡 표와 곡 재생 함수는 이 장 본문에 있습니다.',
       ),
     ],
-    tools: [{ command: 'krpatch snes lua', anchor: 'snes-lua-mesen-2-스크립트' }],
+    tools: [{ command: 'krpatch sfc lua', anchor: 'sfc-lua-mesen-2mesence-스크립트' }],
   },
   {
     order: 14,
@@ -366,7 +366,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     ],
     tools: [
       { command: 'krpatch audio', anchor: 'audio-녹음에서-반복-재생용-파일-만들기' },
-      { command: 'krpatch snes run --wav', anchor: 'snes-run-헤드리스-libretro-실행기' },
+      { command: 'krpatch sfc run --wav', anchor: 'sfc-run-헤드리스-libretro-실행기' },
     ],
   },
 ];

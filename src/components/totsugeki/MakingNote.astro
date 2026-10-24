@@ -357,7 +357,7 @@ const buildSteps: [string, string][] = [
   ['tools/statusmenu1.py', '스토리 현황 목록의 습득·완료 표시를 두 글자로 바꿉니다.'],
   ['tools/pwglyph1.py', '암호 글자 다섯 자리를 다시 그리고 글자 표와 대조합니다.'],
   ['tools/endpw1.py', '엔딩 암호 자리에 「손오공은사이어인」을 넣습니다.'],
-  ['krpatch snes checksum --fix', '헤더 체크섬을 다시 계산합니다.'],
+  ['krpatch sfc checksum --fix', '헤더 체크섬을 다시 계산합니다.'],
   ['krpatch ips make --headered', '헤더 없는 롬용과 512바이트 헤더 롬용 IPS를 만듭니다.'],
 ];
 
@@ -406,15 +406,15 @@ const toolFiles = [
   { name: 'tools/pages1.py', text: '촬영한 화면에서 페이지별 완성 화면 고르기', section: 'testing' },
   { name: 'tools/rgcmp1.py', text: '두 롬의 시나리오별 대사 ID 순서 비교', section: 'testing' },
   { name: 'tools/textdump1.py', text: '모든 텍스트를 코드 목록으로 덤프(버전 간 비교)', section: 'testing' },
-  { name: 'krpatch snes dis', text: '공통 도구. 65c816 역어셈블러', section: 'testing' },
+  { name: 'krpatch sfc dis', text: '공통 도구. 65c816 역어셈블러', section: 'testing' },
   {
-    name: 'krpatch snes run',
+    name: 'krpatch sfc run',
     text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램',
     section: 'testing',
   },
   { name: 'compat/run_all.sh', text: '코어마다 새 게임·이어하기 비교', section: 'testing' },
-  { name: 'script.lua (krpatch snes lua)', text: 'Mesen 2에서 같은 입력 재생', section: 'testing' },
-  { name: 'krpatch snes checksum', text: '공통 도구. 헤더 체크섬 다시 계산', section: 'map' },
+  { name: 'script.lua (krpatch sfc lua)', text: 'Mesen 2에서 같은 입력 재생', section: 'testing' },
+  { name: 'krpatch sfc checksum', text: '공통 도구. 헤더 체크섬 다시 계산', section: 'map' },
   {
     name: 'docs/ANALYSIS.md',
     text: '롬 분석 문서(헤더·메모리·대사와 폰트 형식·후킹 주소·쓴 빈 공간)',
@@ -437,7 +437,7 @@ const sectionTitles: Record<string, string> = {
 };
 
 const sectionTools: Record<string, string[]> = {
-  map: ['krpatch snes checksum'],
+  map: ['krpatch sfc checksum'],
   dialogue: [
     'tools/dialogue1.py',
     'tools/text_patch1.py',
@@ -458,10 +458,10 @@ const sectionTools: Record<string, string[]> = {
     'tools/pages1.py',
     'tools/rgcmp1.py',
     'tools/textdump1.py',
-    'krpatch snes dis',
-    'krpatch snes run',
+    'krpatch sfc dis',
+    'krpatch sfc run',
     'compat/run_all.sh',
-    'script.lua (krpatch snes lua)',
+    'script.lua (krpatch sfc lua)',
   ],
   next: ['docs/ANALYSIS.md'],
 };
@@ -1844,14 +1844,14 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
 </p>
 <Deeper title="직접 돌려 보기: 명령">
   <p>디버그 메뉴를 연 롬과 패치 소스의 Lua 스크립트로 시나리오 $10을 돌리고 이벤트 표 문제를 재현하는 명령입니다.</p>
-  <pre tabindex="0"><code>export LIBDIR=$(krpatch snes lua)
+  <pre tabindex="0"><code>export LIBDIR=$(krpatch sfc lua)
 TARGET=10 SHOTS=1 SHOT_DIR=out Mesen --testrunner debug.smc lua/scenario.lua
 TARGET=c0 SHOT_DIR=out Mesen --testrunner debug.smc lua/eventlist.lua
 python3 tools/pages1.py out 0142          # 대사 0142의 페이지마다 완성된 프레임
 python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</code></pre>
   <p>
     디버그 메뉴를 부르는 코드를 툴킷 역어셈블러로 읽으면 위 표가 그대로 나옵니다:{' '}
-    <code>krpatch snes dis super-gokuden-jp.smc 808061 3 --mapper lorom</code>.
+    <code>krpatch sfc dis super-gokuden-jp.smc 808061 3 --mapper lorom</code>.
   </p>
 </Deeper>
 

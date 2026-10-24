@@ -182,29 +182,34 @@ export const downloads = (patch: KrPatch) => {
 };
 
 /** The toolkit release the notes and the guide were checked against. */
-export const KR_PATCH_TOOLKIT_VERSION = 'v0.2.0';
+export const KR_PATCH_TOOLKIT_VERSION = 'v0.4.0';
 /** A file of the toolkit at that release, by its path in the repository. */
 export const toolkitFileUrl = (path: string) =>
   `https://github.com/perfectacle/kr-patch-toolkit/blob/${KR_PATCH_TOOLKIT_VERSION}/${path}`;
 /** Korean README of the toolkit (`krpatch`) at that release. It is the first release that has the Korean docs. */
 export const KR_PATCH_TOOLKIT_URL = toolkitFileUrl('README.ko.md');
 
+const patchSlug = (patch: KrPatch) => patch.path.slice(patch.path.lastIndexOf('/') + 1);
+
+/** Release tag of a patch version in kr-patches, such as `otogirisou-v1.2`. */
+export const releaseTag = (patch: KrPatch, version = patch.version) => `${patchSlug(patch)}-v${version}`;
+
 /**
- * A file of the patch source on GitHub, by its path inside the game's folder (`tools/build.sh`); a path ending in `/`
- * is a folder. The kr-patches folders are named after the last segment of `path` (`snes/super-mario-rpg`). Release
- * tags predate the Korean docs, so this points at main.
+ * A file of the patch source on GitHub at `ref` (`main` or a release tag), by its path inside the game's folder
+ * (`tools/build.sh`); a path ending in `/` is a folder. The folders are named after the last segment of `path`. The
+ * repository moved them from `snes/` to `sfc/` after the releases, so a tag still has the old folder.
  */
-export const sourceFileUrl = (patch: KrPatch, file: string) =>
-  `https://github.com/perfectacle/kr-patches/${file.endsWith('/') ? 'tree' : 'blob'}/main/snes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/${file}`;
+export const patchFileUrl = (patch: KrPatch, ref: string, file: string) =>
+  `https://github.com/perfectacle/kr-patches/${file.endsWith('/') ? 'tree' : 'blob'}/${ref}/${ref === 'main' ? 'sfc' : 'snes'}/${patchSlug(patch)}/${file}`;
+
+/** A file of the patch source on main. Release tags predate the Korean docs, so links to them go here. */
+export const sourceFileUrl = (patch: KrPatch, file: string) => patchFileUrl(patch, 'main', file);
 
 /** Korean README of the patch source on GitHub. */
 export const sourceUrl = (patch: KrPatch) => sourceFileUrl(patch, 'README.ko.md');
 
-const releaseTag = (patch: KrPatch) => `${patch.path.slice(patch.path.lastIndexOf('/') + 1)}-v${patch.version}`;
-
 /** Korean ROM analysis document at the release tag of `version`, so its addresses match the IPS served here. */
-export const analysisUrl = (patch: KrPatch) =>
-  `https://github.com/perfectacle/kr-patches/blob/${releaseTag(patch)}/snes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/docs/ANALYSIS.md`;
+export const analysisUrl = (patch: KrPatch) => patchFileUrl(patch, releaseTag(patch), 'docs/ANALYSIS.md');
 
 /** e.g. `슈퍼 패미콤 · 1996 · 한글패치 v1.1`. */
 export const releaseLabel = (patch: KrPatch, prefix = '한글패치 ') =>

@@ -140,7 +140,7 @@ export interface Instruction {
   op: Op;
   mode: Mode;
   operand: number;
-  /** Assembly the way `krpatch snes dis` prints it, e.g. `LDA $8012,X`. */
+  /** Assembly the way `krpatch sfc dis` prints it, e.g. `LDA $8012,X`. */
   text: string;
 }
 

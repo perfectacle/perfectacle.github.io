@@ -342,8 +342,8 @@ const regs = [
     툴킷의 역어셈블러는 롬 바이트를 위 「명령 한 줄씩 실행하기」의 목록처럼 명령으로 풀어 줍니다. <code>REP</code>·
     <code>SEP</code>를 만나면 폭을 바꿔 가며 읽고, 중간부터 읽을 때는 시작 폭을 직접 알려 줍니다.
   </p>
-  <pre tabindex="0"><code>krpatch snes dis game.sfc 808000 40            # $80:8000부터 명령 40개
-krpatch snes dis game.sfc 808000 --m16 --x16   # A·X/Y를 16비트로 놓고 시작</code></pre>
+  <pre tabindex="0"><code>krpatch sfc dis game.sfc 808000 40            # $80:8000부터 명령 40개
+krpatch sfc dis game.sfc 808000 --m16 --x16   # A·X/Y를 16비트로 놓고 시작</code></pre>
   <p>
     같은 자리를 <code>--m16</code> 없이 한 번, 붙여서 한 번 읽어 보세요. 어느 쪽이 말이 되는지 비교하는 것이 실제
     분석에서 폭을 알아내는 방법입니다.

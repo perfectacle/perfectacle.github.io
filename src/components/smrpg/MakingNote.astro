@@ -159,7 +159,7 @@ const files = {
       path: 'docs/ANALYSIS.md',
       text: '롬 분석 문서. 롬 헤더, 메모리, 대사·폰트 형식, 후킹 주소, 쓴 빈 공간, 디버그 기능을 [실측]·[추정]으로 나눠 적었습니다',
     },
-    { path: 'krpatch snes dis', text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러' },
+    { path: 'krpatch sfc dis', text: '공통 도구. 롬 주소를 넣으면 65c816 명령으로 풀어 보여 주는 간단한 역어셈블러' },
     { path: 'src/main.asm', text: '모든 후킹 코드. 맨 위 org 줄들이 덮어쓴 원래 코드 위치입니다' },
   ],
   map: [
@@ -175,7 +175,7 @@ const files = {
   ],
   font: [
     {
-      path: 'krpatch snes tiles',
+      path: 'krpatch sfc tiles',
       text: '공통 도구. 롬의 폰트나 아무 구간을 타일 그림으로 뽑기 (아래 256칸 그림을 이것으로 확인)',
     },
     { path: 'data/tbl/korTBL2.tbl', text: 'v1.0 메뉴 폰트 코드표 (korTBL.tbl은 대사 폰트)' },
@@ -193,7 +193,7 @@ const files = {
     { path: 'tools/make.sh', text: 'asar에 -Dres_ui=0을 주면 원판 배치로 빌드돼 전후 비교가 됩니다' },
   ],
   unique: [
-    { path: 'krpatch snes bgrefs', text: '공통 도구. VRAM 덤프에서 화면이 실제로 참조하는 구간 찾기 (빈 칸 찾기)' },
+    { path: 'krpatch sfc bgrefs', text: '공통 도구. VRAM 덤프에서 화면이 실제로 참조하는 구간 찾기 (빈 칸 찾기)' },
     {
       path: 'src/main.asm',
       text: 'DrawItemName·DrawSkillName(그리기), ResetSlots(칸 비우기), NmiUpload(NMI 업로드), HeldName(들고 가는 이름), KoFetch·KoGlyphX·KoCopy(전투 메뉴), KoBtlItem·KoBtlSkill·KoBtlNext·KoBtlBanner(전투 메시지와 이름 띠)',
@@ -203,19 +203,19 @@ const files = {
   ],
   testing: [
     {
-      path: 'seq.lua (krpatch snes lua), tools/run_seq.sh',
+      path: 'seq.lua (krpatch sfc lua), tools/run_seq.sh',
       text: '세이브스테이트에서 버튼 입력 재생, 화면·메모리 저장',
     },
-    { path: 'poke_state.lua (krpatch snes lua), tools/make_states.sh', text: 'RAM 값을 바꿔 새 세이브스테이트 만들기' },
+    { path: 'poke_state.lua (krpatch sfc lua), tools/make_states.sh', text: 'RAM 값을 바꿔 새 세이브스테이트 만들기' },
     { path: 'test/harness/harness.asm, tools/make_harness.sh', text: '원하는 대사를 띄우는 테스트 전용 롬' },
     { path: 'tools/py/scene_rom.py, test/warp_seq.lua', text: '출구를 바꾸거나 방을 워프해 원하는 장소로 가기' },
     { path: 'tools/py/verify_dialogue.py, tools/py/verify_menu.py, tools/test_menu.sh', text: '대사·메뉴 회귀 검사' },
     { path: 'krpatch shotcmp', text: '공통 도구. 스크린샷 비교' },
     { path: 'krpatch ips make', text: '공통 도구. 일본판 원본 기준 IPS 만들기 (헤더 없음/있음)' },
     { path: 'test/probe.lua', text: '주소가 실행되는 순간 기록, 값 강제, 메모리 대응 비교' },
-    { path: 'krpatch snes run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
+    { path: 'krpatch sfc run', text: '공통 도구. libretro 코어를 직접 불러 같은 입력을 넣는 작은 프로그램' },
     { path: 'compat/run_all.sh', text: '코어마다 일본판·v1.1·v1.2에 새 게임과 이어하기 시나리오 돌리기' },
-    { path: 'script.lua (krpatch snes lua)', text: '같은 시나리오 파일을 Mesen 2에서 돌리기' },
+    { path: 'script.lua (krpatch sfc lua)', text: '같은 시나리오 파일을 Mesen 2에서 돌리기' },
     { path: 'compat/make_save.py', text: '세이브에 요시쿠키를 넣고 체크섬 다시 계산' },
   ],
 };

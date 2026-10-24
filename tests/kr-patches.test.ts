@@ -1,14 +1,28 @@
 import { describe, expect, it } from 'vitest';
-import { KR_PATCHES, downloads, formatBytes, releaseOf, sourceUrl } from '../src/lib/kr-patches.ts';
+import {
+  KAKUSEI_PATCH,
+  KR_PATCHES,
+  analysisUrl,
+  downloads,
+  formatBytes,
+  releaseOf,
+  sourceUrl,
+} from '../src/lib/kr-patches.ts';
 
 describe('kr-patches', () => {
   it('links each patch source to the Korean README of its game folder in perfectacle/kr-patches', () => {
     expect(KR_PATCHES.map(sourceUrl)).toEqual([
-      'https://github.com/perfectacle/kr-patches/blob/main/snes/super-mario-rpg/README.ko.md',
-      'https://github.com/perfectacle/kr-patches/blob/main/snes/otogirisou/README.ko.md',
-      'https://github.com/perfectacle/kr-patches/blob/main/snes/dragon-ball-z-super-gokuden-totsugeki/README.ko.md',
-      'https://github.com/perfectacle/kr-patches/blob/main/snes/dragon-ball-z-super-gokuden-kakusei/README.ko.md',
+      'https://github.com/perfectacle/kr-patches/blob/main/sfc/super-mario-rpg/README.ko.md',
+      'https://github.com/perfectacle/kr-patches/blob/main/sfc/otogirisou/README.ko.md',
+      'https://github.com/perfectacle/kr-patches/blob/main/sfc/dragon-ball-z-super-gokuden-totsugeki/README.ko.md',
+      'https://github.com/perfectacle/kr-patches/blob/main/sfc/dragon-ball-z-super-gokuden-kakusei/README.ko.md',
     ]);
+  });
+
+  it('keeps the old snes/ folder for release tags, which were cut before the folders moved to sfc/', () => {
+    expect(analysisUrl(KAKUSEI_PATCH)).toBe(
+      'https://github.com/perfectacle/kr-patches/blob/dragon-ball-z-super-gokuden-kakusei-v1.3/snes/dragon-ball-z-super-gokuden-kakusei/docs/ANALYSIS.md',
+    );
   });
 
   it('serves only the IPS patches from the blog', () => {

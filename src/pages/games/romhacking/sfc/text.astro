@@ -2,12 +2,19 @@
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
-import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
+import {
+  KAKUSEI_PATCH,
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  TOTSUGEKI_PATCH,
+  patchFileUrl,
+  releaseTag,
+} from '../../../../lib/kr-patches.ts';
 import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
-    href: 'https://github.com/perfectacle/kr-patches/blob/super-mario-rpg-v1.2/snes/super-mario-rpg/data/tbl/korTBL.utf8.tbl',
+    href: patchFileUrl(SMRPG_PATCH, releaseTag(SMRPG_PATCH, '1.2'), 'data/tbl/korTBL.utf8.tbl'),
     label: 'kr-patches, super-mario-rpg/data/tbl/korTBL.utf8.tbl',
     note: '이 장에 옮긴 .tbl 글자표 줄(1바이트·2바이트 코드=글자)',
   },
@@ -23,7 +30,7 @@ const references = [
   },
   {
     href: 'https://github.com/perfectacle/kr-patches/blob/main/README.ko.md',
-    label: 'kr-patches, snes/*/docs/ANALYSIS.ko.md',
+    label: 'kr-patches, sfc/*/docs/ANALYSIS.ko.md',
     note: '네 게임의 대사 형식, 포인터 표 주소, 다시 배치한 결과',
   },
 ];
@@ -584,7 +591,7 @@ $E2:03F5 + $0025 = $E2:041A         문자열 1B 07 20 1D 07 1D 22 21 00</code><
     직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
   </h2>
   <p>대사 번호로 뱅크를 고르는 돌격편 루틴을 툴킷으로 역어셈블하면 위 표의 경계값이 그대로 보입니다.</p>
-  <pre tabindex="0"><code>$ krpatch snes dis totsugeki-k.sfc 81AC4C 6 --mapper lorom --m16 --x16
+  <pre tabindex="0"><code>$ krpatch sfc dis totsugeki-k.sfc 81AC4C 6 --mapper lorom --m16 --x16
 81:AC4C  a5 4d        LDA $4D
 81:AC4E  c9 ad 14     CMP #$14AD
 81:AC51  b0 43        BCS $81AC96
@@ -592,7 +599,7 @@ $E2:03F5 + $0025 = $E2:041A         문자열 1B 07 20 1D 07 1D 22 21 00</code><
 81:AC56  b0 56        BCS $81ACAE
 81:AC58  c9 58 0f     CMP #$0F58</code></pre>
   <p>Python에서는 툴킷의 매핑 객체로 포인터를 따라가 문자열 바이트까지 읽을 수 있습니다.</p>
-  <pre tabindex="0"><code>&gt;&gt;&gt; from kr_patch.snes import mapper
+  <pre tabindex="0"><code>&gt;&gt;&gt; from kr_patch.sfc import mapper
 &gt;&gt;&gt; lo = mapper.LoROM()
 &gt;&gt;&gt; rom = open('totsugeki-k.sfc', 'rb').read()
 &gt;&gt;&gt; p = lo.to_offset(0xA88000 + 0x006 * 2)

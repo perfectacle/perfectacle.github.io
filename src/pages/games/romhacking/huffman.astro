@@ -3,7 +3,7 @@ import GuideChapter from '../../../layouts/GuideChapter.astro';
 import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import HuffmanCode from '../../../components/romhacking/HuffmanCode.astro';
-import { OTOGIRISOU_PATCH, analysisUrl, sourceFileUrl } from '../../../lib/kr-patches.ts';
+import { OTOGIRISOU_PATCH, analysisUrl, patchFileUrl, releaseTag, sourceFileUrl } from '../../../lib/kr-patches.ts';
 import { chapterBySlug, chapterPath, notePath } from '../../../components/romhacking/chapters.ts';
 
 const references = [
@@ -23,7 +23,7 @@ const references = [
     note: '일본판 허프만 비트열의 기준점, 트리 표 두 개와 루트, 첫 문장의 비트, v1.0의 2바이트 대본',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patches/blob/otogirisou-v1.2/snes/otogirisou/tools/script.py',
+    href: patchFileUrl(OTOGIRISOU_PATCH, releaseTag(OTOGIRISOU_PATCH, '1.2'), 'tools/script.py'),
     label: 'kr-patches, 제절초 tools/script.py',
     note: '일본판 비트열과 v1.0 2바이트 대본을 읽는 파서(이 장의 실행 결과)',
   },

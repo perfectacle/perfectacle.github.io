@@ -113,7 +113,7 @@ test('chapters key comments by their own path and link the patch notes and toolk
     ),
   ).toHaveCount(1);
   await expect(
-    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/README.ko.md#snes-dis"]'),
+    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.4.0/README.ko.md#sfc-dis"]'),
   ).toHaveCount(1);
 });
 
@@ -285,7 +285,7 @@ test('the hooking chapter links the word-wrap note and the toolkit', async ({ pa
     page.locator('.guide-links a[href="/games/romhacking/sfc/notes/otogirisou/#making-wordwrap"]'),
   ).toHaveCount(1);
   await expect(
-    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/README.ko.md#snes-dis"]'),
+    page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.4.0/README.ko.md#sfc-dis"]'),
   ).toHaveCount(1);
 });
 

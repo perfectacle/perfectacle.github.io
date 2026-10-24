@@ -1,5 +1,5 @@
 /**
- * SFC CPU address ↔ headerless ROM file offset, ported from kr-patch-toolkit (`kr_patch/snes/mapper.py`) so the
+ * SFC CPU address ↔ headerless ROM file offset, ported from kr-patch-toolkit (`kr_patch/sfc/mapper.py`) so the
  * guide's bank map shows the numbers the toolkit commands use. Keep the formulas identical to the toolkit:
  * `tests/sfc-mapper.test.ts` runs the toolkit's own cases.
  *

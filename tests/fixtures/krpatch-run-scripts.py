@@ -1,7 +1,7 @@
 """Writes krpatch-run-scripts.json: input scripts and what kr-patch-toolkit's own parser makes of them.
 
-The guide's script reader (src/lib/run-script.ts) must accept and reject exactly what `krpatch snes run` does, so the
-expected values come from kr_patch.snes.script.parse itself, not from a copy of its rules:
+The guide's script reader (src/lib/run-script.ts) must accept and reject exactly what `krpatch sfc run` does, so the
+expected values come from kr_patch.sfc.script.parse itself, not from a copy of its rules:
 
     python3 -I tests/fixtures/krpatch-run-scripts.py <kr-patch-toolkit checkout>/src > tests/fixtures/krpatch-run-scripts.json
 
@@ -13,7 +13,7 @@ import json
 import sys
 
 sys.path.insert(0, sys.argv[1])
-from kr_patch.snes import script  # noqa: E402
+from kr_patch.sfc import script  # noqa: E402
 
 TOOLKIT_SCRIPT = """\
 # boot
