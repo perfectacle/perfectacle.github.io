@@ -38,6 +38,7 @@ const EMULATOR = '/games/romhacking/sfc/emulator/';
 const SOUND = '/games/romhacking/sfc/sound/';
 const MUSIC = '/games/romhacking/music-loop/';
 const NDS_FS = '/games/romhacking/nds/filesystem/';
+const NDS_TEXT = '/games/romhacking/nds/text/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -299,7 +300,20 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(page.getByRole('button', { name: '한 줄 실행' }).first()).toBeHidden();
   await page.goto(BANKS);
   await expect(page.locator('[data-bank-map] [data-summary-off]')).toHaveText('0x14000C');
-  for (const path of [ENDIAN, BANKS, CPU, GRAPHICS, LZSS, HUFFMAN, EXPANSION, EMULATOR, SOUND, MUSIC, NDS_FS]) {
+  for (const path of [
+    ENDIAN,
+    BANKS,
+    CPU,
+    GRAPHICS,
+    LZSS,
+    HUFFMAN,
+    EXPANSION,
+    EMULATOR,
+    SOUND,
+    MUSIC,
+    NDS_FS,
+    NDS_TEXT,
+  ]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
     expect(await help.count()).toBeGreaterThan(0);
@@ -348,6 +362,11 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(walk.locator('[data-steps] li')).toHaveCount(6);
   await expect(walk.locator('[data-steps] li').last()).toContainText('936바이트');
   await expect(walk.locator('select')).toBeHidden();
+  await page.goto(NDS_TEXT);
+  const lmg = page.locator('[data-lmg-line]');
+  await expect(lmg.locator('[data-screen]')).toContainText('당신에 대해．');
+  await expect(lmg.locator('[data-tokens] li').first()).toContainText('2D FF 04 00 00 00');
+  await expect(lmg.getByRole('button', { name: '다음 값' })).toBeHidden();
   await page.goto(MUSIC);
   const seam = page.locator('[data-seam-lab]');
   await expect(seam.locator('[data-out="score"]')).toHaveText('0.887');
@@ -566,6 +585,34 @@ test('file walk widget follows a chosen file, then reads a ROM the reader opens'
   await expect(widget.locator('[data-rom-name]')).toHaveText('GHOSTTRICK-J(BGTJ)');
   await expect(widget.locator('[data-error]')).toBeHidden();
   await expect(steps.last()).toContainText('38번 칸');
+  await noHorizontalOverflow(page);
+});
+
+test('dialogue byte widget reads one value at a time in both ROMs and encodes typed text', async ({ page }) => {
+  await page.goto(NDS_TEXT);
+  const widget = page.locator('[data-lmg-line]');
+  await expect(widget).toHaveClass(/is-live/);
+  const screen = widget.locator('[data-screen]');
+  await expect(screen).toHaveText('');
+  await widget.getByRole('button', { name: '다음 값' }).click();
+  await expect(widget.locator('li.is-current')).toContainText('대사 머리: 첫 값 4, 번호 0');
+  await expect(widget.locator('[data-live]')).toContainText('0x2E0');
+  for (let i = 0; i < 8; i++) await widget.getByRole('button', { name: '다음 값' }).click();
+  await expect(screen).toHaveText('…………… ▶ 그');
+  await widget.getByRole('button', { name: '끝까지' }).click();
+  await expect(screen).toContainText('당신에 대해．');
+  await widget.getByLabel('일본판').check();
+  await expect(screen).toHaveText('');
+  await widget.getByRole('button', { name: '끝까지' }).click();
+  await expect(screen).toContainText('思い出したわ。');
+
+  const input = widget.getByLabel('직접 적어 보기');
+  await input.fill('{2D:4,0}각{FE}');
+  await expect(widget.locator('[data-out]')).toHaveText('2D FF 04 00 00 00 2D 01 FE FF');
+  await expect(widget.locator('[data-size]')).toHaveText('10');
+  await input.fill('漢');
+  await expect(input).toHaveAttribute('aria-invalid', 'true');
+  await expect(widget.locator('[data-error]')).toContainText('글자표에 없습니다');
   await noHorizontalOverflow(page);
 });
 

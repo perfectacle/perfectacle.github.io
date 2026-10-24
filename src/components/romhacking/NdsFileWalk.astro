@@ -176,21 +176,21 @@ const named = groups.reduce((n, g) => n + g.paths.length, 0);
   }
 </script>
 
-<style>
-  .nw-controls {
+<style is:global>
+  .nds-walk .nw-controls {
     display: flex;
     flex-wrap: wrap;
     gap: 10px 16px;
     align-items: end;
     margin: 0 0 10px;
   }
-  .nw-controls label {
+  .nds-walk .nw-controls label {
     display: grid;
     flex: 1 1 16rem;
     gap: 4px;
     min-width: 0;
   }
-  .nw-controls select {
+  .nds-walk .nw-controls select {
     box-sizing: border-box;
     width: 100%;
     min-height: 44px;
@@ -199,38 +199,38 @@ const named = groups.reduce((n, g) => n + g.paths.length, 0);
     border-radius: 8px;
     background: var(--bg);
   }
-  .nw-open input {
+  .nds-walk .nw-open input {
     box-sizing: border-box;
     width: 100%;
   }
-  .nw-rom {
+  .nds-walk .nw-rom {
     margin: 0 0 8px;
   }
-  .nw-path {
+  .nds-walk .nw-path {
     overflow-wrap: anywhere;
   }
-  .nw-steps {
+  .nds-walk .nw-steps {
     display: grid;
     gap: 10px;
     margin: 0;
     padding-left: 2.2em;
   }
-  .nw-steps li p {
+  .nds-walk .nw-steps li p {
     margin: 0;
   }
-  .nw-where {
+  .nds-walk .nw-where {
     display: flex;
     flex-wrap: wrap;
     gap: 0 8px;
     font-weight: 600;
   }
-  .nw-bytes {
+  .nds-walk .nw-bytes {
     display: block;
     margin: 4px 0;
     overflow-wrap: anywhere;
     white-space: normal;
   }
-  .nw-text {
+  .nds-walk .nw-text {
     color: var(--fg-muted);
   }
 </style>
