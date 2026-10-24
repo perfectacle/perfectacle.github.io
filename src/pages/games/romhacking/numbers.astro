@@ -6,13 +6,6 @@ import BulbByte from '../../../components/romhacking/BulbByte.astro';
 import { toBinary, toHex } from '../../../lib/numbers.ts';
 import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
 
-const sections = [
-  { id: 'bits', label: '전구 여덟 개가 바이트 하나' },
-  { id: 'hex', label: '16진수: 네 칸씩 묶어 읽기' },
-  { id: 'sizes', label: 'KB와 MB, 2의 거듭제곱' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf',
@@ -33,7 +26,7 @@ const references = [
 const hexTable = Array.from({ length: 16 }, (_, n) => n);
 ---
 
-<GuideChapter platform="common" slug="numbers" sections={sections} references={references}>
+<GuideChapter platform="common" slug="numbers" references={references}>
   <h2 id="bits">
     비트와 바이트 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

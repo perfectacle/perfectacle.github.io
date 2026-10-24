@@ -6,17 +6,6 @@ import ApuPorts from '../../../../components/romhacking/ApuPorts.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH } from '../../../../lib/kr-patches.ts';
 import { TOOLKIT_README_KO, chapterBySlug, chapterPath } from '../../../../components/romhacking/chapters.ts';
 
-const sections = [
-  { id: 'two-cpus', label: '소리는 따로 도는 작은 컴퓨터가 냅니다' },
-  { id: 'ports', label: '포트 네 개로 주고받기' },
-  { id: 'upload', label: '사운드 드라이버 올리기' },
-  { id: 'commands', label: '곡 번호와 효과음 번호 보내기' },
-  { id: 'dsp', label: 'S-DSP: 음성 여덟 개' },
-  { id: 'aram', label: '64KB 안에 모두 들어가야 합니다' },
-  { id: 'spc', label: 'SPC 파일' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const FULLSNES = 'https://problemkaputt.de/fullsnes.htm';
 const SNESDEV = 'https://snes.nesdev.org/wiki';
 const TOOLKIT = 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0';
@@ -142,7 +131,7 @@ const probes = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="sound" sections={sections} references={references}>
+<GuideChapter platform="snes" slug="sound" references={references}>
   <h2 id="two-cpus">
     소리는 따로 도는 작은 컴퓨터가 냅니다 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

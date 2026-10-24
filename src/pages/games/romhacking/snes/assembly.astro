@@ -5,16 +5,6 @@ import Figure from '../../../../components/romhacking/Figure.astro';
 import CpuStep from '../../../../components/romhacking/CpuStep.astro';
 import { SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
 
-const sections = [
-  { id: 'names', label: '어셈블리는 바이트에 붙인 이름' },
-  { id: 'cards', label: '자주 쓰는 명령 열두 개' },
-  { id: 'modes', label: '값과 주소 구별하기' },
-  { id: 'branch', label: '분기와 반복' },
-  { id: 'subroutine', label: '서브루틴: JSR과 RTS' },
-  { id: 'copy', label: '패치에 들어간 코드 실행해 보기' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf',
@@ -77,7 +67,7 @@ const modes = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="assembly" sections={sections} references={references}>
+<GuideChapter platform="snes" slug="assembly" references={references}>
   <h2 id="names">
     어셈블리는 바이트에 붙인 이름 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

@@ -41,6 +41,21 @@
 .guide {
   max-width: calc(var(--content) + 2 * var(--gutter));
 }
+.guide-main {
+  min-width: 0;
+}
+/* Wide screens add a contents column beside the body; the body column keeps its width. */
+@media (min-width: 1280px) {
+  .guide-layout {
+    display: grid;
+    grid-template-columns: minmax(0, var(--content)) minmax(200px, 260px);
+    gap: 40px;
+    max-width: calc(var(--content) + 300px + 2 * var(--gutter));
+  }
+  .guide-layout .guide-toc {
+    display: none;
+  }
+}
 
 .guide-crumbs {
   margin: 0 0 20px;

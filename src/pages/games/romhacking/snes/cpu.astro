@@ -5,13 +5,6 @@ import Figure from '../../../../components/romhacking/Figure.astro';
 import CpuStep from '../../../../components/romhacking/CpuStep.astro';
 import { SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
 
-const sections = [
-  { id: 'worker', label: 'CPU는 한 줄씩 읽는 일꾼' },
-  { id: 'registers', label: '레지스터: 일꾼의 손' },
-  { id: 'width', label: '8비트와 16비트를 오가는 CPU' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://www.westerndesigncenter.com/wdc/documentation/w65c816s.pdf',
@@ -63,7 +56,7 @@ const regs = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="cpu" sections={sections} references={references}>
+<GuideChapter platform="snes" slug="cpu" references={references}>
   <h2 id="worker">
     CPU: 명령을 한 줄씩 실행하는 장치 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

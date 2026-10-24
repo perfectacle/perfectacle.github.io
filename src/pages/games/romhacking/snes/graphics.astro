@@ -7,16 +7,6 @@ import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '.
 import { toBinary, toHex } from '../../../../lib/numbers.ts';
 import { SAMPLE_GLYPH, decode, encode, shadowed } from '../../../../lib/snes-tiles.ts';
 
-const sections = [
-  { id: 'tiles', label: '화면은 8×8 타일을 이어 붙인 그림' },
-  { id: 'bitplanes', label: '픽셀 하나에 비트 몇 개: 1·2·4bpp' },
-  { id: 'palette', label: '색은 팔레트 번호로 고른다' },
-  { id: 'vram', label: 'VRAM과 타일맵, BG 모드' },
-  { id: 'fonts', label: '폰트: 고정폭과 가변폭' },
-  { id: 'hangul', label: '한글 수천 자를 제한된 폰트 칸에 넣기' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://problemkaputt.de/fullsnes.htm#snesppuvideomemoryvram',
@@ -136,7 +126,7 @@ const strategies = [
 ];
 ---
 
-<GuideChapter platform="snes" slug="graphics" sections={sections} references={references}>
+<GuideChapter platform="snes" slug="graphics" references={references}>
   <h2 id="tiles">
     화면은 8×8 타일을 이어 붙인 그림 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

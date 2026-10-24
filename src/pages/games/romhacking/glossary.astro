@@ -12,6 +12,7 @@ import {
   entryHref,
   glossaryGroups,
   initialId,
+  termId,
 } from '../../../components/romhacking/glossary.ts';
 
 const title = '용어집';
@@ -70,7 +71,7 @@ const present = new Set(groups.map(g => g.initial));
             <h2 id={initialId(g.initial)}>{g.initial}</h2>
             <dl>
               {g.entries.map(e => (
-                <div class="gl-entry">
+                <div class="gl-entry" id={termId(e)}>
                   <dt>
                     {e.term}
                     {e.en && ' '}
@@ -144,6 +145,9 @@ const present = new Set(groups.map(g => g.initial));
     .gl-group h2 {
       scroll-margin-top: 80px;
     }
+    .gl-entry {
+      scroll-margin-top: 150px;
+    }
   }
   .gl-group {
     max-width: var(--measure);
@@ -162,6 +166,11 @@ const present = new Set(groups.map(g => g.initial));
     padding: 8px 12px;
     border: 1px solid var(--border);
     border-radius: 10px;
+  }
+  /* Guide pages link single entries; the one arrived at stands out from its neighbours. */
+  .gl-entry:target {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
   }
   .gl-entry dt {
     display: flex;

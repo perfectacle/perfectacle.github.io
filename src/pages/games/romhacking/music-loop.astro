@@ -6,20 +6,6 @@ import SeamLab from '../../../components/romhacking/SeamLab.astro';
 import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
 import { TOOLKIT_README_KO, chapterBySlug, chapterPath } from '../../../components/romhacking/chapters.ts';
 
-const sections = [
-  { id: 'goal', label: '무엇을 만드나: 인트로 한 번, 반복 구간 영원히' },
-  { id: 'one-song', label: '원하는 곡만 나오게 하기' },
-  { id: 'record', label: '에뮬레이터 소리 녹음하기' },
-  { id: 'segments', label: '무음으로 곡 경계 찾기' },
-  { id: 'period', label: '반복 주기 찾기' },
-  { id: 'seam', label: '이음매 고르기' },
-  { id: 'crossfade', label: '크로스페이드 모양' },
-  { id: 'tail', label: '파일 끝 꼬리와 AAC 앞 여백' },
-  { id: 'loudness', label: '네 곡의 음량 맞추기' },
-  { id: 'web', label: '웹에서 끊김 없이 반복 재생하기' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const TOOLKIT = 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0';
 const BLOG = 'https://github.com/perfectacle/perfectacle.github.io/blob/main';
 const references = [
@@ -143,7 +129,7 @@ const peaks = [
 ];
 ---
 
-<GuideChapter platform="common" slug="music-loop" sections={sections} references={references}>
+<GuideChapter platform="common" slug="music-loop" references={references}>
   <h2 id="goal">
     무엇을 만드나: 인트로 한 번, 반복 구간 영원히 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

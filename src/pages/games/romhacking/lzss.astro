@@ -6,16 +6,6 @@ import LzssStep from '../../../components/romhacking/LzssStep.astro';
 import { KAKUSEI_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
 import { chapterBySlug, chapterPath } from '../../../components/romhacking/chapters.ts';
 
-const sections = [
-  { id: 'why', label: '게임은 왜 압축하나' },
-  { id: 'rle', label: 'RLE: 같은 바이트가 이어지면 개수만' },
-  { id: 'lz', label: 'LZ: 앞에 나온 것을 다시 쓰기' },
-  { id: 'lzss', label: 'LZSS: 플래그 바이트로 둘을 섞기' },
-  { id: 'variants', label: '게임마다 다른 LZSS' },
-  { id: 'find', label: '롬에서 압축된 곳과 푸는 코드 찾기' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://doi.org/10.1109/TIT.1977.1055714',
@@ -74,7 +64,7 @@ const titleItems = [
 ];
 ---
 
-<GuideChapter platform="common" slug="lzss" sections={sections} references={references}>
+<GuideChapter platform="common" slug="lzss" references={references}>
   <h2 id="why">
     게임은 왜 압축하나 <span class="layer-badge layer-easy">쉽게</span>
   </h2>

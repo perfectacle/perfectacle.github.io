@@ -6,15 +6,6 @@ import HuffmanCode from '../../../components/romhacking/HuffmanCode.astro';
 import { OTOGIRISOU_PATCH } from '../../../lib/kr-patches.ts';
 import { chapterBySlug, chapterPath } from '../../../components/romhacking/chapters.ts';
 
-const sections = [
-  { id: 'idea', label: '자주 나오는 글자에 짧은 부호' },
-  { id: 'prefix', label: '어떤 부호도 다른 부호의 앞부분이 아니다' },
-  { id: 'tree', label: '가장 적은 둘을 묶어 트리 만들기' },
-  { id: 'bits', label: '비트열을 한 비트씩 읽기' },
-  { id: 'rom-tree', label: '롬에 트리를 저장하는 방법과 찾는 법' },
-  { id: 'in-patch', label: '실제 패치에서' },
-  { id: 'try', label: '직접 해 보기' },
-];
 const references = [
   {
     href: 'https://doi.org/10.1109/JRPROC.1952.273898',
@@ -60,7 +51,7 @@ const noWalk = [
 ];
 ---
 
-<GuideChapter platform="common" slug="huffman" sections={sections} references={references}>
+<GuideChapter platform="common" slug="huffman" references={references}>
   <h2 id="idea">
     자주 나오는 글자에 짧은 부호 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
