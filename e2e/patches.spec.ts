@@ -967,9 +967,13 @@ test('tab titles name each page once before the site name', async ({ page }) => 
     await expect(page).toHaveTitle(title);
   }
   // A shared card shows no site name in some messengers, so its title still says what the page offers.
-  await page.goto(OTOGIRI);
-  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
-    'content',
-    `${OTOGIRISOU_PATCH.title} 한글패치`,
-  );
+  const cards: [string, string][] = [
+    [HUB, '한글패치'],
+    [CATALOGUE, '슈퍼 패미컴 | 한글패치'],
+    [OTOGIRI, `${OTOGIRISOU_PATCH.title} 한글패치`],
+  ];
+  for (const [path, title] of cards) {
+    await page.goto(path);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', title);
+  }
 });

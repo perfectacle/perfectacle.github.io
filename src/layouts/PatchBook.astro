@@ -36,6 +36,8 @@ const imageUrl = new URL(preview.src, Astro.site).href;
 // A game page's heading already says 한글패치, so the tab names the game alone before the site name.
 const tabTitle = patch?.title ?? title;
 const fullTitle = tabTitle === KR_PATCH_SITE_TITLE ? tabTitle : `${tabTitle} | ${KR_PATCH_SITE_TITLE}`;
+// A shared card shows no site name in some messengers: a game keeps 한글패치 in its own title, a list takes the tab's.
+const ogTitle = patch ? title : fullTitle;
 ---
 
 <!doctype html>
@@ -55,7 +57,7 @@ const fullTitle = tabTitle === KR_PATCH_SITE_TITLE ? tabTitle : `${tabTitle} | $
     <link rel="preload" href="/games/kr-patches/fonts/guide.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/games/kr-patches/fonts/guide-bold.woff2" as="font" type="font/woff2" crossorigin />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={imageUrl} />
