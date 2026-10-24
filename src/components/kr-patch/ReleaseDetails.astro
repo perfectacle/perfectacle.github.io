@@ -15,10 +15,17 @@
     border-radius: 4px;
   }
 
+  /* Lines that carry the menu cursor start far enough in that the cursor, drawn up to 30px before them, stays
+     inside the box instead of crossing its border or the page edge. */
   summary {
-    padding: 14px 16px;
+    padding: 14px 16px 14px 40px;
     font-weight: 700;
     cursor: pointer;
+  }
+
+  /* The summary spans the box, so its cursor is placed in the left padding rather than before the box edge. */
+  .release-details > summary.pointer::before {
+    left: 12px;
   }
 
   summary:focus-visible {
@@ -31,7 +38,7 @@
     gap: 6px;
     align-items: center;
     min-height: 44px;
-    margin: 0 16px 16px;
+    margin: 0 16px 16px 40px;
     font-weight: 700;
   }
 
