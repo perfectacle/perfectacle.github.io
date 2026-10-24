@@ -27,6 +27,7 @@ type Where =
   | 'nds/text'
   | 'nds/graphics'
   | 'nds/sound'
+  | 'nds/emulator'
   | 'music-loop';
 
 export interface GlossaryEntry {
@@ -608,6 +609,14 @@ const RAW: [string, string, Where, string, string][] = [
     'DS의 악보 형식. 트랙마다 음표·쉼표·악기 같은 명령 바이트가 줄지어 있습니다',
   ],
   ['틱', 'tick', 'nds/sound', 'sseq', '악보의 시간 단위. DS의 SSEQ는 4분음표 하나가 48틱입니다'],
+  [
+    '포인터 장치',
+    'pointer device',
+    'nds/emulator',
+    'touch',
+    'libretro에서 마우스처럼 화면 위 한 점을 넘기는 입력 장치. desmume 코어는 DS 터치를 이것으로 받습니다',
+  ],
+  ['시험 롬', 'test ROM', 'nds/emulator', 'stage', '확인하려고 일부를 바꿔 만든 롬. 배포하지 않습니다'],
   ['LCP', 'Largest Contentful Paint', 'music-loop', 'web', '첫 화면에서 가장 큰 요소가 그려지기까지의 시간'],
 ];
 

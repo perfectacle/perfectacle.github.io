@@ -486,6 +486,29 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     ],
     tools: [{ command: 'krpatch nds unpack', anchor: 'nds-unpack-nds-pack-파일시스템을-폴더로-다시-롬으로' }],
   },
+  {
+    order: 19,
+    slug: 'emulator',
+    platform: 'nds',
+    title: '에뮬레이터로 확인',
+    summary:
+      'desmume libretro 코어를 화면 없이 돌려 입력 스크립트로 같은 장면을 되풀이해 찍습니다. 터치를 포인터 값으로 바꾸고, 세이브 스테이트와 시험 롬으로 뒤쪽 장면에 바로 갑니다.',
+    ready: true,
+    notes: [
+      note(GHOST_TRICK_PATCH, 'making-testing', '입력 스크립트·터치·뒤쪽 장면 시험 롬'),
+      note(GHOST_TRICK_PATCH, 'making-wrap', '시험 문장 롬으로 창 폭 재기'),
+      note(GHOST_TRICK_PATCH, 'making-save', '판마다 남긴 기록을 v1.2에서 이어 하기'),
+    ],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '슈퍼 패미콤 게임의 에뮬레이터 확인은 12장에서 다룹니다.'),
+      gap(KAKUSEI_PATCH, '슈퍼 패미콤 게임의 에뮬레이터 확인은 12장에서 다룹니다.'),
+      gap(OTOGIRISOU_PATCH, '슈퍼 패미콤 게임의 에뮬레이터 확인은 12장에서 다룹니다.'),
+      gap(SMRPG_PATCH, '슈퍼 패미콤 게임의 에뮬레이터 확인은 12장에서 다룹니다.'),
+    ],
+    tools: [
+      { command: 'krpatch sfc run(같은 libretro 연결부, 슈퍼 패미콤용)', anchor: 'sfc-run-헤드리스-libretro-실행기' },
+    ],
+  },
 ];
 
 export const chapterPath = (c: Pick<GuideChapter, 'platform' | 'slug'>) =>

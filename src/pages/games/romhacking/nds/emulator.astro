@@ -1,0 +1,195 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import TouchPoint from '../../../../components/romhacking/TouchPoint.astro';
+import { GHOST_TRICK_PATCH, analysisUrl, sourceFileUrl, toolkitFileUrl } from '../../../../lib/kr-patches.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+
+const references = [
+  {
+    href: 'https://docs.libretro.com/development/cores/developing-cores/',
+    label: 'libretro, Developing cores',
+    note: '코어가 프런트엔드에 화면·소리·입력을 넘기는 콜백과 retro_run 한 번이 한 프레임이라는 점',
+  },
+  {
+    href: 'https://github.com/libretro/libretro-common/blob/master/include/libretro.h',
+    label: 'libretro.h',
+    note: '포인터 장치(RETRO_DEVICE_POINTER)의 좌표가 화면 한쪽 끝 -0x7FFF에서 다른 끝 0x7FFF까지라는 정의, 세이브 스테이트 함수',
+  },
+  {
+    href: sourceFileUrl(GHOST_TRICK_PATCH, 'tools/play.py'),
+    label: 'kr-patches, 고스트 트릭 tools/play.py',
+    note: '입력 스크립트 명령, 터치 좌표 변환, 세이브 스테이트 이어 쓰기, 소리 녹음',
+  },
+  {
+    href: sourceFileUrl(GHOST_TRICK_PATCH, 'tools/stage_rom.py'),
+    label: 'kr-patches, 고스트 트릭 tools/stage_rom.py',
+    note: '「처음부터」가 다른 스테이지·장면에서 시작하는 시험 롬',
+  },
+  {
+    href: toolkitFileUrl('src/kr_patch/sfc/libretro.py'),
+    label: 'kr-patch-toolkit, sfc/libretro.py',
+    note: 'play.py가 그대로 가져다 쓰는 libretro 코어 불러오기와 콜백 정의',
+  },
+  {
+    href: analysisUrl(GHOST_TRICK_PATCH),
+    label: 'kr-patches, 고스트 트릭 docs/ANALYSIS.md 6장',
+    note: '직접 빌드한 desmume 코어의 커밋, melonDS DS 코어가 멈춘 것, 터치 코어 변수',
+  },
+];
+const note = notePath(GHOST_TRICK_PATCH);
+const commands = [
+  { cmd: 'wait N', text: 'N프레임 그대로 둡니다.' },
+  { cmd: 'press BTN[+BTN] [N] [W]', text: '버튼을 N(기본 6)프레임 누르고 W(기본 20)프레임 기다립니다.' },
+  { cmd: 'a K [P]', text: 'A를 K번, P(기본 30)프레임 간격으로 누릅니다. 대사를 넘길 때 씁니다.' },
+  { cmd: 'touch X Y [N] [W]', text: '아래 화면 (X, Y)를 N(기본 6)프레임 누르고 W(기본 20)프레임 기다립니다.' },
+  {
+    cmd: 'drag X1 Y1 X2 Y2 [N] [W]',
+    text: '(X1, Y1)에서 (X2, Y2)까지 N(기본 20)프레임에 걸쳐 끌고 W(기본 20)프레임 기다립니다.',
+  },
+  { cmd: 'shot NAME', text: '위·아래 화면을 합친 256×384 그림을 NAME.png로 저장합니다.' },
+];
+---
+
+<GuideChapter platform="nds" slug="emulator" references={references}>
+  <h2 id="why">
+    실기 없이 확인하기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    한글패치를 만들면 대사가 잘리지 않는지, 고친 화면이 제대로 나오는지, 세이브가 이어지는지를 확인해야 합니다. 장면이
+    수백 개라 손으로 하면 끝이 없습니다. 슈퍼 패미콤 장에서처럼(<a href={chapterHref(12)}>12장</a>) 에뮬레이터를 화면
+    없이 돌리고, 정해 둔 입력을 넣고, 정해 둔 순간의 화면을 저장하면 같은 확인을 몇 번이고 되풀이할 수 있습니다.
+  </p>
+  <p>
+    고스트 트릭 한글패치는 libretro용 desmume 코어를 썼습니다. libretro 코어는 에뮬레이터 본체를 라이브러리로 만든
+    것이라, 프로그램에서 「한 프레임 실행」, 「지금 화면 주세요」, 「이 버튼이 눌렸다」를 함수로 주고받을 수 있습니다.
+    kr-patches의 <code>tools/play.py</code>는 툴킷이 슈퍼 패미콤용으로 만든 libretro 연결부(콜백 형식과 코어 불러오기)를
+    가져다 쓰고, 터치와 코어 변수는 따로 처리합니다.
+  </p>
+
+  <h2 id="script">
+    입력 스크립트 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    <code>play.py</code>는 한 줄에 명령 하나인 스크립트를 읽습니다. 주석은 <code>#</code>으로 시작하는 줄로만 적습니다.{' '}
+    <code>--cmd</code>로 줄 때는 <code>;</code>로 명령을 나눕니다. 프레임은 DS 화면이 한 번 그려지는 단위로, 1초에 약
+    60번입니다.
+  </p>
+  <div class="table-wrap" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">명령</th>
+          <th scope="col">하는 일</th>
+        </tr>
+      </thead>
+      <tbody>
+        {commands.map(c => (
+          <tr>
+            <td>
+              <code>{c.cmd}</code>
+            </td>
+            <td class="wrap">{c.text}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <pre tabindex="0"><code># 600프레임 기다림
+wait 600
+# Start를 누름
+press start
+# A를 30프레임 간격으로 20번
+a 20
+# 아래 화면의 「처음부터」 버튼을 터치
+touch 128 76
+# 위·아래 화면을 title.png로 저장
+shot title</code></pre>
+
+  <h2 id="touch">
+    터치는 포인터로 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    DS의 터치 화면은 아래 화면뿐입니다. libretro에는 「터치 화면」 장치가 따로 없어서, desmume 코어는 마우스 같은 포인터
+    장치로 터치를 받습니다. 코어 변수 <code>desmume_pointer_mouse=enabled</code>와{' '}
+    <code>desmume_pointer_type=touch</code>로 설정해야 합니다.
+  </p>
+  <p>
+    포인터 좌표는 위·아래 화면을 합친 256×384 전체에 걸쳐 있고, libretro 규격에서 포인터 값은 한쪽 끝이 −0x7FFF, 반대쪽
+    끝이 0x7FFF입니다. 그래서 아래 화면 (x, y)는 먼저 합친 화면의 (x, 192 + y)로 옮긴 뒤 이 범위로 늘립니다.{' '}
+    <code>play.py</code>는 간단히 폭 0x10000에서 0x8000을 빼는데, 규격과의 차이는 1픽셀보다 작습니다. 픽셀 한가운데를
+    누르도록 0.5를 더합니다.
+  </p>
+  <TouchPoint />
+  <Deeper title="변환 식">
+    <pre tabindex="0"><code>포인터 x = ⌊(x + 0.5) × 0x10000 ÷ 256⌋ − 0x8000
+포인터 y = ⌊(192 + y + 0.5) × 0x10000 ÷ 384⌋ − 0x8000</code></pre>
+    <p>
+      아래 화면 왼쪽 위 (0, 0)은 포인터 (−32640, 85)이고, 가운데 (128, 96)은 (128, 16469)입니다. 위 화면은 포인터 y가
+      0보다 작은 쪽입니다.
+    </p>
+  </Deeper>
+
+  <h2 id="states">
+    세이브 스테이트로 이어 가기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    처음부터 원하는 장면까지 매번 입력을 넣으면 오래 걸립니다. libretro 코어는 에뮬레이터의 상태 전체를 바이트로
+    내보내고 다시 불러오는 함수(세이브 스테이트)를 줍니다. <code>play.py --save</code>로 스크립트 끝의 상태를 파일에
+    남기고, 다음에는 <code>--state</code>로 그 상태에서 바로 시작합니다. 세이브 스테이트에는 메모리에 이미 올라간
+    대사까지 들어 있어서, 한 롬에서 만든 상태를 다른 롬에 불러오면 화면이 바뀌지 않습니다. 롬마다 같은 스크립트로 상태를
+    따로 만들어 두면, 그 뒤로는 같은 입력으로 비교할 수 있습니다.
+  </p>
+  <p>
+    세이브 스테이트는 게임 안의 기록과 다릅니다. 게임 안 기록은 카드의 세이브 메모리에 들어가고, desmume 코어는 롬
+    이름에 <code>.dsv</code>를 붙인 파일을 <code>play.py</code>의 출력 폴더에 씁니다. 패치한 롬에서 예전 기록을 이어
+    하려면 같은 출력 폴더에서 이 파일 이름을 맞춰야 합니다.
+  </p>
+
+  <h2 id="stage">
+    뒤쪽 장면으로 바로 가기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    마지막 장의 대사를 확인하려고 처음부터 플레이할 수는 없습니다. 고스트 트릭은 「처음부터」를 고르면{' '}
+    <code>route.xml</code>에 적힌 <code>st01/st01_root.xml</code>로 시작합니다. 이 이름을{' '}
+    <code>st06/st06_root.xml</code>로 바꾸면 스테이지 <code>st06</code>부터 시작합니다. 스테이지 번호는 장 번호와
+    다릅니다(<code>st02</code>가 제4장입니다). 스테이지 루트 스크립트의 이름 문자열 구역(
+    <a href={`${chapterHref(16)}#lmg`}>16장</a>)에서 처음 부르는 장면 이름까지 바꾸면 원하는 장면에서 바로 시작합니다.
+  </p>
+  <p>
+    <code>stage_rom.py</code>는 길이가 같은 이름으로 바꾸는 경우만 다루고, 장면 이름은 <code>stNN_장면_Expand.xml</code>{' '}
+    꼴로 만듭니다. 앞 장면을 건너뛰므로 아이템이나 진행 플래그는 실제 플레이와 다를 수 있습니다. 대사와 화면을 확인하는
+    데는 충분합니다. 이렇게 만든 시험 롬은 확인에만 쓰고 배포하지 않습니다.
+  </p>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>고스트 트릭: 코어를 직접 빌드</h3>
+  <p>
+    libretro desmume 코어는 커밋 <code>95b4d79</code>(2026-09-20)를 직접 빌드했습니다. melonDS DS 코어 v1.4.0은 롬을
+    읽은 뒤 멈춰서 쓰지 않았습니다. 패치 노트의 v1.1·v1.2 비교 화면은 모두 두 롬에 같은 입력을 넣어 찍었습니다(
+    <a href={`${note}#making-testing`}>노트</a>).
+  </p>
+  <h3>고스트 트릭: 창 폭 실측과 세이브 확인</h3>
+  <p>
+    대화창이 한 줄에 몇 글자를 받는지는 대사 하나를 「가나다라마바사아자차카타파하」 14자로 바꾼 시험 롬을 찍어
+    정했습니다. 초상화가 창 안에 있는 창에서는 13자만 나왔고, 전체 폭 창은 16자입니다(
+    <a href={`${note}#making-wrap`}>노트</a>). 세이브는 제4장에서 시작하는 시험 롬을 일본판·v1.1·v1.2로 하나씩
+    만들고(스테이지 <code>st02</code>), 앞의 두 롬에서 남긴 기록을 v1.2에서 「계속해서」로 이어 확인했습니다(
+    <a href={`${note}#making-save`}>노트</a>).
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    kr-patches 저장소의 <code>nds/ghost-trick</code> 폴더에서 툴킷이 깔린 파이썬(저장소 README의{' '}
+    <code>../../.venv/bin/python</code>)으로 실행합니다. desmume libretro 코어는 README대로 빌드해{' '}
+    <code>compat/cores/</code>에 두면 <code>--core</code> 없이 찾습니다.
+  </p>
+  <pre tabindex="0"><code>../../.venv/bin/python tools/play.py game.nds out/ \
+  --cmd "wait 1500; press start; wait 600; shot title" --save title.state
+../../.venv/bin/python tools/play.py game.nds out/ --state title.state --cmd "touch 128 76; wait 60; shot after"
+../../.venv/bin/python tools/stage_rom.py game.nds st06.nds 06</code></pre>
+</GuideChapter>
