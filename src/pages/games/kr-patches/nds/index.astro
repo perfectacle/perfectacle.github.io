@@ -1,5 +1,7 @@
 ---
 import PatchBook from '../../../../layouts/PatchBook.astro';
+import NdsCartridge from '../../../../components/kr-patch/NdsCartridge.astro';
+import NdsCartridgeBoot from '../../../../components/kr-patch/NdsCartridgeBoot.astro';
 import { KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, NDS_PATCHES } from '../../../../lib/kr-patches';
 ---
 
@@ -21,7 +23,8 @@ import { KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, NDS_PATCHES } from '../../../../
 >
   <section class="nds-catalogue page-width" aria-labelledby="catalogue-title">
     <div class="nds-heading">
-      <div>
+      <span class="nds-lcd" aria-hidden="true"></span>
+      <div class="nds-heading-copy">
         <a class="nds-back" href={KR_PATCH_LIST_PATH}>
           <span aria-hidden="true">←</span> 기종 고르기
         </a>
@@ -37,19 +40,28 @@ import { KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, NDS_PATCHES } from '../../../../
       />
     </div>
     <ul class="nds-games">
-      {NDS_PATCHES.map(patch => (
+      {NDS_PATCHES.map((patch, i) => (
         <li>
           <a class="nds-card" href={`${patch.path}/`}>
-            <span class="nds-cart" aria-hidden="true">
-              <img src={patch.titleScreen} width="256" height="192" alt="" />
-            </span>
+            <NdsCartridge
+              label={`/games/kr-patches/catalogue/labels/${patch.theme}.webp`}
+              top={patch.titleScreen}
+              bottom={`${patch.path}/images/title-bottom.webp`}
+              eager={i === 0}
+            />
+            <span class="nds-hinge" aria-hidden="true"></span>
             <div class="nds-copy">
-              <p class="nds-release">
-                게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}{' '}
-                <time datetime={patch.released}>({patch.released})</time>
-              </p>
-              <h2>{patch.title}</h2>
-              <p class="nds-summary">{patch.card.summary}</p>
+              <span class="nds-lcd" aria-hidden="true"></span>
+              <div class="nds-banner">
+                <img src={`${patch.path}/images/icon.webp`} width="32" height="32" alt="" />
+                <div>
+                  <h2>{patch.title}</h2>
+                  <p class="nds-release">
+                    게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}{' '}
+                    <time datetime={patch.released}>({patch.released})</time>
+                  </p>
+                </div>
+              </div>
               <p class="nds-copyright">{patch.copyright}</p>
             </div>
           </a>
@@ -57,6 +69,7 @@ import { KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, NDS_PATCHES } from '../../../../
       ))}
     </ul>
   </section>
+  <NdsCartridgeBoot />
 </PatchBook>
 
 <style is:global>
@@ -89,35 +102,53 @@ import { KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, NDS_PATCHES } from '../../../../
     padding-block: clamp(40px, 7vw, 72px) 16px;
   }
 
-  /* The heading is the closed lid of a black DS Lite: glossy plastic with a hinge line at the bottom. */
+  /* Heading and copy are the DS's two screens: a black bezel with a lit LCD inside, joined by the hinge. */
+  .nds-heading,
+  .nds-copy {
+    position: relative;
+    isolation: isolate;
+    background: #0d0f14;
+    box-shadow:
+      inset 0 0 0 10px #1e1f25,
+      inset 0 0 0 11px #3a3c45,
+      0 0 0 2px #050507;
+  }
+
+  .nds-lcd {
+    position: absolute;
+    z-index: -1;
+    inset: 14px;
+    border-radius: 4px;
+  }
+
   .nds-heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    padding: 24px 28px;
-    border-radius: 18px;
-    background: linear-gradient(160deg, #3a3c46, #15161c 55%, #0b0b10);
-    box-shadow:
-      0 0 0 2px #050507,
-      inset 0 2px rgb(255 255 255 / 18%),
-      inset 0 -10px 0 -6px #2b2c34;
+    padding: 26px 30px;
+    border-radius: 16px 16px 8px 8px;
+  }
+
+  .nds-heading .nds-lcd {
+    background: radial-gradient(ellipse at 30% 0%, #1d2a3c, #0b1018 70%);
   }
 
   .nds-back {
-    color: var(--muted);
+    color: #8fb4dd;
     font-size: 0.875rem;
     text-decoration: none;
   }
 
   .nds-back:hover,
   .nds-back:focus-visible {
-    color: var(--ink);
+    color: #cfe3fa;
     text-decoration: underline;
   }
 
   .nds-heading h1 {
     margin-top: 6px;
+    color: var(--ink);
     font-family: var(--pixel);
     font-synthesis: none;
     font-size: 24px;
@@ -141,7 +172,7 @@ import { KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, NDS_PATCHES } from '../../../../
 
   .nds-card {
     display: grid;
-    gap: 16px;
+    gap: 0;
     color: var(--ink);
     text-decoration: none;
   }
@@ -151,41 +182,65 @@ import { KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, NDS_PATCHES } from '../../../../
     outline-offset: 6px;
   }
 
-  /* A DS game card: dark grey shell with the corner notch, the label carrying the title screen. */
-  .nds-cart {
-    display: block;
-    padding: 18px 18px 30px;
-    border-radius: 10px 30px 10px 10px;
-    background: linear-gradient(180deg, #4a4b52, #2e2f35);
-    box-shadow:
-      0 0 0 2px #1a1b20,
-      inset 0 2px rgb(255 255 255 / 15%),
-      0 10px 0 -2px #1a1b20;
-    transition: transform 0.15s;
+  .nds-card :global(.ds-cartridge) {
+    width: min(100%, 240px);
+    justify-self: center;
   }
 
-  .nds-card:hover .nds-cart,
-  .nds-card:focus-visible .nds-cart {
-    transform: translateY(-4px);
+  .nds-card:hover :global(.ds-cartridge),
+  .nds-card:focus-visible :global(.ds-cartridge) {
+    transform: translateY(-6px);
   }
 
-  .nds-cart img {
+  /* The copy sits in a panel cut from the same glossy black plastic as the DS Lite lid above. */
+  .nds-hinge {
     display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-    image-rendering: pixelated;
-    box-shadow: 0 0 0 3px #f2f2f2;
+    height: 14px;
+    margin: 16px 24px 0;
+    border-radius: 0 0 8px 8px;
+    background: linear-gradient(#2e2f36, #111216);
   }
 
   .nds-copy {
     display: grid;
-    gap: 8px;
+    gap: 10px;
+    padding: 26px 28px;
+    border-radius: 8px 8px 16px 16px;
+    transition: box-shadow 0.15s;
+  }
+
+  .nds-copy .nds-lcd {
+    background: linear-gradient(180deg, #121a26, #0b0f16);
+  }
+
+  .nds-card:hover .nds-copy,
+  .nds-card:focus-visible .nds-copy {
+    box-shadow:
+      inset 0 0 0 10px #1e1f25,
+      inset 0 0 0 11px #2a8be0,
+      0 0 0 2px #050507,
+      0 0 18px rgb(42 139 224 / 35%);
+  }
+
+  .nds-banner {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .nds-banner img {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 2px #2a8be0,
+      0 0 14px rgb(42 139 224 / 45%);
+    image-rendering: pixelated;
   }
 
   .nds-release,
   .nds-copyright {
-    color: var(--muted);
+    color: #8e9ab0;
     font-size: 0.875rem;
   }
 
@@ -193,15 +248,16 @@ import { KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, NDS_PATCHES } from '../../../../
     margin-inline: 4px;
   }
 
+  .nds-release time {
+    white-space: nowrap;
+  }
+
   .nds-copy h2 {
+    color: var(--ink);
     font-family: var(--pixel);
     font-synthesis: none;
     font-size: 24px;
     line-height: 1.4;
-  }
-
-  .nds-summary {
-    line-height: 1.75;
   }
 
   @media (width < 560px) {
