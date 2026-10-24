@@ -1,0 +1,212 @@
+---
+import PatchBook from '../../../../layouts/PatchBook.astro';
+import { KR_PATCH_LIST_PATH, KR_PATCH_NDS_PATH, NDS_PATCHES } from '../../../../lib/kr-patches';
+---
+
+<PatchBook
+  title="닌텐도 DS"
+  trail={[
+    { name: '한글패치', path: KR_PATCH_LIST_PATH },
+    { name: '닌텐도 DS', path: KR_PATCH_NDS_PATH },
+  ]}
+  description={`닌텐도 DS 게임 한글패치 모음. ${NDS_PATCHES.map(p => p.title).join(', ')}. 일본판 롬파일을 고르면 이 사이트에서 바로 한글패치를 적용합니다.`}
+  theme="nds"
+  copyright={[]}
+  links={[
+    {
+      href: 'https://commons.wikimedia.org/wiki/File:Nintendo-DS-Lite-Black-Open.png',
+      label: '닌텐도 DS Lite 사진 Evan-Amos(퍼블릭 도메인)',
+    },
+  ]}
+>
+  <section class="nds-catalogue page-width" aria-labelledby="catalogue-title">
+    <div class="nds-heading">
+      <div>
+        <a class="nds-back" href={KR_PATCH_LIST_PATH}>
+          <span aria-hidden="true">←</span> 기종 고르기
+        </a>
+        <h1 id="catalogue-title">닌텐도 DS</h1>
+      </div>
+      <img
+        class="nds-photo"
+        src="/games/kr-patches/catalogue/nintendo-ds-lite.webp"
+        alt=""
+        width="914"
+        height="759"
+        fetchpriority="high"
+      />
+    </div>
+    <ul class="nds-games">
+      {NDS_PATCHES.map(patch => (
+        <li>
+          <a class="nds-card" href={`${patch.path}/`}>
+            <span class="nds-cart" aria-hidden="true">
+              <img src={patch.titleScreen} width="256" height="192" alt="" />
+            </span>
+            <div class="nds-copy">
+              <p class="nds-release">
+                게임 {patch.year} <span aria-hidden="true">·</span> 한글패치 v{patch.version}{' '}
+                <time datetime={patch.released}>({patch.released})</time>
+              </p>
+              <h2>{patch.title}</h2>
+              <p class="nds-summary">{patch.card.summary}</p>
+              <p class="nds-copyright">{patch.copyright}</p>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</PatchBook>
+
+<style is:global>
+  [data-theme='nds'] {
+    --ink: #eceaf2;
+    --muted: #b3afc0;
+    --accent: #7fb2ff;
+    --link: #a9cbff;
+    color-scheme: dark;
+  }
+
+  [data-theme='nds'] body {
+    background: radial-gradient(circle at 50% 0%, #2a2d3a, #101118 70%);
+  }
+
+  [data-theme='nds'] .page-width {
+    width: min(100%, 960px);
+    padding-inline: 24px;
+  }
+
+  [data-theme='nds'] .page-footer {
+    margin-top: 32px;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+</style>
+
+<style>
+  .nds-catalogue {
+    padding-block: clamp(40px, 7vw, 72px) 16px;
+  }
+
+  /* The heading is the closed lid of a black DS Lite: glossy plastic with a hinge line at the bottom. */
+  .nds-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 28px;
+    border-radius: 18px;
+    background: linear-gradient(160deg, #3a3c46, #15161c 55%, #0b0b10);
+    box-shadow:
+      0 0 0 2px #050507,
+      inset 0 2px rgb(255 255 255 / 18%),
+      inset 0 -10px 0 -6px #2b2c34;
+  }
+
+  .nds-back {
+    color: var(--muted);
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+
+  .nds-back:hover,
+  .nds-back:focus-visible {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+
+  .nds-heading h1 {
+    margin-top: 6px;
+    font-family: var(--pixel);
+    font-synthesis: none;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .nds-photo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+  }
+
+  .nds-games {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 32px;
+    margin-top: 40px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nds-card {
+    display: grid;
+    gap: 16px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nds-card:focus-visible {
+    outline: 4px solid var(--accent);
+    outline-offset: 6px;
+  }
+
+  /* A DS game card: dark grey shell with the corner notch, the label carrying the title screen. */
+  .nds-cart {
+    display: block;
+    padding: 18px 18px 30px;
+    border-radius: 10px 30px 10px 10px;
+    background: linear-gradient(180deg, #4a4b52, #2e2f35);
+    box-shadow:
+      0 0 0 2px #1a1b20,
+      inset 0 2px rgb(255 255 255 / 15%),
+      0 10px 0 -2px #1a1b20;
+    transition: transform 0.15s;
+  }
+
+  .nds-card:hover .nds-cart,
+  .nds-card:focus-visible .nds-cart {
+    transform: translateY(-4px);
+  }
+
+  .nds-cart img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    image-rendering: pixelated;
+    box-shadow: 0 0 0 3px #f2f2f2;
+  }
+
+  .nds-copy {
+    display: grid;
+    gap: 8px;
+  }
+
+  .nds-release,
+  .nds-copyright {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .nds-release span {
+    margin-inline: 4px;
+  }
+
+  .nds-copy h2 {
+    font-family: var(--pixel);
+    font-synthesis: none;
+    font-size: 24px;
+    line-height: 1.4;
+  }
+
+  .nds-summary {
+    line-height: 1.75;
+  }
+
+  @media (width < 560px) {
+    .nds-photo {
+      display: none;
+    }
+  }
+</style>

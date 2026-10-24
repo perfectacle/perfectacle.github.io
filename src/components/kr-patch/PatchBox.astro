@@ -1,21 +1,33 @@
 ---
 import type { RomSpec } from '../../lib/rom-patch';
+import type { NdsSpec } from '../../lib/nds-patch';
+import { PLATFORMS } from '../../lib/kr-patches';
 import FileChecksums from './FileChecksums.astro';
 
-interface Props {
+type Props = {
+  /** Patch file: IPS for the Super Famicom, xdelta for the Nintendo DS. */
   ips: string;
-  spec: RomSpec;
   version: string;
   /** File name of the saved Korean ROM, without the extension. */
   output: string;
   /** Character who speaks the box's messages, shown as the game's `<name>` tag. */
   speaker?: string;
-}
+} & ({ platform?: 'sfc'; spec: RomSpec } | { platform: 'nds'; spec: NdsSpec });
 
-const { ips, spec, version, output, speaker } = Astro.props;
+const { ips, spec, version, output, speaker, platform = 'sfc' } = Astro.props;
+const { romExt } = PLATFORMS[platform];
+const accept = platform === 'nds' ? '.nds,.zip' : '.sfc,.smc,.fig,.swc,.zip';
+const extensions = platform === 'nds' ? '.nds · .zip' : '.sfc · .smc · .zip';
 ---
 
-<div id="patch" class="patch-box frame" data-ips={ips} data-spec={JSON.stringify(spec)} data-output={output}>
+<div
+  id="patch"
+  class="patch-box frame"
+  data-ips={ips}
+  data-spec={JSON.stringify(spec)}
+  data-output={output}
+  data-platform={platform}
+>
   <div class="patch-intro">
     <h2 class="patch-heading">여기서 바로 한글패치</h2>
     <p>따로 프로그램을 설치하지 않아도 됩니다.</p>
@@ -32,7 +44,7 @@ const { ips, spec, version, output, speaker } = Astro.props;
     </li>
     <li>
       <strong>저장한 파일로 실행</strong>
-      <span>저장된 .sfc 파일을 에뮬레이터에서 엽니다.</span>
+      <span>저장된 .{romExt} 파일을 에뮬레이터에서 엽니다.</span>
     </li>
   </ol>
   <p class="inapp-warning dialog" hidden>
@@ -47,9 +59,9 @@ const { ips, spec, version, output, speaker } = Astro.props;
     크롬이나 사파리로 열어 주세요.
   </p>
   <label class="drop-zone">
-    <input class="sr-only" type="file" accept=".sfc,.smc,.fig,.swc,.zip" aria-label="일본판 롬파일 고르기" />
+    <input class="sr-only" type="file" accept={accept} aria-label="일본판 롬파일 고르기" />
     <span class="drop-title">일본판 롬파일 고르기</span>
-    <span class="drop-hint">또는 파일을 여기에 끌어다 놓으세요 (.sfc · .smc · .zip)</span>
+    <span class="drop-hint">또는 파일을 여기에 끌어다 놓으세요 ({extensions})</span>
   </label>
   <div class="patch-status dialog" role="status" aria-live="polite" hidden>
     <p>
@@ -70,10 +82,6 @@ const { ips, spec, version, output, speaker } = Astro.props;
 </div>
 
 <script>
-  import type { RomSpec } from '../../lib/rom-patch';
-
-  type Patch = typeof import('../../lib/rom-patch');
-
   const need = <T extends Element>(root: ParentNode, selector: string) => {
     const element = root.querySelector<T>(selector);
     if (!element) throw new Error(`Missing ${selector}`);
@@ -86,7 +94,6 @@ const { ips, spec, version, output, speaker } = Astro.props;
     const status = need<HTMLElement>(box, '.patch-status');
     const text = need<HTMLElement>(status, '.status-text');
     const actions = need<HTMLElement>(status, '.status-actions');
-    const spec = JSON.parse(box.dataset['spec'] ?? '') as RomSpec;
     const output = box.dataset['output'] ?? '';
     let download: string | undefined;
 
@@ -118,43 +125,10 @@ const { ips, spec, version, output, speaker } = Astro.props;
       link.click();
     };
 
-    const make = async (patch: Patch, source: Uint8Array, allowUnverified: boolean) => {
-      show('한글패치를 적용하는 중입니다. 잠시만 기다려 주세요.');
-      let ipsBytes: Uint8Array;
-      try {
-        const response = await fetch(box.dataset['ips'] ?? '');
-        if (!response.ok) throw new Error(String(response.status));
-        ipsBytes = new Uint8Array(await response.arrayBuffer());
-      } catch {
-        show('한글패치 파일을 받지 못했습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.', [
-          { label: '다시 시도', run: () => void make(patch, source, allowUnverified) },
-        ]);
-        return;
-      }
-      try {
-        const rom = patch.createPatchedRom(spec, source, ipsBytes, { allowUnverified });
-        const name = `${output}${allowUnverified ? '_Unverified' : ''}.sfc`;
-        save(rom, name);
-        show(
-          `${name} 파일을 저장했습니다. 에뮬레이터에서 이 롬파일을 열면 한글판으로 시작합니다.` +
-            (allowUnverified
-              ? ' 원본과 다른 롬파일로 만들었으니 게임이 이상하면 다른 일본판 롬파일로 다시 만들어 주세요.'
-              : ''),
-          [{ label: '다시 저장', run: () => save(rom, name) }],
-        );
-      } catch (error) {
-        show(
-          error instanceof Error
-            ? error.message
-            : '한글패치를 적용하지 못했습니다. 페이지를 새로 고친 뒤 다시 시도해 주세요.',
-        );
-      }
-    };
-
     const handle = async (file: File) => {
       show('파일을 살펴보는 중입니다.');
-      const patch = await import('../../lib/rom-patch');
-      let name = file.name;
+      const flow =
+        box.dataset['platform'] === 'nds' ? import('../../lib/nds-patch-box') : import('../../lib/sfc-patch-box');
       let bytes: Uint8Array;
       try {
         bytes = new Uint8Array(await file.arrayBuffer());
@@ -162,55 +136,8 @@ const { ips, spec, version, output, speaker } = Astro.props;
         show('파일을 읽지 못했습니다. 클라우드에 있는 파일이면 먼저 이 기기에 내려받은 뒤 다시 골라 주세요.');
         return;
       }
-      if (patch.isZip(bytes, name)) {
-        const found = await patch.extractRomFromZip(spec, bytes);
-        if (!found) {
-          show('이 압축 파일은 열지 못했습니다. 압축을 풀어서 안에 있는 롬파일(.sfc 또는 .smc) 하나를 골라 주세요.');
-          return;
-        }
-        ({ name, bytes } = found);
-      } else if (patch.isOtherArchive(bytes, name)) {
-        show('.7z·.rar 압축 파일은 열지 못합니다. 압축을 풀어서 안에 있는 롬파일(.sfc 또는 .smc)을 골라 주세요.');
-        return;
-      }
-      const verdict = patch.classifyRom(spec, bytes);
-      switch (verdict.kind) {
-        case 'too-small':
-          show(`${name} 파일은 롬파일이라기엔 너무 작습니다. 사진이나 문서를 고르지 않았는지 확인해 주세요.`);
-          return;
-        case 'truncated':
-          show('롬파일 크기가 조금 모자랍니다. 덜 받아졌을 수 있으니 다시 받아서 골라 주세요.');
-          return;
-        case 'wrong-size':
-          show(
-            `크기가 맞지 않습니다. ${spec.name} 일본판 롬파일은 ${patch.megabytes(spec)}입니다. 다른 게임이거나 여러 게임이 묶인 파일일 수 있습니다.`,
-          );
-          return;
-        case 'wrong-game':
-          show(`다른 게임 롬파일 같습니다. ${spec.name} 일본판 롬파일을 골라 주세요.`);
-          return;
-        case 'other-region':
-          show(
-            `미국판 같은 해외판 롬파일입니다. 이 한글패치는 일본판에만 적용됩니다. ${spec.name} 일본판 롬파일을 구해서 다시 골라 주세요.`,
-          );
-          return;
-        case 'old-korean':
-          show(
-            `${verdict.version ? `이전 버전(${verdict.version})` : '예전에 나온'} 한글패치 롬파일입니다. 새 버전은 패치하지 않은 일본판 롬파일에 적용해야 하니 일본판 롬파일을 골라 주세요.`,
-          );
-          return;
-        case 'already-korean':
-          show('이미 한글패치를 적용한 롬파일입니다. 그대로 즐기면 됩니다.');
-          return;
-        case 'original':
-          await make(patch, bytes, false);
-          return;
-        case 'different':
-          show(
-            `${spec.name} 일본판 롬파일은 맞지만 원본에서 조금 손댄 파일입니다. 다른 패치나 개조가 들어갔을 수 있어 이대로 만들면 게임이 멈추거나 깨질 수 있습니다. 다른 일본판 롬파일을 구해서 골라 주세요.`,
-            [{ label: '그래도 만들기', run: () => void make(patch, bytes, true) }],
-          );
-      }
+      const ui = { spec: box.dataset['spec'] ?? '', patch: box.dataset['ips'] ?? '', output, show, save };
+      await (await flow).handleFile(ui, file.name, bytes);
     };
 
     input.addEventListener('change', () => {

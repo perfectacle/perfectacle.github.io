@@ -11,6 +11,7 @@ export const SECTION_TITLES = {
   play: '진행 방식',
   'battle-system': '전투 시스템',
   scenes: '수련과 선택 장면',
+  gallery: '장면 모음',
   endings: '엔딩과 특별 장면',
   secrets: '놓치기 쉬운 즐길 거리',
   'patch-notes': '패치 노트',

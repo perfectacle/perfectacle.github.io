@@ -12,6 +12,7 @@ import { breadcrumbs } from '../lib/structured-data.ts';
 import {
   KR_PATCH_TOOLKIT_URL,
   KR_PATCH_TOOLKIT_VERSION,
+  PLATFORMS,
   analysisUrl,
   sourceUrl,
   type KrPatch,
@@ -72,7 +73,7 @@ const headings = body.headings.map(h => ({ ...h, text: h.text.replace(/^\d+\.\s*
       <article data-pagefind-body>
         <header class="guide-head">
           <p class="guide-kicker" data-pagefind-ignore>
-            <span>롬 분석 노트 · 슈퍼 패미콤</span>
+            <span>롬 분석 노트 · {PLATFORMS[patch.platform].name}</span>
           </p>
           <h1 data-pagefind-meta="title">{title}</h1>
           <p class="guide-summary">

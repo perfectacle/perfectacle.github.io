@@ -9,7 +9,7 @@ import {
 } from '../src/components/romhacking/chapters.ts';
 import { GLOSSARY, GLOSSARY_PATH, entryHref, termId } from '../src/components/romhacking/glossary.ts';
 import {
-  KR_PATCHES,
+  ALL_KR_PATCHES,
   KR_PATCH_LIST_PATH,
   KR_PATCH_TOOLKIT_URL,
   OTOGIRISOU_PATCH,
@@ -17,7 +17,7 @@ import {
   sourceUrl,
 } from '../src/lib/kr-patches.ts';
 
-const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...KR_PATCHES.map(notePath), GLOSSARY_PATH];
+const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...ALL_KR_PATCHES.map(notePath), GLOSSARY_PATH];
 const first = (list: ReturnType<typeof readyChapters>) => {
   const chapter = list[0];
   if (!chapter) throw new Error('no written chapters');
@@ -499,9 +499,9 @@ test('ROM expansion widget redraws banks, the size byte and the checksum note', 
   await noHorizontalOverflow(page);
 });
 
-for (const patch of KR_PATCHES) {
+for (const patch of ALL_KR_PATCHES) {
   test(`${patch.title} ROM analysis note lives in the guide and links both ways`, async ({ page }) => {
-    const note = `/games/romhacking/sfc/notes/${patch.path.slice(patch.path.lastIndexOf('/') + 1)}/`;
+    const note = notePath(patch);
     await page.goto(`${patch.path}/`);
     const read = page.locator('#making').getByRole('link', { name: '노트 읽기' });
     await expect(read).toHaveAttribute('href', note);
@@ -524,7 +524,7 @@ for (const patch of KR_PATCHES) {
     await expect(making.getByRole('link', { name: 'kr-patch-toolkit' })).toHaveAttribute('href', KR_PATCH_TOOLKIT_URL);
     await expect(making.getByRole('link', { name: /롬 분석 문서/ })).toHaveAttribute(
       'href',
-      new RegExp(`/blob/[^/]+-v${patch.version.replace('.', '\\.')}/sfc/.+/docs/ANALYSIS\\.md$`),
+      new RegExp(`/blob/[^/]+-v${patch.version.replace('.', '\\.')}/(sfc|nds)/.+/docs/ANALYSIS\\.md$`),
     );
     for (const img of await page.locator('.note-body img').all()) {
       await img.scrollIntoViewIfNeeded();
@@ -536,7 +536,7 @@ for (const patch of KR_PATCHES) {
   });
 }
 
-for (const patch of KR_PATCHES) {
+for (const patch of ALL_KR_PATCHES) {
   test(`${patch.title} ROM analysis note fits a 320px phone`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
     await page.goto(notePath(patch));
@@ -546,11 +546,11 @@ for (const patch of KR_PATCHES) {
   });
 }
 
-test('the guide index lists the four ROM analysis notes', async ({ page }) => {
+test('the guide index lists every ROM analysis note', async ({ page }) => {
   await page.goto(GUIDE_PATH);
   const notes = page.locator('.note-map');
-  await expect(notes.locator('li')).toHaveCount(KR_PATCHES.length);
-  for (const patch of KR_PATCHES) await expect(notes.getByRole('link', { name: patch.title })).toHaveCount(1);
+  await expect(notes.locator('li')).toHaveCount(ALL_KR_PATCHES.length);
+  for (const patch of ALL_KR_PATCHES) await expect(notes.getByRole('link', { name: patch.title })).toHaveCount(1);
 });
 
 test('the guide index maps every chapter to each game note, and says why a cell is empty', async ({ page }) => {
@@ -562,7 +562,7 @@ test('the guide index maps every chapter to each game note, and says why a cell 
     const row = rows.nth(i);
     await expect(row.getByRole('rowheader').getByRole('link')).toHaveAttribute('href', chapterPath(chapter));
     const cells = row.getByRole('cell');
-    await expect(cells).toHaveCount(KR_PATCHES.length);
+    await expect(cells).toHaveCount(ALL_KR_PATCHES.length);
     for (const cell of await cells.all()) {
       const links = await cell.locator('a').count();
       const empty = await cell.getByText('해당 절 없음').count();
@@ -914,7 +914,7 @@ test('the trail opens a menu at each step and moves between the guide and the no
 
   await crumbs(page).getByRole('button', { name: '롬 분석 노트 펼치기' }).click();
   const notes = crumbs(page).locator('.gcrumb-menu:visible');
-  for (const p of KR_PATCHES) await expect(notes.locator(`a[href="${p.path}/"]`)).toHaveCount(1);
+  for (const p of ALL_KR_PATCHES) await expect(notes.locator(`a[href="${p.path}/"]`)).toHaveCount(1);
   await notes.getByRole('link', { name: '제절초', exact: true }).click();
   await expect(page).toHaveURL(notePath(OTOGIRISOU_PATCH));
   await crumbs(page).getByRole('button', { name: '제절초 관련 페이지 펼치기' }).click();

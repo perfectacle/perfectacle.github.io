@@ -1,6 +1,6 @@
 ---
 import { statSync } from 'node:fs';
-import { releaseOf, type KrPatch } from '../../lib/kr-patches';
+import { PLATFORMS, releaseOf, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
   patch: KrPatch;
@@ -10,6 +10,7 @@ interface Props {
 const { patch, version } = Astro.props;
 const release = releaseOf(patch, version);
 const kb = Math.ceil(statSync(`public${release.ips}`).size / 1024);
+const kind = PLATFORMS[patch.platform].patchExt === 'ips' ? 'IPS' : 'xdelta';
 ---
 
 <article class="patch-release" aria-labelledby={release.id} data-release={release.id}>
@@ -33,7 +34,9 @@ const kb = Math.ceil(statSync(`public${release.ips}`).size / 1024);
     </svg>
     <span class="release-download-text">
       <strong>v{release.version} 패치 파일 받기</strong>
-      <small>IPS 파일 · {kb.toLocaleString('ko-KR')}KB</small>
+      <small>
+        {kind} 파일 · {kb.toLocaleString('ko-KR')}KB
+      </small>
     </span>
   </a>
   <slot />

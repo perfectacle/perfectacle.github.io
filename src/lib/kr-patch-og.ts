@@ -3,7 +3,9 @@ import { resolve } from 'node:path';
 import sharp from 'sharp';
 import { KR_PATCHES, type KrPatch } from './kr-patches.ts';
 
+/** SFC title screens; an NDS title is its top screen, 256×192, and fits the same frame. */
 const SCREEN = { width: 256, height: 224 };
+const screenOf = (patch: KrPatch) => (patch.platform === 'nds' ? { width: 256, height: 192 } : SCREEN);
 
 /**
  * Link-preview cards crop to about 1.91:1. Each image is sized so its title screens sit at a whole scale, which
@@ -14,11 +16,13 @@ export const OG_SIZE = {
   catalogue: { width: 1712, height: SCREEN.height * 2 * 2 },
 } as const;
 
+export const ogSize = (patch: KrPatch | undefined) => (patch ? OG_SIZE.game : OG_SIZE.catalogue);
+
 const screen = (path: string) => readFile(resolve('public', `.${path}`));
 
-const pixels = (input: Buffer, scale: number) =>
+const pixels = (input: Buffer, scale: number, size = SCREEN) =>
   sharp(input)
-    .resize(SCREEN.width * scale, SCREEN.height * scale, { kernel: 'nearest' })
+    .resize(size.width * scale, size.height * scale, { kernel: 'nearest' })
     .png()
     .toBuffer();
 
@@ -33,25 +37,31 @@ export async function gameOgImage(patch: KrPatch) {
     .png()
     .toBuffer();
   return sharp(backdrop)
-    .composite([{ input: await pixels(title, 3), gravity: 'center' }])
+    .composite([{ input: await pixels(title, 3, screenOf(patch)), gravity: 'center' }])
     .png()
     .toBuffer();
 }
 
-/** Every game's title screen at 2× in a two-by-two grid, for the pages that list them. */
-export async function catalogueOgImage() {
-  if (KR_PATCHES.length > 4) throw new Error('The list preview has room for four title screens');
-  const tiles = await Promise.all(KR_PATCHES.map(async p => pixels(await screen(p.titleScreen), 2)));
+/** Up to four title screens at 2× in a two-by-two grid, for the pages that list them. */
+export async function catalogueOgImage(patches: readonly KrPatch[] = KR_PATCHES) {
+  if (patches.length > 4) throw new Error('The list preview has room for four title screens');
+  const tiles = await Promise.all(patches.map(async p => pixels(await screen(p.titleScreen), 2, screenOf(p))));
   const { width, height } = OG_SIZE.catalogue;
   const tile = { width: SCREEN.width * 2, height: SCREEN.height * 2 };
-  const left = (width - tile.width * 2) / 2;
+  const columns = Math.min(2, tiles.length);
+  const rows = Math.ceil(tiles.length / 2);
+  const left = (width - tile.width * columns) / 2;
+  const top = (height - tile.height * rows) / 2;
   return sharp({ create: { width, height, channels: 3, background: '#0d0f14' } })
     .composite(
-      tiles.map((input, i) => ({
-        input,
-        left: left + (i % 2) * tile.width,
-        top: Math.floor(i / 2) * tile.height,
-      })),
+      tiles.map((input, i) => {
+        const own = screenOf(patches[i] as KrPatch);
+        return {
+          input,
+          left: left + (i % 2) * tile.width + (tile.width - own.width * 2) / 2,
+          top: top + Math.floor(i / 2) * tile.height + (tile.height - own.height * 2) / 2,
+        };
+      }),
     )
     .png()
     .toBuffer();

@@ -7,32 +7,33 @@ import Bgm from '../components/kr-patch/Bgm.astro';
 import Comments from '../components/Comments.astro';
 import { SECTION_TITLES } from '../lib/patch-sections.ts';
 import { SITE } from '../lib/posts.ts';
-import { KR_PATCH_SFC_PATH, KR_PATCH_SITE_TITLE, KR_PATCHES, type KrPatchTheme } from '../lib/kr-patches.ts';
+import { ALL_KR_PATCHES, KR_PATCH_SITE_TITLE, PLATFORMS, type KrPatchTheme } from '../lib/kr-patches.ts';
 import { breadcrumbs, serializeJsonLd } from '../lib/structured-data.ts';
-import { OG_SIZE } from '../lib/kr-patch-og.ts';
+import { ogSize } from '../lib/kr-patch-og.ts';
 
 interface Props {
   title: string;
   description: string;
   /** Where this page sits, from the patch list down to the page itself. */
   trail: { name: string; path: string }[];
-  /** Which game's look the page takes. */
-  theme: KrPatchTheme | 'sfc';
+  /** Which game's look the page takes; `sfc` and `nds` are the list pages. */
+  theme: KrPatchTheme | 'sfc' | 'nds';
   copyright: string[];
   links?: { href: string; label: string }[];
   sections?: { id: string; label: string }[];
 }
 
 const { title, description, trail, theme, copyright, links = [], sections = [] } = Astro.props;
-const patch = KR_PATCHES.find(p => p.theme === theme);
-if (!patch && theme !== 'sfc') throw new Error(`Unknown theme ${theme}`);
+const list = theme === 'sfc' || theme === 'nds';
+const patch = ALL_KR_PATCHES.find(p => p.theme === theme);
+if (!patch && !list) throw new Error(`Unknown theme ${theme}`);
 const color = patch?.color ?? '#182b22';
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 // Every page has an og.png beside it, drawn from the title screens at build time.
 const preview = {
   src: `${Astro.url.pathname}og.png`,
-  alt: patch ? `${patch.title} 타이틀 화면` : '한글패치로 즐기는 슈퍼 패미콤 게임들의 타이틀 화면',
-  ...(patch ? OG_SIZE.game : OG_SIZE.catalogue),
+  alt: patch ? `${patch.title} 타이틀 화면` : '한글패치로 즐기는 게임들의 타이틀 화면',
+  ...ogSize(patch),
 };
 const imageUrl = new URL(preview.src, Astro.site).href;
 // A game page's heading already says 한글패치, so the tab names the game alone before the site name.
@@ -77,10 +78,10 @@ const ogTitle = patch ? title : fullTitle;
     <a class="skip-link" href="#main">
       본문으로 건너뛰기
     </a>
-    {theme !== 'sfc' && (
+    {patch && (
       <header class="masthead page-width">
         <nav aria-label="한글패치">
-          <a class="wordmark" href={KR_PATCH_SFC_PATH}>
+          <a class="wordmark" href={PLATFORMS[patch.platform].path}>
             <span aria-hidden="true">←</span> 한글패치 목록
           </a>
         </nav>
@@ -97,7 +98,7 @@ const ogTitle = patch ? title : fullTitle;
         </div>
       )}
     </main>
-    {theme !== 'sfc' && <ImagePreview />}
+    {!list && <ImagePreview />}
     {patch && <Bgm patch={patch} />}
     <footer class="page-footer page-width">
       {copyright.map(line => (

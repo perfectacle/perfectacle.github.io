@@ -1,0 +1,340 @@
+---
+import { SECTION_TITLES, sectionsOf } from '../../../../lib/patch-sections';
+import PatchRelease from '../../../../components/kr-patch/PatchRelease.astro';
+import LatestRelease from '../../../../components/kr-patch/LatestRelease.astro';
+import ZoomImage from '../../../../components/kr-patch/ZoomImage.astro';
+import ReleaseDetails from '../../../../components/kr-patch/ReleaseDetails.astro';
+import ReleaseItem from '../../../../components/kr-patch/ReleaseItem.astro';
+import ReleasePairs from '../../../../components/kr-patch/ReleasePairs.astro';
+import ReleaseScreenshot from '../../../../components/kr-patch/ReleaseScreenshot.astro';
+import ComparePairs from '../../../../components/kr-patch/ComparePairs.astro';
+import ManualPatch from '../../../../components/kr-patch/ManualPatch.astro';
+import PatchBox from '../../../../components/kr-patch/PatchBox.astro';
+import PatchBook from '../../../../layouts/PatchBook.astro';
+import MakingOf from '../../../../components/ghost-trick/MakingOf.astro';
+import { GHOST_TRICK_PATCH, downloads, patchDescription, releaseLabel, trail } from '../../../../lib/kr-patches';
+import { ghostTrickPairs, ghostTrickV12Pairs, ghostTrickVersions } from '../../../../lib/ghost-trick-showcase';
+import { JAPANESE_AND_KOREAN } from '../../../../lib/version-pairs';
+
+const patch = GHOST_TRICK_PATCH;
+const base = patch.path;
+const scene = (id: string) => `${base}/images/scenes/${id}.webp`;
+
+const cast = [
+  {
+    id: 'sissel',
+    name: '시셀',
+    role: '주인공 · 유령',
+    text: '쓰레기장에서 눈을 뜬 유령. 자신이 누구인지, 왜 죽었는지 기억하지 못합니다. 물건에 깃들어 움직이는 유령의 힘으로 오늘 밤의 사건에 뛰어듭니다.',
+  },
+  {
+    id: 'lynne',
+    name: '린네',
+    role: '형사',
+    text: '시셀이 처음 목격한 붉은 머리의 형사. 오늘 밤 몇 번이고 목숨을 잃을 운명에 놓입니다.',
+  },
+  {
+    id: 'ray',
+    name: '꾸부리',
+    role: '책상 스탠드',
+    text: '쓰레기장의 책상 스탠드에 깃들어 있던 존재. 시셀에게 유령의 힘을 쓰는 법을 알려 줍니다.',
+  },
+  {
+    id: 'missile',
+    name: '미사일',
+    role: '포메라니안',
+    text: '카논과 함께 사는 강아지. 주인을 지키는 일이라면 무엇이든 하려고 합니다.',
+  },
+  {
+    id: 'kamila',
+    name: '카논',
+    role: '린네가 아끼는 소녀',
+    text: '린네를 「언니」라고 부르며 따르는 소녀.',
+  },
+  {
+    id: 'jowd',
+    name: '죠드',
+    role: '사형수',
+    text: '형무소에서 처형 날을 기다리는 사형수. 린네가 오래전부터 신경 쓰고 있는 인물입니다.',
+  },
+  {
+    id: 'cabanela',
+    name: '카바네라',
+    role: '경감',
+    text: '춤추듯 움직이며 말하는 경찰 경감. 오늘 밤의 사건을 쫓는 또 한 사람입니다.',
+  },
+];
+
+const play = [
+  {
+    image: 'ghost-world',
+    alt: '빨갛게 멈춘 쓰레기장에 푸른 혼으로 떠 있는 시셀과 사자의 세계를 알리는 대사',
+    title: '사자의 세계',
+    text: '유령이 된 시셀이 들어가면 시간이 멈춥니다. 그 안에서 주변 물건의 《핵》으로 옮겨 다닙니다.',
+  },
+  {
+    image: 'tricks',
+    alt: '방 안 물건들의 핵과 화면 아래 빙의하기·조종하기 단추',
+    title: '빙의하기 · 조종하기',
+    text: '핵에 깃든 뒤 「조종하기」로 그 물건을 움직입니다. 우산을 펴고, 공을 굴리고, 불을 켜는 작은 움직임이 사건의 흐름을 바꿉니다.',
+  },
+  {
+    image: 'four-minutes',
+    alt: '「그 죽음의 4분 전」 린네의 방 PM 7:33 장 제목',
+    title: '죽음의 4분 전',
+    text: '시체에 깃들면 그 사람이 죽기 4분 전으로 돌아갈 수 있습니다. 미래를 알고 있는 시셀만이 그 운명을 바꿀 수 있습니다.',
+  },
+  {
+    image: 'countdown',
+    alt: '공원에서 총을 겨눈 두 사람과 죽음까지 남은 시간',
+    title: '운명이 바뀌기까지',
+    text: '죽음이 다가오는 동안 남은 시간이 줄어듭니다. 시간 안에 트릭을 이어 운명을 바꾸지 못하면 다시 4분 전으로 돌아가 도전합니다.',
+  },
+  {
+    image: 'phone',
+    alt: '다이얼 전화기와 어디로 이동할지 묻는 화면',
+    title: '전화선 이동',
+    text: '전화가 걸리면 전화선을 타고 수화기가 있는 먼 곳까지 한순간에 옮겨 갑니다.',
+  },
+];
+
+const gallery = [
+  { image: 'junkyard', alt: '쓰레기장에서 붉은 머리 여자와 총을 든 남자가 마주 선 첫 장면' },
+  { image: 'self', alt: '쓰레기 더미에 쓰러진 자신의 몸을 내려다보는 시셀의 독백' },
+  { image: 'room', alt: '크리스마스트리가 있는 린네의 방' },
+  { image: 'madam', alt: '붉은 커튼이 드리운 마담의 방' },
+  { image: 'restaurant', alt: '레스토랑 키친치킨 안' },
+  { image: 'guard', alt: '형무소 교도관실의 교도관' },
+  { image: 'minister', alt: '법무부 장관 집무실' },
+  { image: 'park', alt: '밤의 공원에서 누군가를 부르는 사람' },
+  { image: 'hitman', alt: '모자를 쓴 파란 얼굴의 남자가 웃으며 말하는 장면' },
+  { image: 'possess', alt: '빙의하기 문구가 화면을 가로지르는 순간' },
+];
+
+const latestOverview =
+  '대사 4,048개를 일본판과 하나하나 맞대어 오역·누락·미번역을 고치고, 창 밖으로 잘리던 줄과 나오지 않던 수첩 항목을 바로잡았습니다.';
+---
+
+<PatchBook
+  title={`${patch.title} 한글패치`}
+  trail={trail(patch)}
+  description={patchDescription(patch)}
+  sections={sectionsOf(['korean', 'story', 'cast', 'play', 'gallery', 'patch-notes', 'making'])}
+  theme={patch.theme}
+  copyright={[patch.copyright]}
+>
+  <section class="hero page-width" aria-labelledby="title">
+    <div class="hero-copy">
+      <p class="label">{releaseLabel(patch)}</p>
+      <h1 id="title" class="pixel">
+        {patch.title} 한글패치
+      </h1>
+      <PatchBox platform="nds" ips={downloads(patch).ips} spec={patch.spec} version={patch.version} output={patch.stem}>
+        <LatestRelease slot="intro" patch={patch} overview={latestOverview} />
+        <ManualPatch patch={patch} />
+      </PatchBox>
+    </div>
+    <figure class="hero-shot screen">
+      <ZoomImage
+        src={`${base}/images/title-screens.webp`}
+        width="256"
+        height="384"
+        alt="위 화면에 '고스트 트릭' 한글 로고, 아래 화면에 「처음부터」 단추가 있는 타이틀 화면"
+        fetchpriority="high"
+      />
+    </figure>
+  </section>
+
+  <section id="korean" class="section page-width" aria-labelledby="korean-title">
+    <h2 id="korean-title" class="pixel">
+      <a class="heading-link" href="#korean">
+        {SECTION_TITLES.korean}
+      </a>
+    </h2>
+    <p>하룻밤의 사건을 따라가는 대사와 내레이션을 한국어로 읽습니다. 화면에 그려진 글자도 한국어로 바뀌었습니다.</p>
+    <ul class="checklist frame">
+      <li>대사와 내레이션</li>
+      <li>등장인물과 사건을 정리하는 수첩</li>
+      <li>타이틀 로고, 장 제목, 「빙의하기」 같은 화면 글자</li>
+      <li>메뉴와 단추</li>
+    </ul>
+    <p class="section-note">아래는 같은 장면을 같은 입력으로 찍어 일본판과 한글패치를 나란히 놓은 것입니다.</p>
+    <ComparePairs pairs={ghostTrickPairs} base={base} versions={JAPANESE_AND_KOREAN} visible={3} />
+  </section>
+
+  <section id="story" class="section page-width" aria-labelledby="story-title">
+    <h2 id="story-title" class="pixel">
+      <a class="heading-link" href="#story">
+        {SECTION_TITLES.story}
+      </a>
+    </h2>
+    <div class="story">
+      <div class="story-copy">
+        <p class="lead">
+          밤의 쓰레기장에서 한 남자가 눈을 뜹니다. 바로 옆에는 자신의 시체가 있고, 눈앞에서는 붉은 머리의 여자가 총구
+          앞에 서 있습니다.
+        </p>
+        <p>
+          기억을 잃은 유령 시셀은 물건에 깃들어 움직이는 힘으로 그 여자를 구하고, 자신이 누구이며 왜 죽어야 했는지를
+          찾아 나섭니다. 유령으로 있을 수 있는 시간은 날이 밝을 때까지, 오늘 밤 하룻밤뿐입니다.
+        </p>
+        <p>
+          캡콤이 2010년 6월 19일에 낸 닌텐도 DS 게임으로, 《역전재판》 시리즈를 만든 타쿠미 슈가 감독과 각본을
+          맡았습니다.
+        </p>
+      </div>
+      <div class="story-shots">
+        <figure class="screen">
+          <ZoomImage
+            src={scene('junkyard')}
+            width="256"
+            height="192"
+            alt="쓰레기장에서 붉은 머리 여자와 총을 든 남자가 마주 선 첫 장면"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+        <figure class="screen">
+          <ZoomImage
+            src={scene('self')}
+            width="256"
+            height="192"
+            alt="쓰레기 더미에 쓰러진 자신의 몸을 내려다보며 이것이 나라고 깨닫는 독백"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="cast" class="section page-width" aria-labelledby="cast-title">
+    <h2 id="cast-title" class="pixel">
+      <a class="heading-link" href="#cast">
+        {SECTION_TITLES.cast}
+      </a>
+    </h2>
+    <ul class="cast-list">
+      {cast.map(member => (
+        <li class="member frame">
+          <img
+            class="portrait"
+            src={`${base}/images/cast/${member.id}.webp`}
+            width="128"
+            height="128"
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <h3 class="pixel">{member.name}</h3>
+            <p class="label">{member.role}</p>
+            <p>{member.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section id="play" class="section page-width" aria-labelledby="play-title">
+    <h2 id="play-title" class="pixel">
+      <a class="heading-link" href="#play">
+        {SECTION_TITLES.play}
+      </a>
+    </h2>
+    <div class="play-list">
+      {play.map(item => (
+        <article class="play frame">
+          <figure class="screen">
+            <ZoomImage
+              src={scene(item.image)}
+              width="256"
+              height="192"
+              alt={item.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <h3 class="pixel">{item.title}</h3>
+          <p>{item.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="gallery" class="section page-width" aria-labelledby="gallery-title">
+    <h2 id="gallery-title" class="pixel">
+      <a class="heading-link" href="#gallery">
+        {SECTION_TITLES.gallery}
+      </a>
+    </h2>
+    <p>오늘 밤 시셀이 지나가는 곳들입니다. 이야기의 결말에 닿는 장면은 넣지 않았습니다.</p>
+    <div class="scene-gallery">
+      {gallery.map(item => (
+        <figure class="screen">
+          <ZoomImage src={scene(item.image)} width="256" height="192" alt={item.alt} loading="lazy" decoding="async" />
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <section id="patch-notes" class="section page-width" aria-labelledby="patch-notes-title">
+    <h2 id="patch-notes-title" class="pixel">
+      <a class="heading-link" href="#patch-notes">
+        {SECTION_TITLES['patch-notes']}
+      </a>
+    </h2>
+    <PatchRelease patch={patch} version="1.2">
+      <p class="release-overview">{latestOverview}</p>
+      <ReleaseDetails>
+        <ReleaseItem>
+          <ul>
+            <li>대사 4,048개(본편 3,503개, 수첩·메뉴 545개)를 모두 일본판과 맞대어 검수했습니다.</li>
+            <li>
+              창 폭을 넘어 끝이 잘리던 줄을 다시 나눴습니다. 초상화가 창 안에 있는 창은 13자, 넓은 창은 16자까지
+              들어갑니다.
+            </li>
+            <li>원문과 뜻이 다르게 옮겨진 대사를 바로잡았습니다.</li>
+            <li>빠져 있던 문장과 대사를 되살렸습니다.</li>
+            <li>일본어로 남아 있거나 글자가 깨져 보이던 대사를 한국어로 옮겼습니다.</li>
+            <li>맞춤법·띄어쓰기와 어색한 문장을 다듬었습니다.</li>
+            <li>같은 말을 여러 가지로 옮긴 용어를 하나로 맞췄습니다. 인물·지명 표기는 v1.1을 따랐습니다.</li>
+            <li>대사 중간에 끝 표시가 들어가 뒷부분이 나오지 않던 대사를 고쳤습니다.</li>
+            <li>강조색이 깨지거나 원래 색으로 돌아오지 않던 곳을 고쳤습니다.</li>
+            <li>말하는 사람이 빠지거나 뒤바뀐 대사와 표정·내레이션 표시를 바로잡았습니다.</li>
+            <li>
+              수첩의 인물 이름 연결을 되살리고, 번호가 틀려 나오지 않던 항목(「운명에 사로잡힌 사람」, 「과거 카논의
+              집」)이 나오게 했습니다.
+            </li>
+            <li>두 장면 파일에서 1바이트 어긋나 있던 레이블 표를 일본판에 맞게 바로잡았습니다.</li>
+            <li>원문에 없던 대사 하나를 지웠습니다.</li>
+          </ul>
+          <p class="section-note">아래는 같은 장면을 같은 입력으로 찍어 v1.1과 v1.2를 나란히 놓은 것입니다.</p>
+          <ReleasePairs pairs={ghostTrickV12Pairs} base={base} versions={ghostTrickVersions} />
+        </ReleaseItem>
+      </ReleaseDetails>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.1">
+      <p class="release-overview">고스트 트릭의 한글패치입니다. v1.0은 기록이 남아 있지 않습니다.</p>
+      <ReleaseDetails>
+        <ReleaseItem>
+          <ul>
+            <li>대사·수첩·메뉴와 타이틀 로고, 화면 글자를 한국어로 옮겼습니다.</li>
+          </ul>
+          <ReleaseScreenshot
+            height={384}
+            panels={[
+              {
+                label: '타이틀',
+                src: `${base}/images/title-screens.webp`,
+                alt: '한글 로고가 들어간 타이틀 화면',
+              },
+            ]}
+          />
+        </ReleaseItem>
+      </ReleaseDetails>
+    </PatchRelease>
+  </section>
+
+  <MakingOf patch={patch} />
+</PatchBook>

@@ -4,14 +4,14 @@ import SmrpgNote from '../../../../../components/smrpg/MakingNote.astro';
 import TotsugekiNote from '../../../../../components/totsugeki/MakingNote.astro';
 import KakuseiNote from '../../../../../components/kakusei/MakingNote.astro';
 import OtogirisouNote from '../../../../../components/otogirisou/MakingNote.astro';
-import { KR_PATCHES, type KrPatch } from '../../../../../lib/kr-patches.ts';
+import { KR_PATCHES, type SfcPatch } from '../../../../../lib/kr-patches.ts';
 import { noteSlug } from '../../../../../components/romhacking/chapters.ts';
 
 export function getStaticPaths() {
   return KR_PATCHES.map(patch => ({ params: { game: noteSlug(patch) }, props: { patch } }));
 }
 
-const { patch } = Astro.props as { patch: KrPatch };
+const { patch } = Astro.props as { patch: SfcPatch };
 const notes = {
   smrpg: SmrpgNote,
   gokuden: TotsugekiNote,

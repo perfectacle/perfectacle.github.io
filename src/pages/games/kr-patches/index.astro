@@ -1,6 +1,12 @@
 ---
 import PatchBook from '../../../layouts/PatchBook.astro';
-import { KR_PATCH_LIST_PATH, KR_PATCHES } from '../../../lib/kr-patches';
+import {
+  KR_PATCH_LIST_PATH,
+  KR_PATCH_NDS_PATH,
+  KR_PATCH_SFC_PATH,
+  KR_PATCHES,
+  NDS_PATCHES,
+} from '../../../lib/kr-patches';
 import { GUIDE_PATH } from '../../../components/romhacking/chapters.ts';
 import '../../../styles/kr-patch-hub.css';
 
@@ -10,7 +16,7 @@ const systems = [
     name: '슈퍼 패미콤',
     code: 'SFC',
     meta: `${KR_PATCHES.length}종`,
-    href: '/games/kr-patches/sfc/',
+    href: KR_PATCH_SFC_PATH,
     photo: '/games/kr-patches/catalogue/super-famicom.webp',
     year: 1990,
   },
@@ -18,8 +24,8 @@ const systems = [
     id: 'nds',
     name: '닌텐도 DS',
     code: 'NDS',
-    meta: '준비 중',
-    href: undefined,
+    meta: `${NDS_PATCHES.length}종`,
+    href: KR_PATCH_NDS_PATH as string | undefined,
     photo: '/games/kr-patches/catalogue/nintendo-ds-lite.webp',
     year: 2004,
   },
@@ -29,14 +35,14 @@ const lines = [
   '메모리 검사 .......... 4096K OK',
   '한글 글꼴 불러오기 ... OK',
   `패치 목록 읽기 ...... SFC ${KR_PATCHES.length}종`,
-  'NDS 슬롯 ............ 비어 있음',
+  `NDS 슬롯 ............ ${NDS_PATCHES.length}종`,
 ];
 ---
 
 <PatchBook
   title="한글패치"
   trail={[{ name: '한글패치', path: KR_PATCH_LIST_PATH }]}
-  description="슈퍼 마리오 RPG, 드래곤볼 Z 초오공전 돌격편·각성편, 제절초를 한국어로. 일본판 롬파일을 고르면 프로그램 설치 없이 이 사이트에서 바로 한글패치를 적용합니다."
+  description="슈퍼 마리오 RPG, 드래곤볼 Z 초오공전 돌격편·각성편, 제절초, 고스트 트릭을 한국어로. 일본판 롬파일을 고르면 프로그램 설치 없이 이 사이트에서 바로 한글패치를 적용합니다."
   theme="sfc"
   copyright={[]}
   links={[
