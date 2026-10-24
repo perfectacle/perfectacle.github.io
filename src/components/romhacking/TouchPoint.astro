@@ -1,0 +1,197 @@
+---
+import { BOTH_H, SCREEN_H, SCREEN_W, hex16, pointer } from './touch-point.ts';
+
+const start = { x: 128, y: 96 };
+const p = pointer(start.x, start.y);
+---
+
+<section class="widget touch-point" data-touch-point aria-labelledby="touch-point-title">
+  <h3 class="widget-title" id="touch-point-title">
+    터치 좌표 계산기
+  </h3>
+  <p class="widget-help">
+    아래 화면의 한 점을 libretro 코어가 받는 포인터 값으로 바꿉니다. 계산은 kr-patches 고스트 트릭{' '}
+    <code>tools/play.py</code>와 같습니다.{' '}
+    <span class="live-only">그림의 아래 화면을 누르거나 좌표를 고쳐 보세요.</span>
+  </p>
+
+  <div class="tp-body">
+    <svg
+      class="tp-screens"
+      viewBox={`0 0 ${SCREEN_W} ${BOTH_H}`}
+      role="img"
+      aria-label="위 화면과 아래 화면을 합친 256×384 좌표"
+      data-screens
+    >
+      <rect class="tp-top" x="0" y="0" width={SCREEN_W} height={SCREEN_H}></rect>
+      <text class="tp-label" x={SCREEN_W / 2} y={SCREEN_H / 2} text-anchor="middle">
+        위 화면(터치 없음)
+      </text>
+      <rect class="tp-bottom" x="0" y={SCREEN_H} width={SCREEN_W} height={SCREEN_H}></rect>
+      <text class="tp-label" x="6" y={SCREEN_H + 16}>
+        아래 화면 y = 192부터
+      </text>
+      <circle class="tp-dot" cx={start.x + 0.5} cy={SCREEN_H + start.y + 0.5} r="6" data-dot></circle>
+    </svg>
+
+    <div class="tp-side">
+      <div class="tp-inputs live-only">
+        <label>
+          아래 화면 x
+          <input type="number" min="0" max={SCREEN_W - 1} value={start.x} data-x aria-describedby="touch-point-error" />
+        </label>
+        <label>
+          아래 화면 y
+          <input type="number" min="0" max={SCREEN_H - 1} value={start.y} data-y aria-describedby="touch-point-error" />
+        </label>
+      </div>
+      <p class="widget-error live-only" id="touch-point-error" data-error hidden></p>
+      <dl class="readout">
+        <div>
+          <dt>스크립트</dt>
+          <dd>
+            <code data-cmd>
+              touch {start.x} {start.y}
+            </code>
+          </dd>
+        </div>
+        <div>
+          <dt>합친 화면 좌표</dt>
+          <dd>
+            <code data-both>
+              ({start.x}, {SCREEN_H + start.y})
+            </code>
+          </dd>
+        </div>
+        <div>
+          <dt>포인터 x</dt>
+          <dd>
+            <code data-px>
+              {p.x} ({hex16(p.x)})
+            </code>
+          </dd>
+        </div>
+        <div>
+          <dt>포인터 y</dt>
+          <dd>
+            <code data-py>
+              {p.y} ({hex16(p.y)})
+            </code>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { SCREEN_H, SCREEN_W, BOTH_H, hex16, inBottom, pointer } from './touch-point.ts';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-touch-point]')) {
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel);
+    const xi = q<HTMLInputElement>('[data-x]');
+    const yi = q<HTMLInputElement>('[data-y]');
+    const svg = q<SVGSVGElement>('[data-screens]');
+    const dot = q<SVGCircleElement>('[data-dot]');
+    const error = q<HTMLElement>('[data-error]');
+    const text = (sel: string, v: string) => {
+      const el = q<HTMLElement>(sel);
+      if (el) el.textContent = v;
+    };
+
+    const show = (x: number, y: number) => {
+      const ok = inBottom(x, y);
+      for (const i of [xi, yi]) i?.setAttribute('aria-invalid', ok ? 'false' : 'true');
+      if (error) {
+        error.hidden = ok;
+        error.textContent = ok
+          ? ''
+          : `아래 화면 안의 정수 좌표(x 0–${SCREEN_W - 1}, y 0–${SCREEN_H - 1})를 적어 주세요.`;
+      }
+      if (!ok) return;
+      const p = pointer(x, y);
+      dot?.setAttribute('cx', String(x + 0.5));
+      dot?.setAttribute('cy', String(SCREEN_H + y + 0.5));
+      text('[data-cmd]', `touch ${x} ${y}`);
+      text('[data-both]', `(${x}, ${SCREEN_H + y})`);
+      text('[data-px]', `${p.x} (${hex16(p.x)})`);
+      text('[data-py]', `${p.y} (${hex16(p.y)})`);
+      text('[data-live]', `아래 화면 (${x}, ${y}), 포인터 ${p.x}, ${p.y}`);
+    };
+
+    const fromInputs = () => show(xi?.value ? Number(xi.value) : NaN, yi?.value ? Number(yi.value) : NaN);
+    xi?.addEventListener('input', fromInputs);
+    yi?.addEventListener('input', fromInputs);
+    svg?.addEventListener('click', e => {
+      const box = svg.getBoundingClientRect();
+      const x = Math.floor(((e.clientX - box.left) / box.width) * SCREEN_W);
+      const y = Math.floor(((e.clientY - box.top) / box.height) * BOTH_H) - SCREEN_H;
+      if (y < 0) {
+        if (error) {
+          error.hidden = false;
+          error.textContent = '위 화면은 터치 화면이 아닙니다. 아래 화면을 눌러 주세요.';
+        }
+        return;
+      }
+      if (xi) xi.value = String(Math.min(x, SCREEN_W - 1));
+      if (yi) yi.value = String(Math.min(y, SCREEN_H - 1));
+      fromInputs();
+    });
+    root.classList.add('is-live');
+  }
+</script>
+
+<style is:global>
+  .touch-point .tp-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .touch-point .tp-screens {
+    width: min(100%, 200px);
+    height: auto;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 6px;
+  }
+  .touch-point.is-live .tp-bottom {
+    cursor: crosshair;
+  }
+  .touch-point .tp-top {
+    fill: var(--bg);
+  }
+  .touch-point .tp-bottom {
+    fill: var(--dg-cool-soft);
+  }
+  .touch-point .tp-label {
+    fill: var(--fg-muted);
+    font-size: 13px;
+  }
+  .touch-point .tp-dot {
+    fill: var(--accent);
+  }
+  .touch-point .tp-side {
+    flex: 1 1 14rem;
+    min-width: 0;
+  }
+  .touch-point .tp-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin: 0 0 8px;
+  }
+  .touch-point .tp-inputs label {
+    display: grid;
+    gap: 4px;
+  }
+  .touch-point .tp-inputs input {
+    box-sizing: border-box;
+    width: 7rem;
+    min-height: 44px;
+    padding: 4px 8px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+</style>

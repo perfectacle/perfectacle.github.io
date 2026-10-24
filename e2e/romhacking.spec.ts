@@ -41,6 +41,7 @@ const NDS_FS = '/games/romhacking/nds/filesystem/';
 const NDS_TEXT = '/games/romhacking/nds/text/';
 const NDS_GFX = '/games/romhacking/nds/graphics/';
 const NDS_SOUND = '/games/romhacking/nds/sound/';
+const NDS_EMU = '/games/romhacking/nds/emulator/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -317,6 +318,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
     NDS_TEXT,
     NDS_GFX,
     NDS_SOUND,
+    NDS_EMU,
   ]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
@@ -381,6 +383,11 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(ss.locator('[data-list] li')).toHaveCount(32);
   await expect(ss.locator('[data-now]')).toContainText('명령 32개');
   await expect(ss.getByRole('button', { name: '다음 명령' })).toBeHidden();
+  await page.goto(NDS_EMU);
+  const tp = page.locator('[data-touch-point]');
+  await expect(tp.locator('[data-cmd]')).toHaveText('touch 128 96');
+  await expect(tp.locator('[data-py]')).toHaveText('16469 (0x4055)');
+  await expect(tp.locator('input').first()).toBeHidden();
   await page.goto(MUSIC);
   const seam = page.locator('[data-seam-lab]');
   await expect(seam.locator('[data-out="score"]')).toHaveText('0.887');
@@ -668,6 +675,29 @@ test('SSEQ widget reads one command at a time and moves the cursor on the score'
   await expect(widget.locator('[data-cursor]')).toHaveAttribute('visibility', 'visible');
   await widget.getByRole('button', { name: '처음으로' }).click();
   await expect(widget.locator('li.is-current')).toHaveCount(0);
+  await noHorizontalOverflow(page);
+});
+
+test('touch widget turns a bottom-screen point into libretro pointer values', async ({ page }) => {
+  await page.goto(NDS_EMU);
+  const widget = page.locator('[data-touch-point]');
+  await expect(widget).toHaveClass(/is-live/);
+  await widget.getByLabel('아래 화면 x').fill('0');
+  await widget.getByLabel('아래 화면 y').fill('0');
+  await expect(widget.locator('[data-px]')).toHaveText('-32640 (0x8080)');
+  await expect(widget.locator('[data-py]')).toHaveText('85 (0x0055)');
+  await expect(widget.locator('[data-cmd]')).toHaveText('touch 0 0');
+  await widget.getByLabel('아래 화면 y').fill('300');
+  await expect(widget.locator('[data-error]')).toBeVisible();
+  const svg = widget.locator('[data-screens]');
+  const box = await svg.boundingBox();
+  if (!box) throw new Error('no screens');
+  await svg.click({ position: { x: box.width / 2, y: box.height * 0.25 } });
+  await expect(widget.locator('[data-error]')).toContainText('위 화면은 터치 화면이 아닙니다');
+  await svg.click({ position: { x: box.width * 0.5 + 0.5, y: box.height * 0.75 + 0.5 } });
+  await expect(widget.locator('[data-error]')).toBeHidden();
+  // a click lands within a pixel or two of the middle of the bottom screen
+  await expect(widget.locator('[data-cmd]')).toHaveText(/^touch 1[23]\d (9\d|10\d)$/);
   await noHorizontalOverflow(page);
 });
 
