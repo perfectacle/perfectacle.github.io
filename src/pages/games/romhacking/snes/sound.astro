@@ -3,13 +3,24 @@ import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import ApuPorts from '../../../../components/romhacking/ApuPorts.astro';
-import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH } from '../../../../lib/kr-patches.ts';
-import { TOOLKIT_README_KO, chapterBySlug, chapterPath } from '../../../../components/romhacking/chapters.ts';
+import {
+  KAKUSEI_PATCH,
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  sourceFileUrl,
+  toolkitFileUrl,
+} from '../../../../lib/kr-patches.ts';
+import {
+  TOOLKIT_README_KO,
+  chapterBySlug,
+  chapterHref,
+  chapterPath,
+  notePath,
+} from '../../../../components/romhacking/chapters.ts';
+import { TOOLKIT_LUA } from '../../../../components/kr-patch/source-links.ts';
 
 const FULLSNES = 'https://problemkaputt.de/fullsnes.htm';
 const SNESDEV = 'https://snes.nesdev.org/wiki';
-const TOOLKIT = 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0';
-const PATCHES = 'https://github.com/perfectacle/kr-patches/blob/main/snes';
 const references = [
   {
     href: `${FULLSNES}#snesapumemoryandiomap`,
@@ -67,12 +78,12 @@ const references = [
     note: 'SPC 파일: 0x100바이트 머리(SPC700 레지스터, ID666 태그), 0x100부터 64KB RAM, 0x10100부터 DSP 레지스터 128바이트, 0x101C0부터 IPL 자리 RAM 64바이트',
   },
   {
-    href: `${TOOLKIT}/src/kr_patch/snes/lua/probe/apuports.lua`,
+    href: toolkitFileUrl('src/kr_patch/snes/lua/probe/apuports.lua'),
     label: 'kr-patch-toolkit 0.2.0, snes/lua/probe의 apuports.lua, voices.lua, calls.lua',
     note: '이 장의 기록을 남긴 방법. 이 장의 각성편 기록은 같은 방식의 이전 스크립트로 남긴 것입니다',
   },
   {
-    href: `${PATCHES}/otogirisou/asm/qol.asm`,
+    href: sourceFileUrl(OTOGIRISOU_PATCH, 'asm/qol.asm'),
     label: 'kr-patches, 제절초 asm/qol.asm',
     note: '대본의 소리 코드({39}–{3D})를 처리하는 게임 코드가 $00:CD60·$00:CD69·$00:CD45·$00:CD4E를 부르는 모양',
   },
@@ -387,8 +398,8 @@ const probes = [
     다른 게임은 포트를 다르게 나눠 씁니다. 그래도 찾는 방법은 같습니다. <code>$2140</code>–<code>$2143</code>에 쓰는
     순간을 기록해(<a href={`${EMULATOR}#lua`}>12장</a>), 곡이 바뀌는 장면에서 어떤 값이 어느 포트로 갔는지 보고, 그 값을
     쓴 PC에서 거꾸로 올라가 곡 번호를 넘겨받는 함수를 찾습니다. 그 함수를 찾으면 곡 번호를 바꾸거나, 효과음 함수 첫
-    바이트를 <code>RTL</code>로 바꿔 효과음을 막을 수 있습니다(<a href={`${HOOKING}#jump`}>6장</a>). 14장에서 실제로
-    그렇게 합니다.
+    바이트를 <code>RTL</code>로 바꿔 효과음을 막을 수 있습니다(<a href={`${HOOKING}#jump`}>6장</a>).{' '}
+    <a href={chapterHref(14)}>14장</a>에서 실제로 그렇게 합니다.
   </p>
 
   <h2 id="dsp">
@@ -497,9 +508,9 @@ const probes = [
       위는 머리 <code>C0</code>, 첫 데이터 바이트 <code>7F</code>인 예입니다. 값은{' '}
       <code>(4비트 값 &lt;&lt; shift) &gt;&gt; 1</code>이라서 +7은 7 × 4096 ÷ 2 = 14,336, −1은 −2,048이 됩니다. 필터 0은
       이 값을 그대로 씁니다. 필터 1–3은 바로 앞의 한두 샘플에 정해진 비율을 곱해 더합니다. 소리는 앞 샘플과 비슷하게
-      이어지기 마련이라, "앞에서 예상한 값과의 차이"만 4비트로 적으면 더 작은 shift로 정밀하게 담을 수 있습니다. 9장의
-      LZSS가 "앞에 나온 것을 다시 쓰는" 압축이었다면(<a href={`${LZSS}#lz`}>9장</a>), BRR은 "앞 값으로 다음 값을
-      예측하는" 손실 압축입니다.
+      이어지기 마련이라, "앞에서 예상한 값과의 차이"만 4비트로 적으면 더 작은 shift로 정밀하게 담을 수 있습니다.{' '}
+      <a href={chapterHref(9)}>9장</a>의 LZSS가 "앞에 나온 것을 다시 쓰는" 압축이었다면(<a href={`${LZSS}#lz`}>9장</a>),
+      BRR은 "앞 값으로 다음 값을 예측하는" 손실 압축입니다.
     </p>
     <p>
       끝 비트가 켜진 블록을 다 읽으면, 반복 비트도 켜져 있으면 샘플의 반복 주소로 돌아가 계속 울리고 아니면 소리를
@@ -648,14 +659,15 @@ const probes = [
     위 도구의 기록에서 150–186프레임에 올라간 곡은 데이터 2,194바이트와 샘플 <code>14 15 16 18 19 1A</code>로, 곡 표 3번
     항목과 크기·샘플 번호가 모두 맞습니다. 효과음 함수 <code>$83:8023</code>은 첫 명령이 <code>STA $B3</code>(
     <code>85 B3</code>)이고, 이 기록에서 <code>$2141</code>에 <code>0B</code>, <code>0A</code>, <code>80</code>을
-    보냈습니다. 14장은 이 두 함수의 첫 바이트를 고쳐 원하는 곡만 나오는 롬을 만듭니다.
+    보냈습니다. <a href={chapterHref(14)}>14장</a>은 이 두 함수의 첫 바이트를 고쳐 원하는 곡만 나오는 롬을 만듭니다.
   </p>
 
   <h3>제절초: 대본의 소리 코드에서 부르는 함수</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>는 대본 속 제어 코드로 음악과 효과음을 냅니다. 소리 코드{' '}
-    <code>{'{39}'}</code>를 처리하는 게임 코드가 A에 소리 번호를 넣고 <code>$00:CD60</code>을 부릅니다. 9바이트마다 놓인{' '}
-    <code>$00:CD69</code>, <code>$00:CD72</code>, <code>$00:CD7B</code>, <code>$00:CD84</code>도 같은 모양(
+    <a href={`${notePath(OTOGIRISOU_PATCH)}#making-readers`}>제절초</a>는 대본 속 제어 코드로 음악과 효과음을 냅니다.
+    소리 코드 <code>{'{39}'}</code>를 처리하는 게임 코드가 A에 소리 번호를 넣고 <code>$00:CD60</code>을 부릅니다.
+    9바이트마다 놓인 <code>$00:CD69</code>, <code>$00:CD72</code>, <code>$00:CD7B</code>, <code>$00:CD84</code>도 같은
+    모양(
     <code>PHP</code>, <code>REP #$30</code>, <code>PHA</code>, <code>LDA #값</code>, <code>BRA</code>)의 입구로, 각자
     다른 16비트 값을 A에 넣고 뒤쪽 코드로 건너뜁니다. 멈추는 코드 <code>{'{3B}'}</code>·<code>{'{3C}'}</code>는{' '}
     <code>$00:CD45</code>·<code>$00:CD4E</code>를 부릅니다.
@@ -702,8 +714,11 @@ const probes = [
   </h2>
   <p>
     kr-patch-toolkit 0.2.0에는 이 장의 기록을 남기는 Mesen 2 Lua 스크립트 세 개가 들어 있습니다. 모두 버튼 입력은{' '}
-    <code>boot.lua</code>로 처리하므로, 게임을 켜고 정한 프레임(<code>MAXF</code>, 기본 1500)까지 돌린 뒤{' '}
-    <code>SHOT_DIR</code>에 결과를 씁니다.
+    <a href={toolkitFileUrl('src/kr_patch/snes/lua/boot.lua')}>
+      <code>boot.lua</code>
+    </a>
+    로 처리하므로, 게임을 켜고 정한 프레임(<code>MAXF</code>, 기본 1500)까지 돌린 뒤 <code>SHOT_DIR</code>에 결과를
+    씁니다.
   </p>
   <div class="table-scroll" tabindex="0" role="region" aria-labelledby="probe-caption">
     <table>
@@ -720,7 +735,9 @@ const probes = [
         {probes.map(p => (
           <tr>
             <td>
-              <code>{p.file}</code>
+              <a href={toolkitFileUrl(`${TOOLKIT_LUA}${p.file}`)}>
+                <code>{p.file}</code>
+              </a>
             </td>
             <td>{p.text}</td>
             <td>
@@ -748,8 +765,11 @@ $ head -4 out/apu/apuports.txt</code></pre>
   </p>
   <pre tabindex="0"><code>$ krpatch snes dis game.sfc 838000 20</code></pre>
   <p>
-    곡 번호를 넘겨받는 함수의 주소를 찾았다면 <code>calls.lua</code>로 불릴 때마다 A를 적어 봅니다. 여러 주소는 쉼표로
-    잇습니다.
+    곡 번호를 넘겨받는 함수의 주소를 찾았다면{' '}
+    <a href={toolkitFileUrl('src/kr_patch/snes/lua/probe/calls.lua')}>
+      <code>calls.lua</code>
+    </a>
+    로 불릴 때마다 A를 적어 봅니다. 여러 주소는 쉼표로 잇습니다.
   </p>
   <pre tabindex="0"><code>$ LIBDIR=$L SHOT_DIR=$PWD/out/calls MAXF=3000 EVERY=0 CALLS=838200,838023 \
     Mesen --testrunner $PWD/game.sfc $L/probe/calls.lua
@@ -757,7 +777,11 @@ $ LIBDIR=$L SHOT_DIR=$PWD/out/voices MAXF=3000 EVERY=0 VSTEP=6 \
     Mesen --testrunner $PWD/game.sfc $L/probe/voices.lua</code></pre>
   <p>
     <code>calls.txt</code>의 <code>ret=</code>은 스택에 있는 돌아갈 주소입니다. <code>JSL</code>로 들어왔을 때만 뱅크
-    바이트가 의미가 있습니다(<a href={`${HOOKING}#jump`}>6장</a>). <code>voices.lua</code>는 Mesen 2가 상태에 담는 이름(
+    바이트가 의미가 있습니다(<a href={`${HOOKING}#jump`}>6장</a>).{' '}
+    <a href={toolkitFileUrl('src/kr_patch/snes/lua/probe/voices.lua')}>
+      <code>voices.lua</code>
+    </a>
+    는 Mesen 2가 상태에 담는 이름(
     <code>spc.dsp.voices[0].envVolume</code>)을 읽으므로, 이름이 다른 판에서는 그 사실을 알리며 멈춥니다. 스크립트마다
     받는 환경 변수는 파일 첫 줄들에 적혀 있고, 전체 목록은 툴킷 README의{' '}
     <a href={`${TOOLKIT_README_KO}#${encodeURIComponent('snes-lua-mesen-2-스크립트')}`}>snes lua</a> 절에 있습니다.

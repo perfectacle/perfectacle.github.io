@@ -1,5 +1,11 @@
 ---
-import { KR_PATCH_TOOLKIT_URL, KR_PATCH_TOOLKIT_VERSION, analysisUrl, type KrPatch } from '../../lib/kr-patches';
+import {
+  KR_PATCH_TOOLKIT_URL,
+  KR_PATCH_TOOLKIT_VERSION,
+  analysisUrl,
+  sourceUrl,
+  type KrPatch,
+} from '../../lib/kr-patches';
 
 interface Props {
   patch: KrPatch;
@@ -41,14 +47,14 @@ const { patch, source, holds, missing, toolkit } = Astro.props;
     <div>
       <dt>문서</dt>
       <dd>
-        롬 주소와 형식은 <a href={analysisUrl(patch)}>롬 분석 문서(docs/ANALYSIS.md)</a>, 빌드 순서는 위 패치 소스의
-        안내(README.ko.md)
+        롬 주소와 형식은 <a href={analysisUrl(patch)}>롬 분석 문서(docs/ANALYSIS.md)</a>, 빌드 순서는 패치 소스의{' '}
+        <a href={sourceUrl(patch)}>안내(README.ko.md)</a>
       </dd>
     </div>
     <div>
       <dt>찾는 법</dt>
       <dd>
-        각 장 끝 「패치 소스 속 파일」에 그 장에서 쓴 파일을 적었고, 전체 목록은{' '}
+        각 절 끝 「패치 소스 속 파일」에 그 절에서 쓴 파일을 적었고, 전체 목록은{' '}
         <a href="#making-tools">패치 소스 파일</a>에 있습니다.
       </dd>
     </div>

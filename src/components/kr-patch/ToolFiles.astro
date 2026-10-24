@@ -1,9 +1,15 @@
 ---
+import type { KrPatch } from '../../lib/kr-patches';
+import SourceFile from './SourceFile.astro';
+
 interface Props {
+  patch: KrPatch;
+  /** `path` lists one or more files, separated by `, `: patch source paths, toolkit Lua scripts marked
+   * `(krpatch snes lua)`, or `krpatch` commands. */
   items: { path: string; text: string }[];
 }
 
-const { items } = Astro.props;
+const { patch, items } = Astro.props;
 ---
 
 <aside class="tool-files" aria-label="패치 소스에서 이 내용에 해당하는 파일">
@@ -11,7 +17,7 @@ const { items } = Astro.props;
   <ul>
     {items.map(item => (
       <li>
-        <code>{item.path}</code> {item.text}
+        <SourceFile patch={patch} name={item.path} /> {item.text}
       </li>
     ))}
   </ul>
@@ -42,7 +48,7 @@ const { items } = Astro.props;
     padding-left: 18px;
   }
 
-  .tool-files code {
+  .tool-files :global(code) {
     padding: 1px 6px;
     border-radius: 4px;
     background: rgb(255 255 255 / 10%);
@@ -50,5 +56,15 @@ const { items } = Astro.props;
     font-family: var(--mono);
     font-size: 0.875em;
     overflow-wrap: anywhere;
+  }
+
+  .tool-files :global(a) {
+    text-decoration: none;
+  }
+
+  .tool-files :global(a:hover code),
+  .tool-files :global(a:focus-visible code) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 </style>

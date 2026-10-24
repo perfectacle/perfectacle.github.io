@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import Comments from '../components/Comments.astro';
+import GuideCrumbs from '../components/romhacking/GuideCrumbs.astro';
 import GuideSide from '../components/romhacking/GuideSide.astro';
 import TermPreview from '../components/romhacking/TermPreview.astro';
 import '../styles/romhacking.css';
@@ -15,6 +16,7 @@ import {
   chapterPath,
   neighbours,
   noteHref,
+  noteLabel,
   toolHref,
   type GuidePlatform,
 } from '../components/romhacking/chapters.ts';
@@ -45,30 +47,6 @@ const trail = [
 ];
 // The contents lists come from the rendered headings, and glossary terms in the body become preview links.
 const body = processGuideHtml(await Astro.slots.render('default'));
-const sideLinks = [
-  { href: GUIDE_PATH, label: `${GUIDE_TITLE} 차례` },
-  ...(prev
-    ? [
-        {
-          href: chapterPath(prev),
-          kind: '← 이전 장',
-          rel: 'prev' as const,
-          label: `${chapterLabel(prev)} ${prev.title}`,
-        },
-      ]
-    : []),
-  ...(next
-    ? [
-        {
-          href: chapterPath(next),
-          kind: '다음 장 →',
-          rel: 'next' as const,
-          label: `${chapterLabel(next)} ${next.title}`,
-        },
-      ]
-    : []),
-  { href: GLOSSARY_PATH, label: '용어집' },
-];
 ---
 
 <Base title={fullTitle} description={chapter.summary} jsonLd={[breadcrumbs(SITE, trail)]}>
@@ -89,15 +67,7 @@ const sideLinks = [
           </marker>
         </defs>
       </svg>
-      <nav class="guide-crumbs" aria-label="현재 위치" data-pagefind-ignore>
-        <ol>
-          <li>
-            <a href={GUIDE_PATH}>{GUIDE_TITLE}</a>
-          </li>
-          {chapter.platform !== 'common' && <li>{PLATFORM_LABEL[chapter.platform]}</li>}
-          <li aria-current="page">{chapterLabel(chapter)}</li>
-        </ol>
-      </nav>
+      <GuideCrumbs here={{ kind: 'chapter', chapter }} />
       <article data-pagefind-body>
         <header class="guide-head">
           <p class="guide-kicker" data-pagefind-ignore>
@@ -134,7 +104,7 @@ const sideLinks = [
               <ul>
                 {chapter.notes.map(n => (
                   <li>
-                    <a href={noteHref(n)}>{n.label}</a>
+                    <a href={noteHref(n)}>{noteLabel(n)}</a>
                   </li>
                 ))}
               </ul>
@@ -196,7 +166,7 @@ const sideLinks = [
 
       <Comments path={path} />
     </div>
-    <GuideSide label="이 장에서" headings={body.headings} links={sideLinks} />
+    <GuideSide label="이 장에서" headings={body.headings} />
   </div>
   <TermPreview terms={body.terms} />
 </Base>

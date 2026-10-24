@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import GuideCrumbs from '../../../components/romhacking/GuideCrumbs.astro';
 import '../../../styles/romhacking.css';
 import { SITE } from '../../../lib/posts.ts';
 import { breadcrumbs } from '../../../lib/structured-data.ts';
@@ -32,14 +33,7 @@ const present = new Set(groups.map(g => g.initial));
   ]}
 >
   <div class="container guide">
-    <nav class="guide-crumbs" aria-label="현재 위치" data-pagefind-ignore>
-      <ol>
-        <li>
-          <a href={GUIDE_PATH}>{GUIDE_TITLE}</a>
-        </li>
-        <li aria-current="page">{title}</li>
-      </ol>
-    </nav>
+    <GuideCrumbs here={{ kind: 'glossary' }} />
     <article data-pagefind-body>
       <header class="guide-head">
         <h1 data-pagefind-meta="title">{title}</h1>
@@ -68,7 +62,11 @@ const present = new Set(groups.map(g => g.initial));
       <div class="prose gl-body">
         {groups.map(g => (
           <section class="gl-group" aria-labelledby={initialId(g.initial)}>
-            <h2 id={initialId(g.initial)}>{g.initial}</h2>
+            <h2 id={initialId(g.initial)}>
+              <a class="heading-link" href={`#${initialId(g.initial)}`}>
+                {g.initial}
+              </a>
+            </h2>
             <dl>
               {g.entries.map(e => (
                 <div class="gl-entry" id={termId(e)}>

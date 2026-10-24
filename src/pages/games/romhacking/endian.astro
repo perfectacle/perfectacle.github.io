@@ -4,6 +4,7 @@ import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import EndianScale from '../../../components/romhacking/EndianScale.astro';
 import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
+import { chapterHref, notePath } from '../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -30,7 +31,7 @@ const references = [
   </h2>
   <p>
     바이트 한 칸에는 255까지만 들어갑니다. 그보다 큰 수, 예를 들어 <code>$4575</code>(10진수 17,781)는 두 칸에 나눠
-    적어야 합니다. 16진수 네 자리를 두 자리씩 나누면 됩니다. 큰 자리 쪽 <code>$45</code>와 작은 자리 쪽 <code>$75</code>
+    적어야 합니다. 16진수 네 자리를 두 자리씩 나누면 됩니다. 큰 자리 쪽 <code>$45</code>와 작은 자리 쪽 <code>$75</code>{' '}
     입니다.
   </p>
   <p>
@@ -190,7 +191,7 @@ const references = [
     </p>
     <p>
       반대로 같은 뱅크 안만 가리키는 포인터는 2바이트로 줄여 적고, 뱅크는 코드가 따로 정합니다. 바이트를 아끼는 대신
-      뱅크 밖으로는 못 나갑니다. 4장에서 이 제약이 대사 배치를 어떻게 묶는지 봅니다.
+      뱅크 밖으로는 못 나갑니다. <a href={chapterHref(4)}>4장</a>에서 이 제약이 대사 배치를 어떻게 묶는지 봅니다.
     </p>
     <h3>엔디안은 파일이 아니라 읽는 코드가 정한다</h3>
     <p>
@@ -203,7 +204,9 @@ const references = [
         제절초 한글패치 대본은 글자 하나를 2바이트 <strong>빅</strong> 엔디안으로 적고(<code>01 D8</code> = 「여」),
         점프할 주소는 3바이트 <strong>리틀</strong> 엔디안으로 적습니다. 대본을 읽는 코드가 그렇게 짜여 있습니다.
       </li>
-      <li>IPS 패치 파일은 위치와 길이를 빅 엔디안으로 적습니다(0장).</li>
+      <li>
+        IPS 패치 파일은 위치와 길이를 빅 엔디안으로 적습니다(<a href={chapterHref(0)}>0장</a>).
+      </li>
     </ul>
     <p>모르는 데이터를 볼 때는 두 순서로 다 읽어 보고, 말이 되는 쪽을 고릅니다.</p>
   </Deeper>
@@ -213,9 +216,9 @@ const references = [
   </h2>
   <h3>대사 포인터 표</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>은 대사 번호마다 2바이트 포인터를 표에 적어 둡니다. 대사 $006의
-    포인터는 파일 0x14000C에 있고, 바이트는 <code>FE 85</code>입니다. 거꾸로 읽으면 <code>$85FE</code>, 곧 같은 뱅크의{' '}
-    <code>$A8:85FE</code>(파일 0x1405FE)에 대사가 있습니다.
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-dialogue`}>돌격편</a>은 대사 번호마다 2바이트 포인터를 표에 적어
+    둡니다. 대사 $006의 포인터는 파일 0x14000C에 있고, 바이트는 <code>FE 85</code>입니다. 거꾸로 읽으면{' '}
+    <code>$85FE</code>, 곧 같은 뱅크의 <code>$A8:85FE</code>(파일 0x1405FE)에 대사가 있습니다.
   </p>
   <ul class="byte-strip" aria-label="파일 0x14000C의 포인터">
     <li class="is-cool">
@@ -234,19 +237,21 @@ const references = [
   <h3>글자 코드</h3>
   <p>
     그 자리에서 시작하는 대사 「어떻게」는 <code>F3 08 B5 06 27 05</code>입니다. 2바이트씩 거꾸로 읽어{' '}
-    <code>$08F3</code>(어), <code>$06B5</code>(떻), <code>$0527</code>(게)가 글자 번호입니다. 5장의 「명령 한 줄씩
-    실행하기」에서 이 바이트를 CPU가 2바이트씩 옮기는 모습을 볼 수 있습니다.
+    <code>$08F3</code>(어), <code>$06B5</code>(떻), <code>$0527</code>(게)가 글자 번호입니다.{' '}
+    <a href={chapterHref(5)}>5장</a>의 「명령 한 줄씩 실행하기」에서 이 바이트를 CPU가 2바이트씩 옮기는 모습을 볼 수
+    있습니다.
   </p>
   <h3>헤더 체크섬</h3>
   <p>
-    <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a> 일본판 헤더의 체크섬은 <code>$4575</code>이고, 롬에는{' '}
-    <code>75 45</code>로 들어 있습니다. 「바이트 순서 보기」의 처음 값이 이 숫자입니다.
+    <a href={`${notePath(SMRPG_PATCH)}#making-save`}>슈퍼 마리오 RPG</a> 일본판 헤더의 체크섬은 <code>$4575</code>이고,
+    롬에는 <code>75 45</code>로 들어 있습니다. 「바이트 순서 보기」의 처음 값이 이 숫자입니다.
   </p>
   <h3>한 게임 안의 두 순서</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a> 한글패치의 첫 문장 「여름의 해질녘.」은 파일 0x100018부터{' '}
-    <code>01 D8</code>(여) <code>04 85</code>(름) …처럼 글자마다 2바이트 빅 엔디안이고, 대본 시작 주소 표는 3바이트 리틀
-    엔디안입니다. 일본판 대본은 아예 바이트가 아닌 비트 단위로 압축되어 있었는데, 이것은 10장에서 다룹니다.
+    <a href={`${notePath(OTOGIRISOU_PATCH)}#making-script`}>제절초</a> 한글패치의 첫 문장 「여름의 해질녘.」은 파일
+    0x100018부터 <code>01 D8</code>(여) <code>04 85</code>(름) …처럼 글자마다 2바이트 빅 엔디안이고, 대본 시작 주소 표는
+    3바이트 리틀 엔디안입니다. 일본판 대본은 아예 바이트가 아닌 비트 단위로 압축되어 있었는데, 이것은{' '}
+    <a href={chapterHref(10)}>10장</a>에서 다룹니다.
   </p>
 
   <h2 id="try">

@@ -119,6 +119,9 @@ function fits(text: string, at: number, name: string): boolean {
   return true;
 }
 
+const hasLink = (node: Element): boolean =>
+  node.children.some(c => c.type === 'element' && (c.tagName === 'a' || hasLink(c)));
+
 export interface GuideHtml {
   html: string;
   headings: GuideHeading[];
@@ -194,6 +197,17 @@ export function processGuideHtml(html: string, glossary: GlossaryEntry[] = GLOSS
           child.properties['id'] = id;
         }
         headings.push({ depth: child.tagName === 'h2' ? 2 : 3, id, text });
+        // The whole heading links to itself, so a reader can take the address of any section from its title. A heading
+        // that already holds a link keeps it, since links cannot nest.
+        if (!hasLink(child))
+          child.children = [
+            {
+              type: 'element',
+              tagName: 'a',
+              properties: { className: ['heading-link'], href: `#${id}` },
+              children: child.children,
+            },
+          ];
       }
       const inOutline = outline && !OUTLINE_SKIP_TAGS.has(child.tagName) && !classes(child).includes('widget');
       walk(child, linking && !skipsTerms(child), inOutline);

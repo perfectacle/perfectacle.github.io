@@ -7,9 +7,10 @@ import Figure from '../romhacking/Figure.astro';
 import LzssStep from '../romhacking/LzssStep.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import MakingSources from '../kr-patch/MakingSources.astro';
-import { sourceUrl, TOTSUGEKI_PATCH, type KrPatch } from '../../lib/kr-patches';
+import { sourceFileUrl, sourceUrl, TOTSUGEKI_PATCH, type KrPatch } from '../../lib/kr-patches';
 import { GLOSSARY_PATH } from '../romhacking/glossary';
 import { notePath } from '../romhacking/chapters';
+import SourceFile from '../kr-patch/SourceFile.astro';
 
 interface Props {
   patch: KrPatch;
@@ -412,7 +413,8 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
     바뀌었습니다.
   </li>
   <li>
-    <strong>v1.2</strong>: 대사 8뱅크, 타이틀($89), 새 글자($B6–$B7), 아래 8절의 두 곳($83:F3AF, $88:FFAE), 헤더 체크섬.
+    <strong>v1.2</strong>: 대사 8뱅크, 타이틀($89), 새 글자($B6–$B7), 아래 <a href="#making-unique">8절</a>의 두
+    곳($83:F3AF, $88:FFAE), 헤더 체크섬.
   </li>
   <li>
     <strong>v1.3</strong>: 대사 뱅크 $98·$9B·$9C(나레이션 줄바꿈), 말풍선 뱅크 $B4, 암호 화면의 표($81·$83·$84), 새 글자
@@ -644,6 +646,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </p>
 
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/dialogue.py', text: '대사 ID로 대사 위치 찾기' },
     { path: 'tools/extract.py', text: '일본어·한국어 대사 덤프(TSV)' },
@@ -778,6 +781,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </Deeper>
 
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/font.py', text: '대사 폰트 글자 읽기' },
     { path: 'tools/usedsheet.py', text: '대사에 쓰인 글자 목록' },
@@ -801,7 +805,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
   바이트만 바꿔서는 로고를 고칠 수 없고, 풀어서 그림을 고친 뒤 다시 압축해야 합니다.
 </p>
 <p>
-  압축된 자료가 어디 있는지는 5바이트 항목이 알려 줍니다. 타이틀 글자가 그려진 배경 레이어(BG3) 타일의 항목은 파일
+  압축된 자료가 어디 있는지는 5바이트 항목이 알려 줍니다. 타이틀 글자가 그려진 배경 레이어(BG3) 타일의 항목은 파일{' '}
   <code>0xD720</code>에 있습니다.
 </p>
 <ul class="byte-strip" aria-label="파일 0xD720의 항목: 9D 9B 89 50 13. 주소 $9B9D, 뱅크 $89, 크기 $1350">
@@ -879,6 +883,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </Deeper>
 
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'krpatch lzss', text: '공통 도구. LZSS 압축·해제' },
     { path: 'tools/title.py', text: '타이틀 그림 그리기·넣기' },
@@ -970,6 +975,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </p>
 
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/bubble_patch.py', text: '전투 말풍선 넣기, 옮기기' },
     { path: 'tables/bubbles-v1.3.tsv', text: 'v1.3에서 고친 말풍선 443개' },
@@ -1171,7 +1177,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
   </table>
 </div>
 <p>
-  같은 화면은 글자 암호도 받습니다. 검사 코드보다 먼저 <code>$83:A408</code>이 입력을 문장 6개(<code>$83:B008</code>
+  같은 화면은 글자 암호도 받습니다. 검사 코드보다 먼저 <code>$83:A408</code>이 입력을 문장 6개(<code>$83:B008</code>{' '}
   등)와 비교합니다. v1.1은 이 문장을 「체력을늘려줘신룡」처럼 한글로 바꿔 두었는데, v1.3이 칸을 다시 배치하면서
   룡·션·싶·플·해·회 6자가 격자에서 빠질 뻔해 남는 칸에 넣었습니다. 여섯 문장은 v1.2처럼 그대로 칠 수 있습니다.
 </p>
@@ -1187,13 +1193,12 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
   <p>
     기술 15번(<code>$0D2E</code> 비트 15)은 각성편 기술습득표의 손오공 파워기술 「거북선인류최종오의」입니다. 이 비트만
     켜고 기술습득표를 열면 이 줄만 밝게 나옵니다. 돌격편에서 이 기술(돌격편 v1.1 이름 「무천류 최종오의」,{' '}
-    <code>$0D99</code>
-    비트 9)을 켜는 명령은 카린탑에서 초신수를 마시는 장면 스크립트(<code>$B3:DB07</code>) 한 곳뿐입니다. 「마신다」를
-    고르면 유도 에네르기파·초에네르기파·에네르기파 공격을 익히고, 이벤트 플래그 0x96이 켜져 있을 때만 이어서 이 기술을
-    익힙니다. 플래그 0x96은 펭귄 마을에서 아라레가 내는 퀴즈에서 세 번째 답(일본판 「ほひょ！？」, 돌격편 한글패치
-    「PERFECTACLE」)을 고르면 켜지고, 퀴즈를 시작할 때마다 지워집니다(<code>$B6:BEF1</code>, <code>$B6:BF0E</code>).
-    그래서 돌격편을 끝까지 깨도 이 기술이 없을 수 있습니다. 「손오공은사이어인」은 돌격편을 빠짐없이 마친 상태를
-    대신하는 암호라 이 기술을 익힌 것으로 두었습니다.
+    <code>$0D99</code> 비트 9)을 켜는 명령은 카린탑에서 초신수를 마시는 장면 스크립트(<code>$B3:DB07</code>) 한
+    곳뿐입니다. 「마신다」를 고르면 유도 에네르기파·초에네르기파·에네르기파 공격을 익히고, 이벤트 플래그 0x96이 켜져
+    있을 때만 이어서 이 기술을 익힙니다. 플래그 0x96은 펭귄 마을에서 아라레가 내는 퀴즈에서 세 번째 답(일본판
+    「ほひょ！？」, 돌격편 한글패치 「PERFECTACLE」)을 고르면 켜지고, 퀴즈를 시작할 때마다 지워집니다(
+    <code>$B6:BEF1</code>, <code>$B6:BF0E</code>). 그래서 돌격편을 끝까지 깨도 이 기술이 없을 수 있습니다.
+    「손오공은사이어인」은 돌격편을 빠짐없이 마친 상태를 대신하는 암호라 이 기술을 익힌 것으로 두었습니다.
   </p>
   <p>
     이 암호를 일본판끼리 옮겨도 안 들어간다는 기록이 있었는데, 원작의 어긋남 때문이었습니다. 돌격편은 0x227(ぺ,
@@ -1205,8 +1210,11 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
     돌격편 v1.1 화면에서는 서로 다른 암호 글자가 같은 모양으로 보이는 경우도 있었습니다. つ와 へ는 둘 다 「나」, も와
     ら는 둘 다 「등」, ル와 ォ는 둘 다 「지」, わ·を·ん은 모두 「러」입니다. v1.3은 돌격편 글자 표가 원래 정한 대로 へ는
     「다」, も는 「동」, ル는 「저」, を는 「레」, ん은 「렉」으로 보여 주고, 돌격편도 v1.2에서 같은 대응으로 고쳐 이
-    글자를 서로 다르게 그립니다. 두 게임이 함께 쓰는 대응표는 패치 소스의 <code>tables/totsugeki-password.tsv</code>에
-    있습니다.
+    글자를 서로 다르게 그립니다. 두 게임이 함께 쓰는 대응표는 패치 소스의{' '}
+    <a href={sourceFileUrl(patch, 'tables/totsugeki-password.tsv')}>
+      <code>tables/totsugeki-password.tsv</code>
+    </a>
+    에 있습니다.
   </p>
 </Deeper>
 <p>
@@ -1218,6 +1226,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </p>
 
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'tools/password.py', text: '돌격편 암호 입력 칸·검사 표 맞추기' },
     { path: 'tables/totsugeki-password.tsv', text: '돌격편 v1.1 롬에서 꺼낸 암호 글자와 쌍 표' },
@@ -1262,9 +1271,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </figure>
 <p>
   v1.2는 원래 바이트를 되살리고, 그 자리에 있던 문자열을 뒤로 민 다음, 그 문자열을 가리키는 포인터를 같은 만큼
-  고쳤습니다. 2절 롬 지도의 빨간 줄이 이 두 곳입니다. 대사 8뱅크의 한글 대사는 v1.1에서도 각 뱅크 안에 들어 있었고,
-  문제는 대사 밖의 문자열이었습니다. 이제 빈 공간을 쓸 때는 앞뒤에 여유를 두고, 일본판 원본에서도 그 자리가 0xFF였는지
-  확인합니다(<a href={ch('hooking', 'space')}>6장의 빈 공간 찾기</a>).
+  고쳤습니다. <a href="#making-map">2절</a> 롬 지도의 빨간 줄이 이 두 곳입니다. 대사 8뱅크의 한글 대사는 v1.1에서도 각
+  뱅크 안에 들어 있었고, 문제는 대사 밖의 문자열이었습니다. 이제 빈 공간을 쓸 때는 앞뒤에 여유를 두고, 일본판 원본에서도
+  그 자리가 0xFF였는지 확인합니다(<a href={ch('hooking', 'space')}>6장의 빈 공간 찾기</a>).
 </p>
 <Deeper title="덮인 자리를 읽는 코드와 옮긴 문자열의 포인터">
   <ul>
@@ -1280,7 +1289,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
   </ul>
 </Deeper>
 
-<ToolFiles items={[{ path: 'tools/fix_overwrites.py', text: 'v1.1이 덮어쓴 데이터 되살리기' }]} />
+<ToolFiles patch={patch} items={[{ path: 'tools/fix_overwrites.py', text: 'v1.1이 덮어쓴 데이터 되살리기' }]} />
 
 <h2 id="making-testing">
   9. 확인 방법 <span class="layer-badge layer-try">직접 해 보기</span>
@@ -1437,6 +1446,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </div>
 
 <ToolFiles
+  patch={patch}
   items={[
     { path: 'lua/dbgscene.lua', text: 'Mesen 2용. 디버그 메뉴로 원하는 장면 시작, 대사 ID 기록' },
     { path: 'lib.lua (krpatch snes lua)', text: 'Mesen 2 스크립트 공용 함수(버튼 입력, 세이브스테이트)' },
@@ -1470,7 +1480,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
     376개 장면 회귀는 각 장면을 12,000프레임까지만 돌렸고, 전투는 입력 타이밍에 따라 결과가 달라져 끝까지 같은 순서로
     비교하지 못했습니다.
   </li>
-  <li>bsnes-hd beta와 Beetle Supafaust에서는 디버그 메뉴 장면을 판정하지 못했습니다(9절 표).</li>
+  <li>
+    bsnes-hd beta와 Beetle Supafaust에서는 디버그 메뉴 장면을 판정하지 못했습니다(<a href="#making-testing">9절</a> 표).
+  </li>
 </ul>
 
 <h3>알려진 한계</h3>
@@ -1488,8 +1500,11 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
     남은 빈 공간은 <a href="#making-map">2절의 표</a>에 있습니다.
   </li>
   <li>
-    타이틀 로고 폰트(BM 영성체)는 macOS 시스템 폰트 경로에서 읽습니다. 다른 환경에서는 <code>tools/title.py</code>의{' '}
-    <code>TITLE_FONT</code>를 바꿔야 같은 롬이 나옵니다.
+    타이틀 로고 폰트(BM 영성체)는 macOS 시스템 폰트 경로에서 읽습니다. 다른 환경에서는{' '}
+    <a href={sourceFileUrl(patch, 'tools/title.py')}>
+      <code>tools/title.py</code>
+    </a>
+    의 <code>TITLE_FONT</code>를 바꿔야 같은 롬이 나옵니다.
   </li>
 </ul>
 
@@ -1502,6 +1517,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </ul>
 
 <ToolFiles
+  patch={patch}
   items={[
     {
       path: 'docs/ANALYSIS.md',
@@ -1531,7 +1547,7 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
       {toolFiles.map(t => (
         <tr>
           <td>
-            <code>{t.file}</code>
+            <SourceFile patch={patch} name={t.file} />
           </td>
           <td class="wrap">{t.text}</td>
           <td>

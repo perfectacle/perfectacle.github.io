@@ -3,8 +3,16 @@ import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import RomGrow from '../../../../components/romhacking/RomGrow.astro';
-import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../../lib/kr-patches.ts';
-import { chapterBySlug, chapterPath } from '../../../../components/romhacking/chapters.ts';
+import {
+  KAKUSEI_PATCH,
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  TOTSUGEKI_PATCH,
+  analysisUrl,
+  sourceFileUrl,
+  toolkitFileUrl,
+} from '../../../../lib/kr-patches.ts';
+import { chapterBySlug, chapterPath, notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -38,17 +46,17 @@ const references = [
     note: 'LoROM 4MB, ExHiROM의 뱅크 배치와 헤더 위치 $40FFC0',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/src/kr_patch/snes/header.py',
+    href: toolkitFileUrl('src/kr_patch/snes/header.py'),
     label: 'kr-patch-toolkit, snes/header.py',
     note: '「롬 크기를 늘리면 바뀌는 것」이 옮겨 온 미러 체크섬 계산(같은 테스트 사례로 확인)',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patches/blob/otogirisou-v1.2/snes/otogirisou/docs/ANALYSIS.md',
+    href: analysisUrl(OTOGIRISOU_PATCH),
     label: 'kr-patches, 제절초 docs/ANALYSIS.ko.md 1장·7장',
     note: '1MB → 2MB 롬 지도, 크기 바이트 0A → 0B, 쓴 공간과 남은 공간',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patches/blob/super-mario-rpg-v1.2/snes/super-mario-rpg/docs/ANALYSIS.md',
+    href: analysisUrl(SMRPG_PATCH),
     label: 'kr-patches, 슈퍼 마리오 RPG docs/ANALYSIS.ko.md 3장·9장',
     note: '롬 크기를 4MB로 유지한 이유와 대신 쓴 빈 공간',
   },
@@ -368,32 +376,40 @@ const instead = [
   </h2>
   <h3>제절초: 1MB LoROM을 2MB로</h3>
   <p>
-    <a href={`${OTOGIRISOU_PATCH.path}/`}>제절초</a>는 1MB LoROM입니다. 한글패치 v1.0은 압축을 버린 69만 바이트짜리
-    대본을 넣으려고 롬을 2MB로 늘렸습니다(<a href={HUFFMAN}>10장</a>). 1MB LoROM은 뱅크 <code>$00</code>–
+    <a href={`${notePath(OTOGIRISOU_PATCH)}#making-map`}>제절초</a>는 1MB LoROM입니다. 한글패치 v1.0은 압축을 버린 69만
+    바이트짜리 대본을 넣으려고 롬을 2MB로 늘렸습니다(<a href={HUFFMAN}>10장</a>). 1MB LoROM은 뱅크 <code>$00</code>–
     <code>$1F</code>를 쓰고, 늘린 1MB는 바로 다음 <code>$20</code>–<code>$3F</code>에 나타납니다. 그전까지 앞 1MB의
     미러가 보이던 자리입니다. 대본은 <code>$20:8000</code>부터 놓였고, v1.1 대본은 <code>$35:AF66</code>에서 끝나{' '}
     <code>$36</code>–<code>$3F</code>는 아직 0으로 비어 있습니다.
   </p>
   <p>
     앞에서 본 대로 v1.0은 크기 바이트와 체크섬을 고치지 않았고, v1.1이 크기 바이트를 <code>0A</code>에서 <code>0B</code>
-    로 고쳤습니다. 지금의 패치 소스에서는 <code>tools/build.sh</code>가 <code>tools/fixes.py</code>로 크기 바이트를
-    고치고, 마지막에 <code>krpatch snes checksum --fix --mapper lorom</code>으로 체크섬을 다시 씁니다.
+    로 고쳤습니다. 지금의 패치 소스에서는{' '}
+    <a href={sourceFileUrl(OTOGIRISOU_PATCH, 'tools/build.sh')}>
+      <code>tools/build.sh</code>
+    </a>
+    가{' '}
+    <a href={sourceFileUrl(OTOGIRISOU_PATCH, 'tools/fixes.py')}>
+      <code>tools/fixes.py</code>
+    </a>
+    로 크기 바이트를 고치고, 마지막에 <code>krpatch snes checksum --fix --mapper lorom</code>으로 체크섬을 다시 씁니다.
   </p>
   <h3>슈퍼 마리오 RPG: 4MB에서 멈춘 이유</h3>
   <p>
-    <a href={`${SMRPG_PATCH.path}/`}>슈퍼 마리오 RPG</a>는 SA-1 카트리지라 매핑상으로는 8MB까지 늘릴 수 있습니다. 하지만
-    4MB 너머를 읽으려면 실행 중에 Super MMC 창을 바꿔야 하고, 이 게임은 S-CPU와 SA-1이 동시에 롬을 읽습니다. 한쪽이 창을
-    바꾸는 사이 다른 쪽이 원래 블록을 읽으면 오동작하므로, 한글패치는 롬을 원래 크기 4MB로 두고 원본에서도 0이나{' '}
-    <code>FF</code>로 비어 있던 곳(<code>$C3:F000</code>, <code>$E2:B400</code>, <code>$E4:9D00</code> 등)만 썼습니다.
+    <a href={`${notePath(SMRPG_PATCH)}#making-space`}>슈퍼 마리오 RPG</a>는 SA-1 카트리지라 매핑상으로는 8MB까지 늘릴 수
+    있습니다. 하지만 4MB 너머를 읽으려면 실행 중에 Super MMC 창을 바꿔야 하고, 이 게임은 S-CPU와 SA-1이 동시에 롬을
+    읽습니다. 한쪽이 창을 바꾸는 사이 다른 쪽이 원래 블록을 읽으면 오동작하므로, 한글패치는 롬을 원래 크기 4MB로 두고
+    원본에서도 0이나 <code>FF</code>로 비어 있던 곳(<code>$C3:F000</code>, <code>$E2:B400</code>, <code>$E4:9D00</code>{' '}
+    등)만 썼습니다.
   </p>
   <h3>돌격편·각성편: 2MB 안에서</h3>
   <p>
-    <a href={`${TOTSUGEKI_PATCH.path}/`}>돌격편</a>과 <a href={`${KAKUSEI_PATCH.path}/`}>각성편</a>은 2MB LoROM을 그대로
-    두었습니다. 돌격편 v1.1은 늘린 글자 블록과 새 코드를 원본에서도 <code>FF</code>였던 곳(<code>$81:EF00</code>,{' '}
-    <code>$84:EE00</code>, <code>$86:E000</code>, <code>$B7:FA00</code>)에 두고, 대사는 뱅크마다 원래 문자열 영역 안에서
-    다시 채웠습니다. 각성편 v1.1은 <code>FF</code>가 이어진 곳을 빈 곳으로 보고 썼다가, 바로 앞 데이터가{' '}
-    <code>FFFF</code>를 끝 표시로 쓰고 있어 우주선이 맵 밖을 헤매는 버그를 냈습니다. 늘리지 않을 때 가장 조심할
-    점입니다.
+    <a href={`${notePath(TOTSUGEKI_PATCH)}#making-map`}>돌격편</a>과{' '}
+    <a href={`${notePath(KAKUSEI_PATCH)}#making-map`}>각성편</a>은 2MB LoROM을 그대로 두었습니다. 돌격편 v1.1은 늘린
+    글자 블록과 새 코드를 원본에서도 <code>FF</code>였던 곳(<code>$81:EF00</code>, <code>$84:EE00</code>,{' '}
+    <code>$86:E000</code>, <code>$B7:FA00</code>)에 두고, 대사는 뱅크마다 원래 문자열 영역 안에서 다시 채웠습니다.
+    각성편 v1.1은 <code>FF</code>가 이어진 곳을 빈 곳으로 보고 썼다가, 바로 앞 데이터가 <code>FFFF</code>를 끝 표시로
+    쓰고 있어 우주선이 맵 밖을 헤매는 버그를 냈습니다. 늘리지 않을 때 가장 조심할 점입니다.
   </p>
 
   <h2 id="try">

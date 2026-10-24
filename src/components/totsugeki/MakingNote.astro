@@ -15,11 +15,14 @@ import { chapterBySlug, chapterPath, notePath, type GuidePlatform } from '../rom
 import { TITLE_EXCERPT, describe } from '../romhacking/lzss-samples';
 import { trace } from '../../lib/lzss';
 import { toHex } from '../../lib/numbers';
+import SourceFile from '../kr-patch/SourceFile.astro';
 import {
   KAKUSEI_PATCH,
   KR_PATCH_TOOLKIT_URL,
   OTOGIRISOU_PATCH,
+  analysisUrl,
   releaseOf,
+  sourceFileUrl,
   sourceUrl,
   type KrPatch,
 } from '../../lib/kr-patches';
@@ -347,7 +350,7 @@ const emulators = [
   { name: 'Mesen-S 코어', result: '판정 불가 (일본판 원본도 테스트 프로그램에서 바로 종료)' },
 ];
 
-const buildSteps = [
+const buildSteps: [string, string][] = [
   ['krpatch ips apply', '일본판에 v1.0 IPS를 적용합니다.'],
   ['tools/title.py', '타이틀 글자 층을 다시 그려 압축해 넣습니다.'],
   ['tools/text_patch1.py', '대사와 그 밖의 텍스트를 뱅크마다 다시 채우고, 새 글자를 그리고, 메뉴 문자열을 고칩니다.'],
@@ -622,7 +625,8 @@ const toolsFor = (section: string) =>
 <pre tabindex="0"><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
 $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
 <p>
-  아래 위젯은 3절에 나오는 대사 포인터 주소 <code>$A8:800C</code>에서 시작합니다. 다른 주소를 넣어 볼 수도 있습니다.
+  아래 위젯은 <a href="#making-dialogue">3절</a>에 나오는 대사 포인터 주소 <code>$A8:800C</code>에서 시작합니다. 다른
+  주소를 넣어 볼 수도 있습니다.
 </p>
 <BankMap />
 
@@ -670,7 +674,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
   </div>
   <p>
     <code>$4D</code>는 그래픽을 읽는 루틴(<code>$81:A703</code>, <code>$81:A8B0</code>)도 잠깐 씁니다. 대사를 기록할 때
-    이 값을 그대로 믿으면 엉뚱한 번호가 섞입니다(9절).
+    이 값을 그대로 믿으면 엉뚱한 번호가 섞입니다(<a href="#making-testing">9절</a>).
   </p>
 </Deeper>
 
@@ -710,7 +714,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
   사례는 <a href={notePath(OTOGIRISOU_PATCH)}>제절초 노트</a>에서 볼 수 있습니다.
 </p>
 
-<ToolFiles items={toolsFor('map')} />
+<ToolFiles patch={patch} items={toolsFor('map')} />
 
 <h2 id="making-dialogue">
   3. 대사 <span class="layer-badge layer-easy">쉽게</span>
@@ -730,8 +734,11 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
   ))}
 </ul>
 <p>
-  어느 숫자가 어느 글자인지는 게임마다 다르고, 한글패치는 v1.0이 만든 글자 표(<code>tables/kr-v1.0.txt</code>)를 이어
-  씁니다. 글자 표와 제어 코드는 <a href={guide('snes', 'text', 'table')}>8장 글자표</a>와
+  어느 숫자가 어느 글자인지는 게임마다 다르고, 한글패치는 v1.0이 만든 글자 표(
+  <a href={sourceFileUrl(patch, 'tables/kr-v1.0.txt')}>
+    <code>tables/kr-v1.0.txt</code>
+  </a>
+  )를 이어 씁니다. 글자 표와 제어 코드는 <a href={guide('snes', 'text', 'table')}>8장 글자표</a>와{' '}
   <a href={guide('snes', 'text', 'control')}>제어 코드</a>에서 다룹니다.
 </p>
 
@@ -747,7 +754,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
 </ol>
 <p>
   이 과정을 그림으로 따라가는 예가 <a href={guide('snes', 'text', 'pointers')}>8장 포인터 표</a>에 있고, 주소를 파일
-  위치로 바꾸는 계산은 위 2절의 위젯으로 해 볼 수 있습니다.
+  위치로 바꾸는 계산은 위 <a href="#making-map">2절</a>의 위젯으로 해 볼 수 있습니다.
 </p>
 
 <h3>대사는 뱅크 밖으로 못 나간다</h3>
@@ -826,7 +833,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
 </div>
 <p>
   같은 문자열을 여러 ID가 함께 가리키므로, 한 문자열을 제자리에서 고치면 다른 대사까지 같이 바뀔 수 있습니다. 같은
-  엔진의 각성편은 다시 채우지 않고 <a href={kakusei('making-relocate')}>안 들어가는 줄만 같은 뱅크 끝으로</a>
+  엔진의 각성편은 다시 채우지 않고 <a href={kakusei('making-relocate')}>안 들어가는 줄만 같은 뱅크 끝으로</a>{' '}
   옮겼습니다. 두 방법의 차이는 <a href={guide('snes', 'text', 'grow')}>8장 번역이 길어지면 어디에 두나</a>에
   정리했습니다.
 </p>
@@ -920,8 +927,12 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
   </table>
 </div>
 <p>
-  v1.1은 이 규칙대로 글자마다 폭을 더해 모든 줄을 검사했고(<code>tools/layout1.py</code>), 넘치는 줄이 0이 될 때까지
-  고쳤습니다. v1.1 롬에서 가장 긴 줄은 나레이션 174px, 얼굴 창 128px입니다. 줄을 나눌 때는 이렇게 정했습니다.
+  v1.1은 이 규칙대로 글자마다 폭을 더해 모든 줄을 검사했고(
+  <a href={sourceFileUrl(patch, 'tools/layout1.py')}>
+    <code>tools/layout1.py</code>
+  </a>
+  ), 넘치는 줄이 0이 될 때까지 고쳤습니다. v1.1 롬에서 가장 긴 줄은 나레이션 174px, 얼굴 창 128px입니다. 줄을 나눌 때는
+  이렇게 정했습니다.
 </p>
 <ol class="flow">
   {lineRules.map(rule => (
@@ -965,7 +976,7 @@ $B7:9857  CMP $0210           ; $32가 $0210 이상이면 페이지 대기 뒤 �
   </p>
 </Deeper>
 
-<ToolFiles items={toolsFor('dialogue')} />
+<ToolFiles patch={patch} items={toolsFor('dialogue')} />
 
 <h2 id="making-font">
   4. 글자 <span class="layer-badge layer-easy">쉽게</span>
@@ -1146,7 +1157,8 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
 <p>
   「플」「딩」「렉」은 16px 글자가 없어서 가나 자리의 8px 글자(0x24B, 0x148, 0x14D)를 대사와 메뉴에 빌려 쓰고
   있었습니다. 16px 글자 사이에서 반 칸으로 보였습니다. v1.2는 블록 2의 빈 칸(0xD61–0xD63)에 16px로 새로 그리고, 8px
-  글자는 이름 입력과 엔딩 암호에만 남겼습니다. 「펴」도 새 16px 글자(0xD60)로 그렸습니다(7절).
+  글자는 이름 입력과 엔딩 암호에만 남겼습니다. 「펴」도 새 16px 글자(0xD60)로 그렸습니다(<a href="#making-save">7절</a>
+  ).
 </p>
 <ScreenPair
   shots={[
@@ -1156,7 +1168,7 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   caption="전투 화면 위 띠의 「슬라이딩 킥」. v1.1은 「딩」만 8px 글자였습니다."
 />
 
-<ToolFiles items={toolsFor('font')} />
+<ToolFiles patch={patch} items={toolsFor('font')} />
 
 <h2 id="making-gfx">
   5. 그림·압축 <span class="layer-badge layer-easy">쉽게</span>
@@ -1313,7 +1325,7 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   </p>
 </Deeper>
 
-<ToolFiles items={toolsFor('title-gfx')} />
+<ToolFiles patch={patch} items={toolsFor('title-gfx')} />
 
 <h2 id="making-menus">
   6. 메뉴·이름·전투 <span class="layer-badge layer-patch">실제 패치에서</span>
@@ -1443,9 +1455,12 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
 <h3 id="making-etc">엔딩 크레딧과 그 밖의 메뉴 문자열</h3>
 <ul class="notes">
   <li>
-    포인터 표 밖의 메뉴 문자열은 파일 위치와 새 문자열을 <code>tables/ui-fixes.tsv</code>에 모아 두고 빌드 때
-    덮어씁니다. 타이틀 메뉴는 파일 <code>0x6F17</code>(NEW GAME / OPTION)과 <code>0x6F3D</code>(CONTINUE / NEW GAME /
-    OPTION)에 있습니다.
+    포인터 표 밖의 메뉴 문자열은 파일 위치와 새 문자열을{' '}
+    <a href={sourceFileUrl(patch, 'tables/ui-fixes.tsv')}>
+      <code>tables/ui-fixes.tsv</code>
+    </a>
+    에 모아 두고 빌드 때 덮어씁니다. 타이틀 메뉴는 파일 <code>0x6F17</code>(NEW GAME / OPTION)과 <code>0x6F3D</code>
+    (CONTINUE / NEW GAME / OPTION)에 있습니다.
   </li>
   <li>
     엔딩 크레딧은 줄마다 <code>$B7</code> 뱅크의 고정 칸에 있고, 칸 크기가 일본어 줄 길이로 정해져 있어 그보다 길게 쓸
@@ -1458,11 +1473,11 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   </li>
   <li>
     이름 입력 글자판(파일 <code>0x7005</code>, 160칸)은 v1.0이 쓴 16비트 문자열입니다. 엔딩 암호와 같은 8px 글자를
-    쓰므로, 7절에서 다시 그린 다섯 칸이 함께 바뀝니다.
+    쓰므로, <a href="#making-save">7절</a>에서 다시 그린 다섯 칸이 함께 바뀝니다.
   </li>
 </ul>
 
-<ToolFiles items={toolsFor('menus')} />
+<ToolFiles patch={patch} items={toolsFor('menus')} />
 
 <h2 id="making-save">
   7. 세이브·암호 <span class="layer-badge layer-patch">실제 패치에서</span>
@@ -1576,9 +1591,13 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   </table>
 </div>
 <p>
-  글자 표(<code>tables/kr-v1.0.txt</code>)는 이 다섯 자리를 다·동·레·렉·저로 적고 있어서, v1.2는 그 글자로 다시
-  그렸습니다. 폭 8px, 1px 획, 그림자 없음으로 이웃 글자와 같은 방식입니다. 같은 자리를 쓰는 이름 입력 글자판에서 같은
-  모양이 두 칸 나오지 않게 됐고, 엔딩 스태프 「디러터」는 원래 뜻대로 「디렉터」가 됐습니다. 그림을 바꾸는 방법은{' '}
+  글자 표(
+  <a href={sourceFileUrl(patch, 'tables/kr-v1.0.txt')}>
+    <code>tables/kr-v1.0.txt</code>
+  </a>
+  )는 이 다섯 자리를 다·동·레·렉·저로 적고 있어서, v1.2는 그 글자로 다시 그렸습니다. 폭 8px, 1px 획, 그림자 없음으로
+  이웃 글자와 같은 방식입니다. 같은 자리를 쓰는 이름 입력 글자판에서 같은 모양이 두 칸 나오지 않게 됐고, 엔딩 스태프
+  「디러터」는 원래 뜻대로 「디렉터」가 됐습니다. 그림을 바꾸는 방법은{' '}
   <a href={guide('snes', 'graphics', 'tiles')}>7장 화면은 8×8 타일을 이어 붙인 그림</a>과 같습니다.
 </p>
 <ScreenPair
@@ -1597,7 +1616,11 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
     </li>
     <li>
       빌드는 다섯 자리가 정해 둔 그림과 다르거나, 암호 글자 163자 가운데 같은 모양이 있거나, 글자 표에서 이름이 다른 두
-      코드가 같은 그림을 그리거나, 이름 입력 글자판에 같은 모양이 두 칸 있으면 멈춥니다(<code>tools/pwglyph1.py</code>).
+      코드가 같은 그림을 그리거나, 이름 입력 글자판에 같은 모양이 두 칸 있으면 멈춥니다(
+      <a href={sourceFileUrl(patch, 'tools/pwglyph1.py')}>
+        <code>tools/pwglyph1.py</code>
+      </a>
+      ).
     </li>
     <li>
       대사·전투·메뉴 문자열 7,899개를 v1.1과 코드 단위로 비교해, 바뀐 것은 「펴」를 쓰는 대사 두 줄뿐임을 확인했습니다.
@@ -1614,7 +1637,7 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   </ul>
 </Deeper>
 
-<ToolFiles items={toolsFor('save')} />
+<ToolFiles patch={patch} items={toolsFor('save')} />
 
 <h2 id="making-unique">
   8. 게임 고유 문제 <span class="layer-badge layer-patch">실제 패치에서</span>
@@ -1686,7 +1709,7 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   재현한 방법은 <a href={guide('snes', 'emulator', 'lua')}>12장 Lua로 확인을 자동으로</a>에 있습니다.
 </p>
 
-<ToolFiles items={toolsFor('event-list')} />
+<ToolFiles patch={patch} items={toolsFor('event-list')} />
 
 <h2 id="making-testing">
   9. 확인 방법 <span class="layer-badge layer-try">직접 해 보기</span>
@@ -1832,21 +1855,22 @@ python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</
   </p>
 </Deeper>
 
-<ToolFiles items={toolsFor('testing')} />
+<ToolFiles patch={patch} items={toolsFor('testing')} />
 
 <h2 id="making-next">
   10. 다음 사람에게 <span class="layer-badge layer-patch">실제 패치에서</span>
 </h2>
 <NoteRelated patch={patch} id="making-next" />
 <p>
-  이 롬을 이어서 고칠 분이 알아 두면 좋을 것입니다. 주소와 형식 전체는 패치 소스의 롬 분석 문서(docs/ANALYSIS.md)에
-  있습니다.
+  이 롬을 이어서 고칠 분이 알아 두면 좋을 것입니다. 주소와 형식 전체는 패치 소스의{' '}
+  <a href={analysisUrl(patch)}>롬 분석 문서(docs/ANALYSIS.md)</a>에 있습니다.
 </p>
 <h3>확인하지 않은 것</h3>
 <ul class="notes">
   <li>
-    실제 슈퍼 패미컴과 플래시 카트리지에서 돌려 본 기록은 없습니다. 에뮬레이터 결과는 9절에 있고, 실기에서만 드러나는
-    문제는 <a href={guide('snes', 'emulator', 'hardware')}>12장 실기에서만 알 수 있는 것</a>을 보세요.
+    실제 슈퍼 패미컴과 플래시 카트리지에서 돌려 본 기록은 없습니다. 에뮬레이터 결과는 <a href="#making-testing">9절</a>
+    에 있고, 실기에서만 드러나는 문제는{' '}
+    <a href={guide('snes', 'emulator', 'hardware')}>12장 실기에서만 알 수 있는 것</a>을 보세요.
   </li>
   <li>
     창 정보 첫 바이트가 FE인 대사 347줄은 얼굴 창과 같은 128px로 잡히지만, 얼굴 그림을 부르는 루틴을 건너뛴다는 것만
@@ -1891,7 +1915,7 @@ python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</
   </li>
 </ul>
 
-<ToolFiles items={toolsFor('next')} />
+<ToolFiles patch={patch} items={toolsFor('next')} />
 
 <h2 id="making-tools">
   11. 패치 소스 파일 <span class="layer-badge layer-try">직접 해 보기</span>
@@ -1900,13 +1924,16 @@ python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</
 <p>
   위에서 설명한 파일은 모두 <a href={source}>패치 소스</a>의 게임 폴더에 있습니다. 그 폴더에 일본판 원본(헤더 없음,
   CRC32 <code>{patch.spec.original.crc32}</code>)을 <code>super-gokuden-jp.smc</code>로 두고{' '}
-  <code>zsh tools/build.sh</code>를 실행하면 배포판과 같은 롬(CRC32 <code>{patch.spec.patched.crc32}</code>)이 나옵니다.
-  Python 3(Pillow, numpy)과 <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>이 필요합니다. 빌드는 이 순서로 돕니다.
+  <a href={sourceFileUrl(patch, 'tools/build.sh')}>
+    <code>zsh tools/build.sh</code>
+  </a>
+  를 실행하면 배포판과 같은 롬(CRC32 <code>{patch.spec.patched.crc32}</code>)이 나옵니다. Python 3(Pillow, numpy)과{' '}
+  <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>이 필요합니다. 빌드는 이 순서로 돕니다.
 </p>
 <ol class="flow">
   {buildSteps.map(([cmd, text]) => (
     <li>
-      <code>{cmd}</code> {text}
+      <SourceFile patch={patch} name={cmd} /> {text}
     </li>
   ))}
 </ol>
@@ -1927,7 +1954,7 @@ python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</
       {toolFiles.map(f => (
         <tr>
           <td>
-            <code>{f.name}</code>
+            <SourceFile patch={patch} name={f.name} />
           </td>
           <td class="wrap">{f.text}</td>
           <td>

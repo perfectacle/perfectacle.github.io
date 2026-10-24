@@ -1,6 +1,7 @@
 ---
 import { SECTION_TITLES } from '../../lib/patch-sections';
 import MakingIntro from './MakingIntro.astro';
+import NoteTopics from '../kr-patch/NoteTopics.astro';
 import { notePath } from '../romhacking/chapters';
 import type { KrPatch } from '../../lib/kr-patches';
 
@@ -9,6 +10,14 @@ interface Props {
 }
 
 const { patch } = Astro.props;
+const topics = [
+  { id: 'making-map', label: '롬 지도와 롬 헤더' },
+  { id: 'making-dialogue', label: '대사 포인터와 뱅크 경계' },
+  { id: 'making-font-ext', label: '글자 칸을 512개 늘린 후킹' },
+  { id: 'making-title-gfx', label: '압축된 타이틀 글자 층' },
+  { id: 'making-save', label: '암호 글자와 엔딩 암호' },
+  { id: 'making-event-list', label: '이벤트 표에서 못 나오던 문제' },
+];
 ---
 
 <section id="making" class="section page-width making-teaser" aria-labelledby="making-title">
@@ -23,4 +32,5 @@ const { patch } = Astro.props;
     </a>
   </div>
   <MakingIntro patch={patch} />
+  <NoteTopics patch={patch} topics={topics} />
 </section>

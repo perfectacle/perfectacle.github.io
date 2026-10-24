@@ -2,7 +2,14 @@
 import GuideChapter from '../../../layouts/GuideChapter.astro';
 import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
-import { OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
+import {
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  TOTSUGEKI_PATCH,
+  sourceFileUrl,
+  toolkitFileUrl,
+} from '../../../lib/kr-patches.ts';
+import { chapterHref } from '../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -21,7 +28,7 @@ const references = [
     note: '"이미지 크기를 1024로 나눈 나머지가 512면 카피어 헤더" 판별법',
   },
   {
-    href: 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/src/kr_patch/ips.py',
+    href: toolkitFileUrl('src/kr_patch/ips.py'),
     label: 'kr-patch-toolkit, ips.py',
     note: '이 장의 IPS 예시를 만든 구현',
   },
@@ -343,8 +350,8 @@ const ips = [
     </li>
     <li>
       위 그림의 0x61 두 바이트는 실제 예입니다. 돌격편 롬의 파일 0x61에 있는 <code>80 04</code>를 <code>EA EA</code>로
-      바꾸면 개발자용 디버그 메뉴가 열립니다(5장에서 이 바이트를 어셈블리로 읽습니다). 배포한 패치는 이 자리를 바꾸지
-      않습니다.
+      바꾸면 개발자용 디버그 메뉴가 열립니다(<a href={chapterHref(5)}>5장</a>에서 이 바이트를 어셈블리로 읽습니다).
+      배포한 패치는 이 자리를 바꾸지 않습니다.
     </li>
     <li>
       제절초 일본판은 1MB인데, v1.0 한글패치는 대사를 넣으려고 롬을 2MB로 늘렸습니다. 그런데 게임 안 헤더의 "롬 크기"
@@ -352,8 +359,12 @@ const ips = [
       헤더가 따로 논 사례입니다.
     </li>
     <li>
-      돌격편 패치 소스의 <code>tools/build.sh</code>는 "일본판 + v1.0 IPS → 타이틀 → 텍스트 → … → 체크섬" 순서로 롬을
-      만들고, 마지막에 IPS를 만듭니다. 패치는 이렇게 만든 결과 롬과 원본의 차이입니다.
+      돌격편 패치 소스의{' '}
+      <a href={sourceFileUrl(TOTSUGEKI_PATCH, 'tools/build.sh')}>
+        <code>tools/build.sh</code>
+      </a>
+      는 "일본판 + v1.0 IPS → 타이틀 → 텍스트 → … → 체크섬" 순서로 롬을 만들고, 마지막에 IPS를 만듭니다. 패치는 이렇게
+      만든 결과 롬과 원본의 차이입니다.
     </li>
   </ul>
 

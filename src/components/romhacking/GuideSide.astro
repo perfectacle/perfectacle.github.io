@@ -1,22 +1,13 @@
 ---
 import type { GuideHeading } from './guide-html.ts';
 
-export interface SideLink {
-  href: string;
-  label: string;
-  /** Short word before the label, such as 「이전 장」. */
-  kind?: string;
-  rel?: 'prev' | 'next';
-}
-
 interface Props {
   /** Accessible name of the contents, shared with the list above the body on narrow screens. */
   label: string;
   headings: GuideHeading[];
-  links: SideLink[];
 }
 
-const { label, headings, links } = Astro.props;
+const { label, headings } = Astro.props;
 ---
 
 <div class="guide-side" data-pagefind-ignore>
@@ -31,21 +22,6 @@ const { label, headings, links } = Astro.props;
         </li>
       ))}
     </ol>
-  </nav>
-  <nav class="gside-links" aria-label="바로 가기">
-    <ul>
-      {links.map(l => (
-        <li>
-          <a href={l.href} rel={l.rel}>
-            {l.kind && <small>{l.kind}</small>}
-            {l.label}
-          </a>
-        </li>
-      ))}
-      <li>
-        <a href="#main">↑ 맨 위로</a>
-      </li>
-    </ul>
   </nav>
 </div>
 
@@ -85,23 +61,13 @@ const { label, headings, links } = Astro.props;
       </li>
     ))}
   </ol>
-  <ul class="gside-sheet-links">
-    {links.map(l => (
-      <li>
-        <a href={l.href}>
-          {l.kind && <small>{l.kind}</small>}
-          {l.label}
-        </a>
-      </li>
-    ))}
-  </ul>
 </dialog>
 
 <style>
   .guide-side {
     display: none;
   }
-  /* Wide screens: the contents and the way around sit beside the body, which keeps its width. */
+  /* Wide screens: the contents sit beside the body, which keeps its width. */
   @media (min-width: 1280px) {
     .guide-side {
       position: sticky;
@@ -159,36 +125,6 @@ const { label, headings, links } = Astro.props;
     .gtoc a:hover {
       color: var(--accent);
     }
-  }
-  .gside-links {
-    flex: none;
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border);
-  }
-  .gside-links ul,
-  .gside-sheet-links {
-    display: grid;
-    gap: 4px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .gside-links a,
-  .gside-sheet-links a {
-    display: block;
-    color: var(--fg-muted);
-    line-height: 1.4;
-  }
-  .gside-links a:hover,
-  .gside-sheet-links a:hover {
-    color: var(--accent);
-    text-decoration: none;
-  }
-  .gside-links small,
-  .gside-sheet-links small {
-    display: block;
-    font-size: 0.75rem;
   }
 
   .gside-open {
@@ -264,17 +200,11 @@ const { label, headings, links } = Astro.props;
   .gside-sheet .gtoc li {
     padding-block: 0;
   }
-  .gside-sheet .gtoc a,
-  .gside-sheet-links a {
+  .gside-sheet .gtoc a {
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: 44px;
-  }
-  .gside-sheet-links {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--border);
   }
   @media (prefers-reduced-motion: no-preference) {
     .gside-open {

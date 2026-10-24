@@ -8,7 +8,14 @@ import {
   readyChapters,
 } from '../src/components/romhacking/chapters.ts';
 import { GLOSSARY, GLOSSARY_PATH, entryHref, termId } from '../src/components/romhacking/glossary.ts';
-import { KR_PATCHES, KR_PATCH_LIST_PATH, KR_PATCH_TOOLKIT_URL, sourceUrl } from '../src/lib/kr-patches.ts';
+import {
+  KR_PATCHES,
+  KR_PATCH_LIST_PATH,
+  KR_PATCH_TOOLKIT_URL,
+  OTOGIRISOU_PATCH,
+  TOTSUGEKI_PATCH,
+  sourceUrl,
+} from '../src/lib/kr-patches.ts';
 
 const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...KR_PATCHES.map(notePath), GLOSSARY_PATH];
 const first = (list: ReturnType<typeof readyChapters>) => {
@@ -93,7 +100,7 @@ test('chapters link to each other in reading order', async ({ page }) => {
   const pager = page.getByRole('navigation', { name: '이전·다음 장' });
   await expect(pager.locator('a[rel="next"]')).toHaveCount(0);
   await expect(pager).toContainText('다음 장은 준비 중');
-  await page.getByRole('navigation', { name: '현재 위치' }).getByRole('link', { name: '롬 해킹 기초' }).click();
+  await page.getByRole('navigation', { name: '현재 위치' }).getByRole('link', { name: '롬 해킹', exact: true }).click();
   await expect(page).toHaveURL(GUIDE_PATH);
 });
 
@@ -101,7 +108,9 @@ test('chapters key comments by their own path and link the patch notes and toolk
   await page.goto(BANKS);
   await expect(page.locator('#waline')).toHaveAttribute('data-path', BANKS);
   await expect(
-    page.locator('a[href="/games/romhacking/snes/notes/dragon-ball-z-super-gokuden-totsugeki/#making-dialogue"]'),
+    page.locator(
+      '.guide-links a[href="/games/romhacking/snes/notes/dragon-ball-z-super-gokuden-totsugeki/#making-dialogue"]',
+    ),
   ).toHaveCount(1);
   await expect(
     page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/README.ko.md#snes-dis"]'),
@@ -272,7 +281,9 @@ test('tile painting widget paints pixels with the keyboard and reads typed bytes
 
 test('the hooking chapter links the word-wrap note and the toolkit', async ({ page }) => {
   await page.goto(HOOKING);
-  await expect(page.locator('a[href="/games/romhacking/snes/notes/otogirisou/#making-wordwrap"]')).toHaveCount(1);
+  await expect(
+    page.locator('.guide-links a[href="/games/romhacking/snes/notes/otogirisou/#making-wordwrap"]'),
+  ).toHaveCount(1);
   await expect(
     page.locator('a[href^="https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0/README.ko.md#snes-dis"]'),
   ).toHaveCount(1);
@@ -494,6 +505,11 @@ for (const patch of KR_PATCHES) {
     await page.goto(`${patch.path}/`);
     const read = page.locator('#making').getByRole('link', { name: '노트 읽기' });
     await expect(read).toHaveAttribute('href', note);
+    const topics = page.getByRole('navigation', { name: '이 노트에서 다루는 것' }).locator('a');
+    expect(await topics.count()).toBeGreaterThan(0);
+    for (const href of await topics.evaluateAll(links => links.map(a => a.getAttribute('href') ?? ''))) {
+      expect(href.startsWith(`${note}#making-`), href).toBe(true);
+    }
     await read.click();
     await expect(page).toHaveURL(note);
     await expect(page.locator('h1')).toHaveText(`롬 분석 노트: ${patch.title}`);
@@ -535,6 +551,28 @@ test('the guide index lists the four ROM analysis notes', async ({ page }) => {
   const notes = page.locator('.note-map');
   await expect(notes.locator('li')).toHaveCount(KR_PATCHES.length);
   for (const patch of KR_PATCHES) await expect(notes.getByRole('link', { name: patch.title })).toHaveCount(1);
+});
+
+test('the guide index maps every chapter to each game note, and says why a cell is empty', async ({ page }) => {
+  await page.goto(GUIDE_PATH);
+  const grid = page.getByRole('table', { name: '장 × 게임 노트' });
+  const rows = grid.locator('tbody tr');
+  await expect(rows).toHaveCount(readyChapters().length);
+  for (const [i, chapter] of readyChapters().entries()) {
+    const row = rows.nth(i);
+    await expect(row.getByRole('rowheader').getByRole('link')).toHaveAttribute('href', chapterPath(chapter));
+    const cells = row.getByRole('cell');
+    await expect(cells).toHaveCount(KR_PATCHES.length);
+    for (const cell of await cells.all()) {
+      const links = await cell.locator('a').count();
+      const empty = await cell.getByText('해당 절 없음').count();
+      expect(links > 0 !== empty > 0).toBe(true);
+    }
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+    0,
+  );
 });
 
 test('input script widget reads scripts like the toolkit and shows each frame', async ({ page }) => {
@@ -742,19 +780,17 @@ test('wide screens keep the contents beside the body and mark the section being 
   await toc.locator('a[href="#pointers"]').click();
   await expect(toc.locator('a[aria-current="location"]')).toHaveAttribute('href', '#pointers');
   await expect(toc).toBeInViewport();
-  const jump = page.getByRole('navigation', { name: '바로 가기' });
-  await expect(jump.getByRole('link', { name: '용어집' })).toHaveAttribute('href', GLOSSARY_PATH);
-  await expect(jump.getByRole('link', { name: /롬 해킹 기초 차례/ })).toHaveAttribute('href', GUIDE_PATH);
-  await expect(jump.locator('a[rel="prev"]')).toHaveCount(1);
-  await expect(jump.locator('a[rel="next"]')).toHaveCount(1);
+  // The side column holds only this page's contents; moving between pages is the trail above and the pager below.
+  await expect(page.locator('.guide-side a:not([href^="#"])')).toHaveCount(0);
+  const pager = page.getByRole('navigation', { name: '이전·다음 장' });
+  await expect(pager.locator('a[rel="prev"]')).toHaveCount(1);
+  await expect(pager.locator('a[rel="next"]')).toHaveCount(1);
 
   await page.goto(SMRPG_NOTE);
   await expect(
     page.getByRole('navigation', { name: '이 노트에서' }).getByRole('link', { name: '배경지식' }),
   ).toBeVisible();
-  await expect(
-    page.getByRole('navigation', { name: '바로 가기' }).getByRole('link', { name: /한글패치$/ }),
-  ).toHaveAttribute('href', '/games/kr-patches/sfc/super-mario-rpg/');
+  await expect(page.locator('.guide-side a:not([href^="#"])')).toHaveCount(0);
   await noHorizontalOverflow(page);
 });
 
@@ -768,7 +804,7 @@ test('phones open the contents from a floating button', async ({ page }) => {
   await open.click();
   const sheet = page.getByRole('dialog', { name: '이 장에서' });
   await expect(sheet).toBeVisible();
-  await expect(sheet.getByRole('link', { name: '용어집' })).toHaveAttribute('href', GLOSSARY_PATH);
+  await expect(sheet.locator('a:not([href^="#"])')).toHaveCount(0);
   await sheet.locator('a[href="#try"]').click();
   await expect(sheet).toBeHidden();
   await expect(page).toHaveURL(/#try$/);
@@ -832,4 +868,108 @@ test('without scripts terms are plain links to the glossary', async ({ browser }
   await term.click();
   await expect(page).toHaveURL(/\/glossary\/#term-/);
   await context.close();
+});
+
+const crumbs = (page: Page) => page.getByRole('navigation', { name: '현재 위치' });
+
+test('the trail opens a menu at each step and moves between the guide and the notes', async ({ page }) => {
+  await page.goto(TEXT);
+  const nav = crumbs(page);
+  const guide = nav.getByRole('button', { name: '기초 가이드 펼치기' });
+  await expect(guide).toHaveAttribute('aria-expanded', 'false');
+  await guide.click();
+  await expect(guide).toHaveAttribute('aria-expanded', 'true');
+  const menu = page.locator(`#${await guide.getAttribute('aria-controls')}`);
+  await expect(menu).toBeVisible();
+  await expect(menu.locator('a[aria-current="page"]')).toHaveAttribute('href', TEXT);
+  await expect(menu.locator('a')).toHaveCount(readyChapters().length);
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeHidden();
+  await expect(guide).toBeFocused();
+  await expect(guide).toHaveAttribute('aria-expanded', 'false');
+
+  // Opening one menu closes the other, and a click outside closes it.
+  const top = nav.getByRole('button', { name: '롬 해킹 펼치기' });
+  await guide.click();
+  await top.click();
+  await expect(menu).toBeHidden();
+  await page.mouse.click(4, 600);
+  await expect(top).toHaveAttribute('aria-expanded', 'false');
+
+  // Keyboard: the arrow key opens the menu on the current chapter and moves through it.
+  await guide.focus();
+  await page.keyboard.press('ArrowDown');
+  await expect(menu.locator('a[aria-current="page"]')).toBeFocused();
+  await page.keyboard.press('ArrowDown');
+  await expect(menu.locator('a[aria-current="page"]')).not.toBeFocused();
+  await page.keyboard.press('Escape');
+
+  // The last step lists the notes that use this chapter.
+  await nav.getByRole('button', { name: /관련 노트 펼치기$/ }).click();
+  await nav
+    .getByRole('link', { name: /^돌격편: / })
+    .first()
+    .click();
+  await expect(page).toHaveURL(/\/games\/romhacking\/snes\/notes\/dragon-ball-z-super-gokuden-totsugeki\/#making-/);
+
+  await crumbs(page).getByRole('button', { name: '롬 분석 노트 펼치기' }).click();
+  const notes = crumbs(page).locator('.gcrumb-menu:visible');
+  for (const p of KR_PATCHES) await expect(notes.locator(`a[href="${p.path}/"]`)).toHaveCount(1);
+  await notes.getByRole('link', { name: '제절초', exact: true }).click();
+  await expect(page).toHaveURL(notePath(OTOGIRISOU_PATCH));
+  await crumbs(page).getByRole('button', { name: '제절초 관련 페이지 펼치기' }).click();
+  await crumbs(page)
+    .getByRole('link', { name: /^\d+장 / })
+    .first()
+    .click();
+  await expect(page).toHaveURL(/\/games\/romhacking\/(snes\/)?[a-z-]+\/$/);
+
+  await crumbs(page).getByRole('button', { name: '롬 해킹 펼치기' }).click();
+  await crumbs(page)
+    .getByRole('link', { name: /^용어집/ })
+    .click();
+  await expect(page).toHaveURL(GLOSSARY_PATH);
+});
+
+test('without scripts the trail is plain links to each step', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto(SMRPG_NOTE);
+  const nav = crumbs(page);
+  await expect(nav.getByRole('button')).toHaveCount(0);
+  await expect(nav.getByRole('link', { name: '롬 해킹', exact: true })).toHaveAttribute('href', GUIDE_PATH);
+  await expect(nav.getByRole('link', { name: '롬 분석 노트' })).toHaveAttribute('href', `${GUIDE_PATH}#notes`);
+  await context.close();
+});
+
+test('on a phone the trail fits one line and its menus stay on screen', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  for (const path of [GUIDE_PATH, GLOSSARY_PATH, TEXT, notePath(TOTSUGEKI_PATCH)]) {
+    await page.goto(path);
+    const nav = crumbs(page);
+    const box = await nav.locator('ol').boundingBox();
+    expect(box?.height ?? 99, path).toBeLessThan(44);
+    for (const toggle of await nav.getByRole('button').all()) {
+      await toggle.click();
+      const menu = page.locator(`#${await toggle.getAttribute('aria-controls')}`);
+      const m = await menu.boundingBox();
+      expect(m && m.x >= 0 && m.x + m.width <= 390, `${path} ${await toggle.getAttribute('aria-label')}`).toBe(true);
+      await noHorizontalOverflow(page);
+      await page.keyboard.press('Escape');
+    }
+  }
+});
+
+test('section titles in chapters, notes and the glossary link to themselves', async ({ page }) => {
+  for (const path of [TEXT, SMRPG_NOTE, GLOSSARY_PATH]) {
+    await page.goto(path);
+    const link = page.locator('.prose h2 > a.heading-link').nth(1);
+    const id = await link.evaluate(a => a.parentElement?.id ?? '');
+    await expect(link).toHaveAttribute('href', `#${id}`);
+    expect(await link.evaluate(a => getComputedStyle(a).cursor), path).toBe('pointer');
+    await link.click();
+    await expect(page).toHaveURL(new RegExp(`#${encodeURIComponent(id).replace(/%/g, '%')}$`));
+  }
+  await page.goto(TEXT);
+  await expect(page.locator('.prose h3 > a.heading-link').first()).toHaveAttribute('href', /^#.+/);
 });

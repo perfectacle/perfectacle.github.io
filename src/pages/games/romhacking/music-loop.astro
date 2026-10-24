@@ -3,14 +3,19 @@ import GuideChapter from '../../../layouts/GuideChapter.astro';
 import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import SeamLab from '../../../components/romhacking/SeamLab.astro';
-import { KAKUSEI_PATCH, OTOGIRISOU_PATCH, SMRPG_PATCH, TOTSUGEKI_PATCH } from '../../../lib/kr-patches.ts';
-import { TOOLKIT_README_KO, chapterBySlug, chapterPath } from '../../../components/romhacking/chapters.ts';
+import {
+  KAKUSEI_PATCH,
+  OTOGIRISOU_PATCH,
+  SMRPG_PATCH,
+  TOTSUGEKI_PATCH,
+  toolkitFileUrl,
+} from '../../../lib/kr-patches.ts';
+import { TOOLKIT_README_KO, chapterBySlug, chapterHref, chapterPath } from '../../../components/romhacking/chapters.ts';
 
-const TOOLKIT = 'https://github.com/perfectacle/kr-patch-toolkit/blob/v0.2.0';
 const BLOG = 'https://github.com/perfectacle/perfectacle.github.io/blob/main';
 const references = [
   {
-    href: `${TOOLKIT}/src/kr_patch/audio/loop.py`,
+    href: toolkitFileUrl('src/kr_patch/audio/loop.py'),
     label: 'kr-patch-toolkit 0.2.0, audio의 loop.py, analysis.py, loudness.py',
     note: '이음매 점수(모든 채널을 한 신호로 본 정규화 상호상관), 가장 이른 이음매와 최고 점수 이음매, equal-gain(sin²)과 equal-power(sin·cos) 크로스페이드, 꼬리, 스펙트럼 플럭스로 하는 이음매 검사, 로그 스펙트럼 자기 유사도로 주기 찾기, BS.1770 통합 음량',
   },
@@ -204,8 +209,8 @@ const peaks = [
   </h2>
   <p>
     게임을 그냥 켜 두고 녹음하면 원하는 곡이 언제 나올지 모르고, 효과음이 섞입니다. 이야기를 한참 진행해야 나오는 곡도
-    있습니다. 그래서 롬을 몇 바이트 고쳐 "켜자마자 그 곡이 나오는 롬"을 녹음용으로 따로 만듭니다. 13장에서 찾은 곡
-    번호를 넘기는 곳을 고치는 것입니다.
+    있습니다. 그래서 롬을 몇 바이트 고쳐 "켜자마자 그 곡이 나오는 롬"을 녹음용으로 따로 만듭니다.{' '}
+    <a href={chapterHref(13)}>13장</a>에서 찾은 곡 번호를 넘기는 곳을 고치는 것입니다.
   </p>
   <ul>
     <li>
