@@ -1,0 +1,230 @@
+---
+import { COND_TEXT, OBJECT_AT, PROGRAM, hex, run } from './arm-step.ts';
+
+const FONT = 1;
+const trace = run(FONT);
+const bytes = (raw: number) =>
+  [0, 8, 16, 24].map(s => ((raw >>> s) & 0xff).toString(16).toUpperCase().padStart(2, '0')).join(' ');
+---
+
+<section class="widget arm-step" data-arm-step aria-labelledby="arm-step-title">
+  <h3 class="widget-title" id="arm-step-title">
+    ARM 명령 한 줄씩 실행
+  </h3>
+  <p class="widget-help">
+    고스트 트릭 ARM9 프로그램의 0x02012BA0 함수를 실제 바이트에서 풀어 실행합니다. r0은 호출한 쪽 구조체의 주소(여기서는{' '}
+    <code>{hex(OBJECT_AT)}</code>), r1은 글꼴 번호입니다.{' '}
+    <span class="live-only">
+      글꼴 번호를 고르고 「다음 명령」을 눌러 보세요. 조건이 붙은 명령은 플래그에 따라 실행되거나 건너뜁니다.
+    </span>
+  </p>
+  <label class="as-font live-only">
+    글꼴 번호(r1)
+    <select data-font>
+      <option value="0">0: fonts2bpp_new.imb</option>
+      <option value="1" selected>
+        1: balloon_font.imb
+      </option>
+      <option value="2">2: font_db.imb</option>
+      <option value="3">3: cmp에서 걸러짐</option>
+    </select>
+  </label>
+
+  <ol class="as-list" data-list>
+    {PROGRAM.map((ins, i) => {
+      const t = trace[i];
+      return (
+        <li class:list={{ 'is-skip': t && !t.ran, 'is-data': ins.op.kind === 'word' }}>
+          <span class="as-at mono">{ins.at.toString(16).toUpperCase().padStart(8, '0')}</span>
+          <code class="as-bytes">{bytes(ins.raw)}</code>
+          <code class="as-text">{ins.text}</code>
+          <span class="as-cond">
+            {ins.op.kind === 'word' ? '데이터(리터럴 풀)' : (COND_TEXT[ins.cond] ?? ins.cond)}
+          </span>
+          <span class="as-out" data-out>
+            {t ? (t.ran ? t.text : '건너뜀') : ''}
+          </span>
+        </li>
+      );
+    })}
+  </ol>
+  <div class="as-buttons live-only">
+    <button type="button" class="widget-btn is-primary" data-next>
+      다음 명령
+    </button>
+    <button type="button" class="widget-btn" data-reset>
+      처음으로
+    </button>
+  </div>
+  <dl class="readout" data-regs>
+    <div>
+      <dt>r0</dt>
+      <dd>
+        <code data-r="0">{hex(trace.at(-1)?.state.r[0] ?? 0)}</code>
+      </dd>
+    </div>
+    <div>
+      <dt>r1</dt>
+      <dd>
+        <code data-r="1">{hex(trace.at(-1)?.state.r[1] ?? 0)}</code>
+      </dd>
+    </div>
+    <div>
+      <dt>r2</dt>
+      <dd>
+        <code data-r="2">{hex(trace.at(-1)?.state.r[2] ?? 0)}</code>
+      </dd>
+    </div>
+    <div>
+      <dt>NZCV</dt>
+      <dd>
+        <code data-flags>
+          {['n', 'z', 'c', 'v']
+            .map(f => ((trace.at(-1)?.state.flags as Record<string, boolean> | undefined)?.[f] ? '1' : '0'))
+            .join('')}
+        </code>
+      </dd>
+    </div>
+  </dl>
+  <p class="as-now" data-now>
+    글꼴 번호 {FONT}로 끝까지 실행한 결과입니다. 돌려주는 값은 r0 = {trace.at(-1)?.state.r[0]}입니다.
+  </p>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { hex, start, step, type State } from './arm-step.ts';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-arm-step]')) {
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel);
+    const items = [...root.querySelectorAll<HTMLElement>('[data-list] li')];
+    const select = q<HTMLSelectElement>('[data-font]');
+    let state: State = start(Number(select?.value ?? 1));
+    let done = 0;
+    const text = (sel: string, v: string) => {
+      const el = q<HTMLElement>(sel);
+      if (el) el.textContent = v;
+    };
+    const showRegs = () => {
+      for (const n of [0, 1, 2]) text(`[data-r="${n}"]`, hex(state.r[n] ?? 0));
+      text(
+        '[data-flags]',
+        [state.flags.n, state.flags.z, state.flags.c, state.flags.v].map(f => (f ? '1' : '0')).join(''),
+      );
+    };
+    const reset = () => {
+      state = start(Number(select?.value ?? 1));
+      done = 0;
+      for (const li of items) {
+        li.classList.remove('is-skip', 'is-current', 'is-done');
+        const out = li.querySelector('[data-out]');
+        if (out) out.textContent = '';
+      }
+      showRegs();
+      text('[data-now]', `시작: r0 = 구조체 주소, r1 = ${state.r[1]}(글꼴 번호)`);
+      text('[data-live]', '처음으로 돌아갔습니다');
+    };
+    q('[data-next]')?.addEventListener('click', () => {
+      if (state.done) return;
+      const s = step(state);
+      state = s.state;
+      const li = items[done];
+      items.forEach(x => x.classList.remove('is-current'));
+      if (li) {
+        li.classList.add('is-done', 'is-current');
+        li.classList.toggle('is-skip', !s.ran);
+        const out = li.querySelector('[data-out]');
+        if (out) out.textContent = s.ran ? s.text : '건너뜀';
+      }
+      done++;
+      showRegs();
+      const msg = `${s.instr.text}: ${s.ran ? s.text : '조건이 맞지 않아 건너뜀'}`;
+      text('[data-now]', state.done ? `${msg}. 함수가 끝났습니다.` : msg);
+      text('[data-live]', msg);
+    });
+    q('[data-reset]')?.addEventListener('click', reset);
+    select?.addEventListener('change', reset);
+    root.classList.add('is-live');
+    reset();
+  }
+</script>
+
+<style is:global>
+  .arm-step .as-font {
+    display: grid;
+    gap: 4px;
+    max-width: 18rem;
+    margin: 0 0 10px;
+  }
+  .arm-step .as-font select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    padding: 4px 8px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .arm-step .as-list {
+    display: grid;
+    gap: 4px;
+    margin: 0 0 10px;
+    padding: 0;
+    list-style: none;
+  }
+  .arm-step .as-list li {
+    display: grid;
+    grid-template-columns: auto auto minmax(10rem, 1fr);
+    gap: 2px 10px;
+    align-items: baseline;
+    padding: 4px 8px;
+    border: 1.5px solid var(--dg-line);
+    border-radius: 6px;
+  }
+  .arm-step .as-cond,
+  .arm-step .as-out {
+    grid-column: 1 / -1;
+    font-size: 0.85em;
+  }
+  .arm-step .as-cond {
+    color: var(--fg-muted);
+  }
+  .arm-step .as-out:empty {
+    display: none;
+  }
+  .arm-step .as-list li.is-skip {
+    border-style: dashed;
+  }
+  .arm-step .as-list li.is-data {
+    background: var(--dg-warm-soft);
+  }
+  .arm-step.is-live .as-list li.is-done:not(.is-skip) {
+    border-color: var(--dg-cool);
+    background: var(--dg-cool-soft);
+  }
+  .arm-step .as-list li.is-current {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .arm-step .as-bytes,
+  .arm-step .as-at {
+    white-space: nowrap;
+  }
+  .arm-step .as-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 8px;
+  }
+  .arm-step .as-now {
+    margin: 8px 0 0;
+  }
+  @media (max-width: 480px) {
+    .arm-step .as-list li {
+      grid-template-columns: auto 1fr;
+    }
+    .arm-step .as-text {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
