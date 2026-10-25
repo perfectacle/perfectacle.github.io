@@ -263,8 +263,15 @@ describe('Super Gokuden: Totsugeki-hen (2 MB)', () => {
     expect(hasGameHeader(SMRPG, gameRom(GOKUDEN_TOTSUGEKI))).toBe(false);
   });
 
-  it('mentions its own size when a patch would grow the ROM', () => {
-    expect(() => applyIps(GOKUDEN_TOTSUGEKI, new Uint8Array(2097152), patch(32, 0, 0, 0, 1, 1))).toThrow('2MB');
+  it('grows the ROM to 4 MB and mentions that size when a patch writes past it', () => {
+    const output = applyIps(
+      GOKUDEN_TOTSUGEKI,
+      new Uint8Array(2097152),
+      new Uint8Array([...patch(32, 0, 0, 0, 1, 7), 64, 0, 0]),
+    );
+    expect(output.length).toBe(4194304);
+    expect(output[0x200000]).toBe(7);
+    expect(() => applyIps(GOKUDEN_TOTSUGEKI, new Uint8Array(2097152), patch(64, 0, 0, 0, 1, 1))).toThrow('4MB');
   });
 });
 

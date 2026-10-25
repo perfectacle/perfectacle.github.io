@@ -128,6 +128,7 @@ export const TOTSUGEKI_PATCH = krPatch<SfcPatch>({
   path: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki',
   year: 1995,
   releases: [
+    { version: '1.3', date: '2026-10-25' },
     { version: '1.2', date: '2026-10-24' },
     { version: '1.1', date: '2026-10-18' },
     { version: '1.0', date: '2012-12-12' },

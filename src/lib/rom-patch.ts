@@ -36,9 +36,11 @@ export const GOKUDEN_TOTSUGEKI: RomSpec = {
   name: '초오공전 돌격편',
   size: 2097152,
   header: { title: 'SFX DBZ TOTSUGEKIHEN', mapMode: 0x30, cartType: 0x02, romSize: 0x0b },
+  patchedSize: 4194304,
   original: { crc32: 'D531289B', md5: '8BD89634D1B2205B1E7EF016485C0076' },
-  patched: { crc32: 'A939C4F8', md5: 'AE259E14C8C6B9853C4C76D0E2EB75D0' },
+  patched: { crc32: 'FC7FB902', md5: 'AEAA197ABBBF7F0C3546F7163D834386' },
   previous: [
+    { version: 'v1.2', crc32: 'A939C4F8', md5: 'AE259E14C8C6B9853C4C76D0E2EB75D0' },
     // The first v1.2 build, replaced before the release was announced.
     { crc32: '81DAD733', md5: '96EDB7C2748B1EADBE9375410D3934FF' },
     { version: 'v1.1', crc32: '7405D969', md5: 'FCA11D34E7D5AD8D9D2021AC1C8E34E5' },

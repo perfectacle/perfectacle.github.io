@@ -66,6 +66,12 @@ const versions = [
     tone: 'dg-accent',
     lines: ['암호 글자 다섯 자 다시 그림', '엔딩 고정 암호, 메뉴 표시 두 글자'],
   },
+  {
+    name: 'v1.3',
+    when: '2026. 10. 25',
+    tone: 'dg-cool',
+    lines: ['자모로 조합하는 이름 입력', '이름 글자 11,172자, 롬 4MB'],
+  },
 ];
 
 const readFirst = [
@@ -94,7 +100,11 @@ const header = [
 ];
 
 const memories = [
-  { name: '롬', size: '2MB', role: '프로그램·대사·폰트·그림. 뱅크 $80–$BF의 $8000–$FFFF에 32KB씩 보입니다.' },
+  {
+    name: '롬',
+    size: '2MB',
+    role: '프로그램·대사·폰트·그림. 뱅크 $80–$BF의 $8000–$FFFF에 32KB씩 보입니다. v1.3은 4MB로 늘려 $C0–$FF도 씁니다.',
+  },
   {
     name: 'WRAM',
     size: '128KB',
@@ -123,6 +133,10 @@ const freeSpace = [
   { where: '$86:E000–$86:EBFF', what: '글자 블록 2 (3KB만 씀)', ver: 'v1.1' },
   { where: '$86:EC00–$86:ED7F 일부', what: '「펴」「플」「딩」「렉」', ver: 'v1.2' },
   { where: '$B7:FB00–$B7:FB6B', what: '기술습득표·이벤트 표의 표시 루틴', ver: 'v1.2' },
+  { where: '$80:F590–', what: '이름 입력 커서가 돌아갈 작은 스텁', ver: 'v1.3' },
+  { where: '$C0:8000–$CA:FFFF 일부', what: '이름용 8px 새 글자 11,063자', ver: 'v1.3' },
+  { where: '$E0:8000–', what: '렌더러 훅과 이름 입력 코드', ver: 'v1.3' },
+  { where: '$E1:8000–$E1:D747', what: '음절 번호 → 글자 코드 표(11,172칸)', ver: 'v1.3' },
 ];
 
 const lineBytes = [
@@ -402,6 +416,9 @@ const toolFiles = [
   },
   { name: 'tools/endpw1.py', text: '엔딩 암호 자리에 「손오공은사이어인」 넣기', section: 'save' },
   { name: 'lua/ending.lua', text: 'Mesen 2용. 엔딩 상태에서 이름을 바꿔 암호 화면 촬영', section: 'save' },
+  { name: 'tools/build-v1.3.sh', text: 'v1.2 빌드 위에 v1.3을 쌓는 순서', section: 'name-entry' },
+  { name: 'tools/font8.py', text: '이름용 8px 글자 그리기, 글자 코드와 음절 표 만들기', section: 'name-entry' },
+  { name: 'asm/v13.asm', text: '렌더러 훅과 자모 이름 입력(asar)', section: 'name-entry' },
   { name: 'lua/eventlist.lua', text: 'Mesen 2용. 이벤트 표 문제 재현', section: 'event-list' },
   {
     name: 'lua/scenario.lua',
@@ -434,6 +451,7 @@ const sectionTitles: Record<string, string> = {
   'font-ext': '4. 글자 칸을 512개 늘리기',
   'title-gfx': '5. 그림·압축',
   menus: '6. 메뉴·이름·전투',
+  'name-entry': '6. 메뉴·이름 · 자모 이름 입력',
   save: '7. 세이브·암호',
   'event-list': '8. 이벤트 표에서 못 나오던 문제',
   testing: '9. 확인 방법',
@@ -456,6 +474,7 @@ const sectionTools: Record<string, string[]> = {
   font: ['tools/font1.py', 'tools/fontext1.py', 'tools/render1.py', 'tables/'],
   'title-gfx': ['tools/title.py', 'krpatch lzss'],
   menus: ['tools/textsets.py', 'tools/statusmenu1.py', 'tools/credits1.py'],
+  'name-entry': ['tools/build-v1.3.sh', 'tools/font8.py', 'asm/v13.asm'],
   save: ['tools/pwglyph1.py', 'tools/endpw1.py', 'lua/ending.lua'],
   'event-list': ['lua/eventlist.lua'],
   testing: [
@@ -508,16 +527,17 @@ const toolsFor = (section: string) =>
 <NoteRelated patch={patch} id="making-about" />
 <p>
   한글패치는 일본판 롬의 바이트 일부를 바꾼 것입니다. 이 노트는 그 바뀐 곳을 롬 주소와 실제 바이트로 하나씩 따라갑니다.
-  돌격편 한글패치는 세 번에 걸쳐 쌓였고, 빌드도 이 순서대로 일본판에 v1.0 IPS를 먼저 적용한 다음 v1.1·v1.2의 도구를
-  차례로 돌립니다.
+  돌격편 한글패치는 네 번에 걸쳐 쌓였고, 빌드도 이 순서대로 일본판에 v1.0 IPS를 먼저 적용한 다음 v1.1·v1.2의 도구와
+  v1.3의 어셈블리를 차례로 돌립니다.
 </p>
-<Figure caption="일본판 위에 쌓인 세 버전. 아래가 먼저입니다." max={600}>
-  <svg viewBox="0 0 360 268" role="img" aria-labelledby="tg-ver-t tg-ver-d">
+<Figure caption="일본판 위에 쌓인 네 버전. 아래가 먼저입니다." max={600}>
+  <svg viewBox="0 0 360 332" role="img" aria-labelledby="tg-ver-t tg-ver-d">
     <title id="tg-ver-t">돌격편 한글패치 버전</title>
     <desc id="tg-ver-d">
-      맨 아래 일본판 롬 위에 2012년 v1.0, 2026년 10월 18일 v1.1, 10월 24일 v1.2가 차례로 쌓인다. v1.0은 폰트 칸에 한글을
-      그리고 번역했고, v1.1은 대사 4,483줄과 새 글자 213자, 타이틀과 메뉴, 이벤트 표를 고쳤고, v1.2는 암호 글자 다섯
-      자와 엔딩 고정 암호, 메뉴 표시를 고쳤다.
+      맨 아래 일본판 롬 위에 2012년 v1.0, 2026년 10월 18일 v1.1, 10월 24일 v1.2, 10월 25일 v1.3이 차례로 쌓인다. v1.0은
+      폰트 칸에 한글을 그리고 번역했고, v1.1은 대사 4,483줄과 새 글자 213자, 타이틀과 메뉴, 이벤트 표를 고쳤고, v1.2는
+      암호 글자 다섯 자와 엔딩 고정 암호, 메뉴 표시를 고쳤고, v1.3은 이름 입력을 자모 조합식으로 바꾸고 롬을 4MB로 늘려
+      이름 글자 11,172자를 넣었다.
     </desc>
     {[...versions].reverse().map((v, i) => (
       <>
@@ -539,9 +559,9 @@ const toolsFor = (section: string) =>
   </svg>
 </Figure>
 <p>
-  각 버전이 화면에서 무엇을 바꿨는지는 패치 페이지의 <a href={release('1.2')}>v1.2</a>·<a href={release('1.1')}>v1.1</a>{' '}
-  패치 노트에 비교 화면으로 있습니다. 이 노트는 그 밑의 롬 이야기입니다. 처음 읽는다면 아래 장을 먼저 보면 따라가기
-  쉽습니다.
+  각 버전이 화면에서 무엇을 바꿨는지는 패치 페이지의 <a href={release('1.3')}>v1.3</a>·<a href={release('1.2')}>v1.2</a>
+  ·<a href={release('1.1')}>v1.1</a> 패치 노트에 비교 화면으로 있습니다. 이 노트는 그 밑의 롬 이야기입니다. 처음
+  읽는다면 아래 장을 먼저 보면 따라가기 쉽습니다.
 </p>
 <ul class="notes">
   {readFirst.map(r => (
@@ -563,7 +583,8 @@ const toolsFor = (section: string) =>
 <p>
   돌격편 롬은 2MB이고, 32KB짜리 뱅크 64개($80–$BF)로 나뉩니다. 아래는 v1.0 롬과 v1.1 롬을 바이트 단위로 비교해 바뀐
   뱅크를 칠한 지도입니다. 대사와 텍스트는 원래 있던 뱅크 안에서 다시 채웠고, 롬의 빈 곳에 새로 쓴 것은 글자 블록 3곳과{' '}
-  <code>$B7:FA00</code>의 새 코드뿐입니다. 롬 크기는 늘리지 않았습니다.
+  <code>$B7:FA00</code>의 새 코드뿐입니다. v1.2까지는 롬 크기를 늘리지 않았고, v1.3은 이름 글자를 넣느라 4MB로
+  늘렸습니다(<a href="#making-name-entry">6절</a>).
 </p>
 <figure class="paper">
   <ZoomImage
@@ -714,7 +735,7 @@ $A8:800C → 0x28 × 0x8000 + 0x000C = 0x14000C</code></pre>
   </table>
 </div>
 <p>
-  롬을 늘리지 않고 이렇게 빈 곳을 찾아 쓰는 방법은{' '}
+  v1.3의 새 글자와 코드는 늘린 뒤쪽 2MB(<code>$C0</code>–)에 있습니다. 롬을 늘리지 않고 빈 곳을 찾아 쓰는 방법은{' '}
   <a href={guide('sfc', 'expansion', 'instead')}>11장 늘리지 않고 자리를 만드는 법</a>에서, 반대로 1MB 롬을 2MB로 늘린
   사례는 <a href={notePath(OTOGIRISOU_PATCH)}>제절초 노트</a>에서 볼 수 있습니다.
 </p>
@@ -1478,11 +1499,77 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
   </li>
   <li>
     이름 입력 글자판(파일 <code>0x7005</code>, 160칸)은 v1.0이 쓴 16비트 문자열입니다. 엔딩 암호와 같은 8px 글자를
-    쓰므로, <a href="#making-save">7절</a>에서 다시 그린 다섯 칸이 함께 바뀝니다.
+    쓰므로, <a href="#making-save">7절</a>에서 다시 그린 다섯 칸이 함께 바뀝니다. v1.3은 이 글자판을 자모 두 줄로
+    바꿨습니다(<a href="#making-name-entry">아래</a>).
   </li>
 </ul>
 
 <ToolFiles patch={patch} items={toolsFor('menus')} />
+
+<h3 id="making-name-entry">자모로 조합하는 이름 입력 (v1.3)</h3>
+<NoteRelated patch={patch} id="making-name-entry" />
+<p>
+  v1.2까지 이름은 글자판에 늘어선 음절을 골라 지었습니다. 글자판에 없는 음절은 쓸 수 없었고, 이름에 쓰는 8px 한글은
+  작아서 알아보기 어려웠습니다. v1.3은 글자판을 자음 한 줄과 모음 한 줄로 바꿔 고른 자모를 조합하게 하고, 이름에 쓰는
+  글자를 모두 다시 그렸습니다. 빌드는 v1.2 롬 위에서 <code>tools/font8.py</code>로 글자를 그리고{' '}
+  <code>asm/v13.asm</code>을 asar로 어셈블합니다.
+</p>
+<ul class="notes">
+  <li>
+    <strong>이름이 나오는 곳</strong>: 이름 기록 <code>$0B00</code>–<code>$0B45</code>를 읽는 명령을 정적으로 찾은 뒤
+    실행해서 확인했습니다. 이름 입력 화면의 이름 목록(<code>$80:9529</code>), 인트로와 엔딩의 나쁜놈·라이벌·부하·조언자
+    이름표(<code>$80:A547</code>·<code>A5F0</code>·<code>A69D</code>·<code>A74A</code>), 「달성치」 화면(
+    <code>$80:B751</code>·<code>B78D</code>·<code>B7C9</code>)입니다. 모두 8px 작은 글자로 찍습니다. 데이터 암호(
+    <code>$81:D104</code>, <code>$81:D37F</code>)도 이름을 읽지만, v1.2부터 고정 암호를 보여 주므로 화면에 나오지
+    않습니다.
+  </li>
+  <li>
+    <strong>글자</strong>: 가나 자리(시트 <code>$83:DE00</code>)의 한글 160자는 코드를 그대로 두고 Galmuri11 Condensed로
+    다시 그렸습니다. 나머지 11,012음절과 호환 자모 51자는 새 코드 <code>0x1000</code>–<code>0x6666</code>입니다. 코드는{' '}
+    <code>0x1000 + (i / 16) × 32 + i % 16</code>이라 가나 시트처럼 짝수 줄에서 시작하고 아래 반쪽이 <code>+0x100</code>
+    입니다. 글자 데이터는 뱅크 <code>$C0 + (코드 − 0x1000) / 0x800</code>에 있어, 롬을 4MB로 늘리고 헤더의 크기 바이트(
+    <code>0x7FD7</code>)를 <code>0x0B</code>에서 <code>0x0C</code>로 바꿨습니다.
+  </li>
+  <li>
+    <strong>11,172자를 다 넣은 이유</strong>: 처음에는 완성형 2,350자만 넣었습니다. 그런데 자모를 하나씩 조합하므로
+    「뷁」은 「뷀」을 거쳐 만들어지고, 뷁·뷀·똠·얅은 2,350자에 없습니다. 중간 음절이 표에 없으면 받침이 다음 칸으로
+    떨어져 「뷁얅닭」이 「뷁ㄹ얄ㄱ닭」이 됐습니다. 그래서 가–힣을 모두 넣고, 음절 번호{' '}
+    <code>(초성 × 21 + 중성) × 28 + 종성</code>으로 코드 표(<code>$E1:8000</code>)를 바로 찾습니다. Python의 euc-kr
+    코덱은 2,350자에 없는 음절을 8바이트 자모 열로 인코딩하므로, <code>encode()</code>가 된다고 완성형에 있는 글자는
+    아닙니다.
+  </li>
+  <li>
+    <strong>그리기</strong>: 렌더러(<code>$B7:9763</code>)는 <code>$07F0</code> 이상 코드를 v1.1이 만든{' '}
+    <code>$B7:FA00</code>으로 보냅니다(<a href="#making-font-ext">4절</a>). v1.3은 이 자리에서 <code>0x1000</code> 이상
+    코드의 타일 두 개를 WRAM <code>$7E:4000</code>–<code>$410F</code>로 복사하고 DB를 <code>$7E</code>로 둔 채 그리게
+    했습니다. 렌더러는 <code>$0200</code>대 변수를 DB 기준으로 읽는데, 뱅크 <code>$C0</code> 이상에는 저RAM 미러가 없기
+    때문입니다. 글자 폭과 타일 수를 정하는 <code>$B7:97F0</code>·<code>98DA</code>·<code>9977</code>은 새 코드를 가나
+    자리 코드처럼 다룹니다.
+  </li>
+  <li>
+    <strong>입력</strong>: A(<code>$80:9739</code>)는 조합, B(<code>$80:9789</code>)는 자모 하나 되돌리기, Start(
+    <code>$80:95A7</code>)는 이름을 끝내고 남은 칸을 빈칸으로 채웁니다. 조합 상태는 부팅부터 9,000프레임 동안 아무도
+    쓰지 않은 WRAM <code>$7F:FF00</code>–<code>$7F:FF33</code>에 둡니다. 커서는 상하좌우 이동 네 곳(
+    <code>$80:9624</code>·<code>967C</code>·<code>96A7</code>·<code>96EE</code>)을 후킹해 빈칸을 건너뜁니다. 4바이트{' '}
+    <code>JML</code>이 바로 뒤 <code>JSR $A3A7</code>의 첫 바이트까지 덮으므로, 커서를 다시 그리고 원래 단계로 돌아가는
+    일은 뱅크 <code>$80</code>의 작은 스텁(<code>$80:F590</code>–)이 맡습니다. 글자판이 두 줄이 되어 스크롤 표시였던
+    아래 화살표는 <code>$80:9941</code>에서 숨겼습니다.
+  </li>
+  <li>
+    <strong>확인</strong>: MesenCE에서 이름 다섯 개(뷁얅닭, 똠방, 쌤힣, 읊잖, 손오공)를 넣고, WRAM에 입력한 그대로
+    들어가는 것과 위의 이름이 나오는 곳에서 모두 바르게 찍히는 것을 봤습니다. 달성치 화면은 이벤트 명령(
+    <code>$80:C7CA</code>)으로만 열려서 Lua 스크립트로 PC를 옮겨 열었습니다. libretro 코어 다섯 개(bsnes, bsnes-hd beta,
+    snes9x, snes9x2010, Beetle Supafaust)에서 새 게임과 이전 세이브 이어하기도 정상이었습니다.
+  </li>
+  <li>
+    <strong>asar에서 걸린 것</strong>: <code>.smc</code> 파일은 헤더 있는 롬으로 보므로 <code>.sfc</code> 사본에
+    어셈블합니다. <code>#51</code> 같은 10진 즉시값은 16비트 모드에서도 8비트로 어셈블돼서 <code>CMP.w #51</code>로
+    씁니다. 65816에는 <code>STA long,Y</code>가 없어, DB를 글자 뱅크로 두고 <code>LDA abs,Y</code> /{' '}
+    <code>STA long,X</code>로 복사합니다.
+  </li>
+</ul>
+
+<ToolFiles patch={patch} items={toolsFor('name-entry')} />
 
 <h2 id="making-save">
   7. 세이브·암호 <span class="layer-badge layer-patch">실제 패치에서</span>
@@ -1891,6 +1978,11 @@ python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</
     새 게임 첫 대사 자리가 $5D5의 글자 코드를 가리키게 해서 찍었습니다.
   </li>
   <li>원래 암호를 만드는 루틴의 주소는 찾지 않았습니다.</li>
+  <li>
+    「달성치」 화면을 플레이 중에 여는 이벤트는 찾지 않았습니다. v1.3 이름이 이 화면에 찍히는 것은 PC를 옮겨 열어서만
+    확인했습니다.
+  </li>
+  <li>v1.3에서 새로 쓸 수 있게 된 글자를 넣은 이름을 v1.2 이하 패치에서 불러온 화면은 보지 않았습니다.</li>
 </ul>
 <h3>알려진 한계</h3>
 <ul class="notes">
@@ -1908,13 +2000,18 @@ python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</
     순간을 감시하세요.
   </li>
   <li>새 글자 블록 3–7의 5곳(320자)이 통째로 비어 있습니다. 글자를 더 넣을 때 주소 표를 고치지 않고 쓸 수 있습니다.</li>
+  <li>
+    Galmuri11 Condensed가 같은 그림으로 그리는 음절 145쌍(쌔/썌, 째/쨰, 쎈/쏀 등)은 이름에서도 똑같이 보입니다. 저장되는
+    코드는 다릅니다.
+  </li>
 </ul>
 <h3>쓴 도구</h3>
 <ul class="notes">
   <li>Python 3.9.6(Pillow 11.3.0, numpy 2.0.2), macOS</li>
-  <li>Mesen 2.1.1(Lua 스크립트, --testrunner)</li>
+  <li>Mesen 2.1.1(Lua 스크립트, --testrunner), v1.3은 MesenCE 2.2.1</li>
+  <li>asar 1.91(v1.3 어셈블리)</li>
   <li>libretro 코어: bsnes, bsnes-hd beta, snes9x, snes9x2010, Beetle Supafaust, Mesen-S</li>
-  <li>새 글자: Galmuri11 2.404, 타이틀 글꼴: BM영성체</li>
+  <li>새 글자: Galmuri11 2.404, 이름 글자(v1.3): Galmuri11 Condensed, 타이틀 글꼴: BM영성체</li>
   <li>
     <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>의 IPS·체크섬·LZSS·역어셈블러·libretro 실행 명령
   </li>
