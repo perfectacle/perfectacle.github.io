@@ -173,7 +173,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(OTOGIRISOU_PATCH, 'making-unique', '후킹 지점의 원래 바이트와 바꾼 바이트'),
       note(OTOGIRISOU_PATCH, 'making-select', 'Select를 보게 바꾼 5바이트'),
     ],
-    gaps: [gap(GHOST_TRICK_PATCH, '코드를 고치지 않았습니다. 바뀐 것은 대사·폰트·그림 데이터뿐입니다.')],
+    gaps: [gap(GHOST_TRICK_PATCH, '코드를 고치지 않았습니다. 고스트 트릭의 ARM 코드를 읽는 법은 21장에서 다룹니다.')],
     tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
@@ -528,6 +528,23 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       gap(SMRPG_PATCH, '슈퍼 패미콤의 CPU는 3장에서 다룹니다.'),
     ],
     tools: [{ command: 'krpatch nds info', anchor: 'nds-info-nds-ls-헤더와-파일' }],
+  },
+  {
+    order: 21,
+    slug: 'assembly',
+    platform: 'nds',
+    title: 'ARM 어셈블리 기초',
+    summary:
+      'ARM 명령 4바이트를 읽고, 조건 실행·리터럴 풀·시프트 붙은 주소·BL과 LR을 살펴보고, 고스트 트릭의 글꼴 고르기 함수를 한 줄씩 실행해 봅니다. 문자열에서 거슬러 올라가 함수를 찾는 법도 다룹니다.',
+    ready: true,
+    notes: [note(GHOST_TRICK_PATCH, 'making-rom', '파일 이름으로 찾으니 번호가 바뀌어도 괜찮은 이유')],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '슈퍼 패미콤의 65c816 어셈블리는 5장에서 다룹니다.'),
+      gap(KAKUSEI_PATCH, '슈퍼 패미콤의 65c816 어셈블리는 5장에서 다룹니다.'),
+      gap(OTOGIRISOU_PATCH, '슈퍼 패미콤의 65c816 어셈블리는 5장에서 다룹니다.'),
+      gap(SMRPG_PATCH, '슈퍼 패미콤의 65c816 어셈블리는 5장에서 다룹니다.'),
+    ],
+    tools: [{ command: 'krpatch nds unpack', anchor: 'nds-unpack-nds-pack-파일시스템을-폴더로-다시-롬으로' }],
   },
 ];
 

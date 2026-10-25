@@ -1,0 +1,242 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import ArmStep from '../../../../components/romhacking/ArmStep.astro';
+import { GHOST_TRICK_PATCH } from '../../../../lib/kr-patches.ts';
+import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+
+const references = [
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#armcpuoverview',
+    label: 'GBATEK, ARM CPU Overview',
+    note: '레지스터, CPSR의 N·Z·C·V 플래그, 조건 코드 표',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#armopcodesdataprocessingalu',
+    label: 'GBATEK, ARM Opcodes: Data Processing (ALU)',
+    note: 'MOV·CMP의 바이트 형식, 8비트 값을 짝수만큼 돌려 만드는 즉시값',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#armopcodesmemorysingledatatransferldrstrpld',
+    label: 'GBATEK, ARM Opcodes: Memory: Single Data Transfer',
+    note: 'LDR·STR의 즉시값·시프트 레지스터 오프셋 형식, PC를 읽으면 명령 주소 + 8',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#armopcodesbranchandbranchwithlinkbblbxblxswibkpt',
+    label: 'GBATEK, ARM Opcodes: Branch',
+    note: 'B·BL·BX의 형식과 BL이 LR에 돌아올 주소를 넣는 것',
+  },
+  {
+    href: 'https://github.com/capstone-engine/capstone',
+    label: 'Capstone',
+    note: '이 장의 역어셈블 결과를 확인한 역어셈블러',
+  },
+  {
+    href: 'https://ndspy.readthedocs.io/en/latest/api/codeCompression.html',
+    label: 'ndspy, codeCompression',
+    note: 'ARM9 프로그램의 BLZ 압축 풀기',
+  },
+];
+const note = notePath(GHOST_TRICK_PATCH);
+const table = [
+  { at: '0x020A6EB0', name: '0x020A6E9C', text: 'fonts2bpp_new.imb', id: '0' },
+  { at: '0x020A6EB8', name: '0x020A6E88', text: 'balloon_font.imb', id: '1' },
+  { at: '0x020A6EC0', name: '0x020A6E7C', text: 'font_db.imb', id: '2' },
+  { at: '0x020A6EC8', name: '0x020A6E78', text: '(빈 문자열)', id: '4' },
+];
+---
+
+<GuideChapter platform="nds" slug="assembly" references={references}>
+  <h2 id="read">
+    ARM 명령 읽는 법 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    ARM 명령은 4바이트이고, 작은 자리 바이트부터 적혀 있습니다(<a href={chapterHref(20)}>20장</a>). 4바이트를 하나의
+    32비트 값으로 읽으면 맨 위 4비트가 <strong>조건</strong>이고, 나머지에 무엇을 할지와 어느 레지스터·값을 쓸지가 적혀
+    있습니다. 이 장에서 읽을 명령은 몇 가지뿐입니다.
+  </p>
+  <ul>
+    <li>
+      <code>mov r2, #4</code>: r2에 4를 넣습니다.
+    </li>
+    <li>
+      <code>cmp r1, #3</code>: r1 − 3을 계산하되 결과는 버리고, 결과가 0인지·음수인지 같은 플래그만 남깁니다.
+    </li>
+    <li>
+      <code>ldr r0, [r0, #4]</code>: r0 + 4 번지에서 4바이트를 읽어 r0에 넣습니다. <code>str</code>은 반대로 레지스터를
+      그 번지에 씁니다.
+    </li>
+    <li>
+      <code>bl 주소</code>: 다음 명령의 주소를 lr에 남기고 적힌 주소로 건너뜁니다. <code>bx lr</code>는 lr로 돌아갑니다.
+    </li>
+  </ul>
+  <p>
+    이 장의 예는 고스트 트릭 ARM9 프로그램의 실제 함수입니다. ARM9 프로그램은 롬 안에서 대부분 압축되어 있어서(
+    <a href={`${chapterHref(20)}#ghost-trick`}>20장</a>), 압축을 푼 뒤에 읽었습니다.
+  </p>
+
+  <h2 id="cond">
+    조건 실행: 건너뛰지 않고 고르기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    65c816에서는 「조건이 맞으면 저쪽으로 건너뛰라」는 분기 명령으로 갈래를 나눴습니다(
+    <a href={`${chapterHref(5)}#branch`}>5장</a>). ARM은 거의 모든 명령에 조건을 붙일 수 있습니다. <code>strlt</code>는
+    「앞의 비교에서 작았으면 쓴다」, <code>moveq</code>는 「같았으면 넣는다」입니다. 조건이 맞지 않으면 그 명령은 아무
+    일도 하지 않고 다음 명령으로 넘어갑니다. 그래서 짧은 갈래는 분기 없이 명령 몇 개에 조건만 붙여 씁니다.
+  </p>
+  <p>
+    조건은 상태 레지스터의 플래그 넷으로 판단합니다. N(결과가 음수), Z(결과가 0), C(자리올림), V(부호 있는 넘침)입니다.{' '}
+    <code>cmp r1, #3</code>에서 r1이 1이면 1 − 3 = −2라 N = 1, V = 0이고, <code>lt</code>(작으면)는 N ≠ V일 때 맞습니다.
+  </p>
+
+  <h2 id="function">
+    고스트 트릭 글꼴 고르기 함수 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    0x02012BA0의 함수는 글꼴 번호를 받아 그 글꼴의 파일 이름을 고릅니다. r0에는 호출한 쪽 구조체의 주소, r1에는 글꼴
+    번호가 들어옵니다. 함수가 하는 일을 말로 하면 이렇습니다.
+  </p>
+  <ol>
+    <li>구조체 +4 칸에 일단 4(고른 글꼴 없음)를 씁니다.</li>
+    <li>번호가 3보다 작으면 +4 칸에 번호를 쓰고, 글꼴 표에서 그 번호의 파일 이름 주소를 꺼내 +0x14 칸에 씁니다.</li>
+    <li>+4 칸이 4가 아니면 1, 4면 0을 돌려줍니다.</li>
+  </ol>
+  <ArmStep />
+  <p>
+    3번 줄 <code>cmp r1, #0x3</code>이 플래그를 정하고, 그 뒤 <code>lt</code>가 붙은 네 명령이 함께 실행되거나 함께
+    건너뜁니다. 글꼴 번호를 3으로 바꿔 실행하면 네 명령을 모두 건너뛰고 0을 돌려줍니다.
+  </p>
+
+  <h2 id="literal">
+    리터럴 풀: 먼 주소 불러오기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    <code>mov</code>가 바로 넣을 수 있는 값은 8비트 값을 짝수 자리만큼 돌린 것뿐이라, 0x020A6EB0 같은 임의의 32비트
+    주소는 넣지 못합니다. 그래서 컴파일러는 흔히 함수 끝 바로 뒤에 그 값을 4바이트로 적어 두고(
+    <strong>리터럴 풀</strong>), PC를 기준으로 읽어 옵니다.
+  </p>
+  <p>
+    <code>ldrlt r2, [pc, #0x1C]</code>는 0x02012BAC에 있습니다. ARM 상태에서 PC를 읽으면 지금 명령의 주소 + 8이
+    나오므로, 읽는 자리는 0x02012BAC + 8 + 0x1C = 0x02012BD0입니다. 함수의 마지막 명령 <code>bx lr</code> 바로 뒤의
+    4바이트 <code>B0 6E 0A 02</code>, 곧 0x020A6EB0입니다. 역어셈블러는 이 4바이트도 명령인 줄 알고 엉뚱한 명령으로 풀기
+    쉬워서, 함수 끝 뒤의 값은 데이터로 따로 읽어야 합니다.
+  </p>
+
+  <h2 id="table">
+    표에서 꺼내기: 시프트 붙은 주소 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    0x020A6EB0의 글꼴 표는 칸 하나가 8바이트로, 앞 4바이트가 파일 이름 문자열의 주소, 뒤 4바이트가 번호입니다. 넷째 칸은
+    빈 이름에 번호 4라, 함수가 「고른 글꼴 없음」으로 쓰는 4와 맞습니다. 함수는 칸의 뒤 4바이트를 읽지 않습니다.
+  </p>
+  <div class="table-wrap" tabindex="0">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">칸 위치</th>
+          <th scope="col">이름 주소</th>
+          <th scope="col">파일 이름</th>
+          <th scope="col">번호</th>
+        </tr>
+      </thead>
+      <tbody>
+        {table.map(t => (
+          <tr>
+            <td>
+              <code>{t.at}</code>
+            </td>
+            <td>
+              <code>{t.name}</code>
+            </td>
+            <td>
+              <code>{t.text}</code>
+            </td>
+            <td>{t.id}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    <code>ldrlt r1, [r2, r1, lsl #3]</code>은 r2(표 주소) + r1 × 8(<code>lsl #3</code>은 왼쪽으로 3비트 밀기, 곧 ×
+    8)에서 읽습니다. 번호 하나로 8바이트 칸을 바로 찾는 계산을 명령 하나로 합니다. 슈퍼 패미콤 포인터 표에서 번호 × 2를
+    하던 것(<a href={chapterHref(8)}>8장</a>)과 같은 생각입니다.
+  </p>
+
+  <h2 id="call">
+    부르고 돌아오기: BL과 LR <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>이 함수를 0x020125E8과 0x02012678 두 곳에서 부릅니다. 앞의 것은 이렇습니다.</p>
+  <pre tabindex="0"><code>020125E0  mov r0, r6          ; r0 = 구조체 주소
+020125E4  mov r1, r5          ; r1 = 글꼴 번호
+020125E8  bl  0x02012BA0      ; lr = 0x020125EC, 함수로
+020125EC  cmp r0, #0          ; 돌려받은 값이 0인지
+020125F0  beq 0x02012600      ; 0이면 건너뜀</code></pre>
+  <p>
+    <code>bl</code>은 돌아올 주소(바로 다음 명령 0x020125EC)를 lr에 넣고 건너뜁니다. 함수는 끝에서 <code>bx lr</code>로
+    돌아옵니다. 컴파일러들이 따르는 호출 규약(AAPCS)에서 넘기는 값은 r0–r3(넘치면 스택), 돌려주는 값은 r0입니다. 그래서
+    호출한 쪽은 곧바로 <code>cmp r0, #0</code>으로 결과를 봅니다. 이 함수는 다른 함수를 부르지 않아서 lr을 스택에 저장해
+    둘 필요가 없습니다. 바로 앞의 0x02012B1C 함수는 다른 함수를 부르므로{' '}
+    <code>
+      push {'{'}r4, lr{'}'}
+    </code>
+    로 시작해{' '}
+    <code>
+      pop {'{'}r4, pc{'}'}
+    </code>
+    로 돌아갑니다.
+  </p>
+  <Deeper title="이 함수를 찾은 순서">
+    <ol>
+      <li>
+        ARM9 프로그램(<code>arm9.bin</code>)의 BLZ 압축을 풉니다. 롬의 0x80628바이트가 0xD2118바이트가 됩니다.
+      </li>
+      <li>
+        푼 프로그램에서 문자열 <code>fonts2bpp_new.imb</code>를 찾으면 0x020A6E9C에 있습니다.
+      </li>
+      <li>
+        그 주소를 4바이트로 적은 <code>9C 6E 0A 02</code>를 찾으면 0x020A6EB0, 글꼴 표의 첫 칸이 나옵니다.
+      </li>
+      <li>
+        표 주소 <code>B0 6E 0A 02</code>를 다시 찾으면 0x02012BD0, 리터럴 풀이 나옵니다. 그 앞을 역어셈블하면 이
+        함수입니다.
+      </li>
+      <li>
+        함수 첫 주소 0x02012BA0으로 가는 <code>bl</code>을 찾으면 부르는 곳 두 군데가 나옵니다.
+      </li>
+    </ol>
+    <p>
+      문자열 → 그 주소를 담은 데이터 → 그 데이터를 읽는 코드 순서로 거슬러 올라가는 방법은 파일 이름, 메시지처럼 눈에
+      띄는 문자열이 있는 기능을 찾을 때 두루 씁니다.
+    </p>
+  </Deeper>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>고스트 트릭: 폰트를 이름으로 고르는 코드</h3>
+  <p>
+    이 함수가 고르는 것은 파일 번호가 아니라 이름 문자열입니다. 이름을 고르는 명령을 바꾸면 실제로 다른 폰트 파일로
+    글자가 그려지는 것을 다음 장에서 확인합니다. 한글패치 v1.1은 코드를 고치지 않고 폰트 파일 세 개를 3,203자로 키워
+    같은 이름으로 넣었습니다(<a href={`${chapterHref(17)}#in-patch`}>17장</a>). 롬을 다시 묶으며 파일 번호가 바뀌어도(
+    <a href={`${chapterHref(15)}#in-patch`}>15장</a>) 게임이 이름으로 찾으니 문제가 없었던 것과 맞습니다(
+    <a href={`${note}#making-rom`}>노트</a>).
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    ndspy와 capstone(<code>pip install ndspy capstone</code>)으로 압축을 풀고 함수를 읽습니다. 일본판 롬 기준
+    주소입니다.
+  </p>
+  <pre tabindex="0"><code>krpatch nds unpack game.nds work/
+python3 - &lt;&lt;'EOF'
+import capstone, ndspy.codeCompression
+code = ndspy.codeCompression.decompress(open('work/arm9.bin', 'rb').read())
+print(hex(0x02000000 + code.find(b'fonts2bpp_new.imb')))
+md = capstone.Cs(capstone.CS_ARCH_ARM, capstone.CS_MODE_ARM)
+for i in md.disasm(code[0x12BA0:0x12BD0], 0x02012BA0):
+    print(hex(i.address), i.mnemonic, i.op_str)
+EOF</code></pre>
+</GuideChapter>

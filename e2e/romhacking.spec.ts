@@ -43,6 +43,7 @@ const NDS_GFX = '/games/romhacking/nds/graphics/';
 const NDS_SOUND = '/games/romhacking/nds/sound/';
 const NDS_EMU = '/games/romhacking/nds/emulator/';
 const NDS_CPU = '/games/romhacking/nds/cpu/';
+const NDS_ASM = '/games/romhacking/nds/assembly/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -321,6 +322,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
     NDS_SOUND,
     NDS_EMU,
     NDS_CPU,
+    NDS_ASM,
   ]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
@@ -395,6 +397,11 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(dm.locator('[data-region]')).toContainText('메인 RAM');
   await expect(dm.locator('[data-rom]')).toContainText('0x00004800');
   await expect(dm.locator('[data-addr]')).toBeHidden();
+  await page.goto(NDS_ASM);
+  const as = page.locator('[data-arm-step]');
+  await expect(as.locator('[data-now]')).toContainText('r0 = 1');
+  await expect(as.locator('[data-list] li')).toHaveCount(13);
+  await expect(as.getByRole('button', { name: '다음 명령' })).toBeHidden();
   await page.goto(MUSIC);
   const seam = page.locator('[data-seam-lab]');
   await expect(seam.locator('[data-out="score"]')).toHaveText('0.887');
@@ -724,6 +731,24 @@ test('memory map widget names the region for each CPU and leads code back to the
   await input.fill('nope');
   await expect(input).toHaveAttribute('aria-invalid', 'true');
   await expect(widget.locator('[data-error]')).toBeVisible();
+  await noHorizontalOverflow(page);
+});
+
+test('ARM stepper runs the font function and skips the lt lines for a missing font', async ({ page }) => {
+  await page.goto(NDS_ASM);
+  const widget = page.locator('[data-arm-step]');
+  await expect(widget).toHaveClass(/is-live/);
+  const next = widget.getByRole('button', { name: '다음 명령' });
+  for (let i = 0; i < 4; i++) await next.click();
+  await expect(widget.locator('li.is-current')).toContainText('0x020A6EB0');
+  await expect(widget.locator('[data-r="2"]')).toHaveText('0x020A6EB0');
+  for (let i = 0; i < 8; i++) await next.click();
+  await expect(widget.locator('[data-r="0"]')).toHaveText('0x00000001');
+  await expect(widget.locator('[data-now]')).toContainText('함수가 끝났습니다');
+  await widget.getByRole('combobox', { name: /글꼴 번호/ }).selectOption('3');
+  for (let i = 0; i < 12; i++) await next.click();
+  await expect(widget.locator('li.is-skip')).toHaveCount(5);
+  await expect(widget.locator('[data-r="0"]')).toHaveText('0x00000000');
   await noHorizontalOverflow(page);
 });
 
