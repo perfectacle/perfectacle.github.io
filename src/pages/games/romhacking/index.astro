@@ -64,7 +64,7 @@ const chapterRun = (chapters: GuideChapter[]) =>
           <li>직접 번역 패치를 만들어 보고 싶은 사람</li>
         </ul>
         <p>
-          컴퓨터 구조를 미리 알 필요는 없습니다. 장마다 앞 장에서 배운 것만 씁니다. 처음이라면{' '}
+          컴퓨터 구조를 미리 알 필요는 없습니다. 장마다 앞 장의 내용을 바탕으로 씁니다. 처음이라면{' '}
           <ChapterLink to="common/rom-patch" title />
           부터 차례로 읽어 주세요.
         </p>
@@ -131,6 +131,7 @@ const chapterRun = (chapters: GuideChapter[]) =>
           </li>
         </ul>
 
+        <span id="chapters"></span>
         <h2 id="tracks">세 갈래</h2>
         <p>
           가이드는 세 갈래로 나뉘고, 갈래마다 1장부터 셉니다. 처음이라면{' '}
@@ -152,6 +153,7 @@ const chapterRun = (chapters: GuideChapter[]) =>
           ))}
         </ul>
 
+        <span id="note-grid"></span>
         <h2 id="notes">롬 분석 노트</h2>
         <p>
           한글패치 {NOTE_PATCHES.length}개를 만들며 롬에서 확인한 주소와 형식, 고친 코드, 확인 방법을 게임마다 적은
@@ -195,7 +197,7 @@ const chapterRun = (chapters: GuideChapter[]) =>
             설치합니다.
           </li>
           <li>
-            <strong>에뮬레이터</strong>: 디버거가 있는 Mesen 2를 썼습니다. <ChapterLink to="sfc/emulator" />
+            <strong>에뮬레이터</strong>: 디버거가 있는 MesenCE를 썼습니다. <ChapterLink to="sfc/emulator" />
             에서 자세히 다룹니다.
           </li>
           <li>
