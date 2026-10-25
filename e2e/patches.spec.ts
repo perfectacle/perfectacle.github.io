@@ -826,7 +826,7 @@ const gameRom = (spec: RomSpec) => {
 
 for (const [spec, path] of [
   [SMRPG, `${GAME}downloads/Super_Mario_RPG_K_v1_2.ips`],
-  [GOKUDEN_TOTSUGEKI, `${GOKUDEN}downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_2.ips`],
+  [GOKUDEN_TOTSUGEKI, `${GOKUDEN}downloads/Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K_v1_3.ips`],
   [GOKUDEN_KAKUSEI, `${KAKUSEI}downloads/Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K_v1_3.ips`],
   [OTOGIRISOU, `${OTOGIRI}downloads/Otogirisou_K_v1_2.ips`],
 ] as const) {
