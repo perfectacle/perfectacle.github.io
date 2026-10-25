@@ -107,7 +107,7 @@ const headings = body.headings.map(h => ({ ...h, text: h.text.replace(/^\d+\.\s*
                 {related.map(c => (
                   <li>
                     <a href={chapterPath(c)}>
-                      {chapterLabel(c)} {c.title}
+                      {chapterLabel(c, patch.platform)} {c.title}
                     </a>
                   </li>
                 ))}

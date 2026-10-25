@@ -19,7 +19,7 @@ const chapters = chaptersForNote(patch, id);
       <>
         {i > 0 && <span aria-hidden="true"> · </span>}
         <a href={chapterPath(c)}>
-          {chapterLabel(c)} {c.title}
+          {chapterLabel(c, patch.platform)} {c.title}
         </a>
       </>
     ))}

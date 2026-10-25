@@ -1,10 +1,11 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import LmgLine from '../../../../components/romhacking/LmgLine.astro';
 import { GHOST_TRICK_PATCH, analysisUrl, sourceFileUrl, toolkitFileUrl } from '../../../../lib/kr-patches.ts';
-import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -61,10 +62,13 @@ const codes = [
     대사는 장면마다 파일 하나 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    슈퍼 패미콤 게임은 대사를 롬 한쪽에 모아 두고 포인터 표로 찾는 경우가 많습니다(<a href={chapterHref(8)}>8장</a>).
-    고스트 트릭은 대사를 장면마다 파일 하나에 나눠 둡니다. 제1장의 컷신 하나는{' '}
+    슈퍼 패미콤 게임은 대사를 롬 한쪽에 모아 두고 포인터 표로 찾는 경우가 많습니다(
+    <ChapterLink to="sfc/text" />
+    ). 고스트 트릭은 대사를 장면마다 파일 하나에 나눠 둡니다. 제1장의 컷신 하나는{' '}
     <code>st01/st01_demo101_Expand.xml.lz</code>, 스테이지 폴더(<code>st01</code>) 안에 장면 이름(<code>demo101</code>
-    )을 단 파일입니다. 파일은 롬의 파일 시스템에서 이름으로 찾습니다(<a href={chapterHref(15)}>15장</a>).
+    )을 단 파일입니다. 파일은 롬의 파일 시스템에서 이름으로 찾습니다(
+    <ChapterLink to="nds/filesystem" />
+    ).
   </p>
   <p>
     일본판 롬에는 이런 스크립트 파일이 193개 있습니다. 이름은 <code>.xml</code>로 끝나지만 안은 XML 글이 아닙니다.
@@ -77,7 +81,10 @@ const codes = [
     <li>롬에서 파일을 꺼내 압축을 풉니다.</li>
     <li>코드 구역에서 대사 블록을 찾아 2바이트 값을 글자로 읽습니다.</li>
     <li>번역을 다시 2바이트 값으로 바꿔 넣고, 대사가 옮겨 간 만큼 포인터를 고칩니다.</li>
-    <li>다시 압축해 롬에 넣습니다. 다시 압축한 파일이 원래보다 커지면 15장의 규칙대로 자리를 옮깁니다.</li>
+    <li>
+      다시 압축해 롬에 넣습니다. 다시 압축한 파일이 원래보다 커지면 <ChapterLink to="nds/filesystem" hash="rebuild" />의
+      규칙대로 자리를 옮깁니다.
+    </li>
   </ol>
 
   <h2 id="lz11">
@@ -90,7 +97,7 @@ const codes = [
   </p>
   <p>
     이 파일은 <code>11 94 05 00</code>으로 시작합니다. 푼 크기는 리틀 엔디안으로 0x000594, 곧 1,428바이트이고 롬에서는
-    936바이트입니다. 그 뒤는 <a href={`${chapterHref(9)}#lzss`}>9장</a>의 LZSS처럼 플래그 바이트 하나가 뒤따르는 여덟
+    936바이트입니다. 그 뒤는 <ChapterLink to="common/lzss" hash="lzss" />의 LZSS처럼 플래그 바이트 하나가 뒤따르는 여덟
     항목이 「그대로 쓰는 바이트」인지 「몇 칸 앞에서 몇 바이트 복사」인지 알려 줍니다.
   </p>
   <Deeper title="LZ11의 복사 지시 세 가지">
@@ -106,7 +113,8 @@ const codes = [
     <p>
       BIOS가 푸는 LZ10(형식 바이트 <code>10</code>)은 늘 2바이트 복사(길이 3–18)만 씁니다. LZ11은 BIOS에 푸는 함수가
       없어서 게임이 자기 코드로 풉니다. 다시 압축한 바이트는 원본과 달라도 됩니다. 게임은 푼 결과만 보기 때문입니다(
-      <a href={`${chapterHref(9)}#variants`}>9장 「게임마다 다른 LZSS」</a>).
+      <ChapterLink to="common/lzss" hash="variants" text="「게임마다 다른 LZSS」" />
+      ).
     </p>
   </Deeper>
 
@@ -150,7 +158,8 @@ const codes = [
   </h2>
   <p>
     대사 블록 안의 값은 0xFF00보다 작으면 글자표 번호, <code>FFxx</code>면 제어 코드입니다. 파일에는 작은 자리 바이트가
-    먼저 적혀서(<a href={chapterHref(2)}>2장 엔디안</a>) <code>FF2D</code>는 <code>2D FF</code>로 보입니다.
+    먼저 적혀서(
+    <ChapterLink to="common/endian" title />) <code>FF2D</code>는 <code>2D FF</code>로 보입니다.
   </p>
   <p>
     글자표 0x000–0x12B는 일본판과 한글패치가 같습니다. 숫자, 영문, 가나, 기호입니다. 일본판은 그 뒤에 한자를 두고,
@@ -198,8 +207,9 @@ const codes = [
     포인터는 장면 명령 안에 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    슈퍼 패미콤 게임의 포인터 표는 대사 번호마다 주소를 적은 표입니다(<a href={`${chapterHref(8)}#pointers`}>8장</a>).
-    고스트 트릭에는 따로 떨어진 표가 없습니다. 장면 진행 명령 안에 대사의 파일 위치가 4바이트로 들어 있고, 그 바로
+    슈퍼 패미콤 게임의 포인터 표는 대사 번호마다 주소를 적은 표입니다(
+    <ChapterLink to="sfc/text" hash="pointers" />
+    ). 고스트 트릭에는 따로 떨어진 표가 없습니다. 장면 진행 명령 안에 대사의 파일 위치가 4바이트로 들어 있고, 그 바로
     앞에는 정해진 2바이트 값(태그)이 옵니다.
   </p>
   <p>
@@ -270,8 +280,10 @@ const codes = [
   </p>
   <p>
     번역이 묶음보다 길면 넣을 수 없습니다. 이때는 문장을 줄이는 수밖에 없습니다. 슈퍼 패미콤에서 뱅크 밖으로 대사를 옮길
-    수 없던 것(<a href={`${chapterHref(8)}#grow`}>8장</a>)과 비슷한 제약이지만, 묶음 단위라 더 좁습니다. 고스트 트릭
-    v1.2는 146개 묶음 모두 이 안에 들어갔습니다. 도구는 묶음을 넘으면 빌드를 멈춥니다.
+    수 없던 것(
+    <ChapterLink to="sfc/text" hash="grow" />
+    )과 비슷한 제약이지만, 묶음 단위라 더 좁습니다. 고스트 트릭 v1.2는 146개 묶음 모두 이 안에 들어갔습니다. 도구는
+    묶음을 넘으면 빌드를 멈춥니다.
   </p>
   <Deeper title="창 폭: 13자와 16자">
     <p>

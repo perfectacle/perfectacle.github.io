@@ -1,8 +1,9 @@
 // Integrity of the built site: every internal link and asset resolves, every `#anchor` exists on its page,
-// and the feed and sitemap are well-formed and point at real pages.
+// the feed and sitemap are well-formed and point at real pages, and every 「N장」 link names the chapter it opens.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, posix } from 'node:path';
 import { SyntaxValidator } from 'fast-xml-validator';
+import { GUIDE_CHAPTERS, chapterLabel, chapterPath, trackOfPath } from '../src/components/romhacking/chapters.ts';
 
 const DIST = 'dist';
 const SITE = 'https://perfectacle.github.io';
@@ -47,6 +48,8 @@ const decodeEntities = (s: string) =>
     .replace(/&gt;/g, '>');
 
 const problems: string[] = [];
+const chapterAt = new Map(GUIDE_CHAPTERS.map(c => [chapterPath(c), c]));
+const CHAPTER_TEXT = /^(?:(?:공통|슈퍼 패미콤|DS) )?\d+장/;
 const pages = readdirSync(DIST, { recursive: true, encoding: 'utf8' })
   .filter(f => f.endsWith('.html'))
   .filter(f => !STANDALONE.has(f));
@@ -65,6 +68,16 @@ for (const page of pages) {
     // A link written inside another link comes out as an empty one, which screen readers announce without a name.
     for (const [empty] of html.matchAll(/<a\s[^>]*><\/a>/g))
       problems.push(`${pageUrl}: empty link ${empty.slice(0, 120)}`);
+    // Chapters are numbered within their track, so a link's 「N장」 must match where it goes, as seen from this page.
+    for (const [, href = '', inner = ''] of html.matchAll(/<a\s[^>]*?href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/g)) {
+      const text = decodeEntities(inner.replace(/<[^>]*>/g, '')).trim();
+      const said = CHAPTER_TEXT.exec(text)?.[0];
+      if (!said) continue;
+      const chapter = chapterAt.get(new URL(decodeEntities(href), SITE + pageUrl).pathname);
+      const want = chapter && chapterLabel(chapter, trackOfPath(pageUrl));
+      if (said !== want)
+        problems.push(`${pageUrl}: link 「${text.slice(0, 40)}」 → ${href} should say ${want ?? '(not a chapter)'}`);
+    }
   }
   const refs = [...html.matchAll(/\s(href|src)="([^"]*)"/g)].map(([, attr = '', raw = '']) => [attr, raw]);
   // Each srcset candidate is "<url> <descriptor>"; most screens load these instead of src.

@@ -10,7 +10,7 @@ import { breadcrumbs } from '../lib/structured-data.ts';
 import {
   GUIDE_PATH,
   GUIDE_TITLE,
-  PLATFORM_LABEL,
+  TRACKS,
   chapterBySlug,
   chapterLabel,
   chapterPath,
@@ -39,11 +39,15 @@ interface Props {
 const { platform, slug, references } = Astro.props;
 const chapter = chapterBySlug(platform, slug);
 const path = chapterPath(chapter);
+const track = TRACKS[chapter.platform];
 const { prev, next } = neighbours(chapter);
+const heading = `${chapterLabel(chapter, track.id)} ${chapter.title}`;
+// Search results and shared links show the title without the page around it, so it names the track.
 const fullTitle = `${chapterLabel(chapter)} ${chapter.title} - ${GUIDE_TITLE}`;
 const trail = [
   { name: GUIDE_TITLE, path: GUIDE_PATH },
-  { name: `${chapterLabel(chapter)} ${chapter.title}`, path },
+  { name: track.name, path: track.path },
+  { name: heading, path },
 ];
 // The contents lists come from the rendered headings, and glossary terms in the body become preview links.
 const body = processGuideHtml(await Astro.slots.render('default'));
@@ -71,10 +75,12 @@ const body = processGuideHtml(await Astro.slots.render('default'));
       <article data-pagefind-body>
         <header class="guide-head">
           <p class="guide-kicker" data-pagefind-ignore>
-            <span>{PLATFORM_LABEL[chapter.platform]}</span>
+            <a class="guide-track" href={track.path}>
+              {track.name}
+            </a>
             <a href={GLOSSARY_PATH}>모르는 용어는 용어집에서</a>
           </p>
-          <h1 data-pagefind-meta="title">{`${chapterLabel(chapter)} ${chapter.title}`}</h1>
+          <h1 data-pagefind-meta={`title:${chapterLabel(chapter)} ${chapter.title}`}>{heading}</h1>
           <p class="guide-summary">{chapter.summary}</p>
         </header>
 
@@ -143,23 +149,23 @@ const body = processGuideHtml(await Astro.slots.render('default'));
         {prev ? (
           <a class="prev" href={chapterPath(prev)} rel="prev">
             <small>← 이전 장</small>
-            {chapterLabel(prev)} {prev.title}
+            {chapterLabel(prev, track.id)} {prev.title}
           </a>
         ) : (
-          <a class="prev" href={GUIDE_PATH}>
+          <a class="prev" href={track.path}>
             <small>← 처음으로</small>
-            {GUIDE_TITLE} 차례
+            {track.name} 차례
           </a>
         )}
         {next ? (
           <a class="next" href={chapterPath(next)} rel="next">
             <small>다음 장 →</small>
-            {chapterLabel(next)} {next.title}
+            {chapterLabel(next, track.id)} {next.title}
           </a>
         ) : (
-          <a class="next" href={GUIDE_PATH}>
-            <small>다음 장은 준비 중 →</small>
-            {GUIDE_TITLE} 차례
+          <a class="next" href={track.path}>
+            <small>마지막 장입니다 →</small>
+            {track.name} 차례
           </a>
         )}
       </nav>

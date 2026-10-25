@@ -2,7 +2,14 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test } from 'vitest';
 import { chapterPath } from '../src/components/romhacking/chapters.ts';
-import { GLOSSARY, INITIALS, glossaryGroups, initialId, initialOf } from '../src/components/romhacking/glossary.ts';
+import {
+  GLOSSARY,
+  INITIALS,
+  entryChapterLabel,
+  glossaryGroups,
+  initialId,
+  initialOf,
+} from '../src/components/romhacking/glossary.ts';
 
 const root = resolve(import.meta.dirname, '..');
 const source = (path: string) => readFileSync(resolve(root, 'src/pages', `.${path.replace(/\/$/, '')}.astro`), 'utf8');
@@ -46,4 +53,13 @@ test('every term, or its original, is named on the page it links to', () => {
     return !names.some(n => page.includes(n));
   }).map(e => e.term);
   expect(missing).toEqual([]);
+});
+
+test('the chapter beside each term names its track, since the glossary belongs to none', () => {
+  for (const e of GLOSSARY) {
+    const label = entryChapterLabel(e);
+    expect(label, e.term).toMatch(/^(공통|슈퍼 패미콤|DS) \d+장 /);
+    expect(label, e.term).toContain(e.chapter.title);
+  }
+  for (const e of GLOSSARY) expect(e.meaning, e.term).not.toMatch(/[{}]/);
 });

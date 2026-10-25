@@ -1,0 +1,235 @@
+---
+import Base from './Base.astro';
+import GuideCrumbs from '../components/romhacking/GuideCrumbs.astro';
+import '../styles/romhacking.css';
+import { SITE } from '../lib/posts.ts';
+import { breadcrumbs } from '../lib/structured-data.ts';
+import {
+  GUIDE_PATH,
+  GUIDE_TITLE,
+  NOTE_GAME,
+  TRACKS,
+  TRACK_ORDER,
+  chapterLabel,
+  chapterPath,
+  noteGrid,
+  noteHref,
+  notePath,
+  trackChapters,
+  trackPatches,
+  type GuidePlatform,
+} from '../components/romhacking/chapters.ts';
+import { GLOSSARY_PATH } from '../components/romhacking/glossary.ts';
+
+interface Props {
+  track: GuidePlatform;
+}
+
+const track = TRACKS[Astro.props.track];
+const chapters = trackChapters(track.id);
+const patches = trackPatches(track.id);
+const others = TRACK_ORDER.filter(id => id !== track.id).map(id => TRACKS[id]);
+const common = TRACKS.common;
+const title = `${track.name} - ${GUIDE_TITLE}`;
+const description = `${GUIDE_TITLE} 가이드의 ${track.name} 갈래 ${chapters.length}장 차례입니다. ${track.summary}`;
+---
+
+<Base
+  title={title}
+  description={description}
+  jsonLd={[
+    breadcrumbs(SITE, [
+      { name: GUIDE_TITLE, path: GUIDE_PATH },
+      { name: track.name, path: track.path },
+    ]),
+  ]}
+>
+  <div class="container guide">
+    <GuideCrumbs here={{ kind: 'track', track: track.id }} />
+    <article data-pagefind-body>
+      <header class="guide-head">
+        <p class="guide-kicker" data-pagefind-ignore>
+          <span>{GUIDE_TITLE}</span>
+          <a href={GLOSSARY_PATH}>모르는 용어는 용어집에서</a>
+        </p>
+        <h1 data-pagefind-meta={`title:${title}`}>{track.name}</h1>
+        <p class="guide-summary">{track.summary}</p>
+      </header>
+
+      <div class="prose">
+        {track.id === 'common' ? (
+          <p>
+            어느 게임기를 고치든 먼저 알아야 할 것들입니다. 장마다 앞 장에서 배운 것만 쓰므로 1장부터 차례로 읽어
+            주세요. 다 읽었다면 고칠 게임기의 갈래로 넘어갑니다.
+          </p>
+        ) : (
+          <p>
+            이 갈래는 <a href={common.path}>{common.name}</a>의 16진수·엔디안·압축을 안다고 보고 씁니다. 처음이라면{' '}
+            {common.name}부터 읽어 주세요. 장마다 같은 갈래의 앞 장에서 배운 것만 씁니다.
+          </p>
+        )}
+
+        <h2 id="chapters">차례</h2>
+        <ol class="chapter-map">
+          {chapters.map(c => (
+            <li class="is-ready">
+              <p class="chapter-meta">
+                <span class="mono">{chapterLabel(c, track.id)}</span>
+              </p>
+              <h3>
+                <a href={chapterPath(c)}>{c.title}</a>
+              </h3>
+              <p class="chapter-summary">{c.summary}</p>
+            </li>
+          ))}
+        </ol>
+
+        <h2 id="note-grid">장 × 게임 노트</h2>
+        <p>
+          장에서 배운 개념을 한글패치가 실제로 어떻게 썼는지, 게임마다 노트의 해당 절로 바로 갑니다. 노트에 해당 절이
+          없는 칸에는 그 이유를 적었습니다.
+        </p>
+        <table class="note-grid" role="table" aria-labelledby="note-grid">
+          <thead role="rowgroup">
+            <tr role="row">
+              <th scope="col" role="columnheader">
+                장
+              </th>
+              {patches.map(p => (
+                <th scope="col" role="columnheader">
+                  <a href={notePath(p)}>{NOTE_GAME[p.theme]}</a>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            {noteGrid(track.id).map(({ chapter, cells }) => (
+              <tr role="row">
+                <th scope="row" role="rowheader">
+                  <a href={chapterPath(chapter)}>
+                    <span class="mono">{chapterLabel(chapter, track.id)}</span> {chapter.title}
+                  </a>
+                </th>
+                {cells.map(cell => (
+                  <td role="cell" data-game={NOTE_GAME[cell.patch.theme]}>
+                    {cell.notes.length > 0 ? (
+                      <ul>
+                        {cell.notes.map(n => (
+                          <li>
+                            <a href={noteHref(n)}>{n.label}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p class="note-grid-gap">
+                        <span class="note-grid-none">해당 절 없음</span> {cell.gap}
+                      </p>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h2 id="other-tracks">다른 갈래</h2>
+        <ul class="track-map">
+          {others.map(o => (
+            <li class="is-ready">
+              <p class="chapter-meta">
+                <span class="mono">{trackChapters(o.id).length}장</span>
+              </p>
+              <h3>
+                <a href={o.path}>{o.name}</a>
+              </h3>
+              <p class="chapter-summary">{o.summary}</p>
+            </li>
+          ))}
+        </ul>
+        <p>
+          <a href={GUIDE_PATH}>{GUIDE_TITLE} 첫 페이지</a>에 롬 분석 노트 목록과 준비물이 있습니다.
+        </p>
+      </div>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .prose .note-grid {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+  .note-grid :is(th, td) {
+    vertical-align: top;
+    padding: 8px 10px;
+    overflow-wrap: anywhere;
+  }
+  .note-grid thead th:first-child {
+    width: 17%;
+  }
+  .note-grid tbody th {
+    font-weight: 600;
+  }
+  .note-grid .mono {
+    display: block;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .note-grid ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .note-grid li + li {
+    margin-top: 0.35em;
+  }
+  .note-grid-gap {
+    margin: 0;
+    color: var(--fg-muted);
+  }
+  .note-grid-none {
+    display: block;
+    font-weight: 600;
+  }
+  /* Phones read each chapter as a card: the game names move from the header row into each cell. */
+  @media (max-width: 760px) {
+    .prose .note-grid,
+    .note-grid :is(tbody, tr, th, td) {
+      display: block;
+      width: auto;
+    }
+    .note-grid thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .note-grid tr {
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+    }
+    .note-grid :is(tbody th, td) {
+      border: 0;
+    }
+    .note-grid :is(th, td) + td {
+      border-top: 1px solid var(--border);
+    }
+    .note-grid td::before {
+      content: attr(data-game);
+      display: block;
+      margin-bottom: 2px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--fg-muted);
+    }
+    .note-grid .mono {
+      display: inline;
+    }
+  }
+</style>

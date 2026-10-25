@@ -1,24 +1,27 @@
 ---
 import { KR_PATCH_LIST_PATH, type KrPatch } from '../../lib/kr-patches.ts';
 import {
-  GUIDE_CHAPTERS,
   GUIDE_PATH,
   NOTE_GAME,
   NOTE_PATCHES,
+  TRACKS,
+  TRACK_ORDER,
   chapterLabel,
   chapterPath,
   chaptersForNote,
   noteHref,
   noteLabel,
   notePath,
-  readyChapters,
+  trackChapters,
   type GuideChapter,
+  type GuidePlatform,
 } from './chapters.ts';
 import { GLOSSARY_PATH } from './glossary.ts';
 
 type Here =
   | { kind: 'index' }
   | { kind: 'glossary' }
+  | { kind: 'track'; track: GuidePlatform }
   | { kind: 'chapter'; chapter: GuideChapter }
   | { kind: 'note'; patch: KrPatch };
 
@@ -51,6 +54,7 @@ interface Crumb {
 }
 
 const { here } = Astro.props;
+const currentTrack = here.kind === 'track' ? here.track : here.kind === 'chapter' ? here.chapter.platform : undefined;
 
 const top: Crumb = {
   href: GUIDE_PATH,
@@ -60,10 +64,17 @@ const top: Crumb = {
     name: '롬 해킹',
     groups: [
       {
+        title: '기초 가이드',
+        items: TRACK_ORDER.map(id => ({
+          href: TRACKS[id].path,
+          label: TRACKS[id].name,
+          hint: `${trackChapters(id).length}장${id === 'common' ? ', 여기서 시작' : ''}`,
+          current: here.kind === 'track' && here.track === id,
+        })),
+      },
+      {
         items: [
-          { href: `${GUIDE_PATH}#chapters`, label: '기초 가이드', hint: `${readyChapters().length}장, 0장부터 차례로` },
           { href: `${GUIDE_PATH}#notes`, label: '롬 분석 노트', hint: `한글패치 ${NOTE_PATCHES.length}개의 롬 기록` },
-          { href: `${GUIDE_PATH}#note-grid`, label: '장 × 게임 노트', hint: '장마다 각 게임 노트의 해당 절' },
           { href: GLOSSARY_PATH, label: '용어집', hint: '가나다순 용어와 설명 장', current: here.kind === 'glossary' },
           { href: KR_PATCH_LIST_PATH, label: '한글패치 목록', hint: '패치 내려받기와 롬에 바로 적용' },
         ],
@@ -72,12 +83,11 @@ const top: Crumb = {
   },
 };
 
-const chapterMenu = (current?: GuideChapter): MenuGroup[] => [
+const chapterMenu = (track: GuidePlatform, current?: GuideChapter): MenuGroup[] => [
   {
-    items: GUIDE_CHAPTERS.map(c => ({
-      href: c.ready ? chapterPath(c) : undefined,
-      label: `${chapterLabel(c)} ${c.title}`,
-      hint: c.ready ? undefined : '준비 중',
+    items: trackChapters(track).map(c => ({
+      href: chapterPath(c),
+      label: `${chapterLabel(c, track)} ${c.title}`,
       current: c === current,
     })),
   },
@@ -96,22 +106,27 @@ const notesMenu = (current?: KrPatch): MenuGroup[] => [
 
 const crumbs: Crumb[] = [top];
 if (here.kind === 'glossary') crumbs.push({ href: GLOSSARY_PATH, label: '용어집', current: true });
+if (currentTrack) {
+  const track = TRACKS[currentTrack];
+  crumbs.push({
+    href: track.path,
+    label: track.name,
+    ...(track.short === track.name ? {} : { short: track.short }),
+    current: here.kind === 'track',
+    menu: { name: track.name, groups: chapterMenu(currentTrack, here.kind === 'chapter' ? here.chapter : undefined) },
+  });
+}
 if (here.kind === 'chapter') {
   const { chapter } = here;
-  crumbs.push({
-    href: `${GUIDE_PATH}#chapters`,
-    label: '기초 가이드',
-    short: '가이드',
-    menu: { name: '기초 가이드', groups: chapterMenu(chapter) },
-  });
+  const label = chapterLabel(chapter, chapter.platform);
   crumbs.push({
     href: chapterPath(chapter),
-    label: `${chapterLabel(chapter)} ${chapter.title}`,
-    short: chapterLabel(chapter),
+    label: `${label} ${chapter.title}`,
+    short: label,
     current: true,
     menu: chapter.notes.length
       ? {
-          name: `${chapterLabel(chapter)} 관련 노트`,
+          name: `${label} 관련 노트`,
           groups: [
             {
               title: '이 장의 개념을 쓴 노트',
@@ -144,7 +159,7 @@ if (here.kind === 'note') {
         },
         {
           title: '이 노트의 개념을 설명하는 장',
-          items: chapters.map(c => ({ href: chapterPath(c), label: `${chapterLabel(c)} ${c.title}` })),
+          items: chapters.map(c => ({ href: chapterPath(c), label: `${chapterLabel(c, patch.platform)} ${c.title}` })),
         },
       ],
     },

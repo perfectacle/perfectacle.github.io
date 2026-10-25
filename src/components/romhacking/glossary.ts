@@ -1,5 +1,12 @@
 import { slug } from 'github-slugger';
-import { GUIDE_PATH, chapterBySlug, chapterLabel, chapterPath, type GuideChapter } from './chapters.ts';
+import {
+  GUIDE_PATH,
+  chapterBySlug,
+  chapterLabel,
+  chapterPath,
+  fillChapterRefs,
+  type GuideChapter,
+} from './chapters.ts';
 
 /**
  * Terms of the ROM hacking guide. Each points at the section where a chapter explains it; `tests/romhacking-glossary.test.ts`
@@ -43,7 +50,7 @@ export interface GlossaryEntry {
   anchor: string;
 }
 
-// [term, original or '', chapter, section id, meaning]
+// [term, original or '', chapter, section id, meaning]; `{sfc/cpu}` in a meaning becomes that chapter's number
 const RAW: [string, string, Where, string, string][] = [
   ['롬', 'ROM', 'rom-patch', 'rom', '카트리지 칩에 들어 있는, 읽기만 하는 메모리. 또는 그 내용을 통째로 옮긴 파일'],
   ['바이트', 'byte', 'numbers', 'bits', '비트 여덟 개를 묶은 단위. 0부터 255까지의 숫자 하나'],
@@ -160,7 +167,7 @@ const RAW: [string, string, Where, string, string][] = [
     'opcode',
     'sfc/assembly',
     'names',
-    '명령의 종류를 나타내는 첫 바이트. 3장에서는 "명령 바이트"라고 불렀습니다',
+    '명령의 종류를 나타내는 첫 바이트. {sfc/cpu}에서는 "명령 바이트"라고 불렀습니다',
   ],
   ['피연산자', 'operand', 'sfc/assembly', 'names', '옵코드 뒤에 붙는 값이나 주소. 0–3바이트'],
   ['에뮬레이션 모드', 'emulation mode', 'sfc/cpu', 'width', '전원을 켠 직후 6502처럼 도는 모드'],
@@ -649,7 +656,9 @@ const RAW: [string, string, Where, string, string][] = [
 
 const collator = new Intl.Collator('ko');
 
-export const GLOSSARY: GlossaryEntry[] = RAW.map(([term, en, where, anchor, meaning]) => {
+export const GLOSSARY: GlossaryEntry[] = RAW.map(([term, en, where, anchor, raw]) => {
+  // Previews show the meaning on pages of every track, so chapter numbers in it always name their track.
+  const meaning = fillChapterRefs(raw);
   const [a, b] = where.split('/');
   const chapter = b ? chapterBySlug(a as 'sfc' | 'nds', b) : chapterBySlug('common', a ?? '');
   // Meanings that end in a full sentence get a period; noun phrases stay bare.

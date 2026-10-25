@@ -7,7 +7,7 @@ import Figure from '../romhacking/Figure.astro';
 import BankMap from '../romhacking/BankMap.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import MakingSources from '../kr-patch/MakingSources.astro';
-import { chapterBySlug, chapterLabel, chapterPath, type GuidePlatform } from '../romhacking/chapters';
+import { chapterBySlug, chapterLabel, chapterPath, trackOfPath, type GuidePlatform } from '../romhacking/chapters';
 import { sourceFileUrl, sourceUrl, type KrPatch } from '../../lib/kr-patches';
 import SourceFile from '../kr-patch/SourceFile.astro';
 
@@ -21,7 +21,7 @@ const source = sourceUrl(patch);
 const img = (name: string) => `${base}/images/making/${name}`;
 const chapter = (slug: string, hash = '', platform: GuidePlatform = 'sfc') => {
   const c = chapterBySlug(platform, slug);
-  return { href: `${chapterPath(c)}${hash}`, label: `${chapterLabel(c)} ${c.title}` };
+  return { href: `${chapterPath(c)}${hash}`, label: `${chapterLabel(c, trackOfPath(Astro.url.pathname))} ${c.title}` };
 };
 const ch = {
   cpu: chapter('cpu'),

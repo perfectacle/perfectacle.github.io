@@ -1,10 +1,11 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import DsMemoryMap from '../../../../components/romhacking/DsMemoryMap.astro';
 import { GHOST_TRICK_PATCH } from '../../../../lib/kr-patches.ts';
-import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -54,14 +55,17 @@ const ram = [
     CPU가 둘 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    슈퍼 패미콤에서 게임 코드를 돌린 CPU는 65c816 하나였습니다(<a href={chapterHref(3)}>3장</a>). DS에는 CPU가 둘
-    있습니다. 게임을 돌리는 <strong>ARM9</strong>(ARM946E-S, 66MHz)와 소리·터치·무선을 맡는 <strong>ARM7</strong>
+    슈퍼 패미콤에서 게임 코드를 돌린 CPU는 65c816 하나였습니다(
+    <ChapterLink to="sfc/cpu" />
+    ). DS에는 CPU가 둘 있습니다. 게임을 돌리는 <strong>ARM9</strong>(ARM946E-S, 66MHz)와 소리·터치·무선을 맡는{' '}
+    <strong>ARM7</strong>
     (ARM7TDMI, 33MHz)입니다. 둘은 각자 자기 BIOS와 장치 레지스터를 보고, 메인 RAM 4MB는 함께 씁니다.
   </p>
   <p>
-    카드 헤더에는 두 CPU의 프로그램이 따로 적혀 있습니다(<a href={`${chapterHref(15)}#header`}>15장</a>). 전원을 켜면
-    본체가 두 프로그램을 헤더에 적힌 RAM 주소로 옮기고, 각 CPU를 헤더의 시작 주소에서 출발시킵니다. 그 뒤로 둘은 메인
-    RAM의 약속한 자리와 서로 주고받는 레지스터로 일을 나눕니다.
+    카드 헤더에는 두 CPU의 프로그램이 따로 적혀 있습니다(
+    <ChapterLink to="nds/filesystem" hash="header" />
+    ). 전원을 켜면 본체가 두 프로그램을 헤더에 적힌 RAM 주소로 옮기고, 각 CPU를 헤더의 시작 주소에서 출발시킵니다. 그
+    뒤로 둘은 메인 RAM의 약속한 자리와 서로 주고받는 레지스터로 일을 나눕니다.
   </p>
 
   <h2 id="arm-thumb">
@@ -77,7 +81,9 @@ const ram = [
     추린 2바이트짜리입니다. Thumb는 코드가 작아지는 대신 할 수 있는 일이 조금 줄어듭니다. 어느 쪽으로 읽을지는 CPU가
     지금 어느 상태인지가 정하고, <code>BX</code>처럼 상태를 바꾸는 분기 명령이 목적지 주소의 맨 아래 비트로
     정합니다(1이면 Thumb). 보통 분기 <code>B</code>·<code>BL</code>은 상태를 바꾸지 않습니다. 그래서 같은 바이트도
-    ARM으로 읽느냐 Thumb로 읽느냐에 따라 전혀 다른 명령이 됩니다. 명령 하나하나를 읽는 법은 다음 장에서 다룹니다.
+    ARM으로 읽느냐 Thumb로 읽느냐에 따라 전혀 다른 명령이 됩니다. 명령 하나하나를 읽는 법은{' '}
+    <ChapterLink to="nds/assembly" />
+    에서 다룹니다.
   </p>
   <Figure caption="고스트 트릭 ARM9 프로그램의 첫 명령. 4바이트를 작은 자리부터 적은 ARM 명령입니다." max={600}>
     <svg viewBox="0 0 360 120" role="img" aria-labelledby="ins-t ins-d">
@@ -136,7 +142,9 @@ const ram = [
   <p>
     고스트 트릭 일본판 헤더는 ARM9 프로그램(롬 0x4000부터 0x80628바이트)을 0x02000000에 올리고 0x02000800에서 시작하라고
     적습니다. ARM7 프로그램(롬 0x96800부터 0x2642C바이트)은 메인 RAM 위쪽 0x02380000에 올라가 그 자리에서 시작합니다.
-    장면마다 갈아 끼우는 오버레이 7개는 모두 0x020F1E60에 올라갑니다(<a href={`${chapterHref(15)}#overlay`}>15장</a>).
+    장면마다 갈아 끼우는 오버레이 7개는 모두 0x020F1E60에 올라갑니다(
+    <ChapterLink to="nds/filesystem" hash="overlay" />
+    ).
   </p>
   <Figure caption="고스트 트릭이 메인 RAM에 프로그램을 놓는 자리. 오버레이 크기는 그때그때 다릅니다." max={600}>
     <svg viewBox="0 0 360 186" role="img" aria-labelledby="ram-t ram-d">

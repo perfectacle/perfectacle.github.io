@@ -1,9 +1,10 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import TouchPoint from '../../../../components/romhacking/TouchPoint.astro';
 import { GHOST_TRICK_PATCH, analysisUrl, sourceFileUrl, toolkitFileUrl } from '../../../../lib/kr-patches.ts';
-import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -57,8 +58,9 @@ const commands = [
   </h2>
   <p>
     한글패치를 만들면 대사가 잘리지 않는지, 고친 화면이 제대로 나오는지, 세이브가 이어지는지를 확인해야 합니다. 장면이
-    수백 개라 손으로 하면 끝이 없습니다. 슈퍼 패미콤 장에서처럼(<a href={chapterHref(12)}>12장</a>) 에뮬레이터를 화면
-    없이 돌리고, 정해 둔 입력을 넣고, 정해 둔 순간의 화면을 저장하면 같은 확인을 몇 번이고 되풀이할 수 있습니다.
+    수백 개라 손으로 하면 끝이 없습니다. 슈퍼 패미콤 장에서처럼(
+    <ChapterLink to="sfc/emulator" />) 에뮬레이터를 화면 없이 돌리고, 정해 둔 입력을 넣고, 정해 둔 순간의 화면을
+    저장하면 같은 확인을 몇 번이고 되풀이할 수 있습니다.
   </p>
   <p>
     고스트 트릭 한글패치는 libretro용 desmume 코어를 썼습니다. libretro 코어는 에뮬레이터 본체를 라이브러리로 만든
@@ -154,7 +156,8 @@ shot title</code></pre>
     <code>route.xml</code>에 적힌 <code>st01/st01_root.xml</code>로 시작합니다. 이 이름을{' '}
     <code>st06/st06_root.xml</code>로 바꾸면 스테이지 <code>st06</code>부터 시작합니다. 스테이지 번호는 장 번호와
     다릅니다(<code>st02</code>가 제4장입니다). 스테이지 루트 스크립트의 이름 문자열 구역(
-    <a href={`${chapterHref(16)}#lmg`}>16장</a>)에서 처음 부르는 장면 이름까지 바꾸면 원하는 장면에서 바로 시작합니다.
+    <ChapterLink to="nds/text" hash="lmg" />
+    )에서 처음 부르는 장면 이름까지 바꾸면 원하는 장면에서 바로 시작합니다.
   </p>
   <p>
     <code>stage_rom.py</code>는 길이가 같은 이름으로 바꾸는 경우만 다루고, 장면 이름은 <code>stNN_장면_Expand.xml</code>{' '}

@@ -1,10 +1,11 @@
 ---
+import ChapterLink from '../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../layouts/GuideChapter.astro';
 import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import HuffmanCode from '../../../components/romhacking/HuffmanCode.astro';
 import { OTOGIRISOU_PATCH, analysisUrl, patchFileUrl, releaseTag, sourceFileUrl } from '../../../lib/kr-patches.ts';
-import { chapterBySlug, chapterPath, notePath } from '../../../components/romhacking/chapters.ts';
+import { notePath } from '../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -28,9 +29,6 @@ const references = [
     note: '일본판 비트열과 v1.0 2바이트 대본을 읽는 파서(이 장의 실행 결과)',
   },
 ];
-const LZSS = chapterPath(chapterBySlug('common', 'lzss'));
-const TEXT = chapterPath(chapterBySlug('sfc', 'text'));
-const EXPANSION = chapterPath(chapterBySlug('sfc', 'expansion'));
 
 // 「夏の夕暮。」 and the line break as the Japanese script stores them (tools/script.py).
 const firstLine = [
@@ -62,9 +60,9 @@ const noWalk = [
   </p>
   <p>
     1952년 데이비드 허프만(David A. Huffman)은 글자마다 나온 횟수를 알 때 <strong>평균 길이가 가장 짧은</strong> 부호를
-    만드는 방법을 내놓았습니다. 이것이 <strong>허프만 부호</strong>입니다. <a href={LZSS}>9장</a>의 LZSS가 "앞에 나온
-    것을 다시 쓰기"로 줄인다면, 허프만 부호는 "글자마다 비트 수를 다르게 하기"로 줄입니다. 둘을 함께 쓰는 형식(ZIP의
-    DEFLATE 등)도 많습니다.
+    만드는 방법을 내놓았습니다. 이것이 <strong>허프만 부호</strong>입니다. <ChapterLink to="common/lzss" />의 LZSS가
+    "앞에 나온 것을 다시 쓰기"로 줄인다면, 허프만 부호는 "글자마다 비트 수를 다르게 하기"로 줄입니다. 둘을 함께 쓰는
+    형식(ZIP의 DEFLATE 등)도 많습니다.
   </p>
 
   <h2 id="prefix">
@@ -350,7 +348,7 @@ const noWalk = [
   <p>롬에서 허프만 데이터를 찾는 단서는 이렇습니다.</p>
   <ul>
     <li>
-      화면에 나온 대사를 <a href={TEXT}>8장</a>의 방법(글자표 만들기, 연속된 번호 찾기)으로 아무리 찾아도 나오지
+      화면에 나온 대사를 <ChapterLink to="sfc/text" />의 방법(글자표 만들기, 연속된 번호 찾기)으로 아무리 찾아도 나오지
       않습니다.
     </li>
     <li>
@@ -454,8 +452,9 @@ const noWalk = [
     넣고, 모든 점프 위치를 비트 단위로 다시 계산해야 합니다. 2바이트 대본은 이 일이 모두 필요 없고, 덤프·삽입 도구도
     바이트 단위로 단순해집니다. 대가는 크기입니다. 69만 바이트는 일본판 대본 자리(약 30만 바이트)에 들어가지 않아 v1.0은
     롬을 2MB로 늘리고 대본을 <code>$20:8000</code>부터 두었습니다. 롬을 늘릴 때 따져야 할 것은{' '}
-    <a href={EXPANSION}>11장</a>에서 봅니다. 비워진 일본판 대본 자리(<code>$15:E401</code>–)는 나중에 v1.1·v1.2가 새
-    코드와 표를 넣는 빈 공간이 됐습니다.
+    <ChapterLink to="sfc/expansion" />
+    에서 봅니다. 비워진 일본판 대본 자리(<code>$15:E401</code>–)는 나중에 v1.1·v1.2가 새 코드와 표를 넣는 빈 공간이
+    됐습니다.
   </p>
 
   <h2 id="try">

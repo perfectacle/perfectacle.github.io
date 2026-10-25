@@ -1,10 +1,11 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import NdsFileWalk from '../../../../components/romhacking/NdsFileWalk.astro';
 import { GHOST_TRICK_PATCH, analysisUrl, toolkitFileUrl } from '../../../../lib/kr-patches.ts';
-import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -88,8 +89,9 @@ const front = [
   </h2>
   <p>
     슈퍼 패미콤의 CPU는 카트리지 롬을 주소로 바로 읽습니다. <code>$80:8000</code>이라고 하면 배선이 그 주소를 롬 칩의 한
-    바이트로 이어 줍니다(<a href={chapterHref(4)}>4장 주소와 뱅크</a>). 그래서 슈퍼 패미콤 롬 해킹은 "이 바이트가 CPU
-    주소로 어디인가"를 계산하는 데서 시작합니다.
+    바이트로 이어 줍니다(
+    <ChapterLink to="sfc/banks" title />
+    ). 그래서 슈퍼 패미콤 롬 해킹은 "이 바이트가 CPU 주소로 어디인가"를 계산하는 데서 시작합니다.
   </p>
   <p>
     닌텐도 DS의 CPU는 카드를 주소로 읽지 못합니다. 카드에 "몇 번째 바이트부터 보내 달라"는 명령을 보내고, 받은 바이트를
@@ -166,7 +168,8 @@ const front = [
     롬 파일의 맨 앞 0x200바이트는 <strong>카드 헤더</strong>입니다. 게임 이름과 코드, 카드 용량, 두 CPU의 프로그램이
     롬의 어디에 있고 RAM의 어디에 올라가는지, 파일 표 두 개의 위치가 들어 있습니다. 위치와 크기는 모두 4바이트 리틀
     엔디안(
-    <a href={chapterHref(2)}>2장</a>)입니다. 고스트 트릭 일본판에서 이 장에 필요한 칸만 골랐습니다.
+    <ChapterLink to="common/endian" />
+    )입니다. 고스트 트릭 일본판에서 이 장에 필요한 칸만 골랐습니다.
   </p>
   <div class="table-wrap" tabindex="0">
     <table>
@@ -350,8 +353,9 @@ const front = [
   </h2>
   <p>
     번역한 대사 파일은 대개 원래보다 커집니다. 슈퍼 패미콤에서는 늘어난 데이터를 둘 빈 곳을 찾거나 롬을 늘리고, 옮긴
-    자리를 가리키도록 포인터와 코드를 고쳐야 했습니다(<a href={chapterHref(11)}>11장 롬 확장</a>). DS는 게임이 파일을
-    언제나 FAT로 찾으므로, 파일을 어디에 두든 FAT 칸만 고치면 됩니다.
+    자리를 가리키도록 포인터와 코드를 고쳐야 했습니다(
+    <ChapterLink to="sfc/expansion" title />
+    ). DS는 게임이 파일을 언제나 FAT로 찾으므로, 파일을 어디에 두든 FAT 칸만 고치면 됩니다.
   </p>
   <p>kr-patch-toolkit은 파일을 이렇게 다시 넣습니다.</p>
   <ol>
@@ -372,7 +376,8 @@ const front = [
   <p>
     다른 파일은 한 바이트도 움직이지 않습니다. 그래서 고친 롬과 원래 롬의 차이가 작고, 그 차이를 적는 패치도 작아집니다.
     128MB 롬은 IPS가 고칠 수 있는 16MB(
-    <a href={`${chapterHref(0)}#ips`}>0장</a>)를 넘어서, 고스트 트릭 한글패치는 xdelta 형식을 씁니다(
+    <ChapterLink to="common/rom-patch" hash="ips" />
+    )를 넘어서, 고스트 트릭 한글패치는 xdelta 형식을 씁니다(
     <a href={`${note}#making-xdelta`}>노트</a>).
   </p>
 

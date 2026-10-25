@@ -1,4 +1,5 @@
 ---
+import ChapterLink from '../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../layouts/GuideChapter.astro';
 import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
@@ -10,7 +11,7 @@ import {
   TOTSUGEKI_PATCH,
   toolkitFileUrl,
 } from '../../../lib/kr-patches.ts';
-import { TOOLKIT_README_KO, chapterBySlug, chapterHref, chapterPath } from '../../../components/romhacking/chapters.ts';
+import { TOOLKIT_README_KO } from '../../../components/romhacking/chapters.ts';
 
 const BLOG = 'https://github.com/perfectacle/perfectacle.github.io/blob/main';
 const references = [
@@ -55,10 +56,6 @@ const references = [
     note: '패치 페이지의 배경음악 플레이어: 로드 2.5초 뒤 받기, 첫 클릭·키에서 resume, Firefox 앞 여백 보정, 다른 탭과 동영상에 자리 비켜 주기',
   },
 ];
-const SOUND = chapterPath(chapterBySlug('sfc', 'sound'));
-const HOOKING = chapterPath(chapterBySlug('sfc', 'hooking'));
-const EMULATOR = chapterPath(chapterBySlug('sfc', 'emulator'));
-const NUMBERS = chapterPath(chapterBySlug('common', 'numbers'));
 
 const lags = [
   { s: '42.613', sim: 0.8567, note: '주기의 1/3' },
@@ -141,8 +138,9 @@ const peaks = [
   <p>
     이 블로그의 한글패치 페이지에서는 그 게임의 음악이 끝없이 흘러나옵니다. 게임 음악은 대개 앞부분(인트로)을 한 번
     연주하고, 그 뒤 한 구간을 끝없이 되풀이합니다. 게임기에서는 사운드 드라이버가 악보의 "여기로 돌아가라" 표시를 따라
-    되풀이하지만(<a href={SOUND}>13장</a>), 웹 페이지에는 그 드라이버가 없습니다. 그래서 녹음한 소리 파일 하나로 같은
-    일을 합니다.
+    되풀이하지만(
+    <ChapterLink to="sfc/sound" />
+    ), 웹 페이지에는 그 드라이버가 없습니다. 그래서 녹음한 소리 파일 하나로 같은 일을 합니다.
   </p>
   <p>
     파일에는 곡의 처음부터 반복 구간 한 바퀴까지만 넣고, 플레이어에게 "loopEnd에 닿으면 loopStart로 돌아가라"고 알려
@@ -210,7 +208,8 @@ const peaks = [
   <p>
     게임을 그냥 켜 두고 녹음하면 원하는 곡이 언제 나올지 모르고, 효과음이 섞입니다. 이야기를 한참 진행해야 나오는 곡도
     있습니다. 그래서 롬을 몇 바이트 고쳐 "켜자마자 그 곡이 나오는 롬"을 녹음용으로 따로 만듭니다.{' '}
-    <a href={chapterHref(13)}>13장</a>에서 찾은 곡 번호를 넘기는 곳을 고치는 것입니다.
+    <ChapterLink to="sfc/sound" />
+    에서 찾은 곡 번호를 넘기는 곳을 고치는 것입니다.
   </p>
   <ul>
     <li>
@@ -222,8 +221,9 @@ const peaks = [
     <li>
       <strong>효과음 막기</strong>: 첫 녹음에는 효과음이 섞여 있었습니다. 효과음 함수 <code>$83:8023</code>은{' '}
       <code>JSL</code>로 불리므로, 첫 바이트 <code>85</code>(<code>STA $B3</code>의 첫 바이트)를 <code>6B</code>(
-      <code>RTL</code>)로 바꾸면 아무것도 보내지 않고 바로 돌아옵니다(<a href={`${HOOKING}#jump`}>6장</a>). 효과음을
-      막은 녹음은 27초부터 첫 녹음과 달라졌습니다.
+      <code>RTL</code>)로 바꾸면 아무것도 보내지 않고 바로 돌아옵니다(
+      <ChapterLink to="sfc/hooking" hash="jump" />
+      ). 효과음을 막은 녹음은 27초부터 첫 녹음과 달라졌습니다.
     </li>
     <li>
       <strong>장면 속 곡만 남기기</strong>: 제절초의 「The Legend of Yellow Flower」는 타이틀에서 번호만 바꿔서는 들을
@@ -243,7 +243,7 @@ const peaks = [
   </h2>
   <p>
     스피커에서 나오는 소리를 마이크로 녹음하면 잡음과 방 울림이 들어갑니다. 에뮬레이터는 S-DSP가 만든 소리를 숫자로
-    내주므로, 그 숫자를 그대로 파일에 적는 것이 가장 깨끗합니다. <a href={`${EMULATOR}#headless`}>12장</a>의{' '}
+    내주므로, 그 숫자를 그대로 파일에 적는 것이 가장 깨끗합니다. <ChapterLink to="sfc/emulator" hash="headless" />의{' '}
     <code>krpatch sfc run</code>에 <code>--wav</code>를 주면 libretro 코어가 내는 소리를 16비트 스테레오 WAV로 씁니다.
   </p>
   <pre tabindex="0"><code>$ cat idle.txt
@@ -664,7 +664,7 @@ $ afconvert -f m4af -d aac -b 96000 -s 1 -q 127 totsugeki-norm.wav bgm.m4a</code
   </p>
   <p class="muted">
     이 장의 출력은 kr-patch-toolkit 0.2.0(Python 3.15, numpy 2.5)로 macOS에서 돌린 결과입니다. 주기와 이음매는 모두
-    48,000Hz 샘플 단위이고, 16비트 값은 <a href={`${NUMBERS}#bits`}>1장</a>의 부호 있는 수입니다.
+    48,000Hz 샘플 단위이고, 16비트 값은 <ChapterLink to="common/numbers" hash="bits" />의 부호 있는 수입니다.
   </p>
 </GuideChapter>
 

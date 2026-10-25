@@ -1,4 +1,5 @@
 ---
+import ChapterLink from '../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../layouts/GuideChapter.astro';
 import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
@@ -9,7 +10,6 @@ import {
   sourceFileUrl,
   toolkitFileUrl,
 } from '../../../lib/kr-patches.ts';
-import { chapterHref } from '../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -113,14 +113,16 @@ const ips = [
   <p>
     파일 안에서 몇 번째 바이트인지를 <strong>파일 오프셋</strong>(줄여서 오프셋)이라고 합니다. 첫 바이트가 오프셋
     0입니다. 롬 분석 노트에 나오는 <code>파일 0x7FD5</code> 같은 표기가 바로 이 오프셋이고, 앞에 붙은 <code>0x</code>는
-    "16진수로 적었다"는 표시입니다. 16진수는 <a href="/games/romhacking/numbers/">1장</a>에서 다룹니다.
+    "16진수로 적었다"는 표시입니다. 16진수는 <ChapterLink to="common/numbers" />
+    에서 다룹니다.
   </p>
 
   <Deeper title="카피어 헤더: 앞에 붙은 512바이트">
     <p>
       1990년대에는 카트리지 내용을 디스켓으로 옮기는 "카피어"라는 장치가 있었습니다. 이 장치들은 롬 앞에 자기 설정을
       적은 512바이트를 붙였고, 그 시절 덤프가 지금도 돌아다닙니다. 이것을 <strong>카피어 헤더</strong>라고 합니다. 게임
-      안에 있는 "내부 헤더"(게임 이름·크기를 적은 곳, <a href="/games/romhacking/sfc/banks/">4장</a>)와는 다른 것입니다.
+      안에 있는 "내부 헤더"(게임 이름·크기를 적은 곳, <ChapterLink to="sfc/banks" />
+      )와는 다른 것입니다.
     </p>
     <p>
       롬 크기는 거의 언제나 1024의 배수라서, 파일 크기를 1024로 나눈 나머지가 512면 카피어 헤더가 붙은 파일입니다.
@@ -294,8 +296,8 @@ const ips = [
   </ol>
   <p>
     위치와 길이는 큰 자리 바이트부터 적습니다(<code>00 00 61</code> = 0x000061). 이렇게 큰 자리부터 적는 방식을 "빅
-    엔디안"이라고 하는데, 게임기 CPU는 반대로 적습니다. <a href="/games/romhacking/endian/">2장</a>에서 이 차이를
-    다룹니다.
+    엔디안"이라고 하는데, 게임기 CPU는 반대로 적습니다. <ChapterLink to="common/endian" />
+    에서 이 차이를 다룹니다.
   </p>
 
   <Deeper title="IPS 형식 전부: RLE 레코드, 크기 늘리기, 한계">
@@ -349,8 +351,9 @@ const ips = [
     </li>
     <li>
       위 그림의 0x61 두 바이트는 실제 예입니다. 돌격편 롬의 파일 0x61에 있는 <code>80 04</code>를 <code>EA EA</code>로
-      바꾸면 개발자용 디버그 메뉴가 열립니다(<a href={chapterHref(5)}>5장</a>에서 이 바이트를 어셈블리로 읽습니다).
-      배포한 패치는 이 자리를 바꾸지 않습니다.
+      바꾸면 개발자용 디버그 메뉴가 열립니다(
+      <ChapterLink to="sfc/assembly" />
+      에서 이 바이트를 어셈블리로 읽습니다). 배포한 패치는 이 자리를 바꾸지 않습니다.
     </li>
     <li>
       제절초 일본판은 1MB인데, v1.0 한글패치는 대사를 넣으려고 롬을 2MB로 늘렸습니다. 그런데 게임 안 헤더의 "롬 크기"

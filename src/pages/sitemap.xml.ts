@@ -8,7 +8,7 @@ import {
   postPath,
   SITE,
 } from '../lib/posts.ts';
-import { GUIDE_PATH, chapterPath, readyChapters } from '../components/romhacking/chapters.ts';
+import { GUIDE_PATH, TRACKS, TRACK_ORDER, chapterPath, readyChapters } from '../components/romhacking/chapters.ts';
 import { GLOSSARY_PATH } from '../components/romhacking/glossary.ts';
 
 export async function GET() {
@@ -27,6 +27,7 @@ export async function GET() {
     ['/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei/'],
     ['/games/kr-patches/sfc/otogirisou/'],
     [GUIDE_PATH],
+    ...TRACK_ORDER.map(id => [TRACKS[id].path] as [string]),
     ...readyChapters().map(c => [chapterPath(c)] as [string]),
     [GLOSSARY_PATH],
     ...(await getTags()).map(t => [`/tags/${t.slug}/`] as [string]),

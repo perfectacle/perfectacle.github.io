@@ -93,6 +93,10 @@ html:has(.gcrumbs) {
 .guide-kicker a:hover {
   color: var(--accent);
 }
+.guide-kicker a.guide-track {
+  margin-left: 0;
+  font-weight: 600;
+}
 .guide-kicker .mono {
   color: var(--accent);
   font-weight: 600;
@@ -680,4 +684,55 @@ html:has(.gcrumbs) {
   display: table;
   margin: 0;
   overflow: visible;
+}
+
+/* Lists of chapters, tracks and notes on the guide's first page and the track contents. */
+:is(.chapter-map, .note-map, .track-map) {
+  display: grid;
+  gap: 10px;
+  max-width: var(--measure);
+  margin: 0 0 1.5em;
+  padding: 0;
+  list-style: none;
+}
+:is(.chapter-map, .note-map, .track-map) li {
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+:is(.chapter-map, .note-map, .track-map) li.is-ready {
+  border-left: 4px solid var(--accent);
+}
+:is(.chapter-map, .note-map, .track-map) li:not(.is-ready) {
+  background: var(--bg-soft);
+}
+.chapter-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+}
+.chapter-meta .mono {
+  color: var(--accent);
+  font-weight: 700;
+}
+.chapter-soon {
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+:is(.chapter-map, .note-map, .track-map) :is(h3, h4) {
+  margin: 2px 0 2px;
+  font-size: 1.1rem;
+}
+:is(.chapter-map, .note-map, .track-map) li:not(.is-ready) :is(h3, h4) {
+  color: var(--fg-muted);
+}
+.chapter-summary {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 0.92rem;
 }
