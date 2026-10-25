@@ -44,6 +44,7 @@ const NDS_SOUND = '/games/romhacking/nds/sound/';
 const NDS_EMU = '/games/romhacking/nds/emulator/';
 const NDS_CPU = '/games/romhacking/nds/cpu/';
 const NDS_ASM = '/games/romhacking/nds/assembly/';
+const NDS_HOOK = '/games/romhacking/nds/hooking/';
 
 const noHorizontalOverflow = async (page: Page) =>
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
@@ -323,6 +324,7 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
     NDS_EMU,
     NDS_CPU,
     NDS_ASM,
+    NDS_HOOK,
   ]) {
     await page.goto(path);
     const help = page.locator('.widget-help .live-only');
@@ -402,6 +404,9 @@ test('widgets read as static pictures without scripts', async ({ browser }) => {
   await expect(as.locator('[data-now]')).toContainText('r0 = 1');
   await expect(as.locator('[data-list] li')).toHaveCount(13);
   await expect(as.getByRole('button', { name: '다음 명령' })).toBeHidden();
+  await page.goto(NDS_HOOK);
+  await expect(page.locator('[data-arm-bl] [data-le]')).toHaveText('76 01 00 EB');
+  await expect(page.locator('[data-arm-bl] [data-from]')).toBeHidden();
   await page.goto(MUSIC);
   const seam = page.locator('[data-seam-lab]');
   await expect(seam.locator('[data-out="score"]')).toHaveText('0.887');
@@ -749,6 +754,24 @@ test('ARM stepper runs the font function and skips the lt lines for a missing fo
   for (let i = 0; i < 12; i++) await next.click();
   await expect(widget.locator('li.is-skip')).toHaveCount(5);
   await expect(widget.locator('[data-r="0"]')).toHaveText('0x00000000');
+  await noHorizontalOverflow(page);
+});
+
+test('BL calculator builds and reads branch words both ways', async ({ page }) => {
+  await page.goto(NDS_HOOK);
+  const widget = page.locator('[data-arm-bl]');
+  await expect(widget).toHaveClass(/is-live/);
+  await expect(widget.locator('[data-le]')).toHaveText('76 01 00 EB');
+  await widget.getByRole('button', { name: '게임의 원래 호출' }).click();
+  await expect(widget.locator('[data-le]')).toHaveText('6C 01 00 EB');
+  const bytes = widget.getByLabel('롬의 4바이트(작은 자리부터)');
+  await widget.getByLabel('BL을 놓을 주소').fill('0x02012674');
+  await bytes.fill('52 01 00 EB');
+  await expect(widget.getByLabel('건너갈 주소')).toHaveValue('0x02012BC4');
+  await bytes.fill('04 10 A0 E3');
+  await expect(widget.locator('[data-error]')).toBeVisible();
+  await widget.getByLabel('건너갈 주소').fill('0x06000000');
+  await expect(widget.locator('[data-error]')).toContainText('32MB');
   await noHorizontalOverflow(page);
 });
 

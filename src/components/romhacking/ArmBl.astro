@@ -1,0 +1,157 @@
+---
+import { encodeBl, hex8, leBytes } from './arm-bl.ts';
+
+const from = 0x020125e4;
+const to = 0x02012bc4;
+const w = encodeBl(from, to);
+const examples = [
+  { label: '게임의 원래 호출', from: 0x020125e8, to: 0x02012ba0 },
+  { label: '첫째 훅', from: 0x020125e4, to: 0x02012bc4 },
+  { label: '둘째 훅', from: 0x02012674, to: 0x02012bc4 },
+];
+---
+
+<section class="widget arm-bl" data-arm-bl aria-labelledby="arm-bl-title">
+  <h3 class="widget-title" id="arm-bl-title">
+    BL 계산기
+  </h3>
+  <p class="widget-help">
+    BL을 놓을 주소와 건너갈 주소로 4바이트 명령을 만들고, 반대로 롬의 4바이트에서 목적지를 읽습니다.{' '}
+    <span class="live-only">주소를 고치거나 예시를 눌러 보세요.</span>
+  </p>
+  <div class="ab-inputs live-only">
+    <label>
+      BL을 놓을 주소
+      <input type="text" value={hex8(from)} maxlength="10" data-from aria-describedby="arm-bl-error" />
+    </label>
+    <label>
+      건너갈 주소
+      <input type="text" value={hex8(to)} maxlength="10" data-to aria-describedby="arm-bl-error" />
+    </label>
+    <label>
+      롬의 4바이트(작은 자리부터)
+      <input type="text" value={leBytes(w)} maxlength="11" data-bytes aria-describedby="arm-bl-error" />
+    </label>
+  </div>
+  <p class="widget-error live-only" id="arm-bl-error" data-error hidden></p>
+  <div class="ab-examples live-only" role="group" aria-label="예시">
+    {examples.map(e => (
+      <button type="button" class="widget-btn" data-ex-from={e.from} data-ex-to={e.to}>
+        {e.label}
+      </button>
+    ))}
+  </div>
+  <dl class="readout">
+    <div>
+      <dt>거리</dt>
+      <dd>
+        <code data-diff>
+          {hex8(to)} − ({hex8(from)} + 8) = 0x{(to - from - 8).toString(16).toUpperCase()}
+        </code>
+      </dd>
+    </div>
+    <div>
+      <dt>명령 값</dt>
+      <dd>
+        <code data-word>0x{w.toString(16).toUpperCase()}</code>
+      </dd>
+    </div>
+    <div>
+      <dt>롬 바이트</dt>
+      <dd>
+        <code data-le>{leBytes(w)}</code>
+      </dd>
+    </div>
+  </dl>
+  <p class="visually-hidden" aria-live="polite" data-live></p>
+</section>
+
+<script>
+  import { decodeBl, encodeBl, hex8, leBytes, parseBytes, parseHex } from './arm-bl.ts';
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-arm-bl]')) {
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel);
+    const fromIn = q<HTMLInputElement>('[data-from]');
+    const toIn = q<HTMLInputElement>('[data-to]');
+    const bytesIn = q<HTMLInputElement>('[data-bytes]');
+    const error = q<HTMLElement>('[data-error]');
+    const text = (sel: string, v: string) => {
+      const el = q<HTMLElement>(sel);
+      if (el) el.textContent = v;
+    };
+    const fail = (input: HTMLInputElement | null, message: string) => {
+      for (const i of [fromIn, toIn, bytesIn])
+        i?.setAttribute('aria-invalid', i === input && message ? 'true' : 'false');
+      if (error) {
+        error.hidden = !message;
+        error.textContent = message;
+      }
+    };
+    const show = (from: number, to: number, w: number) => {
+      const diff = to - from - 8;
+      text(
+        '[data-diff]',
+        `${hex8(to)} − (${hex8(from)} + 8) = ${diff < 0 ? '−' : ''}0x${Math.abs(diff).toString(16).toUpperCase()}`,
+      );
+      text('[data-word]', `0x${w.toString(16).toUpperCase()}`);
+      text('[data-le]', leBytes(w));
+      text('[data-live]', `${hex8(from)}에 놓는 BL: ${leBytes(w)}`);
+    };
+    const fromAddresses = () => {
+      const from = parseHex(fromIn?.value ?? '');
+      const to = parseHex(toIn?.value ?? '');
+      if (from === null || to === null) return fail(from === null ? fromIn : toIn, '주소는 16진수로 적어 주세요.');
+      try {
+        const w = encodeBl(from, to);
+        fail(null, '');
+        if (bytesIn) bytesIn.value = leBytes(w);
+        show(from, to, w);
+      } catch (e) {
+        fail(toIn, e instanceof Error ? e.message : String(e));
+      }
+    };
+    fromIn?.addEventListener('input', fromAddresses);
+    toIn?.addEventListener('input', fromAddresses);
+    bytesIn?.addEventListener('input', () => {
+      const from = parseHex(fromIn?.value ?? '');
+      const w = parseBytes(bytesIn.value);
+      const to = from === null || w === null ? undefined : decodeBl(from, w);
+      if (from === null || w === null || to === undefined)
+        return fail(bytesIn, '바이트 넷을 띄어 적어 주세요. BL이 아닌 명령은 읽지 않습니다.');
+      fail(null, '');
+      if (toIn) toIn.value = hex8(to);
+      show(from, to, w);
+    });
+    for (const b of root.querySelectorAll<HTMLButtonElement>('[data-ex-from]'))
+      b.addEventListener('click', () => {
+        if (fromIn) fromIn.value = hex8(Number(b.dataset['exFrom']));
+        if (toIn) toIn.value = hex8(Number(b.dataset['exTo']));
+        fromAddresses();
+      });
+    root.classList.add('is-live');
+  }
+</script>
+
+<style is:global>
+  .arm-bl .ab-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 8px 12px;
+    margin: 0 0 8px;
+  }
+  .arm-bl .ab-inputs label {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+  .arm-bl .ab-inputs input {
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .arm-bl .ab-examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 10px;
+  }
+</style>

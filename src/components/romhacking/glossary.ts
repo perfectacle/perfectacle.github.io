@@ -30,6 +30,7 @@ type Where =
   | 'nds/emulator'
   | 'nds/cpu'
   | 'nds/assembly'
+  | 'nds/hooking'
   | 'music-loop';
 
 export interface GlossaryEntry {
@@ -635,6 +636,13 @@ const RAW: [string, string, Where, string, string][] = [
     'nds/assembly',
     'literal',
     '명령에 바로 넣을 수 없는 32비트 값을 함수 뒤에 적어 두고 PC 기준으로 읽어 오는 자리',
+  ],
+  [
+    'BLZ',
+    'backward LZ',
+    'nds/hooking',
+    'steps',
+    'DS의 ARM9 프로그램과 오버레이를 줄이는 압축. 끝에서부터 앞쪽으로 풉니다',
   ],
   ['LCP', 'Largest Contentful Paint', 'music-loop', 'web', '첫 화면에서 가장 큰 요소가 그려지기까지의 시간'],
 ];
