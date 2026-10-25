@@ -1,10 +1,11 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
 import SseqSteps from '../../../../components/romhacking/SseqSteps.astro';
 import { GHOST_TRICK_PATCH, analysisUrl, sourceFileUrl } from '../../../../lib/kr-patches.ts';
-import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -48,9 +49,9 @@ const blocks = [
   </h2>
   <p>
     슈퍼 패미콤은 소리 전용 CPU(SPC700)가 따로 있고, 본체 CPU와는 포트 네 개로만 주고받았습니다(
-    <a href={chapterHref(13)}>13장</a>). DS는 두 CPU 가운데 ARM7이 소리를 맡습니다. 소리 칩의 레지스터는 ARM7에서만
-    보이고, ARM7에서 도는 사운드 드라이버가 악보를 읽어 채널마다 「이 주소의 표본을 이 높이와 음량으로 울려라」를 적어
-    넣습니다.
+    <ChapterLink to="sfc/sound" />
+    ). DS는 두 CPU 가운데 ARM7이 소리를 맡습니다. 소리 칩의 레지스터는 ARM7에서만 보이고, ARM7에서 도는 사운드
+    드라이버가 악보를 읽어 채널마다 「이 주소의 표본을 이 높이와 음량으로 울려라」를 적어 넣습니다.
   </p>
   <p>
     DS의 소리 채널은 16개입니다. 채널마다 메모리의 표본을 8비트·16비트 PCM이나 IMA-ADPCM(4비트 압축)으로 읽어 울리고,
@@ -62,8 +63,9 @@ const blocks = [
   </h2>
   <p>
     닌텐도 SDK로 만든 게임은 소리를 대개 <code>.sdat</code> 파일 하나에 모아 둡니다. 고스트 트릭은{' '}
-    <code>sound_data.sdat</code>(15,257,056바이트)입니다. 파일 안에도 15장의 롬처럼 이름 표(SYMB), 정보 표(INFO), 위치
-    표(FAT), 내용(FILE)이 있어서, 곡 이름으로 정보를 찾고 정보 표의 파일 번호로 내용을 찾습니다.
+    <code>sound_data.sdat</code>(15,257,056바이트)입니다. 파일 안에도 <ChapterLink to="nds/filesystem" />의 롬처럼 이름
+    표(SYMB), 정보 표(INFO), 위치 표(FAT), 내용(FILE)이 있어서, 곡 이름으로 정보를 찾고 정보 표의 파일 번호로 내용을
+    찾습니다.
   </p>
   <div class="table-wrap" tabindex="0">
     <table>
@@ -174,10 +176,11 @@ const blocks = [
   </p>
   <h3>한글패치 페이지의 배경 음악: 녹음 대신 합성</h3>
   <p>
-    다른 게임 페이지는 에뮬레이터 소리를 녹음해 반복 구간을 찾았습니다(<a href={chapterHref(14)}>14장</a>). 이 곡은
-    녹음으로는 이음매가 맞지 않았습니다. 녹음본은 반복할 때마다 소리가 조금씩 달랐고, 녹음에서 상관으로 잡은 반복 길이는
-    55.51초로 실제 54.87초와 달랐습니다. 반복 한 바퀴가 시퀀서 갱신 주기로 10,532.57번이라 정수가 아니어서, 회차마다
-    틱과 엔벨로프 갱신이 어긋나는 것도 이유일 수 있습니다.
+    다른 게임 페이지는 에뮬레이터 소리를 녹음해 반복 구간을 찾았습니다(
+    <ChapterLink to="common/music-loop" />
+    ). 이 곡은 녹음으로는 이음매가 맞지 않았습니다. 녹음본은 반복할 때마다 소리가 조금씩 달랐고, 녹음에서 상관으로 잡은
+    반복 길이는 55.51초로 실제 54.87초와 달랐습니다. 반복 한 바퀴가 시퀀서 갱신 주기로 10,532.57번이라 정수가 아니어서,
+    회차마다 틱과 엔벨로프 갱신이 어긋나는 것도 이유일 수 있습니다.
   </p>
   <p>
     그래서 위의 형식대로 악보·악기 표·파형을 직접 읽어 합성했습니다. 반복 한 바퀴가 정수 개 표본이 되게 틱 간격을

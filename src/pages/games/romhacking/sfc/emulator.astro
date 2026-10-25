@@ -1,4 +1,5 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
@@ -11,7 +12,7 @@ import {
   sourceFileUrl,
   toolkitFileUrl,
 } from '../../../../lib/kr-patches.ts';
-import { TOOLKIT_README_KO, chapterBySlug, chapterPath, notePath } from '../../../../components/romhacking/chapters.ts';
+import { TOOLKIT_README_KO, notePath, fillChapterRefs } from '../../../../components/romhacking/chapters.ts';
 import { TOOLKIT_LUA } from '../../../../components/kr-patch/source-links.ts';
 
 const MESEN = 'https://github.com/SourMesen/Mesen2/blob/master';
@@ -112,13 +113,6 @@ const references = [
     note: '디버그 메뉴로 장면 띄우기, 장면 376개 회귀, 코어별 결과',
   },
 ];
-const ASSEMBLY = chapterPath(chapterBySlug('sfc', 'assembly'));
-const BANKS = chapterPath(chapterBySlug('sfc', 'banks'));
-const GRAPHICS = chapterPath(chapterBySlug('sfc', 'graphics'));
-const TEXT = chapterPath(chapterBySlug('sfc', 'text'));
-const HOOKING = chapterPath(chapterBySlug('sfc', 'hooking'));
-const LZSS = chapterPath(chapterBySlug('common', 'lzss'));
-const EXPANSION = chapterPath(chapterBySlug('sfc', 'expansion'));
 
 const viewers = [
   {
@@ -127,7 +121,10 @@ const viewers = [
   },
   {
     name: '타일·타일맵·팔레트 보기',
-    text: 'VRAM의 타일을 bpp와 팔레트를 골라 그림으로 보고, BG 타일맵이 어느 타일을 쓰는지, CGRAM의 색이 무엇인지 봅니다(7장).',
+    text: fillChapterRefs(
+      'VRAM의 타일을 bpp와 팔레트를 골라 그림으로 보고, BG 타일맵이 어느 타일을 쓰는지, CGRAM의 색이 무엇인지 봅니다({sfc/graphics}).',
+      'sfc',
+    ),
   },
   {
     name: '추적 기록(Trace Logger)',
@@ -278,9 +275,11 @@ const cores = [
   </Figure>
   <p>
     글자를 그대로 VRAM에 올리는 게임이라면 3단계가 없고, 대사가 압축되어 있다면 4단계에서 압축을 푸는 코드를 먼저 만나게
-    됩니다(<a href={`${LZSS}#find`}>9장</a>). 어느 경우든 "결과에서 한 단계씩 원인으로" 거슬러 오른다는 점은 같습니다.
-    단계마다 찾은 주소는 <a href={BANKS}>4장</a>의 방법으로 파일 오프셋으로 바꾸고, <a href={ASSEMBLY}>5장</a>처럼
-    역어셈블해 읽습니다.
+    됩니다(
+    <ChapterLink to="common/lzss" hash="find" />
+    ). 어느 경우든 "결과에서 한 단계씩 원인으로" 거슬러 오른다는 점은 같습니다. 단계마다 찾은 주소는{' '}
+    <ChapterLink to="sfc/banks" />의 방법으로 파일 오프셋으로 바꾸고, <ChapterLink to="sfc/assembly" />
+    처럼 역어셈블해 읽습니다.
   </p>
 
   <Deeper title="조건식, 이벤트 뷰어 표시, DMA로 쓴 값 따라가기">
@@ -313,8 +312,9 @@ const cores = [
     ))}
   </ul>
   <p>
-    VRAM 보기에서 주소를 읽을 때는 <a href={`${GRAPHICS}#vram`}>7장</a>에서 본 것처럼 VRAM 주소가 워드 단위인지 바이트
-    단위인지 먼저 확인합니다. 게임이 레지스터에 적는 값은 워드 주소이고, 메모리 보기는 보통 바이트 위치로 보여 줍니다.
+    VRAM 보기에서 주소를 읽을 때는 <ChapterLink to="sfc/graphics" hash="vram" />
+    에서 본 것처럼 VRAM 주소가 워드 단위인지 바이트 단위인지 먼저 확인합니다. 게임이 레지스터에 적는 값은 워드 주소이고,
+    메모리 보기는 보통 바이트 위치로 보여 줍니다.
   </p>
 
   <h2 id="lua">
@@ -627,8 +627,9 @@ const cores = [
     </li>
     <li>
       <strong>플래시 카트리지</strong>: 롬 파일을 SD 카드에서 읽어 실기에서 돌리는 카트리지는 헤더와 파일 크기로 매핑과
-      세이브 RAM 크기를 정합니다(<a href={`${EXPANSION}#compat`}>11장</a>). 늘린 롬이나 세이브 크기를 바꾼 패치는 여기서
-      따로 확인해야 합니다.
+      세이브 RAM 크기를 정합니다(
+      <ChapterLink to="sfc/expansion" hash="compat" />
+      ). 늘린 롬이나 세이브 크기를 바꾼 패치는 여기서 따로 확인해야 합니다.
     </li>
   </ul>
   <p>
@@ -695,8 +696,8 @@ const cores = [
   </h2>
   <p>
     롬 파일 없이 따라 할 수 있도록, 위에서 쓴 시험 롬을 만드는 Python 스크립트를 그대로 싣습니다. 128KB LoROM이고,
-    코드는 <a href={ASSEMBLY}>5장</a>의 명령만 씁니다. 리셋에서 화면을 켜고 NMI와 자동 컨트롤러 읽기를 켠 뒤 기다리고,
-    NMI마다 <code>$7E:0010</code>의 프레임 수를 1 올리고 배경색을 칠합니다.
+    코드는 <ChapterLink to="sfc/assembly" />의 명령만 씁니다. 리셋에서 화면을 켜고 NMI와 자동 컨트롤러 읽기를 켠 뒤
+    기다리고, NMI마다 <code>$7E:0010</code>의 프레임 수를 1 올리고 배경색을 칠합니다.
   </p>
   <pre tabindex="0"><code>{`# mkrom.py: 128KB LoROM 시험 롬. 배경색은 $7E:0012, A를 누르는 동안은 초록, $7E:0010은 NMI 수
 import sys
@@ -829,8 +830,8 @@ krpatch: error: line 2: frame is after 'end' at frame 300</code></pre>
   </p>
   <p class="muted">
     이 장의 출력은 kr-patch-toolkit 0.2.0, Mesen 2.1.1, 네 패치의 <code>compat/cores/</code>에 있던 libretro 코어로
-    macOS에서 돌린 결과입니다. 끝으로 되돌아보면 <a href={TEXT}>8장</a>의 대사 구조도, <a href={HOOKING}>6장</a>의
-    후킹도 이 장의 도구로 확인한 것입니다.
+    macOS에서 돌린 결과입니다. 끝으로 되돌아보면 <ChapterLink to="sfc/text" />의 대사 구조도,{' '}
+    <ChapterLink to="sfc/hooking" />의 후킹도 이 장의 도구로 확인한 것입니다.
   </p>
 </GuideChapter>
 

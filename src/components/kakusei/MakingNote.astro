@@ -1,4 +1,5 @@
 ---
+import ChapterLink from '../romhacking/ChapterLink.astro';
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import MakingIntro from './MakingIntro.astro';
 import NoteRelated from '../romhacking/NoteRelated.astro';
@@ -9,7 +10,7 @@ import ToolFiles from '../kr-patch/ToolFiles.astro';
 import MakingSources from '../kr-patch/MakingSources.astro';
 import { sourceFileUrl, sourceUrl, TOTSUGEKI_PATCH, type KrPatch } from '../../lib/kr-patches';
 import { GLOSSARY_PATH } from '../romhacking/glossary';
-import { notePath } from '../romhacking/chapters';
+import { notePath, type ChapterKey } from '../romhacking/chapters';
 import SourceFile from '../kr-patch/SourceFile.astro';
 
 interface Props {
@@ -21,8 +22,6 @@ const base = patch.path;
 const img = (name: string) => `${base}/images/making/${name}`;
 const source = sourceUrl(patch);
 const totsugeki = notePath(TOTSUGEKI_PATCH);
-const ch = (slug: string, hash = '') => `/games/romhacking/sfc/${slug}/${hash && `#${hash}`}`;
-const common = (slug: string, hash = '') => `/games/romhacking/${slug}/${hash && `#${hash}`}`;
 
 const versions = [
   {
@@ -50,14 +49,14 @@ const versions = [
   },
 ];
 
-const readFirst = [
-  { href: common('rom-patch'), label: '0장 롬과 패치', why: 'IPS 패치가 무엇을 적는지' },
-  { href: common('endian'), label: '2장 엔디안', why: '2바이트 글자 코드와 포인터를 거꾸로 읽는 이유' },
-  { href: ch('banks'), label: '4장 주소와 뱅크', why: '$99:A9BE 같은 주소를 파일 위치로 바꾸는 법' },
-  { href: ch('text'), label: '8장 대사는 어떻게 저장되나', why: '글자표와 포인터 표' },
-  { href: ch('graphics'), label: '7장 그림과 글자', why: '16×16 글자를 8×8 타일 네 장으로 나누는 법' },
-  { href: common('lzss'), label: '9장 압축 ① RLE·LZSS', why: '타이틀 그림 압축' },
-  { href: ch('emulator'), label: '12장 에뮬레이터로 확인', why: 'Lua 스크립트와 여러 에뮬레이터 비교' },
+const readFirst: { to: ChapterKey; why: string }[] = [
+  { to: 'common/rom-patch', why: 'IPS 패치가 무엇을 적는지' },
+  { to: 'common/endian', why: '2바이트 글자 코드와 포인터를 거꾸로 읽는 이유' },
+  { to: 'common/lzss', why: '타이틀 그림 압축' },
+  { to: 'sfc/banks', why: '$99:A9BE 같은 주소를 파일 위치로 바꾸는 법' },
+  { to: 'sfc/graphics', why: '16×16 글자를 8×8 타일 네 장으로 나누는 법' },
+  { to: 'sfc/text', why: '글자표와 포인터 표' },
+  { to: 'sfc/emulator', why: 'Lua 스크립트와 여러 에뮬레이터 비교' },
 ];
 
 const memories = [
@@ -320,7 +319,7 @@ const buildSteps = [
 <ul class="notes">
   {readFirst.map(r => (
     <li>
-      <a href={r.href}>{r.label}</a> — {r.why}
+      <ChapterLink to={r.to} title /> — {r.why}
     </li>
   ))}
 </ul>
@@ -356,7 +355,8 @@ const buildSteps = [
 <p>
   <code>0xCA9BE</code> 같은 파일 오프셋은 롬 파일을 처음부터 센 위치이고, <code>$99:A9BE</code> 같은 슈퍼 패미콤 주소는
   CPU가 보는 <code>뱅크:주소</code>입니다. 이 게임은 LoROM이라 뱅크마다 뒤쪽 32KB($8000–$FFFF)에만 롬이 보입니다(
-  <a href={ch('banks', 'mapping')}>4장의 LoROM</a>). 그래서 다음처럼 바꿉니다.
+  <ChapterLink to="sfc/banks" hash="mapping" text="의 LoROM" />
+  ). 그래서 다음처럼 바꿉니다.
 </p>
 <pre tabindex="0"><code>파일 오프셋 = (뱅크 &amp; 0x7F) × 0x8000 + (주소 &amp; 0x7FFF)
 $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
@@ -407,7 +407,8 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </div>
 <p>
   나머지 뱅크($85–$87, $8A–$97, $A0–$B3, $B5, $B8–$BF)는 세 롬이 같습니다. 롬 크기도 원본과 같은 2MB라, 롬을 늘리지
-  않고(<a href={ch('expansion', 'instead')}>11장의 늘리지 않고 자리 만들기</a>) 빈 곳에 맞춰 넣었습니다.
+  않고(
+  <ChapterLink to="sfc/expansion" hash="instead" text="의 늘리지 않고 자리 만들기" />) 빈 곳에 맞춰 넣었습니다.
 </p>
 
 <h3>버전마다 바뀐 뱅크</h3>
@@ -431,7 +432,8 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 <p>
   다음 사람이 무언가를 더 넣을 때 쓸 수 있는 곳입니다. 다만 0xFF가 이어진다고 다 빈 곳은 아닙니다. v1.1은 그렇게 믿고
   넣었다가 진행 버그를 만들었습니다(<a href="#making-bugfix">8절</a>,{' '}
-  <a href={ch('hooking', 'space')}>6장의 빈 공간 찾기</a>).
+  <ChapterLink to="sfc/hooking" hash="space" text="의 빈 공간 찾기" />
+  ).
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -460,9 +462,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 <NoteRelated patch={patch} id="making-dialogue" />
 <p>
   대사 글자 하나는 16비트(2바이트) 코드이고, 작은 쪽 바이트를 먼저 적습니다(
-  <a href={common('endian', 'order')}>2장의 리틀 엔디안</a>). <code>0A 00</code>은 줄바꿈, <code>00 00</code>은 대사
-  끝입니다. 크리링의 대사 하나를 롬에서 그대로 꺼내면 이렇습니다. 위가 롬의 바이트, 아래가 그 바이트가 뜻하는
-  글자입니다.
+  <ChapterLink to="common/endian" hash="order" text="의 리틀 엔디안" />
+  ). <code>0A 00</code>은 줄바꿈, <code>00 00</code>은 대사 끝입니다. 크리링의 대사 하나를 롬에서 그대로 꺼내면
+  이렇습니다. 위가 롬의 바이트, 아래가 그 바이트가 뜻하는 글자입니다.
 </p>
 <ul class="byte-strip" aria-label={`크리링 대사의 바이트: ${lineBytes.map(([b, c]) => `${b} = ${c}`).join(', ')}`}>
   {lineBytes.map(([b, c]) => (
@@ -474,15 +476,17 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </ul>
 <p>
   <code>A2 06</code>은 거꾸로 읽어 코드 <code>$06A2</code>이고, 글자 표에서 「크」입니다. 이 숫자와 글자의 대응표를 글자
-  표라고 합니다(<a href={ch('text', 'table')}>8장</a>). 일본판의 글자 표는 롬에 없어서, v1.1 때 만든 표에 v1.2와 v1.3이
-  고친 것을 더해 씁니다.
+  표라고 합니다(
+  <ChapterLink to="sfc/text" hash="table" />
+  ). 일본판의 글자 표는 롬에 없어서, v1.1 때 만든 표에 v1.2와 v1.3이 고친 것을 더해 씁니다.
 </p>
 
 <h3>포인터 표 따라가기</h3>
 <p>
   대사 ID는 $000부터 $F94까지 4천 개 가까이 됩니다. 스크립트의 대사 명령(0x08)이 ID를 주면, 게임은 ID 범위로 뱅크를
-  고르고 그 뱅크 첫머리의 포인터 표에서 문자열 위치를 찾습니다(<a href={ch('text', 'pointers')}>8장의 포인터 표</a>). 위
-  크리링 대사는 ID <code>$2A7</code>입니다.
+  고르고 그 뱅크 첫머리의 포인터 표에서 문자열 위치를 찾습니다(
+  <ChapterLink to="sfc/text" hash="pointers" text="의 포인터 표" />
+  ). 위 크리링 대사는 ID <code>$2A7</code>입니다.
 </p>
 <Figure caption="대사 ID $2A7에서 롬 속 문자열까지. 포인터는 2바이트라 같은 뱅크 안만 가리킵니다" max={560}>
   <svg viewBox="0 0 360 312" role="img" aria-labelledby="kk-ptr-t kk-ptr-d">
@@ -615,8 +619,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 <NoteRelated patch={patch} id="making-relocate" />
 <p>
   포인터는 2바이트라 뱅크 번호 없이 같은 뱅크 안의 주소만 가리킵니다. 그래서 고친 대사가 원래보다 길면 다른 뱅크로는 못
-  보내고, 같은 뱅크의 빈 공간으로 옮긴 뒤 포인터만 고칩니다(<a href={ch('text', 'grow')}>8장의 번역이 길어졌을 때</a>).
-  여러 ID가 한 문자열을 같이 가리키는 경우도 있어서, 그런 문자열은 제자리에서 고치지 않고 새 자리에 따로 씁니다.
+  보내고, 같은 뱅크의 빈 공간으로 옮긴 뒤 포인터만 고칩니다(
+  <ChapterLink to="sfc/text" hash="grow" text="의 번역이 길어졌을 때" />
+  ). 여러 ID가 한 문자열을 같이 가리키는 경우도 있어서, 그런 문자열은 제자리에서 고치지 않고 새 자리에 따로 씁니다.
   제자리에서 고치면 같은 문자열을 쓰는 다른 ID의 대사까지 바뀝니다.
 </p>
 <p>
@@ -667,8 +672,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </h2>
 <NoteRelated patch={patch} id="making-font" />
 <p>
-  대사 폰트는 16×16 픽셀이고, 8×8 타일 4장으로 나뉘어 들어 있습니다(<a href={ch('graphics', 'fonts')}>7장의 폰트</a>).
-  롬에 저장된 시트는 한 줄에 타일 16장이라 글자 8개의 위 절반이 한 줄, 아래 절반이 그다음 줄입니다. 그래서
+  대사 폰트는 16×16 픽셀이고, 8×8 타일 4장으로 나뉘어 들어 있습니다(
+  <ChapterLink to="sfc/graphics" hash="fonts" text="의 폰트" />
+  ). 롬에 저장된 시트는 한 줄에 타일 16장이라 글자 8개의 위 절반이 한 줄, 아래 절반이 그다음 줄입니다. 그래서
   0x108–0x10F처럼 아래 절반 줄에 해당하는 코드는 글자로 쓰지 않습니다.
 </p>
 <figure class="paper">
@@ -726,8 +732,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </ul>
 <p>
   줄마다 두 바이트가 늘 같습니다. 2bpp 타일은 한 줄을 비트평면 두 장(
-  <a href={ch('graphics', 'bitplanes')}>7장의 비트평면</a>)으로 적는데, 이 폰트는 한 가지 색만 써서 두 평면에 같은 값이
-  들어갑니다. <code>7E</code> = 01111110이 「ㄲ」의 가로줄, <code>12</code> = 00010010이 두 세로줄입니다.
+  <ChapterLink to="sfc/graphics" hash="bitplanes" text="의 비트평면" />
+  )으로 적는데, 이 폰트는 한 가지 색만 써서 두 평면에 같은 값이 들어갑니다. <code>7E</code> = 01111110이 「ㄲ」의
+  가로줄, <code>12</code> = 00010010이 두 세로줄입니다.
 </p>
 <figure class="paper narrow">
   <ZoomImage
@@ -805,9 +812,10 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 <h3 id="making-title-gfx">타이틀 로고</h3>
 <NoteRelated patch={patch} id="making-title-gfx" />
 <p>
-  타이틀 로고는 롬에 LZSS로 압축돼 있습니다(<a href={common('lzss', 'lzss')}>9장의 LZSS</a>). 앞에서 나온 것과 같은
-  내용이 또 나오면 바이트를 다시 적지 않고 "몇 바이트 앞에서 몇 바이트를 베껴라" 라고만 적는 방식입니다. 그래서 롬에서
-  바이트만 바꿔서는 로고를 고칠 수 없고, 풀어서 그림을 고친 뒤 다시 압축해야 합니다.
+  타이틀 로고는 롬에 LZSS로 압축돼 있습니다(
+  <ChapterLink to="common/lzss" hash="lzss" text="의 LZSS" />
+  ). 앞에서 나온 것과 같은 내용이 또 나오면 바이트를 다시 적지 않고 "몇 바이트 앞에서 몇 바이트를 베껴라" 라고만 적는
+  방식입니다. 그래서 롬에서 바이트만 바꿔서는 로고를 고칠 수 없고, 풀어서 그림을 고친 뒤 다시 압축해야 합니다.
 </p>
 <p>
   압축된 자료가 어디 있는지는 5바이트 항목이 알려 줍니다. 타이틀 글자가 그려진 배경 레이어(BG3) 타일의 항목은 파일{' '}
@@ -877,7 +885,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
     </li>
     <li>
       <code>$80:9DA7</code>은 같은 해제 뒤에 타일마다 "평면 0의 8줄, 평면 1의 8줄" 순서를 슈퍼 패미콤 2bpp 순서(줄마다
-      두 평면을 번갈아)로 바꿉니다(<a href={common('lzss', 'variants')}>9장의 변형</a>).
+      두 평면을 번갈아)로 바꿉니다(
+      <ChapterLink to="common/lzss" hash="variants" text="의 변형" />
+      ).
     </li>
     <li>
       「DRAGON BALL Z」 로고와 저작권 줄 「(c) BANDAI 1995」는 원본 그대로입니다. 저작권 줄의 © 타일은 두 줄이 같이 쓰기
@@ -955,8 +965,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 <Deeper title="전투 스크립트 명령의 길이">
   <p>
     스크립트를 분기까지 따라가려면 명령마다 몇 바이트인지 알아야 합니다. 모르면 인자를 명령으로 읽어 그 뒤가 전부
-    어긋납니다(<a href={ch('text', 'control')}>8장의 제어 코드</a>). 명령 표는 <code>$82:D14C</code>이고 명령 00이
-    끝입니다.
+    어긋납니다(
+    <ChapterLink to="sfc/text" hash="control" text="의 제어 코드" />
+    ). 명령 표는 <code>$82:D14C</code>이고 명령 00이 끝입니다.
   </p>
   <ul>
     <li>명령 01–03: 3바이트. 뒤 2바이트가 말풍선 ID입니다. 0A·12도 3바이트입니다.</li>
@@ -1189,10 +1200,11 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 <p>
   v1.3은 여기에 「손오공은사이어인」을 더했습니다. 돌격편 한글패치 엔딩이 보여 주는 암호이고, 8자만 치고 입력완료를
   누르면 됩니다. <code>$83:A408</code>이 문장을 못 찾고 끝나는 자리(<code>$83:A4D0</code>)를 새 루틴(
-  <code>$83:FE00</code>)으로 건너가게 바꿔(<a href={ch('hooking', 'jump')}>6장의 후킹</a>) 이 문장과 비교하고, 맞으면
-  데이터 암호를 통과했을 때와 같은 값을 넣습니다. 시작 체력·전투력은 <code>$83:A313</code>과 같은 값입니다. 플레이 시간
-  0시간 2분은 정할 근거가 없어 임의로 고른 값이고, 돌격편 디버그 엔딩 암호에 든 값을 빌렸습니다. 이름은 암호에서
-  가져오지 않아 이름 입력 화면에 각성편 기본 이름이 나옵니다.
+  <code>$83:FE00</code>)으로 건너가게 바꿔(
+  <ChapterLink to="sfc/hooking" hash="jump" text="의 후킹" />) 이 문장과 비교하고, 맞으면 데이터 암호를 통과했을 때와
+  같은 값을 넣습니다. 시작 체력·전투력은 <code>$83:A313</code>과 같은 값입니다. 플레이 시간 0시간 2분은 정할 근거가 없어
+  임의로 고른 값이고, 돌격편 디버그 엔딩 암호에 든 값을 빌렸습니다. 이름은 암호에서 가져오지 않아 이름 입력 화면에
+  각성편 기본 이름이 나옵니다.
 </p>
 <Deeper title="기술 15번이 켜지는 조건, 원작의 어긋남, 같은 모양 글자">
   <p>
@@ -1278,7 +1290,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
   v1.2는 원래 바이트를 되살리고, 그 자리에 있던 문자열을 뒤로 민 다음, 그 문자열을 가리키는 포인터를 같은 만큼
   고쳤습니다. <a href="#making-map">2절</a> 롬 지도의 빨간 줄이 이 두 곳입니다. 대사 8뱅크의 한글 대사는 v1.1에서도 각
   뱅크 안에 들어 있었고, 문제는 대사 밖의 문자열이었습니다. 이제 빈 공간을 쓸 때는 앞뒤에 여유를 두고, 일본판 원본에서도
-  그 자리가 0xFF였는지 확인합니다(<a href={ch('hooking', 'space')}>6장의 빈 공간 찾기</a>).
+  그 자리가 0xFF였는지 확인합니다(
+  <ChapterLink to="sfc/hooking" hash="space" text="의 빈 공간 찾기" />
+  ).
 </p>
 <Deeper title="덮인 자리를 읽는 코드와 옮긴 문자열의 포인터">
   <ul>
@@ -1303,14 +1317,17 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 <p>
   고친 대사가 실제 장면에서 제대로 뜨는지 보려면 그 장면까지 가야 합니다. 처음부터 플레이하는 대신 일본판 롬에 남아 있던
   개발자용 디버그 메뉴로 장면을 바로 시작하고, Mesen 2의 Lua 스크립트로 버튼을 눌러 대사를 넘기며 화면과 대사 ID를
-  기록했습니다(<a href={ch('emulator', 'lua')}>12장의 Lua 스크립트</a>).
+  기록했습니다(
+  <ChapterLink to="sfc/emulator" hash="lua" text="의 Lua 스크립트" />
+  ).
 </p>
 
 <h3 id="making-debug-menu">디버그 메뉴를 여는 두 바이트</h3>
 <NoteRelated patch={patch} id="making-debug-menu" />
 <p>
   전원을 켠 직후 실행되는 코드(<code>$80:805C</code>, 파일 <code>0x5C</code>)의 바이트를 어셈블리로 읽으면 이렇습니다(
-  <a href={ch('assembly', 'branch')}>5장의 분기</a>).
+  <ChapterLink to="sfc/assembly" hash="branch" text="의 분기" />
+  ).
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -1424,12 +1441,12 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 <h3>여러 에뮬레이터</h3>
 <p>
   libretro 코어를 직접 불러 쓰는 작은 프로그램을 만들어, Mesen 2와 같은 입력을 여러 에뮬레이터에 넣었습니다(
-  <a href={ch('emulator', 'cores')}>12장의 여러 코어</a>). 새 게임(헤더 없는 롬과 헤더 있는 롬), 함께 배포한 100%
-  세이브로 이어하기, 디버그 메뉴로 띄운 나레이션(장면 $084)과 전투 말풍선(장면 $00A), 돌격편 디버그 엔딩 암호와
-  「손오공은사이어인」, 틀린 문장, 「체력을늘려줘신룡」 입력을 일본판·v1.2와 비교했습니다. 메모리를 읽을 수 있는
-  코어에서는 장면 번호가 바뀌는 순서가 일본판과 같았고, 같은 프레임의 화면도 같은 대사였습니다. 코어마다 다른 것은
-  글자가 찍히는 타이밍 몇 프레임과 화면 높이뿐이었습니다. 메모리 주소를 알려 주지 않는 bsnes는 Pro Action Replay 치트로
-  40프레임 동안 장면 번호를 넣었습니다.
+  <ChapterLink to="sfc/emulator" hash="cores" text="의 여러 코어" />
+  ). 새 게임(헤더 없는 롬과 헤더 있는 롬), 함께 배포한 100% 세이브로 이어하기, 디버그 메뉴로 띄운 나레이션(장면 $084)과
+  전투 말풍선(장면 $00A), 돌격편 디버그 엔딩 암호와 「손오공은사이어인」, 틀린 문장, 「체력을늘려줘신룡」 입력을
+  일본판·v1.2와 비교했습니다. 메모리를 읽을 수 있는 코어에서는 장면 번호가 바뀌는 순서가 일본판과 같았고, 같은 프레임의
+  화면도 같은 대사였습니다. 코어마다 다른 것은 글자가 찍히는 타이밍 몇 프레임과 화면 높이뿐이었습니다. 메모리 주소를
+  알려 주지 않는 bsnes는 Pro Action Replay 치트로 40프레임 동안 장면 번호를 넣었습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -1565,7 +1582,9 @@ $99:A9BE → 0x19 × 0x8000 + 0x29BE = 0xCA9BE</code></pre>
 </div>
 <p>
   <a href={source}>패치 소스</a>의 게임 폴더에 일본판 원본을 넣고 빌드 스크립트를 돌리면 아래 순서로 v1.3과 같은 롬이
-  나옵니다(<a href={common('rom-patch', 'ips')}>0장의 IPS</a>).
+  나옵니다(
+  <ChapterLink to="common/rom-patch" hash="ips" text="의 IPS" />
+  ).
 </p>
 <ol class="flow">
   {buildSteps.map(step => (

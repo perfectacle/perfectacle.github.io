@@ -20,6 +20,9 @@ const PAGES: Record<string, { scriptKb: number; tbtMs?: number }> = {
   // The patch logic loads only after a file is picked; the first view ships just the patch box wiring.
   ...Object.fromEntries(ALL_KR_PATCHES.map(patch => [`${patch.path}/`, { scriptKb: 5 }])),
   '/games/romhacking/': { scriptKb: 60 },
+  '/games/romhacking/common/': { scriptKb: 60 },
+  '/games/romhacking/sfc/': { scriptKb: 60 },
+  '/games/romhacking/nds/': { scriptKb: 60 },
   // Widget pages: each widget's script is bundled with the page; the CPU stepper carries the small interpreter.
   '/games/romhacking/numbers/': { scriptKb: 60 },
   '/games/romhacking/sfc/banks/': { scriptKb: 60 },

@@ -1,8 +1,8 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import ArmBl from '../../../../components/romhacking/ArmBl.astro';
-import { chapterHref } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -67,8 +67,9 @@ const steps = [
   <p>
     코드를 고치는 방법은 둘입니다. 명령을 같은 크기의 다른 명령으로 <strong>제자리에서 바꾸거나</strong>, 명령 하나를
     점프로 바꿔 <strong>새 코드로 건너갔다 돌아오는</strong> 것(후킹)입니다. 슈퍼 패미콤에서 본 방법과 같습니다(
-    <a href={chapterHref(6)}>6장</a>). 고스트 트릭 한글패치는 코드를 고치지 않았으므로, 이 장의 예는 21장에서 읽은 글꼴
-    고르기 함수를 직접 고쳐 보고 에뮬레이터로 확인한 것입니다.
+    <ChapterLink to="sfc/hooking" />
+    ). 고스트 트릭 한글패치는 코드를 고치지 않았으므로, 이 장의 예는 <ChapterLink to="nds/assembly" />
+    에서 읽은 글꼴 고르기 함수를 직접 고쳐 보고 에뮬레이터로 확인한 것입니다.
   </p>
 
   <h2 id="steps">
@@ -76,7 +77,8 @@ const steps = [
   </h2>
   <p>
     DS에서는 코드 한 줄을 고치는 데도 순서가 깁니다. ARM9 프로그램이 롬 안에서 압축되어 있기 때문입니다(
-    <a href={`${chapterHref(20)}#ghost-trick`}>20장</a>).
+    <ChapterLink to="nds/cpu" hash="ghost-trick" />
+    ).
   </p>
   <ol>
     {steps.map(s => (
@@ -88,10 +90,11 @@ const steps = [
     12바이트 꼬리 블록(<code>21 06 C0 DE …</code>)이 있고, 0x84800의 오버레이 표까지 0x1CC바이트가 비어 있습니다. ARM9
     프로그램이 커지면 꼬리 블록도 새 끝 뒤로 옮깁니다. 한글패치 v1.1·v1.2 롬은 다시 묶으면서 꼬리 블록 없이 오버레이
     표를 0x84628에 바로 붙여 놓아 빈 곳이 없습니다(
-    <a href={`${chapterHref(15)}#in-patch`}>15장</a>). 이 롬에서는 ARM9 프로그램이 8바이트만 커져도 오버레이 표를
-    덮어써서 게임이 켜지지 않았습니다. 그때는 오버레이 표를 롬 끝으로 옮기고 헤더 0x50을 고쳐야 합니다. 헤더 0x6C의 보안
-    영역 CRC는 롬 0x4000–0x7FFF를 덮는데, 압축 끝 주소(롬 0x4B9C)가 그 안에 있어서 이 값도 맞지 않게 됩니다. 이
-    실험에서는 고치지 않았고 desmume에서는 그대로 켜졌습니다. 실기에서는 확인하지 않았습니다.
+    <ChapterLink to="nds/filesystem" hash="in-patch" />
+    ). 이 롬에서는 ARM9 프로그램이 8바이트만 커져도 오버레이 표를 덮어써서 게임이 켜지지 않았습니다. 그때는 오버레이
+    표를 롬 끝으로 옮기고 헤더 0x50을 고쳐야 합니다. 헤더 0x6C의 보안 영역 CRC는 롬 0x4000–0x7FFF를 덮는데, 압축 끝
+    주소(롬 0x4B9C)가 그 안에 있어서 이 값도 맞지 않게 됩니다. 이 실험에서는 고치지 않았고 desmume에서는 그대로
+    켜졌습니다. 실기에서는 확인하지 않았습니다.
   </p>
 
   <h2 id="inplace">
@@ -105,8 +108,9 @@ const steps = [
   </p>
   <p>
     v1.2 롬에 넣어 첫 내레이션을 찍으면 글자가 모두 알아볼 수 없게 깨집니다. 번호는 대화창 폰트(0)인데 파일은 말풍선
-    폰트라, 16×24 2bpp로 읽어야 할 자리에 16×16 4bpp 데이터를 읽은 것으로 보입니다(<a href={chapterHref(17)}>17장</a>).
-    화면이 바뀌었으므로, 게임이 이 함수가 고른 이름으로 폰트를 읽는다는 것도 알 수 있습니다.
+    폰트라, 16×24 2bpp로 읽어야 할 자리에 16×16 4bpp 데이터를 읽은 것으로 보입니다(
+    <ChapterLink to="nds/graphics" />
+    ). 화면이 바뀌었으므로, 게임이 이 함수가 고른 이름으로 폰트를 읽는다는 것도 알 수 있습니다.
   </p>
 
   <h2 id="bl">
@@ -115,8 +119,8 @@ const steps = [
   <p>
     후킹의 점프는 보통 <code>bl</code>입니다. ARM 상태의 <code>bl</code>은 맨 위 바이트가 <code>EB</code>이고, 아래
     24비트에 목적지까지의 거리를 4바이트 단위로 적습니다. 거리는 BL 명령의 주소 + 8에서 셉니다(PC가 두 명령 앞서 있기
-    때문, <a href={chapterHref(21)}>21장</a>). 24비트에 부호가 있으니 앞뒤로 32MB까지 닿습니다. 메인 RAM이 4MB라 ARM9
-    프로그램 안 어디든 한 번에 갑니다.
+    때문, <ChapterLink to="nds/assembly" />
+    ). 24비트에 부호가 있으니 앞뒤로 32MB까지 닿습니다. 메인 RAM이 4MB라 ARM9 프로그램 안 어디든 한 번에 갑니다.
   </p>
   <ArmBl />
 
@@ -174,7 +178,8 @@ const steps = [
       데이터입니다. 0x020D1A80부터 0x020F1E60까지는 0으로 비우고 쓰는 변수 자리(BSS)이고, 그 뒤가 오버레이 자리입니다.
       그래서 큰 새 코드를 그냥 뒤에 붙일 수는 없습니다. 오버레이 자리에 둘 코드를 따로 올려 주거나, 프로그램을 늘리면서
       BSS 시작을 함께 옮기는 등 더 손이 가는 방법이 필요합니다. 슈퍼 패미콤에서 빈 뱅크를 찾던 일(
-      <a href={`${chapterHref(6)}#space`}>6장</a>)에 해당합니다.
+      <ChapterLink to="sfc/hooking" hash="space" />
+      )에 해당합니다.
     </p>
   </Deeper>
 

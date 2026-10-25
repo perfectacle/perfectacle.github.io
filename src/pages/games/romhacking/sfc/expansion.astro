@@ -1,4 +1,5 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
@@ -12,7 +13,7 @@ import {
   sourceFileUrl,
   toolkitFileUrl,
 } from '../../../../lib/kr-patches.ts';
-import { chapterBySlug, chapterPath, notePath } from '../../../../components/romhacking/chapters.ts';
+import { notePath, fillChapterRefs } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -61,12 +62,6 @@ const references = [
     note: '롬 크기를 4MB로 유지한 이유와 대신 쓴 빈 공간',
   },
 ];
-const NUMBERS = chapterPath(chapterBySlug('common', 'numbers'));
-const BANKS = chapterPath(chapterBySlug('sfc', 'banks'));
-const HOOKING = chapterPath(chapterBySlug('sfc', 'hooking'));
-const TEXT = chapterPath(chapterBySlug('sfc', 'text'));
-const LZSS = chapterPath(chapterBySlug('common', 'lzss'));
-const HUFFMAN = chapterPath(chapterBySlug('common', 'huffman'));
 
 const limits = [
   {
@@ -104,12 +99,15 @@ const instead = [
   {
     name: '같은 뱅크 안에서 다시 채우기',
     who: '돌격편, 각성편 대사',
-    text: '문자열을 처음부터 다시 배치하고 같은 문자열은 하나만 두어 자리를 만듭니다(8장).',
+    text: fillChapterRefs(
+      '문자열을 처음부터 다시 배치하고 같은 문자열은 하나만 두어 자리를 만듭니다({sfc/text}).',
+      'sfc',
+    ),
   },
   {
     name: '압축하기',
     who: '각성편·돌격편 타이틀 그림',
-    text: '새로 그린 그림을 원래 형식으로 다시 압축해 제자리에 넣습니다(9장).',
+    text: fillChapterRefs('새로 그린 그림을 원래 형식으로 다시 압축해 제자리에 넣습니다({common/lzss}).', 'sfc'),
   },
 ];
 ---
@@ -133,9 +131,12 @@ const instead = [
     헤더의 크기 바이트 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    <a href={BANKS}>4장</a>에서 본 내부 헤더(<code>$00:FFC0</code>)의 <code>$FFD7</code>에는 롬 크기가 "1KB를 왼쪽으로
-    n번 민 값"으로 적혀 있습니다(<a href={NUMBERS}>1장</a>). 2의 거듭제곱이 아닌 크기는 올려 적습니다. 파일 오프셋은
-    LoROM과 SA-1이 0x7FD7, HiROM이 0xFFD7, ExHiROM이 0x40FFD7입니다.
+    <ChapterLink to="sfc/banks" />
+    에서 본 내부 헤더(<code>$00:FFC0</code>)의 <code>$FFD7</code>에는 롬 크기가 "1KB를 왼쪽으로 n번 민 값"으로 적혀
+    있습니다(
+    <ChapterLink to="common/numbers" />
+    ). 2의 거듭제곱이 아닌 크기는 올려 적습니다. 파일 오프셋은 LoROM과 SA-1이 0x7FD7, HiROM이 0xFFD7, ExHiROM이
+    0x40FFD7입니다.
   </p>
   <div class="table-scroll" tabindex="0" role="region" aria-labelledby="size-caption">
     <table>
@@ -366,9 +367,9 @@ const instead = [
     ))}
   </ul>
   <p>
-    빈 곳을 찾는 방법과 주의점은 <a href={`${HOOKING}#space`}>6장의 「새 코드를 둘 빈 공간」</a>에, 대사를 같은 뱅크
-    안에서 다시 채우는 방법은 <a href={TEXT}>8장</a>에, 압축은 <a href={LZSS}>9장</a>과 <a href={HUFFMAN}>10장</a>에
-    있습니다.
+    빈 곳을 찾는 방법과 주의점은 <ChapterLink to="sfc/hooking" hash="space" text="의 「새 코드를 둘 빈 공간」" />
+    에, 대사를 같은 뱅크 안에서 다시 채우는 방법은 <ChapterLink to="sfc/text" />
+    에, 압축은 <ChapterLink to="common/lzss" />과 <ChapterLink to="common/huffman" />에 있습니다.
   </p>
 
   <h2 id="in-patch">
@@ -377,10 +378,11 @@ const instead = [
   <h3>제절초: 1MB LoROM을 2MB로</h3>
   <p>
     <a href={`${notePath(OTOGIRISOU_PATCH)}#making-map`}>제절초</a>는 1MB LoROM입니다. 한글패치 v1.0은 압축을 버린 69만
-    바이트짜리 대본을 넣으려고 롬을 2MB로 늘렸습니다(<a href={HUFFMAN}>10장</a>). 1MB LoROM은 뱅크 <code>$00</code>–
-    <code>$1F</code>를 쓰고, 늘린 1MB는 바로 다음 <code>$20</code>–<code>$3F</code>에 나타납니다. 그전까지 앞 1MB의
-    미러가 보이던 자리입니다. 대본은 <code>$20:8000</code>부터 놓였고, v1.1 대본은 <code>$35:AF66</code>에서 끝나{' '}
-    <code>$36</code>–<code>$3F</code>는 아직 0으로 비어 있습니다.
+    바이트짜리 대본을 넣으려고 롬을 2MB로 늘렸습니다(
+    <ChapterLink to="common/huffman" />
+    ). 1MB LoROM은 뱅크 <code>$00</code>–<code>$1F</code>를 쓰고, 늘린 1MB는 바로 다음 <code>$20</code>–<code>$3F</code>
+    에 나타납니다. 그전까지 앞 1MB의 미러가 보이던 자리입니다. 대본은 <code>$20:8000</code>부터 놓였고, v1.1 대본은{' '}
+    <code>$35:AF66</code>에서 끝나 <code>$36</code>–<code>$3F</code>는 아직 0으로 비어 있습니다.
   </p>
   <p>
     앞에서 본 대로 v1.0은 크기 바이트와 체크섬을 고치지 않았고, v1.1이 크기 바이트를 <code>0A</code>에서 <code>0B</code>

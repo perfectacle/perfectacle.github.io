@@ -1,4 +1,5 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import Figure from '../../../../components/romhacking/Figure.astro';
@@ -10,13 +11,7 @@ import {
   sourceFileUrl,
   toolkitFileUrl,
 } from '../../../../lib/kr-patches.ts';
-import {
-  TOOLKIT_README_KO,
-  chapterBySlug,
-  chapterHref,
-  chapterPath,
-  notePath,
-} from '../../../../components/romhacking/chapters.ts';
+import { TOOLKIT_README_KO, notePath } from '../../../../components/romhacking/chapters.ts';
 import { TOOLKIT_LUA } from '../../../../components/kr-patch/source-links.ts';
 
 const FULLSNES = 'https://problemkaputt.de/fullsnes.htm';
@@ -88,14 +83,6 @@ const references = [
     note: '대본의 소리 코드({39}–{3D})를 처리하는 게임 코드가 $00:CD60·$00:CD69·$00:CD45·$00:CD4E를 부르는 모양',
   },
 ];
-const ASSEMBLY = chapterPath(chapterBySlug('sfc', 'assembly'));
-const BANKS = chapterPath(chapterBySlug('sfc', 'banks'));
-const HOOKING = chapterPath(chapterBySlug('sfc', 'hooking'));
-const EMULATOR = chapterPath(chapterBySlug('sfc', 'emulator'));
-const NUMBERS = chapterPath(chapterBySlug('common', 'numbers'));
-const ENDIAN = chapterPath(chapterBySlug('common', 'endian'));
-const LZSS = chapterPath(chapterBySlug('common', 'lzss'));
-const MUSIC = chapterPath(chapterBySlug('common', 'music-loop'));
 
 const aram = [
   { range: '$0000–$00EF', size: '240바이트', what: '제로 페이지: 드라이버의 변수' },
@@ -236,8 +223,9 @@ const probes = [
   </Figure>
   <p>
     롬 해킹에서 소리를 건드릴 일은 생각보다 많습니다. 원하는 곡이 나오게 하거나 효과음을 끄려면 S-CPU가 곡 번호를 보내는
-    곳을 찾아야 하고(<a href={MUSIC}>14장</a>), 화면을 고치다 소리 쪽과 주고받는 순서를 깨뜨리면 게임이 멈춥니다. 그
-    주고받는 길이 다음 절의 포트입니다.
+    곳을 찾아야 하고(
+    <ChapterLink to="common/music-loop" />
+    ), 화면을 고치다 소리 쪽과 주고받는 순서를 깨뜨리면 게임이 멈춥니다. 그 주고받는 길이 다음 절의 포트입니다.
   </p>
 
   <h2 id="ports">
@@ -304,8 +292,8 @@ const probes = [
 
   <p>
     기록의 PC는 포트에 쓴 명령의 다음 명령 주소입니다. 예를 들어 <code>pc=8380F5</code>는 <code>$83:80F2</code>의{' '}
-    <code>STA $2140</code> 다음입니다. 이 값으로 롬에서 올리기 함수를 찾아 <a href={ASSEMBLY}>5장</a>처럼 역어셈블하면,
-    포트를 읽고 비교하며 기다리는 반복이 보입니다.
+    <code>STA $2140</code> 다음입니다. 이 값으로 롬에서 올리기 함수를 찾아 <ChapterLink to="sfc/assembly" />
+    처럼 역어셈블하면, 포트를 읽고 비교하며 기다리는 반복이 보입니다.
   </p>
 
   <Deeper title="IPL 롬 64바이트와 각성편의 블록 목록">
@@ -340,7 +328,7 @@ const probes = [
     <p>
       이 함수가 읽는 블록 목록은 롬에 "길이 2바이트, 받을 주소 2바이트, 데이터"가 이어진 모양이고, 길이가 0이면 그
       주소에서 실행하라는 뜻입니다. 파일 오프셋 0x1C0000에 있는 첫 목록은 이렇게 시작합니다. 2바이트 값은{' '}
-      <a href={`${ENDIAN}#order`}>2장</a>의 리틀 엔디안입니다.
+      <ChapterLink to="common/endian" hash="order" />의 리틀 엔디안입니다.
     </p>
     <ul class="byte-strip" aria-label="파일 0x1C0000의 블록 목록 머리">
       <li class="is-cool">
@@ -396,10 +384,14 @@ const probes = [
   </ul>
   <p>
     다른 게임은 포트를 다르게 나눠 씁니다. 그래도 찾는 방법은 같습니다. <code>$2140</code>–<code>$2143</code>에 쓰는
-    순간을 기록해(<a href={`${EMULATOR}#lua`}>12장</a>), 곡이 바뀌는 장면에서 어떤 값이 어느 포트로 갔는지 보고, 그 값을
-    쓴 PC에서 거꾸로 올라가 곡 번호를 넘겨받는 함수를 찾습니다. 그 함수를 찾으면 곡 번호를 바꾸거나, 효과음 함수 첫
-    바이트를 <code>RTL</code>로 바꿔 효과음을 막을 수 있습니다(<a href={`${HOOKING}#jump`}>6장</a>).{' '}
-    <a href={chapterHref(14)}>14장</a>에서 실제로 그렇게 합니다.
+    순간을 기록해(
+    <ChapterLink to="sfc/emulator" hash="lua" />
+    ), 곡이 바뀌는 장면에서 어떤 값이 어느 포트로 갔는지 보고, 그 값을 쓴 PC에서 거꾸로 올라가 곡 번호를 넘겨받는 함수를
+    찾습니다. 그 함수를 찾으면 곡 번호를 바꾸거나, 효과음 함수 첫 바이트를 <code>RTL</code>로 바꿔 효과음을 막을 수
+    있습니다(
+    <ChapterLink to="sfc/hooking" hash="jump" />
+    ). <ChapterLink to="common/music-loop" />
+    에서 실제로 그렇게 합니다.
   </p>
 
   <h2 id="dsp">
@@ -476,7 +468,8 @@ const probes = [
     <p>
       BRR 블록은 9바이트입니다. 첫 바이트(머리)의 위 4비트는 shift(얼마나 키울지), 그다음 2비트는 필터 번호, 아래
       2비트는 끝·반복 표시입니다. 나머지 8바이트에는 4비트 샘플이 두 개씩, 위 4비트가 먼저 들어 있습니다. 4비트 값은
-      −8–+7로 읽습니다(<a href={`${NUMBERS}#bits`}>1장</a>의 2의 보수).
+      −8–+7로 읽습니다(
+      <ChapterLink to="common/numbers" hash="bits" />의 2의 보수).
     </p>
     <ul class="byte-strip" aria-label="BRR 블록의 머리 C0과 첫 데이터 바이트 7F">
       <li class="is-warm">
@@ -509,8 +502,9 @@ const probes = [
       <code>(4비트 값 &lt;&lt; shift) &gt;&gt; 1</code>이라서 +7은 7 × 4096 ÷ 2 = 14,336, −1은 −2,048이 됩니다. 필터 0은
       이 값을 그대로 씁니다. 필터 1–3은 바로 앞의 한두 샘플에 정해진 비율을 곱해 더합니다. 소리는 앞 샘플과 비슷하게
       이어지기 마련이라, "앞에서 예상한 값과의 차이"만 4비트로 적으면 더 작은 shift로 정밀하게 담을 수 있습니다.{' '}
-      <a href={chapterHref(9)}>9장</a>의 LZSS가 "앞에 나온 것을 다시 쓰는" 압축이었다면(<a href={`${LZSS}#lz`}>9장</a>),
-      BRR은 "앞 값으로 다음 값을 예측하는" 손실 압축입니다.
+      <ChapterLink to="common/lzss" />의 LZSS가 "앞에 나온 것을 다시 쓰는" 압축이었다면(
+      <ChapterLink to="common/lzss" hash="lz" />
+      ), BRR은 "앞 값으로 다음 값을 예측하는" 손실 압축입니다.
     </p>
     <p>
       끝 비트가 켜진 블록을 다 읽으면, 반복 비트도 켜져 있으면 샘플의 반복 주소로 돌아가 계속 울리고 아니면 소리를
@@ -576,7 +570,9 @@ const probes = [
     이 블로그의 배경음악은 SPC 파일로 만들지 않았습니다. 처음에는 Mesen 2의 Lua로 소리 쪽 상태를 떠서 SPC 파일을 만들려
     했지만, <code>emu.getState()</code>가 내주는 S-DSP 상태에는 음성마다의 엔벨로프·샘플 주소·피치와 에코 길이 같은 값만
     있고 DSP 레지스터 128바이트를 그대로 담은 항목이 없었습니다. 그래서 에뮬레이터가 내는 소리를 그대로 녹음하는 길로
-    바꿨습니다(<a href={MUSIC}>14장</a>).
+    바꿨습니다(
+    <ChapterLink to="common/music-loop" />
+    ).
   </p>
   <Deeper title="SPC 파일의 배치">
     <ul>
@@ -659,7 +655,7 @@ const probes = [
     위 도구의 기록에서 150–186프레임에 올라간 곡은 데이터 2,194바이트와 샘플 <code>14 15 16 18 19 1A</code>로, 곡 표 3번
     항목과 크기·샘플 번호가 모두 맞습니다. 효과음 함수 <code>$83:8023</code>은 첫 명령이 <code>STA $B3</code>(
     <code>85 B3</code>)이고, 이 기록에서 <code>$2141</code>에 <code>0B</code>, <code>0A</code>, <code>80</code>을
-    보냈습니다. <a href={chapterHref(14)}>14장</a>은 이 두 함수의 첫 바이트를 고쳐 원하는 곡만 나오는 롬을 만듭니다.
+    보냈습니다. <ChapterLink to="common/music-loop" />은 이 두 함수의 첫 바이트를 고쳐 원하는 곡만 나오는 롬을 만듭니다.
   </p>
 
   <h3>제절초: 대본의 소리 코드에서 부르는 함수</h3>
@@ -777,7 +773,9 @@ $ LIBDIR=$L SHOT_DIR=$PWD/out/voices MAXF=3000 EVERY=0 VSTEP=6 \
     Mesen --testrunner $PWD/game.sfc $L/probe/voices.lua</code></pre>
   <p>
     <code>calls.txt</code>의 <code>ret=</code>은 스택에 있는 돌아갈 주소입니다. <code>JSL</code>로 들어왔을 때만 뱅크
-    바이트가 의미가 있습니다(<a href={`${HOOKING}#jump`}>6장</a>).{' '}
+    바이트가 의미가 있습니다(
+    <ChapterLink to="sfc/hooking" hash="jump" />
+    ).{' '}
     <a href={toolkitFileUrl('src/kr_patch/sfc/lua/probe/voices.lua')}>
       <code>voices.lua</code>
     </a>
@@ -788,6 +786,6 @@ $ LIBDIR=$L SHOT_DIR=$PWD/out/voices MAXF=3000 EVERY=0 VSTEP=6 \
   </p>
   <p class="muted">
     이 장의 기록은 Mesen 2.1.1에서 툴킷 스크립트와 같은 방식의 이전 스크립트로 남긴 것입니다. 롬 주소는 각성편·제절초
-    일본판 기준이고, 주소를 CPU 주소로 바꾸는 법은 <a href={BANKS}>4장</a>에 있습니다.
+    일본판 기준이고, 주소를 CPU 주소로 바꾸는 법은 <ChapterLink to="sfc/banks" />에 있습니다.
   </p>
 </GuideChapter>

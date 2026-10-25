@@ -1,4 +1,5 @@
 ---
+import ChapterLink from '../romhacking/ChapterLink.astro';
 import ZoomImage from '../kr-patch/ZoomImage.astro';
 import MakingIntro from './MakingIntro.astro';
 import NoteRelated from '../romhacking/NoteRelated.astro';
@@ -7,7 +8,6 @@ import Figure from '../romhacking/Figure.astro';
 import ToolFiles from '../kr-patch/ToolFiles.astro';
 import MakingSources from '../kr-patch/MakingSources.astro';
 import SourceFile from '../kr-patch/SourceFile.astro';
-import { chapterBySlug, chapterPath, type GuidePlatform } from '../romhacking/chapters';
 import { KR_PATCH_TOOLKIT_VERSION, analysisUrl, sourceUrl, type KrPatch } from '../../lib/kr-patches';
 
 interface Props {
@@ -18,8 +18,6 @@ const { patch } = Astro.props;
 const base = patch.path;
 const img = (name: string) => `${base}/images/making/${name}`;
 const source = sourceUrl(patch);
-const guide = (platform: GuidePlatform, slug: string, hash = '') =>
-  `${chapterPath(chapterBySlug(platform, slug))}${hash && `#${hash}`}`;
 
 const versions = [
   {
@@ -327,11 +325,12 @@ const buildSteps = [
   </li>
 </ul>
 <p>
-  롬 해킹 가이드의 DS 장은 <a href={guide('nds', 'filesystem')}>15장 롬과 파일 시스템</a>부터입니다. 나머지 장은 대부분
-  주소로 일하는 슈퍼 패미콤 기준이지만, 대사를 글자 코드와 포인터로 적는 방법(<a href={guide('sfc', 'text')}>8장</a>),
-  바이트 순서(
-  <a href={guide('common', 'endian')}>2장 엔디안</a>), 압축(<a href={guide('common', 'lzss')}>9장 LZSS</a>)은 DS에도
-  그대로 통합니다. 처음이라면 <a href={guide('common', 'rom-patch')}>0장 롬과 패치</a>부터 보세요.
+  롬 해킹 가이드의 닌텐도 DS 갈래는 <ChapterLink to="nds/cpu" title />
+  부터 읽으면 되고, 이 노트의 바탕인 롬 구조는 <ChapterLink to="nds/filesystem" title />에 있습니다. 대사를 글자 코드와
+  포인터로 적는 방법은 <ChapterLink to="nds/text" title />, 바이트 순서는 <ChapterLink to="common/endian" title />,
+  압축은 <ChapterLink to="common/lzss" text="LZSS" />
+  에서 다룹니다. 처음이라면 <ChapterLink to="common/rom-patch" title />
+  부터 보세요.
 </p>
 
 <h3 id="making-basics">배경지식: 주소가 아니라 파일</h3>
@@ -351,9 +350,10 @@ const buildSteps = [
 <NoteRelated patch={patch} id="making-xdelta" />
 <p>
   IPS는 바꿀 위치를 3바이트로 적어서 16MB(0xFFFFFF)까지만 고칠 수 있습니다(
-  <a href={guide('common', 'rom-patch', 'ips')}>0장 「IPS 패치를 바이트로 읽기」</a>). 고스트 트릭 롬은 128MB라 IPS로는
-  뒤쪽을 고칠 수 없습니다. 그래서 v1.1부터 xdelta(VCDIFF 형식)를 씁니다. xdelta는 "원본의 어디에서 몇 바이트를 가져오라"
-  와 "이 바이트를 새로 넣어라" 를 이어 적은 형식이라, 파일이 통째로 옮겨 가도 패치가 크게 커지지 않습니다.
+  <ChapterLink to="common/rom-patch" hash="ips" text="「IPS 패치를 바이트로 읽기」" />
+  ). 고스트 트릭 롬은 128MB라 IPS로는 뒤쪽을 고칠 수 없습니다. 그래서 v1.1부터 xdelta(VCDIFF 형식)를 씁니다. xdelta는
+  "원본의 어디에서 몇 바이트를 가져오라" 와 "이 바이트를 새로 넣어라" 를 이어 적은 형식이라, 파일이 통째로 옮겨 가도
+  패치가 크게 커지지 않습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -495,7 +495,8 @@ const buildSteps = [
   v1.2에서 v1.1과 다른 파일은 148개(스크립트 145개, 시스템 파일 2개, 그래픽 묶음 1개)이고, 롬 끝으로 옮겨 간 것은{' '}
   <code>st06/st06_demo100_Expand.xml.lz</code> 하나뿐입니다. 나머지 147개는 바뀐 크기가 원래 자리에
   들어갔습니다(스크립트는 LZ11로 다시 압축한 크기). 슈퍼 패미콤에서 롬을 늘릴 때(
-  <a href={guide('sfc', 'expansion')}>11장 롬 확장</a>)와 달리 주소 지도를 다시 짤 필요가 없습니다.
+  <ChapterLink to="sfc/expansion" title />
+  )와 달리 주소 지도를 다시 짤 필요가 없습니다.
 </p>
 <Deeper title="v1.1 헤더의 사용 크기가 실제보다 작은 것">
   <p>
@@ -529,8 +530,8 @@ const buildSteps = [
 <p>
   <code>.lz</code> 파일은 첫 바이트가 <code>11</code>이고 다음 3바이트가 푼 크기인 LZ11 압축입니다. 제1장 첫 컷신 파일은{' '}
   <code>11 94 05 00</code>으로 시작하니 푼 크기가 0x594(1,428)바이트이고, 롬에서는 936바이트입니다. LZ11은{' '}
-  <a href={guide('common', 'lzss', 'variants')}>9장 「게임마다 다른 LZSS」</a>의 한 갈래로, 앞에서 나온 바이트를 "몇 칸
-  앞에서 몇 바이트" 로 다시 가리켜 줄입니다. 닌텐도 DS 게임이 흔히 쓰는 형식이라 툴킷의 <code>kr_patch.lz11</code>로
+  <ChapterLink to="common/lzss" hash="variants" text="「게임마다 다른 LZSS」" />의 한 갈래로, 앞에서 나온 바이트를 "몇
+  칸 앞에서 몇 바이트" 로 다시 가리켜 줄입니다. 닌텐도 DS 게임이 흔히 쓰는 형식이라 툴킷의 <code>kr_patch.lz11</code>로
   풀고 다시 압축합니다. 다시 압축한 바이트는 원본과 같지 않아도 됩니다. 게임은 푼 결과만 보기 때문입니다.
 </p>
 
@@ -544,8 +545,9 @@ const buildSteps = [
 </p>
 <p>
   v1.2의 제1장 첫 컷신에서 첫 대사(푼 파일 0x2E0)를 2바이트씩 읽으면 이렇습니다. 파일에는 작은 자리 바이트가 먼저 적혀
-  있어서(<a href={guide('common', 'endian')}>2장 엔디안</a>) <code>FF2D</code>는 <code>2D FF</code>로 보입니다. 일본판
-  같은 자리에는 「そうだ…そうだよ。思い出したわ。…あなたのコト。」가 같은 제어 코드 사이에 들어 있습니다.
+  있어서(
+  <ChapterLink to="common/endian" title />) <code>FF2D</code>는 <code>2D FF</code>로 보입니다. 일본판 같은 자리에는
+  「そうだ…そうだよ。思い出したわ。…あなたのコト。」가 같은 제어 코드 사이에 들어 있습니다.
 </p>
 <ul
   class="byte-strip"
@@ -582,7 +584,7 @@ const buildSteps = [
   파일 0xB0에는 <code>37 00 E0 02 00 00</code>이 있는데, 태그 <code>0x37</code> 뒤의 <code>0x000002E0</code>이 바로 위
   첫 대사입니다. 대사를 가리키는 태그는 15가지이고, v1.1이 일본판에서 고친 자리를 모두 모아 찾았습니다. 레이블 표도
   대사를 가리킬 수 있습니다. 포인터와 대사 표의 일반적인 모양은{' '}
-  <a href={guide('sfc', 'text', 'pointers')}>8장 「포인터 표: 대사 번호로 위치 찾기」</a>에 있습니다.
+  <ChapterLink to="sfc/text" hash="pointers" text="「포인터 표: 대사 번호로 위치 찾기」" />에 있습니다.
 </p>
 <Deeper title="포인터 태그와 「번호로 찾는」 수첩">
   <p>
@@ -677,7 +679,7 @@ const buildSteps = [
 <p>
   글자는 종류와 상관없이(한글, 가나, 영문, 공백 모두) 14px씩 나아갑니다. 한 줄에 몇 자가 들어가는지는 창 종류가 정하고,
   넘친 글자는 그려지지 않습니다. 글자 폭과 줄 폭의 관계는{' '}
-  <a href={guide('sfc', 'graphics', 'fonts')}>7장 「폰트: 고정폭과 가변폭」</a>에 있습니다.
+  <ChapterLink to="sfc/graphics" hash="fonts" text="「폰트: 고정폭과 가변폭」" />에 있습니다.
 </p>
 <div class="table-wrap" tabindex="0">
   <table>
@@ -827,7 +829,8 @@ const buildSteps = [
 <p>
   바이트 하나에 픽셀 네 개가 들어가는데, 순서가 앞에서부터가 아닙니다. 위쪽 4비트(니블)가 앞의 두 픽셀이고, 니블
   안에서는 아래 2비트가 먼저입니다. 그래서 픽셀 0, 1, 2, 3의 값은 비트 4, 6, 0, 2에서 시작하는 2비트입니다. 타일과
-  비트평면을 읽는 기본은 <a href={guide('sfc', 'graphics', 'bitplanes')}>7장 「픽셀 하나에 비트 몇 개」</a>에 있습니다.
+  비트평면을 읽는 기본은 <ChapterLink to="sfc/graphics" hash="bitplanes" text="「픽셀 하나에 비트 몇 개」" />에
+  있습니다.
 </p>
 <Deeper title="픽셀 순서를 찾은 방법">
   <p>
@@ -997,9 +1000,9 @@ SHIFT = (4, 6, 0, 2)
 <NoteRelated patch={patch} id="making-bgm" />
 <p>
   한글패치 페이지의 배경 음악은 「BGM054_B」입니다. 다른 게임 페이지는 에뮬레이터 소리를 녹음해 반복 구간을 찾았는데(
-  <a href={guide('common', 'music-loop')}>14장</a>), 이 곡은 녹음으로는 이음매가 맞지 않았습니다. 녹음본은 반복할 때마다
-  소리가 조금씩 달랐습니다. 녹음본에서 반복 길이를 상관으로 잡았더니 55.51초가 나왔는데, 실제 반복은 54.87초라
-  이음매에서 한 박 가까이 같은 음이 다시 들렸습니다.
+  <ChapterLink to="common/music-loop" />
+  ), 이 곡은 녹음으로는 이음매가 맞지 않았습니다. 녹음본은 반복할 때마다 소리가 조금씩 달랐습니다. 녹음본에서 반복
+  길이를 상관으로 잡았더니 55.51초가 나왔는데, 실제 반복은 54.87초라 이음매에서 한 박 가까이 같은 음이 다시 들렸습니다.
 </p>
 <p>
   그래서 롬의 음악 데이터를 직접 읽어 DS 사운드 엔진과 같은 방식으로 합성했습니다. 음악은 <code>sound_data.sdat</code>{' '}
@@ -1042,7 +1045,7 @@ SHIFT = (4, 6, 0, 2)
   실기 없이 모든 확인을 에뮬레이터로 했습니다. libretro desmume 코어를 직접 빌드하고, 툴킷의 libretro 실행 기능으로 화면
   없이 돌리며 버튼과 터치를 넣고 원하는 순간의 화면을 저장합니다. 손으로 하지 않으니 같은 장면을 v1.1과 v1.2에서 똑같은
   입력으로 찍을 수 있습니다. 패치 노트의 비교 화면은 모두 이렇게 찍었습니다. 화면 없이 돌리는 방법은{' '}
-  <a href={guide('sfc', 'emulator', 'headless')}>12장 「화면 없이 돌리기」</a>에 있습니다.
+  <ChapterLink to="sfc/emulator" hash="headless" text="「화면 없이 돌리기」" />에 있습니다.
 </p>
 <pre tabindex="0"><code># 600프레임 기다림
 wait 600

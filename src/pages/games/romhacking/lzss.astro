@@ -1,10 +1,11 @@
 ---
+import ChapterLink from '../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../layouts/GuideChapter.astro';
 import Deeper from '../../../components/romhacking/Deeper.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
 import LzssStep from '../../../components/romhacking/LzssStep.astro';
 import { KAKUSEI_PATCH, TOTSUGEKI_PATCH, analysisUrl, toolkitFileUrl } from '../../../lib/kr-patches.ts';
-import { chapterBySlug, chapterPath, notePath } from '../../../components/romhacking/chapters.ts';
+import { notePath } from '../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -44,10 +45,6 @@ const references = [
     note: '해제 루틴 $81:DF4F, 항목 표, 압축 크기 3,613 → 3,237바이트',
   },
 ];
-const ROM_PATCH = chapterPath(chapterBySlug('common', 'rom-patch'));
-const ENDIAN = chapterPath(chapterBySlug('common', 'endian'));
-const GRAPHICS = chapterPath(chapterBySlug('sfc', 'graphics'));
-const HUFFMAN = chapterPath(chapterBySlug('common', 'huffman'));
 
 // The first 14 bytes of the Totsugeki-hen title tiles, item by item.
 const titleItems = [
@@ -81,7 +78,8 @@ const titleItems = [
   <p>
     다행히 게임이 쓰는 압축은 대부분 몇 가지 단순한 생각의 변형입니다. 이 장은 그중 가장 흔한 두 가지, "같은 것이
     이어지면 개수만 적기"(RLE)와 "앞에 나온 것이면 위치만 적기"(LZ 계열)를 다룹니다. 자주 나오는 글자에 짧은 부호를 주는
-    방식은 <a href={HUFFMAN}>10장</a>에서 봅니다.
+    방식은 <ChapterLink to="common/huffman" />
+    에서 봅니다.
   </p>
 
   <h2 id="rle">
@@ -150,8 +148,8 @@ const titleItems = [
   <p>
     머리 바이트의 맨 위 비트가 1이면 "다음 바이트 하나를 여러 번", 0이면 "다음 몇 바이트를 그대로"입니다. 반복은 3번
     이상일 때만 이득이므로 길이에서 3을 빼고 적어, 7비트로 3–130번을 나타냅니다. 이렇게 "이득이 없는 짧은 경우는 아예
-    적지 않고 그만큼 길이를 당겨 적는" 요령은 뒤의 LZSS에도 똑같이 나옵니다. <a href={ROM_PATCH}>0장</a>의 IPS 패치에도
-    같은 바이트를 되풀이하는 RLE 레코드가 있습니다.
+    적지 않고 그만큼 길이를 당겨 적는" 요령은 뒤의 LZSS에도 똑같이 나옵니다. <ChapterLink to="common/rom-patch" />의 IPS
+    패치에도 같은 바이트를 되풀이하는 RLE 레코드가 있습니다.
   </p>
 
   <h2 id="lz">
@@ -394,9 +392,9 @@ const titleItems = [
     </table>
   </div>
   <p>
-    거리를 그대로 적는지 1을 빼고 적는지, 2바이트를 어느 쪽 먼저 읽는지(<a href={ENDIAN}>2장</a>의 엔디안), 길이에
-    얼마를 더하는지 하나만 달라도 결과가 완전히 어긋납니다. 압축 해제 루틴을 디버거로 따라가며 이 값들을 하나씩 확인하는
-    것이 가장 확실합니다.
+    거리를 그대로 적는지 1을 빼고 적는지, 2바이트를 어느 쪽 먼저 읽는지(
+    <ChapterLink to="common/endian" />의 엔디안), 길이에 얼마를 더하는지 하나만 달라도 결과가 완전히 어긋납니다. 압축
+    해제 루틴을 디버거로 따라가며 이 값들을 하나씩 확인하는 것이 가장 확실합니다.
   </p>
 
   <Deeper title="돌격편의 해제 루틴을 읽어 보기">
@@ -444,9 +442,10 @@ const titleItems = [
     <p>
       각성편의 <code>$80:9DA7</code>과 돌격편의 <code>$81:DFE7</code>은 이 루틴을 부른 뒤 풀어 낸 타일마다 바이트 순서를
       바꾸는 일을 하나 더 합니다. 압축 데이터 안에서는 2bpp 타일 하나의 평면 0 여덟 줄과 평면 1 여덟 줄이 따로 모여
-      있고, 해제 뒤에 이것을 <a href={GRAPHICS}>7장</a>의 슈퍼 패미콤 순서(줄마다 평면 0, 평면 1)로 엇갈려 놓습니다.
-      평면별로 모아 두면 같은 바이트가 더 길게 이어져 압축에 유리합니다. 그래서 압축만 풀어 타일로 그리면 줄무늬가
-      보입니다. 툴킷의 <code>--planar</code> 옵션이 이 순서 바꾸기를 합니다.
+      있고, 해제 뒤에 이것을 <ChapterLink to="sfc/graphics" />
+      에서 본 순서(줄마다 평면 0, 평면 1)로 엇갈려 놓습니다. 평면별로 모아 두면 같은 바이트가 더 길게 이어져 압축에
+      유리합니다. 그래서 압축만 풀어 타일로 그리면 줄무늬가 보입니다. 툴킷의 <code>--planar</code> 옵션이 이 순서
+      바꾸기를 합니다.
     </p>
   </Deeper>
 

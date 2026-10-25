@@ -1,4 +1,5 @@
 ---
+import ChapterLink from '../../../components/romhacking/ChapterLink.astro';
 import Base from '../../../layouts/Base.astro';
 import Comments from '../../../components/Comments.astro';
 import Figure from '../../../components/romhacking/Figure.astro';
@@ -13,25 +14,27 @@ import {
   PLATFORMS,
 } from '../../../lib/kr-patches.ts';
 import {
-  GUIDE_CHAPTERS,
   GUIDE_PATH,
   GUIDE_TITLE,
-  NOTE_GAME,
   NOTE_PATCHES,
-  PLATFORM_LABEL,
-  chapterBySlug,
-  chapterLabel,
-  chapterPath,
+  TRACKS,
+  TRACK_ORDER,
   chaptersForNote,
-  noteGrid,
-  noteHref,
   notePath,
+  trackChapters,
+  trackPatches,
+  type GuideChapter,
 } from '../../../components/romhacking/chapters.ts';
 import { GLOSSARY, GLOSSARY_PATH } from '../../../components/romhacking/glossary.ts';
 
 const description =
   '한글패치를 만들며 쓴 롬 해킹 지식을 처음부터 풀어 쓴 가이드입니다. 16진수와 엔디안부터 65c816 어셈블리, 뱅크와 매핑, 후킹, 타일과 폰트, 대사 형식, 압축과 롬 확장, 에뮬레이터로 확인하는 법, 사운드 구조와 게임 음악을 끊김 없이 반복하는 법, 닌텐도 DS 롬의 파일 시스템까지 그림과 직접 만져 보는 도구로 배웁니다.';
-const first = GUIDE_CHAPTERS.find(c => c.ready);
+/** 「공통 1·3장, 슈퍼 패미콤 2·4장」: one track name per run of chapters. */
+const chapterRun = (chapters: GuideChapter[]) =>
+  TRACK_ORDER.map(id => ({ id, numbers: chapters.filter(c => c.platform === id).map(c => c.number) }))
+    .filter(run => run.numbers.length > 0)
+    .map(run => `${TRACKS[run.id].short} ${run.numbers.join('·')}장`)
+    .join(', ');
 ---
 
 <Base
@@ -61,8 +64,9 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
           <li>직접 번역 패치를 만들어 보고 싶은 사람</li>
         </ul>
         <p>
-          컴퓨터 구조를 미리 알 필요는 없습니다. 장마다 앞 장에서 배운 것만 씁니다. 처음이라면{' '}
-          <a href={first ? chapterPath(first) : GUIDE_PATH}>0장</a>부터 차례로 읽어 주세요.
+          컴퓨터 구조를 미리 알 필요는 없습니다. 장마다 앞 장의 내용을 바탕으로 씁니다. 처음이라면{' '}
+          <ChapterLink to="common/rom-patch" title />
+          부터 차례로 읽어 주세요.
         </p>
 
         <h2 id="layers">한 장은 네 부분으로 되어 있습니다</h2>
@@ -127,98 +131,51 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
           </li>
         </ul>
 
-        <h2 id="chapters">차례</h2>
+        <h2 id="tracks">세 갈래</h2>
         <p>
-          공통 장은 어느 게임기에나 해당하고, 슈퍼 패미콤 장과 닌텐도 DS 장은 그 게임기에 맞춘 내용입니다. 닌텐도 DS
-          장은 15장부터 하나씩 늘려 갑니다.
+          가이드는 세 갈래로 나뉘고, 갈래마다 1장부터 셉니다. 처음이라면{' '}
+          <a href={TRACKS.common.path}>{TRACKS.common.name}</a>부터 읽고, 고칠 게임기의 갈래로 넘어가세요. 다른 갈래의
+          장을 가리킬 때는 「공통 3장」, 「DS 2장」처럼 갈래 이름을 붙입니다.
         </p>
-        <ol class="chapter-map" start="0">
-          {GUIDE_CHAPTERS.map(c => (
-            <li class:list={{ 'is-ready': c.ready }}>
+        <ul class="track-map">
+          {TRACK_ORDER.map(id => (
+            <li class="is-ready">
               <p class="chapter-meta">
-                <span class="mono">{chapterLabel(c)}</span>
-                <span class="chapter-platform">{PLATFORM_LABEL[c.platform]}</span>
-                {!c.ready && <span class="chapter-soon">준비 중</span>}
+                <span class="mono">{trackChapters(id).length}장</span>
+                {id === 'common' && <span class="chapter-platform">여기서 시작</span>}
               </p>
-              <h3>{c.ready ? <a href={chapterPath(c)}>{c.title}</a> : c.title}</h3>
-              <p class="chapter-summary">{c.summary}</p>
+              <h3>
+                <a href={TRACKS[id].path}>{TRACKS[id].name}</a>
+              </h3>
+              <p class="chapter-summary">{TRACKS[id].summary}</p>
             </li>
           ))}
-        </ol>
+        </ul>
 
         <h2 id="notes">롬 분석 노트</h2>
         <p>
           한글패치 {NOTE_PATCHES.length}개를 만들며 롬에서 확인한 주소와 형식, 고친 코드, 확인 방법을 게임마다 적은
           기록입니다. 노트의 각 절에서 그 개념을 설명하는 장으로 건너갈 수 있습니다.
         </p>
-        <ul class="note-map">
-          {NOTE_PATCHES.map(p => (
-            <li class="is-ready">
-              <p class="chapter-meta">
-                <span class="mono">노트</span>
-                <span class="chapter-platform">{PLATFORMS[p.platform].name}</span>
-                <span>한글패치 v{p.version}</span>
-              </p>
-              <h3>
-                <a href={notePath(p)}>{p.title}</a>
-              </h3>
-              <p class="chapter-summary">
-                이어지는 장:{' '}
-                {chaptersForNote(p)
-                  .map(c => chapterLabel(c))
-                  .join(' · ')}
-              </p>
-            </li>
-          ))}
-        </ul>
-
-        <h2 id="note-grid">장 × 게임 노트</h2>
-        <p>
-          장에서 배운 개념을 각 게임이 실제로 어떻게 썼는지, 노트의 해당 절로 바로 갑니다. 노트에 해당 절이 없는 칸에는
-          그 이유를 적었습니다.
-        </p>
-        <table class="note-grid" role="table" aria-labelledby="note-grid">
-          <thead role="rowgroup">
-            <tr role="row">
-              <th scope="col" role="columnheader">
-                장
-              </th>
-              {NOTE_PATCHES.map(p => (
-                <th scope="col" role="columnheader">
-                  <a href={notePath(p)}>{NOTE_GAME[p.theme]}</a>
-                </th>
+        {(['sfc', 'nds'] as const).map(platform => (
+          <>
+            <h3 id={`notes-${platform}`}>{PLATFORMS[platform].name}</h3>
+            <ul class="note-map">
+              {trackPatches(platform).map(p => (
+                <li class="is-ready">
+                  <p class="chapter-meta">
+                    <span class="mono">노트</span>
+                    <span>한글패치 v{p.version}</span>
+                  </p>
+                  <h4>
+                    <a href={notePath(p)}>{p.title}</a>
+                  </h4>
+                  <p class="chapter-summary">이어지는 장: {chapterRun(chaptersForNote(p))}</p>
+                </li>
               ))}
-            </tr>
-          </thead>
-          <tbody role="rowgroup">
-            {noteGrid().map(({ chapter, cells }) => (
-              <tr role="row">
-                <th scope="row" role="rowheader">
-                  <a href={chapterPath(chapter)}>
-                    <span class="mono">{chapterLabel(chapter)}</span> {chapter.title}
-                  </a>
-                </th>
-                {cells.map(cell => (
-                  <td role="cell" data-game={NOTE_GAME[cell.patch.theme]}>
-                    {cell.notes.length > 0 ? (
-                      <ul>
-                        {cell.notes.map(n => (
-                          <li>
-                            <a href={noteHref(n)}>{n.label}</a>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p class="note-grid-gap">
-                        <span class="note-grid-none">해당 절 없음</span> {cell.gap}
-                      </p>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </ul>
+          </>
+        ))}
 
         <h2 id="glossary">용어집</h2>
         <p>
@@ -238,8 +195,8 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
             설치합니다.
           </li>
           <li>
-            <strong>에뮬레이터</strong>: 디버거가 있는 Mesen 2를 썼습니다.{' '}
-            <a href={chapterPath(chapterBySlug('sfc', 'emulator'))}>12장</a>에서 자세히 다룹니다.
+            <strong>에뮬레이터</strong>: 디버거가 있는 MesenCE를 썼습니다. <ChapterLink to="sfc/emulator" />
+            에서 자세히 다룹니다.
           </li>
           <li>
             <strong>롬 파일</strong>: 이 가이드와 툴킷에는 롬이 들어 있지 않습니다. 직접 가진 카트리지에서 뽑은 롬으로
@@ -251,133 +208,3 @@ const first = GUIDE_CHAPTERS.find(c => c.ready);
     <Comments path={GUIDE_PATH} />
   </div>
 </Base>
-
-<style>
-  :is(.chapter-map, .note-map) {
-    display: grid;
-    gap: 10px;
-    max-width: var(--measure);
-    margin: 0 0 1.5em;
-    padding: 0;
-    list-style: none;
-  }
-  :is(.chapter-map, .note-map) li {
-    margin: 0;
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-  }
-  :is(.chapter-map, .note-map) li.is-ready {
-    border-left: 4px solid var(--accent);
-  }
-  :is(.chapter-map, .note-map) li:not(.is-ready) {
-    background: var(--bg-soft);
-  }
-  .chapter-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 10px;
-    margin: 0;
-    font-size: 0.8rem;
-    color: var(--fg-muted);
-  }
-  .chapter-meta .mono {
-    color: var(--accent);
-    font-weight: 700;
-  }
-  .chapter-soon {
-    padding: 0 8px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-  }
-  :is(.chapter-map, .note-map) h3 {
-    margin: 2px 0 2px;
-    font-size: 1.1rem;
-  }
-  :is(.chapter-map, .note-map) li:not(.is-ready) h3 {
-    color: var(--fg-muted);
-  }
-  .chapter-summary {
-    margin: 0;
-    color: var(--fg-muted);
-    font-size: 0.92rem;
-  }
-
-  .prose .note-grid {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-    font-size: 0.86rem;
-    line-height: 1.5;
-  }
-  .note-grid :is(th, td) {
-    vertical-align: top;
-    padding: 8px 10px;
-    overflow-wrap: anywhere;
-  }
-  .note-grid thead th:first-child {
-    width: 17%;
-  }
-  .note-grid tbody th {
-    font-weight: 600;
-  }
-  .note-grid .mono {
-    display: block;
-    color: var(--accent);
-    font-weight: 700;
-  }
-  .note-grid ul {
-    margin: 0;
-    padding-left: 1.1em;
-  }
-  .note-grid li + li {
-    margin-top: 0.35em;
-  }
-  .note-grid-gap {
-    margin: 0;
-    color: var(--fg-muted);
-  }
-  .note-grid-none {
-    display: block;
-    font-weight: 600;
-  }
-  /* Phones read each chapter as a card: the game names move from the header row into each cell. */
-  @media (max-width: 760px) {
-    .prose .note-grid,
-    .note-grid :is(tbody, tr, th, td) {
-      display: block;
-      width: auto;
-    }
-    .note-grid thead {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
-    }
-    .note-grid tr {
-      margin-bottom: 12px;
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--accent);
-      border-radius: var(--radius);
-    }
-    .note-grid :is(tbody th, td) {
-      border: 0;
-    }
-    .note-grid :is(th, td) + td {
-      border-top: 1px solid var(--border);
-    }
-    .note-grid td::before {
-      content: attr(data-game);
-      display: block;
-      margin-bottom: 2px;
-      font-weight: 700;
-      font-size: 0.8rem;
-      color: var(--fg-muted);
-    }
-    .note-grid .mono {
-      display: inline;
-    }
-  }
-</style>

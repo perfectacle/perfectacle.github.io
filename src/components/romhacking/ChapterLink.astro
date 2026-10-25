@@ -1,0 +1,28 @@
+---
+/**
+ * A link to a guide chapter whose 「N장」 comes from the chapter list, so renumbering never leaves a stale number in
+ * prose. `title` or `text` follows the label after a space; slot text (a particle such as 「의 폰트」) follows it
+ * directly. Both stay inside the link.
+ */
+import { chapterByKey, chapterLabel, chapterPath, trackOfPath, type ChapterKey } from './chapters.ts';
+
+interface Props {
+  to: ChapterKey;
+  /** Section id in the chapter page. */
+  hash?: string;
+  /** Append the chapter's title after the label. */
+  title?: boolean;
+  /** Words to append after the label instead of the title, such as a section name. */
+  text?: string;
+}
+
+const { to, hash, title = false, text } = Astro.props;
+const chapter = chapterByKey(to);
+const after = text ?? (title ? chapter.title : undefined);
+const label = chapterLabel(chapter, trackOfPath(Astro.url.pathname)) + (after ? ` ${after}` : '');
+---
+
+<a href={`${chapterPath(chapter)}${hash ? `#${hash}` : ''}`}>
+  {label}
+  <slot />
+</a>

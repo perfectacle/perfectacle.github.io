@@ -1,9 +1,10 @@
 ---
+import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import ArmStep from '../../../../components/romhacking/ArmStep.astro';
 import { GHOST_TRICK_PATCH } from '../../../../lib/kr-patches.ts';
-import { chapterHref, notePath } from '../../../../components/romhacking/chapters.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
 
 const references = [
   {
@@ -51,9 +52,10 @@ const table = [
     ARM 명령 읽는 법 <span class="layer-badge layer-easy">쉽게</span>
   </h2>
   <p>
-    ARM 명령은 4바이트이고, 작은 자리 바이트부터 적혀 있습니다(<a href={chapterHref(20)}>20장</a>). 4바이트를 하나의
-    32비트 값으로 읽으면 맨 위 4비트가 <strong>조건</strong>이고, 나머지에 무엇을 할지와 어느 레지스터·값을 쓸지가 적혀
-    있습니다. 이 장에서 읽을 명령은 몇 가지뿐입니다.
+    ARM 명령은 4바이트이고, 작은 자리 바이트부터 적혀 있습니다(
+    <ChapterLink to="nds/cpu" />
+    ). 4바이트를 하나의 32비트 값으로 읽으면 맨 위 4비트가 <strong>조건</strong>이고, 나머지에 무엇을 할지와 어느
+    레지스터·값을 쓸지가 적혀 있습니다. 이 장에서 읽을 명령은 몇 가지뿐입니다.
   </p>
   <ul>
     <li>
@@ -72,7 +74,8 @@ const table = [
   </ul>
   <p>
     이 장의 예는 고스트 트릭 ARM9 프로그램의 실제 함수입니다. ARM9 프로그램은 롬 안에서 대부분 압축되어 있어서(
-    <a href={`${chapterHref(20)}#ghost-trick`}>20장</a>), 압축을 푼 뒤에 읽었습니다.
+    <ChapterLink to="nds/cpu" hash="ghost-trick" />
+    ), 압축을 푼 뒤에 읽었습니다.
   </p>
 
   <h2 id="cond">
@@ -80,9 +83,10 @@ const table = [
   </h2>
   <p>
     65c816에서는 「조건이 맞으면 저쪽으로 건너뛰라」는 분기 명령으로 갈래를 나눴습니다(
-    <a href={`${chapterHref(5)}#branch`}>5장</a>). ARM은 거의 모든 명령에 조건을 붙일 수 있습니다. <code>strlt</code>는
-    「앞의 비교에서 작았으면 쓴다」, <code>moveq</code>는 「같았으면 넣는다」입니다. 조건이 맞지 않으면 그 명령은 아무
-    일도 하지 않고 다음 명령으로 넘어갑니다. 그래서 짧은 갈래는 분기 없이 명령 몇 개에 조건만 붙여 씁니다.
+    <ChapterLink to="sfc/assembly" hash="branch" />
+    ). ARM은 거의 모든 명령에 조건을 붙일 수 있습니다. <code>strlt</code>는 「앞의 비교에서 작았으면 쓴다」,{' '}
+    <code>moveq</code>는 「같았으면 넣는다」입니다. 조건이 맞지 않으면 그 명령은 아무 일도 하지 않고 다음 명령으로
+    넘어갑니다. 그래서 짧은 갈래는 분기 없이 명령 몇 개에 조건만 붙여 씁니다.
   </p>
   <p>
     조건은 상태 레지스터의 플래그 넷으로 판단합니다. N(결과가 음수), Z(결과가 0), C(자리올림), V(부호 있는 넘침)입니다.{' '}
@@ -160,7 +164,9 @@ const table = [
   <p>
     <code>ldrlt r1, [r2, r1, lsl #3]</code>은 r2(표 주소) + r1 × 8(<code>lsl #3</code>은 왼쪽으로 3비트 밀기, 곧 ×
     8)에서 읽습니다. 번호 하나로 8바이트 칸을 바로 찾는 계산을 명령 하나로 합니다. 슈퍼 패미콤 포인터 표에서 번호 × 2를
-    하던 것(<a href={chapterHref(8)}>8장</a>)과 같은 생각입니다.
+    하던 것(
+    <ChapterLink to="sfc/text" />
+    )과 같은 생각입니다.
   </p>
 
   <h2 id="call">
@@ -218,8 +224,10 @@ const table = [
   <p>
     이 함수가 고르는 것은 파일 번호가 아니라 이름 문자열입니다. 이름을 고르는 명령을 바꾸면 실제로 다른 폰트 파일로
     글자가 그려지는 것을 다음 장에서 확인합니다. 한글패치 v1.1은 코드를 고치지 않고 폰트 파일 세 개를 3,203자로 키워
-    같은 이름으로 넣었습니다(<a href={`${chapterHref(17)}#in-patch`}>17장</a>). 롬을 다시 묶으며 파일 번호가 바뀌어도(
-    <a href={`${chapterHref(15)}#in-patch`}>15장</a>) 게임이 이름으로 찾으니 문제가 없었던 것과 맞습니다(
+    같은 이름으로 넣었습니다(
+    <ChapterLink to="nds/graphics" hash="in-patch" />
+    ). 롬을 다시 묶으며 파일 번호가 바뀌어도(
+    <ChapterLink to="nds/filesystem" hash="in-patch" />) 게임이 이름으로 찾으니 문제가 없었던 것과 맞습니다(
     <a href={`${note}#making-rom`}>노트</a>).
   </p>
 

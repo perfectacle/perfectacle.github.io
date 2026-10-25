@@ -1,11 +1,15 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import {
-  GUIDE_CHAPTERS,
   GUIDE_PATH,
+  TRACKS,
+  TRACK_ORDER,
+  chapterLabel,
   chapterPath,
   notePath,
   readyChapters,
+  trackChapters,
+  trackPatches,
 } from '../src/components/romhacking/chapters.ts';
 import { GLOSSARY, GLOSSARY_PATH, entryHref, termId } from '../src/components/romhacking/glossary.ts';
 import {
@@ -18,7 +22,14 @@ import {
 } from '../src/lib/kr-patches.ts';
 import { encodeFat, encodeFnt } from '../src/lib/nds-fs.ts';
 
-const PAGES = [GUIDE_PATH, ...readyChapters().map(chapterPath), ...ALL_KR_PATCHES.map(notePath), GLOSSARY_PATH];
+const TRACK_PAGES = TRACK_ORDER.map(id => TRACKS[id].path);
+const PAGES = [
+  GUIDE_PATH,
+  ...TRACK_PAGES,
+  ...readyChapters().map(chapterPath),
+  ...ALL_KR_PATCHES.map(notePath),
+  GLOSSARY_PATH,
+];
 const first = (list: ReturnType<typeof readyChapters>) => {
   const chapter = list[0];
   if (!chapter) throw new Error('no written chapters');
@@ -82,35 +93,56 @@ for (const path of PAGES) {
   }
 }
 
-test('the patch hub leads to the guide, which maps every chapter', async ({ page }) => {
+test('the patch hub leads to the guide, whose three tracks list their own chapters', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(KR_PATCH_LIST_PATH);
   await page.getByRole('link', { name: /롬 해킹 기초/ }).click();
   await expect(page).toHaveURL(GUIDE_PATH);
-  const map = page.locator('.chapter-map > li');
-  await expect(map).toHaveCount(GUIDE_CHAPTERS.length);
-  await expect(page.locator('.chapter-map a')).toHaveCount(readyChapters().length);
-  await expect(page.locator('.chapter-map .chapter-soon')).toHaveCount(GUIDE_CHAPTERS.length - readyChapters().length);
-  await expect(page.locator('.chapter-map a').first()).toHaveAttribute('href', chapterPath(first(readyChapters())));
+  const tracks = page.locator('.track-map > li');
+  await expect(tracks).toHaveCount(TRACK_ORDER.length);
+  await expect(tracks.first().locator('a')).toHaveAttribute('href', TRACKS.common.path);
+  for (const id of TRACK_ORDER) {
+    const card = tracks.filter({ has: page.locator(`a[href="${TRACKS[id].path}"]`) });
+    await expect(card).toContainText(`${trackChapters(id).length}장`);
+  }
+  await expect(page.locator('.chapter-map')).toHaveCount(0);
+  await expect(page.locator('.note-grid')).toHaveCount(0);
+  for (const platform of ['sfc', 'nds'] as const)
+    await expect(page.locator(`#notes-${platform} + .note-map > li`)).toHaveCount(trackPatches(platform).length);
+
+  for (const id of TRACK_ORDER) {
+    await page.goto(TRACKS[id].path);
+    const chapters = trackChapters(id);
+    await expect(page.locator('h1')).toHaveText(TRACKS[id].name);
+    await expect(page.locator('.chapter-map > li')).toHaveCount(chapters.length);
+    await expect(page.locator('.chapter-map .mono')).toHaveText(chapters.map(c => `${c.number}장`));
+    await expect(page.locator('.chapter-map a').first()).toHaveAttribute('href', chapterPath(first(chapters)));
+  }
 });
 
-test('chapters link to each other in reading order', async ({ page }) => {
-  const ready = readyChapters();
-  await page.goto(chapterPath(first(ready)));
-  await expect(page.getByRole('navigation', { name: '이전·다음 장' }).getByRole('link').first()).toHaveAttribute(
-    'href',
-    GUIDE_PATH,
-  );
-  for (const next of ready.slice(1)) {
-    await page.getByRole('navigation', { name: '이전·다음 장' }).locator('a[rel="next"]').click();
-    await expect(page).toHaveURL(chapterPath(next));
-    await expect(page.locator('h1')).toContainText(next.title);
+test('chapters link to each other in reading order within their track', async ({ page }) => {
+  for (const id of TRACK_ORDER) {
+    const chapters = trackChapters(id);
+    await page.goto(chapterPath(first(chapters)));
+    const pager = page.getByRole('navigation', { name: '이전·다음 장' });
+    await expect(pager.getByRole('link').first()).toHaveAttribute('href', TRACKS[id].path);
+    for (const next of chapters.slice(1)) {
+      await pager.locator('a[rel="next"]').click();
+      await expect(page).toHaveURL(chapterPath(next));
+      await expect(page.locator('h1')).toHaveText(`${next.number}장 ${next.title}`);
+    }
+    await expect(pager.locator('a[rel="next"]')).toHaveCount(0);
+    await expect(pager.getByRole('link').last()).toHaveAttribute('href', TRACKS[id].path);
   }
-  const pager = page.getByRole('navigation', { name: '이전·다음 장' });
-  await expect(pager.locator('a[rel="next"]')).toHaveCount(0);
-  await expect(pager).toContainText('다음 장은 준비 중');
   await page.getByRole('navigation', { name: '현재 위치' }).getByRole('link', { name: '롬 해킹', exact: true }).click();
   await expect(page).toHaveURL(GUIDE_PATH);
+});
+
+test('a chapter names its track above the title and in the page title', async ({ page }) => {
+  await page.goto(BANKS);
+  await expect(page.locator('.guide-kicker .guide-track')).toHaveAttribute('href', TRACKS.sfc.path);
+  await expect(page.locator('h1')).toHaveText('2장 주소와 뱅크');
+  await expect(page).toHaveTitle(/^슈퍼 패미콤 2장 주소와 뱅크 - /);
 });
 
 test('chapters key comments by their own path and link the patch notes and toolkit', async ({ page }) => {
@@ -822,33 +854,42 @@ for (const patch of ALL_KR_PATCHES) {
   });
 }
 
-test('the guide index lists every ROM analysis note', async ({ page }) => {
+test('the guide index lists every ROM analysis note under its console', async ({ page }) => {
   await page.goto(GUIDE_PATH);
   const notes = page.locator('.note-map');
   await expect(notes.locator('li')).toHaveCount(ALL_KR_PATCHES.length);
-  for (const patch of ALL_KR_PATCHES) await expect(notes.getByRole('link', { name: patch.title })).toHaveCount(1);
+  for (const patch of ALL_KR_PATCHES)
+    await expect(
+      page.locator(`#notes-${patch.platform} + .note-map`).getByRole('link', { name: patch.title }),
+    ).toHaveCount(1);
 });
 
-test('the guide index maps every chapter to each game note, and says why a cell is empty', async ({ page }) => {
-  await page.goto(GUIDE_PATH);
-  const grid = page.getByRole('table', { name: '장 × 게임 노트' });
-  const rows = grid.locator('tbody tr');
-  await expect(rows).toHaveCount(readyChapters().length);
-  for (const [i, chapter] of readyChapters().entries()) {
-    const row = rows.nth(i);
-    await expect(row.getByRole('rowheader').getByRole('link')).toHaveAttribute('href', chapterPath(chapter));
-    const cells = row.getByRole('cell');
-    await expect(cells).toHaveCount(ALL_KR_PATCHES.length);
-    for (const cell of await cells.all()) {
-      const links = await cell.locator('a').count();
-      const empty = await cell.getByText('해당 절 없음').count();
-      expect(links > 0 !== empty > 0).toBe(true);
+test("each track maps its chapters to its games' notes, and says why a cell is empty", async ({ page }) => {
+  for (const id of TRACK_ORDER) {
+    await page.goto(TRACKS[id].path);
+    const grid = page.getByRole('table', { name: '장 × 게임 노트' });
+    await expect(grid.getByRole('columnheader')).toHaveCount(trackPatches(id).length + 1);
+    const rows = grid.locator('tbody tr');
+    const chapters = trackChapters(id);
+    await expect(rows).toHaveCount(chapters.length);
+    for (const [i, chapter] of chapters.entries()) {
+      const row = rows.nth(i);
+      await expect(row.getByRole('rowheader').getByRole('link')).toHaveAttribute('href', chapterPath(chapter));
+      await expect(row.getByRole('rowheader')).toContainText(chapterLabel(chapter, id));
+      const cells = row.getByRole('cell');
+      await expect(cells).toHaveCount(trackPatches(id).length);
+      for (const cell of await cells.all()) {
+        const links = await cell.locator('a').count();
+        const empty = await cell.getByText('해당 절 없음').count();
+        expect(links > 0 !== empty > 0).toBe(true);
+      }
     }
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+      0,
+    );
+    await page.setViewportSize({ width: 1280, height: 800 });
   }
-  await page.setViewportSize({ width: 390, height: 844 });
-  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
-    0,
-  );
 });
 
 test('input script widget reads scripts like the toolkit and shows each frame', async ({ page }) => {
@@ -1151,14 +1192,17 @@ const crumbs = (page: Page) => page.getByRole('navigation', { name: '현재 위�
 test('the trail opens a menu at each step and moves between the guide and the notes', async ({ page }) => {
   await page.goto(TEXT);
   const nav = crumbs(page);
-  const guide = nav.getByRole('button', { name: '기초 가이드 펼치기' });
+  // 롬 해킹 › 슈퍼 패미콤 › 6장: the middle step is the chapter's track.
+  await expect(nav.locator('.gcrumb-name')).toHaveText(['롬 해킹', TRACKS.sfc.name, /^6장 /]);
+  await expect(nav.getByRole('link', { name: TRACKS.sfc.name, exact: true })).toHaveAttribute('href', TRACKS.sfc.path);
+  const guide = nav.getByRole('button', { name: `${TRACKS.sfc.name} 펼치기` });
   await expect(guide).toHaveAttribute('aria-expanded', 'false');
   await guide.click();
   await expect(guide).toHaveAttribute('aria-expanded', 'true');
   const menu = page.locator(`#${await guide.getAttribute('aria-controls')}`);
   await expect(menu).toBeVisible();
   await expect(menu.locator('a[aria-current="page"]')).toHaveAttribute('href', TEXT);
-  await expect(menu.locator('a')).toHaveCount(readyChapters().length);
+  await expect(menu.locator('a')).toHaveCount(trackChapters('sfc').length);
   await page.keyboard.press('Escape');
   await expect(menu).toBeHidden();
   await expect(guide).toBeFocused();
@@ -1220,7 +1264,7 @@ test('without scripts the trail is plain links to each step', async ({ browser }
 
 test('on a phone the trail fits one line and its menus stay on screen', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const path of [GUIDE_PATH, GLOSSARY_PATH, TEXT, notePath(TOTSUGEKI_PATCH)]) {
+  for (const path of [GUIDE_PATH, GLOSSARY_PATH, TRACKS.nds.path, TEXT, notePath(TOTSUGEKI_PATCH)]) {
     await page.goto(path);
     const nav = crumbs(page);
     const box = await nav.locator('ol').boundingBox();
