@@ -517,7 +517,7 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
     platform: 'nds',
     title: 'CPU와 메모리',
     summary:
-      'DS에는 게임을 돌리는 ARM9와 소리·터치를 맡는 ARM7이 있습니다. ARM과 Thumb 두 벌의 명령, 두 CPU의 메모리 지도, 고스트 트릭 프로그램이 메인 RAM에 놓이는 자리를 봅니다.',
+      'DS에는 게임을 돌리는 ARM9과 소리·터치를 맡는 ARM7이 있습니다. ARM과 Thumb 두 벌의 명령, 두 CPU의 메모리 지도, 고스트 트릭 프로그램이 메인 RAM에 놓이는 자리를 봅니다.',
     ready: true,
     notes: [
       note(GHOST_TRICK_PATCH, 'making-basics', 'CPU 둘과 메인 RAM 4MB'),
