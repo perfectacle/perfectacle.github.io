@@ -1,0 +1,199 @@
+---
+import GuideChapter from '../../../../layouts/GuideChapter.astro';
+import Deeper from '../../../../components/romhacking/Deeper.astro';
+import ArmBl from '../../../../components/romhacking/ArmBl.astro';
+import { chapterHref } from '../../../../components/romhacking/chapters.ts';
+
+const references = [
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#armopcodesbranchandbranchwithlinkbblbxblxswibkpt',
+    label: 'GBATEK, ARM Opcodes: Branch',
+    note: 'BL의 24비트 부호 있는 오프셋(명령 주소 + 8 기준, 4바이트 단위)과 닿는 범위',
+  },
+  {
+    href: 'https://problemkaputt.de/gbatek.htm#dscartridgeheader',
+    label: 'GBATEK, DS Cartridge Header',
+    note: 'ARM9 크기(0x2C), 오버레이 표 위치(0x50), 보안 영역 CRC(0x6C)와 헤더 CRC(0x15E)',
+  },
+  {
+    href: 'https://ndspy.readthedocs.io/en/latest/api/codeCompression.html',
+    label: 'ndspy, codeCompression',
+    note: 'ARM9 프로그램의 BLZ 압축을 풀고 다시 압축하기(isArm9)',
+  },
+  {
+    href: 'https://github.com/capstone-engine/capstone',
+    label: 'Capstone',
+    note: '고친 명령과 훅을 역어셈블해 확인',
+  },
+];
+const script = `import struct, ndspy.codeCompression as cc
+from kr_patch.nds.rom import crc16
+
+rom = bytearray(open('jp.nds', 'rb').read())
+size = struct.unpack_from('<I', rom, 0x2C)[0]
+code = bytearray(cc.decompress(rom[0x4000:0x4000 + size]))
+words = {
+    0x02012BA0: [0xE3510003, 0xA3A01004, 0xE5801004, 0xB59F201C, 0xB7922181,
+                 0xB5802014, 0xB3A00001, 0xA3A00000, 0xE12FFF1E,
+                 0xE1B01005, 0x03A01001, 0xE12FFF1E],
+    0x020125E4: [0xEB000176],
+    0x02012674: [0xEB000152],
+}
+for at, ws in words.items():
+    for i, w in enumerate(ws):
+        struct.pack_into('<I', code, at - 0x02000000 + 4 * i, w)
+arm9 = bytearray(cc.compress(bytes(code), isArm9=True))
+params = arm9.find(bytes.fromhex('2106c0de')) - 8      # 모듈 매개변수의 압축 끝 주소
+struct.pack_into('<I', arm9, params, 0x02000000 + len(arm9))
+tail = bytes(rom[0x4000 + size:0x4000 + size + 12])        # ARM9 뒤 꼬리 블록(21 06 C0 DE …)
+assert 0x4000 + len(arm9) + 12 <= struct.unpack_from('<I', rom, 0x50)[0]  # 오버레이 표를 덮지 않게
+rom[0x4000:0x4000 + len(arm9) + 12] = arm9 + tail
+struct.pack_into('<I', rom, 0x2C, len(arm9))
+struct.pack_into('<H', rom, 0x15E, crc16(rom[:0x15E]))
+open('hook.nds', 'wb').write(rom)`;
+const steps = [
+  '롬에서 ARM9 프로그램(arm9.bin)을 꺼내 BLZ 압축을 풉니다.',
+  '풀린 프로그램에서 명령을 고칩니다.',
+  '다시 BLZ로 압축합니다. 압축된 크기는 내용에 따라 조금 달라집니다.',
+  '크기가 바뀌면 헤더 0x2C의 ARM9 크기와, 프로그램 안 모듈 매개변수의 「압축 끝 주소」를 고칩니다.',
+  '롬의 ARM9 자리에 다시 넣고 헤더 CRC(0x15E)를 다시 계산합니다.',
+];
+---
+
+<GuideChapter platform="nds" slug="hooking" references={references}>
+  <h2 id="why">
+    코드를 고치는 두 방법 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    코드를 고치는 방법은 둘입니다. 명령을 같은 크기의 다른 명령으로 <strong>제자리에서 바꾸거나</strong>, 명령 하나를
+    점프로 바꿔 <strong>새 코드로 건너갔다 돌아오는</strong> 것(후킹)입니다. 슈퍼 패미콤에서 본 방법과 같습니다(
+    <a href={chapterHref(6)}>6장</a>). 고스트 트릭 한글패치는 코드를 고치지 않았으므로, 이 장의 예는 21장에서 읽은 글꼴
+    고르기 함수를 직접 고쳐 보고 에뮬레이터로 확인한 것입니다.
+  </p>
+
+  <h2 id="steps">
+    DS에서 코드를 고치는 순서 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    DS에서는 코드 한 줄을 고치는 데도 순서가 깁니다. ARM9 프로그램이 롬 안에서 압축되어 있기 때문입니다(
+    <a href={`${chapterHref(20)}#ghost-trick`}>20장</a>).
+  </p>
+  <ol>
+    {steps.map(s => (
+      <li>{s}</li>
+    ))}
+  </ol>
+  <p>
+    다시 넣을 때 롬에서 ARM9 뒤에 빈 곳이 있어야 합니다. 일본판은 ARM9 끝(0x84628) 바로 뒤에 모듈 매개변수 위치를 적은
+    12바이트 꼬리 블록(<code>21 06 C0 DE …</code>)이 있고, 0x84800의 오버레이 표까지 0x1CC바이트가 비어 있습니다. ARM9
+    프로그램이 커지면 꼬리 블록도 새 끝 뒤로 옮깁니다. 한글패치 v1.1·v1.2 롬은 다시 묶으면서 꼬리 블록 없이 오버레이
+    표를 0x84628에 바로 붙여 놓아 빈 곳이 없습니다(
+    <a href={`${chapterHref(15)}#in-patch`}>15장</a>). 이 롬에서는 ARM9 프로그램이 8바이트만 커져도 오버레이 표를
+    덮어써서 게임이 켜지지 않았습니다. 그때는 오버레이 표를 롬 끝으로 옮기고 헤더 0x50을 고쳐야 합니다. 헤더 0x6C의 보안
+    영역 CRC는 롬 0x4000–0x7FFF를 덮는데, 압축 끝 주소(롬 0x4B9C)가 그 안에 있어서 이 값도 맞지 않게 됩니다. 이
+    실험에서는 고치지 않았고 desmume에서는 그대로 켜졌습니다. 실기에서는 확인하지 않았습니다.
+  </p>
+
+  <h2 id="inplace">
+    제자리에서 한 명령 바꾸기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    글꼴 고르기 함수의 0x02012BB4 <code>ldrlt r1, [r2, r1, lsl #3]</code>(<code>81 11 92 B7</code>)는 글꼴 번호에
+    해당하는 칸의 파일 이름을 꺼냅니다. 이것을 <code>ldrlt r1, [r2, #8]</code>(<code>08 10 92 B5</code>)로 바꾸면 어떤
+    번호든 표의 둘째 칸, 곧 말풍선 폰트 이름을 꺼냅니다. 다시 압축하니 크기가 그대로였고, 롬에서 바뀐 바이트는
+    7개였습니다.
+  </p>
+  <p>
+    v1.2 롬에 넣어 첫 내레이션을 찍으면 글자가 모두 알아볼 수 없게 깨집니다. 번호는 대화창 폰트(0)인데 파일은 말풍선
+    폰트라, 16×24 2bpp로 읽어야 할 자리에 16×16 4bpp 데이터를 읽은 것으로 보입니다(<a href={chapterHref(17)}>17장</a>).
+    화면이 바뀌었으므로, 게임이 이 함수가 고른 이름으로 폰트를 읽는다는 것도 알 수 있습니다.
+  </p>
+
+  <h2 id="bl">
+    BL로 건너가기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    후킹의 점프는 보통 <code>bl</code>입니다. ARM 상태의 <code>bl</code>은 맨 위 바이트가 <code>EB</code>이고, 아래
+    24비트에 목적지까지의 거리를 4바이트 단위로 적습니다. 거리는 BL 명령의 주소 + 8에서 셉니다(PC가 두 명령 앞서 있기
+    때문, <a href={chapterHref(21)}>21장</a>). 24비트에 부호가 있으니 앞뒤로 32MB까지 닿습니다. 메인 RAM이 4MB라 ARM9
+    프로그램 안 어디든 한 번에 갑니다.
+  </p>
+  <ArmBl />
+
+  <h2 id="hook">
+    훅 하나 만들기 <span class="layer-badge layer-easy">쉽게</span>
+  </h2>
+  <p>
+    목표는 「글꼴 0번을 달라고 하면 1번을 주는」 훅입니다. 새 코드를 둘 자리가 먼저 필요합니다. 이 예에서는 글꼴 고르기
+    함수 자체를 같은 동작의 짧은 명령 9개로 다시 써서, 리터럴 풀 앞에 3워드(12바이트)를 비웠습니다.
+  </p>
+  <pre tabindex="0"><code>02012BA0  cmp   r1, #3
+02012BA4  movge r1, #4              ; 3 이상이면 「없음」
+02012BA8  str   r1, [r0, #4]
+02012BAC  ldrlt r2, [pc, #0x1C]     ; 리터럴 풀 0x02012BD0은 제자리
+02012BB0  ldrlt r2, [r2, r1, lsl #3]
+02012BB4  strlt r2, [r0, #0x14]
+02012BB8  movlt r0, #1
+02012BBC  movge r0, #0
+02012BC0  bx    lr
+02012BC4  movs  r1, r5              ; 훅: 덮어쓴 명령을 다시 실행
+02012BC8  moveq r1, #1              ;      0이었으면 1로
+02012BCC  bx    lr                  ;      돌아가기</code></pre>
+  <p>
+    그리고 함수를 부르는 두 곳에서 바로 앞의 <code>mov r1, r5</code>를 훅으로 가는 <code>bl</code>로 바꿉니다.
+    0x020125E4는 <code>76 01 00 EB</code>, 0x02012674는 <code>52 01 00 EB</code>입니다(위 계산기의 예시).
+  </p>
+  <ul>
+    <li>
+      <strong>덮어쓴 명령 다시 실행:</strong> 훅의 첫 명령 <code>movs r1, r5</code>가 원래의 <code>mov r1, r5</code>를
+      대신합니다. <code>s</code>를 붙여 결과가 0인지 플래그에 남기므로, 다음 줄에서 따로 비교하지 않아도 됩니다.
+    </li>
+    <li>
+      <strong>lr을 써도 되는지:</strong> <code>bl</code>은 lr을 덮어씁니다. 두 호출 지점이 든 함수는 이미 다른 함수를
+      부르고{' '}
+      <code>
+        pop {'{'}r3, r4, r5, r6, r7, pc{'}'}
+      </code>
+      로 끝나서, 들어올 때 lr을 스택에 저장해 둡니다. 그래서 여기서 lr을 덮어써도 돌아갈 주소는 잃지 않습니다.
+    </li>
+    <li>
+      <strong>플래그:</strong> 훅이 바꾼 플래그는 바로 다음 <code>bl</code>이 읽지 않고, 글꼴 함수가 <code>cmp</code>로
+      새로 정합니다.
+    </li>
+  </ul>
+  <p>
+    다시 압축하니 ARM9 프로그램이 8바이트 커져서(0x80628 → 0x80630) 헤더 크기와 압축 끝 주소를 고쳤습니다. 빈 곳이 있는
+    일본판 롬으로 첫 내레이션을 찍으면 가나는 그대로 나오고 한자 자리만 깨집니다. 이번에는 번호도 1로 바뀌어 게임이
+    말풍선 폰트 형식으로 제대로 그리고, 말풍선 폰트에는 256자뿐이라 한자 번호가 넘치는 것으로 보입니다. 처음에 한
+    곳(0x020125E4)에만 훅을 걸었을 때는 화면이 그대로였습니다. 내레이션은 다른 한 곳(0x02012674)에서 부르기 때문입니다.
+  </p>
+  <Deeper title="새 코드를 둘 자리">
+    <p>
+      이 예처럼 기존 함수를 짧게 다시 써서 자리를 내는 방법은 작은 훅에만 통합니다. 고스트 트릭 ARM9 프로그램에서 메인
+      RAM에 남는 코드·데이터는 0x020D1A80까지입니다. 풀린 파일은 0x020D2118까지인데, 그 사이는 ITCM·DTCM으로 옮겨질
+      데이터입니다. 0x020D1A80부터 0x020F1E60까지는 0으로 비우고 쓰는 변수 자리(BSS)이고, 그 뒤가 오버레이 자리입니다.
+      그래서 큰 새 코드를 그냥 뒤에 붙일 수는 없습니다. 오버레이 자리에 둘 코드를 따로 올려 주거나, 프로그램을 늘리면서
+      BSS 시작을 함께 옮기는 등 더 손이 가는 방법이 필요합니다. 슈퍼 패미콤에서 빈 뱅크를 찾던 일(
+      <a href={`${chapterHref(6)}#space`}>6장</a>)에 해당합니다.
+    </p>
+  </Deeper>
+
+  <h2 id="in-patch">
+    실제 패치에서 <span class="layer-badge layer-patch">실제 패치에서</span>
+  </h2>
+  <h3>고스트 트릭: 다음 코드 패치를 위해</h3>
+  <p>
+    고스트 트릭 한글패치는 v1.1·v1.2 모두 코드를 고치지 않았습니다. 앞으로 코드를 고친다면 v1.2 롬은 ARM9 프로그램 뒤에
+    빈 곳이 없다는 점부터 챙겨야 합니다. 이 장의 실험은 그 문제를 피하려고 일본판 롬에서 했습니다. 실험한 롬은
+    시험용이고 배포하지 않습니다.
+  </p>
+
+  <h2 id="try">
+    직접 해 보기 <span class="layer-badge layer-try">직접 해 보기</span>
+  </h2>
+  <p>
+    ndspy(<code>pip install ndspy</code>)와 툴킷의 CRC 함수로 일본판 롬에 위의 훅을 넣는 스크립트입니다. 고스트 트릭
+    일본판 주소 기준입니다.
+  </p>
+  <pre tabindex="0"><code>{script}</code></pre>
+</GuideChapter>

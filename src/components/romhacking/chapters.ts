@@ -200,7 +200,9 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       note(KAKUSEI_PATCH, 'making-password', '새 암호 문장으로 건너가는 루틴'),
       note(OTOGIRISOU_PATCH, 'making-unique', '원작에 없던 기능 끼워 넣기'),
     ],
-    gaps: [gap(GHOST_TRICK_PATCH, '코드를 고치지 않았습니다. 길어진 대사는 같은 묶음 안에서 다시 배치합니다.')],
+    gaps: [
+      gap(GHOST_TRICK_PATCH, '패치는 코드를 고치지 않았습니다. 고스트 트릭 코드에 훅을 거는 실험은 22장에 있습니다.'),
+    ],
     tools: [{ command: 'krpatch sfc dis', anchor: 'sfc-dis-65c816-코드-디스어셈블' }],
   },
   {
@@ -543,6 +545,23 @@ export const GUIDE_CHAPTERS: GuideChapter[] = [
       gap(KAKUSEI_PATCH, '슈퍼 패미콤의 65c816 어셈블리는 5장에서 다룹니다.'),
       gap(OTOGIRISOU_PATCH, '슈퍼 패미콤의 65c816 어셈블리는 5장에서 다룹니다.'),
       gap(SMRPG_PATCH, '슈퍼 패미콤의 65c816 어셈블리는 5장에서 다룹니다.'),
+    ],
+    tools: [{ command: 'krpatch nds unpack', anchor: 'nds-unpack-nds-pack-파일시스템을-폴더로-다시-롬으로' }],
+  },
+  {
+    order: 22,
+    slug: 'hooking',
+    platform: 'nds',
+    title: 'ARM 후킹',
+    summary:
+      '압축된 ARM9 프로그램을 풀어 고치고 다시 압축해 넣는 순서, BL 계산, 덮어쓴 명령을 다시 실행하는 훅을 고스트 트릭 글꼴 함수로 만들어 에뮬레이터로 확인합니다.',
+    ready: true,
+    notes: [note(GHOST_TRICK_PATCH, 'making-map', '다시 묶은 롬의 ARM9 뒤 빈 곳')],
+    gaps: [
+      gap(TOTSUGEKI_PATCH, '슈퍼 패미콤의 후킹은 6장에서 다룹니다.'),
+      gap(KAKUSEI_PATCH, '슈퍼 패미콤의 후킹은 6장에서 다룹니다.'),
+      gap(OTOGIRISOU_PATCH, '슈퍼 패미콤의 후킹은 6장에서 다룹니다.'),
+      gap(SMRPG_PATCH, '슈퍼 패미콤의 후킹은 6장에서 다룹니다.'),
     ],
     tools: [{ command: 'krpatch nds unpack', anchor: 'nds-unpack-nds-pack-파일시스템을-폴더로-다시-롬으로' }],
   },
