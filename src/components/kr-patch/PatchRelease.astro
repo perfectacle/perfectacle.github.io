@@ -14,7 +14,12 @@ const kb = Math.ceil(statSync(`public${release.ips}`).size / 1024);
 const kind = PLATFORMS[patch.platform].patchExt === 'ips' ? 'IPS' : 'xdelta';
 ---
 
-<article class="patch-release" aria-labelledby={release.id} data-release={release.id}>
+<article
+  class="patch-release"
+  aria-labelledby={release.id}
+  data-release={release.id}
+  data-latest={release.latest || undefined}
+>
   <div class="release-head">
     <h3 id={release.id} class="pixel">
       <a class="heading-link" href={`#${release.id}`}>

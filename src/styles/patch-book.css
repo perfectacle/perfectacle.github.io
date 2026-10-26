@@ -699,9 +699,29 @@ h4.pixel {
   text-wrap: balance;
 }
 
+/* Each version is one card, so where a release ends and the next begins reads at a glance. */
 .patch-release {
   display: grid;
   gap: 16px;
+  min-width: 0;
+  padding: 20px;
+  border: 2px solid color-mix(in srgb, var(--muted) 45%, transparent);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.patch-release[data-latest] {
+  border-color: var(--accent);
+}
+
+.patch-release + .patch-release {
+  margin-top: 16px;
+}
+
+@media (max-width: 559px) {
+  .patch-release {
+    padding: 16px 8px;
+  }
 }
 
 .patch-release > ul {
