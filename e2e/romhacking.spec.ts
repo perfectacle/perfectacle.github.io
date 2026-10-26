@@ -867,6 +867,9 @@ test('the guide index lists every ROM analysis note under its console', async ({
 test("each track maps its chapters to its games' notes, and says why a cell is empty", async ({ page }) => {
   for (const id of TRACK_ORDER) {
     await page.goto(TRACKS[id].path);
+    const fold = page.locator('details.note-grid-fold');
+    await expect(fold).not.toHaveAttribute('open');
+    await fold.locator('summary').click();
     const grid = page.getByRole('table', { name: '장 × 게임 노트' });
     await expect(grid.getByRole('columnheader')).toHaveCount(trackPatches(id).length + 1);
     const rows = grid.locator('tbody tr');
