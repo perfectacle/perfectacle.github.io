@@ -74,19 +74,27 @@ const mapRows = [0xc0, 0xd0, 0xe0, 0xf0];
 const bankKind = (b: number) =>
   b >= 0xc0 && b <= 0xc3
     ? 'dg-cool'
-    : b >= 0xe2 && b <= 0xe4
+    : (b >= 0xe2 && b <= 0xe4) || [0xda, 0xdc, 0xdd].includes(b)
       ? 'dg-warm'
-      : [0xf7, 0xf9, 0xfa, 0xfe].includes(b)
+      : [0xd5, 0xf7, 0xf9, 0xfa, 0xfe].includes(b)
         ? 'dg-accent'
         : 'dg-cell';
 const romMap = [
   { bank: '$C0', text: '대사 엔진. 대사 주소 계산 루틴 $C0:5800, 제어 코드 분기' },
   { bank: '$C1·$C2', text: '전투. 전투 메뉴 글자 그리기 $C1:6A3F, 레벨업 화면, 전투 애니메이션 해석기 $C2:0C43' },
-  { bank: '$C3', text: '필드 메뉴. 아이템 이름 그리기 $C3:7990, 빈 공간 $C3:F000·$C3:FC40(패치 코드)' },
+  {
+    bank: '$C3',
+    text: '필드 메뉴. 아이템 이름 그리기 $C3:7990, 빈 공간 $C3:F000·$C3:FC40(패치 코드), $C3:E240(v1.3 이름 입력·파일 선택 코드)',
+  },
+  { bank: '$D5', text: 'v1.3 이름 입력의 자모 표, 격자, 문구 $D5:EFEB' },
+  { bank: '$DA·$DC·$DD', text: 'v1.3 이름 글리프 $DA:4DA0, $DC:6506, $DD:EBE0' },
   { bank: '$E2–$E4', text: '대사 4096개(그룹 0–3은 $E2, 4–6은 $E3, 7은 $E4). $E2:B400부터는 빈 공간(새 이름 표)' },
   { bank: '$E4', text: '대사 뒤 $E4:2800 메뉴 폰트, $E4:4000 대사 폰트, $E4:9D00 대사 폰트 확장 칸' },
-  { bank: '$F7', text: '대사 포인터 표 $F7:E000' },
-  { bank: '$F9·$FA', text: '적 이름 $F9:8C11, 필살기 $FA:137F, 아이템 $FA:41FC, 아이템 설명·전투 메시지' },
+  { bank: '$F7', text: '대사 포인터 표 $F7:E000, v1.3 이름 글리프 $F7:B5E8' },
+  {
+    bank: '$F9·$FA',
+    text: '적 이름 $F9:8C11, 필살기 $FA:137F, 아이템 $FA:41FC, 아이템 설명·전투 메시지, v1.3 음절 번호 표 $FA:ED44',
+  },
   { bank: '$FE', text: '메뉴 문구 $FE:EF00' },
 ];
 
@@ -203,7 +211,7 @@ const files = {
     { path: 'tools/py/check_banner.py', text: '기록한 글자 코드를 이름과 대조' },
     {
       path: 'src/name_entry.asm',
-      text: 'NeInit·NeInput(자모 격자와 입력), NeJamo(조합), NeFly·NeLanded(날아가는 글자), NeDrawName·FsPutName(이름 입력·파일 선택의 이름)',
+      text: 'NeInit·NeInput(자모 격자와 입력), NeJamo(조합), NeFly·NeLanded(날아가는 글자), NeDrawName·FsPutName(이름 입력·파일 선택의 이름), FsKeep·FsRestore(파일 선택이 덮는 창 테두리 보존)',
     },
     { path: 'tools/py/name_entry.py', text: '이름 글리프 2,401자, 음절 번호 표, 자모 표, 격자 생성' },
   ],
@@ -456,8 +464,8 @@ DrawItemName:        ; 한글 이름을 그리는 새 코드
   <svg viewBox="0 0 360 170" role="img" aria-labelledby="smrpg-map-t smrpg-map-d">
     <title id="smrpg-map-t">슈퍼 마리오 RPG 롬 지도</title>
     <desc id="smrpg-map-d">
-      뱅크 $C0부터 $FF까지 16개씩 네 줄. $C0–$C3은 게임 코드, $E2–$E4는 대사와 폰트, $F7은 대사 포인터 표, $F9·$FA는
-      이름과 전투 문구, $FE는 메뉴 문구다.
+      뱅크 $C0부터 $FF까지 16개씩 네 줄. $C0–$C3은 게임 코드, $E2–$E4는 대사와 폰트, $DA·$DC·$DD는 v1.3 이름 글리프,
+      $D5는 v1.3 이름 입력 표, $F7은 대사 포인터 표, $F9·$FA는 이름과 전투 문구, $FE는 메뉴 문구다.
     </desc>
     {Array.from({ length: 16 }, (_, i) => (
       <text class="dg-small" x={50 + i * 19} y="16" text-anchor="middle">
@@ -1502,7 +1510,7 @@ end, emu.callbackType.write, 0x3030, 0x3031, emu.cpuType.snes, emu.memType.snesM
   libretro 코어를 직접 불러 쓰는 작은 프로그램으로 일본판, v1.1, v1.2에 같은 입력을 넣었습니다. Mesen 2에도 같은 입력
   파일을 Lua로 넣었습니다. 새 게임은 전원을 켜고 쿠파성까지 가고, 이어하기는 v1.1 세이브에 요시쿠키를 넣어 가시돌이
   무리와 싸우며 요시쿠키를 씁니다. 변신이 나오는지는 난수라 코어마다 다르지만, 같은 코어에서는 세 롬이 같은 프레임에
-  같은 결과를 냈습니다. 실기에서는 시험하지 않았습니다.
+  같은 결과를 냈습니다. 실기에서는 시험하지 않았습니다. v1.3은 이 코어들로 다시 돌리지 않았습니다.
 </p>
 <Deeper title="코어별 결과">
   <div class="table-wrap" tabindex="0">
@@ -1548,9 +1556,9 @@ end, emu.callbackType.write, 0x3030, 0x3031, emu.cpuType.snes, emu.memType.snesM
 <h3>알려진 한계</h3>
 <ul class="notes">
   <li>
-    롬은 4MB를 넘길 수 없습니다(<a href="#making-space">2절</a>). v1.2 롬에 남은 빈 공간은 필드 메뉴 코드 자리
-    286바이트, 전투 메뉴 코드 자리 215바이트, 이름 표 뒤 147바이트, 메뉴 문구 205바이트이고, 임시 칸 글자는 100자, 대사
-    폰트 확장 칸은 27자를 더 넣을 수 있습니다.
+    롬은 4MB를 넘길 수 없습니다(<a href="#making-space">2절</a>). v1.3 롬에 남은 빈 공간은 필드 메뉴 코드 자리
+    164바이트, 이름 입력 코드 자리 1,341바이트, 전투 메뉴 코드 자리 215바이트, 이름 표 뒤 147바이트, 메뉴 문구
+    205바이트이고, 임시 칸 글자는 100자, 대사 폰트 확장 칸은 27자를 더 넣을 수 있습니다.
   </li>
   <li>
     대사 엔진의 2바이트 글자는 <code>1D</code>–<code>1F</code>로만 시작해서, 대사에 새 글자를 더 넣으려면 쓰이지 않는
