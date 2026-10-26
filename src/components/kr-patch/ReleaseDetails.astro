@@ -48,4 +48,12 @@
     min-width: 0;
     padding: 4px 16px 20px;
   }
+
+  /* The version card already pads the notes, so on phones the body gives that room back to keep screenshots at
+     the game's 256px width. */
+  @media (max-width: 559px) {
+    .release-body {
+      padding-inline: 4px;
+    }
+  }
 </style>

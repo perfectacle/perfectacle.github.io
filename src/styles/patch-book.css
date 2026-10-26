@@ -609,10 +609,6 @@ h1.pixel {
 }
 
 @media (max-width: 559px) {
-  .patch-release {
-    padding: 16px 12px;
-  }
-
   .hero {
     padding-top: 12px;
   }
@@ -720,6 +716,12 @@ h4.pixel {
 
 .patch-release + .patch-release {
   margin-top: 16px;
+}
+
+@media (max-width: 559px) {
+  .patch-release {
+    padding: 16px 8px;
+  }
 }
 
 .patch-release > ul {
