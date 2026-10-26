@@ -1,5 +1,5 @@
 <details class="release-details">
-  <summary class="pointer">패치 내용 자세히 보기</summary>
+  <summary>패치 내용 자세히 보기</summary>
   <div class="release-body">
     <slot />
   </div>
@@ -15,17 +15,10 @@
     border-radius: 4px;
   }
 
-  /* Lines that carry the menu cursor start far enough in that the cursor, drawn up to 30px before them, stays
-     inside the box instead of crossing its border or the page edge. */
   summary {
-    padding: 14px 16px 14px 40px;
+    padding: 14px 16px;
     font-weight: 700;
     cursor: pointer;
-  }
-
-  /* The summary spans the box, so its cursor is placed in the left padding rather than before the box edge. */
-  .release-details > summary.pointer::before {
-    left: 12px;
   }
 
   summary:focus-visible {

@@ -171,6 +171,73 @@ for (const patch of ALL_KR_PATCHES) {
   });
 }
 
+for (const patch of ALL_KR_PATCHES) {
+  test(`${patch.title} version links reveal both notes and checksums`, async ({ page }) => {
+    await page.goto(`${patch.path}/`);
+    const release = page.locator('.patch-release').first();
+    const id = await release.getAttribute('data-release');
+    const checksums = release.locator('.file-checksums');
+    const notes = release.locator('.release-details');
+    await release.locator('.heading-link').click();
+    await expect(checksums).toHaveAttribute('open', '');
+    await expect(notes).toHaveAttribute('open', '');
+    await expect(page).toHaveURL(new RegExp(`#${id}$`));
+
+    await checksums.locator('summary').click();
+    await expect(checksums).not.toHaveAttribute('open');
+    await release.locator('.heading-link').click();
+    await expect(checksums).toHaveAttribute('open', '');
+    await expect(notes).toHaveAttribute('open', '');
+
+    await page.goto(`${patch.path}/#${id}`);
+    await expect(checksums).toHaveAttribute('open', '');
+    await expect(notes).toHaveAttribute('open', '');
+    await expect(page.locator('.patch-release > .file-checksums[open]')).toHaveCount(1);
+    await expect(page.locator('.patch-release > .release-details[open]')).toHaveCount(1);
+
+    await notes.locator('summary').click();
+    await checksums.locator('summary').click();
+    await notes.locator('.release-body').evaluate(node => {
+      node.id = 'linked-release-content';
+      location.hash = node.id;
+    });
+    await expect(notes.locator('.release-body')).toBeVisible();
+    await expect(checksums).toHaveAttribute('open', '');
+    await expect(page).toHaveURL(/#linked-release-content$/);
+  });
+
+  test(`${patch.title} uses one right-aligned disclosure arrow`, async ({ page }) => {
+    await page.goto(`${patch.path}/`);
+    for (const summary of await page.locator('details > summary').all()) {
+      const style = await summary.evaluate(node => {
+        const arrow = getComputedStyle(node, '::after');
+        return {
+          display: getComputedStyle(node).display,
+          marker: getComputedStyle(node).listStyleType,
+          arrow: arrow.content,
+          margin: arrow.marginLeft,
+          before: getComputedStyle(node, '::before').content,
+        };
+      });
+      expect(style).toMatchObject({ marker: 'none', arrow: '"▸"', before: 'none' });
+      if (await summary.isVisible()) {
+        expect(style.display).toBe('flex');
+        expect(parseFloat(style.margin)).toBeGreaterThanOrEqual(0);
+      }
+    }
+    const summary = page.locator('.patch-release .file-checksums > summary').first();
+    await summary.focus();
+    await page.keyboard.press('Enter');
+    await expect
+      .poll(() => summary.evaluate(node => getComputedStyle(node, '::after').transform))
+      .toBe('matrix(0, 1, -1, 0, 0, 0)');
+    if (patch === GHOST_TRICK_PATCH) {
+      for (const pointer of await page.locator('.pointer').all())
+        expect(await pointer.evaluate(node => getComputedStyle(node, '::before').backgroundImage)).toBe('none');
+    }
+  });
+}
+
 test('the patch hub boots once per session and then opens the menu at once', async ({ page }) => {
   await page.goto(HUB);
   const crt = page.locator('[data-crt]');

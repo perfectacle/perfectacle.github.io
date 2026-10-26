@@ -23,7 +23,7 @@ const folded = pairs.slice(visible);
 </div>
 {folded.length > 0 && (
   <details class="more">
-    <summary class="pointer">{folded.length}장면 더 보기</summary>
+    <summary>{folded.length}장면 더 보기</summary>
     <div class="compare-list">
       {folded.map(pair => (
         <VersionPair pair={pair} base={base} versions={versions} speaker={speaker} />

@@ -112,26 +112,11 @@ const items = [{ id: 'patch', label: '한글패치 하기' }, ...sections, { id:
 
   .section-nav-menu summary {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0 12px;
+    gap: 12px;
     align-items: center;
     cursor: pointer;
     list-style: none;
     min-height: 28px;
-  }
-
-  .section-nav-menu summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .section-nav-menu summary::after {
-    content: '＋' / '';
-    margin-left: auto;
-    color: var(--accent);
-  }
-
-  .section-nav-menu[open] summary::after {
-    content: '−' / '';
   }
 
   .section-nav-current {
