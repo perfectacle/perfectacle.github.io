@@ -242,7 +242,7 @@ main:focus {
   outline-offset: 4px;
 }
 
-/* The menu's pointing hand appears beside whatever the player is about to choose. */
+/* Hover and keyboard focus mark the current menu choice. */
 .pointer {
   position: relative;
   display: inline-block;
@@ -250,46 +250,52 @@ main:focus {
 }
 
 .pointer::before {
-  content: '';
+  content: '▸' / '';
   position: absolute;
   top: 50%;
-  left: -30px;
-  width: 21px;
-  height: 16px;
-  background: url('/games/kr-patches/sfc/super-mario-rpg/images/ui/hand-cursor.webp') no-repeat;
+  left: -22px;
+  color: var(--accent);
   transform: translateY(-50%);
   opacity: 0;
 }
 
 .pointer:hover::before,
-.pointer:focus-visible::before,
-summary.pointer:focus-visible::before {
+.pointer:focus-visible::before {
   opacity: 1;
 }
 
-/* Every fold on these pages shows the same arrow after its label, turned down while open. The browser's own marker
-   disappears on summary.pointer (inline-block), so all folds draw this one instead. */
-details:not(.section-nav-menu) > summary {
+[data-theme='smrpg'] .pointer::before {
+  content: '';
+  left: -30px;
+  width: 21px;
+  height: 16px;
+  background: url('/games/kr-patches/sfc/super-mario-rpg/images/ui/hand-cursor.webp') no-repeat;
+}
+
+details > summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   list-style: none;
 }
 
-details:not(.section-nav-menu) > summary::-webkit-details-marker {
+details > summary::-webkit-details-marker {
   display: none;
 }
 
-details:not(.section-nav-menu) > summary::after {
+details > summary::after {
   content: '▸';
-  display: inline-block;
-  margin-left: 0.4em;
+  flex: none;
+  margin-left: auto;
   transition: transform 0.15s;
 }
 
-details[open]:not(.section-nav-menu) > summary::after {
+details[open] > summary::after {
   transform: rotate(90deg);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  details:not(.section-nav-menu) > summary::after {
+  details > summary::after {
     transition: none;
   }
 }
@@ -814,7 +820,7 @@ h4.pixel {
 }
 
 .more summary {
-  margin: 0 0 20px 30px;
+  margin: 0 0 20px;
   color: var(--ink);
   cursor: pointer;
 }
