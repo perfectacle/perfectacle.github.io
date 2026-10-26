@@ -81,8 +81,10 @@ export const GOKUDEN_KAKUSEI: RomSpec = {
   patchedTitle: 'DBZ SUPER GOKUDEN 2',
   patchedSize: 4194304,
   original: { crc32: '3172CD4F', md5: '8502A3E5C0FDC56B6495A644ACA54413' },
-  patched: { crc32: '29F5A03B', md5: '078C288B4BA85FE7D2EAFE7503CC73A9' },
+  patched: { crc32: '8AA3123E', md5: 'AC0BE8D6057B4E2188295A71703F58DC' },
   previous: [
+    // The first v1.4 build, replaced the same day before the release was announced.
+    { crc32: '29F5A03B', md5: '078C288B4BA85FE7D2EAFE7503CC73A9' },
     { version: 'v1.3', crc32: 'B9F14962', md5: '7F3D20CAC538E0E197F0EFD3D7B56301' },
     { version: 'v1.2', crc32: 'E46C7A28', md5: 'E2457778B2F11063A75DFA69681E6FA3' },
     { version: 'v1.1', crc32: '32219BC3', md5: 'DBCB002BD5B91ED839BA1425EE13F6DE' },
