@@ -3,6 +3,10 @@ import ChapterLink from '../../../../components/romhacking/ChapterLink.astro';
 import GuideChapter from '../../../../layouts/GuideChapter.astro';
 import Deeper from '../../../../components/romhacking/Deeper.astro';
 import ArmBl from '../../../../components/romhacking/ArmBl.astro';
+import { GHOST_TRICK_PATCH } from '../../../../lib/kr-patches.ts';
+import { notePath } from '../../../../components/romhacking/chapters.ts';
+
+const note = notePath(GHOST_TRICK_PATCH);
 
 const references = [
   {
@@ -188,9 +192,10 @@ const steps = [
   </h2>
   <h3>고스트 트릭: 다음 코드 패치를 위해</h3>
   <p>
-    고스트 트릭 한글패치는 v1.1·v1.2 모두 코드를 고치지 않았습니다. 앞으로 코드를 고친다면 v1.2 롬은 ARM9 프로그램 뒤에
-    빈 곳이 없다는 점부터 챙겨야 합니다. 이 장의 실험은 그 문제를 피하려고 일본판 롬에서 했습니다. 실험한 롬은
-    시험용이고 배포하지 않습니다.
+    고스트 트릭 한글패치는 v1.1·v1.2 모두 코드를 고치지 않았고, v1.3은 오버레이 0의 바이트 몇 개를 제자리에서 바꿨을
+    뿐입니다(<a href={`${note}#making-apfix`}>노트</a>). 앞으로 코드를 더 넣는다면 롬은 ARM9 프로그램 뒤에 빈 곳이
+    없다는 점부터 챙겨야 합니다. 이 장의 실험은 그 문제를 피하려고 일본판 롬에서 했습니다. 실험한 롬은 시험용이고
+    배포하지 않습니다.
   </p>
 
   <h2 id="try">
