@@ -25,8 +25,9 @@ export const SMRPG: RomSpec = {
   size: 4194304,
   header: { title: 'SUPER MARIO RPG', mapMode: 0x23, cartType: 0x35, romSize: 0x0c },
   original: { crc32: '5527071E', md5: '59483FEB9EB20207E3241E005FBDDE7E' },
-  patched: { crc32: '05DBCBE6', md5: 'B7F488D4F448304890A4BCE8000248E2' },
+  patched: { crc32: '76E9D81D', md5: '2EC7FE7658BB9C45C595020AAB0AA063' },
   previous: [
+    { version: 'v1.2', crc32: '05DBCBE6', md5: 'B7F488D4F448304890A4BCE8000248E2' },
     { version: 'v1.1', crc32: 'ABD8AC13', md5: '8E5320631EDCF274BF5C7A62C0417C55' },
     { version: 'v1.0', crc32: 'F4305A06', md5: 'AF6534D26150F9AB7A3765A9C7AF758D' },
   ],
@@ -97,8 +98,9 @@ export const OTOGIRISOU: RomSpec = {
   header: { title: 'OTOGIRISOU', mapMode: 0x20, cartType: 0x02, romSize: 0x0a },
   patchedSize: 2097152,
   original: { crc32: '8E4BEFD0', md5: 'AE1E9C92D0B7E6DBA6C6007D99C9C3F4' },
-  patched: { crc32: '2C31A0B2', md5: 'CD48C59B3B80D6C9E3C648E8BDD5A4E0' },
+  patched: { crc32: 'DAE98F06', md5: '3605777DAC6BE2AAFA011CEAA0429D91' },
   previous: [
+    { version: 'v1.2', crc32: '2C31A0B2', md5: 'CD48C59B3B80D6C9E3C648E8BDD5A4E0' },
     { crc32: 'C70A8E66', md5: '12A3FA116DB687AA4A60A7DB4A67D383' },
     { crc32: '27EE014E', md5: 'F45317CFAAAB68CCA5D8984AF8452535' },
   ],
