@@ -94,7 +94,7 @@ const glyphRows = [
   '000000001',
 ];
 
-// Banks of the three ROMs (docs/ANALYSIS.md 1장 롬 지도), drawn 4.3px per 32KB bank.
+// Banks of the four ROMs (docs/ANALYSIS.md 1장 롬 지도), drawn 4.3px per 32KB bank.
 const bankX = (bank: number) => 78 + bank * 4.3;
 const romRows = [
   {
@@ -128,12 +128,24 @@ const romRows = [
       { from: 0x36, to: 0x40, cls: 'dg-cell dg-dash' },
     ],
   },
+  {
+    label: 'v1.3',
+    size: '2MB',
+    segs: [
+      { from: 0x00, to: 0x15, cls: 'dg-cool' },
+      { from: 0x15, to: 0x1f, cls: 'dg-accent' },
+      { from: 0x1f, to: 0x20, cls: 'dg-cell' },
+      { from: 0x20, to: 0x36, cls: 'dg-warm' },
+      { from: 0x36, to: 0x37, cls: 'dg-accent' },
+      { from: 0x37, to: 0x40, cls: 'dg-cell dg-dash' },
+    ],
+  },
 ];
 const romLegend = [
   { cls: 'dg-cool', text: '프로그램·그림' },
   { cls: 'dg-warm', text: '대본' },
   { cls: 'dg-cell', text: '폰트($1F)' },
-  { cls: 'dg-accent', text: 'v1.1·v1.2 코드와 표' },
+  { cls: 'dg-accent', text: 'v1.1–v1.3 코드와 표' },
   { cls: 'dg-cell dg-dash', text: '0' },
 ];
 
@@ -296,7 +308,7 @@ const freeSpace = [
   { range: '$1C:E628–$1D:FFFF', note: '플로차트 데이터 뒤부터 뱅크 하나 넘게' },
   { range: '$18:81D0–$18:FFFF', note: '세이브 호환 코드 뒤' },
   { range: '$35:AF67–$35:FFFF', note: '대본 뒤. 대본이 늘어날 자리' },
-  { range: '$36:FA80–$3F:FFFF', note: 'v1.3 이름 글자와 코드 뒤' },
+  { range: '$36:FA7A–$3F:FFFF', note: 'v1.3 이름 글자와 코드 뒤' },
 ];
 
 const v10Uploads = [
@@ -414,15 +426,16 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   롬 파일을 32KB씩 잘라 늘어놓으면 어디에 무엇이 있는지 한눈에 보입니다. 일본판은 1MB, 뱅크 32개입니다. 뒤쪽 열 개
   뱅크에 압축된 대본이, 마지막 뱅크 <code>$1F</code>에 대사 폰트가 있습니다. v1.0은 압축을 풀어 크기가 두 배를 넘는
   대본을 넣으려고 롬을 2MB로 늘리고, 늘린 뒤쪽 1MB에 한국어 대본을 두었습니다. 일본판 대본 자리는 0으로 비었고,
-  v1.1·v1.2는 그 빈자리에 새 코드와 표를 넣었습니다.
+  v1.1·v1.2는 그 빈자리에 새 코드와 표를 넣었습니다. v1.3은 0으로 남아 있던 <code>$36</code> 뱅크에 이름 글자와 코드를
+  넣었습니다.
 </p>
-<Figure caption="세 롬을 뱅크(32KB)마다 한 칸으로 늘어놓은 지도. 일본판 대본은 $15:E401부터 시작합니다." max={640}>
-  <svg viewBox="0 0 360 236" role="img" aria-labelledby="map-t map-d">
-    <title id="map-t">일본판, v1.0, v1.2 롬 지도</title>
+<Figure caption="네 롬을 뱅크(32KB)마다 한 칸으로 늘어놓은 지도. 일본판 대본은 $15:E401부터 시작합니다." max={640}>
+  <svg viewBox="0 0 360 290" role="img" aria-labelledby="map-t map-d">
+    <title id="map-t">일본판, v1.0, v1.2, v1.3 롬 지도</title>
     <desc id="map-d">
       일본판 1MB는 $00–$14 프로그램과 그림, $15–$1E 허프만 대본, $1F 폰트입니다. v1.0 2MB는 같은 앞부분에서 일본판 대본
       자리를 0으로 비우고, $20–$35에 한국어 대본을 넣고 $36–$3F는 0입니다. v1.2는 v1.0이 비운 $15–$1E 자리에 v1.1과 v1.2
-      코드와 표를 넣었습니다.
+      코드와 표를 넣었습니다. v1.3은 v1.2에 더해 $36:8000–$36:FA79에 이름 글자와 코드를 넣었고, $37–$3F는 0입니다.
     </desc>
     {['$00', '$15', '$20', '$36', '$3F'].map(t => {
       const b = parseInt(t.slice(1), 16) + (t === '$3F' ? 1 : 0);
@@ -452,14 +465,14 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
         ))}
       </>
     ))}
-    <path class="dg-line dg-dash" d={`M${bankX(0x20)} 22V188`}></path>
-    <text class="dg-small" x={bankX(0x20) + 4} y="196">
+    <path class="dg-line dg-dash" d={`M${bankX(0x20)} 22V242`}></path>
+    <text class="dg-small" x={bankX(0x20) + 4} y="250">
       1MB 경계
     </text>
     {romLegend.map((l, i) => (
       <>
-        <rect class={l.cls} x={4 + (i % 3) * 120} y={206 + Math.floor(i / 3) * 16} width="12" height="10" rx="2" />
-        <text class="dg-small" x={20 + (i % 3) * 120} y={215 + Math.floor(i / 3) * 16}>
+        <rect class={l.cls} x={4 + (i % 3) * 120} y={260 + Math.floor(i / 3) * 16} width="12" height="10" rx="2" />
+        <text class="dg-small" x={20 + (i % 3) * 120} y={269 + Math.floor(i / 3) * 16}>
           {l.text}
         </text>
       </>
@@ -1090,6 +1103,7 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
     { path: 'tools/namefont.py', text: '새 글자 그룹, 자모 쪽 배치, 조합에 쓰는 표 만들기' },
     { path: 'asm/nameentry.asm', text: '디코더 뱅크 후킹, 자모 조합, 커서 이동과 Start' },
     { path: 'tools/build-v1.3.sh', text: 'v1.2 빌드 위에 v1.3 만들기' },
+    { path: 'tools/release-v1.3.sh', text: '배포용 IPS 파일(헤더 없음·있음)을 만들고 CRC32·MD5 출력' },
   ]}
 />
 
@@ -1629,7 +1643,8 @@ $15:E401 → 0x15 × 0x8000 + 0x6401 = 0xAE401</code></pre>
   아래 표는 최종 v1.2(CRC32 2C31A0B2)로 다시 돌린 결과입니다. 코어마다 7가지를 넣었습니다. 새 게임(헤더 없는 롬, 헤더
   있는 롬), v1.1·v1.0·일본판 세이브로 이어하기, 장 목록, 플로차트입니다. 정상인 코어는 끝까지 같은 장면과 선택지로 갔고,
   차이는 글자가 찍히는 타이밍 몇 프레임뿐이었습니다. Mesen 2 줄은 그 전에 Mesen 2로 직접 확인한 결과이고, MesenCE 줄은
-  나중에 Mesen 2와 같은 입력을 나란히 넣어 비교한 결과입니다.
+  나중에 Mesen 2와 같은 입력을 나란히 넣어 비교한 결과입니다. v1.3은 이 코어들로 다시 돌리지 않았고, 세이브가 있을 때와
+  없을 때 이름 입력 화면의 VRAM을 비교해 확인했습니다(<a href="#making-name-entry">이름 입력</a>).
 </p>
 <div class="table-wrap" tabindex="0">
   <table>

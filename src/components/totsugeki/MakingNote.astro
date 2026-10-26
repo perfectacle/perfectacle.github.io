@@ -126,9 +126,9 @@ const freeSpace = [
   { where: '$86:E000–$86:EBFF', what: '글자 블록 2 (3KB만 씀)', ver: 'v1.1' },
   { where: '$86:EC00–$86:ED7F 일부', what: '「펴」「플」「딩」「렉」', ver: 'v1.2' },
   { where: '$B7:FB00–$B7:FB6B', what: '기술습득표·이벤트 표의 표시 루틴', ver: 'v1.2' },
-  { where: '$80:F590–', what: '이름 입력 커서가 돌아갈 작은 스텁', ver: 'v1.3' },
-  { where: '$C0:8000–$CA:FFFF 일부', what: '이름용 8px 새 글자 11,063자', ver: 'v1.3' },
-  { where: '$E0:8000–', what: '렌더러 훅과 이름 입력 코드', ver: 'v1.3' },
+  { where: '$80:F590–$80:F5B2', what: '이름 입력 커서가 돌아갈 작은 스텁', ver: 'v1.3' },
+  { where: '$C0:8000–$CA:E76F', what: '이름용 8px 새 글자 11,063자', ver: 'v1.3' },
+  { where: '$E0:8000–$E0:8655', what: '렌더러 훅과 이름 입력 코드', ver: 'v1.3' },
   { where: '$E1:8000–$E1:D747', what: '음절 번호 → 글자 코드 표(11,172칸)', ver: 'v1.3' },
 ];
 
@@ -370,11 +370,15 @@ const buildSteps: [string, string][] = [
   ['tools/pwglyph1.py', '암호 글자 다섯 자리를 다시 그리고 글자 표와 대조합니다.'],
   ['tools/endpw1.py', '엔딩 암호 자리에 「손오공은사이어인」을 넣습니다.'],
   ['krpatch sfc checksum --fix', '헤더 체크섬을 다시 계산합니다.'],
-  ['krpatch ips make --headered', '헤더 없는 롬용과 512바이트 헤더 롬용 IPS를 만듭니다.'],
+  ['krpatch ips make --headered', 'v1.2의 헤더 없는 롬용과 512바이트 헤더 롬용 IPS를 만듭니다.'],
+  ['tools/font8.py', '여기부터 v1.3입니다. 이름용 8px 한글을 다시 그리고 새 글자를 더합니다.'],
+  ['asm/v13.asm', 'asar로 렌더러 훅과 자모 이름 입력 코드를 넣습니다.'],
+  ['krpatch sfc checksum --fix', '헤더 체크섬을 다시 계산합니다.'],
+  ['krpatch ips make --headered --rle', 'v1.3의 헤더 없는 롬용과 512바이트 헤더 롬용 IPS를 만듭니다.'],
 ];
 
 const toolFiles = [
-  { name: 'tools/build.sh', text: '전체 빌드 순서(위 목록)', section: 'tools' },
+  { name: 'tools/build.sh', text: 'v1.2까지의 빌드 순서(위 목록의 앞부분)', section: 'tools' },
   { name: 'krpatch ips', text: '공통 도구. IPS 만들기와 적용', section: 'tools' },
   { name: 'tools/dialogue1.py', text: '대사 포인터 표 읽기', section: 'dialogue' },
   { name: 'tools/extract1.py', text: '일본어·한국어 대사 덤프(TSV)', section: 'dialogue' },
@@ -2031,11 +2035,12 @@ python3 tools/rgcmp1.py runs_jp runs_kr   # 두 롬의 대사 ID 순서 비교</
 <p>
   위에서 설명한 파일은 모두 <a href={source}>패치 소스</a>의 게임 폴더에 있습니다. 그 폴더에 일본판 원본(헤더 없음,
   CRC32 <code>{patch.spec.original.crc32}</code>)을 <code>super-gokuden-jp.smc</code>로 두고{' '}
-  <a href={sourceFileUrl(patch, 'tools/build.sh')}>
-    <code>zsh tools/build.sh</code>
+  <a href={sourceFileUrl(patch, 'tools/build-v1.3.sh')}>
+    <code>zsh tools/build-v1.3.sh</code>
   </a>
-  를 실행하면 배포판과 같은 롬(CRC32 <code>{patch.spec.patched.crc32}</code>)이 나옵니다. Python 3(Pillow, numpy)과{' '}
-  <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>이 필요합니다. 빌드는 이 순서로 돕니다.
+  를 실행하면 배포판과 같은 롬(CRC32 <code>{patch.spec.patched.crc32}</code>)이 나옵니다. Python 3(Pillow, numpy),{' '}
+  <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>, <code>tools/asar</code>가 필요합니다. 이 스크립트는 먼저{' '}
+  <code>tools/build.sh</code>로 v1.2를 만들고 그 위에 v1.3을 쌓습니다. 빌드는 이 순서로 돕니다.
 </p>
 <ol class="flow">
   {buildSteps.map(([cmd, text]) => (
