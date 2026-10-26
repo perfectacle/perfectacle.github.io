@@ -279,6 +279,11 @@ export const GHOST_TRICK_PATCH = krPatch<NdsPatch>({
   year: 2010,
   releases: [
     {
+      version: '1.3',
+      date: '2026-10-27',
+      rom: { size: 119462534, crc32: 'F13E7A2C', md5: '335B1F8098F40603F4E9295754E912B3' },
+    },
+    {
       version: '1.2',
       date: '2026-10-24',
       rom: { size: 119462534, crc32: '4C863193', md5: 'BE1AC12137C374226DAD6D8DA9C64745' },

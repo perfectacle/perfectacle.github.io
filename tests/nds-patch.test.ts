@@ -49,6 +49,21 @@ describe('classifyNdsRom', () => {
     expect(classifyNdsRom(spec, old)).toEqual({ kind: 'old-korean', version: 'v1.1' });
   });
 
+  it('finds an earlier Korean ROM among releases of the same size', () => {
+    const first = target.slice();
+    first[0x5000] = 1;
+    const second = target.slice();
+    second[0x5000] = 2;
+    const spec = {
+      ...SPEC,
+      previous: [
+        { version: 'v1.2 첫 배포본', size: first.length, ...print(first) },
+        { version: 'v1.2', size: second.length, ...print(second) },
+      ],
+    };
+    expect(classifyNdsRom(spec, second)).toEqual({ kind: 'old-korean', version: 'v1.2' });
+  });
+
   it('tells another game, another region and a changed dump apart', () => {
     const other = source.slice();
     other.set(new TextEncoder().encode('OTHER GAME'), 0);
