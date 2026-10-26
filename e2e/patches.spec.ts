@@ -128,6 +128,49 @@ for (const patch of ALL_KR_PATCHES) {
   });
 }
 
+for (const patch of ALL_KR_PATCHES) {
+  test(`${patch.title} patch notes show the original and Korean file checksums of each version`, async ({
+    page,
+    isMobile,
+  }) => {
+    await page.setViewportSize({ width: isMobile ? 390 : 1280, height: 900 });
+    await page.goto(`${patch.path}/`);
+    const releases = page.locator('#patch-notes .patch-release');
+    await expect(releases).toHaveCount(patch.releases.length);
+    for (const { version, rom } of patch.releases) {
+      const release = page.locator(
+        `#patch-notes .patch-release[data-release="release-${version.replaceAll('.', '-')}"]`,
+      );
+      const details = release.locator('.file-checksums');
+      const summary = details.locator('summary');
+      await expect(details).not.toHaveAttribute('open');
+      await expect(summary).toHaveText('원본 롬파일 크기·해시 보기');
+      await summary.click();
+      await expect(details).toHaveAttribute('open', '');
+      // The checksums open on their own, without opening the notes or moving the shared address to the version.
+      await expect(release.locator('.release-details')).not.toHaveAttribute('open');
+      await expect(details).toContainText(`v${version} 패치 파일을 적용하면`);
+      for (const file of [
+        { name: '일본판 원본', size: patch.spec.size, fingerprint: patch.spec.original },
+        { name: `한글패치 v${version}`, size: rom.size, fingerprint: rom },
+      ]) {
+        const card = details.getByRole('region', { name: file.name, exact: true });
+        await expect(card.getByRole('heading', { level: 4, name: file.name, exact: true })).toBeVisible();
+        await expect(card.locator('dd')).toHaveText([
+          formatBytes(file.size),
+          file.fingerprint.crc32,
+          file.fingerprint.md5,
+        ]);
+      }
+      for (const hash of await details.locator('code').all()) {
+        const bounds = await hash.boundingBox();
+        if (!bounds) throw new Error('The file checksum must be visible');
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(page.viewportSize()?.width ?? 0);
+      }
+    }
+  });
+}
+
 test('the patch hub boots once per session and then opens the menu at once', async ({ page }) => {
   await page.goto(HUB);
   const crt = page.locator('[data-crt]');

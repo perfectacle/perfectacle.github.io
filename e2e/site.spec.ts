@@ -859,7 +859,7 @@ for (const game of PATCH_GUIDES) {
     await page.goto(path);
     const releases = page.locator('#patch-notes .patch-release');
     for (const release of await releases.all()) {
-      const detail = release.locator('details');
+      const detail = release.locator('.release-details');
       await expect(detail).toHaveCount(1);
       await expect(detail).not.toHaveAttribute('open');
       await expect(release.locator('h3').first()).toBeVisible();
@@ -898,18 +898,18 @@ for (const game of PATCH_GUIDES) {
     // A shared link lands on that version with its notes already open.
     await page.goto(`${path}#${older}`);
     const shared = page.locator(`#patch-notes .patch-release[data-release="${older}"]`);
-    await expect(shared.locator('details')).toHaveAttribute('open', '');
+    await expect(shared.locator('.release-details')).toHaveAttribute('open', '');
     await expect(shared.locator('h3')).toBeInViewport();
-    await expect(releases.locator('details[open]')).toHaveCount(1);
+    await expect(releases.locator('.release-details[open]')).toHaveCount(1);
 
     // The summary under the title opens the latest notes; opening and closing keeps the address in step.
     await page.locator('.latest-release a').click();
     const current = page.locator(`#patch-notes .patch-release[data-release="${latest}"]`);
-    await expect(current.locator('details')).toHaveAttribute('open', '');
+    await expect(current.locator('.release-details')).toHaveAttribute('open', '');
     await expect(page).toHaveURL(new RegExp(`#${latest}$`));
-    await current.locator('summary').click();
+    await current.locator('.release-details > summary').click();
     await expect(page).toHaveURL(new RegExp(`${path}$`));
-    await current.locator('summary').click();
+    await current.locator('.release-details > summary').click();
     await expect(page).toHaveURL(new RegExp(`#${latest}$`));
 
     // Each version title links to itself, so its address can be copied and shared from the bar.
@@ -928,7 +928,7 @@ for (const game of PATCH_GUIDES) {
     await page.goto(path);
     for (const { version, images } of PATCH_SCREEN_COVERAGE[game] ?? []) {
       const release = page.locator(`#patch-notes article[aria-labelledby="${version}"]`);
-      await release.locator('summary').click();
+      await release.locator('.release-details > summary').click();
       if (images.some(name => name.startsWith('title_v')))
         await expect(release.locator('img').first()).toHaveAttribute('src', /\/title_v/);
       for (const name of images) {
