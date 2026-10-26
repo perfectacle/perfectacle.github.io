@@ -79,9 +79,11 @@ export const GOKUDEN_KAKUSEI: RomSpec = {
     romSize: 0x0b,
   },
   patchedTitle: 'DBZ SUPER GOKUDEN 2',
+  patchedSize: 4194304,
   original: { crc32: '3172CD4F', md5: '8502A3E5C0FDC56B6495A644ACA54413' },
-  patched: { crc32: 'B9F14962', md5: '7F3D20CAC538E0E197F0EFD3D7B56301' },
+  patched: { crc32: '29F5A03B', md5: '078C288B4BA85FE7D2EAFE7503CC73A9' },
   previous: [
+    { version: 'v1.3', crc32: 'B9F14962', md5: '7F3D20CAC538E0E197F0EFD3D7B56301' },
     { version: 'v1.2', crc32: 'E46C7A28', md5: 'E2457778B2F11063A75DFA69681E6FA3' },
     { version: 'v1.1', crc32: '32219BC3', md5: 'DBCB002BD5B91ED839BA1425EE13F6DE' },
   ],
@@ -234,15 +236,18 @@ export function applyIps(spec: RomSpec, source: Uint8Array, ips: Uint8Array): Ui
   }
 }
 
-/** `patched` checks the name and size the patch writes; the ROM size byte doubles with each doubling of the size. */
+/**
+ * `patched` checks the name and size the patch writes; `renamed` the patch's name at the original size, as
+ * earlier releases wrote it before a later one grew the ROM. The ROM size byte doubles with each doubling of the size.
+ */
 export function hasGameHeader(
   spec: RomSpec,
   normalizedBytes: Uint8Array,
-  which: 'original' | 'patched' = 'original',
+  which: 'original' | 'patched' | 'renamed' = 'original',
 ): boolean {
   const { mapMode, cartType } = spec.header;
   const size = which === 'patched' ? patchedSize(spec) : spec.size;
-  const title = which === 'patched' ? (spec.patchedTitle ?? spec.header.title) : spec.header.title;
+  const title = which === 'original' ? spec.header.title : (spec.patchedTitle ?? spec.header.title);
   const romSize = spec.header.romSize + Math.log2(size / spec.size);
   return (
     normalizedBytes.length === size &&
@@ -305,6 +310,7 @@ export function classifyRom(spec: RomSpec, source: Uint8Array): RomVerdict {
   if (earlier) return { kind: 'old-korean', version: earlier.version };
   const renamed = spec.patchedTitle !== undefined || patchedSize(spec) !== spec.size;
   if (renamed && hasGameHeader(spec, bytes, 'patched')) return { kind: 'old-korean' };
+  if (spec.patchedTitle !== undefined && hasGameHeader(spec, bytes, 'renamed')) return { kind: 'old-korean' };
   if (size !== spec.size) return { kind: 'wrong-size' };
   if (!hasGameHeader(spec, bytes)) return { kind: 'wrong-game' };
   // Cartridge header destination code: 0x00 is Japan; other versions need a different patch.

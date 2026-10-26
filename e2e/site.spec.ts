@@ -956,8 +956,8 @@ for (const game of PATCH_GUIDES) {
     for (const pair of await panels.all()) {
       const labels = await pair.locator('.panel-label').allTextContents();
       if (labels.length > 1 && /^(v1\.\d|일본판)$/.test(labels[0] ?? '')) {
-        expect(labels[0]).toMatch(/^(v1\.[012]|일본판)$/);
-        expect(labels.at(-1)).toMatch(/^v1\.[123]$/);
+        expect(labels[0]).toMatch(/^(v1\.[0-3]|일본판)$/);
+        expect(labels.at(-1)).toMatch(/^v1\.[1-4]$/);
       }
       expect((await pair.locator('.patch-picture').count()) + (await pair.locator('.panel-note').count())).toBe(
         Math.max(labels.length, 1),

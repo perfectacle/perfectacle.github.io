@@ -282,14 +282,26 @@ describe('Super Gokuden: Kakusei-hen (2 MB, katakana header)', () => {
     expect(classifyRom(GOKUDEN_KAKUSEI, rom).kind).toBe('different');
   });
 
-  it('expects the Korean internal name its patch writes', () => {
+  it('expects the Korean internal name and the 4 MB size its patch writes', () => {
     const rename = [...encode(GOKUDEN_KAKUSEI.patchedTitle ?? '')];
-    const renaming = patch(0, 0x7f, 0xc0, 0, rename.length, ...rename);
+    const renaming = new Uint8Array([
+      ...patch(0, 0x7f, 0xc0, 0, rename.length, ...rename, 0, 0x7f, 0xd7, 0, 1, 0x0c),
+      0x40,
+      0,
+      0,
+    ]);
     const output = createPatchedRom(GOKUDEN_KAKUSEI, gameRom(GOKUDEN_KAKUSEI), renaming, { allowUnverified: true });
+    expect(output.length).toBe(4194304);
     expect(hasGameHeader(GOKUDEN_KAKUSEI, output, 'patched')).toBe(true);
     expect(() =>
       createPatchedRom(GOKUDEN_KAKUSEI, gameRom(GOKUDEN_KAKUSEI), patch(), { allowUnverified: true }),
     ).toThrow('게임 식별 정보');
+  });
+
+  it('still knows a 2 MB Korean build from before v1.4 by its name', () => {
+    const rom = gameRom(GOKUDEN_KAKUSEI);
+    rom.set(encode(GOKUDEN_KAKUSEI.patchedTitle ?? ''), 0x7fc0);
+    expect(classifyRom(GOKUDEN_KAKUSEI, rom)).toEqual({ kind: 'old-korean' });
   });
 
   it('does not mistake Totsugeki-hen for Kakusei-hen or the other way round', () => {

@@ -152,6 +152,7 @@ export const KAKUSEI_PATCH = krPatch<SfcPatch>({
   path: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei',
   year: 1995,
   releases: [
+    { version: '1.4', date: '2026-10-26' },
     { version: '1.3', date: '2026-10-24' },
     { version: '1.2', date: '2026-10-18' },
     { version: '1.1', date: '2016-01-04' },
