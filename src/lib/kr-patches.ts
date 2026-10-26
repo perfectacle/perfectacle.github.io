@@ -1,5 +1,12 @@
 import { GHOST_TRICK, type NdsSpec } from './nds-patch.ts';
-import { GOKUDEN_KAKUSEI, GOKUDEN_TOTSUGEKI, OTOGIRISOU, SMRPG, type RomSpec } from './rom-patch.ts';
+import {
+  GOKUDEN_KAKUSEI,
+  GOKUDEN_TOTSUGEKI,
+  OTOGIRISOU,
+  SMRPG,
+  type RomFingerprint,
+  type RomSpec,
+} from './rom-patch.ts';
 
 /** What differs by console: list page, folder in perfectacle/kr-patches, patch and ROM file types. */
 export const PLATFORMS = {
@@ -64,6 +71,8 @@ export interface KrRelease {
   version: string;
   /** YYYY-MM-DD */
   date: string;
+  /** Korean ROM this release's patch writes onto the Japanese original, for players who check their files by hand. */
+  rom: RomFingerprint & { size: number };
 }
 
 const krPatch = <P extends KrPatch>(patch: Omit<P, 'version' | 'released' | 'stem'>): P => {
@@ -105,10 +114,26 @@ export const SMRPG_PATCH = krPatch<SfcPatch>({
   path: '/games/kr-patches/sfc/super-mario-rpg',
   year: 1996,
   releases: [
-    { version: '1.3', date: '2026-10-24' },
-    { version: '1.2', date: '2026-10-24' },
-    { version: '1.1', date: '2026-10-18' },
-    { version: '1.0', date: '2015-03-12' },
+    {
+      version: '1.3',
+      date: '2026-10-24',
+      rom: { size: 4194304, crc32: '76E9D81D', md5: '2EC7FE7658BB9C45C595020AAB0AA063' },
+    },
+    {
+      version: '1.2',
+      date: '2026-10-24',
+      rom: { size: 4194304, crc32: '05DBCBE6', md5: 'B7F488D4F448304890A4BCE8000248E2' },
+    },
+    {
+      version: '1.1',
+      date: '2026-10-18',
+      rom: { size: 4194304, crc32: 'ABD8AC13', md5: '8E5320631EDCF274BF5C7A62C0417C55' },
+    },
+    {
+      version: '1.0',
+      date: '2015-03-12',
+      rom: { size: 4194304, crc32: 'F4305A06', md5: 'AF6534D26150F9AB7A3765A9C7AF758D' },
+    },
   ],
   fileBase: 'Super_Mario_RPG_K',
   spec: SMRPG,
@@ -128,10 +153,26 @@ export const TOTSUGEKI_PATCH = krPatch<SfcPatch>({
   path: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-totsugeki',
   year: 1995,
   releases: [
-    { version: '1.3', date: '2026-10-25' },
-    { version: '1.2', date: '2026-10-24' },
-    { version: '1.1', date: '2026-10-18' },
-    { version: '1.0', date: '2012-12-12' },
+    {
+      version: '1.3',
+      date: '2026-10-25',
+      rom: { size: 4194304, crc32: 'FC7FB902', md5: 'AEAA197ABBBF7F0C3546F7163D834386' },
+    },
+    {
+      version: '1.2',
+      date: '2026-10-24',
+      rom: { size: 2097152, crc32: 'A939C4F8', md5: 'AE259E14C8C6B9853C4C76D0E2EB75D0' },
+    },
+    {
+      version: '1.1',
+      date: '2026-10-18',
+      rom: { size: 2097152, crc32: '7405D969', md5: 'FCA11D34E7D5AD8D9D2021AC1C8E34E5' },
+    },
+    {
+      version: '1.0',
+      date: '2012-12-12',
+      rom: { size: 2097152, crc32: '52FEF8C3', md5: 'B00D892B59588393145CF3E848A1BA3A' },
+    },
   ],
   fileBase: 'Dragon_Ball_Z_Super_Gokuden_Totsugeki_Hen_K',
   spec: GOKUDEN_TOTSUGEKI,
@@ -152,11 +193,31 @@ export const KAKUSEI_PATCH = krPatch<SfcPatch>({
   path: '/games/kr-patches/sfc/dragon-ball-z-super-gokuden-kakusei',
   year: 1995,
   releases: [
-    { version: '1.4', date: '2026-10-26' },
-    { version: '1.3', date: '2026-10-24' },
-    { version: '1.2', date: '2026-10-18' },
-    { version: '1.1', date: '2016-01-04' },
-    { version: '1.0', date: '2011-12-30' },
+    {
+      version: '1.4',
+      date: '2026-10-26',
+      rom: { size: 4194304, crc32: '8AA3123E', md5: 'AC0BE8D6057B4E2188295A71703F58DC' },
+    },
+    {
+      version: '1.3',
+      date: '2026-10-24',
+      rom: { size: 2097152, crc32: 'B9F14962', md5: '7F3D20CAC538E0E197F0EFD3D7B56301' },
+    },
+    {
+      version: '1.2',
+      date: '2026-10-18',
+      rom: { size: 2097152, crc32: 'E46C7A28', md5: 'E2457778B2F11063A75DFA69681E6FA3' },
+    },
+    {
+      version: '1.1',
+      date: '2016-01-04',
+      rom: { size: 2097152, crc32: '32219BC3', md5: 'DBCB002BD5B91ED839BA1425EE13F6DE' },
+    },
+    {
+      version: '1.0',
+      date: '2011-12-30',
+      rom: { size: 2097152, crc32: '5BE29896', md5: '31BDA289697C787D6C3ADF40B1642BDC' },
+    },
   ],
   fileBase: 'Dragon_Ball_Z_Super_Gokuden_Kakusei_Hen_K',
   spec: GOKUDEN_KAKUSEI,
@@ -177,10 +238,26 @@ export const OTOGIRISOU_PATCH = krPatch<SfcPatch>({
   path: '/games/kr-patches/sfc/otogirisou',
   year: 1992,
   releases: [
-    { version: '1.3', date: '2026-10-25' },
-    { version: '1.2', date: '2026-10-24' },
-    { version: '1.1', date: '2026-10-18' },
-    { version: '1.0', date: '2016-09-29' },
+    {
+      version: '1.3',
+      date: '2026-10-25',
+      rom: { size: 2097152, crc32: 'DAE98F06', md5: '3605777DAC6BE2AAFA011CEAA0429D91' },
+    },
+    {
+      version: '1.2',
+      date: '2026-10-24',
+      rom: { size: 2097152, crc32: '2C31A0B2', md5: 'CD48C59B3B80D6C9E3C648E8BDD5A4E0' },
+    },
+    {
+      version: '1.1',
+      date: '2026-10-18',
+      rom: { size: 2097152, crc32: '27EE014E', md5: 'F45317CFAAAB68CCA5D8984AF8452535' },
+    },
+    {
+      version: '1.0',
+      date: '2016-09-29',
+      rom: { size: 2097152, crc32: 'C70A8E66', md5: '12A3FA116DB687AA4A60A7DB4A67D383' },
+    },
   ],
   fileBase: 'Otogirisou_K',
   spec: OTOGIRISOU,
@@ -201,8 +278,16 @@ export const GHOST_TRICK_PATCH = krPatch<NdsPatch>({
   path: '/games/kr-patches/nds/ghost-trick',
   year: 2010,
   releases: [
-    { version: '1.2', date: '2026-10-24' },
-    { version: '1.1', date: '2015-11-01' },
+    {
+      version: '1.2',
+      date: '2026-10-24',
+      rom: { size: 119462534, crc32: '4C863193', md5: 'BE1AC12137C374226DAD6D8DA9C64745' },
+    },
+    {
+      version: '1.1',
+      date: '2015-11-01',
+      rom: { size: 119459746, crc32: 'D366A4D9', md5: '782D23E4E11767691B85B73E6BFD74EE' },
+    },
   ],
   fileBase: 'Ghost_Trick_K',
   spec: GHOST_TRICK,

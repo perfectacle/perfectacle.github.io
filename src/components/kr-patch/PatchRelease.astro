@@ -1,6 +1,7 @@
 ---
 import { statSync } from 'node:fs';
 import { PLATFORMS, releaseOf, type KrPatch } from '../../lib/kr-patches';
+import FileChecksums from './FileChecksums.astro';
 
 interface Props {
   patch: KrPatch;
@@ -39,6 +40,7 @@ const kind = PLATFORMS[patch.platform].patchExt === 'ips' ? 'IPS' : 'xdelta';
       </small>
     </span>
   </a>
+  <FileChecksums spec={patch.spec} version={release.version} rom={release.rom} />
   <slot />
 </article>
 
@@ -50,7 +52,7 @@ const kind = PLATFORMS[patch.platform].patchExt === 'ips' ? 'IPS' : 'xdelta';
     const id = decodeURIComponent(location.hash.slice(1));
     const target = id ? document.getElementById(id) : null;
     if (!target) return;
-    const details = target.closest('.patch-release')?.querySelector('details');
+    const details = target.closest('.patch-release')?.querySelector<HTMLDetailsElement>('.release-details');
     const hidden = !!details && !details.open && details.contains(target);
     if (details) details.open = true;
     if (hidden || settle) target.scrollIntoView({ behavior: settle ? 'instant' : 'smooth' });
@@ -58,7 +60,7 @@ const kind = PLATFORMS[patch.platform].patchExt === 'ips' ? 'IPS' : 'xdelta';
 
   for (const release of releases) {
     const id = release.dataset['release'] ?? '';
-    const details = release.querySelector('details');
+    const details = release.querySelector<HTMLDetailsElement>('.release-details');
     if (!details) continue;
 
     // Opening a version puts its address in the bar, so copying the page address shares these notes open.

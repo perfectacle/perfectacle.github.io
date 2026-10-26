@@ -89,6 +89,7 @@ export const GOKUDEN_KAKUSEI: RomSpec = {
     { version: 'v1.3', crc32: 'B9F14962', md5: '7F3D20CAC538E0E197F0EFD3D7B56301' },
     { version: 'v1.2', crc32: 'E46C7A28', md5: 'E2457778B2F11063A75DFA69681E6FA3' },
     { version: 'v1.1', crc32: '32219BC3', md5: 'DBCB002BD5B91ED839BA1425EE13F6DE' },
+    { version: 'v1.0', crc32: '5BE29896', md5: '31BDA289697C787D6C3ADF40B1642BDC' },
   ],
 };
 
@@ -101,8 +102,8 @@ export const OTOGIRISOU: RomSpec = {
   patched: { crc32: 'DAE98F06', md5: '3605777DAC6BE2AAFA011CEAA0429D91' },
   previous: [
     { version: 'v1.2', crc32: '2C31A0B2', md5: 'CD48C59B3B80D6C9E3C648E8BDD5A4E0' },
-    { crc32: 'C70A8E66', md5: '12A3FA116DB687AA4A60A7DB4A67D383' },
-    { crc32: '27EE014E', md5: 'F45317CFAAAB68CCA5D8984AF8452535' },
+    { version: 'v1.1', crc32: '27EE014E', md5: 'F45317CFAAAB68CCA5D8984AF8452535' },
+    { version: 'v1.0', crc32: 'C70A8E66', md5: '12A3FA116DB687AA4A60A7DB4A67D383' },
   ],
 };
 

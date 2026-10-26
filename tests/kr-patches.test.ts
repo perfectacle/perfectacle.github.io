@@ -97,4 +97,18 @@ describe('formatBytes', () => {
     expect(formatBytes(4194304)).toBe('4MB(4,194,304바이트)');
     expect(formatBytes(1572864)).toBe('1.5MB(1,572,864바이트)');
   });
+  it('publishes for every release the Korean ROM its patch writes, the same one the web patcher recognizes', () => {
+    for (const patch of ALL_KR_PATCHES) {
+      const [latest, ...older] = patch.releases;
+      const { spec } = patch;
+      expect(latest?.rom).toEqual({ size: spec.patchedSize ?? spec.size, ...spec.patched });
+      for (const release of older) {
+        const known = spec.previous?.find(previous => previous.version === `v${release.version}`);
+        expect(known, `${patch.title} v${release.version}`).toMatchObject({
+          crc32: release.rom.crc32,
+          md5: release.rom.md5,
+        });
+      }
+    }
+  });
 });

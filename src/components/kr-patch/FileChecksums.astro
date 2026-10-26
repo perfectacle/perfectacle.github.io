@@ -1,32 +1,43 @@
 ---
 import { formatBytes } from '../../lib/kr-patches';
 import type { NdsSpec } from '../../lib/nds-patch';
-import type { RomSpec } from '../../lib/rom-patch';
+import type { RomFingerprint, RomSpec } from '../../lib/rom-patch';
 
 interface Props {
   spec: RomSpec | NdsSpec;
   version: string;
+  /** Korean ROM of an older release, shown in that release's patch notes; the patch box shows the latest. */
+  rom?: (RomFingerprint & { size: number }) | undefined;
 }
 
-const { spec, version } = Astro.props;
+const { spec, version, rom } = Astro.props;
 const nds = 'code' in spec.header;
+// Inside patch notes the fold sits under the version's h3.
+const Heading = rom ? 'h4' : 'h3';
 const files = [
   { name: '일본판 원본', size: spec.size, fingerprint: spec.original },
-  { name: `한글패치 v${version}`, size: spec.patchedSize ?? spec.size, fingerprint: spec.patched },
+  { name: `한글패치 v${version}`, size: rom?.size ?? spec.patchedSize ?? spec.size, fingerprint: rom ?? spec.patched },
 ];
 ---
 
 <details class="file-checksums">
   <summary>원본 롬파일 크기·해시 보기</summary>
   <div class="file-checksums-body">
-    <p class="file-checksums-note">
-      일본판 원본 롬파일에만 패치할 수 있습니다. 파일을 고르면 이 페이지가 아래 값과 맞는지 확인합니다.
-      {nds && ' 뒤쪽 빈 공간을 잘라 낸(트리밍한) 롬파일은 이 페이지가 원래 크기로 되돌려 확인합니다.'}
-    </p>
+    {rom ? (
+      <p class="file-checksums-note">
+        패치하지 않은 일본판 원본 롬파일에 v{version} 패치 파일을 적용하면 아래 한글패치 값이 나옵니다.
+        {nds && ' 원본 값은 뒤쪽 빈 공간을 잘라 내지 않은(트리밍하지 않은) 롬파일 기준입니다.'}
+      </p>
+    ) : (
+      <p class="file-checksums-note">
+        일본판 원본 롬파일에만 패치할 수 있습니다. 파일을 고르면 이 페이지가 아래 값과 맞는지 확인합니다.
+        {nds && ' 뒤쪽 빈 공간을 잘라 낸(트리밍한) 롬파일은 이 페이지가 원래 크기로 되돌려 확인합니다.'}
+      </p>
+    )}
     <div class="file-checksums-files">
       {files.map(file => (
         <section class="file-checksums-file" aria-label={file.name}>
-          <h3>{file.name}</h3>
+          <Heading>{file.name}</Heading>
           <dl>
             <div>
               <dt>크기</dt>
