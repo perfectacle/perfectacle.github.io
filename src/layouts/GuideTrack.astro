@@ -89,48 +89,51 @@ const description = `${GUIDE_TITLE} 가이드의 ${track.name} 갈래 ${chapters
           장에서 배운 개념을 한글패치가 실제로 어떻게 썼는지, 게임마다 노트의 해당 절로 바로 갑니다. 노트에 해당 절이
           없는 칸에는 그 이유를 적었습니다.
         </p>
-        <table class="note-grid" role="table" aria-labelledby="note-grid">
-          <thead role="rowgroup">
-            <tr role="row">
-              <th scope="col" role="columnheader">
-                장
-              </th>
-              {patches.map(p => (
-                <th scope="col" role="columnheader">
-                  <a href={notePath(p)}>{NOTE_GAME[p.theme]}</a>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody role="rowgroup">
-            {noteGrid(track.id).map(({ chapter, cells }) => (
+        <details class="note-grid-fold">
+          <summary>표 펼치기</summary>
+          <table class="note-grid" role="table" aria-labelledby="note-grid">
+            <thead role="rowgroup">
               <tr role="row">
-                <th scope="row" role="rowheader">
-                  <a href={chapterPath(chapter)}>
-                    <span class="mono">{chapterLabel(chapter, track.id)}</span> {chapter.title}
-                  </a>
+                <th scope="col" role="columnheader">
+                  장
                 </th>
-                {cells.map(cell => (
-                  <td role="cell" data-game={NOTE_GAME[cell.patch.theme]}>
-                    {cell.notes.length > 0 ? (
-                      <ul>
-                        {cell.notes.map(n => (
-                          <li>
-                            <a href={noteHref(n)}>{n.label}</a>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p class="note-grid-gap">
-                        <span class="note-grid-none">해당 절 없음</span> {cell.gap}
-                      </p>
-                    )}
-                  </td>
+                {patches.map(p => (
+                  <th scope="col" role="columnheader">
+                    <a href={notePath(p)}>{NOTE_GAME[p.theme]}</a>
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody role="rowgroup">
+              {noteGrid(track.id).map(({ chapter, cells }) => (
+                <tr role="row">
+                  <th scope="row" role="rowheader">
+                    <a href={chapterPath(chapter)}>
+                      <span class="mono">{chapterLabel(chapter, track.id)}</span> {chapter.title}
+                    </a>
+                  </th>
+                  {cells.map(cell => (
+                    <td role="cell" data-game={NOTE_GAME[cell.patch.theme]}>
+                      {cell.notes.length > 0 ? (
+                        <ul>
+                          {cell.notes.map(n => (
+                            <li>
+                              <a href={noteHref(n)}>{n.label}</a>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p class="note-grid-gap">
+                          <span class="note-grid-none">해당 절 없음</span> {cell.gap}
+                        </p>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
 
         <h2 id="other-tracks">다른 갈래</h2>
         <ul class="track-map">
@@ -155,6 +158,11 @@ const description = `${GUIDE_TITLE} 가이드의 ${track.name} 갈래 ${chapters
 </Base>
 
 <style>
+  .note-grid-fold summary {
+    cursor: pointer;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
   .prose .note-grid {
     display: table;
     width: 100%;
