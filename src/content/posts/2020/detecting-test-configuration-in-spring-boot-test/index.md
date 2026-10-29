@@ -72,7 +72,7 @@ internal class ContextConfigurationTest2(
 ```
 
 실제 어떻게 동작하는지 하나씩 찾아나가보자.
-[@SpringBootTest 어노테이션](https://github.com/spring-projects/spring-boot/blob/master/spring-boot-project/spring-boot-test/src/main/java/org/springframework/boot/test/context/SpringBootTest.java#L81)을 보면 그 안에 @ExtendWith(SpringExtension.class) 어노테이션이 포함돼있다.
+[@SpringBootTest 어노테이션](https://github.com/spring-projects/spring-boot/blob/v2.4.1/spring-boot-project/spring-boot-test/src/main/java/org/springframework/boot/test/context/SpringBootTest.java#L81)을 보면 그 안에 @ExtendWith(SpringExtension.class) 어노테이션이 포함돼있다.
 또한 @BootstrapWith 어노테이션을 통해 어떤 클래스를 통해 Spring TestContext Framework를 부트스트랩할 지 명시하고 있다.  
 ```java
 @Target(ElementType.TYPE)
@@ -264,7 +264,7 @@ private MergedContextConfiguration buildMergedContextConfiguration(Class<?> test
             smartContextLoader.processContextConfiguration(configAttributes);
 ``` 
 
-그리고 [SpringBootContextLoader의 processContextConfiguration 메서드를 보면 detectDefaultConfigurationClasses를 호출](https://github.com/spring-projects/spring-boot/blob/master/spring-boot-project/spring-boot-test/src/main/java/org/springframework/boot/test/context/SpringBootContextLoader.java#L204)하고 있다.  
+그리고 [SpringBootContextLoader의 processContextConfiguration 메서드를 보면 detectDefaultConfigurationClasses를 호출](https://github.com/spring-projects/spring-boot/blob/v2.4.1/spring-boot-project/spring-boot-test/src/main/java/org/springframework/boot/test/context/SpringBootContextLoader.java#L213)하고 있다.  
 (우리의 테스트 코드에서는 resource가 비어있는데 그거까지 이 포스트에서 다루기에는 너무 방대해져서 생략했다.)
 ```java
 @Override

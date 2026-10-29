@@ -81,7 +81,7 @@ export default class About extends Component {
 ```
 
 `npm start`를 쳐서 webpack-dev-server를 띄우고  
-http://localhost:3001/about/name으로 접속해보자.  
+`http://localhost:3001/about/name`으로 접속해보자.  
 그 다음에 About.js를 수정해보면 페이지 새로고침 없이도 수정 내역이 잘 반영된다.  
 그럼 이번에는 함수형 컴포넌트인 Name.js를 수정해보자.  
 아마도 페이지가 새로고침 되면서 수정 내역이 반영될 것이다.  
@@ -437,7 +437,7 @@ process.env가 뭐하는 놈인지 처음 본 사람은 아래 링크를 참조�
 ```
 
 이제 다 끝났다.  
-`npm start` 치고 http://localhost:3001/로 접속하면 아래와 같은 화면이 뜰 것이다.
+`npm start` 치고 `http://localhost:3001/`로 접속하면 아래와 같은 화면이 뜰 것이다.
 
 ![소스 코드는 9번 라인을 넘지 않지만 트랜스파일 된 소스를 기준으로 해서 저렇게 나온다.](./02.webp)
 

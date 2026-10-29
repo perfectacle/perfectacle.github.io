@@ -6,7 +6,7 @@ date: 2019-08-15 10:14:29
 ---
 
 [EBS 다큐프라임 자본주의 제1부 돈은 빚이다](https://youtu.be/0LYMTsj_eqc?t=3022)와
-[돌디](https://www.youtube.com/channel/UClmxSq4_kJfLtyIY7TycFfw) 님의 [금리](https://youtu.be/LzpNvyvTmIE), [돈은 가짜다 - 저축만 해서 망하는 이유](https://youtu.be/jqeXqLJMYl0?t=590) 영상을 보면 좀 더 많은 인사이트를 쌓을 수 있다.
+[돌디](https://www.youtube.com/channel/UClmxSq4_kJfLtyIY7TycFfw) 님의 금리, 돈은 가짜다 - 저축만 해서 망하는 이유 영상을 보면 좀 더 많은 인사이트를 쌓을 수 있다.
 
 ## 왜 한국은 한국 금리에만 의존할 수 없는 걸까?
 그 이유는 바로 무역 때문이다.  

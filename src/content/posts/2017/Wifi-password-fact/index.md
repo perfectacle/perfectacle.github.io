@@ -66,7 +66,7 @@ SSID를 지정하면 쉽게 찾아낼 수가 없을 것이다.
 ## 공유기 암호화에 대한 다른 비밀
 암호화 방법이 여러 개 있고, 암호화 방법에 따라서 인터넷 속도도 천차 만별이다.  
 출처는 아래 링크와 같다.  
-[iptime 암호화 방법에 따라 속도 차이가 엄청나군요.](http://www.clien.net/cs2/bbs/board.php?bo_table=cm_iphonien&wr_id=1061462)  
+iptime 암호화 방법에 따라 속도 차이가 엄청나군요.  
 ![이는 암호화 알고리즘 때문에 나타나는 현상이다](./speed.webp)  
 복잡한 알고리즘, 안전한 알고리즘일 수록 느리지 않을까...  
 뭐 꼭 그렇다는 것만은 아니지만...
@@ -87,6 +87,6 @@ TKIP 방식의 암호화 알고리즘은 802.11N 방식을 지원하지 않는�
 2. 속도를 포기하기 싫으신 분은 귀찮으시더라도 유선랜을 쓰도록 하자...
 
 ## 참조 링크
-* [iptime 암호화 방법에 따라 속도 차이가 엄청나군요.](http://www.clien.net/cs2/bbs/board.php?bo_table=cm_iphonien&wr_id=1061462)  
+* iptime 암호화 방법에 따라 속도 차이가 엄청나군요.  
 * [WiFi 공유기 암호방식, 꼭 WPA2-AES를 써야하는 이유는?](http://www.bodnara.co.kr/bbs/article.html?num=106786)  
 * [공유기 암호화방법 변경으로 무선/WIFI 속도 제대로 활용하기!](http://blog.daum.net/fachul/49)

@@ -33,11 +33,11 @@ date: 2017-05-26 09:07:59
 내 대학 생활은 그런 취미 생활로 인해 활력이 부여된 것 같다.  
 지금은 생업과 다른 취미가 생겨 한글화를 접었지만, 후일에 또 할지도 모르겠다.  
 내가 한 한글화는 다음과 같다.  
-* [초오공전 돌격편](http://perfectacle.blog.me/40174638159)  
-* [초오공전 각성편](http://perfectacle.blog.me/220587556160)  
-* [슈퍼마리오 RPG](http://perfectacle.blog.me/220297115483)  
-* [고스트 트릭](http://perfectacle.blog.me/220525483533)  
-* [제절초](http://perfectacle.blog.me/220824102818)  
+* [초오공전 돌격편](https://blog.naver.com/perfectacle/40174638159)  
+* [초오공전 각성편](https://blog.naver.com/perfectacle/220587556160)  
+* [슈퍼마리오 RPG](https://blog.naver.com/perfectacle/220297115483)  
+* [고스트 트릭](https://blog.naver.com/perfectacle/220525483533)  
+* [제절초](https://blog.naver.com/perfectacle/220824102818)  
 
 ## 생전 처음으로 팬(?)이 생기다
 위에서 한 게임 중에 가장 네임드 있는 작품은 슈퍼마리오 RPG와 고스트 트릭이다.  

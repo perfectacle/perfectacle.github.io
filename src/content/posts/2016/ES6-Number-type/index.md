@@ -127,7 +127,7 @@ console.log(Object.is(0, -0)); // false
 ```
 
 #### 필요성
-[You Don't Know JS: Types & Grammar - Zeros](https://github.com/getify/You-Dont-Know-JS/blob/master/types%20%26%20grammar/ch2.md#zeros)    
+[You Don't Know JS: Types & Grammar - Zeros](https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/types%20%26%20grammar/ch2.md#zeros)    
 스피드나 x, y와 같은 방향 같은 요소를 쓰는 어플리케이션에서 만약 -0이 0으로 바뀐다면,  
 속도나 방향 등등의 정보를 잃게될 것이다.  
 

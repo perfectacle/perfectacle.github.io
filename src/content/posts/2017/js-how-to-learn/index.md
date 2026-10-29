@@ -220,13 +220,13 @@ ES2015+의 코드를 ES5로 바꿔주는 애가 100% 커버를 해주지 못한�
 그런데 매번 소스를 복붙 해서 트랜스파일하는 귀찮은 과정을 반복할 것인가?  
 그리고 우리는 바벨이 ES5로 트랜스파일 한 코드를 보고 이해하지 못한다.  
 따라서 우리가 소스 유지보수를 하기 위해서는 ES2015+로 짠 코드 하나, ES5로 트랜스파일 된 코드 하나, 총 두 개를 들고 있어야한다.  
-이런 귀찮은 작업을 줄여주기 위한 것이 [babel-cli](https://babeljs.io/docs/usage/cli/)이다.  
+이런 귀찮은 작업을 줄여주기 위한 것이 [babel-cli](https://babeljs.io/docs/babel-cli)이다.  
 MS-DOS 유저라면 익숙할 법한 시꺼먼 창인 터미널(윈도우의 CMD)에서 트랜스파일을 해주는 도구이다.  
 하지만 이 babel-cli를 설치는 npm을 통해서만 가능하다. (왜냐면 babel-cli가 Node.js 위에서 돌기 때문...)  
 npm은 [Node.js](https://nodejs.org/)를 설치하면 자동으로 설치된다.  
 이 때 우리가 배워야할 것은 두 가지이다.  
 1. npm 사용 방법(package.json에 대해 공부하기, 모듈 설치 삭제 해보기)  
-2. [babel-cli 사용 방법](https://babeljs.io/docs/usage/cli/#babel)  
+2. [babel-cli 사용 방법](https://babeljs.io/docs/babel-cli#babel)  
 
 ### 4. ES2015+가 익숙해졌다면 Typescript를 공부해보자
 ES2015+가 아무리 좋아졌다고 하더라도 다음과 같은 걸 해결하지 못했다.  

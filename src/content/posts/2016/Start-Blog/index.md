@@ -6,7 +6,7 @@ tags: [잡동사니]
 ---
 ![](./thumb.webp)
 
-[기존의 네이버 블로그](http://perfectacle.blog.me/)를 포기하고 새로 블로그를 이전했다.  
+[기존의 네이버 블로그](https://blog.naver.com/perfectacle/)를 포기하고 새로 블로그를 이전했다.  
 다소 어려움들이 있었지만 제대로 해보려고 한다.
 
 ## 왜 블로그를 옮겼는가?

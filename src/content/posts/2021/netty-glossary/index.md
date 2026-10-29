@@ -19,7 +19,7 @@ for rapid development of maintainable high performance protocol servers & client
 
 네티는 비동기 이벤트 기반 네트워크 어플리케이션 프레임워크로써 유지보수를 고려한 고성능 프로토콜 서버와 클라이언트를 빠르게 개발할 수 있다.
 즉, TCP 통신을 위해 무조건 Netty를 써야하는 건 아니지만 유지보수하기도 쉽고, 비동기 이벤트 기반이기 때문에 고성능도 보장하게 된다.  
-[Spring Integration](https://docs.spring.io/spring-integration/reference/html/ip.html) 또한 TCP 통신을 지원한다.
+[Spring Integration](https://docs.spring.io/spring-integration/reference/ip.html) 또한 TCP 통신을 지원한다.
 > Spring Integration provides channel adapters for receiving and sending messages over internet protocols. 
   Both UDP (User Datagram Protocol) and TCP (Transmission Control Protocol) adapters are provided.
 

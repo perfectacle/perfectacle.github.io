@@ -30,7 +30,7 @@ CDN에 대해서는 구글링하면 많이 나오는데 CDN은 각 지역 별로
 ![태그는 저장소에서 releases 탭으로 오면 볼 수 있다.](./02.webp)  
 &nbsp;   
 그 이후에 아래 링크로 접속한다.  
-[https://github.com/jsdelivr/jsdelivr/tree/master/files](https://github.com/jsdelivr/jsdelivr/tree/master/files)  
+`https://github.com/jsdelivr/jsdelivr/tree/master/files`  
 ![Create new file을 클릭하자.](./03.webp)  
 ```
 author = "name of lib author"

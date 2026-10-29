@@ -30,9 +30,9 @@ yarn add async-to-sync
 
 ### 사용법
 만약 타겟 브라우저/노드의 async/await 및 Promise 지원 여부를 모른다면 아래 링크를 확인하자.  
-[ECMAScript 6 compatibility table | Promise](https://kangax.github.io/compat-table/es6/#test-Promise)  
+[ECMAScript 6 compatibility table | Promise](https://compat-table.github.io/compat-table/es6/#test-Promise)  
 [Node.js ES2015/ES6 | Promise](http://node.green/#ES2015-built-ins-Promise)  
-[ECMAScript 2016+ compatibility table | async](http://kangax.github.io/compat-table/es2016plus/#test-async_functions)  
+[ECMAScript 2016+ compatibility table | async](https://compat-table.github.io/compat-table/es2016plus/#test-async_functions)  
 [Node.js ES2017 support | async](http://node.green/#ES2017-features-async-functions)  
 `주의!`  
 async-to-sync는 babel-polyfill을 포함하지 않았다.  

@@ -71,7 +71,7 @@ public interface ParentRepository extends JpaRepository<Parent, Long> {
 ![LoadEvent가 발생하면서 AttributeConvert가 호출되고 있다.](./convert-01.webp)  
 ![그 이후에 딥카피가 발생하면서 한 번 더 AttributeConvert가 호출되고 있다.](./convert-02.webp)  
 
-[TwoPhaseLoad.initializeEntityFromEntityEntryLoadedState 메서드](https://github.com/hibernate/hibernate-orm/blob/main/hibernate-core/src/main/java/org/hibernate/engine/internal/TwoPhaseLoad.java#L339)가 핵심이다.  
+[TwoPhaseLoad.initializeEntityFromEntityEntryLoadedState 메서드](https://github.com/hibernate/hibernate-orm/blob/5.4.32/hibernate-core/src/main/java/org/hibernate/engine/internal/TwoPhaseLoad.java#L339)가 핵심이다.  
 ```java
 if ( isReallyReadOnly ) {
     //no need to take a snapshot - this is a
@@ -106,7 +106,7 @@ public interface ParentRepository extends JpaRepository<Parent, Long> {
 위와 같이 트랜잭션을 생성하지 않더라도 리드온리 트랜잭션은 아니기 때문에 else 구문을 탄다.
 
 ## Readonly 트랜잭션이면 스냅샷을 만들지 않는다
-이번에는 readonly 트랜잭션을 사용하는 [SimpleJpaRepository.findById](https://github.com/spring-projects/spring-data-jpa/blob/main/src/main/java/org/springframework/data/jpa/repository/support/SimpleJpaRepository.java#L295) 메서드를 사용하여 스냅샷(딥카피)을 만드는지 직접 확인해보자.  
+이번에는 readonly 트랜잭션을 사용하는 [SimpleJpaRepository.findById](https://github.com/spring-projects/spring-data-jpa/blob/2.5.3/src/main/java/org/springframework/data/jpa/repository/support/SimpleJpaRepository.java#L295) 메서드를 사용하여 스냅샷(딥카피)을 만드는지 직접 확인해보자.  
 ```java
 @Repository
 @Transactional(readOnly = true)

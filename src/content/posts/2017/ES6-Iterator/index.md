@@ -315,5 +315,5 @@ console.log(isArrNum3(arr));
 ## 참조 링크
 * [[es6] GDG 2016 발표자료](http://www.bsidesoft.com/?p=2913)  
 * [[MDN] Iteration protocols](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Iteration_protocols)  
-* [ES6 Iterable and Iterator | programmist](https://bcnam.github.io/bcnam.github.io/2016/11/25/2016-11-25-ES6-Iterable-and-Iterator/)  
+* ES6 Iterable and Iterator | programmist  
 * [21. Iterables and iterators](http://exploringjs.com/es6/ch_iteration.html)

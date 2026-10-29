@@ -133,7 +133,7 @@ sequenceDiagram
       트랜잭션의 범위를 최소화하여야한다. 
       하나의 큰 트랜잭션이 아닌 작은 범위의 트랜잭션으로 잘게 쪼개고, 각 트랜잭션을 보장할 수 있도록 별도의 상태를 더 두고 수동 롤백 전략(롤백 코드 직접 작성)을 취해야할 수도 있다.
    3. OSIV(Open Session In View)에 의해 커넥션을 과도하게 물고있는 것은 아닌지...? 
-      스프링 부트 1부터 2까지 [OSIV는 기본값으로 활성화](https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/orm/jpa/JpaBaseConfiguration.java#L213) 돼있다.
+      스프링 부트 1부터 2까지 [OSIV는 기본값으로 활성화](https://github.com/spring-projects/spring-boot/blob/v2.7.4/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/orm/jpa/JpaBaseConfiguration.java#L205) 돼있다.
       그리고 Spring Data JPA에서 Hibernate를 사용할 경우 Hibernate의 기본값을 덮어씌우는 것들이 존재한다. 
       Spring Boot 2.x의 Spring Data JPA에서 기본적으로 사용하는 Hibernate 5.2+의 [커넥션 핸들링 전략(PhysicalConnectionHandlingMode)](https://github.com/hibernate/hibernate-orm/blob/5.2/hibernate-core/src/main/java/org/hibernate/resource/transaction/backend/jta/internal/JtaTransactionCoordinatorBuilderImpl.java#L39-L42)은 [DELAYED_ACQUISITION_AND_RELEASE_AFTER_STATEMENT](https://github.com/hibernate/hibernate-orm/blob/5.2/hibernate-core/src/main/java/org/hibernate/resource/jdbc/spi/PhysicalConnectionHandlingMode.java#L42)이다. (최대한 커넥션을 늦게 획득하고 트랜잭션이 종료되기 전에도 SQL 문이 하나 종료될 때마다 커넥션을 반납하는 전략)
       하지만 Spring Boot 2.x에서는 Hibernate의 기본값을 무시하고 [DELAYED_ACQUISITION_AND_HOLD로 덮어씌우고](https://github.com/spring-projects/spring-framework/blob/5.3.x/spring-orm/src/main/java/org/springframework/orm/jpa/vendor/HibernateJpaVendorAdapter.java#L159-L162) 있다. (최대한 커넥션을 늦게 획득하고 요청이 끝나는 시점인 엔티티매니저가 close 되는 시점에 커넥션풀에 커넥션을 반납하는 전략)  

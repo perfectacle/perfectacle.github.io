@@ -148,7 +148,7 @@ promise(f1)
 
 ## ES2017(Async/Await)
 크롬, 파폭, 사파리, 오페라 최신 버전에서는 지원하는 것 같은데 MS 진영은(엣지 포함) 암담하다.  
-[ECMAScript Next compatibility table](http://kangax.github.io/compat-table/es2016plus/#test-async_functions)
+[ECMAScript Next compatibility table](https://compat-table.github.io/compat-table/es2016plus/#test-async_functions)
 
 MS나 하위 브라우저를 지원해야한다면  
 [Syntax async functions · Babel](https://babeljs.io/docs/plugins/syntax-async-functions/)을 참고하자.  

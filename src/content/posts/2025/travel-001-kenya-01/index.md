@@ -232,7 +232,7 @@ Big Time Safaris가 답변이 빨랐고, Kale Voyage는 메일을 보낸 다음�
 ![](./fig-tree-camp-03.webp)  
 ![](./fig-tree-camp-04.webp)  
 ![](./fig-tree-camp-05.webp)  
-[Mara Fig Tree Camp](https://madahotels.com/fig-tree-camp-masai-mara/)라는 숙소에 내려주면서 기다리면 열기구를 타러 출발한다고 했다.  
+[Mara Fig Tree Camp](https://madahotels.com/Fig-Tree-Camp-MasaiMara.html)라는 숙소에 내려주면서 기다리면 열기구를 타러 출발한다고 했다.  
 숙소를 보자마자 '와... 진짜 자연과 하나 되는 숙소 같고 여기서 묵었으면 좋겠다...' 하는 생각이 들며 우리 숙소와 비교를 하였다.  
 프론트로 가서 열기구 타러 왔다고 말하자 티켓이 없냐고 물어봤다. 나는 그런 거 받은 거 없다고 하자 그 자리에서 티켓을 끊어줬는데 열기구에 탈 때 결국 검사는 하지 않았다.  
 커피도 마시고 30분 정도 기다리자 뭔가 출발한다는 얘기를 하고 사람들이 이동하길래 눈치껏 나도 이동했다.  

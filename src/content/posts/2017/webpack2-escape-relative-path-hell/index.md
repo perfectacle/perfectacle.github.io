@@ -57,7 +57,7 @@ css 파일을 모듈로써 사용하기 위해 사용.
 sass, scss 파일을 모듈로써 사용하기 위해 사용.
 
 프로젝트 디렉토리에 웹팩 설정 파일인 webpack.config.js 파일을 만들고 아래와 같이 적어주자.  
-웹팩 1은 [Configuration - Webpack](https://webpack.github.io/docs/configuration.html#resolve) 링크를 참조하자.  
+웹팩 1은 [Configuration - Webpack](https://webpack.js.org/configuration/resolve/) 링크를 참조하자.  
 ```javascript
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');

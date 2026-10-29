@@ -294,4 +294,4 @@ symClone은 모든 참조 데이터를 순회하면서 재귀적으로 얕은 �
 하지만 이런 깊은 복사는 계속해서 함수를 호출하는 재귀함수이므로 콜스택을 많이 만들어내는 등등의 문제로 인해 값비싼 비용을 치르게 된다.  
 즉 느리다는 뜻이다. (체감 못하는 경우가 많을테지만)  
 이를 위해 Immutable.js가 나오고 여기서는 Immutable 자료형인 List와 Map을 권장하는 바이다.  
-좀 더 궁금한 사람은 [Immutable.js 공식 사이트](https://facebook.github.io/immutable-js/)를 참고하도록 하자.  
+좀 더 궁금한 사람은 [Immutable.js 공식 사이트](https://immutable-js.com/)를 참고하도록 하자.  
