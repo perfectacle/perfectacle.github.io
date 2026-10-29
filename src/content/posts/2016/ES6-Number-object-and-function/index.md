@@ -17,7 +17,7 @@ tags: [Number]
 * [Number ↔ String](#number--string)
 
 ## Number 객체(Global 객체)
-ES5까지 Number 객체는 거의 [래퍼 객체](http://noritersand.tistory.com/536)의 역할만을 수행했다.  
+ES5까지 Number 객체는 거의 [래퍼 객체](https://web.archive.org/web/20160816065610/http://noritersand.tistory.com/536)의 역할만을 수행했다.  
 하지만 ES6에 들어서면서 다양한 프로퍼티와 메소드들이 생기면서  
 래퍼 객체 이상의 역할을 수행하는 전역 객체와 같이 쓸 수 있게 되었다.  
 래퍼 객체는 원시 타입의 값을 객체로 다루기 위한 객체이며,  
@@ -58,7 +58,7 @@ console.log(isNaN(Number.NaN)); // true
 #### [Number.MIN_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MIN_VALUE) & [Number.MAX_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_VALUE)
 ##### Problem in ES
 [부동 소수점에 대한 이해](http://thrillfighter.tistory.com/349)  
-[수의 표현범위가 다른 int와 float, 그리고 신뢰할 수 없는 부동소수점](http://slame.tistory.com/2)
+[수의 표현범위가 다른 int와 float, 그리고 신뢰할 수 없는 부동소수점](https://web.archive.org/web/20170316193303/http://slame.tistory.com/2)
 ```javascript
 console.log(Number.MIN_VALUE); // 5e-324
 console.log(Number.MIN_VALUE - 1); // -1
@@ -111,10 +111,10 @@ console.log(0.1 + 0.2 === 0.3); // false
 ```
 ES에서는 위와 같이 소수점 계산에서 고질적인 문제를 안고 있다.  
 이는 아마 [IEEE에서 제정한 부동소수점 표현 형식인 IEE754의 고질적인 문제](https://ko.wikipedia.org/wiki/IEEE_754)라고 보여진다.  
-[실수 표현 문제 발생 이유 or 오차 발생 이유](http://karmainearth.tistory.com/143)
+[실수 표현 문제 발생 이유 or 오차 발생 이유](https://web.archive.org/web/20170114181154/http://karmainearth.tistory.com/143)
 > 자바스크립트의 숫자는 십진 부동 소수점 숫자로 접근하는데 반해  
   그 내부 동작 원리는 이진 부동 소수점 숫자이기 때문에 오차가 발생한다.  
-> [원문 보기](http://speakingjs.com/es5/ch11.html#rounding_errors)
+> [원문 보기](https://web.archive.org/web/20161120021043/http://speakingjs.com/es5/ch11.html#rounding_errors)
 JavaScript’s numbers are usually entered as decimal floating-point numbers,
 but they are internally represented as binary floating-point numbers.
 That leads to imprecision.

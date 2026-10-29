@@ -467,7 +467,7 @@ class TimeTest {
 }
 ```
 
-또한 생성자에 접근 제어자를 사용하면 [싱글톤 패턴](https://blog.seotory.com/post/2016/03/java-singleton-pattern)을 구현할 수 있다.  
+또한 생성자에 접근 제어자를 사용하면 [싱글톤 패턴](https://web.archive.org/web/20160419221021/https://blog.seotory.com/post/2016/03/java-singleton-pattern)을 구현할 수 있다.  
 싱글톤: 해당 클래스의 인스턴스가 하나만 만들어지고, 어디서든지 그 인스턴스에 접근할 수 있도록 하기 위한 패턴.  
 
 ```java

@@ -423,7 +423,7 @@ filename에 그 템플릿을 토대로 새롭게 만들어질 html 파일을 지
 2. postcss  
 스타일 시트에 벤더 프리픽스를 지정하기 위해 추가하였다.  
 사용하고자 하는 쿼리는 [Browserslist](https://github.com/ai/browserslist)에서 확인 가능하고,  
-쿼리문 테스트는 [browserl.ist](http://browserl.ist/)에서 확인 가능하며,  
+쿼리문 테스트는 [browserl.ist](https://web.archive.org/web/20161119082143/http://browserl.ist/)에서 확인 가능하며,  
 데모는 [Autoprefixer CSS online](http://autoprefixer.github.io/)에서 가능하다.
 
 3. css-loader, sass-loader  

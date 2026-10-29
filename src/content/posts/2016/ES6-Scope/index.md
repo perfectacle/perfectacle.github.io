@@ -140,7 +140,7 @@ B(); // 'B'
 함수 B의 스코프가 **이미 생명 주기가 끝난 외부 함수의 변수**, **생성 당시의 스코프**이고,  
 함수 C의 스코프가 **참조하는 함수**, **연결을 갖는 블록**과 매칭이 된다.  
 왜 그런지 궁금하면 아래 링크를 참조하고 공부하자.  
-[http://blog.javarouka.me/2012/01/closure.html](http://blog.javarouka.me/2012/01/closure.html)
+[http://blog.javarouka.me/2012/01/closure.html](https://web.archive.org/web/20160613071539/http://blog.javarouka.me/2012/01/closure.html)
 
 ## 함수 단위 스코프의 위험성  
 ```html

@@ -364,8 +364,8 @@ p2.age = null; // age를 재할당 했을 때는 오류를 잡아낼 수가 없�
 이를 위해서는 ES2015의 class, 유일한 값을 만들어내는 Symbol, 외부에서 접근 불가능한 별도의 스코프를 만들어냄과 동시에 실행하는 즉시 실행 함수 패턴,  
 내부 스코프에 있는 변수(private 변수)들을 접근하기 위해 클로저 사용, private 변수들에 대한 유효성 검사(?)를 위한 getter/setter 메소드가 사용되었다.  
 사실 Reflect.ownKeys나 Object.getOwnPropertySymbols를 이용하면 Symbol로 만든 private 변수에 접근이 가능하지만,  
-private 접근 지정자가 존재하는 자바에도 Reflect를 사용하면 [Private Filed에 접근하기](http://hiddenviewer.tistory.com/115)가 가능하다고 한다.  
-Reflect를 사용 했을 때도 private 멤버들을 숨기고 싶다면 [ES6 Class에서 private member를 정의하는 방법](https://gomugom.github.io/how-to-make-private-member/)를 참조하자.
+private 접근 지정자가 존재하는 자바에도 Reflect를 사용하면 [Private Filed에 접근하기](https://web.archive.org/web/20160924181342/http://hiddenviewer.tistory.com/115)가 가능하다고 한다.  
+Reflect를 사용 했을 때도 private 멤버들을 숨기고 싶다면 [ES6 Class에서 private member를 정의하는 방법](https://web.archive.org/web/20190717004006/https://gomugom.github.io/how-to-make-private-member/)를 참조하자.
 ```javascript
 const Person = (() => {
   // 즉시 실행 함수 패턴을 사용하여 별도의 스코프를 생성함과 동시에 함수를 실행.

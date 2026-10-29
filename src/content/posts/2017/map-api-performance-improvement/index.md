@@ -152,7 +152,7 @@ public void mappingDealAndThumbnail(List<DealInMap> dealList, Map<Long, String> 
 기본적으로 List에서 데이터를 검색할 때는 입력되는 데이터의 양에 따라 비례하여 처리시간이 증가하는 알고리즘 -O(N)- 이고,  
 (ArrayList는 인덱스를 가지고 순차적으로 탐색하지 않지만 순차적인 숫자 이외에 인덱스를 가지지 않으므로 순서를 모르면 말짱꽝이다.)    
 Map의 경우에는 key, value의 쌍으로 이루어져있어서 입력되는 데이터의 크기에 상관없이 항상 같은 처리 시간을 보장 받는 알고리즘 -O(1)- 이다.  
-Big-O 표기법에 관해서는 [초보자를 위한 Big O 표기법 따라잡기](http://www.mydiyworld.net/?p=440)을 참고하자.  
+Big-O 표기법에 관해서는 [초보자를 위한 Big O 표기법 따라잡기](https://web.archive.org/web/20160531070053/http://www.mydiyworld.net/?p=440)을 참고하자.  
 따라서 해당 자료구조를 전부 해시맵으로 바꿔주었다.  
 ![총 실행 시간이 2초 내외로 줄어들었다.](./31.webp)  
 

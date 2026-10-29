@@ -29,7 +29,7 @@ date: 2018-09-25 23:05:08
 > An epoch means an instant in time chosen as the origin of a particular era. 
   The "epoch" then serves as a reference point from which time is measured. 
   Time measurement units are counted from the epoch so that the date and time of events can be specified unambiguously.
-  https://www.symantec.com/connect/articles/what-epoch-time-and-how-convert-human-understandable-format
+  [https://www.symantec.com/connect/articles/what-epoch-time-and-how-convert-human-understandable-format](https://web.archive.org/web/20160313193453/https://www.symantec.com/connect/articles/what-epoch-time-and-how-convert-human-understandable-format)
   
 시간을 측정하는 기준점을 Epoch라고 부르는 것 같다.  
 

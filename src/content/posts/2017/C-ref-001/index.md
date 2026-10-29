@@ -85,7 +85,7 @@ CPU의 Register의 크기가 64bit라서 한 번에 연산(처리)할 수 있는
   따라서 64비트 머신이라면 64비트 char, short, int, long, long long 도 표준 위반이 아닙니다.  
   Hyunsok Oh님
 
-이미지와 소스 코드의 출처는 [32bit와 64bit의 C 자료형(Data Type) 크기 차이](http://blog.junsu.kim/entry/32bit%EC%99%80-64bit%EC%9D%98-C-%EC%9E%90%EB%A3%8C%ED%98%95Data-Type-%ED%81%AC%EA%B8%B0-%EC%B0%A8%EC%9D%B4)이다.  
+이미지와 소스 코드의 출처는 [32bit와 64bit의 C 자료형(Data Type) 크기 차이](https://web.archive.org/web/20161024185204/http://blog.junsu.kim/entry/32bit%EC%99%80-64bit%EC%9D%98-C-%EC%9E%90%EB%A3%8C%ED%98%95Data-Type-%ED%81%AC%EA%B8%B0-%EC%B0%A8%EC%9D%B4)이다.  
 ```c
 #include<stdio.h>
 
@@ -266,8 +266,8 @@ int main() {
 ## 참조 링크
 * [Windows 환경에서 32 bit 와 64 bit](http://bluese05.tistory.com/17)  
 * [왜 32비트 환경을 x86이라고 하는걸까요?](https://kldp.org/node/102650)  
-* [32bit와 64bit의 C 자료형(Data Type) 크기 차이](http://blog.junsu.kim/entry/32bit%EC%99%80-64bit%EC%9D%98-C-%EC%9E%90%EB%A3%8C%ED%98%95Data-Type-%ED%81%AC%EA%B8%B0-%EC%B0%A8%EC%9D%B4)  
+* [32bit와 64bit의 C 자료형(Data Type) 크기 차이](https://web.archive.org/web/20161024185204/http://blog.junsu.kim/entry/32bit%EC%99%80-64bit%EC%9D%98-C-%EC%9E%90%EB%A3%8C%ED%98%95Data-Type-%ED%81%AC%EA%B8%B0-%EC%B0%A8%EC%9D%B4)  
 * [32bit 자료형 / 64bit 자료형의 크기 정리](http://foxlime.tistory.com/115)  
 * [64bit 머신에서 int형이 64bit가 아닌가요?](https://kldp.org/node/61089)  
-* [long과 int는 크기가 같은데 왜 존재하나요?](http://dev.likejazz.com/post/69840022906/long%EA%B3%BC-int%EB%8A%94-%ED%81%AC%EA%B8%B0%EA%B0%80-%EA%B0%99%EC%9D%80%EB%8D%B0-%EC%99%9C-%EC%A1%B4%EC%9E%AC%ED%95%98%EB%82%98%EC%9A%94)  
+* [long과 int는 크기가 같은데 왜 존재하나요?](https://web.archive.org/web/20170416171410/http://dev.likejazz.com/post/69840022906/long%EA%B3%BC-int%EB%8A%94-%ED%81%AC%EA%B8%B0%EA%B0%80-%EA%B0%99%EC%9D%80%EB%8D%B0-%EC%99%9C-%EC%A1%B4%EC%9E%AC%ED%95%98%EB%82%98%EC%9A%94)  
 * [C에서 상수 포인터는 무엇입니까?](https://www.scaler.com/topics/c/constant-pointer-in-c/)

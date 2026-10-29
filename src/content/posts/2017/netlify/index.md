@@ -6,7 +6,7 @@ tags: [Continuous Deployment, CDN]
 ---
 ![](./thumb.webp)
 
-이 포스트는 [2017 GDG Seoul](https://devfest17-seoul.firebaseapp.com)에서 Github와 CloudFlare를 이용한 무료 고성능 웹 어플리케이션 호스팅을
+이 포스트는 [2017 GDG Seoul](https://web.archive.org/web/20180122010203/https://devfest17-seoul.firebaseapp.com/)에서 Github와 CloudFlare를 이용한 무료 고성능 웹 어플리케이션 호스팅을
 주제로 발표하신 박병진 님의 세션을 듣고 삘이 꽂혀서 바로 실행에 옮긴 삽질을 포스팅했습니다.
 
 ## 깃헙 페이지의 문제점

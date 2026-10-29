@@ -9,7 +9,7 @@ date: 2017-09-23 09:06:20
 메이븐은 기본적으로 빌드할 때 프로필을 지정할 수 있는 것 같은데 gradle은 직접 삽질을 하면서 깨달았다.  
 다음의 글들을 보고 Spring boot 1.5.7과 Gradle 3.x(아마)? 에 맞게, 내 입맛에 맞게 각색해보았다.  
 
-* [Gradle 배포 환경 별 설정파일 분리](http://osozaki.tistory.com/14)
+* [Gradle 배포 환경 별 설정파일 분리](https://web.archive.org/web/20170821095700/http://osozaki.tistory.com/14)
 * [Gradle에서 서버별 패키징 하기](http://yookeun.github.io/java/2016/04/11/gradle-packing/)
 
 ## Profile 구성하기

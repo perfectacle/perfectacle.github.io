@@ -133,7 +133,7 @@ BASE는 신호 변조 방식을 의미하는데
 BASE는 Baseband 방식을 의미하고 다른 방식으로는 Broadband 방식이 있다.  
 전공에서 다 배웠는데 다 까먹... ㅠㅠ  
 아래 글을 참고해보자.  
-* [브로드밴드와 베이스밴드 전송의 차이점과 특성이 무엇인지 알려주세요](http://tip.daum.net/question/38733404)  
+* [브로드밴드와 베이스밴드 전송의 차이점과 특성이 무엇인지 알려주세요](https://web.archive.org/web/20171123105612/http://tip.daum.net/question/38733404)  
 * [베이스밴드와 브로드밴드](https://blog.naver.com/jvioonpe/220227244403)   
 
 마지막 TX는 케이블의 재질을 의미한다.  
