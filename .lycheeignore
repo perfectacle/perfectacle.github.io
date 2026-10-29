@@ -1,0 +1,9 @@
+# 브라우저에서는 열리지만 lychee 로는 검사할 수 없는 사이트.
+# 사이트가 정말 사라지면 리포트에 안 잡히므로, 가끔 직접 열어 확인한다.
+
+# HTTP/2 응답이 깨져 lychee 가 받지 못한다.
+^https://[a-z]+\.mgmresorts\.com/
+# rustls 가 지원하지 않는 TLS 설정이라 연결이 실패한다.
+^https?://(www\.)?kbench\.com/
+# 인증서 체인이 불완전해 lychee 가 인증서를 믿지 못한다.
+^https://visa\.immigration\.go\.tz/
