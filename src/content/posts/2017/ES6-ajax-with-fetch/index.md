@@ -11,7 +11,7 @@ ajax(XMLHttpRequest)와 promise에 대한 기본적인 이해가 있다면 상�
 async/await 크롬과 오페라에서만 된다고 한다.  
 아래 사이트에서 확인 가능하다.  
 [https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API#Browser_compatibility](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API#Browser_compatibility)  
-[ECMAScript Next compatibility table](http://kangax.github.io/compat-table/es2016plus/#test-async_functions)
+[ECMAScript Next compatibility table](https://compat-table.github.io/compat-table/es2016plus/#test-async_functions)
 
 ## fetch
 다시 공부하다보니 XMLHttpRequest와 Fetch는 ECMAScript가 아니라고 한다.  

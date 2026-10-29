@@ -138,7 +138,7 @@ console.log(getColor());
 이외에도 정말 무궁무진할 정도로 생산성을 향상시키는 코드들이 많다.
   
 ## ES6에서 ES5로 트랜스파일하기
-[ES6의 호환성 보기](http://kangax.github.io/compat-table/es6/)  
+[ES6의 호환성 보기](https://compat-table.github.io/compat-table/es6/)  
 ![IE11의 ES6 지원율은 심히 안습이다.](./es6-compatibility.webp)  
 ![혹시나 문제가 있는 짤이라면 말씀해주세요.](./babel.webp)  
 ![ES5는 IE8을 제외하고는 많이 커버가 된다.](./es5-compatibility.webp)  

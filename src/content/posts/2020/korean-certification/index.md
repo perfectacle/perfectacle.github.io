@@ -141,7 +141,7 @@ ASN.1 Decoder로 보니 내 공인인증서였다.
 (하나를 뚫으면 여러 벤더사를 함께 뚫을 수 있게 된다.)
 
 ## 참조 링크
-* [https://www.letmecompile.com/certificate-file-format-extensions-comparison/](https://www.letmecompile.com/certificate-file-format-extensions-comparison/https://www.letmecompile.com/certificate-file-format-extensions-comparison/)
+* [https://www.letmecompile.com/certificate-file-format-extensions-comparison/](https://www.letmecompile.com/certificate-file-format-extensions-comparison/)
 * [https://indienote.tistory.com/272](https://indienote.tistory.com/272)
 * [https://indienote.tistory.com/273](https://indienote.tistory.com/273)
 * [https://www.slideshare.net/ied206/4th-inc0gnito](https://www.slideshare.net/ied206/4th-inc0gnito)

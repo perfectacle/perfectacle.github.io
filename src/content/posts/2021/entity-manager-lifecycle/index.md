@@ -35,7 +35,7 @@ class SomeService(
 첫 라인에서는 엔티티 매니저의 1차 캐시에 아무것도 없어서 쿼리가 날아갈 것 같고, 두 번째 라인에서는 엔티티 매니저의 1차 캐시에 id가 1인 SomeEntity가 있을 것 같으니 쿼리가 안 날아갈 것 같지 않은가?  
 답은 `spring.jpa.open-in-view: false`로 OSIV 설정이 꺼져있으면 두 번 날아가고, OSIV 설정을 따로 건드리지 않았다면 기본적으로 켜져있을테니 한 번만 날아가게 된다.
 
-먼저 알아둬야할 사항은 JpaRepository 인터페이스의 기본 구현체인 [SimpleJpaRepository](https://github.com/spring-projects/spring-data-jpa/blob/main/src/main/java/org/springframework/data/jpa/repository/support/SimpleJpaRepository.java#L83)에 대해 알아야한다.    
+먼저 알아둬야할 사항은 JpaRepository 인터페이스의 기본 구현체인 [SimpleJpaRepository](https://github.com/spring-projects/spring-data-jpa/blob/2.5.1/src/main/java/org/springframework/data/jpa/repository/support/SimpleJpaRepository.java#L83)에 대해 알아야한다.    
 우리가 만든 인터페이스 SomeRepository도 결국 실행될 때는 객체화 돼야하는데 이 때 JpaRepository 구현체인 SimpleJpaRepository를 상속받아서 구현되기 때문이다.  
 ![Spring AOP는 인터페이스 타입에 대해서는 JDK Dynamic Proxy를 사용하여 프록시 객체를 생성한다.](./simple-jpa-repository.webp)  
 ```java
@@ -525,7 +525,7 @@ transaction이 새로운 트랜잭션이 아니기 때문에 [JpaTransactionMana
 트랜잭션 내에서만 1차 캐시의 성능 최적화를 맛 볼 수 있기 때문에 생각보다 1차 캐시의 hit rate가 낮을 것 같다.   
 
 ## OSIV가 켜져있을 때
-Spring Boot의 Auto Configuration인 [JpaWebConfiguration](https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/orm/jpa/JpaBaseConfiguration.java#L206)을 보면 아래와 같이 설정이 돼있다.
+Spring Boot의 Auto Configuration인 [JpaWebConfiguration](https://github.com/spring-projects/spring-boot/blob/v2.5.0/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/orm/jpa/JpaBaseConfiguration.java#L206)을 보면 아래와 같이 설정이 돼있다.
 ```java
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnWebApplication(type = Type.SERVLET)

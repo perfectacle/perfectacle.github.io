@@ -31,7 +31,7 @@ CPU 입장에서는 10개의 네이티브 쓰레드를 사용하는 것보다 �
 따라서 그린 쓰레드가 싱글 쓰레드 환경에서는 더 좋은 성능을 발휘하게 된다.  
 하지만 자바 환경에서는 멀티 코어 환경에서 그 강점을 발휘하지 못하기 때문에 자바 3부터 Native Thread로 전부 바뀌었다.
 
-Node.js에서는 [Event Loop](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/)를 구현하기 위해 사용하고 있는
+Node.js에서는 [Event Loop](https://nodejs.org/en/learn/asynchronous-work/event-loop-timers-and-nexttick)를 구현하기 위해 사용하고 있는
 [libuv](https://github.com/libuv/libuv)에서 Green Thread를 사용하고 있지 않을까... **추측**을 해본다.
 
 ## Native Thread

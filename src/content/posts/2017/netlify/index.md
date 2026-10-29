@@ -6,8 +6,8 @@ tags: [Continuous Deployment, CDN]
 ---
 ![](./thumb.webp)
 
-이 포스트는 [2017 GDG Seoul](https://devfest17-seoul.firebaseapp.com)에서 [Github와 CloudFlare를 이용한 무료 고성능 웹 어플리케이션 호스팅](https://devfest17-seoul.firebaseapp.com/schedule/?sessionId=115)을
-주제로 발표하신 [박병진](https://devfest17-seoul.firebaseapp.com/speakers/7) 님의 세션을 듣고 삘이 꽂혀서 바로 실행에 옮긴 삽질을 포스팅했습니다.
+이 포스트는 [2017 GDG Seoul](https://devfest17-seoul.firebaseapp.com)에서 Github와 CloudFlare를 이용한 무료 고성능 웹 어플리케이션 호스팅을
+주제로 발표하신 박병진 님의 세션을 듣고 삘이 꽂혀서 바로 실행에 옮긴 삽질을 포스팅했습니다.
 
 ## 깃헙 페이지의 문제점
 기본적으로 [github page](https://pages.github.com/)는 [지킬](https://jekyllrb.com/)이 내장돼있다.  

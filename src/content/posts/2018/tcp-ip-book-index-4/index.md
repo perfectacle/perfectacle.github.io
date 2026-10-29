@@ -476,7 +476,7 @@ http://d2.naver.com./helloworld/238638 으로 접속하면 com.뒤에 뭔가 올
 바로 루트를 의미하는 .은 있어도 되고, 없으면 자동으로 내부적으로 붙여주기 때문이다.
 
 DNS 캐시 서버는 하드웨어 단의 캐시 서버이고 자바 같이 소프트웨어 단에서도 DNS 캐시를 설정할 수 있다.  
-* [Java VM 의 DNS caching TTL](https://www.lesstif.com/pages/viewpage.action?pageId=17105897)  
+* [Java VM 의 DNS caching TTL](https://lesstif.atlassian.net/wiki/spaces/JAVA/pages/886374934/Java+VM+DNS+caching+TTL)  
 * [DNS Caching in JVM](https://charsyam.wordpress.com/2017/12/27/%EC%9E%85-%EA%B0%9C%EB%B0%9C-dns-caching-in-jvm/)  
 
 운영체제 별로 hosts 파일이 존재한다.  

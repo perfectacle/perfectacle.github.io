@@ -16,7 +16,7 @@ tags: [React Router]
 * [(Webpack 2) 코드를 분할해보자!](/2017/03/13/webpack2-code-splitting/)
 
 ## v3으로 만들어보기
-소스 코드는 [정재남](https://www.facebook.com/gomugomm?fref=ts) 님께서 제공해주신 [소스](https://github.com/react-study/todo-app/tree/_lecture/05_router-test/src/routerTest)를 이용했다.  
+소스 코드는 [정재남](https://www.facebook.com/gomugomm?fref=ts) 님께서 제공해주신 소스를 이용했다.  
 v3으로 만든 [라이브 데모](http://react-router-v3.surge.sh/)에서 직접 내용을 확인해보고 시작하자.  
 혹시 만들기 귀찮거나 중간중간 확인할 사람은 [소스 코드](https://github.com/perfectacle/react-router-4/tree/master)를 보도록 하자.
 서버는 없으니 새로고침을 하면 제대로 정보를 표시 못 하지만, 우리가 실제 진행할 때는  
@@ -396,8 +396,8 @@ app.get('*', (req, res) => {
 }
 ```
 
-1. npm start라고 치고 http://localhost:3001/에 접속하면 개발용 버전으로 볼 수 있고(소스맵, 리액트 개발 도구)  
-2. npm build라고 치고 http://localhost:3000/에 접속하면 배포용으로 볼 수 있다. (소스맵 X, 리액트 개발 도구 X)  
+1. npm start라고 치고 `http://localhost:3001/`에 접속하면 개발용 버전으로 볼 수 있고(소스맵, 리액트 개발 도구)  
+2. npm build라고 치고 `http://localhost:3000/`에 접속하면 배포용으로 볼 수 있다. (소스맵 X, 리액트 개발 도구 X)  
 
 윈도우 유저는 `rm -rf`에 해당하는 다른 명령어로 build 스크립트를 수정해야할 것이다.  
 

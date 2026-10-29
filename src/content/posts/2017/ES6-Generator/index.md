@@ -183,4 +183,4 @@ const gen = function*() {
 * [[es6] GDG 2016 발표자료](http://www.bsidesoft.com/?p=2913)  
 * [function* - JavaScript | MDN](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/function*)  
 * [ES6 In Depth: 제너레이터(Generator) ★ Mozilla 웹 기술 블로그](http://hacks.mozilla.or.kr/2015/08/es6-in-depth-generators/)  
-* [ES6 Generator with Aysnc | programmist](https://bcnam.github.io/bcnam.github.io/2016/11/29/2016-11-29-ES6-Generator-and-yield/)
+* ES6 Generator with Aysnc | programmist

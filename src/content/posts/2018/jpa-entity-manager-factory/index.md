@@ -5,7 +5,7 @@ tags: [ORM, Hibernate]
 categories: [Spring, JPA]
 ---
 ![엔티티는 과자, 엔티티 매니저는 아줌마, 엔티티 매니저 팩토리는 과자 공장](./thumb.webp)  
-이미지 출처: [<박상문의 Photo & Essay>평양 육아원의 모습](http://m.blog.daum.net/umji0112/11794517?categoryId=646664)
+이미지 출처: <박상문의 Photo & Essay>평양 육아원의 모습
 
 ## Entity
 DB의 테이블과 매칭이 되는 개념이라고 보면 된다.  

@@ -588,7 +588,7 @@ node server
 http://localhost:8080 으로 접속한 결과다.
 ![Comp 컴포넌트](./03.webp)  
 크롬 개발자 도구의 네트워크 탭을 보면 Comp.[chunkhash]만 있고 Comp2는 로드하지 않았다.  
-하이 라는 링크를 클릭하면 http://localhost:8080/aa/bb/cc로 이동한다.  
+하이 라는 링크를 클릭하면 `http://localhost:8080/aa/bb/cc`로 이동한다.  
 여기서 다시 네트워크 탭을 봐보자.  
 ![Comp2 컴포넌트](./04.webp)  
 페이지를 처음부터 로딩하는 게 아니라 새로운 부분인  
@@ -596,7 +596,7 @@ Comp2.[chunkhash] 부분만 로딩한 것을 볼 수 있다.
 여기서 새로고침을 해보자.  
 ![Comp2 컴포넌트](./05.webp)  
 역시 Comp2.[chunkhash]만 로드하고 Comp는 로드하지 않았다.  
-바이 라는 링크를 클릭하면 http://localhost:8080/으로 이동한다.  
+바이 라는 링크를 클릭하면 `http://localhost:8080/`으로 이동한다.  
 ![Comp 컴포넌트](./06.webp)  
 역시 페이지를 처음부터 로딩하는 게 아니라 새로운 부분인
 Comp.[chunkhash] 부분만 로딩한 것을 볼 수 있다.  
@@ -608,5 +608,5 @@ Comp.[chunkhash] 부분만 로딩한 것을 볼 수 있다.
 * [웹팩2로 청크 관리 및 코드 스플리팅 하기](https://www.zerocho.com/category/Javascript/post/58ad4c9d1136440018ba44e7)  
 * [브라우저의 리소스 병렬 다운로드를 가로막는 자바스크립트 | 감성 프로그래밍](http://programmingsummaries.tistory.com/285)  
 * [Code Splitting - Libraries](https://webpack.js.org/guides/code-splitting-libraries/)  
-* [A beginner’s step-by-step guide to Code Splitting with Webpack 2 and React Router](https://brotzky.co/blog/code-splitting-react-router-webpack-2/)  
+* A beginner’s step-by-step guide to Code Splitting with Webpack 2 and React Router  
 등등...

@@ -20,7 +20,7 @@ YAML은 마크업 언어가 아니고, `사람에게 친숙한 데이터 Seriali
 Serialization(직렬화)은 데이터를 시스템 외부(파일로 쓰거나 네트워크로 전송하거나)에서 사용할 때 사용한다. (Byte Array, [JSON](https://www.json.org/), YAML)  
 
 ![Spring Boot 2의 기본 디펜던시에 포함된 SnakeYAML](./snake-yaml.webp)
-[Spring](https://spring.io/)에서는 YAML Parser인 [SnakeYAML](https://bitbucket.org/asomov/snakeyaml)이 내장돼있다.  
+[Spring](https://spring.io/)에서는 YAML Parser인 [SnakeYAML](https://bitbucket.org/snakeyaml/snakeyaml)이 내장돼있다.  
 따라서 YAML 파일을 POJO로 매핑할 수도 있고, Configuration 파일에서도 사용할 수 있다.  
 주의사항은 Spring에 내장된 [SankeYAML은 YAML 1.1 스펙을 구현한 점](https://mvnrepository.com/artifact/org.yaml/snakeyaml)이다.  
 

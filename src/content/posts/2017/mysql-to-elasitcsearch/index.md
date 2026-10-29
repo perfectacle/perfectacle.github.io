@@ -105,7 +105,7 @@ DB와 테이블 관련 내용은 [Source](https://github.com/siddontang/go-mysql
 또한 기본적으로 go-mysql-elasticsearch는 하나의 인덱스(RDS로 치면 DB)에 여러 타입(RDS로 치면 테이블)을 두는 게 아니라  
 한 인덱스에 하나의 타입(테이블 명과 일치하게끔)을 넣는 걸 디폴트 동작으로 두었으니 하나의 인덱스에 다 때려박고 싶거나 한다면 위의 Rule 파트를 참조해야한다.  
 또한 [Wildcard table](https://github.com/siddontang/go-mysql-elasticsearch#wildcard-table)을 이용하면 테이블 이름을 일일이 입력해야하는 수고를 줄일 수 있는데, 아직은 그 기능이 좀 미약하다.  
-혹시나 데이터베이스 내에 존재하는 모든 테이블의 싱크를 맞추고자 한다면 [포크 뜬 저장소](https://github.com/perfectacle/go-mysql-elasticsearch)를 다시 go get 메소드로 받아서  
+혹시나 데이터베이스 내에 존재하는 모든 테이블의 싱크를 맞추고자 한다면 포크 뜬 저장소(지금은 지웠다)를 다시 go get 메소드로 받아서  
 *.toml 파일에서 `tables = ["*"]`로 설정해주면 된다.  
 모든 설정을 마쳤으면 아래 커맨드를 입력해서 
 
