@@ -186,17 +186,33 @@ const chapterRun = (chapters: GuideChapter[]) =>
         <h2 id="tools">준비물</h2>
         <ul>
           <li>
-            <strong>헥스 에디터</strong>: 파일을 바이트 단위로 보여 주는 프로그램입니다. 아무것이나 괜찮고,
-            macOS·Linux라면 터미널의 <code>xxd</code>로도 충분합니다.
+            <strong>헥스 에디터</strong>: 파일을 바이트 단위로 보여 주는 프로그램입니다. 아무것이나 괜찮습니다.
+            Windows라면 <a href="https://mh-nexus.de/en/hxd/">HxD</a>, macOS라면{' '}
+            <a href="https://hexfiend.com/">Hex Fiend</a>를 많이 쓰고, <a href="https://imhex.werwolv.net/">ImHex</a>는
+            Windows·macOS·Linux에서 모두 돌아갑니다. macOS·Linux라면 터미널의 <code>xxd</code>로도 충분합니다.
           </li>
           <li>
-            <strong>kr-patch-toolkit</strong>: 이 패치들을 만들 때 쓴 명령 모음입니다. Python 3.15 이상에서{' '}
+            <strong>
+              <a href={KR_PATCH_TOOLKIT_URL}>kr-patch-toolkit</a>
+            </strong>
+            : 이 패치들을 만들 때 쓴 명령 모음입니다. Python 3.15 이상에서{' '}
             <code>pip install git+https://github.com/perfectacle/kr-patch-toolkit@{KR_PATCH_TOOLKIT_VERSION}</code>으로
             설치합니다.
           </li>
           <li>
-            <strong>에뮬레이터</strong>: 디버거가 있는 MesenCE를 썼습니다. <ChapterLink to="sfc/emulator" />
-            에서 자세히 다룹니다.
+            <strong>에뮬레이터</strong>: 게임기마다 다른 에뮬레이터를 썼습니다.
+            <ul>
+              <li>
+                슈퍼 패미콤: 디버거가 있는 <a href="https://github.com/nesdev-org/MesenCE">MesenCE</a>.{' '}
+                <ChapterLink to="sfc/emulator" />
+                에서 자세히 다룹니다.
+              </li>
+              <li>
+                닌텐도 DS: <a href="https://github.com/libretro/desmume">libretro desmume 코어</a>.{' '}
+                <ChapterLink to="nds/emulator" />
+                에서 자세히 다룹니다.
+              </li>
+            </ul>
           </li>
           <li>
             <strong>롬 파일</strong>: 이 가이드와 툴킷에는 롬이 들어 있지 않습니다. 직접 가진 카트리지에서 뽑은 롬으로
