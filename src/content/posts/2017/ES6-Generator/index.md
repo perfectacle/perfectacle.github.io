@@ -7,7 +7,7 @@ tags: [Iterator, Symbol, Generator]
 ![](./thumb.webp)  
 
 ## 들어가기에 앞서
-이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
+이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](https://web.archive.org/web/20161126025502/http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
 [(ES6) Interface](/2016/12/25/es6-interface/)와 [(ES6) Symbol](/2017/04/16/ES6-Symbol/), [(ES6) Iterator](/2017/04/22/ES6-Iterator/)에 대한 내용은 링크를 참조하도록 하자.  
 
 ## 사용 사례  
@@ -180,7 +180,7 @@ const gen = function*() {
 * [(ES6+) 비동기 함수를 깔끔하게 처리해보자.](/2017/04/03/js-async-function/)
 
 ## 참조 링크
-* [[es6] GDG 2016 발표자료](http://www.bsidesoft.com/?p=2913)  
+* [[es6] GDG 2016 발표자료](https://web.archive.org/web/20161126025502/http://www.bsidesoft.com/?p=2913)  
 * [function* - JavaScript | MDN](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Statements/function*)  
 * [ES6 In Depth: 제너레이터(Generator) ★ Mozilla 웹 기술 블로그](http://hacks.mozilla.or.kr/2015/08/es6-in-depth-generators/)  
 * ES6 Generator with Aysnc | programmist

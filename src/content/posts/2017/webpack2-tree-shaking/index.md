@@ -343,7 +343,7 @@ render(
 
 ## 참조 링크
 * [웹팩2(Webpack) 설정하기](https://www.zerocho.com/category/Javascript/post/58aa916d745ca90018e5301d)  
-* [Webpack 2 Tree Shaking Configuration](http://moduscreate.com/webpack-2-tree-shaking-configuration/)  
+* [Webpack 2 Tree Shaking Configuration](https://web.archive.org/web/20170508181945/http://moduscreate.com/webpack-2-tree-shaking-configuration/)  
 * [Webpack2 Guides](https://webpack.js.org/guides/)  
 * [UglifyJS2](https://github.com/mishoo/UglifyJS2)  
 등등 너무 많아서 증발함...

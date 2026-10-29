@@ -44,7 +44,7 @@ Nginx의 Access Log까지는 정상적으로 남은 걸 보니 LB를 찾지 못�
 나는 딱히 설정을 바꾼 것도 없는데... 잘 동작하니 귀신이 곡할 노릇이었다.  
 
 ## ELB 동작 방식
-[Best Practices in Evaluating Elastic Load Balancing](https://aws.amazon.com/articles/best-practices-in-evaluating-elastic-load-balancing/)을 보면 다음과 같은 구문이 나온다.
+Best Practices in Evaluating Elastic Load Balancing을 보면 다음과 같은 구문이 나온다.
 > The controller will also monitor the load balancers and manage the capacity that is used to handle the client requests.
   The Elastic Load Balancing service will update the Domain Name System (DNS) record of the load balancer when it scales so that the new resources have their respective IP addresses registered in DNS.  
   The DNS record that is created includes a Time-to-Live (TTL) setting of 60 seconds, with the expectation that clients will re-lookup the DNS at least every 60 seconds.
@@ -119,7 +119,7 @@ http {
 4. `nginx -s reload`를 통해 다운타임 없이 설정파일을 재적용한다.
 
 ## 참고 링크
-* [Best Practices in Evaluating Elastic Load Balancing](https://aws.amazon.com/articles/best-practices-in-evaluating-elastic-load-balancing/)
+* Best Practices in Evaluating Elastic Load Balancing
 * [Amazon EC2 Elastic Load Balancer: Does its IP ever Change?](https://stackoverflow.com/questions/3821333/amazon-ec2-elastic-load-balancer-does-its-ip-ever-change)
 * [Nginx proxy_pass 의 AWS ELB 연결 문제](https://medium.com/@circlee7/nginx-proxy-pass-%EC%9D%98-aws-elb-%EC%97%B0%EA%B2%B0-%EC%84%A4%EC%A0%95-f0c4b792ef71)
 * [Nginx를 ELB Reverse Proxy로 사용할때 주의 점](http://tech.kkung.net/blog/nginx-with-elb/)

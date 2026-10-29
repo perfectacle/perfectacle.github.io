@@ -77,7 +77,7 @@ iptime 암호화 방법에 따라 속도 차이가 엄청나군요.
 [WiFi 공유기 암호방식, 꼭 WPA2-AES를 써야하는 이유는?](http://www.bodnara.co.kr/bbs/article.html?num=106786)  
 802.11AC 방식(기가 광랜)에서는 어떤 방식이 제일 좋은지는 모르겠다.  
 TKIP 방식의 암호화 알고리즘은 802.11N 방식을 지원하지 않는다는 것 같다.
-[공유기 암호화방법 변경으로 무선/WIFI 속도 제대로 활용하기!](http://blog.daum.net/fachul/49)
+[공유기 암호화방법 변경으로 무선/WIFI 속도 제대로 활용하기!](https://web.archive.org/web/20150930122535/http://blog.daum.net/fachul/49)
 
 비밀번호를 걸지 않고, 송수신 데이터만 암호화 하는 방법이 존재하는지 모르겠지만,  
 어지간하면 비밀번호가 걸려있지 않은 공개 AP는 쓰지 않는 게 좋고,  
@@ -89,4 +89,4 @@ TKIP 방식의 암호화 알고리즘은 802.11N 방식을 지원하지 않는�
 ## 참조 링크
 * iptime 암호화 방법에 따라 속도 차이가 엄청나군요.  
 * [WiFi 공유기 암호방식, 꼭 WPA2-AES를 써야하는 이유는?](http://www.bodnara.co.kr/bbs/article.html?num=106786)  
-* [공유기 암호화방법 변경으로 무선/WIFI 속도 제대로 활용하기!](http://blog.daum.net/fachul/49)
+* [공유기 암호화방법 변경으로 무선/WIFI 속도 제대로 활용하기!](https://web.archive.org/web/20150930122535/http://blog.daum.net/fachul/49)

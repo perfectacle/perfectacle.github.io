@@ -102,7 +102,7 @@ console.log(
 ![이러한 파이프를 타고 요리조리 이동하며 함수를 하나씩 실행하는 원리이다.](./pipe.webp)  
 우리가 인자로 넘긴 함수를 하나 하나 순차적으로 실행할 수 있게 해주는 pipe 함수를 만들어보자.  
 머리를 굴려도 생각이 나지 않아 아래 링크를 ~~베껴~~참조 하였다.  
-[(함수형JS) 흐름 기반 프로그래밍](http://blog.jeonghwan.net/js/2017/05/11/pipeline.html)  
+[(함수형JS) 흐름 기반 프로그래밍](https://web.archive.org/web/20170706142453/http://blog.jeonghwan.net/js/2017/05/11/pipeline.html)  
 최종 결과는 아래와 같을 것이다.  
 ```javascript
 const nums = [];

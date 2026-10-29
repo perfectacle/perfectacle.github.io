@@ -81,7 +81,7 @@ forEach, map, filter, reduce, some, every와 같은 순환 메소드들이 생�
 [Strict mode - JavaScript | MDN](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Strict_mode)  
 * [bind() 메소드](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)    
 this를 강제로 bind 시켜주는 메소드이다.  
-* [실행 컨텍스트 내에 존재하는 Lexical Environment](http://huns.me/development/1407)  
+* [실행 컨텍스트 내에 존재하는 Lexical Environment](https://web.archive.org/web/20170717114342/http://huns.me/development/1407)  
 * JSON(JavaScript Object Notation)  
 과거 통신을 할 때 데이터를 XML 형태로 많이 주고 받았다.  
 하지만 JSON이 좀 더 경량화 돼있는지 요새는 JSON이 대세다.  

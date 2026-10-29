@@ -6,7 +6,7 @@ tags: [Iterator]
 ---
 ![](./thumb.webp)
 
-이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
+이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](https://web.archive.org/web/20161126025502/http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
 [이터레이터 인터페이스와 이터러블 인터페이스](/2017/04/22/ES6-Iterator/)는 다음 포스트에서 정리할 예정이다.  
 이 글을 읽고난 후에 [(ES6) Symbol](/2017/04/16/ES6-Symbol/)에 대한 글부터 읽어보길 바란다.  
 다소 짧아서 어디 공유하기 부끄럽지만 이렇게 짧은 내용들이 집중해서 읽기에 참 좋은 것 같다.
@@ -18,8 +18,8 @@ ECMAScript2015(이하 ES6) 들어서서 `인터페이스`는 `고유 명사`가 
 
 Java에서 Interface는 다음과 같은 명세를 준수해야 Interface라고 부른다.  
 자바 허접이라 다음 링크를 참조하였다.  
-[JAVA 강좌 21편. 인터페이스(Interface)](http://blog.eairship.kr/122)  
-[Interface는 객체인가?](https://slipp.net/questions/52)  
+[JAVA 강좌 21편. 인터페이스(Interface)](https://web.archive.org/web/20170106033418/http://blog.eairship.kr/122)  
+[Interface는 객체인가?](https://web.archive.org/web/20150407132155/https://slipp.net/questions/52)  
 * 메소드는 public abstract로 선언된 추상 메소드만을 가진다.
 * 변수는 public static final로 선언된 상수만을 가진다.
 

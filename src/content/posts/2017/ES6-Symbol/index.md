@@ -62,7 +62,7 @@ isNaN과 Number.isNaN의 차이는 후자는 타입 검사(number인지 아닌�
 
 하지만 typeof null을 개선하면 레거시 코드들이 문제가 있는지 아직도 고쳐지지 않았다.  
 아래 링크를 참조해서 누가 번역을 해주면 고마울 것 같다.  
-[The history of “typeof null”](http://2ality.com/2013/10/typeof-null.html)
+[The history of “typeof null”](https://web.archive.org/web/20170505104236/http://2ality.com/2013/10/typeof-null.html)
 
 또한 원시값은 불변값(Immutable Value)이다.  
 아래의 결과가 당연하다고 생각하는 사람은 객체에서는 어떻게 결과가 나타나는지 객체 파트를 보길 바란다.

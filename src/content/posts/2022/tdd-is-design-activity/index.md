@@ -5,7 +5,7 @@ categories: [설계, 테스트]
 date: 2022-06-06 14:39:22
 ---
 
-1~2년 전 쯤 존경하는 개발자 분과 함께 [A Brief History of Mock Objects](http://www.mockobjects.com/2009/09/brief-history-of-mock-objects.html)라는 아티클을 함께 본 적이 있다.  
+1~2년 전 쯤 존경하는 개발자 분과 함께 [A Brief History of Mock Objects](https://web.archive.org/web/20220302133944/http://www.mockobjects.com/2009/09/brief-history-of-mock-objects.html)라는 아티클을 함께 본 적이 있다.  
 개인적으로 이렇게 특정 개념의 근본이 된다던지, 해당 분야의 대가들이 쓴 아티클들을 함께 보는 것으로 인해 굉장히 많은 인사이트들이 생겼던 것 같다.
 객체의 테스트 때문에 추가했던 getter로부터의 해방을 위해 고민하던 것으로 시작한 게 Mock의 탄생이라는 사실을 알게 되었을 때는 정말 위대한 탄생이라고 생각했다.  
 
@@ -145,7 +145,7 @@ Top-Down Development에서는 가장 높은 레벨의 추상화에서 시작해�
 독립된 환경에서 개발해봤는데 뭔가 잘못 이해하고 개발한 게 있어서 결과가 올바르지 않은 걸 발견했다는 것이다.  
 아마 이게 필요하지 않을까? 나는 이거까지 책임져야하지 않을까? 하고 예측을 기반으로 각자 개발을 하다보니 나중에 객체 간의 협력을 해야할 때 뭔가 미묘하게 안 맞는 부분이 계속 생겼던 게 아닐까 싶다.
 
-[Need-Driven Development](https://www.nomachetejuggling.com/2012/08/10/need-driven-development/)이라는 아티클을 보면 Need-Driven Development(Top-Down)과 Bottom-up의 차이가 좀 더 명확히 느껴질 것이다.
+[Need-Driven Development](https://web.archive.org/web/20220523130356/https://www.nomachetejuggling.com/2012/08/10/need-driven-development/)이라는 아티클을 보면 Need-Driven Development(Top-Down)과 Bottom-up의 차이가 좀 더 명확히 느껴질 것이다.
 
 ## 결론
 TDD는 단순히 테스트를 "먼저" 작성하는 게 아니라 테스트가 내 코드를 "주도"하게 만들어야하는 것 같다.  

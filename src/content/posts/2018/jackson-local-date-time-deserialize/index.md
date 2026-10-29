@@ -342,7 +342,7 @@ public class Controller {
 웬일인지 모르겠지만 문제가 발생한다.  
 
 #### [JSR-310](https://jcp.org/en/jsr/detail?id=310) (Java Specification Request - Date and Time API)  
-[Spring Jpa java8 date (LocalDateTime) 와 Jackson](http://wonwoo.ml/index.php/post/1008)을 참고했을 때  
+[Spring Jpa java8 date (LocalDateTime) 와 Jackson](https://web.archive.org/web/20170601153328/http://wonwoo.ml/index.php/post/1008)을 참고했을 때  
 Java8이 나오기 전에는 Date 클래스가 좀 허접했다고 한다.  
 그 이전에는 [Joda Time](http://www.joda.org/joda-time/)이라는 라이브러리를 사용했다고 한다.  
 이 JSR-310 스펙은 조다 타임의 창시자도 같이 제정했다고 하니 아주 믿을만(?)한 스펙인 거 같다.  

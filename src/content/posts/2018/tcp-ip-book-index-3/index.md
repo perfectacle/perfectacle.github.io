@@ -251,8 +251,8 @@ UDP는 TCP에 비해 상당히 간단한 프로토콜이다.
 본인의 MAC Address와 일치하지 않는 패킷은 바로 버리면 되고 CPU까지 올라오지도 않으므로 PC 성능에 영향을 미치지 않는다.  
 
 아래 링크들을 보면 도움이 많이 된다.  
-* [삽질 왕국 :: ③ 유니캐스트, 브로드캐스트, 멀티캐스트](http://bongsnet.tistory.com/15)  
-* [유니캐스트 VS 브로드캐스트 VS 멀티캐스트](http://blog.daum.net/ossogood/8435529)  
+* [삽질 왕국 :: ③ 유니캐스트, 브로드캐스트, 멀티캐스트](https://web.archive.org/web/20180914034959/http://bongsnet.tistory.com/15)  
+* [유니캐스트 VS 브로드캐스트 VS 멀티캐스트](https://web.archive.org/web/20180324084516/http://blog.daum.net/ossogood/8435529)  
 
 ### 3-5. netstat 명령으로 네트워크의 상태 확인하기(B)
 netstat 명령어로 서버와 커넥션이 제대로 맺어졌는지 어떤 상태인지 알 수 있다는 내용이다.  

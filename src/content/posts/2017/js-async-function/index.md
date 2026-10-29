@@ -151,7 +151,7 @@ promise(f1)
 [ECMAScript Next compatibility table](https://compat-table.github.io/compat-table/es2016plus/#test-async_functions)
 
 MS나 하위 브라우저를 지원해야한다면  
-[Syntax async functions · Babel](https://babeljs.io/docs/plugins/syntax-async-functions/)을 참고하자.  
+[Syntax async functions · Babel](https://web.archive.org/web/20170501054021/https://babeljs.io/docs/plugins/syntax-async-functions/)을 참고하자.  
 Node.js LTS(v6.x)에서도 지원하지 않는 것 같으니 참고하자.  
 [Node.js ES2015/ES6, ES2016 and ES2017 support](http://node.green/#ES2017-features-async-functions)
 ```javascript

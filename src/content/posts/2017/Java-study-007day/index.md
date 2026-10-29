@@ -16,7 +16,7 @@ seriesOrder: 7
 객체지향하면 사람들은 클래스를 먼저 떠오르기 마련인 것 같다.  
 하지만 `객체 != 클래스`이다.  
 객체지향 언어의 하나인 자바스크립트를 통해 보도록 하자.  
-출처: [JavaScript : 프로토타입(prototype) 이해](http://www.nextree.co.kr/p7323/)  
+출처: [JavaScript : 프로토타입(prototype) 이해](https://web.archive.org/web/20161128101006/http://www.nextree.co.kr/p7323/)  
 > JavaScript는 클래스라는 개념이 없습니다.  
 그래서 기존의 객체를 복사하여(cloning)  
 새로운 객체를 생성하는 프로토타입 기반의 언어입니다.  

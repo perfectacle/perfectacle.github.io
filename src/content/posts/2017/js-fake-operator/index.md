@@ -103,4 +103,4 @@ console.log(+a); // NaN
 
 ## 참고 링크
 * [JavaScript plus sign in front of function name](https://stackoverflow.com/questions/13341698/javascript-plus-sign-in-front-of-function-name)  
-* [Fake operator overloading in JavaScript](http://2ality.com/2011/12/fake-operator-overloading.html)  
+* [Fake operator overloading in JavaScript](https://web.archive.org/web/20170615113908/http://2ality.com/2011/12/fake-operator-overloading.html)  

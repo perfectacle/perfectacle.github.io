@@ -632,7 +632,7 @@ asdf: qwer
 ```
 
 ### \*.yaml vs \*.yml
-[YAML FAQ](http://yaml.org/faq.html)에서는 \*.yaml을 공식 확장자라고 얘기하고 있다.  
+[YAML FAQ](https://web.archive.org/web/20180826042924/http://yaml.org/faq.html)에서는 \*.yaml을 공식 확장자라고 얘기하고 있다.  
 그럼에도 불구하고 \*.yml이 있는 이유는 `*.html vs *.htm` 과도 비슷한 이유일 것 같다.  
 MS-Dos 시절에는 파일의 확장자 길이가 3자로 제한됐었다.  
 그 시절의 영향 때문인지, 3글자 확장자 스타일을 고수하는 사람들 때문에 \*.yml이나 *.htm 같은 확장자가 보이는 것 같다. 

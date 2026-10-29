@@ -5,7 +5,7 @@ categories: [CS, 보안]
 date: 2018-04-13 02:00:23
 ---
 
-![출처: http://kryptophone.kryptotel.net/faq/encryption/index.html](./thumb.webp)
+![출처: https://web.archive.org/web/20180112232649/http://kryptophone.kryptotel.net/faq/encryption/index.html](./thumb.webp)
 
 이번 포스트에서는 평문의 데이터를 암호화/복호화 하는 방법에 대해서 이해해보자.  
 사람이 알아볼 수 있는 데이터를 평문(plain text)라고 말하고, 평문을 암호화한 걸 암호문(cipher text)라고 부른다.  

@@ -21,7 +21,7 @@ CDN에 대해서는 구글링하면 많이 나오는데 CDN은 각 지역 별로
 ![하지만 구세주는 있었으니 그 이름하여 jsdelivr...!](./jsdelivr.webp)  
 &nbsp;  
 혼자서 깃헙 문서를 보고 따라할 사람은 아래 링크로 들어가면 된다.  
-[https://github.com/jsdelivr/jsdelivr/blob/master/CONTRIBUTING.md](https://github.com/jsdelivr/jsdelivr/blob/master/CONTRIBUTING.md)  
+[https://github.com/jsdelivr/jsdelivr/blob/master/CONTRIBUTING.md](https://web.archive.org/web/20160130181003/https://github.com/jsdelivr/jsdelivr/blob/master/CONTRIBUTING.md)  
 &nbsp;  
 준비사항: 라이브러리가 올라가 있는 본인의 깃헙 저장소.  
 그리고 그 깃헙 저장소에 태그가 있어야한다.  

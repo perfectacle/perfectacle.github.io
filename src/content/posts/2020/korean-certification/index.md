@@ -93,7 +93,7 @@ X.509 인증서의 데이터 구조는 ASN.1 표기법에 의해 표기된다.
 
 ![개인키를 ASN.1 표기법으로 표기](./asn1-key.webp)  
 개인키 파일을 디코딩해보면 어떤 암호화 알고리즘을 사용했는지, 어떤 KDF(Key Derivation Function)를 사용했는지 나온다.
-object identifer를 [http://oid-info.com/get/1.2.410.200004.1.4](http://oid-info.com/get/1.2.410.200004.1.4)에서 검색하면 더 자세한 정보가 나온다.
+object identifer를 [http://oid-info.com/get/1.2.410.200004.1.4](https://web.archive.org/web/20160907090034/http://oid-info.com/get/1.2.410.200004.1.4)에서 검색하면 더 자세한 정보가 나온다.
 
 ![개인키를 ASN.1 표기법으로 표기](./seed-iv.webp)  
 또한 [SEED 알고리즘 규격 문서](http://www.rootca.or.kr/kcac/down/TechSpec/2.3-KCAC.TS.ENC.pdf)를 보면 OID에 따라서 초기 벡터 값을 어떻게 세팅해야하는지 나온다.

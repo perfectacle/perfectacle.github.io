@@ -76,7 +76,7 @@ Queue 안에 있는 Virtual Thread 쓰레드들은 FIFO 방식으로 스케쥴�
 
 > The difference with virtual threads is that, due to them being under the control of the JVM, the thread stack is stored in the heap memory and not in the stack. 
 > This means that allocating the thread stack for an awakened virtual thread becomes much cheaper. 
-> https://theboreddev.com/understanding-java-virtual-threads/ 
+> [https://theboreddev.com/understanding-java-virtual-threads/](https://web.archive.org/web/20221220013455/https://theboreddev.com/understanding-java-virtual-threads/) 
 
 JVM에서 쓰레드를 스케쥴링 해야하기 때문에 stack이 아닌 Heap 메모리 영역에 쓰레드의 스택이 저장되고 관리되기 때문에 우리가 알고있는 컨텍스트 스위칭에 대한 비용이 OS 레벨이 아닌 JVM 레벨에서 끝나기 때문에 훨씬 값싼 것이다.
 
@@ -778,7 +778,7 @@ Virtual Thread는 굉장히 많은 갯수일 수 있다보니 어디선가 오�
 해당 포스트는 아래 링크들을 참고하여 짜집기한 글이므로 보다 자세한 정보들은 아래 링크를 참고하는 걸 추천한다.
 * [Coming to Java 19: Virtual threads and platform threads](https://blogs.oracle.com/javamagazine/post/java-loom-virtual-threads-platform-threads)
 * [Virtual Threads: New Foundations for High-Scale Java Applications](https://www.infoq.com/articles/java-virtual-threads/)
-* [Understanding Java Virtual Threads – The Death of Async Programming](https://theboreddev.com/understanding-java-virtual-threads/)
+* [Understanding Java Virtual Threads – The Death of Async Programming](https://web.archive.org/web/20221220013455/https://theboreddev.com/understanding-java-virtual-threads/)
 * [Intro to virtual threads: A new approach to Java concurrency](https://www.infoworld.com/article/3678148/intro-to-virtual-threads-a-new-approach-to-java-concurrency.html)
 * [Difference Between Thread and Virtual Thread in Java](https://www.baeldung.com/java-virtual-thread-vs-thread)
 * [Embracing Virtual Threads](https://spring.io/blog/2022/10/11/embracing-virtual-threads)

@@ -124,7 +124,7 @@ Registration 부스에 가서 등록을 마치고 Swag 부스에서 AWS Reinvent
 
 ![](./midnignt-madness-01.webp)
 ![](./midnignt-madness-02.webp)
-저녁을 먹고 AWS 리인벤트의 전야제인 [Midnignt Madness](https://reinvent.awsevents.com/play/)에 참석하였는데
+저녁을 먹고 AWS 리인벤트의 전야제인 [Midnignt Madness](https://web.archive.org/web/20211215195120/https://reinvent.awsevents.com/play/)에 참석하였는데
 일반인 참여자가 올라와서 락음악에 맞추어 허공에 드럼&기타질하기, OX 퀴즈 등등 같은 것이 진행되었지만 미국 블랙코메디인지 나하고는 코드가 잘 맞지 않았다.  
 그리고 한국은 잘 모르겠지만 미국은 묘기 스포츠 같은 것들이 잘 형성돼있어서인지 자전거&스케이트 보드로 엄청난 퍼포먼스를 보여주었다.
 

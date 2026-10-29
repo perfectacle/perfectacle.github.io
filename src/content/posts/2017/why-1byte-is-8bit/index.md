@@ -4,7 +4,7 @@ date: 2017-08-07 09:02:39
 categories: [CS, 상식]
 tags: []
 ---
-![이미지 출처: http://keybreak.tistory.com/125](./thumb.webp)  
+![이미지 출처: https://web.archive.org/web/20170305111922/http://keybreak.tistory.com/125](./thumb.webp)  
 
 과거에는 1byte가 7bit, 9bit 등등이던 시절이 있다고 하지만 현재는 8비트로 거의 표준이 된 것 같다.  
 왜일까?  

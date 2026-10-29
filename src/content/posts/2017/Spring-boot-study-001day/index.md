@@ -104,7 +104,7 @@ public class SampleVO {
 ```
 
 하지만 Lombok을 쓰면 Setter에 로직을 심을 수 없다는 단점이 존재해서 간단한 getter/setter나 기타 어노테이션 정도만 써야겠다.  
-기타 어노테이션은 [(Lombok)사용 설명](http://lahuman.jabsiri.co.kr/124)을 참고하자.  
+기타 어노테이션은 [(Lombok)사용 설명](https://web.archive.org/web/20170810110312/http://lahuman.jabsiri.co.kr/124)을 참고하자.  
 
 ## 스프링의 어노테이션
 ES.Next에도 어노테이션과 비슷한 데코레이터라는 게 있는데 아직도 어떻게 동작하는지 제대로 이해하지 못했다.  

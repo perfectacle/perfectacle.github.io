@@ -39,7 +39,7 @@ public class Controller {
     }
 }
 ```
-[@RestController](http://highcode.tistory.com/24)에 대한 설명은 링크를 참조하자.  
+[@RestController](https://web.archive.org/web/20171024015424/http://highcode.tistory.com/24)에 대한 설명은 링크를 참조하자.  
 
 get일 때는 파라미터를 URI에 실어서 보내고, post일 때는 body에 실어보내면 된다.  
 나는 큰 착각을 한 게 post로 보낼 때는 대부분 json으로 보내는 경우가 많다보니  

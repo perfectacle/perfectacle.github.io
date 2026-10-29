@@ -62,4 +62,4 @@ LSB(Least Significant Byte), 최하위 바이트부터 차례로 저장한다.
 
 ## 참조 링크
 * [시스템 프로그래밍 리틀 엔디안(Little Endian), 빅 엔디안(Big Endian)](http://blog.naver.com/krinlion/40137959041)  
-* [리틀 엔디안 VS 빅 엔디안](http://genesis8.tistory.com/37)  
+* [리틀 엔디안 VS 빅 엔디안](https://web.archive.org/web/20170326011625/http://genesis8.tistory.com/37)  

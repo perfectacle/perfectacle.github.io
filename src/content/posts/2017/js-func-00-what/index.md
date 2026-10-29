@@ -123,7 +123,7 @@ const c = () => () => {}; // 5. 익명으로 생성이 가능하다.
 ```
 VO와 함수 표현식 및 선언식에 대한 내용은 아래 사이트를 참고하자.  
 * [Variable Object in JS](http://mohwa.github.io/blog/javascript/2015/10/14/vo-inJS/)  
-* [Javascript : 함수(function) 다시 보기](http://www.nextree.co.kr/p4150/)
+* [Javascript : 함수(function) 다시 보기](https://web.archive.org/web/20170704200653/http://www.nextree.co.kr/p4150/)
 
 하지만 자바스크립트에서 함수는 객체이다.  
 ```javascript

@@ -86,6 +86,6 @@ stack 영역에 올라가는 arr2의 크기가 사용자의 입력에 따라서 
 ## 참고 링크
 * [C언어의 메모리 구조](http://dsnight.tistory.com/50)  
 * [메모리 영역(code, data, stack, heap)](http://sfixer.tistory.com/entry/%EB%A9%94%EB%AA%A8%EB%A6%AC-%EC%98%81%EC%97%ADcode-data-stack-heap)  
-* [동적할당과 정적할당](http://ghgus0702.tistory.com/11)  
-* [[C/C++] 데이터, 스택(Stack), 힙(Heap) 영역](http://pacs.tistory.com/entry/CC-Programming-%EC%8A%A4%ED%83%9DStack-%ED%9E%99Heap-%EC%98%81%EC%97%AD)  
+* [동적할당과 정적할당](https://web.archive.org/web/20170329161407/http://ghgus0702.tistory.com/11)  
+* [[C/C++] 데이터, 스택(Stack), 힙(Heap) 영역](https://web.archive.org/web/20160512185714/http://pacs.tistory.com/entry/CC-Programming-%EC%8A%A4%ED%83%9DStack-%ED%9E%99Heap-%EC%98%81%EC%97%AD)  
 * [메모리 영역 (Code, Data, BSS, HEAP, Stack), Little Endian, Stack의 이해](http://donghwada.tistory.com/entry/%EB%A9%94%EB%AA%A8%EB%A6%AC-%EC%98%81%EC%97%AD-Code-Data-BSS-HEAP-Stack-Little-Endian-Stack%EC%9D%98-%EC%9D%B4%ED%95%B4)

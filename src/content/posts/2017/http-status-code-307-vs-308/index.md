@@ -7,7 +7,7 @@ tags: [HTTP, HTTPS, Nginx]
 ![](./thumb.webp)  
 
 redirect를 위한 HTTP 상태 코드 301과 302에 대해 잘 모르겠다면 아래 링크를 참고하고 글을 읽도록 하자.  
-[301리디렉션 & 302리디렉션의 차이(사용법)](http://www.aun-korea.com/301%EB%A6%AC%EB%94%94%EB%A0%89%EC%85%98-302%EB%A6%AC%EB%94%94%EB%A0%89%EC%85%98%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%82%AC%EC%9A%A9%EB%B2%95/)  
+[301리디렉션 & 302리디렉션의 차이(사용법)](https://web.archive.org/web/20171012174434/http://www.aun-korea.com/301%EB%A6%AC%EB%94%94%EB%A0%89%EC%85%98-302%EB%A6%AC%EB%94%94%EB%A0%89%EC%85%98%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%82%AC%EC%9A%A9%EB%B2%95/)  
 
 ## [307 Temporary Redirect](https://tools.ietf.org/html/rfc7231#section-6.4.7) vs [308 Permanent Redirect](https://tools.ietf.org/html/rfc7538#section-3)
 307은 302와 유사하고, 308은 301과 유사하다.  

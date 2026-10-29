@@ -77,7 +77,7 @@ public class TestsTest {
 다만 Inject는 자바에서 지원하는 표준 어노테이션이고, Autowired는 스프링에서 지원해주는 것 같다.  
 build.gradle의 dependency에 `compile('javax.inject:javax.inject:1')` 을 추가하면 된다.  
 자세한 설명은 아래 링크를...
-[Spring MVC 어노테이션 기반 설정 - 2 . @Autowired](http://deoki.tistory.com/28)  
+[Spring MVC 어노테이션 기반 설정 - 2 . @Autowired](https://web.archive.org/web/20170916030412/http://deoki.tistory.com/28)  
 
 ## 결론
 중요한 것은 @Component, @Value, @Inject(@Autowired) 라는 점을 생각하자!

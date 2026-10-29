@@ -7,7 +7,7 @@ tags: [Iterator, Symbol]
 ![](./thumb.webp)  
 
 ## 들어가기에 앞서
-이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
+이 포스트는 [GDG 2016](https://festi.kr/festi/gdg-korea-2016-devfest-seoul/)에서 발표하신 [맹기완](https://www.facebook.com/hika00) 님의 [발표](https://web.archive.org/web/20161126025502/http://www.bsidesoft.com/?p=2913)를 듣고 감명을 받아 정리해본 글이다.  
 [(ES6) Interface](/2016/12/25/es6-interface/)와 [(ES6) Symbol](/2017/04/16/ES6-Symbol/)에 대한 내용은 링크를 참조하도록 하자.  
 또한 이 글을 다 읽고 나서 [ES6 Generator](/2017/04/22/ES6-Generator/)도 읽어보자.  
 `Iterator는 반복자`란 뜻을 가지고 있으며, 대충 반복과 관련된 용어라는 것만 알고 글을 읽어보자.
@@ -313,7 +313,7 @@ console.log(isArrNum3(arr));
 ```
 
 ## 참조 링크
-* [[es6] GDG 2016 발표자료](http://www.bsidesoft.com/?p=2913)  
+* [[es6] GDG 2016 발표자료](https://web.archive.org/web/20161126025502/http://www.bsidesoft.com/?p=2913)  
 * [[MDN] Iteration protocols](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Iteration_protocols)  
 * ES6 Iterable and Iterator | programmist  
-* [21. Iterables and iterators](http://exploringjs.com/es6/ch_iteration.html)
+* [21. Iterables and iterators](https://web.archive.org/web/20170520052458/http://exploringjs.com/es6/ch_iteration.html)

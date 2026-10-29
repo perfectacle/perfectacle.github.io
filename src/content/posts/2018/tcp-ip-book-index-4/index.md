@@ -502,7 +502,7 @@ DNS 서버에 등록되는 정보를 리소스 레코드라고 부르고, 리소
 
 #### 4-8-7. 리소스 레코드의 의미
 각각의 레코드에 대해서는 나도 아직 공부하는 중이므로 아래 링크를 참조하자 ㅠㅠ  
-[DNS Zone 파일에 쓰이는 레코드 설명](http://ricky840.tistory.com/10)  
+[DNS Zone 파일에 쓰이는 레코드 설명](https://web.archive.org/web/20171216050615/http://ricky840.tistory.com/10)  
 
 ![GoDaddy에 등록된 내 도메인에 대한 리소스 레코드](./go-daddy.webp)
 
