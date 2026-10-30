@@ -47,7 +47,7 @@ public class Tests {
 여튼 properties에 있는 값을 사용하려면 둘이 스프링에 의해 같이 관리돼야하기 때문에  
 클래스를 스프링 빈으로 등록해야하는 것 같다.  
 자세하게는 모르겠다 ㅠㅠ  
-[@Bean vs @Component](http://jojoldu.tistory.com/27)을 보면 둘 사이에도 명확한 차이가 있는 것 같은데 링크를 참조해보자. (나도 잘 모르니 ㅠㅠ)  
+[@Bean vs @Component](https://web.archive.org/web/20170710200144/http://jojoldu.tistory.com/27)을 보면 둘 사이에도 명확한 차이가 있는 것 같은데 링크를 참조해보자. (나도 잘 모르니 ㅠㅠ)  
 
 * Value
 properties의 어느 속성을 적용할지 정하는 것 같다.  
