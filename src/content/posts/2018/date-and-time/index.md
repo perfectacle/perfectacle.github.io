@@ -115,7 +115,7 @@ UTC를 위에 Coordinated Universal Time라고 적어놨는데 왜 UTC라고 줄
 
 ### Zulu Time
 > Zulu (short for "Zulu time") is used in the military and in navigation generally as a term for Universal Coordinated Time (UCT), sometimes called Universal Time Coordinated ( UTC ) or Coordinated Universal Time (but abbreviated UTC), and formerly called Greenwich Mean Time.
-  https://whatis.techtarget.com/definition/Zulu-Zulu-time
+  [https://whatis.techtarget.com/definition/Zulu-Zulu-time](https://web.archive.org/web/20180305002526/http://whatis.techtarget.com/definition/Zulu-Zulu-time)
   
 짧게는 Zulu라고 부르고, 군사적이나 배, 비행기 항법 등등에서 주로 사용한다.  
 
