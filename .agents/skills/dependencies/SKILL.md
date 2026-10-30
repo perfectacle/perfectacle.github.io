@@ -50,4 +50,4 @@ description: npm 의존성·pnpm·Node·GitHub Actions 버전을 추가하거나
 - **astro 는 묶어서 올린다**: `astro`·`@astrojs/*` 는 Renovate 가 한 PR 로 묶는다. `astro.config.ts` 가 `@astrojs/markdown-remark` 를 직접 import 하므로 따로 올리면 마크다운 처리기 버전이 어긋난다.
 - **TypeScript**: `tsc` 는 네이티브 TS 7(`@typescript/native` 라는 별칭으로 설치한 `npm:typescript@7.x`), `typescript` 라는 이름은 TS 6 API 호환 패키지(`npm:@typescript/typescript6`)다. typescript-eslint 와 astro check 가 TS 7 에서 빠진 컴파일러 API 를 쓰기 때문이다. `typescript` 를 7 로 올리지 않는다. 두 도구가 TS 7 을 지원한다고 릴리스 노트에 밝히면 하나로 합친다.
 - **Renovate PR 이 실패했을 때**: CI 로그로 원인을 찾아 같은 브랜치에 커밋해 고친다. `output-diff` 가 실패했다면 업데이트로 렌더 결과가 바뀐 것이다. 차이를 보고 의도된 변화면 사람이 머지하고, 아니면 고친다([ci](../ci/SKILL.md)).
-- **pnpm·Node 버전**은 `package.json` 의 `packageManager`(해시 포함)와 `.node-version` 이 정한다. corepack 으로 활성화한다(`corepack enable pnpm`).
+- **pnpm·Node 버전**은 `package.json` 의 `packageManager`(해시 포함)와 `.node-version` 이 정한다. corepack 으로 활성화한다(`corepack enable pnpm`). `.tool-versions` 는 로컬 asdf 가 같은 Node 를 고르게 하는 사본이라 `.node-version` 과 늘 같은 값이어야 한다(Renovate 가 「node.js」 PR 하나로 함께 올린다).
