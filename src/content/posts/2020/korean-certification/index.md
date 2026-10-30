@@ -23,7 +23,7 @@ A가 데이터를 보냈는데 이게 진짜 A가 보낸 건지 아닌지를 검
 ## 공인인증서는 왜 나왔을까
 인터넷 뱅킹이나 온라인 쇼핑몰 등등을 이용하기 위해서는 보안이 취약해서는 안되며 이를 위해서 인증서 사용은 필수이다.
 
-[https://news.joins.com/article/521864](https://news.joins.com/article/521864)  
+[https://www.joongang.co.kr/article/521864](https://www.joongang.co.kr/article/521864)  
 하지만 과거에는 미국의 수출 금지법에 의해 미국을 제외한 나라에서는 브라우저에서 56bit 길이 이하의 약한 암호화 방식 밖에 사용할 수 없었다.
 
 따라서 국내에서 직접 암호화 알고리즘인 SEED(128bit 길이, 2009년부터는 256bit 길이도 제공)를 개발하고,  
@@ -145,7 +145,7 @@ ASN.1 Decoder로 보니 내 공인인증서였다.
 * [https://indienote.tistory.com/272](https://indienote.tistory.com/272)
 * [https://indienote.tistory.com/273](https://indienote.tistory.com/273)
 * [https://www.slideshare.net/ied206/4th-inc0gnito](https://www.slideshare.net/ied206/4th-inc0gnito)
-* [https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0](https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0)
-* [https://news.joins.com/article/521864](https://news.joins.com/article/521864)
+* [https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0](https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0)
+* [https://www.joongang.co.kr/article/521864](https://www.joongang.co.kr/article/521864)
 * [SEED 암호 알고리즘 규격](https://www.rootca.or.kr/kcac/down/TechSpec/2.3-KCAC.TS.ENC.pdf) 
 * [전자서명 인증서 프로파일 규격](https://www.rootca.or.kr/kcac/down/TechSpec/1.1-KCAC.TS.CERTPROF.pdf)

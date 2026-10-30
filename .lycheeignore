@@ -7,3 +7,5 @@
 ^https?://(www\.)?kbench\.com/
 # 인증서 체인이 불완전해 lychee 가 인증서를 믿지 못한다.
 ^https://visa\.immigration\.go\.tz/
+# GitHub Actions 러너에서만 응답이 없어 시간 초과가 난다.
+^https://www\.kakaobank\.com/
