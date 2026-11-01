@@ -44,8 +44,10 @@ jobs:
           if git diff --quiet -- pnpm-workspace.yaml pnpm-lock.yaml; then changed=false; else changed=true; fi
           echo "changed=$changed" >> "$GITHUB_OUTPUT"
 
-      # A PR or push made with GITHUB_TOKEN triggers no workflows, so CI is dispatched on the branch instead. Its
-      # ci-ok check lands on the same commit, which is what the ruleset and auto-merge look at.
+      # A PR or push made with GITHUB_TOKEN either starts no pull_request run or starts one held for approval, as if
+      # from an outside contributor. A held run blocks the merge even after the dispatched run passes, so it is
+      # approved here; the dispatch still covers the case where no run starts. Both runs' ci-ok land on the same
+      # commit, which is what the ruleset and auto-merge look at.
       - if: steps.changes.outputs.changed == 'true'
         id: pr
         env:
@@ -62,6 +64,13 @@ jobs:
           echo "number=$number" >> "$GITHUB_OUTPUT"
           gh workflow run pages.yml --ref "$BRANCH"
           gh pr merge "$number" --auto --merge
+          head=$(gh pr view "$number" --json headRefOid --jq .headRefOid)
+          for _ in $(seq 12); do
+            held=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$head&event=pull_request&status=action_required" --jq '.workflow_runs[].id')
+            [ -n "$held" ] && break
+            sleep 5
+          done
+          for id in $held; do gh api -X POST "repos/$GITHUB_REPOSITORY/actions/runs/$id/approve"; done
 
       # Waiting for the merge turns a fix that CI rejected into an issue instead of a PR nobody looks at.
       - if: steps.pr.outputs.number != ''
