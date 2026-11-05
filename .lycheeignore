@@ -9,3 +9,6 @@
 ^https://visa\.immigration\.go\.tz/
 # GitHub Actions 러너에서만 응답이 없어 시간 초과가 난다.
 ^https://www\.kakaobank\.com/
+^https://babeljs\.io/
+# GitHub Actions 러너 IP 를 봇으로 보고 비표준 456 을 돌려준다.
+^https://hanabcn\.com/
