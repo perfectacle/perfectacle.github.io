@@ -5,7 +5,7 @@ description: GitHub Actions 워크플로를 바꾸거나 CI 가 실패했을 때
 
 # CI
 
-이 스킬이 CI-01, CI-02 의 정본이다. 워크플로는 `.github/workflows/pages.yml`(검사·빌드·배포)과 `links.yml`(외부 링크 주간 점검)이다. 잡 목록은 워크플로 파일을 본다.
+이 스킬이 CI-01, CI-02 의 정본이다. 워크플로는 `.github/workflows/pages.yml`(검사·빌드·배포)과 `links.yml`(외부 링크 매일 점검)이다. 잡 목록은 워크플로 파일을 본다.
 
 ## 절차 — CI 가 실패했을 때
 
@@ -45,5 +45,5 @@ main 은 `ci-ok` 체크 통과가 필수다(저장소 ruleset). `ci-ok` 는 모�
 - **main 재검사 생략**: PR 캐시는 main 에서 읽히지 않는다. 그래서 PR 의 `ci-ok` 가 통과하면 머지 결과의 트리 해시로 `verified-tree-<트리>` 아티팩트를 남긴다. main push 때 `tested` 잡이 같은 트리의 표식을 찾으면 검사 잡을 건너뛰고 build·deploy 만 돈다. PR 검사 뒤 main 이 움직였거나(필수 체크가 strict 가 아니다) 수동 실행이면 트리가 달라 전부 다시 돈다. 그래서 main 실행은 그때만 최후 방어선 역할을 한다.
 - **이미지 캐시**: `.github/actions/astro-assets-cache` 는 최적화 이미지와 형식 선택 결과를 `node_modules/.astro/assets` 에 함께 보관한다. 키에는 `astro.config.ts`·`src/lib/rehype-post-images.ts`·`src/lib/image-format.ts`·`src/components/PostList.astro` 의 해시가 들어간다. AVIF 설정이나 Sharp 버전이 바뀌면 내부 설정 표식으로 생성된 AVIF 만 지우고 WebP 와 형식 선택 캐시는 남긴다. 선택 캐시는 원본·변환 설정·Sharp 버전으로 구분된다. 이미지 선택 코드를 다른 파일로 옮기면 CI 키와 `src/lib/image-cache.ts` 의 `CODE` 목록도 고친다.
 - **동시 실행 한도**: 무료 계정은 동시 20잡이다. 대기열에 오래 머물면 다른 실행과 겹친 것이다. PR 이 main 과 충돌하면 `pull_request` 워크플로가 아예 시작되지 않는다(머지 상태 `DIRTY`).
-- **외부 링크 점검**: `links.yml` 이 매주 깨진 외부 링크를 `broken-links` 이슈로 올린다. 옛 글의 죽은 링크는 글 작성자가 판단할 일이라 에이전트가 임의로 고치지 않는다.
+- **외부 링크 점검**: `links.yml` 이 매일 깨진 외부 링크를 `broken-links` 이슈로 올린다. 실패한 링크는 10분 뒤 한 번 더 확인해 두 번 다 실패한 것만 올리고, 깨진 링크가 없는 날 이슈를 닫는다. 옛 글의 죽은 링크는 글 작성자가 판단할 일이라 에이전트가 임의로 고치지 않는다.
 - **보안 점검**: `zizmor` 잡이 워크플로를 검사한다. checkout 에는 `persist-credentials: false`(이 워크플로는 push 하지 않는다).

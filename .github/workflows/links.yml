@@ -1,10 +1,10 @@
 name: External links
 
 # Posts link to thousands of outside pages that move or die over time. Not a merge gate (other sites'
-# uptime is not ours); a weekly report issue instead.
+# uptime is not ours); a daily report issue instead, closed by the first clean run.
 on:
   schedule:
-    - cron: '0 0 * * 1' # Monday 09:00 KST
+    - cron: '0 0 * * *' # 09:00 KST
   workflow_dispatch:
 
 permissions:
@@ -26,7 +26,8 @@ jobs:
         with:
           persist-credentials: false
 
-      - id: lychee
+      # --cache keeps only successful results, so the recheck requests just the links that failed.
+      - id: first
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           # 403/418/429: sites that block bots or rate-limit, not dead links (418 is Naver's bot block).
@@ -34,7 +35,28 @@ jobs:
           # scripts/check-dist.ts already checks them in the built site, so resolve them there and skip them.
           # Loopback: posts show local dev-server addresses as examples, never reachable from CI.
           args: >-
-            --no-progress --max-concurrency 8 --timeout 30 --max-retries 2
+            --no-progress --max-concurrency 8 --timeout 30 --max-retries 2 --cache
+            --exclude-loopback
+            --accept '200..=299,403,418,429'
+            --base-url https://perfectacle.github.io
+            --exclude '^https://perfectacle\.github\.io/'
+            'src/content/posts/**/*.md'
+          output: lychee-report.md
+          format: markdown
+          fail: false
+
+      # Outages, expired certificates and timeouts usually clear within minutes; only links that fail
+      # both passes reach the issue.
+      - name: Wait before rechecking failures
+        if: steps.first.outputs.exit_code != 0
+        run: sleep 600
+
+      - id: recheck
+        if: steps.first.outputs.exit_code != 0
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: >-
+            --no-progress --max-concurrency 8 --timeout 30 --max-retries 2 --cache
             --exclude-loopback
             --accept '200..=299,403,418,429'
             --base-url https://perfectacle.github.io
@@ -45,7 +67,7 @@ jobs:
           fail: false
 
       - name: Open or update the report issue
-        if: steps.lychee.outputs.exit_code != 0
+        if: steps.first.outputs.exit_code != 0 && steps.recheck.outputs.exit_code != 0
         env:
           GH_TOKEN: ${{ github.token }}
           TITLE: 깨진 외부 링크 리포트
@@ -67,7 +89,7 @@ jobs:
           fi
 
       - name: Close the report issue when everything resolves
-        if: steps.lychee.outputs.exit_code == 0
+        if: steps.first.outputs.exit_code == 0 || steps.recheck.outputs.exit_code == 0
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
