@@ -39,8 +39,10 @@ export const GOKUDEN_TOTSUGEKI: RomSpec = {
   header: { title: 'SFX DBZ TOTSUGEKIHEN', mapMode: 0x30, cartType: 0x02, romSize: 0x0b },
   patchedSize: 4194304,
   original: { crc32: 'D531289B', md5: '8BD89634D1B2205B1E7EF016485C0076' },
-  patched: { crc32: '070FE484', md5: '71C606DECD7E2A88C73D4D6B0B46C46C' },
+  patched: { crc32: '4B766A85', md5: 'A61F61C75CB013CCBC6368122AEFBA7B' },
   previous: [
+    // The first v1.4 build, replaced the same day before the release was announced.
+    { crc32: '070FE484', md5: '71C606DECD7E2A88C73D4D6B0B46C46C' },
     { version: 'v1.3', crc32: 'FC7FB902', md5: 'AEAA197ABBBF7F0C3546F7163D834386' },
     { version: 'v1.2', crc32: 'A939C4F8', md5: 'AE259E14C8C6B9853C4C76D0E2EB75D0' },
     // The first v1.2 build, replaced before the release was announced.

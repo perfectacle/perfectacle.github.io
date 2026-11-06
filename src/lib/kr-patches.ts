@@ -156,7 +156,7 @@ export const TOTSUGEKI_PATCH = krPatch<SfcPatch>({
     {
       version: '1.4',
       date: '2026-11-07',
-      rom: { size: 4194304, crc32: '070FE484', md5: '71C606DECD7E2A88C73D4D6B0B46C46C' },
+      rom: { size: 4194304, crc32: '4B766A85', md5: 'A61F61C75CB013CCBC6368122AEFBA7B' },
     },
     {
       version: '1.3',
