@@ -239,6 +239,11 @@ export const OTOGIRISOU_PATCH = krPatch<SfcPatch>({
   year: 1992,
   releases: [
     {
+      version: '1.4',
+      date: '2026-11-06',
+      rom: { size: 2097152, crc32: 'C2AF6ABF', md5: '2B7BF4CFFC83CAD3D4F646F4DE6CD527' },
+    },
+    {
       version: '1.3',
       date: '2026-10-25',
       rom: { size: 2097152, crc32: 'DAE98F06', md5: '3605777DAC6BE2AAFA011CEAA0429D91' },

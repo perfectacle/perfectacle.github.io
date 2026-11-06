@@ -99,8 +99,9 @@ export const OTOGIRISOU: RomSpec = {
   header: { title: 'OTOGIRISOU', mapMode: 0x20, cartType: 0x02, romSize: 0x0a },
   patchedSize: 2097152,
   original: { crc32: '8E4BEFD0', md5: 'AE1E9C92D0B7E6DBA6C6007D99C9C3F4' },
-  patched: { crc32: 'DAE98F06', md5: '3605777DAC6BE2AAFA011CEAA0429D91' },
+  patched: { crc32: 'C2AF6ABF', md5: '2B7BF4CFFC83CAD3D4F646F4DE6CD527' },
   previous: [
+    { version: 'v1.3', crc32: 'DAE98F06', md5: '3605777DAC6BE2AAFA011CEAA0429D91' },
     { version: 'v1.2', crc32: '2C31A0B2', md5: 'CD48C59B3B80D6C9E3C648E8BDD5A4E0' },
     { version: 'v1.1', crc32: '27EE014E', md5: 'F45317CFAAAB68CCA5D8984AF8452535' },
     { version: 'v1.0', crc32: 'C70A8E66', md5: '12A3FA116DB687AA4A60A7DB4A67D383' },
