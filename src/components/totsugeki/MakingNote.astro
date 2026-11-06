@@ -73,6 +73,12 @@ const versions = [
     tone: 'dg-cool',
     lines: ['자모로 조합하는 이름 입력', '이름 글자 11,172자, 롬 4MB'],
   },
+  {
+    name: 'v1.4',
+    when: '2026. 11. 7',
+    tone: 'dg-warm',
+    lines: ['이름 목록 라벨 폭 맞춤', '라벨 세 줄만 다시 씀'],
+  },
 ];
 
 const readFirst: { to: ChapterKey; why: string }[] = [
@@ -375,6 +381,9 @@ const buildSteps: [string, string][] = [
   ['asm/v13.asm', 'asar로 렌더러 훅과 자모 이름 입력 코드를 넣습니다.'],
   ['krpatch sfc checksum --fix', '헤더 체크섬을 다시 계산합니다.'],
   ['krpatch ips make --headered --rle', 'v1.3의 헤더 없는 롬용과 512바이트 헤더 롬용 IPS를 만듭니다.'],
+  ['tools/namelabels1.py', '여기부터 v1.4입니다. 이름 목록 라벨 세 줄을 같은 폭으로 다시 씁니다.'],
+  ['krpatch sfc checksum --fix', '헤더 체크섬을 다시 계산합니다.'],
+  ['krpatch ips make --headered --rle', 'v1.4의 헤더 없는 롬용과 512바이트 헤더 롬용 IPS를 만듭니다.'],
 ];
 
 const toolFiles = [
@@ -416,6 +425,8 @@ const toolFiles = [
   { name: 'tools/build-v1.3.sh', text: 'v1.2 빌드 위에 v1.3을 쌓는 순서', section: 'name-entry' },
   { name: 'tools/font8.py', text: '이름용 8px 글자 그리기, 글자 코드와 음절 표 만들기', section: 'name-entry' },
   { name: 'asm/v13.asm', text: '렌더러 훅과 자모 이름 입력(asar)', section: 'name-entry' },
+  { name: 'tools/build-v1.4.sh', text: 'v1.3 빌드 위에 v1.4를 쌓는 순서', section: 'name-entry' },
+  { name: 'tools/namelabels1.py', text: '이름 목록 라벨 폭 맞추기', section: 'name-entry' },
   { name: 'lua/eventlist.lua', text: 'Mesen 2용. 이벤트 표 문제 재현', section: 'event-list' },
   {
     name: 'lua/scenario.lua',
@@ -471,7 +482,7 @@ const sectionTools: Record<string, string[]> = {
   font: ['tools/font1.py', 'tools/fontext1.py', 'tools/render1.py', 'tables/'],
   'title-gfx': ['tools/title.py', 'krpatch lzss'],
   menus: ['tools/textsets.py', 'tools/statusmenu1.py', 'tools/credits1.py'],
-  'name-entry': ['tools/build-v1.3.sh', 'tools/font8.py', 'asm/v13.asm'],
+  'name-entry': ['tools/build-v1.3.sh', 'tools/font8.py', 'asm/v13.asm', 'tools/build-v1.4.sh', 'tools/namelabels1.py'],
   save: ['tools/pwglyph1.py', 'tools/endpw1.py', 'lua/ending.lua'],
   'event-list': ['lua/eventlist.lua'],
   testing: [
@@ -524,17 +535,17 @@ const toolsFor = (section: string) =>
 <NoteRelated patch={patch} id="making-about" />
 <p>
   한글패치는 일본판 롬의 바이트 일부를 바꾼 것입니다. 이 노트는 그 바뀐 곳을 롬 주소와 실제 바이트로 하나씩 따라갑니다.
-  돌격편 한글패치는 네 번에 걸쳐 쌓였고, 빌드도 이 순서대로 일본판에 v1.0 IPS를 먼저 적용한 다음 v1.1·v1.2의 도구와
-  v1.3의 어셈블리를 차례로 돌립니다.
+  돌격편 한글패치는 다섯 번에 걸쳐 쌓였고, 빌드도 이 순서대로 일본판에 v1.0 IPS를 먼저 적용한 다음 v1.1·v1.2의 도구와
+  v1.3의 어셈블리, v1.4의 도구를 차례로 돌립니다.
 </p>
-<Figure caption="일본판 위에 쌓인 네 버전. 아래가 먼저입니다." max={600}>
-  <svg viewBox="0 0 360 332" role="img" aria-labelledby="tg-ver-t tg-ver-d">
+<Figure caption="일본판 위에 쌓인 다섯 버전. 아래가 먼저입니다." max={600}>
+  <svg viewBox="0 0 360 396" role="img" aria-labelledby="tg-ver-t tg-ver-d">
     <title id="tg-ver-t">돌격편 한글패치 버전</title>
     <desc id="tg-ver-d">
-      맨 아래 일본판 롬 위에 2012년 v1.0, 2026년 10월 18일 v1.1, 10월 24일 v1.2, 10월 25일 v1.3이 차례로 쌓인다. v1.0은
-      폰트 칸에 한글을 그리고 번역했고, v1.1은 대사 4,483줄과 새 글자 213자, 타이틀과 메뉴, 이벤트 표를 고쳤고, v1.2는
-      암호 글자 다섯 자와 엔딩 고정 암호, 메뉴 표시를 고쳤고, v1.3은 이름 입력을 자모 조합식으로 바꾸고 롬을 4MB로 늘려
-      이름 글자 11,172자를 넣었다.
+      맨 아래 일본판 롬 위에 2012년 v1.0, 2026년 10월 18일 v1.1, 10월 24일 v1.2, 10월 25일 v1.3, 11월 7일 v1.4가 차례로
+      쌓인다. v1.0은 폰트 칸에 한글을 그리고 번역했고, v1.1은 대사 4,483줄과 새 글자 213자, 타이틀과 메뉴, 이벤트 표를
+      고쳤고, v1.2는 암호 글자 다섯 자와 엔딩 고정 암호, 메뉴 표시를 고쳤고, v1.3은 이름 입력을 자모 조합식으로 바꾸고
+      롬을 4MB로 늘려 이름 글자 11,172자를 넣었고, v1.4는 이름 목록 라벨의 폭을 맞췄다.
     </desc>
     {[...versions].reverse().map((v, i) => (
       <>
@@ -556,9 +567,9 @@ const toolsFor = (section: string) =>
   </svg>
 </Figure>
 <p>
-  각 버전이 화면에서 무엇을 바꿨는지는 패치 페이지의 <a href={release('1.3')}>v1.3</a>·<a href={release('1.2')}>v1.2</a>
-  ·<a href={release('1.1')}>v1.1</a> 패치 노트에 비교 화면으로 있습니다. 이 노트는 그 밑의 롬 이야기입니다. 처음
-  읽는다면 아래 장을 먼저 보면 따라가기 쉽습니다.
+  각 버전이 화면에서 무엇을 바꿨는지는 패치 페이지의 <a href={release('1.4')}>v1.4</a>·<a href={release('1.3')}>v1.3</a>
+  ·<a href={release('1.2')}>v1.2</a>·<a href={release('1.1')}>v1.1</a> 패치 노트에 비교 화면으로 있습니다. 이 노트는 그
+  밑의 롬 이야기입니다. 처음 읽는다면 아래 장을 먼저 보면 따라가기 쉽습니다.
 </p>
 <ul class="notes">
   {readFirst.map(r => (
@@ -1574,6 +1585,13 @@ $B7:FA70  81 84 86 86 A6 AE B1 B6                           ; 뱅크</code></pre
     어셈블합니다. <code>#51</code> 같은 10진 즉시값은 16비트 모드에서도 8비트로 어셈블돼서 <code>CMP.w #51</code>로
     씁니다. 65816에는 <code>STA long,Y</code>가 없어, DB를 글자 뱅크로 두고 <code>LDA abs,Y</code> /{' '}
     <code>STA long,X</code>로 복사합니다.
+  </li>
+  <li>
+    <strong>이름 목록 라벨 (v1.4)</strong>: 이름 목록(<code>$80:9529</code>)은 줄 번호 <code>$4D</code>에{' '}
+    <code>$12</code>를 곱해 <code>$80:F237,X</code>에서 라벨을 복사하고, 바로 뒤에 <code>$0B01</code>의 이름을 붙입니다.
+    이름은 라벨이 끝난 자리에서 시작하는데, v1.0 라벨은 63–67px(나쁜놈 63, 부하 66, 나머지 67)이라 줄마다 어긋났습니다.
+    v1.4는 다섯 줄을 모두 PLAYER처럼 67px로 맞추고 작은 ‥를 x = 39, 47, 55에 둡니다. 한 줄은 18바이트라 8코드와 끝
+    표시까지 들어갑니다.
   </li>
 </ul>
 
