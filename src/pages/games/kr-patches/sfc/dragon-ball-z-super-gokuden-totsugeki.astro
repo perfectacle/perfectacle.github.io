@@ -179,7 +179,8 @@ const arcs = [
   },
 ];
 
-const latestOverview = '이름 입력 화면의 이름 목록에서 줄마다 어긋나던 이름 칸을 한 줄로 맞췄습니다.';
+const latestOverview =
+  '이름 입력 화면의 이름 목록에서 줄마다 어긋나던 이름 칸을 한 줄로 맞추고, 혼자 영어였던 PLAYER를 한글로 바꿨습니다.';
 ---
 
 <PatchBook
@@ -371,8 +372,9 @@ const latestOverview = '이름 입력 화면의 이름 목록에서 줄마다 �
           <ul>
             <li>
               이름 목록의 「부하」「나쁜놈」「조언자」 뒤 점선 길이가 달라 이름이 줄마다 다른 자리에서 시작했습니다.
-              다섯 줄 모두 「PLAYER」 줄과 같은 길이로 맞춰 이름이 한 줄로 섭니다.
+              다섯 줄 모두 같은 길이로 맞춰 이름이 한 줄로 섭니다.
             </li>
+            <li>첫 줄만 영어로 남아 있던 「PLAYER」를 일본판처럼 「플레이어」로 바꿨습니다.</li>
           </ul>
           <ReleaseScreenshot
             panels={[
@@ -384,7 +386,7 @@ const latestOverview = '이름 입력 화면의 이름 목록에서 줄마다 �
               {
                 label: 'v1.4',
                 src: `${base}/images/patch/name_list_v14_1.webp`,
-                alt: 'v1.4 이름 입력. 다섯 줄의 이름이 같은 자리에서 시작한다',
+                alt: 'v1.4 이름 입력. 첫 줄이 플레이어가 되고 다섯 줄의 이름이 같은 자리에서 시작한다',
               },
             ]}
             caption="이름 입력 화면의 이름 목록."
