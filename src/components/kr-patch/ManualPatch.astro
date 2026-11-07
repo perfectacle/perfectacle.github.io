@@ -35,6 +35,7 @@ const tools = nds
       을 받아 아래 패치 도구로 일본판 원본 롬파일 {formatBytes(size)}에 적용하세요.
       {!nds && korean !== size && ` 패치하면 파일이 ${megabytes(patch.spec, korean)}로 늘어납니다.`}
       {nds && ` 패치한 파일은 ${formatBytes(korean)}입니다.`}
+      {patch.releases.length > 1 && ` 이 ${kind} 하나에 이전 버전의 수정이 모두 들어 있어, 예전 버전 패치를 먼저 적용할 필요가 없습니다.`}
     </p>
     <ul class="downloads">
       {tools.map(tool => (
