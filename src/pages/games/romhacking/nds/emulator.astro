@@ -35,7 +35,7 @@ const references = [
   {
     href: analysisUrl(GHOST_TRICK_PATCH),
     label: 'kr-patches, 고스트 트릭 docs/ANALYSIS.md 6장',
-    note: '직접 빌드한 desmume 코어의 커밋, melonDS DS 코어가 멈춘 것, 터치 코어 변수',
+    note: '직접 빌드한 desmume 코어의 커밋, 뒤가 잘린 롬에서 melonDS DS 코어가 멈춘 것, 터치 코어 변수',
   },
 ];
 const note = notePath(GHOST_TRICK_PATCH);
@@ -170,8 +170,9 @@ shot title</code></pre>
   </h2>
   <h3>고스트 트릭: 코어를 직접 빌드</h3>
   <p>
-    libretro desmume 코어는 커밋 <code>95b4d79</code>(2026-09-20)를 직접 빌드했습니다. melonDS DS 코어 v1.4.0은 롬을
-    읽은 뒤 멈춰서 쓰지 않았습니다. 패치 노트의 v1.1·v1.2 비교 화면은 모두 두 롬에 같은 입력을 넣어 찍었습니다(
+    libretro desmume 코어는 커밋 <code>95b4d79</code>(2026-09-20)를 직접 빌드했습니다. melonDS DS 코어 v1.4.0은
+    v1.3까지의 롬을 읽은 뒤 멈춰서 쓰지 않았습니다. 롬 뒤쪽 0xFF가 잘려 128MB가 아니었던 탓이라, v1.4부터는 롬을 128MB로
+    채웁니다. 패치 노트의 v1.1·v1.2 비교 화면은 모두 두 롬에 같은 입력을 넣어 찍었습니다(
     <a href={`${note}#making-testing`}>노트</a>).
   </p>
   <h3>고스트 트릭: 창 폭 실측과 세이브 확인</h3>
