@@ -1038,10 +1038,13 @@ for (const game of PATCH_GUIDES) {
       await noHorizontalOverflow(page);
       const close = preview.getByRole('button', { name: '미리 보기 닫기' });
       await expect(close).toBeFocused();
-      await page.keyboard.press('Tab');
-      await expect(close).toBeFocused();
-      await page.keyboard.press('Shift+Tab');
-      await expect(close).toBeFocused();
+      // Tab cycles through the dialog's buttons and never leaves it.
+      const focusInside = () => preview.evaluate(node => node.contains(document.activeElement));
+      for (const key of ['Tab', 'Tab', 'Tab', 'Shift+Tab']) {
+        await page.keyboard.press(key);
+        expect(await focusInside()).toBe(true);
+      }
+      await close.focus();
       if (index === 0) {
         const { violations } = await new AxeBuilder({ page }).include('#patch-image-preview').analyze();
         expect(violations.filter(v => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);
@@ -1056,6 +1059,55 @@ for (const game of PATCH_GUIDES) {
       await expect(preview).not.toBeVisible();
       await expect(trigger).toBeFocused();
     }
+  });
+
+  test(`${game} patch screenshots step through their section in the preview`, async ({ page, isMobile }) => {
+    await page.setViewportSize({ width: isMobile ? 390 : 1280, height: 900 });
+    await page.goto(path);
+    const section = page.locator('section.section:has([data-patch-preview])').first();
+    const triggers = section.locator('[data-patch-preview]');
+    const alts = await triggers
+      .locator('img')
+      .evaluateAll(nodes =>
+        nodes
+          .filter(node => node.getClientRects().length > 0 || node.closest('details:not([open])'))
+          .map(node => (node as HTMLImageElement).alt),
+      );
+    const preview = page.getByRole('dialog', { name: '스크린샷 미리 보기' });
+    const shown = () => preview.locator('.preview-content img').getAttribute('alt');
+    const first = triggers.first();
+    await first.scrollIntoViewIfNeeded();
+    await first.click();
+    await expect(preview).toBeVisible();
+    if (alts.length < 2) {
+      await expect(preview.locator('.preview-nav')).toBeHidden();
+      return;
+    }
+    const count = preview.locator('.preview-count');
+    await expect(count).toHaveText(`1 / ${alts.length}`);
+    await page.keyboard.press('ArrowRight');
+    await expect(count).toHaveText(`2 / ${alts.length}`);
+    expect(await shown()).toBe(alts[1]);
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('ArrowLeft');
+    await expect(count).toHaveText(`${alts.length} / ${alts.length}`);
+    expect(await shown()).toBe(alts.at(-1));
+    await preview.getByRole('button', { name: '다음 스크린샷' }).click();
+    await expect(count).toHaveText(`1 / ${alts.length}`);
+    expect(await shown()).toBe(alts[0]);
+    await preview.getByRole('button', { name: '이전 스크린샷' }).click();
+    await expect(count).toHaveText(`${alts.length} / ${alts.length}`);
+    const image = await preview.locator('.patch-picture').boundingBox();
+    const viewport = page.viewportSize();
+    if (!image || !viewport) throw new Error('Missing preview dimensions');
+    expect(image.x + image.width).toBeLessThanOrEqual(viewport.width);
+    expect(image.y + image.height).toBeLessThanOrEqual(viewport.height);
+    await noHorizontalOverflow(page);
+    const { violations } = await new AxeBuilder({ page }).include('#patch-image-preview').analyze();
+    expect(violations.filter(v => v.impact === 'serious' || v.impact === 'critical')).toEqual([]);
+    await page.keyboard.press('Escape');
+    await expect(preview).not.toBeVisible();
+    expect(await page.evaluate(() => document.activeElement?.matches('[data-patch-preview]'))).toBe(true);
   });
 
   test(`${game} mobile navigation does not shift content when scripts load`, async ({ page, isMobile }) => {

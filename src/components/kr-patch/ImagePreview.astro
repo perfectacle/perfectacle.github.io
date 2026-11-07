@@ -1,7 +1,16 @@
 <dialog id="patch-image-preview" aria-labelledby="patch-image-preview-title">
   <div class="preview-header">
     <h2 id="patch-image-preview-title">스크린샷 미리 보기</h2>
-    <button type="button" autofocus aria-label="미리 보기 닫기">
+    <div class="preview-nav" hidden>
+      <span class="preview-count" aria-live="polite"></span>
+      <button type="button" class="preview-step" data-step="-1" aria-label="이전 스크린샷">
+        ‹
+      </button>
+      <button type="button" class="preview-step" data-step="1" aria-label="다음 스크린샷">
+        ›
+      </button>
+    </div>
+    <button type="button" class="preview-close" autofocus aria-label="미리 보기 닫기">
       닫기
     </button>
   </div>
@@ -11,18 +20,48 @@
 <script>
   const dialog = document.querySelector<HTMLDialogElement>('#patch-image-preview');
   const content = dialog?.querySelector('.preview-content');
-  const close = dialog?.querySelector('button');
+  const close = dialog?.querySelector<HTMLButtonElement>('.preview-close');
+  const nav = dialog?.querySelector<HTMLElement>('.preview-nav');
+  const count = dialog?.querySelector('.preview-count');
+  /** The screenshot the preview was opened from, and the one it shows now. */
+  let opener: HTMLButtonElement | null = null;
   let trigger: HTMLButtonElement | null = null;
+  let group: HTMLButtonElement[] = [];
   let overflow = '';
+  const rendered = (node: Element) => node.getClientRects().length > 0;
 
-  if (dialog && content && close) {
+  // Screenshots of one page section step through together; note pages without sections are one group.
+  // Folded ones (inside a closed <details>) count, but those hidden in other ways (another layout's copy) do not.
+  const groupOf = (button: HTMLButtonElement) => {
+    const scope = button.closest('section.section') ?? document.querySelector('main') ?? document.body;
+    return [...scope.querySelectorAll<HTMLButtonElement>('[data-patch-preview]')].filter(
+      node => node === button || rendered(node) || node.closest('details:not([open])') !== null,
+    );
+  };
+
+  if (dialog && content && close && nav && count) {
+    const show = (button: HTMLButtonElement) => {
+      const picture = button.querySelector('.patch-picture');
+      if (!picture) return;
+      trigger = button;
+      content.replaceChildren(picture.cloneNode(true));
+      count.textContent = `${group.indexOf(button) + 1} / ${group.length}`;
+    };
+    const step = (by: number) => {
+      if (!trigger || group.length < 2) return;
+      const next = group[(group.indexOf(trigger) + by + group.length) % group.length];
+      if (next) show(next);
+    };
     const finishClose = () => {
-      if (dialog.open || !trigger) return;
+      if (dialog.open || !opener) return;
       document.documentElement.style.overflow = overflow;
       content.replaceChildren();
-      const previous = trigger;
-      trigger = null;
-      previous.focus({ preventScroll: true });
+      // A screenshot reached by stepping may sit in a folded section; focus then returns to the one opened.
+      const target = trigger && rendered(trigger) ? trigger : opener;
+      opener = trigger = null;
+      group = [];
+      target.scrollIntoView({ block: 'nearest' });
+      target.focus({ preventScroll: true });
     };
     const closePreview = () => {
       dialog.close();
@@ -31,10 +70,11 @@
     document.addEventListener('click', event => {
       const button =
         event.target instanceof Element ? event.target.closest<HTMLButtonElement>('[data-patch-preview]') : null;
-      const picture = button?.querySelector('.patch-picture');
-      if (!button || !picture || dialog.open) return;
-      trigger = button;
-      content.replaceChildren(picture.cloneNode(true));
+      if (!button?.querySelector('.patch-picture') || dialog.open) return;
+      opener = button;
+      group = groupOf(button);
+      nav.hidden = group.length < 2;
+      show(button);
       dialog.showModal();
       overflow = document.documentElement.style.overflow;
       document.documentElement.style.overflow = 'hidden';
@@ -44,10 +84,21 @@
       event.preventDefault();
       closePreview();
     });
+    nav.addEventListener('click', event => {
+      const button = event.target instanceof Element ? event.target.closest<HTMLElement>('[data-step]') : null;
+      if (button) step(Number(button.dataset.step));
+    });
     dialog.addEventListener('keydown', event => {
-      if (event.key === 'Tab') {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
         event.preventDefault();
-        close.focus();
+        step(event.key === 'ArrowLeft' ? -1 : 1);
+      } else if (event.key === 'Tab') {
+        // Focus stays on the dialog's own buttons.
+        event.preventDefault();
+        const buttons = [...dialog.querySelectorAll<HTMLButtonElement>('button')].filter(node => rendered(node));
+        const at = buttons.indexOf(document.activeElement as HTMLButtonElement);
+        const by = event.shiftKey ? -1 : 1;
+        buttons[(at + by + buttons.length) % buttons.length]?.focus();
       }
     });
     dialog.addEventListener('click', event => {
@@ -92,6 +143,41 @@
   h2 {
     margin: 0;
     font-size: 1rem;
+  }
+
+  .preview-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-inline-start: auto;
+  }
+
+  .preview-nav[hidden] {
+    display: none;
+  }
+
+  .preview-count {
+    min-width: 4.5em;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .preview-step {
+    min-width: 44px;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  /* On a phone the counter and buttons need the row; the title stays as the dialog's accessible name. */
+  @media (max-width: 480px) {
+    h2:has(+ .preview-nav:not([hidden])) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
   }
 
   button {
