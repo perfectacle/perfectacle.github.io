@@ -173,8 +173,8 @@ importers:
         specifier: 3.16.1
         version: 3.16.1(@typescript/typescript6@6.0.2)
       astro:
-        specifier: 7.4.4
-        version: 7.4.4(@astrojs/markdown-remark@7.3.5(supports-color@8.1.1))(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
+        specifier: 7.4.5
+        version: 7.4.5(@astrojs/markdown-remark@7.3.5(supports-color@8.1.1))(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
       github-slugger:
         specifier: 2.0.0
         version: 2.0.0
@@ -1762,8 +1762,8 @@ packages:
     resolution: {integrity: sha512-WavQUarfgwSbpCq4xsdcIBdX5KArfI2d6DD8EIloJIMthnB1508iNpx4C77EhUyMd03LpEt8HAPzwF/cG0V39g==}
     engines: {node: ^22.22.3 || ^24.16.0 || >=26.3.0}
 
-  astro@7.4.4:
-    resolution: {integrity: sha512-e+BzhGCaIY/H1tV/BQPTbOPZVZ8wuu6+bbpc+3oSMH2UgoB1l9peSGASk6nswtYra9PO9OoMREhldKtQkZ5TVw==}
+  astro@7.4.5:
+    resolution: {integrity: sha512-n5lET11/qnrOWn4wNpXxD9g2VKkTIa162hHgrkMPChMQC5q/xh2lY2OerK5mpsEAFCNmXsYA7NISE+9Uo7Cxxg==}
     engines: {node: '>=22.23.4', npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
     peerDependencies:
@@ -5407,7 +5407,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  astro@7.4.4(@astrojs/markdown-remark@7.3.5(supports-color@8.1.1))(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1):
+  astro@7.4.5(@astrojs/markdown-remark@7.3.5(supports-color@8.1.1))(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1):
     dependencies:
       '@astrojs/compiler-rs': 0.5.2
       '@astrojs/internal-helpers': 0.13.0
