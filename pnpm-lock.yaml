@@ -170,8 +170,8 @@ importers:
         specifier: 7.3.5
         version: 7.3.5(supports-color@8.1.1)
       '@waline/client':
-        specifier: 3.16.1
-        version: 3.16.1(@typescript/typescript6@6.0.2)
+        specifier: 3.16.2
+        version: 3.16.2(@typescript/typescript6@6.0.2)
       astro:
         specifier: 7.4.5
         version: 7.4.5(@astrojs/markdown-remark@7.3.5(supports-color@8.1.1))(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.1)
@@ -1672,8 +1672,8 @@ packages:
     resolution: {integrity: sha512-r1H+XL+/Ww4qXv8vjq09HJQtMvYqMofgfueuokgsDW1kJ9/6CYY7g6LkksYlDJmWm0aqkLR/9ZTI/bbozL4FBA==}
     engines: {node: '>=22'}
 
-  '@waline/client@3.16.1':
-    resolution: {integrity: sha512-3zrFOl1kK0ITz8npaB7HFecx6PS6qpTNfF9qdNx49pffGxQ4luIX06MaPBn6LgbnhCTTWHCHa0v3wHn5j7BwDw==}
+  '@waline/client@3.16.2':
+    resolution: {integrity: sha512-KXv1rHtCiqRckib5UnSIdk3y5up8Ugw3/723BMUuMM4sH66WFUuTD6z1RoRHQ+BlGr/6YgQ45GIVQnNrUFyzlw==}
     engines: {node: '>=22'}
 
   '@webc.site/math@0.1.41':
@@ -5319,7 +5319,7 @@ snapshots:
 
   '@waline/api@1.1.2': {}
 
-  '@waline/client@3.16.1(@typescript/typescript6@6.0.2)':
+  '@waline/client@3.16.2(@typescript/typescript6@6.0.2)':
     dependencies:
       '@vueuse/core': 15.0.0(vue@3.5.44(@typescript/typescript6@6.0.2))
       '@waline/api': 1.1.2

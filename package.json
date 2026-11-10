@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@astrojs/markdown-remark": "7.3.5",
-    "@waline/client": "3.16.1",
+    "@waline/client": "3.16.2",
     "astro": "7.4.5",
     "github-slugger": "2.0.0",
     "hast-util-from-html": "2.0.3",
