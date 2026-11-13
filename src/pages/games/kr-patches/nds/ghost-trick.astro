@@ -112,7 +112,9 @@ const gallery = [
   { image: 'possess', alt: '빙의하기 문구가 화면을 가로지르는 순간' },
 ];
 
-const latestOverview = 'RetroArch의 melonDS DS 코어에서 롬을 읽은 뒤 게임이 진행되지 않던 문제를 고쳤습니다.';
+const latestOverview =
+  '에뮬레이터에서 실기 BIOS·펌웨어로 부팅(네이티브 부팅)하면 흰 화면에서 멈추던 문제와, DS 메뉴의 게임 제목이 「@@@ @@」로 나오던 문제를 고쳤습니다.';
+const v14Overview = 'RetroArch의 melonDS DS 코어에서 롬을 읽은 뒤 게임이 진행되지 않던 문제를 고쳤습니다.';
 const v13Overview =
   'DS 실기에서 TWiLight Menu++나 플래시카드로 실행하면 대사·지문·선택지·말풍선에 글자가 나오지 않던 문제를 고쳤습니다.';
 const v12Overview =
@@ -289,8 +291,29 @@ const v12Overview =
         {SECTION_TITLES['patch-notes']}
       </a>
     </h2>
-    <PatchRelease patch={patch} version="1.4">
+    <PatchRelease patch={patch} version="1.5">
       <p class="release-overview">{latestOverview}</p>
+      <ReleaseDetails>
+        <ReleaseItem>
+          <ul>
+            <li>
+              melonDS 등에서 BIOS 부팅을 네이티브로 두면 게임을 고른 뒤 흰 화면에서 멈췄습니다. v1.1 때부터 롬 안의
+              프로그램과 파일이 0x200 경계에 놓여 있지 않아, 펌웨어가 카드에서 읽은 프로그램이 깨졌습니다. 일본판처럼
+              모든 부분을 0x200 경계에 다시 놓았습니다. 다이렉트 부팅은 전에도 문제가 없었습니다.
+            </li>
+            <li>
+              DS 메뉴의 게임 제목이 「@@@ @@」로 나왔습니다. 제목은 펌웨어 글꼴로 그리는데 한국판이 아닌 펌웨어에는
+              한글이 없습니다. 이제 「Ghost Trick (K)」로 나오고, 한국판 펌웨어가 읽는 한국어 칸에는 「고스트 트릭」을
+              넣었습니다.
+            </li>
+            <li>대사·그래픽은 v1.4와 같고, 세이브도 그대로 이어서 쓸 수 있습니다.</li>
+            <li>문제를 알려 주신 마메짱 님께 감사드립니다.</li>
+          </ul>
+        </ReleaseItem>
+      </ReleaseDetails>
+    </PatchRelease>
+    <PatchRelease patch={patch} version="1.4">
+      <p class="release-overview">{v14Overview}</p>
       <ReleaseDetails>
         <ReleaseItem>
           <ul>
