@@ -23,7 +23,7 @@ export const GHOST_TRICK: NdsSpec = {
   header: { title: 'GHOSTTRICK-J', code: 'BGTJ' },
   patchedSize: 134217728,
   original: { crc32: '105DDD9E', md5: '2E0629DBACEF1E5F55BB254377FC0367' },
-  patched: { crc32: '13DD4810', md5: '0A7C2390083525B87AB288D0F7D77AEF' },
+  patched: { crc32: '6DDD429F', md5: 'A7D2BC7227232FB42DB917E346A30544' },
   previous: [
     { version: 'v1.1', size: 119459746, crc32: 'D366A4D9', md5: '782D23E4E11767691B85B73E6BFD74EE' },
     // The first v1.2 build, before the v1.1 notice and credit lines came off the title screen.
@@ -31,6 +31,7 @@ export const GHOST_TRICK: NdsSpec = {
     { version: 'v1.2', size: 119462534, crc32: '4C863193', md5: 'BE1AC12137C374226DAD6D8DA9C64745' },
     // Also what a trimming tool leaves of v1.4, which is v1.3 padded with 0xFF.
     { version: 'v1.3', size: 119462534, crc32: 'F13E7A2C', md5: '335B1F8098F40603F4E9295754E912B3' },
+    { version: 'v1.4', size: 134217728, crc32: '13DD4810', md5: '0A7C2390083525B87AB288D0F7D77AEF' },
   ],
 };
 
