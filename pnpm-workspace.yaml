@@ -4,3 +4,11 @@ minimumReleaseAge: 10080
 minimumReleaseAgeExcludePrune: true
 
 allowBuilds: {}
+
+packageExtensions:
+  # astro2tsx loads @napi-rs/wasm-runtime, which peers on both @emnapi/core and @emnapi/runtime, but
+  # astro2tsx only declares core. pnpm then fills the runtime peer from whatever else is in the graph
+  # (rolldown's wasm binding pins a 2.x beta), and a 1.x core with a 2.x runtime crashes on load.
+  '@astrojs/astro2tsx':
+    dependencies:
+      '@emnapi/runtime': ^1.11.3
