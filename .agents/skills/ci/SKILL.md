@@ -28,7 +28,7 @@ main 은 `ci-ok` 체크 통과가 필수다(저장소 ruleset). `ci-ok` 는 모�
 - 새 검사 잡에는 `needs: tested` 와 `if: ${{ !cancelled() && needs.tested.outputs.verified != 'true' }}` 를 붙인다. 안 붙이면 PR 이 이미 검사한 트리라도 main 에서 다시 돈다([main 재검사 생략](#참고)). `!cancelled()` 가 빠지면 `tested` 가 skip 되는 PR 에서 그 잡도 skip 된다. `build`·`deploy` 처럼 main 에서 늘 돌아야 하는 잡에는 붙이지 않는다. `tested` 는 `ci-ok` 의 `needs` 에 넣지 않는다. 표식 조회만 하는 잡이라, 그 잡이 죽어도 검사는 전부 돌고 배포까지 막을 이유가 없다.
 - matrix 잡의 `name` 에 matrix 식을 쓰지 않는다. 잡 수준 `if` 로 skip 된 matrix 잡은 펼쳐지지 않아 `${{ matrix.shard }}` 가 그대로 찍힌다. `name` 을 비우면 GitHub 이 matrix 값을 붙여 `verify (lint)` 로 보여 준다. 그래서 이름에 보일 키 하나만 matrix 에 두고, 나머지 설정은 그 키로 계산한다(`verify` 의 `env.SCOPE`·`env.REUSE`).
 - 자동 머지는 체크가 통과하는 순간 일어난다. PR 에 커밋을 더 올릴 계획이면 그 전에 머지될 수 있으니, 다 올린 뒤에 `gh pr merge --auto --merge` 를 건다.
-- Renovate PR 에서만 `output-baseline`/`output-diff` 가 돌아 base 와 렌더 결과(페이지 목록·본문 HTML)를 비교한다. 한 글자라도 다르면 실패해 사람이 보게 된다. 사람 PR 은 의도적으로 결과를 바꾸므로 돌지 않는다.
+- Renovate PR 에서만 `output-baseline`/`output-diff` 가 돌아 base 와 렌더 결과(페이지 목록·본문 HTML)를 비교한다. 한 글자라도 다르면 실패해 사람이 보게 된다. 화면에 안 나오는 차이(해시된 파일 이름, Astro scope 속성, 공백 길이, 표 구조 태그 사이 공백)만 `scripts/snapshot-output.ts` 가 지운다. 정규화를 늘릴 때는 화면이 같다는 근거(스크린샷 비교 등)를 PR 에 적는다. 사람 PR 은 의도적으로 결과를 바꾸므로 돌지 않는다.
 - 배포 잡은 `needs.ci-ok.result == 'success'` 로 판정한다. 기본 `success()` 는 봇 전용으로 skip 된 상위 잡 때문에 거짓이 되어 배포가 건너뛰어진다.
 
 ### CI-02 — 실패는 원인을 고친다
