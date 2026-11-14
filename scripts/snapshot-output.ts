@@ -6,6 +6,12 @@ import { join } from 'node:path';
 
 const [dist = 'dist', out = 'output-snapshot.json'] = process.argv.slice(2);
 
+// Whitespace between table parts (`<tr> <td>`, `</td> </tr>`) is dropped by CSS table layout, even
+// with `.prose table { display: block }`. HTML parsers differ on whether they keep it, so a parser
+// update would otherwise flag every table. Cell contents (`<td> <b>`) are left alone.
+const tableGap =
+  /(<\/?(?:table|thead|tbody|tfoot|tr|colgroup)\b[^>]*>|<\/t[hd]>|<\/caption>)\s+(?=<\/?(?:table|thead|tbody|tfoot|tr|th|td|caption|colgroup|col)\b)/g;
+
 // Build-specific noise that changes without the page changing: content-hashed asset names,
 // Astro's per-component scope attributes, and whitespace.
 const normalize = (html: string) =>
@@ -13,6 +19,7 @@ const normalize = (html: string) =>
     .replace(/\/_astro\/([^"'\s)]+?)\.[\w-]{8}(?:_[\w-]+)?\.(\w+)/g, '/_astro/$1.$2')
     .replace(/\sdata-astro-cid-\w+(?:="[^"]*")?/g, '')
     .replace(/\s+/g, ' ')
+    .replace(tableGap, '$1')
     .trim();
 
 const mainOf = (html: string) => /<main[^>]*>([\s\S]*)<\/main>/.exec(html)?.[1] ?? html;
