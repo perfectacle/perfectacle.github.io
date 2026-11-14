@@ -66,7 +66,7 @@ CA(인증서 발급 기관, Certificate Authority)에게 인증서 발급을 요
 
 ## 비밀키 (*.key)
 ![](./key-format-desc.webp)  
-[전자서명인증관리센터](https://www.rootca.or.kr/kor/accredited/accredited06_01.jsp)에 보면 PKCS#5와 PKCS#8 형식이라고 나와있다.
+[전자서명인증관리센터](https://web.archive.org/web/20240119193253/https://www.rootca.or.kr/kor/accredited/accredited06_01.jsp)에 보면 PKCS#5와 PKCS#8 형식이라고 나와있다.
 
 > In cryptography, PKCS #8 is a standard syntax for storing private key information.
   The PKCS #8 private key may be encrypted with a passphrase using the PKCS #5 standards,
@@ -96,7 +96,7 @@ X.509 인증서의 데이터 구조는 ASN.1 표기법에 의해 표기된다.
 object identifer를 [http://oid-info.com/get/1.2.410.200004.1.4](https://web.archive.org/web/20160907090034/http://oid-info.com/get/1.2.410.200004.1.4)에서 검색하면 더 자세한 정보가 나온다.
 
 ![개인키를 ASN.1 표기법으로 표기](./seed-iv.webp)  
-또한 [SEED 알고리즘 규격 문서](http://www.rootca.or.kr/kcac/down/TechSpec/2.3-KCAC.TS.ENC.pdf)를 보면 OID에 따라서 초기 벡터 값을 어떻게 세팅해야하는지 나온다.
+또한 [SEED 알고리즘 규격 문서](https://web.archive.org/web/20240527205257/https://www.rootca.or.kr/kcac/down/TechSpec/2.3-KCAC.TS.ENC.pdf)를 보면 OID에 따라서 초기 벡터 값을 어떻게 세팅해야하는지 나온다.
 
 ## ActiveX로 깔은 모듈(delfino, Xecure 등등)에서는 무슨 일을 할까...?
 ![Ajax나 WebSocket을 통해서 주기적으로 로컬과 통신한다.](./activex-commuicate-local.webp)  
@@ -114,7 +114,7 @@ ASN.1 Decoder로 보니 내 공인인증서였다.
 따라서 저 공인인증서를 내가 전달한 건지, 남이 전달한 건지 서버는 알 길이 없다.
 
 ![VID_RANDOM 파라미터에 Base64 인코딩 된 스트링을 보내고 있다.](./kb-login-vid-random.webp)  
-[식별번호를 이용한 본인확인 기술규격](http://www.rootca.or.kr/kcac/down/TechSpec/1.5-KCAC.TS.SIVID.pdf)을 보면 다음과 같은 부분이 나와있다.  
+[식별번호를 이용한 본인확인 기술규격](https://web.archive.org/web/20220516102247/https://www.rootca.or.kr/kcac/down/TechSpec/1.5-KCAC.TS.SIVID.pdf)을 보면 다음과 같은 부분이 나와있다.  
 `VID = h(h(IDN, R)`
 
 - VID: 가상식별번호
@@ -147,5 +147,5 @@ ASN.1 Decoder로 보니 내 공인인증서였다.
 * [https://www.slideshare.net/ied206/4th-inc0gnito](https://www.slideshare.net/ied206/4th-inc0gnito)
 * [https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0](https://unius.tistory.com/entry/%EC%A0%84%EC%9E%90%EC%84%9C%EB%AA%85-%EC%89%BD%EA%B2%8C-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0)
 * [https://www.joongang.co.kr/article/521864](https://www.joongang.co.kr/article/521864)
-* [SEED 암호 알고리즘 규격](https://www.rootca.or.kr/kcac/down/TechSpec/2.3-KCAC.TS.ENC.pdf) 
-* [전자서명 인증서 프로파일 규격](https://www.rootca.or.kr/kcac/down/TechSpec/1.1-KCAC.TS.CERTPROF.pdf)
+* [SEED 암호 알고리즘 규격](https://web.archive.org/web/20240527205257/https://www.rootca.or.kr/kcac/down/TechSpec/2.3-KCAC.TS.ENC.pdf) 
+* [전자서명 인증서 프로파일 규격](https://web.archive.org/web/20220516003044/https://www.rootca.or.kr/kcac/down/TechSpec/1.1-KCAC.TS.CERTPROF.pdf)
