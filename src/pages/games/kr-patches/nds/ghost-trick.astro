@@ -302,13 +302,65 @@ const v12Overview =
               모든 부분을 0x200 경계에 다시 놓았습니다. 다이렉트 부팅은 전에도 문제가 없었습니다.
             </li>
             <li>
-              DS 메뉴의 게임 제목이 「@@@ @@」로 나왔습니다. 제목은 펌웨어 글꼴로 그리는데 한국판이 아닌 펌웨어에는
-              한글이 없습니다. 이제 「Ghost Trick (K)」로 나오고, 한국판 펌웨어가 읽는 한국어 칸에는 「고스트 트릭」을
-              넣었습니다.
+              배치를 고치면 DS 메뉴가 게임 제목을 읽어 오는데, v1.1부터 들어 있던 한글 제목은 「@@@ @@」로 나왔습니다.
+              제목은 펌웨어 글꼴로 그리는데 한국판이 아닌 펌웨어에는 한글이 없습니다. 이제 「Ghost Trick (K)」로 나오고,
+              한국판 펌웨어가 읽는 한국어 칸에는 「고스트 트릭」을 넣었습니다.
             </li>
             <li>대사·그래픽은 v1.4와 같고, 세이브도 그대로 이어서 쓸 수 있습니다.</li>
             <li>문제를 알려 주신 마메짱 님께 감사드립니다.</li>
           </ul>
+          <p class="section-note">
+            아래는 melonDS DS 코어에서 BIOS 부팅을 네이티브로 두고 영어 펌웨어로 찍은 것입니다. 위는 DS 메뉴, 아래는
+            게임을 고른 뒤의 화면입니다.
+          </p>
+          <ReleaseScreenshot
+            height={192}
+            rows={[
+              [
+                {
+                  label: 'v1.4',
+                  src: `${base}/images/patch/native-boot_v14_1.webp`,
+                  alt: 'v1.4: DS 메뉴의 게임 칸이 아이콘도 제목도 없이 비어 있음',
+                },
+                {
+                  label: 'v1.5',
+                  src: `${base}/images/patch/native-boot_v15_1.webp`,
+                  alt: 'v1.5: DS 메뉴의 게임 칸에 유령 아이콘과 Ghost Trick (K), CAPCOM이 나옴',
+                },
+              ],
+              [
+                {
+                  label: 'v1.4',
+                  src: `${base}/images/patch/native-boot_v14_2.webp`,
+                  alt: 'v1.4: 게임 칸을 누른 뒤 흰 화면에서 멈춤',
+                },
+                {
+                  label: 'v1.5',
+                  src: `${base}/images/patch/native-boot_v15_2.webp`,
+                  alt: 'v1.5: 게임 칸을 누르면 고스트 트릭 타이틀 화면이 나옴',
+                },
+              ],
+            ]}
+          />
+          <p class="section-note">
+            DS 메뉴의 제목 칸을 크게 본 것입니다. 왼쪽은 배치만 고치고 v1.4의 제목을 그대로 둔 롬입니다.
+          </p>
+          <ReleaseScreenshot
+            width={200}
+            height={52}
+            panels={[
+              {
+                label: '배치만 고친 v1.4',
+                src: `${base}/images/patch/banner_v14_1.webp`,
+                alt: '배치만 고친 v1.4: DS 메뉴의 제목이 @@@ @@와 CAPCOM으로 나옴',
+              },
+              {
+                label: 'v1.5',
+                src: `${base}/images/patch/banner_v15_1.webp`,
+                alt: 'v1.5: DS 메뉴의 제목이 Ghost Trick (K)와 CAPCOM으로 나옴',
+              },
+            ]}
+          />
         </ReleaseItem>
       </ReleaseDetails>
     </PatchRelease>
