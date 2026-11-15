@@ -79,7 +79,7 @@ console.log(sub10(4)); // 6
 n개의 인자에 대해 대비할 수 있는 커리 함수를 다시 만들어보자.  
 ~~아래 링크를 보고 완전히 베낀 수준이며 ES6로 작성했을 뿐이다.~~  
 아래 링크를 참고하면 좀 더 자세하고 ES5로 작성된 예제를 볼 수 있다.  
-[JavaScript에서 커링 currying 함수 작성하기](http://www.haruair.com/blog/2993)
+[JavaScript에서 커링 currying 함수 작성하기](https://edykim.com/ko/post/writing-a-curling-currying-function-in-javascript/)
 
 클로저는 **함수가 아무리 호출되어도 다시 초기화 하지 않고, 유지되어야하는 값을 위해 쓴다**고 나는 알고 있다.(혹시 틀렸다면 태클을...)  
 기존 함수를 커리 함수로 호출할 때 유지해야할 값이 두 가지가 있다.  
