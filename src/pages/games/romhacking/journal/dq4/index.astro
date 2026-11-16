@@ -1,0 +1,60 @@
+---
+import Base from '../../../../../layouts/Base.astro';
+import Comments from '../../../../../components/Comments.astro';
+import GuideCrumbs from '../../../../../components/romhacking/GuideCrumbs.astro';
+import '../../../../../styles/romhacking.css';
+import { SITE } from '../../../../../lib/posts.ts';
+import { breadcrumbs } from '../../../../../lib/structured-data.ts';
+import { GUIDE_PATH, GUIDE_TITLE } from '../../../../../components/romhacking/chapters.ts';
+import {
+  DQ4_JOURNAL,
+  JOURNAL_SECTION_TITLE,
+  journalPartLabel,
+  journalPartPath,
+} from '../../../../../components/romhacking/journal.ts';
+
+const journal = DQ4_JOURNAL;
+const title = `${JOURNAL_SECTION_TITLE}: ${journal.title}`;
+const trail = [
+  { name: GUIDE_TITLE, path: GUIDE_PATH },
+  { name: title, path: journal.path },
+];
+---
+
+<Base title={`${title} - ${GUIDE_TITLE}`} description={journal.summary} jsonLd={[breadcrumbs(SITE, trail)]}>
+  <div class="container guide">
+    <GuideCrumbs here={{ kind: 'journal', journal }} />
+    <article data-pagefind-body>
+      <header class="guide-head">
+        <p class="guide-kicker" data-pagefind-ignore>
+          <span>{JOURNAL_SECTION_TITLE}</span>
+        </p>
+        <h1 data-pagefind-meta="title">{title}</h1>
+        <p class="guide-summary">{journal.summary}</p>
+      </header>
+
+      <div class="prose">
+        <p>
+          아직 만드는 중인 해킹롬이라 배포한 패치는 없습니다. 소스와 형식 문서는{' '}
+          <a href={journal.repo}>sfc-dq4 저장소</a>에 있고, 롬 데이터는 들어 있지 않습니다. 처음이라면 0편부터 차례로
+          읽어 주세요.
+        </p>
+        <h2 id="parts">차례</h2>
+        <ul class="chapter-map">
+          {journal.parts.map(part => (
+            <li class="is-ready">
+              <p class="chapter-meta">
+                <span class="mono">{journalPartLabel(journal, part)}</span>
+              </p>
+              <h3>
+                <a href={journalPartPath(journal, part)}>{part.title}</a>
+              </h3>
+              <p class="chapter-summary">{part.summary}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </article>
+    <Comments path={journal.path} />
+  </div>
+</Base>

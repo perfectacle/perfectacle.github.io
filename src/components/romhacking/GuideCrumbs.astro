@@ -17,13 +17,23 @@ import {
   type GuidePlatform,
 } from './chapters.ts';
 import { GLOSSARY_PATH } from './glossary.ts';
+import {
+  JOURNALS,
+  JOURNAL_SECTION_PATH,
+  JOURNAL_SECTION_TITLE,
+  journalPartLabel,
+  journalPartPath,
+  type Journal,
+  type JournalPart,
+} from './journal.ts';
 
 type Here =
   | { kind: 'index' }
   | { kind: 'glossary' }
   | { kind: 'track'; track: GuidePlatform }
   | { kind: 'chapter'; chapter: GuideChapter }
-  | { kind: 'note'; patch: KrPatch };
+  | { kind: 'note'; patch: KrPatch }
+  | { kind: 'journal'; journal: Journal; part?: JournalPart };
 
 interface Props {
   here: Here;
@@ -75,6 +85,11 @@ const top: Crumb = {
       {
         items: [
           { href: `${GUIDE_PATH}#notes`, label: '롬 분석 노트', hint: `한글패치 ${NOTE_PATCHES.length}개의 롬 기록` },
+          {
+            href: JOURNAL_SECTION_PATH,
+            label: JOURNAL_SECTION_TITLE,
+            hint: `만드는 중인 해킹롬 ${JOURNALS.length}개의 기록`,
+          },
           { href: GLOSSARY_PATH, label: '용어집', hint: '가나다순 용어와 설명', current: here.kind === 'glossary' },
           { href: KR_PATCH_LIST_PATH, label: '한글패치 목록', hint: '패치 내려받기와 롬에 바로 적용' },
         ],
@@ -164,6 +179,31 @@ if (here.kind === 'note') {
       ],
     },
   });
+}
+if (here.kind === 'journal') {
+  const { journal, part } = here;
+  crumbs.push({
+    href: journal.path,
+    label: `${JOURNAL_SECTION_TITLE}: ${journal.title}`,
+    short: journal.short,
+    current: !part,
+    menu: {
+      name: `${JOURNAL_SECTION_TITLE}: ${journal.title}`,
+      groups: [
+        {
+          items: journal.parts.map(p => ({
+            href: journalPartPath(journal, p),
+            label: `${journalPartLabel(journal, p)} ${p.title}`,
+            current: p.slug === part?.slug,
+          })),
+        },
+      ],
+    },
+  });
+  if (part) {
+    const label = journalPartLabel(journal, part);
+    crumbs.push({ href: journalPartPath(journal, part), label: `${label} ${part.title}`, short: label, current: true });
+  }
 }
 ---
 

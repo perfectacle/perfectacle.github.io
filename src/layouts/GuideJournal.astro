@@ -1,0 +1,138 @@
+---
+import Base from './Base.astro';
+import Comments from '../components/Comments.astro';
+import GuideCrumbs from '../components/romhacking/GuideCrumbs.astro';
+import GuideSide from '../components/romhacking/GuideSide.astro';
+import TermPreview from '../components/romhacking/TermPreview.astro';
+import '../styles/romhacking.css';
+import '../styles/romhacking-notes.css';
+import { SITE } from '../lib/posts.ts';
+import { breadcrumbs } from '../lib/structured-data.ts';
+import { GUIDE_PATH, GUIDE_TITLE } from '../components/romhacking/chapters.ts';
+import { processGuideHtml } from '../components/romhacking/guide-html.ts';
+import { focusableTables, sizeJournalImages } from '../components/romhacking/journal-images.ts';
+import {
+  DQ4_JOURNAL,
+  JOURNAL_SECTION_PATH,
+  JOURNAL_SECTION_TITLE,
+  journalPart,
+  journalPartLabel,
+  journalPartPath,
+} from '../components/romhacking/journal.ts';
+
+interface Props {
+  /** Markdown pages name their part of the journal in the frontmatter. */
+  frontmatter: { part: string };
+}
+
+const journal = DQ4_JOURNAL;
+const part = journalPart(journal, Astro.props.frontmatter.part);
+const path = journalPartPath(journal, part);
+const label = journalPartLabel(journal, part);
+const title = `${part.title} - ${JOURNAL_SECTION_TITLE}: ${journal.title}`;
+const i = journal.parts.findIndex(p => p.slug === part.slug);
+const prev = journal.parts[i - 1];
+const next = journal.parts[i + 1];
+const trail = [
+  { name: GUIDE_TITLE, path: GUIDE_PATH },
+  { name: `${JOURNAL_SECTION_TITLE}: ${journal.title}`, path: journal.path },
+  { name: part.title, path },
+];
+const body = processGuideHtml(focusableTables(await sizeJournalImages(await Astro.slots.render('default'))));
+const headings = body.headings.map(h => ({ ...h, text: h.text.replace(/^\d+\.\s*/, '') }));
+---
+
+<Base title={`${title} - ${GUIDE_TITLE}`} description={part.summary} jsonLd={[breadcrumbs(SITE, trail)]}>
+  <div class="container guide note guide-layout">
+    <div class="guide-main">
+      <GuideCrumbs here={{ kind: 'journal', journal, part }} />
+      <article data-pagefind-body>
+        <header class="guide-head">
+          <p class="guide-kicker" data-pagefind-ignore>
+            <span>
+              {JOURNAL_SECTION_TITLE} · {journal.title}
+            </span>
+            <span class="mono">{label}</span>
+          </p>
+          <h1 data-pagefind-meta="title">{part.title}</h1>
+          <p class="guide-summary">{part.summary}</p>
+        </header>
+
+        <nav class="guide-toc" aria-labelledby="toc-title" data-pagefind-ignore>
+          <h2 id="toc-title">이 편에서</h2>
+          <ol>
+            {headings
+              .filter(h => h.depth === 2)
+              .map(h => (
+                <li>
+                  <a href={`#${h.id}`}>{h.text}</a>
+                </li>
+              ))}
+          </ol>
+        </nav>
+
+        <div class="prose note-body journal-body">
+          <Fragment set:html={body.html} />
+        </div>
+      </article>
+
+      <nav class="chapter-pager" aria-label="이전·다음 편" data-pagefind-ignore>
+        {prev ? (
+          <a class="prev" href={journalPartPath(journal, prev)} rel="prev">
+            <small>← 이전 편</small>
+            {prev.title}
+          </a>
+        ) : (
+          <a class="prev" href={journal.path}>
+            <small>← 처음으로</small>
+            {'일지 차례'}
+          </a>
+        )}
+        {next ? (
+          <a class="next" href={journalPartPath(journal, next)} rel="next">
+            <small>다음 편 →</small>
+            {next.title}
+          </a>
+        ) : (
+          <a class="next" href={journal.path}>
+            <small>차례로 →</small>
+            {'일지 차례'}
+          </a>
+        )}
+      </nav>
+
+      <p class="journal-back" data-pagefind-ignore>
+        <a href={JOURNAL_SECTION_PATH}>
+          {GUIDE_TITLE}의 {JOURNAL_SECTION_TITLE}
+        </a>
+      </p>
+
+      <Comments path={path} />
+    </div>
+    <GuideSide label="이 편에서" headings={headings} />
+  </div>
+  <TermPreview terms={body.terms} />
+</Base>
+
+<style is:global>
+  .journal-body img.journal-image {
+    display: block;
+    width: min(100%, var(--journal-image-width));
+    height: auto;
+    margin: 1.25em 0 0.5em;
+    border: 1px solid var(--border);
+    image-rendering: pixelated;
+  }
+  /* The line under an image is its caption. */
+  .journal-body p:has(> img.journal-image) + p > em:only-child {
+    display: block;
+    margin-top: -0.5em;
+    color: var(--fg-muted);
+    font-size: 0.92rem;
+    font-style: normal;
+  }
+  .journal-back {
+    margin: 0 0 32px;
+    font-size: 0.92rem;
+  }
+</style>
