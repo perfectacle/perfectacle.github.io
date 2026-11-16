@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import Comments from '../components/Comments.astro';
+import MermaidDiagrams from '../components/MermaidDiagrams.astro';
 import GuideCrumbs from '../components/romhacking/GuideCrumbs.astro';
 import GuideSide from '../components/romhacking/GuideSide.astro';
 import TermPreview from '../components/romhacking/TermPreview.astro';
@@ -10,7 +11,7 @@ import { SITE } from '../lib/posts.ts';
 import { breadcrumbs } from '../lib/structured-data.ts';
 import { GUIDE_PATH, GUIDE_TITLE } from '../components/romhacking/chapters.ts';
 import { processGuideHtml } from '../components/romhacking/guide-html.ts';
-import { focusableTables, sizeJournalImages } from '../components/romhacking/journal-images.ts';
+import { focusableScrollers, sizeJournalImages } from '../components/romhacking/journal-images.ts';
 import {
   DQ4_JOURNAL,
   JOURNAL_SECTION_PATH,
@@ -38,7 +39,7 @@ const trail = [
   { name: `${JOURNAL_SECTION_TITLE}: ${journal.title}`, path: journal.path },
   { name: part.title, path },
 ];
-const body = processGuideHtml(focusableTables(await sizeJournalImages(await Astro.slots.render('default'))));
+const body = processGuideHtml(focusableScrollers(await sizeJournalImages(await Astro.slots.render('default'))));
 const headings = body.headings.map(h => ({ ...h, text: h.text.replace(/^\d+\.\s*/, '') }));
 ---
 
@@ -112,6 +113,7 @@ const headings = body.headings.map(h => ({ ...h, text: h.text.replace(/^\d+\.\s*
     <GuideSide label="이 편에서" headings={headings} />
   </div>
   <TermPreview terms={body.terms} />
+  <MermaidDiagrams />
 </Base>
 
 <style is:global>
@@ -124,12 +126,20 @@ const headings = body.headings.map(h => ({ ...h, text: h.text.replace(/^\d+\.\s*
     image-rendering: pixelated;
   }
   /* The line under an image is its caption. */
-  .journal-body p:has(> img.journal-image) + p > em:only-child {
+  .journal-body :is(p:has(> img.journal-image), .mermaid, pre:has(> code.language-mermaid)) + p > em:only-child {
     display: block;
     margin-top: -0.5em;
     color: var(--fg-muted);
     font-size: 0.92rem;
     font-style: normal;
+  }
+  /* A sequence diagram squeezed to a phone's width is too small to read, so it keeps a readable width and scrolls. */
+  .journal-body .mermaid {
+    overflow-x: auto;
+    margin: 1.25em 0 0.5em;
+  }
+  .journal-body .mermaid svg[aria-roledescription='sequence'] {
+    min-width: 560px;
   }
   .journal-back {
     margin: 0 0 32px;

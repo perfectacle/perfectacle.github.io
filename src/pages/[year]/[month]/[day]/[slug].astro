@@ -1,4 +1,5 @@
 ---
+import MermaidDiagrams from '../../../../components/MermaidDiagrams.astro';
 import { render } from 'astro:content';
 import Base from '../../../../layouts/Base.astro';
 import Toc from '../../../../components/Toc.astro';
@@ -347,36 +348,7 @@ const jsonLd = [
       );
     }
   </script>
-  <script>
-    // Mermaid is large and rendering blocks the main thread, so each diagram is drawn only when it
-    // approaches the viewport (posts can have many). The library itself loads with the first one.
-    const blocks = [...document.querySelectorAll<HTMLElement>('pre > code.language-mermaid')];
-    let mermaidReady: Promise<typeof import('mermaid').default> | undefined;
-    const loadMermaid = () =>
-      (mermaidReady ??= import('mermaid').then(({ default: mermaid }) => {
-        mermaid.initialize({
-          startOnLoad: false,
-          theme: document.documentElement.dataset['theme'] === 'dark' ? 'dark' : 'default',
-        });
-        return mermaid;
-      }));
-    const observer = new IntersectionObserver(
-      entries => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          observer.unobserve(entry.target);
-          const pre = entry.target as HTMLElement;
-          const div = document.createElement('div');
-          div.className = 'mermaid';
-          div.textContent = pre.textContent;
-          pre.replaceWith(div);
-          void loadMermaid().then(mermaid => mermaid.run({ nodes: [div] }));
-        }
-      },
-      { rootMargin: '400px 0px' },
-    );
-    for (const code of blocks) if (code.parentElement) observer.observe(code.parentElement);
-  </script>
+  <MermaidDiagrams />
 </Base>
 
 <style>
