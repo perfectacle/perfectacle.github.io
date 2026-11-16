@@ -12,6 +12,7 @@ import {
   trackPatches,
 } from '../src/components/romhacking/chapters.ts';
 import { GLOSSARY, GLOSSARY_PATH, entryHref, termId } from '../src/components/romhacking/glossary.ts';
+import { JOURNALS, journalPartPath } from '../src/components/romhacking/journal.ts';
 import {
   ALL_KR_PATCHES,
   KR_PATCH_LIST_PATH,
@@ -28,6 +29,7 @@ const PAGES = [
   ...TRACK_PAGES,
   ...readyChapters().map(chapterPath),
   ...ALL_KR_PATCHES.map(notePath),
+  ...JOURNALS.flatMap(j => [j.path, ...j.parts.map(p => journalPartPath(j, p))]),
   GLOSSARY_PATH,
 ];
 const first = (list: ReturnType<typeof readyChapters>) => {

@@ -10,6 +10,7 @@ import {
 } from '../lib/posts.ts';
 import { GUIDE_PATH, TRACKS, TRACK_ORDER, chapterPath, readyChapters } from '../components/romhacking/chapters.ts';
 import { GLOSSARY_PATH } from '../components/romhacking/glossary.ts';
+import { JOURNALS, journalPartPath } from '../components/romhacking/journal.ts';
 
 export async function GET() {
   const posts = await getPosts();
@@ -30,6 +31,7 @@ export async function GET() {
     ...TRACK_ORDER.map(id => [TRACKS[id].path] as [string]),
     ...readyChapters().map(c => [chapterPath(c)] as [string]),
     [GLOSSARY_PATH],
+    ...JOURNALS.flatMap(j => [[j.path], ...j.parts.map(p => [journalPartPath(j, p)])] as [string][]),
     ...(await getTags()).map(t => [`/tags/${t.slug}/`] as [string]),
     ...flattenCategories(await getCategoryTree()).map(c => [categoryPath(c.path)] as [string]),
   ];
