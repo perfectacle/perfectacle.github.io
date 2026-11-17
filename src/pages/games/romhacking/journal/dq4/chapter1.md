@@ -7,7 +7,7 @@ part: chapter1
 이번 편은 그 위에 진짜 게임을 올리는 이야기다.
 새 게임을 누르면 DQ5 대신 DQ4의 서장이 시작하고, 1장 왕궁의 전사들을 끝까지 깰 수 있다.
 
-연재의 마지막 편이니 1장을 처음부터 끝까지 같이 걸어 보면서, 그 장면을 만들 때 뭐가 터졌는지 이야기해보려 한다.
+이번에는 1장을 처음부터 끝까지 같이 걸어 보면서, 그 장면을 만들 때 뭐가 터졌는지 이야기해보려 한다.
 (전부 적으면 끝이 없어서 재미있었던 것만 골랐다.)
 
 ## 네 줄 요약
@@ -311,11 +311,10 @@ snes9x 사건 뒤로는 같은 걷기를 snes9x와 bsnes에서도 실행한다.
 - 왕의 선물 장면에서 status window가 대사를 가린다.
 - 실기와 플래시 카트에서는 실행해보지 못했다.
 - 서장의 개구리가 나타날 때의 물결 효과와 카메라 이동이 없다.
-- 2장부터는 만드는 중이다.
 
 ## 더 보기
 
-연재는 여기까지다. 처음부터 읽으려면 [개요](/games/romhacking/journal/dq4/overview/)로 가면 된다.
+이야기는 [아리나의 2장](/games/romhacking/journal/dq4/chapter2/)으로 이어진다.
 주소와 table까지 궁금하다면 아래 문서에 다 있다.
 
 - [서장 형식 문서](https://github.com/perfectacle/sfc-dq4/blob/main/sfc/dq4/docs/dq4-prologue-format.md), [형식 문서(1장)](https://github.com/perfectacle/sfc-dq4/blob/main/sfc/dq4/docs/dq4-chapter1-format.md)

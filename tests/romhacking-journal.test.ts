@@ -22,6 +22,7 @@ test('parts are numbered from the overview, which is part 0', () => {
   const [journal] = JOURNALS;
   if (!journal) throw new Error('no journal');
   expect(journalPartLabel(journal, journalPart(journal, 'overview'))).toBe('0편');
-  expect(journalPartLabel(journal, journalPart(journal, 'chapter1'))).toBe(`${journal.parts.length - 1}편`);
+  expect(journalPartLabel(journal, journalPart(journal, 'chapter1'))).toBe('10편');
+  expect(journalPartLabel(journal, journalPart(journal, 'chapter2'))).toBe(`${journal.parts.length - 1}편`);
   expect(() => journalPart(journal, 'missing')).toThrow();
 });
