@@ -1075,6 +1075,32 @@ for (const patch of ALL_KR_PATCHES) {
   });
 }
 
+// The image takes its attributes by spread, and the compiler has changed how it marks such elements for scoped
+// styles. What those styles do is read here as the browser applies it, so a compiler update that loses them fails a
+// test: the image fills its frame, and a game screen keeps hard pixels.
+test('zoomable images keep the scoped styles that size and draw them', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  for (const patch of ALL_KR_PATCHES) {
+    for (const path of [`${patch.path}/`, notePath(patch)]) {
+      await page.goto(path);
+      await page.evaluate(() => document.querySelectorAll('details').forEach(d => (d.open = true)));
+      const images = page.locator('main .zoom-image > .patch-picture > img');
+      expect(await images.count(), path).toBeGreaterThan(0);
+      const off = await images.evaluateAll(list =>
+        list.flatMap(img => {
+          const picture = img.parentElement;
+          if (!picture) return [];
+          const gap = Math.abs(img.getBoundingClientRect().width - picture.getBoundingClientRect().width);
+          const drawn = getComputedStyle(img).imageRendering;
+          const hard = picture.classList.contains('smooth') || drawn === 'pixelated';
+          return gap < 1 && hard ? [] : [`${img.getAttribute('src')} gap ${gap} ${drawn}`];
+        }),
+      );
+      expect(off, path).toEqual([]);
+    }
+  }
+});
+
 for (const width of [1280, 1920]) {
   test(`game screens render at whole-number scales at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
