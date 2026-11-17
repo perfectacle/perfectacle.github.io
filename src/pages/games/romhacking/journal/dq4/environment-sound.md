@@ -6,7 +6,7 @@ part: environment-sound
 [앞 편](/games/romhacking/journal/dq4/windows/)에서 window와 한글 글자를 끝냈으니, 이제 화면의 나머지인 맵 그림과 귀로 듣는 소리 차례다.
 패미콤판 DQ4의 맵 배치는 [5편](/games/romhacking/journal/dq4/originals/)에서 읽어 뒀고, DQ5가 맵을 그리고 곡을 연주하는 방식은 [1편](/games/romhacking/journal/dq4/dq5-maps/)과 [4편](/games/romhacking/journal/dq4/dq5-graphics-sound/)에서 풀어 뒀다.
 남은 건 그 둘을 이어 붙이는 일인데, 패미콤 그림과 패미콤 소리를 그대로 옮길 수는 없다. 슈퍼 패미콤 게임처럼 보이고 들려야 하니까.
-그래서 그림은 새로 그리고, 곡은 닌텐도 DS 리메이크의 편곡을 가져오기로 했다.
+그래서 맵의 tile은 새로 그리고, 곡은 닌텐도 DS 리메이크의 것을 옮긴다. (리메이크가 늘리거나 새로 만든 것은 전부 옮기는 프로젝트라 곡도 그렇다.)
 
 그림과 소리는 사실 따로 한 편씩 써야 할 분량이다. 여기서는 주제마다 이야기 둘씩만 골랐다.
 
