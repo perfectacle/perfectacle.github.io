@@ -12,3 +12,9 @@ packageExtensions:
   '@astrojs/astro2tsx':
     dependencies:
       '@emnapi/runtime': ^1.11.3
+
+overrides:
+  # GHSA-fc5q-39xc-vjpf; pinned by the audit workflow.
+  picomatch@2: 2.3.2
+  # GHSA-fc5q-39xc-vjpf; pinned by the audit workflow.
+  picomatch@4: 4.0.7
