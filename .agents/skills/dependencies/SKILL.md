@@ -18,14 +18,14 @@ description: npm 의존성·pnpm·Node·GitHub Actions 버전을 추가하거나
 
 ## 절차 — `audit` 이 새 advisory 로 실패했을 때
 
-`audit` 은 파일이 그대로여도 새 advisory 가 나오면 실패한다. 그래서 PR 에서는 의존성 파일(`package.json`·`pnpm-lock.yaml`·`pnpm-workspace.yaml`)을 바꾼 PR 에서만 돌고, 나머지는 매일 06:00 KST 의 `audit.yml` 이 자동으로 고친다. 사람·에이전트는 아래 경우에만 손댄다.
+`audit`(`scripts/audit.ts`)은 파일이 그대로여도 새 advisory 가 나오면 실패한다. 실패시키는 것은 수정 버전이 나온 high·critical advisory 뿐이다. 수정 버전이 아직 없는 advisory 는 경고로만 찍는다: 어떤 PR 로도 고칠 수 없는데 의존성 PR 을 전부 막기 때문이다. 대신 `audit.yml` 이 `audit` 라벨 이슈를 열어 두고, 수정 버전이 나온 날 수정 PR 을 연다. 그래서 PR 에서는 의존성 파일(`package.json`·`pnpm-lock.yaml`·`pnpm-workspace.yaml`)을 바꾼 PR 에서만 돌고, 나머지는 매일 06:00 KST 의 `audit.yml` 이 자동으로 고친다. 사람·에이전트는 아래 경우에만 손댄다.
 
 1. **자동 수정을 먼저 본다** — 열린 `automation/audit-fix` PR 이 있으면 그 PR 이 머지되기를 기다린다. 없고 기다릴 수 없으면 `gh workflow run audit.yml` 로 바로 돌린다.
    완료: `automation/audit-fix` PR 이 열렸거나, `audit` 라벨 이슈가 열렸다.
-2. **이슈가 열렸을 때만 손으로 고친다** — 이슈는 같은 메이저 안에 수정 버전이 없거나 설치가 안 될 때만 열린다. 메이저를 올리거나, 실행되지 않는 코드면 예외로 둔다. 브랜치는 [git-workflow](../git-workflow/SKILL.md) 절차 0 부터 따른다.
+2. **이슈가 열렸을 때만 손으로 고친다** — 이슈는 수정 버전이 아직 없거나, 같은 메이저 안에 없거나, 설치가 안 될 때만 열린다. 수정 버전이 아직 없으면 영향 여부만 이슈에 적고 기다린다(검사는 막지 않는다). 나머지는 메이저를 올리거나, 실행되지 않는 코드면 예외로 둔다. 브랜치는 [git-workflow](../git-workflow/SKILL.md) 절차 0 부터 따른다.
    완료: 새 커밋의 `audit` 이 통과하고, 다음 `audit.yml` 실행이 이슈를 닫는다.
 
-자동 수정(`.github/scripts/audit-fix.mjs`)이 하는 일: 쿨다운 안에서 lockfile 을 갱신하고, 안 되면 같은 메이저의 수정 버전을 `overrides` 로 고정한다. 그 버전이 쿨다운 안이면 advisory 를 달아 `minimumReleaseAgeExclude` 에 넣고([DEP-01](#dep-01--7일-쿨다운) 예외), 쿨다운이 지난 예외는 지운다. 커밋은 GitHub API 로 만들어 GitHub 이 서명한다. `GITHUB_TOKEN` 으로 연 PR 은 워크플로를 트리거하지 않으므로 CI 는 `workflow_dispatch` 로 돌린다.
+자동 수정(`.github/scripts/audit-fix.mjs`)이 하는 일: 쿨다운 안에서 lockfile 을 갱신하고, 안 되면 같은 메이저의 수정 버전을 `overrides` 로 고정하고 advisory 가 사라졌는지 다시 확인한다(수정 버전이 없는 advisory 는 고정하지 않는다). 그 버전이 쿨다운 안이면 advisory 를 달아 `minimumReleaseAgeExclude` 에 넣고([DEP-01](#dep-01--7일-쿨다운) 예외), 쿨다운이 지난 예외는 지운다. 커밋은 GitHub API 로 만들어 GitHub 이 서명한다. `GITHUB_TOKEN` 으로 연 PR 은 워크플로를 트리거하지 않으므로 CI 는 `workflow_dispatch` 로 돌린다.
 
 ## 규칙
 
@@ -35,7 +35,7 @@ description: npm 의존성·pnpm·Node·GitHub Actions 버전을 추가하거나
 
 - 이유: 공급망 공격은 대개 배포 직후 며칠 안에 발견·회수된다.
 - 예외는 보안 수정 하나다. Renovate 는 취약점 PR 에 쿨다운을 적용하지 않는다(`vulnerabilityAlerts`). pnpm 쪽은 그 버전을 `pnpm-workspace.yaml` 의 `minimumReleaseAgeExclude` 에 넣어야 설치되고, `minimumReleaseAgeExcludePrune` 이 lockfile 이 더 쓰지 않는 항목을 지운다. 예외는 취약점 수정 버전에만, 근거(advisory 링크)를 PR 에 적고 넣는다.
-- `audit` 잡이 새 advisory 로 실패하면 [위 절차](#절차--audit-이-새-advisory-로-실패했을-때)를 따른다. 수정 버전이 없으면 PR 에 advisory 와 영향 여부를 적고 저장소 주인에게 넘긴다.
+- `audit` 잡이 새 advisory 로 실패하면 [위 절차](#절차--audit-이-새-advisory-로-실패했을-때)를 따른다. 수정 버전이 없는 advisory 는 `audit` 을 실패시키지 않으니, `audit` 라벨 이슈에 영향 여부를 적어 둔다.
 - GitHub Actions 도 같은 기준이다. 액션은 커밋 SHA 로 고정하고 `# vX.Y.Z` 주석을 단다(Renovate 가 둘 다 올린다). docker 이미지(actionlint)는 digest 로, pipx 로 도는 zizmor 는 잡 env 의 `ZIZMOR` 한 곳에 `==` 버전으로 두고 `renovate.json` 의 customManager 가 올린다(캐시 키와 실행이 같은 값을 읽는다).
 
 ### DEP-02 — lockfile
