@@ -40,7 +40,7 @@ main 은 `ci-ok` 체크 통과가 필수다(저장소 ruleset). `ci-ok` 는 모�
 
 ## 참고
 
-- **audit**: 파일이 그대로여도 새 advisory 로 결과가 바뀌므로, PR 에서는 의존성 파일(`package.json`·`pnpm-lock.yaml`·`pnpm-workspace.yaml`)을 바꾼 PR 에서만 돈다. 새 advisory 는 매일 도는 `audit.yml` 이 수정 PR 을 열어 고치고 머지 후 배포를 실행한다([dependencies](../dependencies/SKILL.md#절차--audit-이-새-advisory-로-실패했을-때)).
+- **audit**: 수정 버전이 나온 high·critical advisory 만 실패시킨다(수정 버전이 없는 것은 경고, `audit` 라벨 이슈로 추적). 파일이 그대로여도 새 advisory 로 결과가 바뀌므로, PR 에서는 의존성 파일(`package.json`·`pnpm-lock.yaml`·`pnpm-workspace.yaml`)을 바꾼 PR 에서만 돈다. 새 advisory 는 매일 도는 `audit.yml` 이 수정 PR 을 열어 고치고 머지 후 배포를 실행한다([dependencies](../dependencies/SKILL.md#절차--audit-이-새-advisory-로-실패했을-때)).
 - **결과 재사용**: PR 에서 잡마다 입력 파일 해시로 "통과 표식"을 캐시해 같은 입력이면 설치·실행을 건너뛴다. 입력 범위를 바꾸는 변경(새 파일 종류를 읽는 검사 등)은 그 잡의 fingerprint 패턴도 같이 고친다.
 - **main 재검사 생략**: PR 캐시는 main 에서 읽히지 않는다. 그래서 PR 의 `ci-ok` 가 통과하면 머지 결과의 트리 해시로 `verified-tree-<트리>` 아티팩트를 남긴다. main push 때 `tested` 잡이 같은 트리의 표식을 찾으면 검사 잡을 건너뛰고 build·deploy 만 돈다. PR 검사 뒤 main 이 움직였거나(필수 체크가 strict 가 아니다) 수동 실행이면 트리가 달라 전부 다시 돈다. 그래서 main 실행은 그때만 최후 방어선 역할을 한다.
 - **이미지 캐시**: `.github/actions/astro-assets-cache` 는 최적화 이미지와 형식 선택 결과를 `node_modules/.astro/assets` 에 함께 보관한다. 키에는 `astro.config.ts`·`src/lib/rehype-post-images.ts`·`src/lib/image-format.ts`·`src/components/PostList.astro` 의 해시가 들어간다. AVIF 설정이나 Sharp 버전이 바뀌면 내부 설정 표식으로 생성된 AVIF 만 지우고 WebP 와 형식 선택 캐시는 남긴다. 선택 캐시는 원본·변환 설정·Sharp 버전으로 구분된다. 이미지 선택 코드를 다른 파일로 옮기면 CI 키와 `src/lib/image-cache.ts` 의 `CODE` 목록도 고친다.

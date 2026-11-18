@@ -16,7 +16,7 @@
     "verify:urls": "node scripts/check-published-urls.ts",
     "verify:dist": "node scripts/check-dist.ts",
     "test:e2e": "playwright test --project desktop --project mobile",
-    "audit": "pnpm audit --prod --audit-level high",
+    "audit": "node scripts/audit.ts",
     "test:lighthouse": "playwright test --project lighthouse --workers 1",
     "images": "node scripts/convert-images.ts"
   },

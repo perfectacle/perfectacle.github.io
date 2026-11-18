@@ -8,6 +8,7 @@
 // for a person and reported as unresolved.
 import { spawnSync } from 'node:child_process';
 import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
+import { hasPatchedRelease } from '../../src/lib/audit-gate.ts';
 
 const WORKSPACE = 'pnpm-workspace.yaml';
 const LEVELS = new Set(['high', 'critical']);
@@ -146,8 +147,19 @@ if (found.length) {
   }
 }
 
-// 3. Pin what the refresh could not move, per installed major.
+// 3. Pin what the refresh could not move, per installed major. An advisory nothing fixes yet has no version to pin to:
+// without this filter its empty patched range would match the newest release, which is still vulnerable.
 found = audit();
+for (const a of found.filter(a => !hasPatchedRelease(a)))
+  unresolved.push(`- \`${a.module_name}\`: ${a.github_advisory_id} (${a.severity}) has no patched release yet`);
+found = found.filter(hasPatchedRelease);
+const stillVulnerable = (name, major, ids) =>
+  audit().some(
+    a =>
+      a.module_name === name &&
+      ids.includes(a.github_advisory_id) &&
+      a.findings.some(f => Number(f.version.split('.')[0]) === major),
+  );
 for (const name of [...new Set(found.map(a => a.module_name))]) {
   const advisories = found.filter(a => a.module_name === name);
   const ids = [...new Set(advisories.map(a => a.github_advisory_id))].join(', ');
@@ -163,12 +175,16 @@ for (const name of [...new Set(found.map(a => a.module_name))]) {
     const target = mature.at(-1) ?? candidates[0];
     const before = readWorkspace();
     setEntry('overrides', quote(`${name}@${major}`), target, `${ids}; pinned by the audit workflow.`);
-    if (install(ids)) report.push(`- \`${name}@${major}\`: ${ids} fixed by overriding to ${target}`);
-    else {
-      writeFileSync(WORKSPACE, before);
-      run('pnpm', ['install', '--no-frozen-lockfile']);
-      unresolved.push(`- \`${name}@${major}\`: ${ids} could not install ${target}`);
+    const installed = install(ids);
+    if (installed && !stillVulnerable(name, major, ids)) {
+      report.push(`- \`${name}@${major}\`: ${ids} fixed by overriding to ${target}`);
+      continue;
     }
+    writeFileSync(WORKSPACE, before);
+    run('pnpm', ['install', '--no-frozen-lockfile']);
+    unresolved.push(
+      `- \`${name}@${major}\`: ${ids} ${installed ? `is still reported after overriding to ${target}` : `could not install ${target}`}`,
+    );
   }
 }
 
