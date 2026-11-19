@@ -741,5 +741,5 @@ COPY ${buildDir}/app .
 도커 이미지는 마치 스택 자료구조 안에 레이어들을 쌓아간다고 생각하면 좀 더 이해하기 쉬운 것 같다.
 
 ## 참조 링크
-* [TOPICAL GUIDE Spring Boot Docker](https://spring.io/guides/topicals/spring-boot-docker)  
+* [Spring Boot with Docker](https://spring.io/guides/gs/spring-boot-docker/)  
 * [Optimizing Docker Images for Spring Boot](https://toedter.com/2017/09/23/optimizing-docker-images-for-spring-boot/)
