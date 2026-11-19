@@ -62,7 +62,7 @@ modules:
 아마 5초라는 관대한 시간을 줬기 때문에 더 알람을 늦게 받게된 게 아닌가 싶다.  
 
 ![심지어는 60초까지 걸렸다.](./nginx-access-log-2.webp)  
-이제는 유저가 못참고 페이지를 이탈해서 [HTTP Status Code 499](https://httpstatuses.com/499)도 나왔다.  
+이제는 유저가 못참고 페이지를 이탈해서 [HTTP Status Code 499](https://web.archive.org/web/20190515145851/https://httpstatuses.com/499)도 나왔다.  
 동일한 API에서 계속해서 10초 이상이 걸리고, 점점 느려지는 걸 보니 해당 API의 문제가 맞다고 80% 정도는 확신을 했다.
 
 실제로 해당 코드를 보니 페이징 처리나 조건문이 좀 부실했었고, 쿼리를 손 본 후에야 문제를 해결할 수 있었다. 
